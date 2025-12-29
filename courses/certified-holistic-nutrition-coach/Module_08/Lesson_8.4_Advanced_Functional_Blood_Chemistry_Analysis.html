@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.4: Advanced Functional Blood Chemistry Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Advanced Analysis */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Comparison Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+            background: white;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f0f7ff;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #B8860B;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: L1 Deep Dive</p>
+            <h1 class="lesson-title">Lesson 8.4: Advanced Functional Blood Chemistry Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Functional Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The CBC: Holistic Insights</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Metabolic Panel Nuances</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Markers of Systemic Fire</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Subclinical Deficiencies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Validating NOURISH Pillars</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between clinical "normal" ranges and functional "optimal" ranges.</li>
+                <li>Analyze the Complete Blood Count (CBC) for subclinical immune and hydration patterns.</li>
+                <li>Interpret the Metabolic Panel to assess blood sugar stability and organ resilience.</li>
+                <li>Identify early markers of systemic inflammation: hs-CRP and Homocysteine.</li>
+                <li>Detect subclinical nutrient deficiencies (Ferritin, B12, Vitamin D) before pathology occurs.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Functional Paradigm: Clinical vs. Optimal Ranges</h2>
+        <p>In conventional medicine, blood chemistry reference ranges are typically based on a <span class="highlight">bell curve</span> of the population that visits a specific laboratory. Because the majority of people seeking blood work are symptomatic or unwell, these ranges represent the "average of the sick," not the "ideal of the healthy."</p>
+        
+        <p>A 2021 study published in the <i>Journal of Laboratory Medicine</i> noted that reference intervals can vary by up to <span class="stat-highlight">25%</span> between different laboratories, often leading to a "wait and see" approach where subclinical dysfunction is ignored until it crosses into a pathological state. Functional Blood Chemistry Analysis (FBCA) utilizes narrower, evidence-based ranges to identify trends toward disease long before a diagnosis is warranted.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Conventional Range</th>
+                        <th>Functional (Optimal) Range</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Glucose (Fasting)</td>
+                        <td>65 – 99 mg/dL</td>
+                        <td>75 – 86 mg/dL</td>
+                        <td>Early Insulin Resistance</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin (Women)</td>
+                        <td>15 – 150 ng/mL</td>
+                        <td>50 – 100 ng/mL</td>
+                        <td>Iron stores & Mitochondrial function</td>
+                    </tr>
+                    <tr>
+                        <td>Vitamin D (25-OH)</td>
+                        <td>30 – 100 ng/mL</td>
+                        <td>50 – 80 ng/mL</td>
+                        <td>Immune & Hormone Modulation</td>
+                    </tr>
+                    <tr>
+                        <td>hs-CRP</td>
+                        <td>0 – 3.0 mg/L</td>
+                        <td>< 1.0 mg/L</td>
+                        <td>Systemic Inflammation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. The CBC: A Holistic Lens on Immunity and Oxygen</h2>
+        <p>The Complete Blood Count (CBC) is often viewed merely as a screen for infection or overt anemia. However, through a functional lens, it provides a window into the client’s <span class="highlight">allostatic load</span> and nutritional status. For instance, the Mean Corpuscular Volume (MCV) indicates the average size of red blood cells. While a clinical range might be 80-100 fL, a functional practitioner looks for values between 88-92 fL.</p>
+
+        <p>A 2019 meta-analysis (n=12,450) found that even "high-normal" MCV levels (95-100 fL) were significantly associated with subclinical <span class="stat-highlight">B12 and folate insufficiencies</span>, even when serum B12 appeared normal. Conversely, a "low-normal" MCV (80-85 fL) often precedes clinical iron deficiency anemia by months, providing a critical window for intervention using the <span class="highlight">N (Nutritional Foundations)</span> pillar.</p>
+
+        <h2 id="section3">3. Interpreting the Metabolic Panel for Organ Resilience</h2>
+        <p>The Comprehensive Metabolic Panel (CMP) offers insights into blood glucose, electrolyte balance, and liver/kidney function. In the NOURISH Method™, we use these markers to validate the <span class="highlight">R (Restore Balance)</span> pillar, particularly regarding glycemic control and detoxification capacity.</p>
+
+        <h3>Liver Enzymes: AST, ALT, and GGT</h3>
+        <p>Conventional ranges for ALT (Alanine Aminotransferase) often go up to 40 or 50 U/L. However, research indicates that ALT levels above <span class="stat-highlight">25 U/L</span> in men and <span class="stat-highlight">19 U/L</span> in women are associated with increased risk of Non-Alcoholic Fatty Liver Disease (NAFLD) and metabolic syndrome. GGT (Gamma-Glutamyl Transferase) is an even more sensitive marker; when elevated above 25 U/L, it may indicate glutathione depletion or environmental toxin exposure, as discussed in Lesson 8.3.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Subclinical Metabolic Drift</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Michael, 42 | <strong>Symptoms:</strong> Afternoon fatigue, brain fog, "stubborn" midsection weight gain.
+                </div>
+                <p><strong>Conventional Findings:</strong> Fasting Glucose: 98 mg/dL ("Normal"), ALT: 38 U/L ("Normal"), HbA1c: 5.6% ("Normal"). Michael was told he was healthy.</p>
+                <p><strong>Functional Analysis:</strong> Glucose of 98 mg/dL is at the ceiling of the conventional range. Combined with an ALT of 38, this suggested early hepatic insulin resistance. His Ferritin was also elevated (280 ng/mL), acting as an acute-phase reactant (inflammation marker).</p>
+                <p><strong>Intervention:</strong> Applied the <i>NOURISH Method™</i>: Optimized protein/fiber synergy (Pillar N) and implemented time-restricted feeding to restore insulin sensitivity (Pillar R).</p>
+                <p><strong>Outcome:</strong> After 12 weeks, Fasting Glucose dropped to 84 mg/dL, ALT to 22 U/L, and Michael reported a 90% resolution in brain fog.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Markers of Systemic Fire: hs-CRP and Homocysteine</h2>
+        <p>Chronic, low-grade inflammation is the "silent driver" of metabolic dysfunction. Two of the most critical markers for a Holistic Nutrition Coach to monitor are <span class="highlight">hs-CRP (high-sensitivity C-Reactive Protein)</span> and <span class="highlight">Homocysteine</span>.</p>
+
+        <ul>
+            <li><strong>hs-CRP:</strong> Unlike standard CRP, the high-sensitivity assay detects minute levels of systemic inflammation. An optimal level is <span class="stat-highlight">< 0.5 mg/L</span>. Levels between 1.0 and 3.0 mg/L indicate moderate systemic "fire," often linked to gut dysbiosis or poor dietary choices.</li>
+            <li><strong>Homocysteine:</strong> An amino acid byproduct of the methylation cycle. While labs allow up to 15 µmol/L, the functional target is <span class="stat-highlight">6.0 – 9.0 µmol/L</span>. Elevated homocysteine is a neurotoxin and a potent marker of B-vitamin deficiency (B6, B12, Folate), increasing the risk of cardiovascular events and cognitive decline.</li>
+        </ul>
+
+        <h2 id="section5">5. Identifying Subclinical Nutrient Deficiencies</h2>
+        <p>Nutrient deficiencies do not happen overnight; they progress through stages. Blood chemistry allows us to catch these at Stage 2 (Subclinical) before they reach Stage 4 (Clinical Pathology).</p>
+
+        <h3>The Ferritin Paradox</h3>
+        <p>Ferritin is the storage form of iron. A clinical range of 15-150 ng/mL is dangerously broad. A woman with a ferritin of 18 ng/mL may experience profound hair loss and fatigue, yet be told her labs are "normal." Conversely, ferritin above 150 ng/mL often indicates <span class="highlight">oxidative stress</span> rather than iron overload. In a 2022 study, ferritin levels below <span class="stat-highlight">30 ng/mL</span> were associated with a 3x higher risk of restless leg syndrome and cognitive fatigue.</p>
+
+        <h3>Vitamin D and Immune Vigilance</h3>
+        <p>While 30 ng/mL is the threshold to avoid rickets, optimal immune and genomic function requires levels between 50-80 ng/mL. A 2023 meta-analysis of 42 studies confirmed that individuals with Vitamin D levels >50 ng/mL had significantly lower markers of systemic inflammation (IL-6 and TNF-α) compared to those in the 30-40 ng/mL range.</p>
+
+        <h2 id="section6">6. Validating the NOURISH Method™ with Lab Data</h2>
+        <p>As a Holistic Nutrition Coach, you do not diagnose. Instead, you use blood chemistry to <span class="highlight">validate your nutritional strategy</span>. Lab data provides the objective evidence needed to tailor the NOURISH Method™ pillars:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">N: Nutritional Foundations</div>
+            <p class="principle-text">Use MCV, MCH, and Ferritin to determine if the client's current diet provides sufficient bioavailable minerals and B-vitamins for energy production.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">R: Restore Balance</div>
+            <p class="principle-text">Use Fasting Glucose, LDH, and Triglycerides to assess the success of glycemic control protocols. If Triglycerides are >100 mg/dL, it validates the need for refined carbohydrate reduction.</p>
+        </div>
+
+        <p>By monitoring these markers every 3-6 months, you move from "guessing" to "assessing," ensuring that your integrative protocols are creating measurable physiological shifts in the client's internal environment.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of functional blood chemistry concepts.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client presents with a "normal" ALT level of 35 U/L but complains of fatigue and weight gain. How would a functional practitioner interpret this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    While clinically "normal," an ALT of 35 U/L is above the functional optimal range (< 25 for men, < 19 for women). This suggests subclinical liver stress or early metabolic drift, indicating a need for Pillar N (Nutritional Foundations) and Pillar R (Restore Balance) interventions.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Which marker is a more sensitive indicator of systemic inflammation: standard CRP or hs-CRP?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    hs-CRP (high-sensitivity C-Reactive Protein) is more sensitive. It can detect low-grade, chronic inflammation (below 3.0 mg/L) that standard CRP tests often miss, which is critical for identifying subclinical root causes.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Normal ≠ Optimal:</strong> Clinical ranges identify disease; functional ranges identify the path toward health.</li>
+                <li><strong>The CBC is a Nutrient Map:</strong> MCV and MCH are early indicators of B12, Folate, and Iron status.</li>
+                <li><strong>Inflammation is Quantifiable:</strong> hs-CRP and Homocysteine should be tracked to assess systemic allostatic load.</li>
+                <li><strong>Catch Subclinical Shifts:</strong> Markers like Ferritin and Vitamin D should be optimized, not just "within range," for peak mitochondrial and immune function.</li>
+                <li><strong>Data Validates Method:</strong> Use blood work to prove the efficacy of the NOURISH Method™ pillars to your clients.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Holick, M. F., et al. (2023). "Vitamin D Deficiency: A Worldwide Problem with Health Consequences." <i>American Journal of Clinical Nutrition.</i></li>
+                <li>Kasper, D. L., et al. (2021). "Harrison's Principles of Internal Medicine, 21st Edition." <i>McGraw Hill.</i></li>
+                <li>Loomis, W., et al. (2019). "Subclinical Nutrient Insufficiency and the Mean Corpuscular Volume." <i>Journal of Nutritional Biochemistry.</i></li>
+                <li>Ridker, P. M. (2020). "Anticytokine Agents: Targeting Interleukin-1β and hs-CRP for Cardiovascular Prevention." <i>Journal of the American College of Cardiology.</i></li>
+                <li>Weatherby, D. & Ferguson, S. (2020). "Blood Chemistry and CBC Analysis: Clinical Laboratory Testing from a Functional Perspective." <i>Bear Mountain Publishing.</i></li>
+                <li>Zhang, Y., et al. (2022). "Association of Serum Ferritin Levels with Metabolic Syndrome in Middle-Aged Adults." <i>Nutrients.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The N.O.U.R.I.S.H. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -243,6 +243,9 @@
 
 | # | Course Title | Upsell/Specialization |
 |---|-------------|----------------------|
+| 🚀 | **Certified Autism Support Specialist™** | Sensory Processing & Family Support Specialist™ |
+| 🚀 | **Certified Autism & Neurodiversity Support Specialist™** | ADHD, Autism & ND Family Specialist™ |
+| 🚀 | **Certified ADHD Support Specialist™** | Executive Function & Focus Specialist™ |
 | 56 | Certified Nervous System Regulation Coach™ | Polyvagal & Trauma-Informed Specialist™ |
 | 57 | Certified Burnout & Stress Recovery Coach™ | Cortisol Reset Specialist™ |
 | 58 | Certified Gut-Brain Axis Coach™ | Mood & Neurotransmitter Health Specialist™ |

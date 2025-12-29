@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10.7: Customizing the Forever Plan</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Maintenance */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 5px;
+            color: #1e40af;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-top: 20px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 10: M - Maintain Forever</p>
+            <h1 class="lesson-title">Lesson 10.7: Customizing the Forever Plan</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Synthesizing the TRANSFORM Pillars</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Periodic 'Mini-Reset' Protocol</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Nutritional Flexibility & Tolerance</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Strength (S) as Metabolic Insurance</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Maintenance Contract</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Adaptive Eating Scenarios</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the 9 TRANSFORM pillars into a streamlined daily routine for clients.</li>
+                <li>Implement a "Mini-Reset" strategy to address weight drift before it becomes a relapse.</li>
+                <li>Guide clients through scientific food reintroduction to determine individual nutritional tolerances.</li>
+                <li>Solidify the role of resistance training in long-term metabolic health and skeletal muscle preservation.</li>
+                <li>Create a formal "Maintenance Contract" to establish psychological commitment and clear boundaries.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Synthesizing the TRANSFORM Pillars</h2>
+        <p>The transition from weight loss to maintenance is often where the most significant psychological friction occurs. Throughout this course, we have utilized the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span> to systematically address metabolism, habits, inflammation, and hormones. However, a client cannot live in a state of "active intervention" forever.</p>
+        
+        <p>Customizing the Forever Plan requires distilling these complex pillars into a simplified daily operating system. In maintenance, we shift from <em>intensity</em> to <em>consistency</em>. The goal is to move the client toward "unconscious competence," where the foundational behaviors of the methodology become their new baseline identity.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">20%</span>
+                    <span class="stat-label">Success rate of self-guided maintenance</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">62%</span>
+                    <span class="stat-label">Success rate with structured plan</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5 lbs</span>
+                    <span class="stat-label">Critical threshold for intervention</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The Periodic 'Mini-Reset' Protocol</h2>
+        <p>Biological homeostasis (discussed in Lesson 10.2) is a powerful force. Even the most successful clients will experience periods of "drift"—seasonal holidays, high-stress work projects, or travel—where habits begin to slide. The Forever Plan includes a pre-defined <span class="highlight">Mini-Reset Protocol</span> based on the "R" (Reset Habits) phase of our framework.</p>
+
+        <p>A Mini-Reset is triggered when a client hits a specific "Red Zone" weight (typically 3–5 lbs above their maintenance range). Rather than panicking or returning to a restrictive diet, the client reverts to the core <strong>Reset Habits</strong> for 7–14 days:</p>
+        <ul>
+            <li><strong>Environmental Audit:</strong> Clearing ultra-processed triggers from the home.</li>
+            <li><strong>Hunger Signaling:</strong> Returning to the Hunger-Satiety Scale (Lesson 2.2).</li>
+            <li><strong>Sleep Hygiene:</strong> Prioritizing circadian rhythm to lower cortisol.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Drift Correction</p>
+                    <p class="subtitle">Managing Post-Vacation Weight Drift</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 52</h4>
+                        <p>Lost 45 lbs (240 lbs to 195 lbs). Maintenance range: 193-198 lbs.</p>
+                    </div>
+                </div>
+                <p>David returned from a 10-day cruise weighing 204 lbs. In the past, this would have triggered a "shame spiral" leading to total relapse. Using his customized Forever Plan, he immediately initiated a 10-day <strong>Mini-Reset</strong>:</p>
+                <ul>
+                    <li><strong>Intervention:</strong> Reverted to "Anti-Inflammatory Plate" (Module 3) and 10k steps/day.</li>
+                    <li><strong>Outcome:</strong> Within 12 days, David returned to 197 lbs. He avoided the "all-or-nothing" mindset by treating the drift as a data point rather than a failure.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Nutritional Flexibility & Tolerance</h2>
+        <p>During the active weight loss phase, we often emphasize an Anti-Inflammatory Diet (Module 3) to reduce systemic inflammation and improve insulin sensitivity. However, <span class="highlight">long-term sustainability</span> requires testing tolerances for a wider variety of foods.</p>
+
+        <p>As a coach, you will guide the client through a "Tolerance Test" for previously restricted foods (e.g., dairy, grains, or occasional treats). We use a structured reintroduction to monitor for three specific bio-markers:</p>
+        <ol>
+            <li><strong>Digestive Response:</strong> Bloating, gas, or changes in bowel habits.</li>
+            <li><strong>Inflammatory Response:</strong> Joint pain, skin flare-ups, or water retention.</li>
+            <li><strong>Behavioral Response:</strong> Does this food trigger a dopamine loop or cravings for more?</li>
+        </ol>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Food Category</th>
+                        <th>Reintroduction Goal</th>
+                        <th>Red Flag (Stop/Limit)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Whole Grains</td>
+                        <td>Assess energy & glycemic response</td>
+                        <td>Post-meal lethargy; 2lb+ water weight spike</td>
+                    </tr>
+                    <tr>
+                        <td>Dairy</td>
+                        <td>Assess gut-axis health</td>
+                        <td>Congestion, acne, or digestive distress</td>
+                    </tr>
+                    <tr>
+                        <td>Alcohol/Treats</td>
+                        <td>Social integration & flexibility</td>
+                        <td>Disruption of sleep; "loss of control" eating</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Strength (S) as Metabolic Insurance</h2>
+        <p>If there is one non-negotiable pillar for maintenance, it is <strong>Strength (S)</strong>. As we established in Module 5, muscle is a highly metabolically active endocrine organ. During maintenance, muscle mass serves as a <span class="highlight">metabolic buffer</span>.</p>
+        
+        <p>A 2022 meta-analysis published in <em>Medicine & Science in Sports & Exercise</em> found that individuals who maintained resistance training were 2.5x more likely to sustain weight loss over 3 years compared to those who only focused on cardio. Muscle mass preserves the Resting Metabolic Rate (RMR) even when caloric intake increases to maintenance levels.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>In the Forever Plan, recommend a minimum of <strong>two full-body resistance sessions per week</strong>. This is the "Minimum Effective Dose" to prevent sarcopenia and maintain the metabolic advantages of the TRANSFORM method.</p>
+        </div>
+
+        <h2 id="section5">5. The Maintenance Contract</h2>
+        <p>Psychologically, the end of weight loss can feel like "crossing the finish line," which leads to a dangerous drop in vigilance. To combat this, we implement the <span class="highlight">Maintenance Contract</span>. This is a written agreement between the coach and the client that formalizes the transition.</p>
+        
+        <p>The contract should include:</p>
+        <ul>
+            <li><strong>The Maintenance Range:</strong> A 5-lb window that defines success.</li>
+            <li><strong>The Monitoring Frequency:</strong> How often will they weigh in or track (e.g., "The Friday Check-in")?</li>
+            <li><strong>The Non-Negotiables:</strong> 2-3 behaviors that never stop (e.g., protein at breakfast, 8k steps).</li>
+            <li><strong>The Support Plan:</strong> When will they reach out for a "booster session"?</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📝</div>
+                <div>
+                    <p class="box-label">Case Study: The Contract in Action</p>
+                    <p class="subtitle">Establishing Long-term Boundaries</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 34</h4>
+                        <p>Lost 30 lbs. Goal: Maintain while re-entering a high-travel career.</p>
+                    </div>
+                </div>
+                <p>Elena feared that her frequent business dinners would lead to weight regain. Her Maintenance Contract specified that she would "Audit the Menu" (Module 2) before every dinner and maintain a "Protein First" rule. If her weight hit 145 lbs (upper limit), she agreed to book a 30-minute strategy call with her coach immediately.</p>
+                <p><strong>Result:</strong> Elena has maintained within 2 lbs of her goal for 18 months, despite traveling 50% of the time.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Adaptive Eating Scenarios</h2>
+        <p>The Forever Plan must be flexible enough to survive the "real world." We teach clients <span class="highlight">Adaptive Eating</span>—the ability to adjust intake based on context without emotional distress. This is the synthesis of Module 4 (Nourish) and Module 9 (Adaptive Eating).</p>
+        
+        <p>Customization involves creating "If-Then" blueprints for common scenarios:</p>
+        <ul>
+            <li><strong>If</strong> I am going to a late-night wedding, <strong>Then</strong> I will prioritize a high-protein, high-fiber lunch to maximize satiety before the event.</li>
+            <li><strong>If</strong> I miss my strength workout due to a flight, <strong>Then</strong> I will perform a 15-minute bodyweight routine in the hotel to maintain the habit loop.</li>
+            <li><strong>If</strong> I overeat at a celebration, <strong>Then</strong> I will return to my standard Anti-Inflammatory Plate at the very next meal—no "compensation" fasting required.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Forever Plan customization.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What is the primary trigger for initiating a "Mini-Reset" protocol in the TRANSFORM framework?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The trigger is hitting a pre-defined "Red Zone" weight, typically 3-5 lbs above the client's maintenance range. This allows for early intervention before significant regain occurs.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is resistance training (the 'S' pillar) considered 'Metabolic Insurance' during maintenance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Muscle mass is metabolically active and helps preserve the Resting Metabolic Rate (RMR). It provides a "buffer" that allows for higher caloric intake while maintaining weight and improving insulin sensitivity.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Simplification is Key:</strong> Maintenance requires distilling the 9 TRANSFORM pillars into 2-3 daily non-negotiable habits.</li>
+                <li><strong>Proactive, Not Reactive:</strong> The Mini-Reset Protocol removes the shame from weight drift by providing a pre-planned corrective action.</li>
+                <li><strong>Tolerance Testing:</strong> Use a scientific reintroduction phase to determine which foods a client can enjoy without metabolic or behavioral setbacks.</li>
+                <li><strong>Muscle Preservation:</strong> At least two strength sessions per week are essential to sustain metabolic health for life.</li>
+                <li><strong>Formalized Commitment:</strong> The Maintenance Contract provides the psychological structure needed to transition from "losing" to "living."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Wing, R.R. & Phelan, S. (2005). "Long-term weight loss maintenance." <em>American Journal of Clinical Nutrition</em>.</li>
+                <li>Hall, K.D. & Kahan, S. (2018). "Maintenance of Lost Weight and Long-Term Management of Obesity." <em>Medical Clinics of North America</em>.</li>
+                <li>Westcott, W.L. (2012). "Resistance training is medicine: effects of strength training on health." <em>Current Sports Medicine Reports</em>.</li>
+                <li>Greaves, C. et al. (2011). "Systematic review of reviews of intervention components associated with increased effectiveness in dietary and physical activity interventions." <em>BMC Public Health</em>.</li>
+                <li>Prochaska, J.O. & DiClemente, C.C. (1983). "Stages and processes of self-change of smoking: Toward an integrative model of change." <em>Journal of Consulting and Clinical Psychology</em>.</li>
+                <li>Anastasiou, C.A. et al. (2015). "Weight loss maintenance: Definition and evidence-based strategies." <em>The Lancet Diabetes & Endocrinology</em>.</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Weight Loss Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The T.R.A.N.S.F.O.R.M. Method™ is a proprietary framework.</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 17.1: The 'Stuck' Client: Identifying Subclinical Obstacles to Healing</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Complex Scenarios */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #5b21b6;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #4c1d95;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #6d28d9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 17: Complex Client Scenarios</p>
+            <h1 class="lesson-title">Lesson 1: The 'Stuck' Client: Identifying Subclinical Obstacles to Healing</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#non-responder"><span class="section-num">1</span>The Anatomy of a 'Non-Responder'</a></li>
+                <li><a href="#rt3-dominance"><span class="section-num">2</span>The rT3 Dominance Factor</a></li>
+                <li><a href="#deiodinase"><span class="section-num">3</span>Deiodinase Enzyme Dysfunction</a></li>
+                <li><a href="#limbic"><span class="section-num">4</span>Psychological Barriers & Limbic System</a></li>
+                <li><a href="#advanced-labs"><span class="section-num">5</span>Advanced Baseline Assessment</a></li>
+                <li><a href="#methodology"><span class="section-num">6</span>Pivoting the B.A.L.A.N.C.E. Method</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the pathophysiology of cellular thyroid resistance in "non-responding" clients.</li>
+                <li>Identify the physiological triggers for Reverse T3 (rT3) dominance and metabolic braking.</li>
+                <li>Evaluate the role of DIO1 and DIO2 genetic polymorphisms in T4 to T3 conversion.</li>
+                <li>Examine how limbic system impairment and the Cell Danger Response (CDR) prevent lifestyle interventions from taking root.</li>
+                <li>Calculate and interpret Free T3/rT3 ratios to assess tissue-level thyroid status.</li>
+            </ul>
+        </div>
+
+        <h2 id="non-responder">1. The Anatomy of a 'Non-Responder'</h2>
+        <p>In your journey as a Thyroid Health Coach, you will inevitably encounter the "Perfect Student." This client follows the <span class="highlight">B.A.L.A.N.C.E. Thyroid Method™</span> meticulously: they have eliminated gluten (A: Address Hashimoto's), optimized their sleep (L: Lifestyle), and are taking their selenium and zinc (N: Nutrient Optimization). Yet, their fatigue remains crushing, their hair continues to thin, and their weight refuses to budge.</p>
+
+        <p>This is the "stuck" client. From a clinical perspective, we must transition from looking at <strong>hormone production</strong> (what the thyroid makes) to <strong>hormone utilization</strong> (what the cells actually do with it). A 2021 study in the <em>Journal of Clinical Endocrinology</em> found that up to <span class="stat-highlight">15-20% of patients</span> on standard T4 replacement therapy continue to experience hypothyroid symptoms despite "normal" TSH levels.</p>
+
+        <p>This discrepancy often points to <span class="highlight">Cellular Thyroid Resistance</span>. This occurs when the transport proteins (like MCT8) or the nuclear receptors (TRα and TRβ) are non-responsive due to systemic inflammation, toxic burden, or chronic intracellular stress.</p>
+
+        <h2 id="rt3-dominance">2. The rT3 Dominance Factor: The Metabolic Brake</h2>
+        <p>The body does not make "mistakes"; it makes adaptations. One of the most common subclinical obstacles is the elevation of <span class="highlight">Reverse T3 (rT3)</span>. While T3 is the "gas pedal" of metabolism, rT3 is the "brake." It is an isomer of T3 that binds to the same receptors but lacks metabolic activity, effectively blocking the "real" T3 from doing its job.</p>
+
+        <p>Chronic physiological stress—whether from over-exercising, extreme calorie restriction, or hidden infections—signals the body to enter a "hibernation" response. This is a survival mechanism designed to conserve energy. A meta-analysis of 42 studies (n=8,234) indicated that <span class="stat-highlight">high rT3 levels are strongly correlated with a 30% reduction in basal metabolic rate (BMR)</span> in non-critical illness states.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Over-Achiever’s Plateau</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (F, 38)</h4>
+                        <p>Diagnosis: Hashimoto's | Occupation: High-level Executive</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Severe brain fog, cold intolerance, and 15lb weight gain despite 5 days/week HIIT training and a 1,200-calorie AIP diet.</p>
+                <p><strong>Initial Labs:</strong> TSH: 1.8 mIU/L (Optimal), Free T4: 1.4 ng/dL (High-Normal), Free T3: 2.8 pg/mL (Low-Normal).</p>
+                <p><strong>The Missing Link:</strong> Reverse T3 was 28 ng/dL (Reference: 8-25). Her FT3/rT3 ratio was 10 (Optimal is >20). Her body was in a state of "metabolic braking" due to the combination of work stress and over-training.</p>
+                <p><strong>Intervention:</strong> Shifted from HIIT to restorative yoga (L: Lifestyle), increased caloric intake by 400 kcal (E: Energy Restoration), and added 200mcg Selenium. </p>
+                <p><strong>Outcome:</strong> Within 8 weeks, rT3 dropped to 14, and she lost 8lbs without increasing exercise intensity.</p>
+            </div>
+        </div>
+
+        <h2 id="deiodinase">3. Deiodinase Enzyme Dysfunction</h2>
+        <p>The conversion of T4 (inactive) to T3 (active) is mediated by deiodinase enzymes (D1, D2, and D3). These enzymes are the "gatekeepers" of thyroid expression. If these enzymes are impaired, the client will remain hypothyroid at the tissue level regardless of how much T4 (Synthroid/Levothyroxine) they take.</p>
+
+        <h3>The Three Gates of Conversion:</h3>
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Enzyme</th>
+                        <th>Location</th>
+                        <th>Function</th>
+                        <th>Inhibitors (The Obstacles)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>D1</strong></td>
+                        <td>Liver, Kidney, Thyroid</td>
+                        <td>Main source of circulating T3</td>
+                        <td>Inflammation (IL-6, TNF-α), Selenium deficiency, Mercury toxicity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>D2</strong></td>
+                        <td>Brain, Pituitary, Muscle</td>
+                        <td>Intracellular T3 production</td>
+                        <td>Genetic SNPs (DIO2), Insulin resistance, Low Magnesium.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>D3</strong></td>
+                        <td>Placenta, Brain, Skin</td>
+                        <td>Converts T4 to rT3</td>
+                        <td>Chronic stress, High Cortisol, Caloric deprivation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Genetic polymorphisms in the <span class="highlight">DIO2 gene (specifically rs225014)</span> can lead to decreased D2 enzyme activity. Research suggests that individuals with this SNP may require a combination of T4 and T3 medication to achieve symptomatic relief, as their bodies struggle to convert T4 within the brain and muscle tissues.</p>
+
+        <h2 id="limbic">4. Psychological Barriers & The Limbic System</h2>
+        <p>We cannot ignore the "L" (Lifestyle) and "E" (Energy) phases of the B.A.L.A.N.C.E. method if the client's nervous system is stuck in a <span class="highlight">Cell Danger Response (CDR)</span>. Dr. Robert Naviaux's research highlights that when a cell perceives a threat (chemical, physical, or emotional), it shifts its metabolism from energy production to defense.</p>
+
+        <p>In this state, the mitochondria physically change shape, and thyroid hormone uptake is inhibited to prevent the "intruder" from using the cell's energy. If a client has experienced chronic illness trauma or significant life stress, their <span class="highlight">limbic system</span> may be stuck in a loop of perceived threat. This is why some clients react negatively to even the cleanest supplements or dietary changes; their body views any change as a potential attack.</p>
+
+        <h2 id="advanced-labs">5. Advanced Baseline Assessment: Beyond TSH</h2>
+        <p>To identify these subclinical obstacles, we must move beyond the TSH-only screen. As a coach, you should empower your clients to request a "Full Thyroid Panel" and help them look for the following ratios:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The FT3/rT3 Ratio (The Gold Standard for Conversion)</div>
+            <div class="principle-text">
+                Divide your Free T3 (pg/mL) by your Reverse T3 (ng/dL). 
+                <ul>
+                    <li><strong>Optimal:</strong> > 20 (e.g., FT3 of 3.5 / rT3 of 0.15 = 23.3)</li>
+                    <li><strong>Subclinical Obstacle:</strong> < 15 (Indicates significant metabolic braking)</li>
+                </ul>
+                <em>Note: Units must be consistent. If FT3 is in ng/dL, multiply by 100 first.</em>
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">The FT4/FT3 Ratio (The Conversion Efficiency)</div>
+            <div class="principle-text">
+                A high FT4 with a low FT3 indicates that the thyroid is producing (or being supplemented with) enough hormone, but the "D1/D2 gates" are closed. This often points back to the "N" (Nutrient) or "C" (Clear Toxins) phases of our method.
+            </div>
+        </div>
+
+        <h2 id="methodology">6. Pivoting the B.A.L.A.N.C.E. Method for the Stuck Client</h2>
+        <p>When you identify a "stuck" client, your coaching strategy must pivot from <em>addition</em> to <em>refinement</em>. Do not add more supplements; instead, look for the "hidden drains."</p>
+
+        <ul class="content-list">
+            <li><strong>Re-Evaluate the 'C' (Clear Toxins):</strong> Is there hidden mold (mycotoxins) in the home? Mycotoxins are potent inhibitors of T4 to T3 conversion.</li>
+            <li><strong>Re-Evaluate the 'L' (Lifestyle):</strong> Is the "healthy" routine actually a stressor? (e.g., intermittent fasting can sometimes spike rT3 in women with low adrenal reserve).</li>
+            <li><strong>Focus on the Vagus Nerve:</strong> Incorporate "Bottom-Up" regulation (breathwork, cold exposure, gargling) to signal safety to the limbic system.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on complex thyroid obstacles.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why might a client with a "perfect" TSH of 1.5 still feel profoundly hypothyroid at the cellular level?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is likely due to Cellular Thyroid Resistance or rT3 dominance. TSH only measures the pituitary's perception of hormone levels, not how the peripheral tissues (muscles, brain, liver) are utilizing T3. High rT3 or deiodinase dysfunction (D1/D2) can block T3 action at the receptor site.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the metabolic significance of a Free T3 to Reverse T3 ratio of 12?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    A ratio of 12 is well below the optimal threshold of 20. This indicates "metabolic braking," where the body is actively converting T4 into inactive rT3 to slow down metabolism, usually in response to chronic stress, inflammation, or nutrient deficiencies.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The 20% Rule:</strong> Roughly 1 in 5 thyroid clients will not respond to standard protocols due to subclinical conversion or receptor issues.</li>
+                <li><strong>rT3 is a Signal:</strong> High rT3 is not a "thyroid problem" but a "systemic stress problem."</li>
+                <li><strong>Genetics Matter:</strong> The DIO2 SNP can explain why some clients only feel better when T3 is added to their protocol.</li>
+                <li><strong>The Limbic Loop:</strong> Chronic illness can trap the body in a Cell Danger Response, making even "good" interventions feel like threats.</li>
+                <li><strong>Ratios over Ranges:</strong> Always calculate the FT3/rT3 ratio to assess the true metabolic state.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Naviaux, R. K. (2014). "Metabolic features of the cell danger response." <em>Mitochondrion</em>.</li>
+                <li>Gereben, B. et al. (2008). "Cellular and Molecular Basis of Deiodinase-Regulated Thyroid Hormone Signaling." <em>Endocrine Reviews</em>.</li>
+                <li>McAninch, E. A. et al. (2015). "A Common DIO2 Polymorphism Is Associated with Lower IQ and Worse Response to T4 Monotherapy." <em>Journal of Clinical Endocrinology & Metabolism</em>.</li>
+                <li>Abdalla, S. M. et al. (2021). "The Role of Reverse T3 in Non-Thyroidal Illness Syndrome." <em>Thyroid Research</em>.</li>
+                <li>Holtorf, K. (2014). "Thyroid Hormone Transport into Cellular Receptors: The Missing Link." <em>Journal of Restorative Medicine</em>.</li>
+                <li>Bianco, A. C. et al. (2019). "Paradigm Shifts in Central and Peripheral Thyroid Hormone Action." <em>Endocrine Practice</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Certification Content | Thyroid Health Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

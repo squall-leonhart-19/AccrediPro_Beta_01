@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.1: The Glycemic Architecture: Index vs. Load</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Nutrition */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0e7490;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        .alert-box.warning {
+            background: #fff7ed;
+            border-left-color: #f97316;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #c2410c;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #0369a1;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #0369a1;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #0369a1;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        /* Helpers */
+        .formula-box {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 20px;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: T: Transform Nutrition</p>
+            <h1 class="lesson-title">Lesson 2.1: The Glycemic Architecture: Index vs. Load</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 1 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Physiological Blueprint</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Glycemic Index (GI) Decoded</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Glycemic Load (GL): The True Metric</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Processing & Thermal Impact</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Glucose Rollercoaster</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Application Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish the physiological differences between Glycemic Index and Glycemic Load for clinical application.</li>
+                <li>Analyze how food processing, heat, and retrogradation alter the glycemic response of starches.</li>
+                <li>Identify the mechanics of "Reactive Hypoglycemia" and its impact on client compliance.</li>
+                <li>Apply the GL formula to predict and minimize postprandial glucose (PPG) excursions.</li>
+                <li>Implement specific clinical GL thresholds to stabilize blood sugar within the S.T.A.B.L.E. Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Physiological Blueprint: Beyond Simple Carbs</h2>
+        <p>In Module 1, we established the baseline of your client’s metabolic health through HbA1c and Fasting Insulin. Now, we move into the <span class="highlight">Transform Nutrition</span> phase of the S.T.A.B.L.E. Method™. To transform nutrition, we must move beyond the reductionist view of "sugar is bad" and understand the <strong>Glycemic Architecture</strong> of food.</p>
+        
+        <p>The glycemic response is not merely a reflection of the sugar content in a food; it is a complex interaction between the food’s physical structure, the presence of co-nutrients (fiber, fat, protein), and the individual’s metabolic flexibility. A <span class="stat-highlight">2022 meta-analysis</span> involving over 40,000 participants confirmed that postprandial glucose (PPG) variability is a stronger predictor of cardiovascular complications in Type 2 Diabetics than fasting glucose alone.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Perspective</p>
+            <p>Our goal as coaches is not just to "lower blood sugar," but to <strong>flatten the curve</strong>. High peaks (spikes) followed by deep valleys (crashes) trigger inflammatory cascades and hormonal dysregulation that make weight loss and glucose management nearly impossible.</p>
+        </div>
+
+        <h2 id="section2">2. Glycemic Index (GI) Decoded: The Speed of Glucose</h2>
+        <p>The <span class="highlight">Glycemic Index (GI)</span> is a ranking of carbohydrates on a scale from 0 to 100 based on how quickly they raise blood glucose levels after eating, compared to a reference food (usually pure glucose or white bread). </p>
+
+        <h3>The Physiological Basis of GI</h3>
+        <p>GI measures the <strong>quality</strong> of the carbohydrate, specifically how easily enzymes (like amylase) can access and break down the starch into glucose. Factors influencing GI include:</p>
+        <ul>
+            <li><strong>Amylose vs. Amylopectin Ratio:</strong> Amylose is a straight-chain molecule that is harder to digest; high-amylose foods (like legumes) have a lower GI.</li>
+            <li><strong>Particle Size:</strong> Finely ground flours have a higher GI than whole grains because the increased surface area allows for rapid enzymatic action.</li>
+            <li><strong>Acidity:</strong> Acids (like vinegar or sourdough fermentation) slow gastric emptying, lowering the GI.</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The GI Limitation</p>
+            <p>GI is calculated based on a standardized amount of <strong>50 grams of available carbohydrates</strong>. It does not account for typical serving sizes. This is where many practitioners fail their clients by banning foods that have a high GI but a negligible impact in real-world portions.</p>
+        </div>
+
+        <h2 id="section3">3. Glycemic Load (GL): The True Clinical Metric</h2>
+        <p>If GI is the "speed" of the glucose entering the bloodstream, <span class="highlight">Glycemic Load (GL)</span> is the "total volume." GL is the most critical metric in the S.T.A.B.L.E. Method™ because it accounts for both the quality (GI) and the quantity of the carbohydrate in a standard serving.</p>
+
+        <div class="formula-box">
+            GL = (GI × Grams of Net Carbohydrates) / 100
+        </div>
+
+        <p>A GL of 10 or less is considered <strong>Low</strong>; 11-19 is <strong>Medium</strong>; and 20 or more is <strong>High</strong>. For a client aiming for glycemic stability, we generally target a daily total GL of under 60-80, with individual meals staying below 15-20.</p>
+
+        <h3>Comparison Table: The GI vs. GL Paradox</h3>
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Food Item</th>
+                        <th>Serving Size</th>
+                        <th>Glycemic Index (GI)</th>
+                        <th>Net Carbs (g)</th>
+                        <th>Glycemic Load (GL)</th>
+                        <th>Clinical Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Watermelon</td>
+                        <td>120g</td>
+                        <td>72 (High)</td>
+                        <td>6g</td>
+                        <td>4.3 (Low)</td>
+                        <td>Minimal Spike</td>
+                    </tr>
+                    <tr>
+                        <td>White Bagel</td>
+                        <td>70g</td>
+                        <td>72 (High)</td>
+                        <td>35g</td>
+                        <td>25 (High)</td>
+                        <td>Severe Spike</td>
+                    </tr>
+                    <tr>
+                        <td>Apple</td>
+                        <td>120g</td>
+                        <td>38 (Low)</td>
+                        <td>15g</td>
+                        <td>6 (Low)</td>
+                        <td>Stable</td>
+                    </tr>
+                    <tr>
+                        <td>Baked Potato</td>
+                        <td>150g</td>
+                        <td>85 (High)</td>
+                        <td>30g</td>
+                        <td>26 (High)</td>
+                        <td>Severe Spike</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Processing & Thermal Impact: The "Invisible" Glycemic Shift</h2>
+        <p>A food’s GL is not static. How a client prepares their food can shift a "safe" carbohydrate into a metabolic disruptor. We must educate clients on two primary mechanisms: <span class="highlight">Gelatinization</span> and <span class="highlight">Retrogradation</span>.</p>
+
+        <h3>1. Gelatinization (The Heat Factor)</h3>
+        <p>When starches are cooked in water, the starch granules swell and burst, making them highly accessible to digestive enzymes. 
+            <br><em>Example:</em> "Al dente" pasta has a lower GI than overcooked, mushy pasta because the starch remains partially crystalline and harder to digest.</p>
+
+        <h3>2. Retrogradation (The Cooling Factor)</h3>
+        <p>When cooked starches (like potatoes, rice, or pasta) are cooled, the starch molecules realign into a structure called <strong>Resistant Starch (Type 3)</strong>. This starch resists digestion in the small intestine and instead travels to the colon to feed beneficial bacteria. 
+            <br><span class="stat-highlight">Research Highlight:</span> A study published in <em>Asia Pacific Journal of Clinical Nutrition</em> found that cooling white rice for 24 hours at 4°C and then reheating it reduced the glycemic response by <span class="stat-highlight">approx. 20%</span> compared to freshly cooked rice.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study: The "Potato Hack"</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> David, 54, Type 2 Diabetic (HbA1c: 7.4%).</p>
+                <p><strong>The Issue:</strong> David loved potatoes but noticed his 2-hour PPG would spike to 190 mg/dL after a dinner including a hot baked potato.</p>
+                <p><strong>Intervention:</strong> We instructed David to boil his potatoes, refrigerate them overnight, and eat them cold in a salad with vinegar and olive oil the next day.</p>
+                <p><strong>Outcome:</strong> By utilizing <strong>retrogradation</strong> (cooling) and <strong>acidic slowing</strong> (vinegar), David's 2-hour PPG for the same portion of potato dropped to 142 mg/dL—a 25% reduction without changing the carbohydrate count.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. The Glucose Rollercoaster & Reactive Hypoglycemia</h2>
+        <p>When a client consumes a high-GL meal, the rapid influx of glucose triggers a massive insulin surge. In many clients with early-stage insulin resistance, the pancreas "over-responds," secreting more insulin than necessary to clear the glucose.</p>
+        
+        <p>This results in <span class="highlight">Reactive Hypoglycemia</span>—a rapid drop in blood sugar below baseline levels roughly 2 to 4 hours after eating. This is the physiological "crash."</p>
+
+        <h3>Symptoms of the Crash:</h3>
+        <ul>
+            <li>Intense cravings for sugar/starch (the body's attempt to raise glucose).</li>
+            <li>Irritability ("Hangry").</li>
+            <li>Brain fog and mid-afternoon fatigue.</li>
+            <li>Palpitations or tremors.</li>
+        </ul>
+
+        <p>This "rollercoaster" creates a vicious cycle. The crash triggers a craving, the client eats another high-GL snack to feel better, and the cycle repeats. Breaking this cycle is the first priority of the <strong>Transform Nutrition</strong> phase.</p>
+
+        <h2 id="section6">6. Clinical Application: The S.T.A.B.L.E. Method™ Protocols</h2>
+        <p>As a coach, you will use the following thresholds to design meal plans that respect the glycemic architecture:</p>
+
+        <h3>The 15/40 Rule</h3>
+        <p>For most clients struggling with glycemic variability, we aim for:</p>
+        <ul>
+            <li><strong>Per Meal GL:</strong> Max 15-18.</li>
+            <li><strong>Daily Total GL:</strong> Max 40-60 (during the intensive transformation phase).</li>
+        </ul>
+
+        <h3>Practical "Architecture" Strategies:</h3>
+        <ol>
+            <li><strong>The Fiber Buffer:</strong> Always consume fiber (greens/vegetables) 5-10 minutes <em>before</em> the carbohydrate source to slow gastric emptying.</li>
+            <li><strong>The Acid Splash:</strong> Incorporate lemon juice or apple cider vinegar into high-starch meals to inhibit alpha-amylase activity.</li>
+            <li><strong>Whole Form Focus:</strong> Prefer intact grains (steel-cut oats) over pulverized versions (instant oatmeal/flour).</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question">
+                <p><strong>1. A client eats a serving of brown rice with 45g of net carbs. The GI of brown rice is 55. What is the Glycemic Load?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    GL = (55 × 45) / 100 = 24.75. This is considered a <strong>High</strong> Glycemic Load (>20), which would likely cause a significant glucose excursion in a metabolically compromised client.
+                </div>
+            </div>
+
+            <div class="question" style="margin-top: 20px;">
+                <p><strong>2. Why might a cold pasta salad have a lower glycemic impact than a hot bowl of the same pasta?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Through the process of <strong>retrogradation</strong>, cooling the pasta converts some of the digestible starch into <strong>Resistant Starch</strong>, which is not broken down into glucose in the small intestine.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>GI is Quality, GL is Quantity:</strong> Always prioritize GL for real-world meal planning.</li>
+                <li><strong>The 50g Trap:</strong> Remember that GI is based on 50g of carbs; foods like watermelon have a high GI but low GL due to low carb density.</li>
+                <li><strong>Preparation Matters:</strong> Cooling starches (retrogradation) can reduce glycemic impact by 20% or more.</li>
+                <li><strong>Flatten the Curve:</strong> Preventing reactive hypoglycemia is the key to reducing cravings and stabilizing hormones.</li>
+                <li><strong>Clinical Goal:</strong> Aim for a per-meal GL of <15 to maintain glycemic stability.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>1. Brand-Miller, J., et al. (2021). "Glycemic Index and Glycemic Load: Implications for Health and Disease." <em>American Journal of Clinical Nutrition.</em></p>
+            <p>2. Jenkins, D.J., et al. (2019). "Glycaemic index: 40 years of research and its impact on diabetes management." <em>The Lancet Diabetes & Endocrinology.</em></p>
+            <p>3. Sonia, S., et al. (2015). "Effect of cooling of cooked white rice on resistant starch content and glycemic response." <em>Asia Pacific Journal of Clinical Nutrition.</em></p>
+            <p>4. Harvard T.H. Chan School of Public Health. (2023). "Glycemic Index and Glycemic Load." <em>The Nutrition Source.</em></p>
+            <p>5. Augustin, L.S., et al. (2015). "Glycemic index, glycemic load and glycemic response: An International Scientific Consensus Summit." <em>Nutrition, Metabolism and Cardiovascular Diseases.</em></p>
+            <p>6. Zafar, M.I., et al. (2019). "Low-glycemic index diets as an intervention for diabetes: a systematic review and meta-analysis." <em>American Journal of Clinical Nutrition.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Proprietary S.T.A.B.L.E. Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

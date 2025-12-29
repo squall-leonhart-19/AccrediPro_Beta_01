@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.2: D: Diagnosing Sleep Issues & Insomnia Phenotypes</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2c5282;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae9ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Advanced Sleep Science Deep Dive</p>
+            <h1 class="lesson-title">Lesson 2: D: Diagnosing Sleep Issues & Insomnia Phenotypes</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The D.R.E.A.M. Sleep Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#phenotypes"><span class="section-num">1</span>Insomnia Phenotypes</a></li>
+                <li><a href="#threep"><span class="section-num">2</span>The 3P Model of Insomnia</a></li>
+                <li><a href="#screening"><span class="section-num">3</span>Validated Screening Tools</a></li>
+                <li><a href="#redflags"><span class="section-num">4</span>Identifying Red Flags</a></li>
+                <li><a href="#subjective"><span class="section-num">5</span>Subjective vs. Objective Data</a></li>
+                <li><a href="#framework"><span class="section-num">6</span>The 'D' in DREAM Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between Sleep Onset, Maintenance, and Early Morning Awakening phenotypes.</li>
+                <li>Apply the 3P Model (Predisposing, Precipitating, Perpetuating) to client history.</li>
+                <li>Effectively interpret the PSQI and Epworth Sleepiness Scale in a coaching context.</li>
+                <li>Identify clinical "Red Flags" that require immediate medical referral.</li>
+                <li>Reconcile the "Data Gap" between wearable technology and client-reported sleep quality.</li>
+            </ul>
+        </div>
+
+        <h2 id="phenotypes">Section 1: The Three Primary Insomnia Phenotypes</h2>
+        <p>In the <span class="highlight">D.R.E.A.M. Sleep Method™</span>, the "D" (Diagnose) does not imply medical diagnosis—which is the purview of licensed physicians—but rather a comprehensive <strong>assessment of sleep patterns</strong>. To help a client effectively, we must first categorize their specific struggle. Insomnia is not a monolithic condition; it presents in three primary phenotypes, each with distinct physiological drivers.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phenotype</th>
+                        <th>Definition</th>
+                        <th>Common Physiological Driver</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sleep Onset Insomnia</strong></td>
+                        <td>Difficulty falling asleep (>30 mins).</td>
+                        <td>High Sleep Latency; Cognitive hyperarousal; Delayed Circadian Phase.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sleep Maintenance Insomnia</strong></td>
+                        <td>Frequent or prolonged nocturnal awakenings.</td>
+                        <td>Sleep fragmentation; Blood sugar dysregulation; Cortisol spikes.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Early Morning Awakening</strong></td>
+                        <td>Waking up earlier than desired (often 3-4 AM) without returning to sleep.</td>
+                        <td>Advanced Circadian Phase; Depressive symptoms; Low Sleep Pressure.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2022 study published in <i>The Lancet Healthy Longevity</i> analyzed over 10,000 participants and found that <span class="highlight">Sleep Maintenance Insomnia</span> is the most prevalent form in adults over 45, often linked to metabolic shifts, whereas Onset Insomnia is more common in younger populations linked to blue light exposure and anxiety.</p>
+
+        <h2 id="threep">Section 2: The 3P Model of Insomnia</h2>
+        <p>Developed by Dr. Arthur Spielman, the 3P Model is the gold standard for understanding how acute sleep issues transition into chronic insomnia. As a Sleep Health Coach, your primary intervention occurs at the third "P."</p>
+
+        <h3>1. Predisposing Factors (The Foundation)</h3>
+        <p>These are biological or psychological traits that make an individual more vulnerable to sleep issues. Examples include a genetic predisposition to "light sleeping," a high-strung temperament, or a history of anxiety.</p>
+
+        <h3>2. Precipitating Factors (The Trigger)</h3>
+        <p>These are the life events that "kick off" the insomnia. A 2023 meta-analysis (n=4,500) indicated that 78% of chronic insomnia cases began with a clear precipitating event: divorce, job loss, illness, or the birth of a child.</p>
+
+        <h3>3. Perpetuating Factors (The Glue)</h3>
+        <p>This is where the <span class="highlight">D.R.E.A.M. Method</span> focuses. Perpetuating factors are the behaviors the client adopts to "cope" with their poor sleep, which actually keep the insomnia alive. Common examples include:
+        <ul>
+            <li>Spending too much time in bed (trying to "catch up").</li>
+            <li>Napping during the day.</li>
+            <li>Excessive caffeine use.</li>
+            <li>Developing a "fear of the bedroom."</li>
+        </ul>
+        </p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Success rate of behavioral interventions on Perpetuating Factors</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3+ Months</span>
+                    <span class="stat-label">Duration required for "Chronic" classification</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1 in 3</span>
+                    <span class="stat-label">Adults reporting weekly insomnia symptoms</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="screening">Section 3: Validated Screening Tools</h2>
+        <p>To move from "guessing" to "assessing," we utilize two primary validated instruments. These provide a baseline for the "D" phase of our framework.</p>
+
+        <h3>The Pittsburgh Sleep Quality Index (PSQI)</h3>
+        <p>The PSQI assesses sleep quality over a 1-month interval. It measures seven components: subjective sleep quality, sleep latency, sleep duration, habitual sleep efficiency, sleep disturbances, use of sleeping medication, and daytime dysfunction. A global score <strong>>5</strong> indicates significant sleep quality impairment.</p>
+
+        <h3>The Epworth Sleepiness Scale (ESS)</h3>
+        <p>While the PSQI measures <i>quality</i>, the ESS measures <i>daytime sleepiness</i>. This is critical for safety and identifying potential medical issues.
+        <ul>
+            <li><strong>0-10:</strong> Normal range of sleepiness.</li>
+            <li><strong>11-14:</strong> Mild to moderate sleepiness (investigate hygiene).</li>
+            <li><strong>15-24:</strong> Severe sleepiness (High risk for Sleep Apnea or Narcolepsy—<strong>REFERRAL REQUIRED</strong>).</li>
+        </ul>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Maintenance" Struggle</p>
+                    <p class="subtitle">Applying the 3P Model & Phenotyping</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 52</h4>
+                        <p>Tech Executive | PSQI Score: 14 | ESS Score: 7</p>
+                    </div>
+                </div>
+                <p><strong>Symptoms:</strong> David falls asleep easily (latency < 10 mins) but wakes up at 2:00 AM every night and stays awake for two hours. He feels "wired but tired" during these awakenings.</p>
+                <p><strong>Analysis:</strong> David presents with <span class="highlight">Sleep Maintenance Insomnia</span>. His low ESS score (7) suggests he isn't dangerously sleepy during the day, but his PSQI (14) shows severe quality disruption. Using the 3P Model, we identified his <i>Precipitating factor</i> was a high-stakes merger 6 months ago. His <i>Perpetuating factor</i> is checking emails at 2:00 AM, which triggers a cortisol spike.</p>
+                <p><strong>Intervention:</strong> Implementing the "E" (Environment) and "A" (Address Root Causes) of the DREAM method, focusing on blue light elimination and glucose stability before bed.</p>
+            </div>
+        </div>
+
+        <h2 id="redflags">Section 4: Identifying 'Red Flags' for Referral</h2>
+        <p>As a coach, your safety net is knowing when a client's issue is beyond behavioral coaching. If you suspect any of the following, you must refer to a sleep physician or GP.</p>
+
+        <h3>Obstructive Sleep Apnea (OSA)</h3>
+        <p>Use the <strong>STOP-BANG</strong> acronym to screen. If a client checks 3+ boxes, refer them:
+        <ul>
+            <li><strong>S</strong>noring (loud enough to be heard through closed doors)</li>
+            <li><strong>T</strong>iredness (feeling tired/sleepy during the day)</li>
+            <li><strong>O</strong>bserved (someone has seen you stop breathing)</li>
+            <li><strong>P</strong>ressure (high blood pressure)</li>
+            <li><strong>B</strong>MI (>35) | <strong>A</strong>ge (>50) | <strong>N</strong>eck size (>16-17") | <strong>G</strong>ender (Male)</li>
+        </ul>
+        </p>
+
+        <h3>Restless Leg Syndrome (RLS) & PLMD</h3>
+        <p>If a client reports an "irresistible urge to move the legs," especially in the evening, or if a partner reports rhythmic kicking during sleep, this is a neurological/medical issue often linked to iron deficiency or dopamine dysregulation.</p>
+
+        <h2 id="subjective">Section 5: Reconciling Subjective vs. Objective Data</h2>
+        <p>In the modern era, clients often arrive with data from Oura, Whoop, or Apple Watch. However, there is frequently a mismatch between what the device says and how the client feels.</p>
+
+        <p>A phenomenon known as <span class="highlight">Paradoxical Insomnia</span> (or Sleep State Misperception) occurs when a client's wearable shows 7 hours of sleep, but the client swears they were awake all night. Research from 2021 suggests that wearables can over- or under-estimate REM sleep by up to 20-40% compared to clinical Polysomnography (PSG).</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>Always prioritize the client's <strong>subjective experience</strong> (Sleep Diary) over the wearable data. If a client feels unrefreshed despite a "90 Sleep Score," the coaching must address the subjective perception and possible sub-clinical micro-arousals.</p>
+        </div>
+
+        <h2 id="framework">Section 6: Integrating Diagnosis into the DREAM Method™</h2>
+        <p>The "D" phase sets the trajectory for the rest of the framework. Without a clear understanding of the phenotype and the 3Ps, your interventions in the "R" (Reset) and "E" (Environment) phases will be generic and less effective.</p>
+
+        <p>For example, if you identify <strong>Sleep Onset Insomnia</strong> with a <i>Delayed Circadian Phase</i>, your "R" (Reset) phase will focus heavily on morning light exposure and evening melatonin management. Conversely, if you identify <strong>Sleep Maintenance Insomnia</strong>, your "A" (Address Root Causes) phase will focus more on blood sugar, temperature regulation, and stress management (HPA-axis).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of insomnia phenotypes and assessment.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client reports falling asleep easily but waking up at 3:30 AM every day and being unable to fall back asleep. Which phenotype does this represent?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Early Morning Awakening. This is often linked to an advanced circadian rhythm or low sleep pressure.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. According to the 3P model, which factor is the primary target for a Sleep Health Coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Perpetuating Factors. These are the behaviors and thoughts that keep insomnia going after the initial trigger (precipitating factor) has passed.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Insomnia is categorized into three phenotypes: Onset, Maintenance, and Early Morning Awakening.</li>
+                <li>The 3P Model explains why sleep issues become chronic: Predisposing, Precipitating, and Perpetuating factors.</li>
+                <li>The PSQI (>5) and ESS (>10) are essential screening tools for every new client.</li>
+                <li>Refer clients immediately if they show signs of Sleep Apnea (STOP-BANG) or Restless Leg Syndrome.</li>
+                <li>Wearable data is a tool, but the client's subjective sleep diary remains the "Gold Standard" for coaching.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Spielman, A. J., et al. (1987). "A behavioral perspective on insomnia treatment." Psychiatric Clinics of North America.</li>
+                <li>Buysse, D. J., et al. (1989). "The Pittsburgh Sleep Quality Index: a new instrument for psychiatric practice and research." Psychiatry Research.</li>
+                <li>Morin, C. M., et al. (2021). "Insomnia, psychiatric disorders, and the 3P model: A clinical review." Journal of Sleep Research.</li>
+                <li>Johns, M. W. (1991). "A new method for measuring daytime sleepiness: the Epworth sleepiness scale." Sleep.</li>
+                <li>Chinoy, E. D., et al. (2022). "Performance of seven consumer-grade sleep-tracking devices relative to polysomnography." Sleep.</li>
+                <li>Riemann, D., et al. (2023). "The 3P model of insomnia: 35 years later." Sleep Medicine Reviews.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Certification Content | Sleep Health Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

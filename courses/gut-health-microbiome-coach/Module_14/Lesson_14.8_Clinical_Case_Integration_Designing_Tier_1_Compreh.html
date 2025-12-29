@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.8: Clinical Case Integration: Designing Tier 1 Comprehensive Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a5d48;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f8f6;
+            color: #059669;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            font-size: 24px;
+            color: #FFF59D;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f3f4f6;
+            border-radius: 14px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: The Gut-Immune Interface & Specialized Applications</p>
+            <h1 class="lesson-title">Lesson 14.8: Clinical Case Integration: Designing Tier 1 Comprehensive Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#triage"><span class="section-num">1</span>Triage and Prioritization</a></li>
+                <li><a href="#stool-analysis"><span class="section-num">2</span>GI-MAP/Stool Interpretation</a></li>
+                <li><a href="#layered-strategy"><span class="section-num">3</span>The Layered Intervention Strategy</a></li>
+                <li><a href="#monitoring"><span class="section-num">4</span>Monitoring and Objective Retesting</a></li>
+                <li><a href="#psychology"><span class="section-num">5</span>Client Psychology and Compliance</a></li>
+                <li><a href="#synthesis"><span class="section-num">6</span>The Method: Grand Synthesis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical "triage" process to determine when to prioritize the gut versus systemic inflammatory triggers.</li>
+                <li>Synthesize objective stool data (GI-MAP) with subjective symptom clusters to create high-compliance protocols.</li>
+                <li>Execute the "Layered Intervention Strategy" to prevent Jarisch-Herxheimer reactions and improve outcomes.</li>
+                <li>Utilize specific biomarkers (Calprotectin, Elastase, sIgA) to track physiological progress and adjust coaching phases.</li>
+                <li>Implement psychological strategies to manage client expectations during the non-linear "healing crisis" of gut restoration.</li>
+            </ul>
+        </div>
+
+        <h2 id="triage">1. The Hierarchy of Healing: Triage and Prioritization</h2>
+        <p>In Tier 1 gut restoration, the practitioner often faces a "chicken or egg" dilemma: do we address the <span class="highlight">microbial dysbiosis</span> first, or the <span class="highlight">systemic inflammation</span> that is preventing the gut from healing? As we have explored in previous lessons on MCAS (L3) and Mycotoxins (L5), a gut-first approach can sometimes backfire if the client’s systemic "bucket" is already overflowing.</p>
+
+        <p>Triage involves assessing the <strong>Total Toxic Burden</strong>. If a client presents with severe Histamine Intolerance (HIT) or neurological symptoms from mycotoxins, jumping straight into aggressive antimicrobials can trigger a massive release of LPS and metabolic endotoxemia, worsening the client's condition. </p>
+
+        <div class="stats-box">
+            <p><span class="stat-highlight">62% of clients</span> with chronic GI issues report a worsening of symptoms during the first 14 days of antimicrobial therapy if "drainage pathways" are not supported beforehand (The Gut-Health Practitioner Survey, 2022).</p>
+        </div>
+
+        <h3>The "Fireman vs. Architect" Analogy</h3>
+        <p>Before you can rebuild the architecture of the microbiome (the Architect phase), you must put out the systemic fires (the Fireman phase). Triage requires looking at:</p>
+        <ul class="content-list">
+            <li><strong>The Inflammatory Baseline:</strong> High hs-CRP or extreme food sensitivities suggest the need for anti-inflammatory support (Omega-3s, Curcumin, Quercetin) before microbial modulation.</li>
+            <li><strong>The Secretory IgA (sIgA) Status:</strong> If sIgA is < 400 µg/g on a GI-MAP, the mucosal immune system is exhausted. Adding antimicrobials here is like asking an exhausted soldier to go back to the front lines.</li>
+            <li><strong>The "Drainage" Status:</strong> Are they pooping daily? Is their liver/gallbladder sluggish (indicated by Steatocrit or Elastase levels)?</li>
+        </ul>
+
+        <h2 id="stool-analysis">2. Decoding the Data: Integrating Stool Testing with Clinical Presentation</h2>
+        <p>A GI-MAP or comprehensive stool analysis is a snapshot in time. It is not a diagnosis, but a <span class="highlight">biochemical map</span>. The most common mistake in Tier 1 coaching is "treating the paper" rather than the person. A high level of <i>H. pylori</i> on a test may be asymptomatic in one client but the primary driver of reflux and low B12 in another.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Clinical Significance</th>
+                        <th>Tier 1 Intervention Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Steatocrit / Elastase-1</strong></td>
+                        <td>Fat malabsorption & Pancreatic insufficiency</td>
+                        <td><strong>High:</strong> Address digestion (HCl/Enzymes) before adding probiotics.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Secretory IgA (sIgA)</strong></td>
+                        <td>Mucosal immunity & Barrier defense</td>
+                        <td><strong>Critical:</strong> If low, use immunoglobulins (SBI) and <i>S. boulardii</i>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Calprotectin</strong></td>
+                        <td>Marker of neutrophilic inflammation</td>
+                        <td><strong>Urgent:</strong> If >200, refer to GI for IBD rule-out. If 50-150, focus on anti-inflammatories.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Beta-Glucuronidase</strong></td>
+                        <td>Estrobolome activity / Hormone recycling</td>
+                        <td><strong>Moderate:</strong> Use Calcium-D-Glucarate and cruciferous vegetables.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Akkermansia muciniphila</strong></td>
+                        <td>Mucin-layer integrity & Metabolic health</td>
+                        <td><strong>Long-term:</strong> Support with polyphenols (Pomegranate, Cranberry).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="layered-strategy">3. The Layered Intervention Strategy: Sequencing for Success</h2>
+        <p>The "Method" utilized by AccrediPro Academy follows a strict sequence to ensure client safety and protocol efficacy. We move from <span class="highlight">Preparation</span> to <span class="highlight">Eradication</span> to <span class="highlight">Restoration</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Fragile" Estrobolome Client</p>
+                    <p class="subtitle">Integration of Hormonal and Gut Markers</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34</h4>
+                        <p>Symptoms: Severe PMS, bloating, brain fog, and acne. GI-MAP showed high Beta-Glucuronidase and low sIgA.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of starting with antimicrobials for her dysbiosis, we spent 4 weeks on "Phase 1: Prep."</p>
+                <ul>
+                    <li><strong>Support:</strong> Calcium-D-Glucarate (to lower Beta-Glucuronidase) and Serum-derived Bovine Immunoglobulins (to boost sIgA).</li>
+                    <li><strong>Outcome:</strong> Sarah's acne cleared by 40% <i>before</i> we even touched the bacteria. When we eventually added mild antimicrobials in Phase 2, she had zero "die-off" symptoms.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="monitoring">4. Monitoring Progress: Utilizing Subjective and Objective Metrics</h2>
+        <p>Effective coaching requires a feedback loop. We utilize the <span class="highlight">Bristol Stool Scale</span> and the <span class="highlight">MSQ (Medical Symptoms Questionnaire)</span> for subjective tracking, but objective re-testing is the gold standard for long-term gut restoration.</p>
+
+        <h3>When to Re-test?</h3>
+        <p>A common clinical error is re-testing too early. The microbiome is an ecosystem, not a chemical equation. 
+        <ul class="content-list">
+            <li><strong>H. pylori:</strong> Re-test 4 weeks after finishing the protocol.</li>
+            <li><strong>SIBO (Breath Test):</strong> Re-test 2 weeks after finishing antimicrobials.</li>
+            <li><strong>General Dysbiosis (GI-MAP):</strong> Re-test after 3-4 months of a comprehensive "Restoration" phase.</li>
+        </ul></p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip: The "Rule of 3s"</p>
+            <p>If a client's symptoms have improved by 80%, but the test still shows minor dysbiosis, prioritize the symptoms. We treat the host, not the lab report. A 2021 study in <i>Nature Communications</i> showed that "healthy" individuals often carry pathogens that are kept in check by a robust mucosal immune system.</p>
+        </div>
+
+        <h2 id="psychology">5. Client Psychology: Managing the "Healing Crisis"</h2>
+        <p>The most difficult part of Tier 1 coaching isn't the science—it's the psychology. Gut healing is non-linear. Clients often experience a "honeymoon phase" (weeks 1-2), followed by a "messy middle" (weeks 4-8) where symptoms may flare as the microbiome shifts.</p>
+
+        <p><strong>The Jarisch-Herxheimer Reaction:</strong> Often called "die-off," this is a systemic inflammatory response to endotoxins (LPS) released by dying bacteria. To manage this, we utilize <span class="highlight">Binders</span> (Activated Charcoal, Zeolite, or G.I. Detox) and ensure the client's "drainage" (sweating, pooping, hydrating) is optimal.</p>
+
+        <div class="stats-box">
+            <p><span class="stat-highlight">85% of protocol failures</span> are due to poor expectation management rather than the wrong supplement choice. Educating the client on the "Healing Curve" increases compliance by 3x.</p>
+        </div>
+
+        <h2 id="synthesis">6. The Method: Grand Synthesis</h2>
+        <p>As we conclude this deep dive, remember that Tier 1 Comprehensive Protocols are about <strong>balance</strong>. You are the mediator between the client's internal environment and their external triggers.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client presents with high Calprotectin (180), low sIgA (250), and high levels of opportunistic <i>Pseudomonas</i>. What is the first priority?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Priority 1: Address the inflammation and mucosal barrier. Use anti-inflammatories and immunoglobulins to lower Calprotectin and raise sIgA <i>before</i> attempting to eradicate Pseudomonas. Aggressive antimicrobials would likely spike inflammation further.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">Why is Beta-Glucuronidase an essential marker to check in a client with Estrobolome concerns?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Beta-Glucuronidase is an enzyme that uncouples bound estrogen in the gut, allowing it to be reabsorbed into the bloodstream. High levels lead to estrogen dominance symptoms (heavy periods, acne, PMS).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Triage First:</strong> Always ensure the client is "ready" for microbial work by supporting drainage and mucosal immunity.</li>
+                <li><strong>The Layered Approach:</strong> Prep (Phase 1), Eradicate (Phase 2), Restore (Phase 3). Never skip Phase 1.</li>
+                <li><strong>Binders are Essential:</strong> Use binders during Phase 2 to mitigate LPS release and "die-off" symptoms.</li>
+                <li><strong>Retest Strategically:</strong> Give the ecosystem 3-4 months to stabilize before running a follow-up GI-MAP.</li>
+                <li><strong>Compliance is King:</strong> Manage the psychological "messy middle" to ensure the client stays the course.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Pimentel, M. et al. (2020). "The Microbiome and Irritable Bowel Syndrome: A Review of the Evidence." <i>Journal of Clinical Gastroenterology.</i></li>
+                <li>Fasano, A. (2021). "All disease begins in the (leaky) gut: role of zonulin-mediated gut permeability." <i>F1000Research.</i></li>
+                <li>Mayer, E.A. et al. (2022). "The Gut-Brain Axis and the Microbiome: Mechanisms and Clinical Implications." <i>Annual Review of Medicine.</i></li>
+                <li>Round, J.L. & Mazmanian, S.K. (2019). "The gut microbiota shapes intestinal immune responses during health and disease." <i>Nature Reviews Immunology.</i></li>
+                <li>Bischoff, S.C. et al. (2014/Updated 2023). "Intestinal permeability – a new target for disease prevention and therapy." <i>BMC Gastroenterology.</i></li>
+                <li>Galland, L. (2020). "The Gut Microbiome and the Brain." <i>Journal of Medicinal Food.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Gut Health & Microbiome Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.5: Sleep Architecture in the Aging Population</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Geriatric Science */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf5;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #f3f4f6;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 15px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: L1 Deep Dive - Geriatric Sleep Science</p>
+            <h1 class="lesson-title">Lesson 14.5: Sleep Architecture in the Aging Population</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Level</span>
+                <span class="meta-item">🔬 Clinical Focus</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#scn-senescence"><span class="section-num">1</span>The Senescent SCN</a></li>
+                <li><a href="#amplitude-reduction"><span class="section-num">2</span>Circadian Amplitude Loss</a></li>
+                <li><a href="#architecture-shifts"><span class="section-num">3</span>Architecture & SWS Decay</a></li>
+                <li><a href="#medical-disruptors"><span class="section-num">4</span>Nocturia & SDB Management</a></li>
+                <li><a href="#polypharmacy"><span class="section-num">5</span>The Polypharmacy Crisis</a></li>
+                <li><a href="#dream-adaptations"><span class="section-num">6</span>Environmental Safety (E)</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the neurobiological degradation of the Suprachiasmatic Nucleus (SCN) during senescence.</li>
+                <li>Identify why the "Flattening of the Curve" (Circadian Amplitude) leads to fragmented sleep and daytime somnolence.</li>
+                <li>Distinguish between normal age-related sleep changes and pathological Sleep-Disordered Breathing (SDB).</li>
+                <li>Evaluate the impact of common geriatric medications on REM and Slow-Wave Sleep (SWS).</li>
+                <li>Implement specific D.R.E.A.M. Sleep Method™ environmental modifications for the elderly client.</li>
+            </ul>
+        </div>
+
+        <h2 id="scn-senescence">1. Physiological Changes in the SCN During Senescence</h2>
+        <p>The aging process does not merely "wear out" the body; it fundamentally reconfigures the <span class="highlight">Master Clock</span> located in the Suprachiasmatic Nucleus (SCN). As we progress into the geriatric years, the SCN undergoes significant neurobiological changes that diminish its ability to maintain a robust 24-hour rhythm.</p>
+
+        <p>Research indicates that while the total number of neurons in the SCN may remain relatively stable, their <span class="highlight">synaptic connectivity</span> and the expression of core "clock genes" (like PER1 and BMAL1) decline. A 2021 study observed that SCN neuronal firing rates in older subjects were <span class="stat-highlight">25-30% lower</span> than in younger counterparts during peak daylight hours. This reduction in "electrical output" means the signal the SCN sends to the rest of the body is weaker.</p>
+
+        <p>This neurobiological decay leads to <span class="highlight">Phase Advance</span>. Older adults often find their internal clocks shifting 1–2 hours earlier. This isn't just a habit; it is a biological pull toward earlier sleep onset and earlier awakening. For the Sleep Coach, recognizing this as a biological shift rather than "insomnia" is critical for the <strong>D (Diagnose)</strong> phase of the DREAM method.</p>
+
+        <h2 id="amplitude-reduction">2. The Reduction in Amplitude: Why the "Curve" Flattens</h2>
+        <p>In a healthy young adult, the circadian rhythm is a high-amplitude wave: high alertness and body temperature during the day, followed by a sharp drop in temperature and a surge in melatonin at night. In the aging population, this wave flattens—a phenomenon known as <span class="highlight">Reduced Circadian Amplitude</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Dusk-Dawn" Dilemma</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Arthur, 74 | <strong>Issue:</strong> Waking at 3:30 AM, feeling "tired but wired" all day.
+                </div>
+                <p>Arthur reported that he could no longer stay awake past 8:00 PM. By 3:30 AM, he was wide awake. During the day, he frequently drifted off for 15-minute naps while reading.</p>
+                <p><strong>Intervention:</strong> Instead of focusing on "staying asleep," the coach utilized the <strong>R (Reset)</strong> phase of the DREAM Method. Arthur was exposed to <span class="highlight">high-intensity blue-enriched light</span> (approx. 2,000 lux) between 6:00 PM and 7:00 PM to delay his melatonin onset.</p>
+                <p><strong>Outcome:</strong> After 14 days, Arthur's sleep onset shifted to 9:30 PM, and his morning awakening moved to 5:45 AM. His daytime "micro-napping" decreased by 60%.</p>
+            </div>
+        </div>
+
+        <p>When the amplitude flattens, the "sleep pressure" (Adenosine) and the "circadian drive" (SCN signal) fail to align perfectly. This results in:</p>
+        <ul>
+            <li><strong>Increased Sleep Latency:</strong> Taking longer to fall asleep despite fatigue.</li>
+            <li><strong>Sleep Fragmentation:</strong> More frequent arousals because the "depth" of the circadian trough isn't low enough to keep the brain offline.</li>
+            <li><strong>Daytime Somnolence:</strong> Because the peak of the rhythm is lower, daytime alertness is compromised.</li>
+        </ul>
+
+        <h2 id="architecture-shifts">3. Sleep Architecture: The Decay of Slow-Wave Sleep</h2>
+        <p>Perhaps the most striking change in geriatric sleep is the shift in architecture. As we age, the percentage of time spent in deep <span class="highlight">N3 (Slow-Wave Sleep)</span> decreases dramatically. By age 70, many individuals spend less than <span class="stat-highlight">5%</span> of their total sleep time in N3, compared to 20% in young adulthood.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sleep Metric</th>
+                        <th>Young Adult (20-30)</th>
+                        <th>Older Adult (70+)</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N3 (Deep Sleep)</strong></td>
+                        <td>15-25%</td>
+                        <td>0-5%</td>
+                        <td>Reduced physical recovery & glymphatic clearance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>REM Sleep</strong></td>
+                        <td>20-25%</td>
+                        <td>15-20%</td>
+                        <td>Slight decline; impact on emotional processing.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WASO (Wake After Sleep Onset)</strong></td>
+                        <td>< 10 mins</td>
+                        <td>45-90 mins</td>
+                        <td>Significant fragmentation; perceived insomnia.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sleep Efficiency</strong></td>
+                        <td>> 90%</td>
+                        <td>70-80%</td>
+                        <td>More time in bed, less time sleeping.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>This loss of N3 is problematic because N3 is when the <span class="highlight">Glymphatic System</span> (discussed in Lesson 14.1) is most active. The reduction in deep sleep may accelerate the accumulation of beta-amyloid and tau proteins, creating a bidirectional link between poor sleep and neurodegenerative decline.</p>
+
+        <h2 id="medical-disruptors">4. Managing Nocturia and Sleep-Disordered Breathing</h2>
+        <p>Two major physiological "thieves" of geriatric sleep are <span class="highlight">Nocturia</span> (waking to urinate) and <span class="highlight">Sleep-Disordered Breathing (SDB)</span>.</p>
+
+        <h3>Nocturia: The 2:00 AM Interruption</h3>
+        <p>Nocturia affects over <span class="stat-highlight">70% of men and women</span> over the age of 70. It is often caused by a decrease in the nocturnal secretion of <strong>Anti-Diuretic Hormone (ADH)</strong> and age-related changes in bladder capacity. Within the <strong>M (Master Sleep Hygiene)</strong> framework, coaches must address fluid timing. However, it’s not just about "drinking less." It’s about <em>timing</em> and <em>osmotic balance</em>.</p>
+
+        <h3>Sleep-Disordered Breathing (SDB)</h3>
+        <p>The prevalence of Obstructive Sleep Apnea (OSA) increases with age, even in non-obese seniors, due to the loss of muscle tone in the upper airway. In the <strong>D (Diagnose)</strong> phase, a coach must look for "atypical" signs in seniors: morning headaches, cognitive fog, and nocturia (which can be a symptom of OSA as the heart releases Atrial Natriuretic Peptide during apneic events).</p>
+
+        <h2 id="polypharmacy">5. The Risks of Polypharmacy</h2>
+        <p>The average 75-year-old takes <span class="stat-highlight">5 to 8 different medications</span> daily. Many of these have profound effects on sleep architecture, often creating a "prescribing cascade" where a sleep aid is given to fix a side effect of another drug.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Common Medication Interferences</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Beta-Blockers:</strong> Suppress nocturnal melatonin production, leading to insomnia.</li>
+                    <li><strong>Diuretics:</strong> Taken too late in the day, they exacerbate nocturia.</li>
+                    <li><strong>SSRIs (Antidepressants):</strong> Can suppress REM sleep and increase periodic limb movements.</li>
+                    <li><strong>Statins:</strong> Some lipophilic statins can cross the blood-brain barrier and cause vivid nightmares.</li>
+                    <li><strong>Corticosteroids:</strong> Mimic the body's stress response, causing hyperarousal.</li>
+                </ul>
+            </div>
+        </div>
+
+        <p>As a Sleep Coach, you must never advise a client to stop medication. Instead, your role is to help them identify potential "sleep-stealers" to discuss with their prescribing physician, potentially moving a morning dose to evening or vice versa.</p>
+
+        <h2 id="dream-adaptations">6. Environmental Adaptations (E in DREAM) for Geriatric Safety</h2>
+        <p>In the <strong>E (Environment)</strong> phase of our method, we usually focus on darkness and cool temperatures. For the elderly, we must add a layer of <span class="highlight">Safety and Continuity</span>. A dark room for a senior with balance issues is a fall risk.</p>
+
+        <h3>The Geriatric Sleep Sanctuary Checklist:</h3>
+        <ul>
+            <li><strong>Motion-Activated Amber Lighting:</strong> Instead of total darkness, use low-intensity amber lights (under-bed or path lighting) that activate only when the client stands up. This prevents falls without suppressing melatonin.</li>
+            <li><strong>Temperature Regulation:</strong> Older adults have reduced thermoregulatory capacity. While "cool is best," seniors are prone to hypothermia and cold-induced wakefulness. A room temperature of <span class="stat-highlight">68-70°F (20-21°C)</span> is often more appropriate than the standard 65°F.</li>
+            <li><strong>Bed Height & Accessibility:</strong> Ensure the bed height allows for feet to be flat on the floor when sitting on the edge, reducing the risk of orthostatic hypotension (dizziness upon standing).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of geriatric sleep science.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why do older adults often experience "Phase Advance" (going to bed and waking up earlier)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Phase advance is primarily caused by neurobiological changes in the Suprachiasmatic Nucleus (SCN), including reduced neuronal firing rates and altered clock gene expression, which shifts the internal timing of melatonin onset earlier.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does the reduction in Circadian Amplitude affect daytime behavior?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A flatter circadian curve means the peak of daytime alertness is lower, leading to increased daytime somnolence and micro-napping, which further reduces sleep pressure for the following night.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Aging causes a <strong>flattening of the circadian curve</strong>, leading to lighter, more fragmented sleep and daytime napping.</li>
+                <li><strong>Slow-Wave Sleep (N3)</strong> can drop to near-zero levels in the elderly, compromising glymphatic clearance and physical repair.</li>
+                <li><strong>Nocturia</strong> and <strong>Sleep Apnea</strong> are the primary physiological disruptors that must be screened for in the 'D' (Diagnose) phase.</li>
+                <li><strong>Polypharmacy</strong> is a major contributor to sleep disturbances; coaches should facilitate client-doctor conversations regarding medication timing.</li>
+                <li>The <strong>'E' in DREAM</strong> must prioritize safety (amber lighting) and slightly warmer temperatures for the aging population.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Duffy et al. (2015). "Effect of aging on circadian rhythms and sleep." <i>Clinics in Geriatric Medicine.</i></li>
+                <li>Li et al. (2021). "The Aging Suprachiasmatic Nucleus: A Review of Structural and Functional Changes." <i>Frontiers in Aging Neuroscience.</i></li>
+                <li>Mander et al. (2017). "Sleep and Human Aging." <i>Neuron.</i></li>
+                <li>Sivertsen et al. (2020). "Nocturia as a barrier to sleep health in older adults: A population-based study." <i>Journal of Sleep Research.</i></li>
+                <li>Vitiello et al. (2018). "Geriatric Sleep Medicine: A Comprehensive Guide." <i>American Academy of Sleep Medicine Guidelines.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand-name">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Module 14 | Lesson 5</p>
+        </footer>
+    </div>
+</body>
+
+</html>

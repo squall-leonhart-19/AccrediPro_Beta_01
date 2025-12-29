@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.6: Optimizing Resilience: Integrating 'Optimize' into the Plan</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Optimization */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0f9ff;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #0ea5e9;
+            margin: 30px 0;
+            font-style: italic;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: #0369a1;
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a017;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Footer */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        .takeaways-box {
+            background: #0369a1;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 6: Optimizing Resilience: Integrating 'Optimize' into the Plan</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Bio-Resilience Framework</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Precision Nutrition for Energy</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Movement as Medicine</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Circadian Optimization</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Targeted Supplementation</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Navigating Behavioral Barriers</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design personalized nutrition strategies that stabilize blood sugar and support the HPA axis.</li>
+                <li>Construct movement plans that respect the client’s current metabolic "bandwidth" and prevent overtraining.</li>
+                <li>Integrate advanced sleep hygiene and circadian rhythm protocols into a cohesive recovery plan.</li>
+                <li>Evaluate the evidence-based use of adaptogens and micronutrients within a coaching scope of practice.</li>
+                <li>Develop contingency strategies for common psychological and environmental barriers to lifestyle change.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Bio-Resilience Framework: Beyond Symptom Management</h2>
+        <p>In the previous lessons of this module, we focused on <span class="highlight">Recognizing</span> the depth of burnout, <span class="highlight">Evaluating</span> the physiological damage, <span class="highlight">Stabilizing</span> the immediate nervous system response, and <span class="highlight">Transforming</span> the mindset. However, a mindset shift is difficult to maintain if the biological "hardware" is malfunctioning. This is where the <strong>Optimize</strong> phase of the <strong>R.E.S.T.O.R.E. Protocol™</strong> becomes critical.</p>
+
+        <p>Optimization is not about "perfection"; it is about creating a physiological environment where resilience is the default state. For a client in burnout, their biological reserves are depleted. A 2021 study published in <i>Frontiers in Psychology</i> noted that <span class="stat-highlight">burnout is significantly correlated with systemic inflammation (CRP levels) and a 27% decrease in mitochondrial efficiency.</span> If we do not address the biological engine, the client will remain in a "fragile" state, prone to relapse the moment external stress increases.</p>
+
+        <h2 id="section2">2. Precision Nutrition for Energy and Stress Management</h2>
+        <p>A treatment plan for burnout must prioritize <strong>glycemic stability</strong>. When blood sugar spikes and crashes, the body perceives this as an internal stressor, triggering a cortisol release to mobilize glucose. For a client with a dysregulated HPA axis, these "nutritional stress events" can keep them in a state of sympathetic dominance.</p>
+
+        <h3>The "Resilience Plate" Principles:</h3>
+        <ul>
+            <li><strong>The Blood Sugar Buffer:</strong> Every meal must contain a "trio" of fiber, healthy fats, and high-quality protein to slow glucose absorption.</li>
+            <li><strong>Micronutrient Density:</strong> Focus on Magnesium (the "anti-stress" mineral), B-Vitamins (co-factors for energy production), and Vitamin C (highly concentrated in the adrenal glands).</li>
+            <li><strong>Anti-Inflammatory Focus:</strong> Emphasizing Omega-3 fatty acids to counteract the neuroinflammation often seen in chronic burnout.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nutritional Factor</th>
+                        <th>Impact on Burnout</th>
+                        <th>Coaching Intervention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Glycemic Variability</strong></td>
+                        <td>High variability correlates with increased anxiety and 4:00 PM energy crashes.</td>
+                        <td>Incorporate 20-30g protein at breakfast; eliminate "naked" carbohydrates.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Magnesium Status</strong></td>
+                        <td>Stress causes magnesium wasting; deficiency increases NMDA receptor sensitivity (hyper-excitability).</td>
+                        <td>Increase leafy greens, pumpkin seeds, and Epsom salt baths.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hydration/Electrolytes</strong></td>
+                        <td>Dehydration mimics stress symptoms (tachycardia, brain fog).</td>
+                        <td>Add a pinch of sea salt to morning water to support adrenal mineral balance.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Coffee & Toast" Cycle</p>
+                    <p style="color: white; font-size: 12px; margin: 0;">Client: Sarah, 42, Marketing Director</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Sarah reported "wired but tired" energy, severe afternoon brain fog, and nightly sugar cravings. Her current diet consisted of black coffee and dry toast for breakfast, a salad for lunch, and a heavy pasta dinner.</p>
+                <p><strong>Intervention:</strong> We integrated the 'Optimize' phase by restructuring her breakfast to include 3 eggs and half an avocado (protein/fat) and adding a 3:00 PM snack of walnuts and an apple. We also replaced her third coffee with an adrenal cocktail (OJ, sea salt, cream of tartar).</p>
+                <p><strong>Outcomes:</strong> Within 14 days, Sarah's afternoon energy stabilized. Her 4:00 PM "crash" disappeared, and she reported a 40% reduction in evening anxiety levels. Her HRV (Heart Rate Variability) increased from a baseline of 32ms to 45ms.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Movement as Medicine: Supporting the Metabolic Bandwidth</h2>
+        <p>A common mistake in burnout recovery is prescribing high-intensity exercise too early. For a client in Stage 3 burnout (Exhaustion), a 45-minute HIIT session is not "healthy"—it is a catastrophic stressor that further depletes cortisol reserves. A 2022 meta-analysis of 42 studies (n=8,234) found that <span class="stat-highlight">overtraining syndrome and burnout share nearly identical physiological markers, including suppressed T-cell function and blunted cortisol awakening responses (CAR).</span></p>
+
+        <p>In the treatment plan, we must shift from "Exercise" to <strong>"Restorative Movement."</strong> The goal is to stimulate the parasympathetic nervous system without triggering a massive inflammatory response.</p>
+
+        <h3>The Movement Hierarchy for Burnout:</h3>
+        <ol>
+            <li><strong>Zone 1 Activities:</strong> Walking in nature, Yin Yoga, Tai Chi. (Foundation)</li>
+            <li><strong>Resistance Training:</strong> Low volume (2-3 sets), high rest periods. Focus on eccentric movements.</li>
+            <li><strong>Avoidance:</strong> High-intensity cardio or fasted exercise until the client reaches the 'Reclaim' phase of the protocol.</li>
+        </ol>
+
+        <h2 id="section4">4. Circadian Optimization: The Sleep Cornerstone</h2>
+        <p>Sleep is the primary period for glymphatic drainage (brain detox) and hormonal recalibration. Without optimizing sleep, the R.E.S.T.O.R.E. Protocol™ cannot succeed. Research indicates that even <span class="highlight">one night of partial sleep deprivation (4 hours) increases next-day cortisol levels by 37%</span> and significantly impairs the prefrontal cortex's ability to regulate the amygdala.</p>
+
+        <h3>Integrating Sleep into the Plan:</h3>
+        <ul>
+            <li><strong>Light Hygiene:</strong> Viewing sunlight within 30 minutes of waking to "set" the circadian clock; blocking blue light 90 minutes before bed.</li>
+            <li><strong>Thermal Optimization:</strong> Maintaining a bedroom temperature of 65°F (18°C) to facilitate the necessary drop in core body temperature.</li>
+            <li><strong>The "Brain Dump" Ritual:</strong> Using a notebook to externalize stressors before bed, reducing "cognitive load" and sleep-onset latency.</li>
+        </ul>
+
+        <h2 id="section5">5. Targeted Supplementation: The Role of Adaptogens</h2>
+        <p>As a Stress & Burnout Coach, you do not prescribe, but you do <strong>educate</strong>. Supplementation in the 'Optimize' phase is designed to "bridge the gap" while lifestyle changes take hold. Adaptogens are unique pharmacological agents that increase the state of non-specific resistance to stress.</p>
+
+        <div class="stat-highlight">
+            A randomized, double-blind, placebo-controlled study (2019) found that high-concentration full-spectrum Ashwagandha root extract safely and effectively improved an individual's resistance towards stress and thereby improved self-assessed quality of life. Cortisol levels were reduced by an average of 28% over 60 days.
+        </div>
+
+        <h3>Key Considerations for the Plan:</h3>
+        <ul>
+            <li><strong>Ashwagandha (KSM-66):</strong> Best for the "wired but tired" client with high evening cortisol.</li>
+            <li><strong>Rhodiola Rosea:</strong> Effective for the "flat-lined" client needing help with mental fatigue and focus.</li>
+            <li><strong>Magnesium Glycinate:</strong> The most bioavailable form for nervous system relaxation and sleep support.</li>
+            <li><strong>Phosphatidylserine:</strong> Useful for blunting the ACTH/cortisol response during periods of acute stress.</li>
+        </ul>
+        <p><i>Note: Always include a disclaimer in your plan that clients must consult their primary care physician before starting any new supplement regimen.</i></p>
+
+        <h2 id="section6">6. Addressing Potential Barriers to Lifestyle Changes</h2>
+        <p>The best optimization plan is useless if the client cannot execute it. Burnout clients often suffer from "decision fatigue" and "executive dysfunction." If you give them a 10-step nutrition plan, you may inadvertently increase their stress.</p>
+
+        <h3>Strategies for Overcoming Obstacles:</h3>
+        <ul>
+            <li><strong>The "Minimum Viable Habit":</strong> Instead of "Cook all meals at home," start with "Add one palm of protein to lunch."</li>
+            <li><strong>Environmental Design:</strong> Helping the client audit their pantry or workspace to remove friction.</li>
+            <li><strong>Identity Reframing:</strong> Shifting from "I am trying to eat healthy" to "I am the type of person who prioritizes my recovery."</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is high-intensity interval training (HIIT) often contraindicated for a client in the late stages of burnout?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    In late-stage burnout, the HPA axis is already dysregulated and cortisol reserves are often depleted. HIIT acts as a major systemic stressor that can trigger further inflammatory responses and metabolic exhaustion, leading to a "crash" rather than a fitness gain.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary physiological goal of the "Resilience Plate" (balancing protein, fat, and fiber)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The primary goal is glycemic stability. By preventing blood sugar spikes and crashes, we reduce "internal stress events" that would otherwise trigger unnecessary cortisol releases.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li>Optimization focuses on rebuilding the biological reservoir (mitochondria, hormones, gut-brain axis) to sustain long-term resilience.</li>
+                <li>Nutrition plans should focus on blood sugar buffering and anti-inflammatory micronutrients rather than calorie restriction.</li>
+                <li>Movement must be calibrated to the client's current metabolic bandwidth; for many, walking is more "productive" than running.</li>
+                <li>Sleep hygiene is non-negotiable and must include light, temperature, and cognitive management strategies.</li>
+                <li>Implementation should follow the "Minimum Viable Habit" approach to prevent adding to the client's decision fatigue.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lopresti, A. L., et al. (2019). "An investigation into the stress-relieving and pharmacological actions of an ashwagandha (Withania somnifera) extract." <i>Medicine (Baltimore)</i>.</li>
+                <li>Walker, M. (2017). <i>Why We Sleep: Unlocking the Power of Sleep and Dreams</i>. Scribner.</li>
+                <li>Selye, H. (1950). "The Physiology and Pathology of Exposure to Stress." <i>ACTA Inc.</i></li>
+                <li>Bayes, J., et al. (2022). "The effect of a Mediterranean diet on the symptoms of depression in young men (the AMMEND study)." <i>American Journal of Clinical Nutrition</i>.</li>
+                <li>Huberman, A. D. (2021). "Using Light to Optimize Health and Performance." <i>Stanford University School of Medicine</i>.</li>
+                <li>Hofmann, S. G., et al. (2010). "The Efficacy of Mindfulness-Based Therapy: A Meta-Analytic Review." <i>Journal of Consulting and Clinical Psychology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Stress & Burnout Coach Program | Professional Excellence</p>
+        </footer>
+    </div>
+</body>
+
+</html>

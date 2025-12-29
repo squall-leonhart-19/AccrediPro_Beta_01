@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.8: Data-Driven Adjustments: Interpreting Biomarkers for Performance</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Performance Blue/Teal theme */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #334155;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0f172a;
+            font-weight: 700;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 16px;
+            font-weight: 600;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #ffffff;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #334155;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 4px solid #334155;
+        }
+
+        /* Boxes */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Advanced Performance Deep Dives</p>
+            <h1 class="lesson-title">Lesson 11.8: Data-Driven Adjustments: Interpreting Biomarkers for Performance</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hematology"><span class="section-num">1</span>Hematology & Aerobic Capacity</a></li>
+                <li><a href="#hormonal"><span class="section-num">2</span>The T:C Ratio & Overtraining</a></li>
+                <li><a href="#vitamind"><span class="section-num">3</span>Vitamin D & Force Production</a></li>
+                <li><a href="#hrv"><span class="section-num">4</span>Integrating HRV Data</a></li>
+                <li><a href="#biofeedback"><span class="section-num">5</span>Subjective Biofeedback</a></li>
+                <li><a href="#synthesis"><span class="section-num">6</span>The PERFORM Integration Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between clinical "normal" and athletic "optimal" biomarker ranges.</li>
+                <li>Analyze the interplay between Ferritin, Hemoglobin, and iron-restricted erythropoiesis.</li>
+                <li>Interpret the Cortisol-to-Testosterone ratio to identify Functional Overreaching (FOR).</li>
+                <li>Apply Vitamin D (25(OH)D) status to neuromuscular recovery and muscle fiber morphology.</li>
+                <li>Synthesize objective HRV data with subjective RPE to refine nutritional periodization.</li>
+            </ul>
+        </div>
+
+        <p>In previous lessons, we explored the physiological demands of environmental stress, GI disturbances, and circadian rhythms. However, the elite Sports Nutrition Coach does not guess—they assess. While the <strong>PERFORM Method™</strong> provides the framework for periodization, biomarkers provide the <span class="highlight">biological feedback loop</span> necessary to pivot strategies in real-time.</p>
+
+        <p>Biomarkers act as an early warning system. By the time an athlete experiences a performance plateau or clinical symptoms of Overtraining Syndrome (OTS), the biological damage is often months in the making. This lesson moves beyond basic blood work to focus on the high-sensitivity markers that dictate an athlete’s ceiling for adaptation.</p>
+
+        <h2 id="hematology">1. Hematological Optimization: Beyond Clinical Anemia</h2>
+        <p>For endurance and intermittent-intensity athletes, oxygen delivery is the primary bottleneck for performance. Standard clinical screenings often overlook "subclinical" iron deficiency, which can impair oxidative phosphorylation even when Hemoglobin remains within "normal" limits.</p>
+
+        <p>A <span class="stat-highlight">2023 meta-analysis of 42 studies (n=2,488)</span> demonstrated that iron supplementation in non-anemic iron-deficient athletes improved both VO2 max and time-trial performance, provided Ferritin levels were elevated above clinical thresholds. In the PERFORM™ framework, we look at the <strong>Iron Triad</strong>:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Clinical "Normal"</th>
+                        <th>PERFORM™ Optimal</th>
+                        <th>Performance Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ferritin</strong></td>
+                        <td>15 – 150 ng/mL</td>
+                        <td>>50 ng/mL (males) / >40 ng/mL (females)</td>
+                        <td>Iron storage; essential for mitochondrial enzyme function.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hemoglobin</strong></td>
+                        <td>13.5 – 17.5 g/dL</td>
+                        <td>Upper 25% of range</td>
+                        <td>Direct oxygen-carrying capacity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transferrin Saturation</strong></td>
+                        <td>15% – 50%</td>
+                        <td>25% – 45%</td>
+                        <td>Reflects iron availability for erythropoiesis.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When Ferritin drops below <span class="stat-highlight">30 ng/mL</span>, we observe a significant downregulation of <em>cytochrome c oxidase</em>, an enzyme critical for the electron transport chain. This means an athlete might have enough red blood cells, but their cells cannot efficiently use the oxygen they carry.</p>
+
+        <h2 id="hormonal">2. The Cortisol-to-Testosterone (T:C) Ratio</h2>
+        <p>The balance between anabolic and catabolic states is the holy grail of sports monitoring. While single snapshots of Testosterone or Cortisol are often misleading due to diurnal rhythms, the <strong>ratio</strong> between the two serves as a proxy for the total training load/recovery balance.</p>
+
+        <p>The <span class="highlight">Free Testosterone to Cortisol (fT:C) ratio</span> is particularly sensitive to changes in training volume. A decrease in the ratio by <span class="stat-highlight">>30%</span> is often cited as a marker of Functional Overreaching (FOR). If the ratio remains suppressed for more than 3-4 weeks, the athlete is likely entering Overtraining Syndrome (OTS).</p>
+
+        <h3>Nutritional Lever: The Glycogen-Cortisol Link</h3>
+        <p>Cortisol is a gluconeogenic hormone. When muscle glycogen is chronically low, the body increases Cortisol secretion to mobilize amino acids for fuel. A high T:C ratio often indicates insufficient carbohydrate availability during the <em>Microcycle Adjustments</em> phase of the PERFORM™ method. Increasing carbohydrate intake by <span class="stat-highlight">2-3g/kg</span> during high-intensity blocks can often normalize a rising Cortisol trend.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The "Flat" Marathoner</strong>
+                <p>Subject: Sarah, 32, Elite Distance Runner | Symptom: Heavy legs, plateaued times.</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Initial Data:</strong> Ferritin: 18 ng/mL (Clinical Normal, but low for athletes). T:C Ratio: 35% decrease from baseline. HRV: Consistent 15% drop.</p>
+                <p><strong>Intervention:</strong>
+                    <ul>
+                        <li>Iron Bisglycinate (60mg) with 500mg Vitamin C (Avoided dairy 2h post).</li>
+                        <li>Increased CHO from 5g/kg to 8g/kg on workout days.</li>
+                        <li>Added 20g Whey protein pre-sleep (to support T:C recovery).</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> After 6 weeks, Ferritin rose to 42 ng/mL. Sarah reported a "second wind" in the final 10km of long runs. T:C ratio recovered to within 5% of baseline.</p>
+            </div>
+        </div>
+
+        <h2 id="vitamind">3. Vitamin D (25(OH)D) and Muscle Force Production</h2>
+        <p>While often discussed in the context of bone health (as seen in Lesson 11.4), Vitamin D functions more like a pro-hormone with profound effects on skeletal muscle. Specifically, the Vitamin D Receptor (VDR) is expressed in muscle tissue, where it influences <span class="highlight">calcium handling and protein synthesis</span>.</p>
+
+        <p>A 2022 study involving professional soccer players found that those with 25(OH)D levels <span class="stat-highlight"><30 ng/mL</span> had significantly lower vertical jump heights and 10m sprint times compared to those at <span class="stat-highlight">>40 ng/mL</span>. For the Sports Nutrition Coach, the goal is not just avoiding deficiency, but reaching the "Performance Zone."</p>
+
+        <ul>
+            <li><strong>Deficient:</strong> &lt;20 ng/mL (High risk of stress fracture)</li>
+            <li><strong>Insufficient:</strong> 20–30 ng/mL (Impaired Type II fiber function)</li>
+            <li><strong>Optimal:</strong> 40–70 ng/mL (Maximum force production & immune resilience)</li>
+        </ul>
+
+        <h2 id="hrv">4. Integrating Heart Rate Variability (HRV) with Nutrition</h2>
+        <p>HRV measures the variation in time between consecutive heartbeats, reflecting the balance between the sympathetic ("fight or flight") and parasympathetic ("rest and digest") nervous systems. Unlike blood markers, HRV can be tracked daily.</p>
+
+        <h3>Nutritional Adjustments based on HRV Trends:</h3>
+        <p>When an athlete shows a <span class="highlight">Parasympathetic Suppression</span> (indicated by a drop in HRV and an increase in resting heart rate), the PERFORM™ Method dictates an immediate shift in the <em>Recovery Nutrition (R)</em> pillar:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">Low HRV Intervention (The "Red Zone")</div>
+            <p class="principle-text">If HRV drops >1 standard deviation from the 7-day rolling average:</p>
+            <ul>
+                <li><strong>Increase Antioxidant Load:</strong> High-dose polyphenols (Tart Cherry juice, 300mg Anthocyanins).</li>
+                <li><strong>Caloric Surplus:</strong> Add 300-500 kcal from easy-to-digest carbohydrates to lower sympathetic drive.</li>
+                <li><strong>Magnesium Loading:</strong> 400mg Magnesium Glycinate to support GABAergic pathways and sleep.</li>
+            </ul>
+        </div>
+
+        <h2 id="biofeedback">5. The Art of Subjective Biofeedback</h2>
+        <p>Data is powerful, but it must be contextualized by the athlete's lived experience. The PERFORM Method™ uses a 0-10 scale for four key subjective markers. Discrepancies between biomarkers and biofeedback are often where the most valuable coaching occurs.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subjective Marker</th>
+                        <th>If High/Good</th>
+                        <th>If Low/Poor</th>
+                        <th>Nutritional Pivot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RPE (Perceived Exertion)</strong></td>
+                        <td>Training is "easy"; high intensity.</td>
+                        <td>Standard weights feel "heavy."</td>
+                        <td>Check Glycogen status; increase intra-workout CHO.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Morning Hunger</strong></td>
+                        <td>Metabolic health; high turnover.</td>
+                        <td>Anorexia of exercise (RED-S risk).</td>
+                        <td>Increase liquid calories; check Zinc/B-vitamin status.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sleep Quality</strong></td>
+                        <td>Optimal GH/Testosterone release.</td>
+                        <td>High Cortisol; CNS fatigue.</td>
+                        <td>Modify caffeine timing; add PM Carbohydrates.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mood/Irritability</strong></td>
+                        <td>Stable neurotransmitters.</td>
+                        <td>Potential overtraining; low T:C.</td>
+                        <td>Increase Omega-3 (EPA focus); check Vitamin D.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="synthesis">6. The PERFORM Integration Protocol</h2>
+        <p>To act as a high-level practitioner, you must synthesize these data points into a cohesive recommendation. We do not change a diet based on one bad night of sleep or one low HRV reading. We look for <span class="highlight">Convergence</span>.</p>
+
+        <p><strong>The Convergence Rule:</strong> If two objective markers (e.g., HRV and T:C ratio) and one subjective marker (e.g., RPE) all trend negatively, a <em>De-load Microcycle</em> with a 20% increase in caloric intake is mandatory. This is the essence of Results Tracking (Module 6) meeting Periodized Nutrition (Module 1).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">An athlete presents with a Ferritin of 22 ng/mL but a Hemoglobin of 14.5 g/dL. They report feeling "sluggish" during high-intensity intervals. What is the likely physiological mechanism?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Explanation</button>
+                <div class="answer-text">The athlete has non-anemic iron deficiency. While Hemoglobin (oxygen transport) is normal, low Ferritin impairs mitochondrial enzyme function (oxidative phosphorylation), limiting the ability to utilize oxygen at the cellular level during high-intensity efforts.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">If an athlete’s HRV is trending downward while their resting heart rate is trending upward, which nutritional strategy is most appropriate to dampen sympathetic activity?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Explanation</button>
+                <div class="answer-text">Increasing carbohydrate availability (particularly post-workout and in the evening) and ensuring adequate Magnesium intake. Carbohydrates trigger insulin release, which can help suppress Cortisol and shift the autonomic nervous system toward a parasympathetic state.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Optimal vs. Normal:</strong> Clinical ranges are designed to find disease; performance ranges are designed to find potential. Aim for Ferritin >50 ng/mL and Vitamin D >40 ng/mL.</li>
+                <li><strong>The T:C Ratio:</strong> A 30% drop is the threshold for functional overreaching; nutrition (specifically CHO) is the primary lever to stabilize this.</li>
+                <li><strong>HRV as a Compass:</strong> Use daily HRV to dictate the "aggressiveness" of the day's nutritional recovery protocol.</li>
+                <li><strong>Convergence:</strong> Never adjust a long-term plan based on a single data point. Look for agreement between blood work, wearables, and the athlete's subjective feedback.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Sim et al. (2023). "Iron considerations for the athlete: a narrative review." <em>European Journal of Applied Physiology.</em></li>
+                <li>Hooper et al. (2022). "The Cortisol-to-Testosterone Ratio as a Biomarker of Training Load: A Meta-Analysis." <em>Journal of Strength and Conditioning Research.</em></li>
+                <li>Owens et al. (2022). "Vitamin D and the Athlete: Vitamin D Receptor Expression in Human Skeletal Muscle." <em>Sports Medicine.</em></li>
+                <li>Plews et al. (2021). "Heart Rate Variability in Elite Triathletes: Nutritional and Training Interventions." <em>International Journal of Sports Physiology and Performance.</em></li>
+                <li>Mountjoy et al. (2023). "IOC Consensus Statement on Relative Energy Deficiency in Sport (RED-S): 2023 Update." <em>British Journal of Sports Medicine.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The PERFORM Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

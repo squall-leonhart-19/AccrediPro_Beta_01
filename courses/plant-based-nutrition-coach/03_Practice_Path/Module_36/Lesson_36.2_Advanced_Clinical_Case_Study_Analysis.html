@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 36.2: Advanced Clinical Case Study Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DARK GREEN theme for Advanced Clinical */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #064e3b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📋';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #064e3b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #059669;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #059669;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #059669;
+            display: block;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            color: #064e3b;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Footer Boxes */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            border-left: 6px solid #059669;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 36: Certification & Final Review</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Clinical Case Study Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 45 min read</span>
+                <span class="meta-item">🎓 Level 4 Master Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#complex-profiles"><span class="section-num">1</span>Multi-morbidity Frameworks</a></li>
+                <li><a href="#biometric-data"><span class="section-num">2</span>Interpreting Biometric Data</a></li>
+                <li><a href="#red-flags"><span class="section-num">3</span>Red Flags & Medical Referrals</a></li>
+                <li><a href="#success-failure"><span class="section-num">4</span>Intervention Success Analysis</a></li>
+                <li><a href="#soap-notes"><span class="section-num">5</span>Clinical Documentation Mastery</a></li>
+                <li><a href="#case-studies"><span class="section-num">6</span>Comprehensive Case Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Deconstruct complex multi-morbid client profiles using the P.L.A.N.T. Nutrition Method™.</li>
+                <li>Analyze clinical biometrics (HbA1c, Lipids, CRP) to personalize plant-based protocols.</li>
+                <li>Identify critical "Red Flag" symptoms requiring immediate medical escalation.</li>
+                <li>Evaluate the variables that differentiate successful vs. failed 12-week interventions.</li>
+                <li>Master the art of professional SOAP documentation for multi-disciplinary collaboration.</li>
+            </ul>
+        </div>
+
+        <h2 id="complex-profiles">1. Deconstructing Complex Client Profiles</h2>
+        <p>As a Master Practitioner, you will rarely encounter "textbook" cases where a client has only one health concern. Most clients in clinical practice present with <span class="highlight">multi-morbidity</span>—the co-occurrence of two or more chronic conditions. This requires a hierarchical approach to the P.L.A.N.T. Nutrition Method™.</p>
+        
+        <p>When managing multi-morbidity (e.g., Type 2 Diabetes combined with Chronic Kidney Disease and Hypertension), the coach must prioritize interventions based on <span class="highlight">metabolic urgency</span>. A 2022 systematic review published in <i>The Lancet</i> highlighted that multi-morbidity affects approximately 33% of adults globally, necessitating integrated rather than siloed nutritional strategies.</p>
+
+        <div class="principle-card" style="background: #f0fdf4; border-left: 5px solid #059669; padding: 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="font-weight: 700; color: #064e3b; margin-bottom: 10px;">The Hierarchical Prioritization Matrix:</p>
+            <ol>
+                <li><strong>Safety First:</strong> Address electrolyte imbalances or nutrient-drug interactions (e.g., Vitamin K and Warfarin).</li>
+                <li><strong>Metabolic Stability:</strong> Prioritize glycemic control (HbA1c) as it impacts systemic inflammation.</li>
+                <li><strong>Symptom Management:</strong> Address gut dysbiosis to improve nutrient absorption for other conditions.</li>
+            </ol>
+        </div>
+
+        <h2 id="biometric-data">2. Interpreting Biometric Data for Plant-Based Protocols</h2>
+        <p>Biometrics are the "GPS" of your coaching intervention. While we do not diagnose, we must be fluent in the language of clinical data to adjust the <strong>"Learn Nutrients"</strong> and <strong>"Anti-Inflammatory"</strong> phases of our method.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biometric Marker</th>
+                        <th>Standard Range</th>
+                        <th>Plant-Based "Optimal"</th>
+                        <th>P.L.A.N.T. Adjustment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HbA1c</strong></td>
+                        <td>&lt; 5.7%</td>
+                        <td>5.0% - 5.4%</td>
+                        <td>High levels require increasing <span class="highlight">Resistant Starch</span> and lowering glycemic load.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LDL-Cholesterol</strong></td>
+                        <td>&lt; 100 mg/dL</td>
+                        <td>&lt; 70 mg/dL</td>
+                        <td>Elevated levels suggest higher <span class="highlight">viscous fiber</span> (oats, legumes) and lower saturated fat.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>hs-CRP</strong></td>
+                        <td>&lt; 3.0 mg/L</td>
+                        <td>&lt; 1.0 mg/L</td>
+                        <td>High markers trigger the <strong>Anti-Inflammatory Protocol</strong> (Phytochemical synergy).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>eGFR (Kidney)</strong></td>
+                        <td>&gt; 90</td>
+                        <td>Stable trend</td>
+                        <td>Requires careful titration of plant proteins and potassium-rich foods.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stat-highlight">
+            <span class="stat-value">37% Reduction</span>
+            <span class="stat-desc">In hs-CRP levels observed in patients switching to a whole-food plant-based diet for 12 weeks (n=1,200).</span>
+        </div>
+
+        <h2 id="red-flags">3. Identifying 'Red Flag' Scenarios</h2>
+        <p>Professional ethics (Module 0, L3) dictate that we must know the limits of our scope. Clinical red flags are symptoms that suggest underlying pathology that nutrition alone cannot or should not address without medical oversight.</p>
+        
+        <p><strong>Immediate Referral Criteria:</strong></p>
+        <ul class="content-list">
+            <li><strong>Unexplained Weight Loss:</strong> Losing &gt;5% of body weight involuntarily within 6 months.</li>
+            <li><strong>Persistent Dysphagia:</strong> Difficulty swallowing, which may indicate esophageal issues.</li>
+            <li><strong>Change in Bowel Habits:</strong> Especially "pencil-thin" stools or blood (melena), suggesting colorectal concerns.</li>
+            <li><strong>Severe Polydipsia/Polyuria:</strong> Extreme thirst and urination, indicating undiagnosed or uncontrolled diabetes.</li>
+            <li><strong>Cardiac Symptoms:</strong> Shortness of breath (dyspnea) or chest pain during light activity.</li>
+        </ul>
+
+        <h2 id="case-studies">4. Case Study Analysis: Complex Metabolic Syndrome</h2>
+        
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Multi-Morbid Profile</p>
+                    <p style="color: white; font-size: 12px; margin: 0;">Complex Management: T2D, Grade 2 Obesity, and Hypertension</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">RJ</div>
+                    <div class="patient-info">
+                        <h4>Robert J., 58 years old</h4>
+                        <p>HbA1c: 8.2% | BMI: 34.2 | BP: 155/95 mmHg</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Chronic fatigue, bilateral lower extremity edema, and frequent "crashing" after meals. Robert was taking Metformin and Lisinopril but felt "stuck."</p>
+                
+                <p><strong>Intervention (The P.L.A.N.T. Method™):</strong></p>
+                <ul>
+                    <li><strong>Prepare:</strong> Kitchen sweep to remove ultra-processed "vegan" meats high in sodium.</li>
+                    <li><strong>Learn:</strong> Transitioned to 100% WFPB with a focus on 40g+ fiber/day.</li>
+                    <li><strong>Anti-Inflammatory:</strong> Daily intake of 2 tbsp ground flaxseed and 1 tsp turmeric with black pepper.</li>
+                    <li><strong>Nourish:</strong> Introduced fermented vegetables to improve the microbiome-insulin axis.</li>
+                </ul>
+
+                <p><strong>Outcome (12 Weeks):</strong></p>
+                <ul>
+                    <li>HbA1c dropped from <span class="highlight">8.2% to 6.4%</span>.</li>
+                    <li>Weight loss: 18 lbs (8.1 kg).</li>
+                    <li>Blood Pressure: 128/82 mmHg (Physician-supervised reduction in Lisinopril dosage).</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="success-failure">5. Comparative Analysis: Success vs. Failure</h2>
+        <p>Why do some clients thrive while others plateau? A retrospective analysis of over 500 plant-based coaching interventions reveals the "Success Gap."</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Factors for Intervention Failure</p>
+                <ul style="font-size: 14px; padding-left: 20px;">
+                    <li><strong>"Vegan Junk Food" Reliance:</strong> High caloric density, low nutrient density.</li>
+                    <li><strong>Inadequate Caloric Intake:</strong> Leading to binge-restrict cycles.</li>
+                    <li><strong>Social Isolation:</strong> Lack of "Thrive" systems (Module 5).</li>
+                    <li><strong>Unaddressed Gut Dysbiosis:</strong> High fiber transition without enzyme support.</li>
+                </ul>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Factors for Intervention Success</p>
+                <ul style="font-size: 14px; padding-left: 20px;">
+                    <li><strong>Fiber Diversity:</strong> Consuming &gt;30 unique plant species per week.</li>
+                    <li><strong>Batch Cooking Systems:</strong> Reducing decision fatigue (Module 1, L4).</li>
+                    <li><strong>Biometric Feedback:</strong> Using data to stay motivated.</li>
+                    <li><strong>Adequate Hydration:</strong> Managing the increased osmotic load of fiber.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="soap-notes">6. Clinical Documentation: The SOAP Method</h2>
+        <p>Professionalism is defined by documentation. As you prepare for certification, your case studies must follow the SOAP format to ensure they are defensible and professional.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">S: Subjective</p>
+            <p class="principle-text">Client’s self-reported feelings, symptoms, and dietary adherence. <i>"Client reports improved energy but occasional bloating after beans."</i></p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">O: Objective</p>
+            <p class="principle-text">Measurable data. <i>"Weight: 185 lbs (-2 lbs); BP: 130/85; Daily fiber intake: 35g."</i></p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">A: Assessment</p>
+            <p class="principle-text">Your professional synthesis. <i>"Progressing well in 'Nourish' phase; bloating likely due to rapid fiber increase without adequate soaking of legumes."</i></p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">P: Plan</p>
+            <p class="principle-text">Next steps. <i>"Adjust legume preparation (overnight soak + kombu); increase water by 500ml; review B12 labs next week."</i></p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Master Practitioner Challenge</p>
+            <p class="box-subtitle">Test your clinical reasoning before the final exam.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client on a WFPB diet presents with an LDL of 110 mg/dL despite 90% adherence. They consume significant amounts of coconut oil and avocado. What is the P.L.A.N.T. adjustment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Clinical Logic</button>
+                <div class="answer-text">
+                    Saturated fat (even from plant sources like coconut oil) can downregulate LDL receptors. The adjustment is to replace coconut oil with whole-food fats (walnuts/seeds) and increase viscous fiber (oats/beans) to enhance bile acid excretion.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Which biometric marker is the most sensitive indicator of systemic inflammation and should be monitored during the 'Anti-Inflammatory' phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    hs-CRP (high-sensitivity C-Reactive Protein). It reflects the inflammatory cascade and is highly responsive to phytochemical-rich plant diets.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Final Review Takeaways</p>
+            <ul>
+                <li><strong>Multi-morbidity</strong> requires a hierarchical approach: Safety &gt; Metabolic Stability &gt; Gut Health.</li>
+                <li><strong>Biometric Mastery</strong> allows for "Precision Nutrition" rather than a one-size-fits-all plant-based approach.</li>
+                <li><strong>Referral Knowledge</strong> is as important as nutrition knowledge; never ignore "Red Flags."</li>
+                <li><strong>The Success Gap</strong> is often bridged by social support (Thrive) and meal systems (Prepare).</li>
+                <li><strong>Professional Documentation</strong> (SOAP) is mandatory for high-level clinical practice and liability protection.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label" style="font-size: 12px; color: #064e3b; margin-bottom: 15px; letter-spacing: 1px;">REFERENCES & FURTHER READING</p>
+            <ol>
+                <li>Barnard, N. D., et al. (2021). "A Whole-Food Plant-Based Diet for Type 2 Diabetes Management." <i>American Journal of Lifestyle Medicine.</i></li>
+                <li>Esselstyn, C. B. (2023). "Nutritional Reversal of Cardiovascular Disease." <i>Journal of Geriatric Cardiology.</i></li>
+                <li>Greger, M. (2022). "The Role of Phytochemicals in Suppressing hs-CRP." <i>Nutrients.</i></li>
+                <li>The Lancet. (2022). "The Global Burden of Multi-morbidity: A Systematic Review." <i>Lancet Public Health.</i></li>
+                <li>Wright, N., et al. (2017). "The BROAD study: A randomised controlled trial using a whole food plant-based diet." <i>Nutrition & Diabetes.</i></li>
+                <li>Satija, A., et al. (2017). "Healthful and Unhealthful Plant-Based Diets and the Risk of Coronary Heart Disease." <i>Journal of the American College of Cardiology.</i></li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Plant-Based Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

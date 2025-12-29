@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 13.6: High-Performance Sleep: Recovery Protocols for Athletes</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for High Performance */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #facc15;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Boxes */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 13: Advanced Performance Coaching</p>
+            <h1 class="lesson-title">Lesson 13.6: High-Performance Sleep: Recovery Protocols for Athletes</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Elite Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#extension"><span class="section-num">1</span>Sleep Extension Science</a></li>
+                <li><a href="#banking"><span class="section-num">2</span>The Prophylactic Sleep Bank</a></li>
+                <li><a href="#thermal"><span class="section-num">3</span>Thermoregulatory SWS Induction</a></li>
+                <li><a href="#travel"><span class="section-num">4</span>Travel Fatigue vs. Jet Lag</a></li>
+                <li><a href="#load"><span class="section-num">5</span>Training Load & Sleep Architecture</a></li>
+                <li><a href="#protocols"><span class="section-num">6</span>The D.R.E.A.M. Athlete Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Quantify the performance gains associated with chronic sleep extension in elite populations.</li>
+                <li>Design "Sleep Banking" protocols to mitigate the cognitive and physical toll of competition-induced deprivation.</li>
+                <li>Differentiate between the physiological mechanisms of travel fatigue and circadian desynchrony (jet lag).</li>
+                <li>Implement thermal manipulation strategies to maximize Slow-Wave Sleep (SWS) during heavy training blocks.</li>
+                <li>Analyze the bidirectional relationship between training overreaching and nocturnal autonomic arousal.</li>
+            </ul>
+        </div>
+
+        <h2 id="extension">1. The Sleep Extension Paradigm: Beyond the 8-Hour Norm</h2>
+        <p>In the world of elite athletics, the standard recommendation of 7–8 hours of sleep is often insufficient. Athletes face higher metabolic demands, increased neurocognitive load, and significant physical tissue repair requirements. <span class="highlight">Sleep extension</span>—the practice of increasing sleep duration to 9 or 10 hours per night—has emerged as a "legal performance-enhancing drug."</p>
+
+        <p>A seminal 2011 study by Mah et al. at Stanford University demonstrated that when basketball players extended their sleep to a minimum of 10 hours per night for 5–7 weeks, the results were staggering. This wasn't just about "feeling better"; it was about measurable, objective performance metrics.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">+9.2%</div>
+                    <div class="stat-label">Free Throw Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">-0.7s</div>
+                    <div class="stat-label">80m Sprint Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+13.7%</div>
+                    <div class="stat-label">3-Point Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">-5%</div>
+                    <div class="stat-label">Reaction Time</div>
+                </div>
+            </div>
+        </div>
+
+        <p>The mechanism behind these gains lies in the <span class="highlight">cumulative reduction of sleep debt</span> and the optimization of the glymphatic system. During extended sleep windows, the brain has additional time for motor pattern consolidation and the clearance of metabolic byproducts accumulated during high-intensity training.</p>
+
+        <h2 id="banking">2. Sleep Banking: Proactive Prophylaxis</h2>
+        <p>While we cannot "make up" for years of poor sleep, research suggests we can <span class="highlight">bank sleep</span> in anticipation of a known period of deprivation (e.g., a week of late-night games or transmeridian travel). This is known as prophylactic sleep.</p>
+
+        <p>A 2016 study (Arnal et al.) found that individuals who extended their sleep for six nights prior to a period of total sleep deprivation performed significantly better on vigilance tasks and recovered faster than those who maintained a standard 7-hour schedule. For the sleep coach, this means scheduling "banking weeks" during the taper phase of an athlete’s program.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏆</div>
+                <div>
+                    <p class="box-label">Case Study: Pro Basketball Playoff Prep</p>
+                    <p class="subtitle">Implementing the Prophylactic Bank</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">MJ</div>
+                    <div class="patient-info">
+                        <h4>Marcus J., 26</h4>
+                        <p>Professional Point Guard | High Training Load</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Issue:</strong> Marcus historically suffered from "Game 4 Fatigue" during playoff series involving back-to-back travel, resulting in a 15% drop in shooting percentage.</p>
+                <p><strong>Intervention:</strong> Two weeks prior to the playoffs, Marcus implemented a 10-hour sleep window (9:30 PM – 7:30 AM). He utilized the <strong>D.R.E.A.M. Method™</strong> to engineer his environment (Total Darkness & Thermal Regulation).</p>
+                <p><strong>Outcome:</strong> Marcus maintained a consistent PER (Player Efficiency Rating) throughout the 7-game series. Objective tracking showed his Heart Rate Variability (HRV) remained 12ms higher than his previous playoff average, indicating superior autonomic recovery.</p>
+            </div>
+        </div>
+
+        <h2 id="thermal">3. Thermoregulation for Recovery: The SWS Induction</h2>
+        <p>As we explored in Module 3, core body temperature (CBT) must drop by approximately 1°C (2°F) to initiate deep sleep. For athletes, managing this is critical because high-intensity exercise late in the day can elevate CBT for hours, delaying the onset of <span class="highlight">Slow-Wave Sleep (SWS)</span>—the stage where Growth Hormone (GH) is primarily secreted.</p>
+
+        <p><strong>The Warm Bath Paradox:</strong> By taking a hot bath (40-42°C) 90 minutes before bed, an athlete induces vasodilation in the hands and feet. This "shunts" heat from the core to the extremities, leading to a rapid precipitous drop in CBT once they exit the tub, significantly shortening sleep onset latency.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th>Mechanism</th>
+                        <th>Impact on Sleep Architecture</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Passive Heating (Bath/Sauna)</strong></td>
+                        <td>Distal vasodilation; core cooling</td>
+                        <td>Increased SWS duration; faster onset</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active Cooling (Mattress Pads)</strong></td>
+                        <td>Continuous heat extraction</td>
+                        <td>Reduced nocturnal awakenings; stable REM</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cryotherapy (Post-Training)</strong></td>
+                        <td>Systemic vasoconstriction</td>
+                        <td>Mixed; may inhibit SWS if done too close to bed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="travel">4. Travel Fatigue vs. Jet Lag: A Critical Distinction</h2>
+        <p>Athletes and coaches often conflate these two issues, but they require different protocols. In the <strong>D.R.E.A.M. Sleep Method™</strong>, we address travel through the 'R' (Reset) and 'E' (Environment) pillars.</p>
+
+        <h3>Travel Fatigue</h3>
+        <p>This is a <span class="highlight">transient state</span> caused by the act of traveling—dehydration from airplane air, cramped seating, and the stress of logistics. It does not involve a shift in the circadian clock. Recovery requires rehydration and a single "anchor sleep" of 9+ hours.</p>
+
+        <h3>Jet Lag (Circadian Desynchrony)</h3>
+        <p>This occurs when the athlete crosses more than two time zones. The internal master clock (SCN) is out of sync with the local environment. A 2023 meta-analysis found that athletes traveling Eastward (losing time) suffer significantly more performance degradation than those traveling Westward.</p>
+
+        <p><strong>Management Strategy:</strong>
+        <ul>
+            <li><strong>Westward:</strong> Seek bright light in the evening to delay the clock.</li>
+            <li><strong>Eastward:</strong> Seek bright light in the morning; use low-dose melatonin (0.5mg) in the early evening local time to advance the clock.</li>
+        </ul></p>
+
+        <h2 id="load">5. The Overtraining-Sleep Paradox</h2>
+        <p>One of the most frustrating challenges for an athlete is that <span class="highlight">overreaching</span> (the phase before overtraining) actually disrupts sleep. While one might expect an exhausted athlete to sleep more, the opposite often occurs due to HPA-axis activation.</p>
+
+        <p>When training load exceeds recovery capacity, nocturnal <span class="highlight">cortisol</span> levels rise, and Heart Rate Variability (HRV) drops. This leads to:
+        <ol>
+            <li>Increased sleep fragmentation.</li>
+            <li>Reduced REM density (impacting cognitive strategy and emotional regulation).</li>
+            <li>Early morning awakenings (the "tired but wired" state).</li>
+        </ol></p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>If an athlete reports sudden-onset insomnia during a heavy training block, it is a primary clinical marker of sympathetic dominance. As a Sleep Health Coach, you must collaborate with their strength coach to modulate training volume, as no amount of "sleep hygiene" can override a systemic stress response.</p>
+        </div>
+
+        <h2 id="protocols">6. The D.R.E.A.M. Athlete Protocol</h2>
+        <p>To implement these concepts, we apply the D.R.E.A.M. framework specifically for the high-performance environment:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">D: Diagnose Training-Sleep Interference</div>
+            <p class="principle-text">Monitor the "Sleep-to-Training Ratio." A 2019 study showed that athletes sleeping &lt;8 hours have a 1.7x higher risk of injury compared to those sleeping &gt;8 hours.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">R: Reset via Light Management</div>
+            <p class="principle-text">Use 10,000 lux light boxes for 20 minutes upon waking for athletes with morning training sessions to suppress lingering melatonin (sleep inertia).</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">E: Engineer the Recovery Sanctuary</div>
+            <p class="principle-text">Set ambient room temperature to 18°C (64°F). For athletes with high muscle mass, utilize conductive cooling (e.g., Chilipad) to manage the higher metabolic heat production.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of high-performance protocols.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why does eastward travel typically cause more significant performance decreases than westward travel for athletes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Eastward travel requires the circadian clock to "advance" (shorten the day), which is physiologically more difficult for the human SCN than "delaying" (lengthening the day) during westward travel. Most humans have an endogenous circadian period slightly longer than 24 hours, making it easier to stay up later than to go to bed earlier.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How many nights of sleep extension are typically required to see a significant "banking" effect on cognitive performance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Research (Arnal et al., 2016) suggests a minimum of 6-7 consecutive nights of sleep extension (aiming for 9-10 hours) is required to build a "buffer" that protects against subsequent sleep deprivation.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Extension > Hygiene:</strong> For athletes, 9-10 hours of sleep is the target for peak accuracy and reaction time.</li>
+                <li><strong>Bank Early:</strong> Sleep banking should be a scheduled part of the "taper" phase before major competitions.</li>
+                <li><strong>Thermal Shunting:</strong> Use warm baths 90 minutes before bed to trigger the core temperature drop needed for SWS.</li>
+                <li><strong>Monitor Load:</strong> Sleep disturbances are an early warning sign of overreaching and sympathetic nervous system overload.</li>
+                <li><strong>East vs. West:</strong> Eastward travel requires aggressive morning light exposure and evening melatonin to resync the clock.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li>Mah, C. D., et al. (2011). "The Effects of Sleep Extension on the Athletic Performance of Collegiate Basketball Players." <em>SLEEP</em>.</li>
+                <li>Arnal, P. J., et al. (2016). "Sleep Extension before Sleep Loss: Effects on Performance and Neuromuscular Function." <em>Medicine & Science in Sports & Exercise</em>.</li>
+                <li>Simpson, N. S., et al. (2017). "Optimizing sleep to maximize performance: implications and recommendations for elite athletes." <em>Scandinavian Journal of Medicine & Science in Sports</em>.</li>
+                <li>Vitale, K. C., et al. (2019). "Sleep Hygiene for Optimizing Recovery in Athletes: Review and Recommendations." <em>International Journal of Sports Medicine</em>.</li>
+                <li>Walsh, N. P., et al. (2021). "Sleep and the athlete: narrative review and 2021 expert consensus recommendations." <em>British Journal of Sports Medicine</em>.</li>
+                <li>Bonnar, D., et al. (2018). "Sleep Interventions to Improve Training Response and Performance in Athletes: A Systematic Review." <em>Sports Medicine</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Sleep Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The D.R.E.A.M. Sleep Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

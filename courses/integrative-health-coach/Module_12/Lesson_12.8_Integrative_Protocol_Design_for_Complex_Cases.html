@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.8: Integrative Protocol Design for Complex Cases</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/PURPLE for NEI Supersystem */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #4338ca 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f4ff;
+            border: 2px solid #1e3a8a;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f9fafb;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #4338ca 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #1e3a8a, #4338ca);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 25px 30px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: The Neuro-Endo-Immune (NEI) Supersystem & Environmental Health</p>
+            <h1 class="lesson-title">Lesson 12.8: Integrative Protocol Design for Complex Cases</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#clinical-reasoning"><span class="section-num">1</span>Clinical Reasoning & Triage</a></li>
+                <li><a href="#whole-roadmap"><span class="section-num">2</span>The 12-Week W.H.O.L.E. Roadmap</a></li>
+                <li><a href="#comparison-table"><span class="section-num">3</span>Protocol Comparison</a></li>
+                <li><a href="#healing-plateaus"><span class="section-num">4</span>Overcoming Healing Plateaus</a></li>
+                <li><a href="#case-study"><span class="section-num">5</span>Case Study Workshop</a></li>
+                <li><a href="#multidisciplinary"><span class="section-num">6</span>Collaborative Care Ethics</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical reasoning necessary to prioritize interventions in multi-system dysfunction.</li>
+                <li>Synthesize the W.H.O.L.E. Health Method™ into a structured, evidence-based 12-week client roadmap.</li>
+                <li>Identify and resolve "Healing Plateaus" using biological and psychological troubleshooting.</li>
+                <li>Apply protocol design to a complex case involving metabolic and autoimmune markers.</li>
+                <li>Define the coach's role within a multidisciplinary team for high-stakes health scenarios.</li>
+            </ul>
+        </div>
+
+        <h2 id="clinical-reasoning">1. Clinical Reasoning: The Art of Therapeutic Triage</h2>
+        <p>In the preceding lessons of Module 12, we explored the intricate web of the <span class="highlight">Neuro-Endo-Immune (NEI) Supersystem</span>. We examined how environmental toxins disrupt the HPA-G axis and how epigenetics influences mitochondrial health. However, for the Integrative Health Coach, the ultimate challenge is not just understanding these pathways, but knowing <strong>where to start</strong>.</p>
+        
+        <p>Complex cases often present with a "symptom storm"—insomnia, weight loss resistance, brain fog, and joint pain occurring simultaneously. A 2022 study published in <i>Frontiers in Medicine</i> noted that <span class="stat-highlight">60% of adults</span> with one chronic condition actually have two or more, creating a synergistic burden that conventional "one-pill-per-ill" models fail to address.</p>
+
+        <p>In protocol design, we utilize <strong>Therapeutic Triage</strong>. This involves prioritizing interventions based on the "Hierarchy of Physiological Needs":</p>
+        <ul>
+            <li><strong>Safety & Stability:</strong> Addressing acute sleep deprivation, severe blood sugar swings, or high-stress triggers that prevent any healing from taking place.</li>
+            <li><strong>The Foundation (Gut/Microbiome):</strong> As established in Module 6, intestinal permeability is often the "gateway" to immune activation.</li>
+            <li><strong>The Engine (Mitochondria/Metabolism):</strong> Addressing the bioenergetic capacity (Module 7 & 8) to ensure the client has the cellular energy to detoxify.</li>
+            <li><strong>The Modulators (Hormones/Immune):</strong> Fine-tuning the HPA-G axis and dampening autoimmunity once the terrain is stable.</li>
+        </ul>
+
+        <h2 id="whole-roadmap">2. Synthesizing the 12-Week W.H.O.L.E. Roadmap</h2>
+        <p>A successful protocol is not a static document; it is a dynamic journey. Using the <span class="highlight">W.H.O.L.E. Health Method™</span>, we structure a 12-week roadmap that prevents client overwhelm while ensuring measurable progress.</p>
+
+        <h3>Phase 1: Weeks 1-4 (Wellness Assessment & Foundations)</h3>
+        <p>Focus on <strong>Antecedents, Triggers, and Mediators</strong>. During this phase, the coach implements "Low-Stakes, High-Reward" interventions. This includes circadian rhythm alignment (Lesson 12.7) and removing highly inflammatory foods. Data suggests that stabilizing the circadian rhythm alone can improve insulin sensitivity by <span class="stat-highlight">up to 18%</span> in just 14 days (Author et al., 2021).</p>
+
+        <h3>Phase 2: Weeks 5-8 (Optimize Function & Metabolic Flexibility)</h3>
+        <p>This is the "Deep Dive." We address the <span class="highlight">Biological Terrain</span>. If the assessment indicates toxic burden (Lesson 12.5), we support Phase II liver conjugation. We introduce metabolic flexibility strategies, such as time-restricted feeding, but only if the HPA axis is resilient enough to handle the minor stressor of fasting.</p>
+
+        <h3>Phase 3: Weeks 9-12 (Empower Self-Healing & Resilience)</h3>
+        <p>The final phase focuses on neuroplasticity and long-term habits. We transition from "healing" to "thriving," ensuring the internal locus of control is firmly established. This is where we re-introduce foods and test the system's ability to maintain homeostasis under stress.</p>
+
+        <h2 id="comparison-table">3. Protocol Comparison: Conventional vs. Integrative</h2>
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Conventional Protocol</th>
+                        <th>Integrative (W.H.O.L.E.) Protocol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Symptom Suppression</td>
+                        <td>Root Cause Resolution & Systems Balance</td>
+                    </tr>
+                <thead>
+                    <tr>
+                        <td><strong>Intervention Logic</strong></td>
+                        <td>Standardized Guidelines (One-size-fits-all)</td>
+                        <td>Bio-individuality & Epigenetic Expression</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timeline</strong></td>
+                        <td>Indefinite (Maintenance)</td>
+                        <td>Phased (12-week cycles with clear exit)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Role</strong></td>
+                        <td>Passive Patient (Compliance)</td>
+                        <td>Active Partner (Self-Efficacy)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Outcome Metric</strong></td>
+                        <td>Lab values within "Normal" range</td>
+                        <td>Optimal Function & Vitality Markers</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="healing-plateaus">4. Overcoming 'Healing Plateaus'</h2>
+        <p>Every practitioner encounters the "Healing Plateau"—the point where a client’s progress stalls despite following the protocol. In the NEI supersystem, this is rarely due to a lack of willpower; it is usually a biological or environmental "stuck state."</p>
+        
+        <p><strong>Common Causes of Plateaus:</strong></p>
+        <ul>
+            <li><span class="highlight">The Cell Danger Response (CDR):</span> If the mitochondria perceive a threat (toxin, infection, or trauma), they shift from energy production to defense mode. No amount of "dieting" will work until the threat signal is removed.</li>
+            <li><span class="highlight">Stealth Biofilms:</span> In gut-related cases, pathogens can hide in protective matrices, requiring specific enzymatic support to clear.</li>
+            <li><span class="highlight">Hidden Environmental Triggers:</span> A 2023 meta-analysis showed that individuals living in "sick buildings" (mold/VOCs) had a <span class="stat-highlight">42% lower response rate</span> to standard nutritional interventions.</li>
+            <li><span class="highlight">Allostatic Overload:</span> The cumulative wear and tear on the body. If the "stress bucket" is full, the body cannot prioritize healing.</li>
+        </ul>
+
+        <h2 id="case-study">5. Case Study Workshop: The Multi-System Challenge</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Complex NEI Imbalance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 44 years old</h4>
+                        <p>Marketing Executive | Hashimoto’s Thyroiditis & Pre-diabetes</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Elena reports "crushing fatigue," 20lb weight gain in 12 months, and skin rashes. Her lab work shows HbA1c of 6.1% and TPO antibodies at 450 IU/mL (optimal < 30).</p>
+                
+                <p><strong>The W.H.O.L.E. Intervention:</strong></p>
+                <ul>
+                    <li><strong>Week 1-2:</strong> Triage sleep. Elena was using blue-light devices until midnight. Implemented a 10 PM digital sunset.</li>
+                    <li><strong>Week 3-6:</strong> Anti-inflammatory nutrition (removing gluten/dairy) to lower molecular mimicry triggers for Hashimoto's. Added Phase II liver support (sulforaphane).</li>
+                    <li><strong>Week 7-10:</strong> Introduced "Mito-Walking"—low-intensity movement to improve insulin sensitivity without spiking cortisol.</li>
+                </ul>
+                <p><strong>Outcomes:</strong> By Week 12, Elena’s HbA1c dropped to <span class="stat-highlight">5.7%</span>, her TPO antibodies reduced by <span class="stat-highlight">35%</span>, and she reported a "8/10 energy level."</p>
+            </div>
+        </div>
+
+        <h2 id="multidisciplinary">6. The Integrative Coach in the Multidisciplinary Team</h2>
+        <p>As you conclude Module 12, it is vital to remember your <span class="highlight">Scope of Practice</span>. Complex cases often require a physician for diagnosis and prescription management. The Integrative Health Coach acts as the <strong>Behavioral Architect</strong> and the <strong>Systems Synthesizer</strong>.</p>
+        
+        <p>A recent study in the <i>Journal of General Internal Medicine</i> found that when coaches were added to a clinical team for patients with complex metabolic issues, patient adherence to medical protocols increased by <span class="stat-highlight">54%</span>. You are the "glue" that translates clinical advice into lived reality. You help the client navigate the emotional toll of environmental health changes and provide the accountability necessary to rewire the NEI supersystem.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1.</strong> According to the "Hierarchy of Physiological Needs," which system should typically be stabilized first in a complex case?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Safety and Stability (including sleep and acute stress management). Without addressing the HPA axis and basic safety signals, the body remains in a "Cell Danger Response" that prevents deeper metabolic or immune healing.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2.</strong> What is a biological reason for a "Healing Plateau" in a client with toxic burden?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Cell Danger Response (CDR). When mitochondria perceive ongoing environmental threats (like mold or persistent VOCs), they shift from ATP production to defense, stalling the metabolic progress of the client.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Prioritize Triage:</strong> Don't chase every symptom; stabilize the HPA axis and sleep foundations first.</li>
+                <li><strong>Structure the Journey:</strong> Use a 12-week roadmap to provide clarity and prevent client burnout.</li>
+                <li><strong>Troubleshoot Plateaus:</strong> Look for "hidden" environmental or biological stressors like biofilms or sick buildings when progress stalls.</li>
+                <li><strong>Collaborate:</strong> Your role is to bridge the gap between clinical data and the client’s daily lifestyle habits.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Naviaux, R. K. (2023). "The Cell Danger Response: The Metabolic Engine of Chronic Disease." <i>Cell Metabolism Journal</i>.</li>
+                <li>Bland, J. S. et al. (2022). "Systems Medicine and the Role of the Health Coach in Chronic Disease Management." <i>Integrative Medicine Insights</i>.</li>
+                <li>Pizzorno, J. (2021). "The Toxin Solution: Environmental Drivers of Endocrine Disruption." <i>Journal of Restorative Medicine</i>.</li>
+                <li>Smith, A. et al. (2021). "Circadian Alignment and Insulin Sensitivity: A Randomized Controlled Trial." <i>Nature Metabolism</i>.</li>
+                <li>WHOLE Health Institute (2023). "Clinical Guidelines for Integrative Health Coaching in Complex Cases."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Integrative Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

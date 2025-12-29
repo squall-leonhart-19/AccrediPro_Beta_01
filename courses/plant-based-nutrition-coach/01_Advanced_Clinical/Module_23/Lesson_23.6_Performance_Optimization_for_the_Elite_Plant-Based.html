@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.6: Performance Optimization for the Elite Plant-Based Athlete</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Performance Gold Theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fdfcfb;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #B8860B;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #B8860B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #334155;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e293b;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #1e293b;
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 50px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #D4A84B;
+            margin: 0 0 20px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .takeaways-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .takeaways-box li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .takeaways-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #D4A84B;
+            font-weight: bold;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            padding-left: 18px;
+            margin: 0;
+            color: #777;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #1e293b;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 6: Performance Optimization for the Elite Plant-Based Athlete</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Nitric Oxide & Hemodynamics</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Intra-workout Glycogen Kinetics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Phytohormetic Recovery Protocols</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Buffering Capacity Strategies</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Performance Matrix</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical dosing protocols for dietary nitrates to enhance VO2 max and time-to-exhaustion.</li>
+                <li>Design intra-workout fueling strategies using plant-based glucose-fructose ratios to maximize oxidation rates.</li>
+                <li>Implement specific anthocyanin-rich recovery protocols to mitigate exercise-induced oxidative stress (EIOS).</li>
+                <li>Evaluate the efficacy of plant-based buffering agents like beta-alanine and sodium bicarbonate for anaerobic power.</li>
+                <li>Synthesize advanced nutrient timing with elite-level athletic physiological demands.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Nitric Oxide (NO) & Hemodynamics: The Nitrate Window</h2>
+        <p>In the "T" (Thrive) phase of <strong>The P.L.A.N.T. Nutrition Method™</strong>, we transition from foundational health to physiological peak. For the elite athlete, the <span class="highlight">entero-salivary pathway</span> is a primary target for ergogenic intervention. Dietary nitrates (NO3-), found abundantly in arugula, spinach, and beets, are reduced to nitrites (NO2-) by anaerobic bacteria on the tongue, and subsequently converted to nitric oxide (NO) in the acidic environment of the stomach and systemic circulation.</p>
+
+        <p>A 2021 meta-analysis of 24 studies (n=312) demonstrated that <span class="stat-highlight">acute nitrate supplementation improved time-to-exhaustion by an average of 4.2%</span> and reduced the oxygen cost of submaximal exercise by 1-5%. For the elite athlete, where margins of victory are less than 1%, these gains are monumental.</p>
+
+        <h3>Advanced Dosing Protocol</h3>
+        <p>The standard "eat more beets" advice is insufficient for elite performance. Precision coaching requires specific millimole (mmol) targets:</p>
+        <ul>
+            <li><strong>Optimal Dose:</strong> 8.4 mmol to 12.4 mmol of NO3- per serving.</li>
+            <li><strong>Timing:</strong> 2–3 hours pre-competition (peak plasma nitrite occurs at ~150 minutes).</li>
+            <li><strong>Chronic Loading:</strong> 3–6 days of loading prior to a major event may be superior to acute dosing for highly trained individuals (VO2 max >65 ml/kg/min).</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🚴</div>
+                <div class="case-study-content">
+                    <p class="box-label">Case Study 1: The Pro-Tour Cyclist</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus S., 32</h4>
+                        <p>Professional Road Cyclist | VO2 Max: 78 ml/kg/min</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Marcus reported "fading" during the final 20 minutes of 4-hour stages, despite hitting standard carbohydrate targets.</p>
+                <p><strong>Intervention:</strong> We implemented a 6-day nitrate loading protocol (12.4 mmol/day) using concentrated beet juice and arugula extracts. We also restricted the use of antibacterial mouthwash, which inhibits the conversion of NO3- to NO2-.</p>
+                <p><strong>Outcome:</strong> Marcus showed a <span class="stat-highlight">7% increase in power output at lactate threshold</span> during his next stage race and reported significantly lower perceived exertion (RPE) during high-intensity climbs.</p>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Intra-workout Glycogen Kinetics: The Glucose-Fructose Ratio</h2>
+        <p>The limiting factor in high-intensity endurance performance is often the <span class="highlight">intestinal absorption rate</span> of carbohydrates. Traditional plant-based fueling often relies on glucose or maltodextrin alone, which saturates the SGLT1 transporters at approximately 60g per hour.</p>
+
+        <p>By utilizing <span class="highlight">dual-transportable carbohydrates</span>, we can increase total carbohydrate oxidation to 90g–120g per hour. This is achieved by adding fructose, which utilizes the <strong>GLUT5 transporter</strong>, an independent pathway. For the plant-based athlete, this means moving beyond just "fruit" to specific formulations.</p>
+
+        <div class="data-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fueling Strategy</th>
+                        <th>Carb Ratio (G:F)</th>
+                        <th>Max Oxidation Rate</th>
+                        <th>GI Distress Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pure Glucose/Starch</td>
+                        <td>1:0</td>
+                        <td>~60g / hr</td>
+                        <td>High (at >60g)</td>
+                    </tr>
+                    <tr>
+                        <td>Standard Fruit (e.g., Banana)</td>
+                        <td>~1:1</td>
+                        <td>Variable</td>
+                        <td>Moderate (Fiber)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Optimized PB Blend</strong></td>
+                        <td><strong>2:1 or 1:0.8</strong></td>
+                        <td><strong>90g - 120g / hr</strong></td>
+                        <td><strong>Low (Dual Path)</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>The Plant-Based Formulation</h3>
+        <p>Elite coaches should recommend a ratio of 1:0.8 (Glucose to Fructose) for durations exceeding 2.5 hours. Excellent plant-based sources include:</p>
+        <ul>
+            <li><strong>Dates:</strong> Naturally high in glucose with moderate fructose.</li>
+            <li><strong>Maple Syrup:</strong> Primarily sucrose (which cleaves into 1:1 glucose/fructose).</li>
+            <li><strong>Coconut Water:</strong> Provides electrolytes + simple sugars (best used as a base).</li>
+            <li><strong>Tapioca Maltodextrin + Agave:</strong> A customizable 2:1 blend for high-intensity efforts.</li>
+        </ul>
+
+        <h2 id="section3">3. Mitigating EIOS with Anthocyanin Protocols</h2>
+        <p>In Lesson 23.5, we discussed <span class="highlight">Phytohormesis</span>—the idea that small amounts of stress induce cellular resilience. However, for elite athletes in a heavy competition phase, the goal shifts from <em>adaptation</em> to <em>recovery</em>. Excessive Exercise-Induced Oxidative Stress (EIOS) can lead to secondary muscle damage and delayed recovery.</p>
+
+        <p>A 2019 study (n=54) found that <span class="stat-highlight">Tart Cherry juice (Montmorency) reduced muscle soreness and accelerated strength recovery</span> by 10-15% following a marathon. The mechanism is driven by high concentrations of anthocyanins and quercetin, which modulate the NF-κB inflammatory pathway.</p>
+
+        <h3>The Recovery Protocol</h3>
+        <p>For the elite plant-based athlete, recovery is not passive; it is an active nutritional intervention:</p>
+        <ul>
+            <li><strong>Tart Cherry:</strong> 30ml concentrate (equivalent to ~100 cherries) twice daily for 4 days pre-event and 2 days post-event.</li>
+            <li><strong>Curcumin (Turmeric):</strong> 500mg - 1000mg with piperine (black pepper) to reduce DOMS (Delayed Onset Muscle Soreness).</li>
+            <li><strong>Bromelain:</strong> Found in pineapple, used to reduce tissue edema and facilitate protein turnover.</li>
+        </ul>
+
+        <h2 id="section4">4. Buffering Capacity: Beta-Alanine & Sodium Bicarbonate</h2>
+        <p>High-intensity exercise (lasting 1–4 minutes) is limited by the accumulation of hydrogen ions (H+), leading to metabolic acidosis. To combat this, the body relies on <span class="highlight">Carnosine</span>, an intracellular buffer. Since carnosine is exclusively found in animal tissues, plant-based athletes must optimize their own synthesis via <strong>Beta-Alanine</strong> supplementation.</p>
+
+        <p>A meta-analysis of 15 studies (n=360) indicated that <span class="stat-highlight">beta-alanine supplementation increased muscle carnosine content by 60-80%</span>, leading to a 2.85% improvement in exercise capacity. This is critical for sprinters, swimmers, and CrossFit athletes.</p>
+
+        <h3>Extracellular Buffering: Sodium Bicarbonate</h3>
+        <p>While beta-alanine handles the <em>inside</em> of the cell, <strong>Sodium Bicarbonate (NaHCO3)</strong> handles the <em>outside</em>. This creates a "pH gradient" that pulls H+ out of the muscle more rapidly.
+        <br><strong>Elite Dose:</strong> 0.3g per kg of body weight, taken 60–90 minutes before exercise. Note: To avoid the common GI distress associated with bicarbonate, recommend "split dosing" or co-ingestion with a high-carbohydrate meal.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏋️‍♀️</div>
+                <div class="case-study-content">
+                    <p class="box-label">Case Study 2: The Elite CrossFit Competitor</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena V., 28</h4>
+                        <p>Regional CrossFit Athlete | Focus: Anaerobic Power</p>
+                    </div>
+                </div>
+                <p><strong>Challenge:</strong> Elena struggled with high-volume "metcons" (metabolic conditioning) where lactic acid accumulation caused premature muscle failure.</p>
+                <p><strong>Intervention:</strong> We initiated a 4-week beta-alanine loading phase (6.4g/day split into four 1.6g doses to avoid paraesthesia). On competition days, we added a sodium bicarbonate protocol (21g total for her weight, split into 3 doses with meals).</p>
+                <p><strong>Outcome:</strong> Elena improved her "Fran" time (a standard CrossFit benchmark) by <span class="stat-highlight">14 seconds</span> and reported a significant "buffer" feeling, where she could maintain a higher intensity for longer before the "burn" became debilitating.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. The Advanced Plant-Based Performance Matrix</h2>
+        <p>To effectively coach elite clients, you must distinguish between "General Health" and "Performance Optimization." The following table summarizes the shift in focus for the elite tier of <strong>The P.L.A.N.T. Nutrition Method™</strong>.</p>
+
+        <div class="data-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nutrient/Factor</th>
+                        <th>General Health Focus</th>
+                        <th>Elite Performance Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Proteins</strong></td>
+                        <td>0.8 - 1.2g/kg (Total daily)</td>
+                        <td>1.6 - 2.2g/kg (Leucine-triggered timing)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nitrates</strong></td>
+                        <td>Eat leafy greens daily</td>
+                        <td>8-12 mmol targeted 150 min pre-race</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carbohydrates</strong></td>
+                        <td>Whole food, high fiber</td>
+                        <td>Dual-pathway (G:F) 90g/hr intra-workout</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Antioxidants</strong></td>
+                        <td>General variety</td>
+                        <td>Targeted anthocyanin loading for EIOS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hydration</strong></td>
+                        <td>Drink to thirst</td>
+                        <td>Sweat-rate matched with sodium precision</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section6">6. Practitioner Application: The Performance Audit</h2>
+        <p>When working with an elite plant-based athlete, your role as a coach is to perform a <span class="highlight">Performance Audit</span>. This involves mapping their training phases (Macrocycles) to specific nutritional interventions. For example, during a "base building" phase, we might prioritize mitochondrial biogenesis through low-carb "train low" sessions. During a "peaking" phase, we shift entirely to the buffering and nitrate protocols discussed today.</p>
+
+        <p>In the upcoming lessons, we will explore how <span class="highlight">Precision Chrono-Nutrition</span> (Lesson 23.2) and <span class="highlight">Nutrigenomics</span> (Lesson 23.3) integrate with these performance protocols to create a truly bespoke athletic blueprint.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is the use of antibacterial mouthwash contraindicated for an athlete using a nitrate-loading protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Antibacterial mouthwash kills the oral bacteria (e.g., Veillonella) responsible for reducing dietary nitrate (NO3-) into nitrite (NO2-). Without this initial step in the entero-salivary pathway, the subsequent conversion to nitric oxide in the stomach and blood is significantly impaired, negating the ergogenic benefit.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. An athlete is consuming 80g of maltodextrin per hour but experiencing severe bloating. What is the physiological cause and the solution?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The cause is SGLT1 transporter saturation, which occurs at ~60g/hr of glucose/maltodextrin. The remaining 20g stays in the gut, causing osmotic stress and bloating. The solution is to use a 2:1 or 1:0.8 glucose-to-fructose ratio, utilizing the GLUT5 transporter to increase total absorption capacity.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Nitrate Precision:</strong> Target 8.4–12.4 mmol of NO3- approximately 2.5 hours before performance for maximum hemodynamic benefit.</li>
+                <li><strong>Dual-Pathway Fueling:</strong> Use a 1:0.8 glucose-to-fructose ratio for efforts over 2.5 hours to achieve oxidation rates up to 120g/hr.</li>
+                <li><strong>Strategic Recovery:</strong> Anthocyanin-rich protocols (Tart Cherry) should be used during high-competition phases to accelerate strength recovery.</li>
+                <li><strong>Buffering Synergy:</strong> Combine intracellular (Beta-Alanine) and extracellular (Sodium Bicarbonate) strategies for high-intensity anaerobic power.</li>
+                <li><strong>Contextual Coaching:</strong> Always align nutritional interventions with the athlete's specific training phase and physiological demands.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Senefeld et al. (2020). "Ergogenic Effect of Dietary Nitrate Supplementation in Trained Populations." <i>Journal of Applied Physiology.</i></li>
+                <li>Viribay et al. (2020). "Effects of 120 g/h of Carbohydrates Intake during a Mountain Marathon on Exercise-Induced Muscle Damage." <i>Nutrients.</i></li>
+                <li>Vitale et al. (2017). "Tart Cherry Juice Supplementation and Recovery from Strenuous Exercise: A Systematic Review." <i>Current Sports Medicine Reports.</i></li>
+                <li>Saunders et al. (2017). "Beta-alanine supplementation to improve exercise capacity and performance: a systematic review and meta-analysis." <i>British Journal of Sports Medicine.</i></li>
+                <li>Hoon et al. (2013). "The Effect of Variable Doses of Inorganic Nitrate-Rich Beetroot Juice on Simulated 2,000-m Rowing Performance." <i>International Journal of Sports Physiology and Performance.</i></li>
+                <li>Maughan et al. (2018). "IOC Consensus Statement: Dietary Supplements and the High-Performance Athlete." <i>British Journal of Sports Medicine.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Plant-Based Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The P.L.A.N.T. Nutrition Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 28.2: Advanced Intervention for RED-S</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - CRIMSON theme for Crisis & Complex Cases */
+        .module-header {
+            background: linear-gradient(135deg, #8b0000 0%, #b22222 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #8b0000;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #8b0000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #8b0000;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff5f5;
+            border: 2px solid #8b0000;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8b0000;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #8b0000;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #8b0000 0%, #b22222 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            color: #8b0000;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #8b0000;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #8b0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border-left: 5px solid #8b0000;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 28: Crisis & Complex Cases</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Intervention for Relative Energy Deficiency in Sport (RED-S)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#pathophysiology"><span class="section-num">1</span>Multi-System Pathophysiology</a></li>
+                <li><a href="#silent-reds"><span class="section-num">2</span>Identifying 'Silent' RED-S</a></li>
+                <li><a href="#refeeding"><span class="section-num">3</span>Advanced Refeeding Protocols</a></li>
+                <li><a href="#biomarkers"><span class="section-num">4</span>Metabolic Results Tracking (R)</a></li>
+                <li><a href="#psychology"><span class="section-num">5</span>The Mental Edge (M) Nuances</a></li>
+                <li><a href="#recovery"><span class="section-num">6</span>Return-to-Play Criteria</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the systemic impact of Low Energy Availability (LEA) beyond reproductive health.</li>
+                <li>Implement specific screening protocols for male athletes and non-traditional sporting populations.</li>
+                <li>Calculate and adjust Energy Availability (EA) using the <span class="highlight">PERFORM Method™</span> framework.</li>
+                <li>Interpret clinical biomarkers (T3, IGF-1, Leptin) to monitor metabolic restoration.</li>
+                <li>Navigate the psychological barriers associated with weight restoration and training reduction.</li>
+            </ul>
+        </div>
+
+        <h2 id="pathophysiology">1. Pathophysiology: Beyond the Triad</h2>
+        <p>For decades, the "Female Athlete Triad" dominated the clinical landscape, focusing narrowly on disordered eating, amenorrhea, and osteoporosis. However, the <span class="highlight">2023 IOC Consensus Statement</span> on Relative Energy Deficiency in Sport (RED-S) has solidified our understanding of this as a multi-system impairment affecting both sexes and nearly every physiological process.</p>
+        
+        <p>The core mechanism is <span class="highlight">Low Energy Availability (LEA)</span>. When the body perceives a chronic deficit between energy intake and the energy cost of exercise, it enters a state of "metabolic preservation." This is not a simple "calories in vs. calories out" issue; it is a fundamental shift in endocrine signaling. A 2022 study published in the <i>Journal of Applied Physiology</i> demonstrated that even short-term LEA (<span class="stat-highlight">&lt;30 kcal/kg FFM/day</span>) for as little as 5 days can significantly suppress metabolic rate and alter hormone profiles.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Impairment in RED-S</th>
+                        <th>Performance Consequence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Metabolic</td>
+                        <td>Decreased Resting Metabolic Rate (RMR)</td>
+                        <td>Inability to lose body fat despite high volume</td>
+                    </tr>
+                    <tr>
+                        <td>Endocrine</td>
+                        <td>Suppressed T3, IGF-1, Leptin; Elevated Cortisol</td>
+                        <td>Stalled muscle protein synthesis (MPS)</td>
+                    </tr>
+                    <tr>
+                        <td>Immunological</td>
+                        <td>Decreased T-cell function and Secretory IgA</td>
+                        <td>Frequent URIs and missed training days</td>
+                    </tr>
+                    <tr>
+                        <td>Cardiovascular</td>
+                        <td>Endothelial dysfunction; Bradycardia</td>
+                        <td>Reduced oxygen delivery to working muscles</td>
+                    </tr>
+                    <tr>
+                        <td>Hematological</td>
+                        <td>Suppressed Hepcidin regulation</td>
+                        <td>Iron-deficiency anemia (non-responsive to supps)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="silent-reds">2. Identifying 'Silent' RED-S in Males & Diverse Groups</h2>
+        <p>In male athletes, RED-S is often "silent" because there is no overt marker like the loss of a menstrual cycle. Instead, clinicians must look for the <span class="highlight">Male Athlete Triad</span>: low energy availability, hypogonadotropic hypogonadism (low testosterone), and impaired bone health. A meta-analysis of 21 studies (n=1,432) found that up to <span class="stat-highlight">50% of elite male cyclists</span> and distance runners exhibit suppressed testosterone levels directly correlated with LEA.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Plateaued" Cyclist</p>
+                    <p class="subtitle">Identifying Male RED-S</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 32</h4>
+                        <p>Cat 2 Road Cyclist | 15 hours/week training</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Marcus reported chronic fatigue, recurring upper respiratory infections, and a 12-month plateau in Functional Threshold Power (FTP) despite increasing training volume. He was strictly "eating clean" and maintaining a low body fat percentage (6%).</p>
+                <p><strong>Intervention:</strong> Using the <strong>Results Tracking (R)</strong> pillar, we assessed his Energy Availability. He was consuming 2,800 kcal but burning 1,400 kcal in training. With 68kg FFM, his EA was <span class="stat-highlight">20.5 kcal/kg FFM</span> (Severe LEA). Blood work revealed Total Testosterone at 240 ng/dL (Low) and suppressed T3.</p>
+                <p><strong>Outcome:</strong> By increasing daily intake to 3,400 kcal and introducing two full rest days, Marcus's testosterone rose to 510 ng/dL within 4 months, and his FTP increased by 15 watts as his body finally began to adapt to the training stimulus.</p>
+            </div>
+        </div>
+
+        <h2 id="refeeding">3. Advanced Refeeding Protocols: The PERFORM™ Strategy</h2>
+        <p>Refeeding an athlete in RED-S is a delicate balance. Simply telling an athlete to "eat more" often fails due to the <strong>Mental Edge (M)</strong> factors—specifically, the fear of fat gain—and physiological barriers like delayed gastric emptying (common in chronic LEA).</p>
+        
+        <p>The goal is to reach an <span class="highlight">EA of &gt;45 kcal/kg FFM/day</span> for optimal recovery. However, we must bridge the gap from the typical "danger zone" (<30 kcal/kg FFM) incrementally. We utilize a phased approach:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Phase 1: The Metabolic Spark (Weeks 1-4)</div>
+            <div class="principle-text">
+                Focus on <strong>Periodized Nutrition (P)</strong> by adding 300-500 kcal/day, primarily through liquid or calorie-dense functional foods to minimize GI distress.
+                <ul>
+                    <li>Priority: Post-workout <strong>Recovery (R)</strong> window (high-glycemic carbs + leucine-rich protein).</li>
+                    <li>Objective: Reverse the "starvation signaling" of the hypothalamus.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Phase 2: Endocrine Restoration (Weeks 5-12)</div>
+            <div class="principle-text">
+                Targeting an EA of 40-45 kcal/kg FFM. This phase requires a reduction in <strong>Energy System (E)</strong> demand—typically a 20-30% reduction in high-intensity volume.
+                <ul>
+                    <li>Priority: Healthy fats (omega-3s, cholesterol) to provide precursors for steroid hormones.</li>
+                    <li>Objective: Return of menses (females) or morning erections/libido (males).</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="biomarkers">4. Metabolic Results Tracking (R): Clinical Markers</h2>
+        <p>As a Master Coach, you must collaborate with medical professionals to monitor specific biomarkers that act as a "proxy" for energy availability. Relying on body weight is deceptive, as the body often retains water or experiences "rebound" weight when metabolic rate is suppressed.</p>
+
+        <p><strong>Key Biomarkers to Monitor:</strong></p>
+        <ul>
+            <li><span class="highlight">Triiodothyronine (T3):</span> The most sensitive marker of LEA. A "low-normal" T3 often indicates the body is down-regulating thermogenesis.</li>
+            <li><span class="highlight">IGF-1:</span> A marker of anabolic status. In RED-S, IGF-1 drops, making muscle repair nearly impossible.</li>
+            <li><span class="highlight">Leptin:</span> Produced by adipocytes, leptin signals the brain that energy stores are sufficient. Chronic low leptin keeps the body in a "stress" state.</li>
+        </ul>
+
+        <h2 id="psychology">5. The Mental Edge (M): Managing "Anabolic Fear"</h2>
+        <p>The most significant hurdle in RED-S intervention is the psychological transition. Athletes often equate "lightness" with "speed," ignoring the fact that a starved muscle cannot produce power. In our <strong>Mental Edge (M)</strong> framework, we utilize <i>Cognitive Reframing</i>.</p>
+        
+        <p>Instead of "weight gain," we discuss <span class="highlight">Metabolic Capacity</span>. Instead of "rest," we discuss <span class="highlight">Adaptation Windows</span>. A 2021 study on female runners found that those who received cognitive-behavioral support alongside nutritional intervention had a <span class="stat-highlight">3x higher rate of menses recovery</span> compared to those receiving nutrition advice alone.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">An athlete has 60kg of Fat-Free Mass (FFM). They consume 2,500 kcal and burn 1,000 kcal in training. What is their Energy Availability (EA)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    EA = (Energy Intake - Exercise Energy Expenditure) / FFM. <br>
+                    (2,500 - 1,000) / 60 = <strong>25 kcal/kg FFM/day</strong>. <br>
+                    This is in the <strong>Danger Zone</strong> (clinical LEA).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is T3 a more reliable marker of RED-S than TSH?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    TSH often remains in the normal range during LEA, while T3 (the active hormone) is directly suppressed by the body to conserve energy and reduce the basal metabolic rate.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li>RED-S is a multi-system condition; look for immunological, hematological, and cardiovascular signs, not just bone/hormones.</li>
+                <li>In male athletes, suppressed testosterone and a lack of training adaptation are primary red flags for "Silent" RED-S.</li>
+                <li>The goal EA for recovery is >45 kcal/kg FFM, achieved through phased refeeding and training volume reduction.</li>
+                <li>Results Tracking (R) must include T3, IGF-1, and Leptin to confirm metabolic restoration.</li>
+                <li>Psychological support is mandatory to manage the athlete's fear of body composition changes during the recovery phase.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Mountjoy, M. et al. (2023). "The IOC Consensus Statement: Relative Energy Deficiency in Sport (RED-S) 2023 Update." British Journal of Sports Medicine.</li>
+                <li>Heikura, I. A. et al. (2022). "Low energy availability is associated with low T3 and testosterone in male elite endurance athletes." Journal of Applied Physiology.</li>
+                <li>Logue, D. et al. (2020). "Low Energy Availability in Athletes 2020: An Updated Narrative Review of Prevalance, Risk, and Manifestations." Sports Medicine.</li>
+                <li>Strock, N. C. et al. (2021). "The Male Athlete Triad: A Consensus Statement." Clinical Journal of Sport Medicine.</li>
+                <li>Areta, J. L. et al. (2021). "Metabolic and endocrine responses to relative energy deficiency in sport (RED-S): A systematic review." Endocrine Connections.</li>
+                <li>Melin, A. K. et al. (2019). "Energy Availability in Athletics: Health, Performance, and Physique." International Journal of Sport Nutrition and Exercise Metabolism.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

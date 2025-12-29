@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.7: Data-Driven Adjustments: The Iterative Coaching Loop</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Data/Results */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 12px;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .toc-list .section-num {
+            background: #1e3a8a;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Highlights & Terms */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f1f5f9;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 35px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 32px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* Interactive Elements */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f0fdf4;
+            border-left: 5px solid #22c55e;
+            padding: 25px;
+            margin: 40px 0;
+        }
+
+        /* References */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: L1 Deep Dive - The Mental Edge & Results Tracking</p>
+            <h1 class="lesson-title">Lesson 8.7: Data-Driven Adjustments: The Iterative Coaching Loop</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 7</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#pivot"><span class="section-num">1</span>The 'Pivot Point' of Diminishing Returns</a></li>
+                <li><a href="#metabolic"><span class="section-num">2</span>The Science of Metabolic Adaptation</a></li>
+                <li><a href="#macros"><span class="section-num">3</span>Macro-Adjustments for Plateaus</a></li>
+                <li><a href="#tapering"><span class="section-num">4</span>Nutritional Tapering Protocols</a></li>
+                <li><a href="#offseason"><span class="section-num">5</span>The Off-Season Transition</a></li>
+                <li><a href="#psychology"><span class="section-num">6</span>Data Obsession vs. Flexible Precision</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the "Pivot Point" where current protocols yield diminishing physiological returns.</li>
+                <li>Master the math of metabolic adaptation to bypass weight loss and performance plateaus.</li>
+                <li>Implement nutritional tapering strategies to transition athletes from high-volume training to competition peak.</li>
+                <li>Design off-season protocols that prioritize metabolic flexibility and psychological recovery.</li>
+                <li>Navigate the delicate balance between high-precision data tracking and athlete mental well-being.</li>
+            </ul>
+        </div>
+
+        <h2 id="pivot">1. The 'Pivot Point': Recognizing Diminishing Returns</h2>
+        <p>In the <span class="highlight">The P.E.R.F.O.R.M. Athletic Method™</span>, we recognize that no nutritional protocol works indefinitely. The "Pivot Point" is the specific intersection where the current stimulus—whether it be a caloric deficit for a weight-class athlete or a high-carbohydrate loading phase—no longer produces the desired physiological adaptation and begins to accrue "metabolic debt."</p>
+
+        <p>A 2021 longitudinal study observed that athletes remaining in a strict caloric deficit ( >25% below TDEE) for longer than 12 weeks showed a <span class="stat-highlight">14% decrease in circulating T3 (triiodothyronine)</span> and a significant rise in cortisol-to-testosterone ratios, indicating that the protocol had reached its pivot point. As a coach, your role is to identify these markers before performance collapses.</p>
+
+        <div class="stats-box">
+            <div class="stat-item">
+                <span class="number">12-16</span>
+                <span class="label">Weeks to Pivot</span>
+            </div>
+            <div class="stat-item">
+                <span class="number">15%</span>
+                <span class="label">Metabolic Slowdown</span>
+            </div>
+            <div class="stat-item">
+                <span class="number">2.5x</span>
+                <span class="label">Injury Risk in RED-S</span>
+            </div>
+        </div>
+
+        <h2 id="metabolic">2. Metabolic Adaptation: The Science of Plateaus</h2>
+        <p>Metabolic adaptation, or <span class="highlight">adaptive thermogenesis</span>, is the body’s evolutionary defense mechanism against perceived starvation. When an athlete reduces caloric intake, the body responds by downregulating non-exercise activity thermogenesis (NEAT), reducing basal metabolic rate (BMR), and increasing mitochondrial efficiency.</p>
+
+        <p>Research by Trexler et al. (2014) highlights that this adaptation often exceeds what would be predicted by the loss of body mass alone. For example, a 10% loss in body weight can result in a 20-25% reduction in total daily energy expenditure (TDEE). This creates a "moving target" for the coach.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Adaptation Response</th>
+                        <th>Impact on Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Leptin</strong></td>
+                        <td>Decreases significantly</td>
+                        <td>Increased hunger, decreased metabolic rate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thyroid (T3)</strong></td>
+                        <td>Downregulates</td>
+                        <td>Reduced thermogenesis, lethargy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cortisol</strong></td>
+                        <td>Increases</td>
+                        <td>Water retention (masking fat loss), muscle breakdown</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NEAT</strong></td>
+                        <td>Unconscious reduction</td>
+                        <td>Fewer "fidget" calories burned, lower intensity</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="macros">3. Macro-Adjustments: Breaking the Stall</h2>
+        <p>When a plateau occurs, the instinctual move is to "cut more and do more." However, within the PERFORM framework, we utilize the <strong>Iterative Coaching Loop</strong> to make surgical adjustments rather than blunt cuts. If an athlete's weight or performance has stalled for >14 days despite 100% compliance, a pivot is required.</p>
+
+        <h3>The "Refeed" and "Diet Break" Strategy</h3>
+        <p>A meta-analysis of 12 studies (n=450) found that intermittent energy restriction (using diet breaks) resulted in <span class="stat-highlight">greater retention of Fat-Free Mass (FFM)</span> compared to continuous restriction. We recommend two primary adjustment types:</p>
+        <ul>
+            <li><strong>The 48-Hour Refeed:</strong> Increasing carbohydrates to maintenance levels for 2 days to acutely spike leptin and refill glycogen.</li>
+            <li><strong>The 1-Week Maintenance Phase:</strong> Bringing all macros to maintenance levels for 7-10 days to "reset" the hormonal environment.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The Stalled Combat Athlete</p>
+                <p class="subtitle">Applying the Iterative Loop to Weight-Class Mastery</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 28</h4>
+                        <p>MMA Fighter | 155lb Class | Training 10 sessions/week</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Marcus was stuck at 164lbs for 3 weeks while consuming 2,200 kcal. His "Mental Edge" (M) was fraying—he reported brain fog and poor reactive timing.</p>
+                <p><strong>The Intervention:</strong> Instead of cutting to 2,000 kcal, we implemented a 10-day "Metabolic Primer." We increased his calories to 2,700 (Maintenance), primarily through complex carbohydrates (Functional Foods - F). We also reduced training volume by 20%.</p>
+                <p><strong>Outcome:</strong> After the 10-day break, Marcus dropped 2lbs of "whoosh" weight (likely cortisol-induced water retention). When we returned to 2,200 kcal, his weight loss resumed at 1lb/week, and his sparring performance improved by 15% (measured by strike accuracy).</p>
+            </div>
+        </div>
+
+        <h2 id="tapering">4. Tapering Nutrition: From Training to Competition</h2>
+        <p>As covered in Module 1 (Periodization), the transition from high-volume training to competition requires a shift in the <span class="highlight">Energy Systems (E)</span> focus. Nutritional tapering is the process of reducing oxidative stress and inflammation while maximizing fuel stores.</p>
+
+        <p>During the taper (usually 7-14 days before competition):
+        <ol>
+            <li><strong>Volume Down, Carbs Up:</strong> As training volume drops, maintain or slightly increase carbohydrate intake to ensure 100% glycogen saturation.</li>
+            <li><strong>Fiber Reduction:</strong> 48-72 hours before competition, reduce fiber intake to 10-15g/day to minimize GI distress and "gut weight."</li>
+            <li><strong>Hydration Precision:</strong> Shift from general hydration to "Hyper-hydration" protocols if the event is in heat (utilizing 1,000mg+ sodium/L).</li>
+        </ol></p>
+
+        <h2 id="offseason">5. The Off-Season Transition: Building Metabolic Flexibility</h2>
+        <p>The off-season is not a "free-for-all"; it is a period to optimize the <strong>Recovery (R)</strong> and <strong>Functional Foods (F)</strong> pillars. The goal is to restore <span class="highlight">metabolic flexibility</span>—the body's ability to switch efficiently between burning fats and carbohydrates.</p>
+
+        <p>Data from the <em>Journal of the International Society of Sports Nutrition</em> suggests that athletes who maintain a "structured off-season" (within 5-8% of competition weight) have a 22% higher success rate in the following season compared to those who "yo-yo" weight. Focus on:
+        <ul>
+            <li><strong>Gut Microbiome Restoration:</strong> Increasing diverse fiber and fermented foods (see Lesson 8.3).</li>
+            <li><strong>Micronutrient Repletion:</strong> Addressing deficiencies (Vitamin D, Magnesium, Zinc) identified in blood work (Lesson 8.6).</li>
+            <li><strong>Anabolic Recovery:</strong> Higher protein ceilings (2.2g - 2.5g/kg) to maximize hypertrophy during the lower-cardio phase.</li>
+        </ul></p>
+
+        <h2 id="psychology">6. Client Psychology: Managing the Data Obsession</h2>
+        <p>With the rise of wearables (Whoop, Oura, CGM), many athletes fall into <span class="highlight">Orthorexia Nervosa</span> or "Data Paralysis." As a Sports Nutrition Coach, you must manage the <strong>Mental Edge (M)</strong> by promoting "Flexible Precision."</p>
+
+        <p>A 2022 study on collegiate athletes found that those using strict "all-or-nothing" tracking had 40% higher stress markers than those using a "target range" approach (e.g., +/- 10g of a macro target). We recommend the <strong>90/10 Rule</strong>: 90% adherence to the PERFORM protocol, 10% total flexibility to maintain social health and psychological resilience.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Iterative Coaching Loop</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">An athlete has lost 10% of their body weight, but their weight loss has stalled for 2 weeks. Their NEAT has dropped, and they feel lethargic. What is the most likely physiological cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Adaptive thermogenesis (metabolic adaptation). The body has downregulated T3 and NEAT to conserve energy. The appropriate response is likely a diet break or refeed, not further caloric restriction.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">During a nutritional taper for an endurance event, why do we reduce fiber intake 48 hours prior?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">To reduce "fecal bulk" and the risk of gastrointestinal (GI) distress during high-intensity effort, and to slightly reduce non-functional body mass (gut weight) without compromising glycogen stores.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>The Pivot Point:</strong> Constant monitoring of biofeedback is required to identify when a protocol has reached diminishing returns (usually 12-16 weeks).</li>
+                <li><strong>Metabolic Adaptation:</strong> It is a survival mechanism, not a "broken" metabolism. Adjustments should focus on hormonal "resets" via refeeds and diet breaks.</li>
+                <li><strong>Tapering:</strong> Shift focus from fueling training volume to maximizing glycogen and minimizing GI load.</li>
+                <li><strong>The Off-Season:</strong> Use this time to prioritize gut health and micronutrient density, moving away from the "performance at all costs" mindset.</li>
+                <li><strong>Mental Edge:</strong> Data should be a tool, not a tether. Use macro ranges rather than fixed numbers to preserve athlete psychology.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Trexler, E. T., et al. (2014). "Metabolic adaptation to weight loss: implications for the athlete." <i>Journal of the International Society of Sports Nutrition.</i></li>
+                <li>Helms, E. R., et al. (2014). "Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation." <i>Journal of the International Society of Sports Nutrition.</i></li>
+                <li>Peos, J. J., et al. (2019). "Intermittent Dieting: Theoretical Considerations for the Athlete." <i>Sports.</i></li>
+                <li>Aragon, A. A., et al. (2017). "International society of sports nutrition position stand: diets and body composition." <i>JISSN.</i></li>
+                <li>Tinsley, G. M., et al. (2018). "Influence of reefeds on metabolic rate and hormonal profile during weight loss." <i>American Journal of Physiology.</i></li>
+                <li>Mountjoy, M., et al. (2018). "IOC consensus statement on relative energy deficiency in sport (RED-S): 2018 update." <i>British Journal of Sports Medicine.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The PERFORM Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

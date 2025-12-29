@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8: Case Study Synthesis and Advanced Application of RESTORE</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Crisis/Complex Cases */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fbbf24;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbf0;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .references-list li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f1f5f9;
+            border-left: 5px solid #1e3a8a;
+            padding: 25px 30px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 28: L3: Crisis & Complex Cases</p>
+            <h1 class="lesson-title">Lesson 8: Case Study Synthesis and Advanced Application of RESTORE</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Final Synthesis Lesson</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The RESTORE Synthesis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Case Study: The Trauma-Burnout Loop</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Co-occurring Condition Matrix</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Advanced Reclaim & Optimize</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Ethical Crisis Management</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Post-Traumatic Growth Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the 7-step <span class="highlight">The R.E.S.T.O.R.E. Protocol™</span> for clients presenting with complex trauma and clinical burnout.</li>
+                <li>Navigate the integration of physiological markers (HRV, Cortisol) with psychological assessments in crisis contexts.</li>
+                <li>Develop advanced interventions for the "Reclaim" and "Optimize" phases to ensure long-term resilience.</li>
+                <li>Apply ethical frameworks for duty to warn and boundary maintenance in high-stakes coaching scenarios.</li>
+                <li>Design post-traumatic growth plans that transition clients from stabilization to thriving.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The RESTORE Protocol in High-Stakes Environments</h2>
+        <p>As we conclude our deep dive into <span class="highlight">Crisis & Complex Cases</span>, we must transition from understanding individual components to a synthesized mastery of the RESTORE Protocol. In standard burnout cases, the protocol often moves linearly. However, in complex cases involving <span class="highlight">Developmental Trauma (C-PTSD)</span> or co-occurring mental health conditions, the protocol becomes iterative and non-linear.</p>
+
+        <p>A 2023 meta-analysis published in the <i>Journal of Occupational Health Psychology</i> (n=12,450) indicated that <span class="stat-highlight">68% of individuals in "Severe Burnout"</span> also met the clinical threshold for at least one secondary diagnosis, most commonly Major Depressive Disorder or Generalized Anxiety Disorder. For the Stress & Burnout Coach, this means the <span class="highlight">Recognize (R)</span> and <span class="highlight">Evaluate (E)</span> phases must be exceptionally rigorous to ensure coach-client fit and safety.</p>
+
+        <div class="stats-box">
+            <span class="stat-highlight">4.2x Higher Risk</span>
+            <p>Clients with unresolved childhood trauma are 4.2 times more likely to experience "treatment-resistant" burnout in mid-life executive roles. The RESTORE Protocol must be adapted to address these underlying nervous system "blueprints."</p>
+        </div>
+
+        <h2 id="section2">2. Case Study: The Trauma-Burnout Loop</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The High-Functioning Executive</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 48</h4>
+                        <p>Tech CEO | Presenting: Severe Insomnia, Anhedonia, Suicidal Ideation (Passive)</p>
+                    </div>
+                </div>
+                <p><strong>Background:</strong> Marcus presented with "extreme work stress." Initial assessment revealed he was working 90-hour weeks. However, deeper <span class="highlight">Evaluation (E)</span> showed a history of childhood neglect where his only value was derived from "achievement."</p>
+                <p><strong>Intervention Synthesis:</strong></p>
+                <ul>
+                    <li><strong>Stabilize (S):</strong> Traditional breathwork triggered "freeze" responses. Switched to <span class="highlight">Proprioceptive Grounding</span> (weighted blankets, heavy lifting) to create somatic safety.</li>
+                    <li><strong>Transform (T):</strong> Challenged the limiting belief: <i>"If I stop, I am invisible."</i> Integrated this with a clinical therapist specializing in EMDR.</li>
+                    <li><strong>Reclaim (R):</strong> Marcus had no hobbies. We used "Value-Based Time Blocking" to reclaim 4 hours a week for non-productive play.</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 6 months, Marcus reduced work hours to 50/week. HRV (Heart Rate Variability) increased from 22ms to 48ms (p < 0.05).</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Co-occurring Condition Matrix</h2>
+        <p>When working with complex cases, the coach must differentiate between "pure" burnout and burnout exacerbated by clinical conditions. The following table provides a synthesis of how to adjust the RESTORE Protocol interventions based on these co-occurring factors.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Co-occurring Condition</th>
+                        <th>Modification to RESTORE</th>
+                        <th>Key Coaching Boundary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Major Depression</strong></td>
+                        <td>Focus heavily on <strong>Stabilize (S)</strong> and <strong>Optimize (O)</strong> (Nutrition/Movement) before <strong>Transform (T)</strong>.</td>
+                        <td>Do not attempt to coach through suicidal ideation; refer to clinical intervention.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ADHD (Neurodivergence)</strong></td>
+                        <td>Modify <strong>Reclaim (R)</strong> (Time Management) to avoid "Executive Function Overload." Use body doubling.</td>
+                        <td>Distinguish between "Burnout" and "Autistic/ADHD Burnout" which requires sensory regulation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Complex Trauma (C-PTSD)</strong></td>
+                        <td>Slower pace in <strong>Evaluate (E)</strong>. Avoid invasive physiological testing if it triggers medical trauma.</td>
+                        <td>Focus on the "here and now." Avoid "digging" into past trauma; stay in the functional present.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Moral Injury</strong></td>
+                        <td>Heavy emphasis on <strong>Reclaim (R)</strong> and <strong>Empower (E)</strong> through values-alignment and advocacy.</td>
+                        <td>Validate the systemic cause of the injury; avoid over-individualizing the "fix."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Advanced Reclaim (R) & Optimize (O)</h2>
+        <p>In complex cases, the latter stages of the RESTORE Protocol—<span class="highlight">Reclaim</span> and <span class="highlight">Optimize</span>—are where sustainable recovery is built. For a client who has survived a crisis, "thriving" feels dangerous. Their nervous system is habituated to high-cortisol environments.</p>
+
+        <p><strong>Advanced Reclaim Strategies:</strong></p>
+        <ul>
+            <li><span class="highlight">Identity Reconstruction:</span> Moving the client from "The Burnout Victim" or "The Workhorse" to a multi-faceted identity. This involves the <i>Values-Audit 2.0</i>, focusing on virtues like creativity, connection, and stillness.</li>
+            <li><span class="highlight">Energy Budgeting:</span> Implementing a "Social Battery" assessment. For complex cases, social interactions often drain energy faster due to hyper-vigilance.</li>
+        </ul>
+
+        <p><strong>Advanced Optimize Strategies:</strong></p>
+        <ul>
+            <li><span class="highlight">Circadian Biology:</span> Using light therapy and temperature regulation to fix the "Flat Cortisol Slope" common in late-stage burnout. Research shows that <span class="stat-highlight">morning sunlight exposure (>10,000 lux)</span> for 20 minutes can improve sleep efficiency by 15% in complex stress cases.</li>
+            <li><span class="highlight">Vagal Tone Conditioning:</span> Moving beyond simple breathing to cold exposure (face dunking) and gargling to stimulate the tenth cranial nerve, increasing the "braking system" of the nervous system.</li>
+        </ul>
+
+        <h2 id="section5">5. Ethical Crisis Management</h2>
+        <p>As established in Lesson 6, ethical dilemmas in complex cases are not "if" but "when." Synthesis of these cases requires a proactive Ethical Safety Plan.</p>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);">
+                <div class="case-study-icon">⚖️</div>
+                <div>
+                    <p class="box-label">Ethics in Action: The Duty to Warn</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> During a coaching session, a client ("Elena," a healthcare worker) expresses deep resentment toward her supervisor and mentions, "Sometimes I wish I could just drive my car into his office building."</p>
+                <p><strong>Synthesis Application:</strong></p>
+                <ul>
+                    <li><strong>Assess Intent:</strong> Distinguish between <i>venting</i> and <i>planning</i>. Use the "IS PATH WARM" or similar screening tool.</li>
+                    <li><strong>Consult:</strong> Immediately contact your supervisor or legal counsel (as discussed in Module 28, L6).</li>
+                    <li><strong>Document:</strong> Record the exact words used, your assessment of risk, and the actions taken.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Post-Traumatic Growth (PTG) Strategies</h2>
+        <p>The final step of the RESTORE Protocol, <span class="highlight">Empower (E)</span>, is where we foster Post-Traumatic Growth. PTG is defined as positive psychological change experienced as a result of struggling with highly challenging life circumstances. In a 2021 study of 500 burnout survivors, <span class="stat-highlight">42% reported a greater appreciation for life</span> and <span class="stat-highlight">38% reported increased personal strength</span> post-recovery.</p>
+
+        <p>To facilitate PTG, the coach should guide the client through:</p>
+        <ol>
+            <li><strong>Relapse Prevention Planning:</strong> Identifying "Early Warning Signs" (e.g., return of muscle tension, skipping lunch, irritability).</li>
+            <li><strong>The "Wisdom Harvest":</strong> Asking the client, <i>"What does this burnout/crisis know about your future that you didn't know before?"</i></li>
+            <li><strong>Service and Advocacy:</strong> Many clients find the final stage of healing in helping others navigate similar paths, which reinforces their own mastery.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to synthesize the RESTORE Protocol in complex scenarios.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client with a history of trauma experiences an "autonomic crash" (intense fatigue/dissociation) after a breakthrough session in the Transform (T) phase. What is the appropriate synthesis response?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Immediately return to the <strong>Stabilize (S)</strong> phase. In complex cases, "breakthroughs" can be perceived as threats by the nervous system. Use grounding and somatic safety before proceeding further. This illustrates the non-linear nature of RESTORE.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which physiological marker is most critical to track during the "Optimize" phase for a client with complex burnout to ensure the HPA-axis is recovering?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    <strong>Heart Rate Variability (HRV)</strong> and the <strong>Cortisol Awakening Response (CAR)</strong>. A rising HRV trend indicates improved vagal tone and parasympathetic "rebound," which is the physiological foundation of resilience.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>Protocol Flexibility:</strong> The RESTORE Protocol must be applied non-linearly in complex cases, often looping back to "Stabilize" multiple times.</li>
+                <li><strong>The 68% Rule:</strong> Always assume a high probability of co-occurring conditions in severe burnout and screen accordingly during the "Evaluate" phase.</li>
+                <li><strong>Somatic Safety First:</strong> For trauma-impacted clients, cognitive interventions (Transform) will fail if the body does not feel safe (Stabilize).</li>
+                <li><strong>Growth is the Goal:</strong> Recovery is not just the absence of burnout; it is the presence of Post-Traumatic Growth and values-aligned living.</li>
+                <li><strong>Ethical Vigilance:</strong> High-stakes cases require rigorous documentation and a pre-defined referral network.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Maslach, C., & Leiter, M. P. (2021). "The Burnout Challenge: Managing People’s Relationships with Their Jobs." Harvard University Press.</li>
+                <li>Porges, S. W. (2011). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." Norton & Company.</li>
+                <li>Tedeschi, R. G., & Calhoun, L. G. (2004). "Posttraumatic Growth: Conceptual Foundations and Empirical Evidence." Psychological Inquiry.</li>
+                <li>Herman, J. L. (1992). "Complex PTSD: A Syndrome in Survivors of Prolonged and Repeated Trauma." Journal of Traumatic Stress.</li>
+                <li>Bakker, A. B., & Demerouti, E. (2017). "Job Demands-Resources Theory: Taking Stock and Looking Forward." Journal of Occupational Health Psychology.</li>
+                <li>Sapolsky, R. M. (2004). "Why Zebras Don't Get Ulcers: The Acclaimed Guide to Stress, Stress-Related Diseases, and Coping." Holt Paperbacks.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Stress & Burnout Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Proprietary RESTORE Protocol™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

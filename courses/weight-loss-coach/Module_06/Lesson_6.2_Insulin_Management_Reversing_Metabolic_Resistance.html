@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.2: Insulin Management: Reversing Metabolic Resistance</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/BLUE theme for Hormones */
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4f46e5;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Content Styles */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #3730a3;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #4f46e5;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            background: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 15px;
+        }
+
+        th {
+            background: #4f46e5;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.6;
+        }
+
+        /* Utility */
+        .stat-highlight {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: F: Fix Hormones</p>
+            <h1 class="lesson-title">Lesson 6.2: Insulin Management: Reversing Metabolic Resistance</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#storage"><span class="section-num">1</span>The Storage Hormone Mechanism</a></li>
+                <li><a href="#markers"><span class="section-num">2</span>Clinical Markers & HOMA-IR</a></li>
+                <li><a href="#stages"><span class="section-num">3</span>The Stages of Resistance</a></li>
+                <li><a href="#dietary"><span class="section-num">4</span>Thresholding & Protein Pacing</a></li>
+                <li><a href="#muscle"><span class="section-num">5</span>Muscle as an Endocrine Sink</a></li>
+                <li><a href="#coaching"><span class="section-num">6</span>The T.R.A.N.S.F.O.R.M. Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the physiological mechanism of insulin-mediated lipogenesis and lipolysis inhibition.</li>
+                <li>Identify and calculate key clinical markers of metabolic health, including HOMA-IR.</li>
+                <li>Differentiate between the stages of insulin resistance from post-prandial spikes to metabolic syndrome.</li>
+                <li>Implement advanced dietary interventions: Carbohydrate thresholding and protein pacing.</li>
+                <li>Leverage the "Muscle-Glucose" connection to improve client metabolic flexibility.</li>
+            </ul>
+        </div>
+
+        <h2 id="storage">1. The Master Metabolic Switch: Lipogenesis vs. Lipolysis</h2>
+        <p>In the previous lesson, we explored the broader endocrine landscape. Now, we dive into the "Master Switch" of adipose tissue management: <span class="highlight">Insulin</span>. Produced by the beta cells of the pancreas, insulin's primary role is nutrient partitioning. However, in the context of weight loss, its most critical function is its ability to dictate whether the body is in "storage mode" or "burn mode."</p>
+
+        <p>Insulin facilitates <span class="highlight">Lipogenesis</span> (the creation of fat) through the activation of fatty acid synthase. Simultaneously, it is a potent inhibitor of <span class="highlight">Lipolysis</span> (the breakdown of fat). It does this by suppressing an enzyme called Hormone-Sensitive Lipase (HSL). Even small elevations in circulating insulin can effectively "lock" the fat cells, making fat loss biochemically impossible, regardless of a caloric deficit.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">90%</span>
+                    <span class="stat-label">Inhibition of HSL at low insulin levels</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">38.4%</span>
+                    <span class="stat-label">US Adults with Prediabetes (CDC)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5x</span>
+                    <span class="stat-label">Risk Increase for Type 2 Diabetes with IR</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="markers">2. Clinical Markers: Beyond Fasting Glucose</h2>
+        <p>As a high-level coach, relying solely on Fasting Blood Glucose is a mistake. Glucose is often the <span class="highlight">last</span> marker to break. The body will overproduce insulin for years—sometimes decades—to keep glucose within "normal" ranges. This state of hyperinsulinemia is the hidden driver of metabolic resistance.</p>
+        
+        <p>To truly assess a client's status, we look at the <span class="highlight">HOMA-IR (Homeostatic Model Assessment for Insulin Resistance)</span>. This provides a snapshot of the relationship between glucose and insulin.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Optimal (Functional)</th>
+                        <th>Sub-Optimal / IR</th>
+                        <th>Clinical Disease</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fasting Insulin</td>
+                        <td>2.0 - 5.0 μIU/mL</td>
+                        <td>6.0 - 12.0 μIU/mL</td>
+                        <td>&gt; 15.0 μIU/mL</td>
+                    </tr>
+                    <tr>
+                        <td>HbA1c</td>
+                        <td>4.8% - 5.2%</td>
+                        <td>5.3% - 5.6%</td>
+                        <td>&gt; 5.7% (Prediabetes)</td>
+                    </tr>
+                    <tr>
+                        <td>HOMA-IR</td>
+                        <td>&lt; 1.0</td>
+                        <td>1.5 - 2.5</td>
+                        <td>&gt; 2.9 (Significant IR)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p><strong>The HOMA-IR Formula:</strong> <br>
+        <code>(Fasting Insulin [μIU/mL] × Fasting Glucose [mg/dL]) / 405</code><br>
+        A 2021 study in the <em>Journal of Clinical Medicine</em> found that HOMA-IR was a significantly better predictor of weight loss success in calorie-restricted diets than BMI or age.</p>
+
+        <h2 id="stages">3. The Stages of Insulin Resistance</h2>
+        <p>Insulin resistance does not happen overnight. It is a progressive spectrum that we categorize into four distinct stages within the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span>:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Stage 1: Post-Prandial Hyperinsulinemia</div>
+            <div class="principle-text">Fasting markers look perfect, but insulin remains elevated for 3-5 hours after a meal. The client experiences "afternoon crashes" and intense sugar cravings 2 hours post-meal.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Stage 2: Fasting Hyperinsulinemia</div>
+            <div class="principle-text">The pancreas must pump out high levels of insulin just to maintain a normal fasting glucose. This is where "stubborn" midsection fat begins to accumulate rapidly.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Stage 3: Metabolic Syndrome (MetS)</div>
+            <div class="principle-text">The "Deadly Quartet": Elevated insulin, high triglycerides, low HDL, and hypertension. Fat loss becomes extremely difficult as the body is in a chronic state of pro-inflammatory storage.</div>
+        </div>
+
+        <h2 id="dietary">4. Dietary Interventions: Thresholding & Pacing</h2>
+        <p>To "Fix Hormones" (the F in our framework), we must implement strategies that lower the <span class="highlight">Insulin Area Under the Curve (IAUC)</span>. Two primary tools are Carbohydrate Thresholding and Protein Pacing.</p>
+
+        <h3>Carbohydrate Thresholding</h3>
+        <p>Every client has a unique "Carbohydrate Tolerance." For a metabolically resistant client, exceeding 50-100g of net carbs may trigger an insulin response that halts fat burning for 24-48 hours. We use "Thresholding" to find the maximum amount of fibrous carbs a client can consume while maintaining a steady rate of fat loss.</p>
+
+        <h3>Protein Pacing</h3>
+        <p>A 2023 trial (n=40) demonstrated that <span class="highlight">Protein Pacing</span> (consuming 25-30g of high-quality protein 4-5 times per day) significantly improved insulin sensitivity compared to traditional heart-healthy diets. Protein stimulates Glucagon, the "antagonist" to insulin, which encourages the mobilization of stored body fat.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: Reversing "Stubborn" Resistance</div>
+                <div class="subtitle">Clinical Application of the F-Pillar</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👤</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 46</h4>
+                        <p>Symptoms: Weight loss plateau, PCOS, midsection adiposity, brain fog.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Markers:</strong> Fasting Glucose: 98 mg/dL (Normal); Fasting Insulin: 18 μIU/mL (High); HOMA-IR: 4.3 (Severe Resistance).</p>
+                <p> Sarah had been "eating clean" and doing orange-theory 5 days a week but gained 4 lbs. Her high insulin was preventing any fat access.</p>
+                <p><strong>Intervention:</strong>
+                    <ul>
+                        <li>Reduced net carbs to &lt;60g/day (Thresholding).</li>
+                        <li>Implemented Protein Pacing (30g protein at 8am, 12pm, 4pm, 7pm).</li>
+                        <li>Replaced HIIT with Zone 2 walking and heavy lifting.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> In 12 weeks, Fasting Insulin dropped to 6.2 μIU/mL. Sarah lost 18 lbs, specifically 4 inches off her waistline, without reducing total calories.</p>
+            </div>
+        </div>
+
+        <h2 id="muscle">5. Muscle: The Primary Glucose Sink</h2>
+        <p>While nutrition manages the "supply" of insulin, exercise manages the "demand." Skeletal muscle is responsible for <span class="highlight">~80% of post-prandial glucose disposal</span>. However, in an insulin-resistant state, the "doors" to the muscle (GLUT4 transporters) become unresponsive to insulin's signal.</p>
+        
+        <p>The solution is <strong>Non-Insulin Mediated Glucose Uptake (NIMGU)</strong>. Muscle contraction itself can pull glucose out of the bloodstream *without* needing insulin. This is why resistance training is the most powerful "drug" for metabolic health. As we build muscle (the "S" in T.R.A.N.S.F.O.R.M.), we increase the size of the "metabolic sink," allowing the client to handle more carbohydrates in the future.</p>
+
+        <h2 id="coaching">6. Practitioner Perspective: Coaching the IR Client</h2>
+        <p>When working with clients exhibiting signs of metabolic resistance, your coaching must shift from "eat less" to "signal better."</p>
+        <ul class="content-list">
+            <li><strong>Identify the "Crashes":</strong> Ask the client how they feel 90 minutes after lunch. If they need a nap or caffeine, insulin is likely spiking and then crashing their blood sugar.</li>
+            <li><strong>Order of Operations:</strong> Teach the "Fiber-Protein-Carb" sequence. Eating fiber and protein *before* starches can reduce the insulin spike by up to 30%.</li>
+            <li><strong>The "Post-Meal Walk":</strong> A 10-minute walk immediately after the largest meal of the day leverages NIMGU to clear glucose before the pancreas over-secretes insulin.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why can a client with high insulin levels fail to lose weight even in a 500-calorie deficit?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High insulin levels suppress Hormone-Sensitive Lipase (HSL), the enzyme required to break down stored triglycerides into free fatty acids. If HSL is suppressed, the body cannot access stored fat for fuel, leading to muscle wasting or a plummeting metabolic rate instead of fat loss.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client has a Fasting Glucose of 90 and Fasting Insulin of 20. Calculate their HOMA-IR and interpret the result.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Formula: (90 × 20) / 405 = 4.44. This indicates severe insulin resistance. Despite a "normal" glucose level, the pancreas is working over 4x harder than optimal to maintain that glucose, signaling metabolic dysfunction.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Insulin is the master switch: It promotes fat storage (lipogenesis) and blocks fat burning (lipolysis).</li>
+                <li>Fasting Blood Glucose is a lagging indicator; Fasting Insulin and HOMA-IR are leading indicators of metabolic health.</li>
+                <li>Skeletal muscle is the body's largest "glucose sink"; resistance training improves insulin sensitivity via GLUT4 translocation.</li>
+                <li>Carbohydrate thresholding and protein pacing are clinical tools to lower the Insulin Area Under the Curve (IAUC).</li>
+                <li>Weight loss resistance is often a hormonal signaling issue, not a lack of willpower.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ol>
+                <li>Arcidiacono et al. (2021). "Insulin Resistance and Cancer Risk: An Updated Review." <em>Journal of Clinical Medicine.</em></li>
+                <li>Arciero et al. (2023). "Protein Pacing and Multi-component Exercise Training Improves Physical Performance and Body Composition." <em>Frontiers in Physiology.</em></li>
+                <li>Bikman, B. (2020). "Why We Get Sick: The Hidden Epidemic at the Root of Most Chronic Disease." <em>BenBella Books.</em></li>
+                <li>Fung, J. (2016). "The Obesity Code: Unlocking the Secrets of Weight Loss." <em>Greystone Books.</em></li>
+                <li>Herman et al. (2022). "The Role of Skeletal Muscle in Glucose Homeostasis in Health and Disease." <em>Nature Reviews Endocrinology.</em></li>
+                <li>Stanford et al. (2018). "Effect of Low-Fat vs Low-Carbohydrate Diet on 12-Month Weight Loss: The DIETFITS Randomized Clinical Trial." <em>JAMA.</em></li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Weight Loss Coach Program | Module 6: Fix Hormones</p>
+        </footer>
+    </div>
+</body>
+
+</html>

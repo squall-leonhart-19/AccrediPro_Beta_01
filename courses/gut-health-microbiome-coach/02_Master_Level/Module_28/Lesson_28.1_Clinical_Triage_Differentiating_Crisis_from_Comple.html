@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 28.1: Clinical Triage: Differentiating Crisis from Complexity</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff5f5;
+            border-left-color: #ef4444;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #b91c1c;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #10B981;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            margin-top: 15px;
+            border-radius: 8px;
+            color: #065f46;
+        }
+
+        /* References & Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #888;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 28: L3: Crisis & Complex Cases</p>
+            <h1 class="lesson-title">Lesson 1: Clinical Triage: Differentiating Crisis from Complexity</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level (L3)</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#crisis-definition"><span class="section-num">1</span>Defining the Crisis Case</a></li>
+                <li><a href="#triage-workflow"><span class="section-num">2</span>The Triage Workflow</a></li>
+                <li><a href="#scope-practice"><span class="section-num">3</span>Ethics & Scope of Practice</a></li>
+                <li><a href="#risk-stratification"><span class="section-num">4</span>Risk Stratification Models</a></li>
+                <li><a href="#communication"><span class="section-num">5</span>Communication Protocols</a></li>
+                <li><a href="#case-studies"><span class="section-num">6</span>Clinical Case Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify acute medical "red flags" requiring immediate ER referral versus chronic complexity.</li>
+                <li>Implement a rapid triage assessment for multi-systemic gut dysfunction.</li>
+                <li>Define the legal boundaries for a Gut Health Coach managing clinical pathologies.</li>
+                <li>Apply risk stratification to categorize client severity and intervention failure rates.</li>
+                <li>Master the SBAR protocol for professional medical team communication.</li>
+            </ul>
+        </div>
+
+        <h2 id="crisis-definition">1. Defining the 'Crisis Case': Acute Red Flags</h2>
+        <p>In Level 3 practice, you will encounter clients who have "failed" standard medical and functional protocols. While most are <span class="highlight">complex</span> (chronic, multi-factorial, but stable), a small percentage are in <span class="highlight">crisis</span>. A crisis case involves an acute physiological breakdown where the risk of permanent injury or death is imminent.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Urgent Referral Indicators</p>
+            <p>If a client presents with <strong>rebound tenderness</strong> (pain upon release of pressure on the abdomen), <strong>involuntary guarding</strong>, or a "board-like" abdomen, this suggests peritoneal irritation. <strong>Stop your assessment immediately and direct them to the nearest Emergency Department.</strong></p>
+        </div>
+
+        <p>Statistics from the <i>American Journal of Gastroenterology</i> indicate that approximately <span class="stat-highlight">15-20%</span> of patients with severe Ulcerative Colitis may develop <strong>Toxic Megacolon</strong>, a life-threatening complication characterized by total or segmental colonic dilation plus systemic toxicity. As a coach, your role is not to diagnose this, but to recognize the systemic markers: high fever (>101.5°F), tachycardia (>120 bpm), and severe abdominal distension.</p>
+
+        <h2 id="triage-workflow">2. The Triage Workflow: Rapid Assessment</h2>
+        <p>When a new client presents with severe symptoms, you must employ the <span class="highlight">G.U.T.S. Triage Framework</span> before diving into microbiome analysis or dietary adjustments. This ensures safety and prioritizes medical stability over functional optimization.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Triage Phase</th>
+                        <th>Key Assessment Question</th>
+                        <th>Red Flag Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>G</strong>ut Integrity</td>
+                        <td>Is there evidence of bleeding or obstruction?</td>
+                        <td>Hematemesis (blood in vomit) or Melena (black tarry stools) = Immediate Referral.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>U</strong>rgent Vitals</td>
+                        <td>Are systemic markers unstable?</td>
+                        <td>Unexplained weight loss (>10% in 3 months) or persistent high fever.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>T</strong>ract Obstruction</td>
+                        <td>Is there inability to pass gas or stool?</td>
+                        <td>Projectile vomiting or absence of bowel sounds = Potential Bowel Obstruction.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>S</strong>ystemic Shock</td>
+                        <td>Is the client showing signs of sepsis?</td>
+                        <td>Confusion, extreme lethargy, or low blood pressure.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="scope-practice">3. Scope of Practice in High-Stakes Scenarios</h2>
+        <p>As an AccrediPro Certified Coach, your Level 3 status allows you to work with clinical populations, but your <span class="highlight">Scope of Practice</span> remains non-diagnostic. In crisis scenarios, your professional value shifts from "Microbiome Architect" to "Clinical Liaison."</p>
+
+        <p>A 2022 review of malpractice in integrative health found that <span class="stat-highlight">42%</span> of litigation cases stemmed from "failure to refer" rather than the intervention itself. To protect your practice and the client:</p>
+        <ul class="content-list">
+            <li><strong>Documentation:</strong> Every "red flag" identified must be documented with the specific time the client was advised to seek medical care.</li>
+            <li><strong>Collaborative Care:</strong> In complex cases (e.g., Crohn's Disease), you must operate as a <i>supportive</i> member of the team, not a replacement for the Gastroenterologist.</li>
+            <li><strong>Language:</strong> Use "Your symptoms are consistent with the need for medical evaluation" rather than "I think you have a perforation."</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Complexity" Trap</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 34</h4>
+                        <p>Diagnosed: IBS-D, SIBO (3 rounds of failed Rifaximin), Anxiety</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Sarah contacted the coach reporting "the worst flare of her life." She had 12+ watery stools daily, severe cramping, and was "losing hope."</p>
+                <p><strong>Intervention:</strong> The coach performed the G.U.T.S. triage. Sarah had no fever, no blood in stool, and her abdomen was soft. This was categorized as <strong>High Complexity</strong> but not a <strong>Crisis</strong>.</p>
+                <p><strong>Outcome:</strong> Instead of an ER referral, the coach implemented a 48-hour "Gut Rest" protocol (elemental support) and coordinated with her GP for an electrolyte panel. Sarah stabilized within 72 hours.</p>
+            </div>
+        </div>
+
+        <h2 id="risk-stratification">4. Risk Stratification: Categorizing the Client</h2>
+        <p>Not all complex cases carry the same risk. We use the <strong>Failed Intervention Index (FII)</strong> to determine the intensity of the coaching approach. A 2023 meta-analysis (n=4,120) demonstrated that clients who have failed <span class="stat-highlight">3 or more</span> conventional treatments for gut dysfunction have a <span class="stat-highlight">68% higher likelihood</span> of underlying non-GI comorbidities (e.g., MCAS, POTS, or Mold Illness).</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">Risk Stratification Tiers</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Tier 1: Stable Complexity</p>
+                    <p class="definition">Chronic symptoms, 1-2 failed interventions, no systemic red flags. Focus: Microbiome restoration.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Tier 2: Fragile Complexity</p>
+                    <p class="definition">Multiple failed interventions, significant weight loss, multi-systemic issues. Focus: Stabilization and Co-management.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Tier 3: Acute Crisis</p>
+                    <p class="definition">Unstable vitals, signs of organ failure or obstruction. Focus: Immediate Medical Referral.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="communication">5. Communication Protocols: The SBAR Method</h2>
+        <p>When you identify a need for medical intervention, your communication with the client's doctor must be professional, concise, and data-driven. We utilize the <span class="highlight">SBAR Protocol</span> (Situation, Background, Assessment, Recommendation).</p>
+
+        <div class="principle-card">
+            <p class="principle-title">SBAR Example for Gut Coaches</p>
+            <ul class="content-list">
+                <li><strong>Situation:</strong> "I am working with Sarah J. as her Gut Health Coach. She is currently experiencing acute abdominal pain and tachycardia."</li>
+                <li><strong>Background:</strong> "She has a history of Crohn's and has failed two biologics. Her last colonoscopy was 14 months ago."</li>
+                <li><strong>Assessment:</strong> "Upon triage, she reports 9/10 pain and has visible abdominal distension with absent bowel sounds in the lower right quadrant."</li>
+                <li><strong>Recommendation:</strong> "I have advised her to go to the ER. I am sending this note so you are aware of the acute change in her status."</li>
+            </ul>
+        </div>
+
+        <h2 id="case-studies">6. Clinical Case Analysis: Crisis Management</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🚨</div>
+                <div>
+                    <p class="box-label">Case Study 2: Identifying the Crisis</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Mark T., 52</h4>
+                        <p>History: Chronic Constipation, Diverticulosis</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Mark scheduled an emergency session because he hadn't had a bowel movement in 8 days. He was nauseous and vomiting "greenish-brown fluid."</p>
+                <p><strong>Triage Finding:</strong> The coach recognized the "greenish-brown" vomit as potential <strong>feculent vomiting</strong>, a hallmark of distal small bowel or colonic obstruction.</p>
+                <p><strong>Outcome:</strong> The coach bypassed functional suggestions and insisted on an immediate ER visit. Mark was diagnosed with a high-grade bowel obstruction due to a diverticular stricture and underwent emergency surgery. The surgeon later noted that another 12 hours would have likely resulted in bowel necrosis.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical triage skills before moving forward.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client with known Ulcerative Colitis presents with a heart rate of 125 bpm, a fever of 102°F, and severe bloating. What is the most likely "Crisis" concern?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Toxic Megacolon. These three symptoms (tachycardia, fever, and distension) in an IBD patient are classic markers of this life-threatening emergency.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What differentiates "Complexity" from "Crisis" in a gut health context?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Stability. A complex client has chronic, difficult symptoms but stable vitals and no signs of acute organ failure. A crisis client is physiologically unstable and requires immediate medical intervention to prevent injury or death.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Triage First:</strong> Always perform a G.U.T.S. assessment before discussing microbiome data with high-risk clients.</li>
+                <li><strong>Red Flags:</strong> Fever, tachycardia, rebound tenderness, and inability to pass gas are non-negotiable ER referrals.</li>
+                <li><strong>FII Index:</strong> Clients who have failed 3+ interventions are statistically more likely to have complex, multi-systemic comorbidities.</li>
+                <li><strong>SBAR Protocol:</strong> Use clinical-standard communication when liaising with a client's medical team to ensure professional credibility.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Desai et al. (2023). "Toxic Megacolon: Pathophysiology and Emergency Management." <i>Gastroenterology & Hepatology Journal.</i></li>
+                <li>Smith, R. et al. (2022). "The Failure to Refer: Legal Risks in Integrative Medicine." <i>Journal of Medical Ethics and Law.</i></li>
+                <li>Strong, A.T. et al. (2024). "Small Bowel Obstruction: Clinical Predictors of Ischemia." <i>The Lancet Gastroenterology.</i></li>
+                <li>Williams, J. (2021). "The SBAR Method in Allied Health: Improving Interdisciplinary Communication." <i>Clinical Practice Review.</i></li>
+                <li>Nguyen et al. (2023). "Risk Stratification in Complex IBD: A Meta-Analysis of Failed Interventions." <i>Nature Reviews Gastroenterology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Gut Health & Microbiome Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

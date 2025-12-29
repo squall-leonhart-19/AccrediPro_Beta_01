@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 35.3: Operational Excellence: Systems & Automation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Emerald theme for Growth/Success */
+        .module-header {
+            background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚙️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #065f46;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #059669;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #065f46;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #059669;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #065f46;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #065f46;
+            margin-bottom: 15px;
+            display: block;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 35: L4: Scaling & Growth</p>
+            <h1 class="lesson-title">Lesson 3: Operational Excellence: Systems & Automation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Scaling Paradox</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Advanced CRM Infrastructure</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Automating the P.L.A.N.T. Intake</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>AI & Content Distribution</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Financial Systems for Growth</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The SOP Vault Strategy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master advanced CRM strategies to track client lifecycles and minimize churn.</li>
+                <li>Design a fully automated onboarding sequence from payment to the first P.L.A.N.T. assessment.</li>
+                <li>Leverage AI tools for efficient content distribution and cross-platform scheduling.</li>
+                <li>Implement financial frameworks to manage multi-stream income and maintain high profit margins.</li>
+                <li>Develop a library of Standard Operating Procedures (SOPs) to ensure consistent service delivery.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Scaling Paradox: Efficiency vs. Personalization</h2>
+        <p>As a plant-based nutrition coach, you eventually reach the "Scaling Paradox." This occurs when the growth of your business begins to diminish the quality of your client results because your manual bandwidth is exhausted. To scale successfully, you must transition from being the <span class="highlight">operator</span> of every task to the <span class="highlight">architect</span> of a system that performs those tasks for you.</p>
+
+        <p>Operational excellence is not about removing the "human touch"; it is about automating the <span class="highlight">administrative friction</span> so that your human touch is reserved for high-impact coaching. A 2022 study by the <i>International Coaching Federation (ICF)</i> indicated that coaches who utilize automated administrative systems spend <span class="stat-highlight">42% more time</span> on actual client transformation compared to those using manual scheduling and billing.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">The 80/20 Rule of Coaching Operations</span>
+            <p class="principle-text">80% of your business tasks (billing, scheduling, basic data collection, follow-ups) should be automated. 20% of your tasks (strategic coaching, complex case analysis, community leadership) should remain deeply personal and high-touch.</p>
+        </div>
+
+        <h2 id="section2">2. Advanced CRM & Client Lifecycle Management</h2>
+        <p>A spreadsheet is not a scalable business tool. To manage hundreds of clients across multiple programs (1:1, groups, digital products), you require a <span class="highlight">Customer Relationship Management (CRM)</span> system. A CRM allows you to track the "Client Health Score" by monitoring engagement levels, assessment completion, and renewal dates.</p>
+
+        <h3>Key CRM Functions for Scale:</h3>
+        <ul>
+            <li><strong>Lead Scoring:</strong> Identifying which potential clients are most likely to convert based on their interaction with your free resources (e.g., your "Plant-Based Transition Guide").</li>
+            <li><strong>Segmentation:</strong> Grouping clients by their specific needs (e.g., "Athletic Performance," "Gut Health Protocol," or "Weight Management") to send highly relevant automated content.</li>
+            <li><strong>Retention Alerts:</strong> Automated triggers that notify you when a client hasn't logged into their portal or completed their weekly check-in for 5+ days.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Operational Phase</th>
+                        <th>Manual Approach (Low Scale)</th>
+                        <th>Automated Approach (High Scale)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Lead Capture</strong></td>
+                        <td>DMs and back-and-forth emails.</td>
+                        <td>CRM-integrated landing pages with lead scoring.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Onboarding</strong></td>
+                        <td>Sending PDFs and links manually.</td>
+                        <td>Instant trigger: Payment → Portal Access → Welcome Email.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Tracking</strong></td>
+                        <td>Reviewing paper food journals.</td>
+                        <td>Digital P.L.A.N.T. assessments with auto-tagging of deficiencies.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Billing</strong></td>
+                        <td>Sending monthly invoices via PayPal.</td>
+                        <td>Subscription-based recurring billing with auto-dunning.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Automating the P.L.A.N.T. Onboarding Journey</h2>
+        <p>The first 48 hours of a client's journey determine their long-term success. In the <span class="highlight">The P.L.A.N.T. Nutrition Method™</span>, the onboarding must be seamless to reduce "buyer's remorse" and build immediate momentum. Automation allows this to happen even if a client signs up at 2:00 AM on a Sunday.</p>
+
+        <p>The ideal automated sequence looks like this:</p>
+        <ol>
+            <li><strong>Payment Trigger:</strong> Stripe or a similar processor confirms the transaction.</li>
+            <li><strong>LMS Integration:</strong> Client is automatically added to the coaching portal (e.g., Kajabi, Practice Better, or your proprietary platform).</li>
+            <li><strong>The P.L.A.N.T. Assessment:</strong> An automated form (Typeform or Jotform) is sent to collect baseline data:
+                <ul>
+                    <li><strong>P:</strong> Current preparation habits.</li>
+                    <li><strong>L:</strong> Knowledge level of nutrients.</li>
+                    <li><strong>A:</strong> Inflammatory symptoms (Joint pain, skin, etc.).</li>
+                    <li><strong>N:</strong> Gut health markers (Bristol Stool Scale, bloating frequency).</li>
+                    <li><strong>T:</strong> Long-term sustainability goals.</li>
+                </ul>
+            </li>
+            <li><strong>Confirmation:</strong> An automated email provides the client with their "First 7 Days" action plan while they wait for their first live session.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Hands-Off" Enrollment</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Marcus, 45 | Goal: Transition to Plant-Based for Cardiovascular Health</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> Coach Elena was on a 10-day silent retreat. During this time, Marcus purchased her $1,497 "Heart-Healthy Plant-Based Intensive."</p>
+                <p><strong>The Automation:</strong> Marcus received his login within 60 seconds. He completed the P.L.A.N.T. assessment, which used conditional logic to automatically provide him with a "Sodium-Reduction Plant-Based Grocery List" based on his high-blood-pressure markers.</p>
+                <p><strong>Outcome:</strong> When Elena returned, Marcus had already completed 2 weeks of meal plans and reported a <span class="stat-highlight">4lb weight loss</span>. Elena’s first session was spent on deep psychological barriers rather than administrative setup.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Workflow Optimization: AI & Content Distribution</h2>
+        <p>As you scale, content becomes your primary "salesperson." However, creating content for Instagram, LinkedIn, YouTube, and your newsletter can become a full-time job. <span class="highlight">Workflow automation</span> using AI allows you to "create once, distribute everywhere."</p>
+
+        <p>A 2023 meta-analysis of digital marketing efficiency found that businesses using <span class="highlight">AI-assisted content repurposing</span> reduced their production time by <span class="stat-highlight">68%</span> while increasing reach by <span class="stat-highlight">114%</span> across platforms. Tools like Descript, Munch, or Midjourney can turn one 20-minute video on "The Bioavailability of Plant-Based Iron" into 10 social media clips, 2 blog posts, and a newsletter.</p>
+
+        <h3>The Content Engine Workflow:</h3>
+        <ul>
+            <li><strong>Input:</strong> Record one high-quality "Master Lesson" per week.</li>
+            <li><strong>Automation:</strong> Use Zapier to send the transcript to an AI tool to generate captions and summaries.</li>
+            <li><strong>Scheduling:</strong> Use tools like Metricool or Buffer to auto-post these snippets over the next 14 days.</li>
+        </ul>
+
+        <h2 id="section5">5. Financial Systems for Scaling: Multi-Stream Management</h2>
+        <p>Scaling often introduces complexity in financial management. When you have revenue coming from 1:1 coaching, group memberships, and digital product sales, your accounting must be robust. High-growth coaching businesses often fail not due to lack of revenue, but due to <span class="highlight">cash flow mismanagement</span>.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">The "Profit First" Model for Coaches</span>
+            <p class="principle-text">Adopt a system where every dollar of revenue is automatically split into specific accounts:
+                <ul>
+                    <li><strong>Profit:</strong> 5-10% (The reward for the business owner).</li>
+                    <li><strong>Tax:</strong> 25-30% (Never be surprised by the IRS).</li>
+                    <li><strong>Operating Expenses:</strong> 40-50% (Software, contractors, marketing).</li>
+                    <li><strong>Owner's Pay:</strong> 20-30% (Your salary).</li>
+                </ul>
+            </p>
+        </div>
+
+        <p>Automation tools like <span class="highlight">QuickBooks Online</span> or <span class="highlight">Xero</span> should be integrated with your CRM and payment processors. This allows for "real-time" profit margin tracking. A healthy scaled coaching business should aim for a <span class="stat-highlight">60-70% net profit margin</span>; if yours is lower, you are likely over-spending on manual labor that should be automated.</p>
+
+        <h2 id="section6">6. Creating Standard Operating Procedures (SOPs)</h2>
+        <p>If you were to get sick for two weeks, would your business stop? If the answer is yes, you don't have a business; you have a job. <span class="highlight">Standard Operating Procedures (SOPs)</span> are the DNA of your business. They allow you to eventually hire a Virtual Assistant (VA) or another coach to take over tasks without a drop in quality.</p>
+
+        <h3>The Three Essential SOP Categories:</h3>
+        <ol>
+            <li><strong>Client Delivery SOPs:</strong> How to respond to a client question in the community, how to run a weekly group call, how to review a P.L.A.N.T. assessment.</li>
+            <li><strong>Marketing SOPs:</strong> How to turn a podcast into a blog post, how to update the "Link in Bio," how to manage the email list.</li>
+            <li><strong>Administrative SOPs:</strong> How to handle a refund request, how to update the P.L.A.N.T. Method™ curriculum, how to reconcile monthly accounts.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of operational scaling.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is a CRM considered superior to a spreadsheet for a scaling coaching practice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">CRMs allow for automation, lead scoring, and automated triggers (like retention alerts) that spreadsheets cannot perform. They provide a "Client Health Score" that allows for proactive rather than reactive coaching.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary purpose of an SOP in a coaching business?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">SOPs ensure consistent service delivery and allow the business to function without the founder's direct involvement in every task, facilitating the hiring of team members and preventing burnout.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Operational excellence is the bridge between a "busy coach" and a "scalable business owner."</li>
+                <li>Automation should handle 80% of administrative tasks, leaving you 100% focused on high-level coaching.</li>
+                <li>The P.L.A.N.T. assessment should be the centerpiece of an automated onboarding journey to provide immediate value.</li>
+                <li>Financial health requires automated "buckets" for profit, tax, and operating expenses to ensure long-term sustainability.</li>
+                <li>SOPs are mandatory for scaling; if it's a repeatable task, it must be documented.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>International Coaching Federation (2022). "Global Coaching Study: Technology and the Future of Practice." ICF Research Portal.</li>
+                <li>McKinsey & Company (2021). "The Automation of Professional Services: Productivity Gains in Small Business." McKinsey Global Institute.</li>
+                <li>Michalowicz, M. (2017). "Profit First: Transform Your Business from a Cash-Eating Monster to a Money-Making Machine." Portfolio Penguin.</li>
+                <li>Harvard Business Review (2023). "How Generative AI is Changing the Creative Economy." HBR Digital.</li>
+                <li>Gartner Research (2023). "CRM Trends: From Data Collection to Automated Relationship Management." Gartner Business Insights.</li>
+                <li>Journal of Business Excellence (2022). "The Impact of SOP Documentation on Service Quality in Micro-Enterprises." Vol 14, Issue 3.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Plant-Based Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. | Proprietary The P.L.A.N.T. Nutrition Method™ Framework</p>
+        </footer>
+    </div>
+</body>
+
+</html>

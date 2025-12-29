@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.6: Behavioral Architecture: Planning for Adherence</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Planning/Logic */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #1e3a8a;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            color: #334155;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: H: Holistic Planning</p>
+            <h1 class="lesson-title">Lesson 2.6: Behavioral Architecture: Planning for Adherence</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#fogg"><span class="section-num">1</span>The Fogg Behavior Model</a></li>
+                <li><a href="#choice"><span class="section-num">2</span>Choice Architecture</a></li>
+                <li><a href="#habit"><span class="section-num">3</span>The Science of Habit Stacking</a></li>
+                <li><a href="#contingency"><span class="section-num">4</span>Contingency Planning</a></li>
+                <li><a href="#friction"><span class="section-num">5</span>The Role of Friction</a></li>
+                <li><a href="#synthesis"><span class="section-num">6</span>Synthesizing the WHOLE Plan</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the B=MAP formula to troubleshoot and design successful health interventions.</li>
+                <li>Implement choice architecture strategies to make healthy decisions the "default" for clients.</li>
+                <li>Apply habit stacking protocols to leverage existing neural pathways for new behaviors.</li>
+                <li>Develop robust "If-Then" implementation intentions for high-stress client scenarios.</li>
+                <li>Identify and manipulate friction points to automate adherence in the WHOLE Method.</li>
+            </ul>
+        </div>
+
+        <p>In our previous lesson, we explored <strong>Bio-Individuality</strong> and how to tailor plans to the unique physiological needs of the client. However, even the most scientifically perfect health plan is worthless if the client cannot—or does not—follow it. Professional coaching separates itself from mere "advice-giving" through the mastery of <span class="highlight">Behavioral Architecture</span>.</p>
+
+        <p>Adherence is not a matter of willpower; it is a matter of design. As an Integrative Health Coach, your role is to move beyond the "what" and "why" of health and become an architect of the client's environment and daily flow. This lesson provides the engineering tools required to ensure the strategies developed in the <strong>H: Holistic Planning</strong> phase translate into permanent lifestyle shifts.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">Chronic Care Non-Adherence</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2-3x</span>
+                    <span class="stat-label">Success with If-Then Plans</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">66</span>
+                    <span class="stat-label">Avg. Days to Habit Automacity</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="fogg">1. The Fogg Behavior Model: Designing for Ability</h2>
+        <p>Developed by Dr. BJ Fogg at Stanford, the Fogg Behavior Model posits that behavior occurs when three elements converge at the same moment: <span class="highlight">Motivation, Ability, and a Prompt (B=MAP)</span>. If any element is missing or insufficient, the behavior will not occur.</p>
+
+        <h3>The Motivation Myth</h3>
+        <p>Most clients rely on high motivation to start a plan. However, motivation is "slippery"—it fluctuates based on stress, sleep, and glucose levels. In the WHOLE Method, we design for the "Motivation Valley." We assume the client will eventually have low motivation and ensure the plan remains executable during those times.</p>
+
+        <h3>Increasing Ability through Simplicity</h3>
+        <p>When motivation is low, the behavior must be <span class="highlight">extremely easy</span> to do. If a client wants to start a meditation practice, don't start with 20 minutes (high ability required). Start with 2 minutes (low ability required). In coaching, we call this "shrinking the change."</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Prompt (Trigger)</p>
+            <p>Nothing happens without a prompt. A prompt can be external (a phone alarm) or internal (a physical sensation). The most effective prompts are existing behaviors already embedded in the client's day.</p>
+        </div>
+
+        <h2 id="choice">2. Choice Architecture: Modifying the Environment</h2>
+        <p>Choice architecture is the practice of influencing choice by changing the context in which people make decisions. In the <strong>W.H.O.L.E. Health Method™</strong>, we recognize that the physical environment is often the strongest "mediator" of health outcomes.</p>
+
+        <p>A 2012 study published in the <i>American Journal of Public Health</i> demonstrated that simply rearranging the layout of a cafeteria—placing fruit at eye level and moving sugared drinks to a less accessible cooler—increased healthy choices by <span class="stat-highlight">25% without changing the menu</span>. This is the power of "nudges."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>High Friction (Harder)</th>
+                        <th>Choice Architecture (Easier)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Therapeutic Nutrition</td>
+                        <td>Vegetables hidden in the bottom crisper drawer.</td>
+                        <td>Pre-washed/cut veggies in clear containers at eye level.</td>
+                    </tr>
+                    <tr>
+                        <td>Functional Movement</td>
+                        <td>Gym bag packed in the morning.</td>
+                        <td>Gym clothes laid out on the floor by the bed.</td>
+                    </tr>
+                    <tr>
+                        <td>Sleep Hygiene</td>
+                        <td>Phone on the nightstand (scrolling).</td>
+                        <td>Phone charging in the kitchen after 9 PM.</td>
+                    </tr>
+                    <tr>
+                        <td>Hydration</td>
+                        <td>Walking to the kitchen for water.</td>
+                        <td>Full 32oz water bottle placed on the desk.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="habit">3. Habit Stacking: Sequencing Neural Pathways</h2>
+        <p>Habit stacking is a specialized form of an <span class="highlight">implementation intention</span>. It leverages the neural process of "synaptic pruning"—where the brain strengthens frequently used connections. By "stacking" a new behavior onto an old one, you hijack an established neural highway.</p>
+
+        <p><strong>The Formula:</strong> "After [Current Habit], I will [New Habit]."</p>
+        
+        <p>For habit stacking to work, the "current habit" must be a rock-solid anchor (e.g., brushing teeth, making coffee, sitting at a desk) and the "new habit" must be small enough to fit into the immediate window of time following that anchor.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Busy Executive" Protocol</p>
+                    <p class="subtitle">Applying Habit Stacking for Metabolic Health</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 44</h4>
+                        <p>CEO, chronic stress, insulin resistance, sedentary behavior.</p>
+                    </div>
+                </div>
+                <p><strong>Challenge:</strong> Sarah struggled to find time for the movement and hydration goals set in her WHOLE plan. She felt "too busy" to leave her desk.</p>
+                <p><strong>Intervention:</strong> We implemented three habit stacks:</p>
+                <ul>
+                    <li>"After I hang up a Zoom call, I will drink 8oz of water."</li>
+                    <li>"After I finish my morning coffee, I will do 10 air squats."</li>
+                    <li>"After I close my laptop for the day, I will walk to the mailbox and back."</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 4 weeks, Sarah reported a <span class="stat-highlight">40% increase in daily water intake</span> and 100% adherence to the movement protocol. By attaching these to existing "anchors," she removed the "decision fatigue" associated with starting a new task.</p>
+            </div>
+        </div>
+
+        <h2 id="contingency">4. Contingency Planning: The "If-Then" Strategy</h2>
+        <p>Health plans often fail during "edge cases"—travel, illness, high-stress days, or social pressure. Behavioral architecture requires <strong>pre-deciding</strong> how to handle these moments. This is known as an <span class="highlight">Implementation Intention</span>.</p>
+
+        <p>Research by Peter Gollwitzer (1999) shows that people who use implementation intentions are <span class="stat-highlight">2-3 times more likely</span> to follow through on their goals. The "If-Then" structure creates a mental link between a situational cue and a goal-directed response.</p>
+
+        <h3>Examples for the Integrative Coach:</h3>
+        <ul>
+            <li><strong>The Social Dinner:</strong> "If the server asks for a drink order, then I will order sparkling water with lime first."</li>
+            <li><strong>The Late Work Night:</strong> "If I work past 7 PM and feel tempted to order pizza, then I will make the 5-minute frozen stir-fry I keep in the freezer."</li>
+            <li><strong>The Missed Workout:</strong> "If I miss my morning gym session, then I will do 5 minutes of stretching before bed."</li>
+        </ul>
+
+        <h2 id="friction">5. The Role of Friction: Identifying Barriers</h2>
+        <p>In behavioral science, <span class="highlight">friction</span> is the number of steps or the amount of psychological effort required to complete a task. To change behavior, we follow two rules:</p>
+        <ol>
+            <li><strong>Decrease friction</strong> for the behaviors we want to encourage.</li>
+            <li><strong>Increase friction</strong> for the behaviors we want to discourage.</li>
+        </ol>
+
+        <p>As a coach, you must perform a "Friction Audit" with your clients. If a client isn't taking their supplements, is it because the bottle is in a cupboard (friction)? If they are snacking on chips, is it because the bag is open on the counter (zero friction)?</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The 20-Second Rule</p>
+            <p>A simple heuristic: If you can reduce the time it takes to start a good habit by 20 seconds, or increase the time it takes to start a bad habit by 20 seconds, you significantly shift the probability of the behavior occurring.</p>
+        </div>
+
+        <h2 id="synthesis">6. Synthesizing the WHOLE Plan: From Logic to Life</h2>
+        <p>The final step in Module 2 is ensuring the <strong>H: Holistic Plan</strong> is architected for the client's reality. We have synthesized assessment data (Module 1), set SMART-I goals, and prioritized interventions. Now, we apply the behavioral layers:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 1: The Anchor Audit</div>
+            <div class="principle-text">Identify the client's existing "anchors" (consistent daily habits). Map new health behaviors directly to these anchors using habit stacking.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 2: Environmental Engineering</div>
+            <div class="principle-text">Perform a "Home and Office Walkthrough" (virtual or in-person). Identify 3 friction points to remove and 2 "nudges" to add.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 3: The Failure Pre-Mortem</div>
+            <div class="principle-text">Ask the client: "What is most likely to derail us this week?" Create "If-Then" plans for those specific scenarios.</div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of behavioral architecture principles.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client has high motivation but low ability to cook healthy meals due to a 60-hour work week. According to the Fogg Model, what is the best coaching intervention?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Focus on increasing <strong>Ability</strong> by simplifying the task (e.g., using pre-cut vegetables or a meal delivery service) rather than trying to increase motivation. When ability is low, even high motivation often fails to produce the behavior.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Explain the difference between a "Nudge" and an "Implementation Intention."</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A <strong>Nudge</strong> (Choice Architecture) is an environmental change that makes the healthy choice easier or more obvious (e.g., fruit on the counter). An <strong>Implementation Intention</strong> is a mental pre-decision using "If-Then" logic to handle specific triggers or obstacles.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Design Over Willpower:</strong> Adherence is a result of environment and system design, not character strength.</li>
+                <li><strong>B=MAP:</strong> Behavior happens when Motivation, Ability, and a Prompt coincide. Focus on making habits "stupidly simple" (Ability).</li>
+                <li><strong>Environment as Mediator:</strong> Small changes in the physical environment (Choice Architecture) yield massive shifts in long-term adherence.</li>
+                <li><strong>Stacking & Intentions:</strong> Use habit stacking to build neural pathways and If-Then plans to navigate stress and obstacles.</li>
+                <li><strong>Friction Management:</strong> The "20-Second Rule" is your most powerful tool for automating the WHOLE Method.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Fogg, B.J. (2009). "A Behavior Model for Persuasive Design." <i>Proceedings of the 4th International Conference on Persuasive Technology.</i></li>
+                <li>Gollwitzer, P. M., & Sheeran, P. (2006). "Implementation intentions and goal achievement: A meta‐analysis of effects and processes." <i>Advances in Experimental Social Psychology.</i></li>
+                <li>Thaler, R. H., & Sunstein, C. R. (2008). <i>Nudge: Improving Decisions About Health, Wealth, and Happiness.</i> Yale University Press.</li>
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <i>European Journal of Social Psychology.</i></li>
+                <li>Clear, J. (2018). <i>Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones.</i> Avery.</li>
+                <li>Gardner, B., et al. (2012). "Making health habitual: the psychology of ‘habit-formation’ and general practice." <i>British Journal of General Practice.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Integrative Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The W.H.O.L.E. Health Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

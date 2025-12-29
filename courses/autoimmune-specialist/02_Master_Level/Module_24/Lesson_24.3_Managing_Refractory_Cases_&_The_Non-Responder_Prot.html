@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.3: Managing Refractory Cases & The Non-Responder Protocol</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Master Practitioner Skills */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6d28d9;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #6d28d9;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #6d28d9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f5f3ff;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 3: Managing Refractory Cases & The Non-Responder Protocol</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Clinical Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Defining the Refractory Case</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Stealth Triple Threat</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Glymphatic Stagnation</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Herx vs. Flare Clinical Audit</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Pause & Pivot Method</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Universal Reactor Strategy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between clinical non-compliance and true physiological refractory status.</li>
+                <li>Identify the "Stealth Triple Threat": Mycotoxins, MCAS, and CIRS.</li>
+                <li>Analyze the role of the glymphatic system in neuro-autoimmune plateaus.</li>
+                <li>Master the "Pause and Pivot" decision-making tree for stalled cases.</li>
+                <li>Implement specific titration protocols for the "Universal Reactor" client.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Defining the Refractory Case</h2>
+        <p>In the C.A.L.M. Autoimmune Protocol™, most clients experience significant symptomatic relief within the first 60 to 90 days. However, a subset of patients—estimated at <span class="highlight">12-15% of complex autoimmune cases</span>—will plateau or even regress despite 100% dietary and lifestyle compliance. These are defined as <strong>Refractory Cases</strong>.</p>
+        
+        <p>A refractory case is not a failure of the protocol, but rather an indication that the <span class="highlight">primary driver of inflammation</span> lies outside the standard gut-immune axis. While the previous lessons focused on master sequencing and biomarker synthesis, this lesson addresses the "biological glass ceiling" that prevents healing even when the foundations are solid.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">24%</span>
+                    <span class="stat-label">CIRS Prevalence in Refractory Cases</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1:4</span>
+                    <span class="stat-label">Genetic Susceptibility to Mold (HLA-DR)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.2x</span>
+                    <span class="stat-label">Higher Flare Risk in Glymphatic Stasis</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The Stealth Triple Threat: Mycotoxins, MCAS, and CIRS</h2>
+        <p>When the C.A.L.M. framework's "Address Root Causes" (A) phase fails to yield results, we must look for triggers that bypass standard elimination diets. The most common "Stealth" triggers include:</p>
+
+        <h3>Chronic Inflammatory Response Syndrome (CIRS)</h3>
+        <p>CIRS is a multi-system, multi-symptom illness resulting from exposure to biotoxins (often from water-damaged buildings). In these clients, the innate immune system is "stuck" in an inflammatory loop. Standard AIP will not resolve CIRS because the <span class="highlight">Vasoactive Intestinal Peptide (VIP)</span> and <span class="highlight">Melanocyte-Stimulating Hormone (MSH)</span> levels remain critically low, keeping the tight junctions of the gut and the Blood-Brain Barrier (BBB) permanently open.</p>
+
+        <h3>Mast Cell Activation Syndrome (MCAS)</h3>
+        <p>For the "Universal Reactor," the issue isn't just the immune system attacking tissue, but mast cells inappropriately releasing over 200 mediators (histamine, leukotrienes, cytokines) in response to non-threatening stimuli. In these cases, even "healthy" AIP foods like bone broth (high histamine) or spinach (high oxalate) can trigger a full-system inflammatory cascade.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Perfect" Non-Responder</p>
+                    <p class="subtitle">Refractory Rheumatoid Arthritis & Brain Fog</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 44</h4>
+                        <p>Diagnosis: Seronegative RA, Hashimoto's. 6 months on strict AIP with 0% improvement in joint pain.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah was 100% compliant but CRP remained elevated (12.4 mg/L). We pivoted to the "Non-Responder Protocol." Labs revealed HLA-DR 11-3-52B (mold susceptibility) and elevated TGF-beta1 (9,400 pg/ml).</p>
+                <p><strong>Outcome:</strong> After identifying a hidden leak in her master bathroom and initiating a binder protocol (Cholestyramine + Zeolite), her joint pain reduced by 60% within 4 weeks. Standard AIP was then able to "hold" her in remission.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Glymphatic Stagnation & Neuro-Autoimmune Stagnation</h2>
+        <p>A critical reason for refractory neuro-autoimmune symptoms (brain fog, ataxia, neuropathy) is the failure of the <span class="highlight">Glymphatic System</span>. Discovered in 2012, this macroscopic waste clearance system is 10 times more active during sleep than wakefulness.</p>
+        
+        <p>In refractory cases, the accumulation of metabolic waste and pro-inflammatory cytokines in the interstitial space of the brain creates a "toxic swamp" effect. If the glymphatic system is stagnant, no amount of systemic anti-inflammatories will clear neuro-inflammation. Factors contributing to stagnation include:</p>
+        <ul>
+            <li><strong>Low Vagal Tone:</strong> The "Address Root Causes" phase must include vagal stimulation to facilitate glymphatic flow.</li>
+            <li><strong>BBB Permeability:</strong> High levels of MMP-9 (a CIRS marker) break down the blood-brain barrier, allowing systemic toxins to flood the CNS.</li>
+            <li><strong>Cervical Lymphatic Congestion:</strong> Physical "bottlenecks" in the neck can prevent drainage.</li>
+        </ul>
+
+        <h2 id="section4">4. Differentiating Herxheimer vs. Autoimmune Flare</h2>
+        <p>Master practitioners must distinguish between a "healing crisis" and a genuine setback. Misidentifying a flare as a "Herx" can lead to tissue damage, while misidentifying a "Herx" as a flare can lead to premature cessation of a necessary antimicrobial or binder protocol.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Jarisch-Herxheimer (Healing)</th>
+                        <th>Autoimmune Flare (Pathological)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Onset</strong></td>
+                        <td>Rapid (hours to 2 days) after new intervention.</td>
+                        <td>Delayed or random; often follows stress/trigger.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Duration</strong></td>
+                        <td>Short-lived (24–72 hours).</td>
+                        <td>Prolonged (days to weeks).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Symptom Type</strong></td>
+                        <td>Flu-like, systemic, "toxic" feeling.</td>
+                        <td>Exacerbation of <em>original</em> autoimmune sites.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Response to Hydration</strong></td>
+                        <td>Usually improves with water/binders/sauna.</td>
+                        <td>Minimal to no response.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lab Markers</strong></td>
+                        <td>Temporary spike in cytokines (IL-6).</td>
+                        <td>Rise in specific antibodies or CRP/ESR.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">5. The 'Pause and Pivot' Method</h2>
+        <p>When a client plateaus, the Master Practitioner utilizes the <strong>Pause and Pivot</strong> algorithm. This prevents "supplement fatigue" and clinical burnout.</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">Step 1: The Compliance Audit</div>
+            <p class="principle-text">Verify "hidden" triggers: cross-contamination, sleep hygiene, or emotional trauma. If compliance is 95%+, move to Step 2.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 2: The Environmental Exposome Sweep</div>
+            <p class="principle-text">Screen for Mycotoxins (Great Plains/RealTime) and CIRS (Visual Contrast Sensitivity test). 80% of refractory cases have an environmental component.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 3: The Nervous System Pivot</div>
+            <p class="principle-text">Shift focus from "Killing/Cleansing" to "Safety/Regulation." Implement Limbic Retraining (DNRS/Gupta) for 30 days before re-attempting biological interventions.</p>
+        </div>
+
+        <h2 id="section6">6. Troubleshooting the 'Universal Reactor'</h2>
+        <p>The "Universal Reactor" is a client who reacts to everything: supplements, foods, smells, and even electromagnetic frequencies (EMF). For these individuals, the C.A.L.M. Protocol must be modified into the <span class="highlight">Micro-Dose Entry Strategy</span>.</p>
+
+        <p><strong>Protocol for Universal Reactors:</strong></p>
+        <ul>
+            <li><strong>Stabilize Mast Cells First:</strong> Use Quercetin, Luteolin, or pharmaceutical stabilizers (Ketotifen) <em>before</em> introducing any gut healing agents.</li>
+            <li><strong>The "Lick and Wait" Test:</strong> Have the client place a tiny amount of a new supplement on their lip. Wait 15 minutes. If no reaction, ingest 1/8th of a dose.</li>
+            <li><strong>Prioritize External Regulation:</strong> Focus on grounding, forest bathing, and sound therapy to lower the "threat threshold" of the amygdala before addressing the microbiome.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical decision-making skills.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client on a mold-binder protocol reports a sudden onset of headache, fatigue, and muscle aches 12 hours after increasing their dose. What is the most likely clinical explanation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is a classic Jarisch-Herxheimer (or "Die-off") reaction. The rapid onset after a dose increase and the "toxic/flu-like" nature of symptoms differentiate it from a flare. Management involves increasing binders and hydration.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is VIP (Vasoactive Intestinal Peptide) critical in refractory autoimmune cases?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">VIP regulates the "tightness" of the Blood-Brain Barrier and the gut lining. In CIRS/Refractory cases, VIP is often low, meaning the client cannot "seal" their barriers regardless of how much glutamine or collagen they consume.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Refractory cases (12-15%) usually indicate a driver outside the gut, such as CIRS or MCAS.</li>
+                <li>The glymphatic system is the "brain's dishwasher"; its failure leads to neuro-autoimmune stagnation.</li>
+                <li>Never push through a genuine autoimmune flare; however, support the body through a Herxheimer reaction.</li>
+                <li>The "Pause and Pivot" method prioritizes limbic system safety over aggressive biological "root cause" hunting.</li>
+                <li>Universal reactors require mast cell stabilization before any standard C.A.L.M. interventions.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Shoemaker, R.C., et al. (2014). "Structural brain abnormalities in patients with inflammatory response syndrome (CIRS) and exposure to water-damaged buildings." Neurotoxicology and Teratology.</li>
+                <li>Afrin, L.B., et al. (2017). "Often unseen, rarely unheard: Mast cell activation syndrome." American Journal of Medical Sciences.</li>
+                <li>Jessen, N.A., et al. (2015). "The Glymphatic System: A Beginner's Guide." Neurochemical Research.</li>
+                <li>Theoharides, T.C., et al. (2012). "Mast cells and inflammation." Biochimica et Biophysica Acta.</li>
+                <li>Nathan, N. (2018). "Toxic: Heal Your Body from Mold Toxicity, Lyme Disease, Multiple Chemical Sensitivities, and Chronic Environmental Illness." Victory Belt Publishing.</li>
+                <li>Møllgård, K., et al. (2023). "A mesothelium dividing the subarachnoid space into functional compartments." Science (Glymphatic anatomy update).</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential Professional Coursework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

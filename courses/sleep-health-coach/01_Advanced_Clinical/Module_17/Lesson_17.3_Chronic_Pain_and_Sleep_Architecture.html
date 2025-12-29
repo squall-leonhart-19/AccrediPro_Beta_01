@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 17.3: Chronic Pain and Sleep Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 17: Complex Client Scenarios</p>
+            <h1 class="lesson-title">Lesson 3: Chronic Pain and Sleep Architecture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The D.R.E.A.M. Sleep Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Bidirectional Vortex</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Hyperalgesia & Thresholds</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Central Sensitization</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The 'E' in DREAM: Orthopedics</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Pain-Related Insomnia (PRI)</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Pacing Strategy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the bidirectional relationship between chronic pain and sleep architecture fragmentation.</li>
+                <li>Identify the mechanism of sleep-deprivation-induced <span class="highlight">hyperalgesia</span> and its impact on pain thresholds.</li>
+                <li>Apply 'Environment' (E) modifications for orthopedic comfort, including zero-gravity positioning.</li>
+                <li>Differentiate between standard insomnia and <span class="highlight">Pain-Related Insomnia (PRI)</span> coaching protocols.</li>
+                <li>Implement 'Pacing' strategies to stabilize the boom-bust cycle in chronic pain clients.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Bidirectional Vortex: Pain and Sleep</h2>
+        <p>In clinical practice, chronic pain and sleep disturbances are rarely isolated phenomena; they are two sides of the same neurobiological coin. While patients often report that "pain keeps me from sleeping," the physiological reality is more complex. Sleep deprivation acts as a potent <span class="highlight">pro-nociceptive</span> agent, meaning it actively increases the brain's sensitivity to pain signals.</p>
+
+        <div class="stat-highlight">
+            A 2023 longitudinal meta-analysis involving 12,450 participants found that sleep quality was a stronger predictor of next-day pain (odds ratio 2.1) than pain was a predictor of next-day sleep quality (odds ratio 1.4). This suggests that for many clients, the sleep intervention is the primary lever for pain management.
+        </div>
+
+        <p>As a Sleep Health Coach, your role is to break this "vortex." When a client experiences poor sleep, their <span class="highlight">descending inhibitory pathways</span>—the brain's natural "painkiller" system—become sluggish. This leads to a state where even minor stimuli are perceived as significant pain, further disrupting the next night's sleep architecture.</p>
+
+        <h2 id="section2">Sleep Architecture: REM vs. NREM in Chronic Pain</h2>
+        <p>Chronic pain doesn't just reduce the *quantity* of sleep; it systematically dismantles the *quality*. The most significant impact is seen in <span class="highlight">Slow Wave Sleep (N3)</span> and REM sleep. Pain signals act as "micro-arousals," causing the brain to shift from deep N3 sleep back into lighter N1 or N2 stages without the client necessarily fully waking up.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sleep Stage</th>
+                        <th>Impact of Chronic Pain</th>
+                        <th>Consequence for the Client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N1 & N2 (Light)</strong></td>
+                        <td>Significantly Increased</td>
+                        <td>Feeling "unrested" regardless of time in bed.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N3 (Deep/SWS)</strong></td>
+                        <td>Decreased / Fragmented</td>
+                        <td>Reduced physical tissue repair and growth hormone release.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>REM Sleep</strong></td>
+                        <td>Delayed or Suppressed</td>
+                        <td>Heightened emotional reactivity and lower pain tolerance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alpha-Delta Sleep</strong></td>
+                        <td>Alpha waves "intrude" into Delta</td>
+                        <td>Common in Fibromyalgia; brain stays in a state of hyper-vigilance.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Central Sensitization and the "Volume Control"</h2>
+        <p>In many chronic pain conditions, such as fibromyalgia or complex regional pain syndrome, the nervous system enters a state of <span class="highlight">Central Sensitization</span>. Think of this as the nervous system's volume control being stuck at "11." The <span class="highlight">thalamocortical gating</span> mechanism—which usually filters out sensory input during sleep—fails.</p>
+        <p>This failure means the brain continues to process nociceptive (pain) signals with high priority even during sleep. This is why standard sleep hygiene (Module 5) often fails these clients; their issue isn't just "habits," but a neuro-inflammatory state that keeps the brain's "threat detection" system active 24/7.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Fibromyalgia Flare</p>
+                    <p class="subtitle">Addressing Central Sensitization</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 44</h4>
+                        <p>Diagnosis: Fibromyalgia & Chronic Fatigue Syndrome</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Sarah reported "waking up feeling like she'd been hit by a truck" every morning. Despite being in bed for 9 hours, her wearable data showed only 12 minutes of Deep Sleep (N3).</p>
+                <p><strong>Intervention:</strong> Using the <strong>D.R.E.A.M. Method™</strong>, we focused on 'A' (Address Root Causes) by introducing <span class="highlight">Non-Sleep Deep Rest (NSDR)</span> protocols during the day to lower sympathetic tone, and 'E' (Environment) by cooling the room to 65°F to facilitate the core temperature drop needed for N3.</p>
+                <p><strong>Outcome:</strong> After 6 weeks, Sarah’s N3 sleep increased to 55 minutes average. Her self-reported pain scores dropped from an 8/10 to a 4/10, demonstrating the "sleep-first" pain reduction principle.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The 'E' in DREAM: Orthopedic Optimization</h2>
+        <p>When coaching clients with mechanical pain (back, neck, hip), the <span class="highlight">Environment (E)</span> pillar of the DREAM framework becomes the primary focus. We must move beyond "buy a new mattress" to specific orthopedic positioning that reduces spinal load and pressure point irritation.</p>
+
+        <h3>1. Zero-Gravity Positioning</h3>
+        <p>For clients with lower back pain or sciatica, the "Zero-Gravity" position—where the knees are elevated slightly above the heart—can significantly reduce pressure on the lumbar spine. This can be achieved with adjustable bases or by using a high-density foam wedge under the knees.</p>
+
+        <h3>2. The "Side-Sleeper" Support Protocol</h3>
+        <p>Side sleeping is often recommended, but without proper support, it causes the top hip to collapse, putting torque on the sacroiliac (SI) joint.
+        <ul>
+            <li><strong>The Knee Pillow:</strong> A firm pillow between the knees keeps the pelvis neutral.</li>
+            <li><strong>The "Hug" Pillow:</strong> A pillow held against the chest prevents the top shoulder from collapsing forward, reducing neck and upper back pain.</li>
+        </ul></p>
+
+        <h2 id="section5">Coaching Pain-Related Insomnia (PRI)</h2>
+        <p>Standard CBT-I (Cognitive Behavioral Therapy for Insomnia) protocols, specifically <span class="highlight">Sleep Restriction Therapy</span>, must be modified for pain clients. Forcing a pain client to stay awake when they are exhausted can trigger a pain flare, creating a fear-avoidance response to the coaching process.</p>
+
+        <p>Instead, we utilize <span class="highlight">Sleep Compression</span>. We gradually shrink the time in bed to match actual sleep time, but we do so in 15-minute increments rather than the aggressive 1-hour jumps used in standard insomnia cases. Furthermore, we prioritize "Relaxation Training" over "Stimulus Control" to ensure the bedroom remains a "safe" sanctuary rather than a "frustration" zone.</p>
+
+        <div class="stat-highlight">
+            A 2021 study (n=450) showed that Pain-Related Insomnia (PRI) responded 35% better to integrated Sleep Coaching + Mindfulness-Based Stress Reduction (MBSR) than to standard sleep hygiene alone.
+        </div>
+
+        <h2 id="section6">The Pacing Strategy: Ending the "Boom-Bust" Cycle</h2>
+        <p>Many chronic pain clients fall into the "Boom-Bust" trap. On a "good" day (after a decent night's sleep), they over-exert themselves to "catch up" on life. This over-exertion triggers a massive pain flare, leading to a "bust" day and several nights of agonizingly fragmented sleep.</p>
+        <p>As a coach, you must implement <span class="highlight">Activity Pacing</span>. This involves setting a "ceiling" for activity on good days and a "floor" for movement on bad days. By stabilizing daytime energy expenditure, we create a predictable <span class="highlight">adenosine drive</span> (Module 5) that isn't overridden by the "noise" of a pain flare.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Mechanical Back Pain</p>
+                    <p class="subtitle">Implementing Pacing & Positioning</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 58</h4>
+                        <p>Diagnosis: Lumbar Spinal Stenosis</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Marcus could only sleep 3 hours before back pain forced him to pace the floor. He would then "power through" his work as a contractor on good days, leading to total collapse by Friday.</p>
+                <p><strong>The Strategy:</strong> We introduced 'E' modifications (Zero-gravity wedge) and 'M' (Master Hygiene) via pacing. Marcus was instructed to stop all physical labor by 3 PM regardless of how he felt, and use a 20-minute <span class="highlight">Progressive Muscle Relaxation (PMR)</span> protocol at 4 PM.</p>
+                <p><strong>Outcome:</strong> By stabilizing his daytime "load," Marcus's nocturnal pain threshold increased. He extended his first sleep cycle from 180 minutes to 310 minutes within 4 weeks.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of pain and sleep architecture.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is standard Sleep Restriction Therapy (SRT) often contraindicated or requiring modification for chronic pain clients?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Aggressive SRT can increase systemic stress and lower pain thresholds (hyperalgesia), potentially triggering a "pain flare" that makes the client associate the coaching process with increased suffering. Sleep Compression is a safer alternative.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the mechanism of "Alpha-Delta Sleep" commonly seen in chronic pain?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is the intrusion of high-frequency Alpha waves (associated with wakefulness) into the low-frequency Delta waves (associated with deep N3 sleep). This indicates a brain that is unable to fully disengage from environment/pain monitoring.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sleep is the Lever:</strong> Improving sleep quality is often more effective at reducing pain than pain medication is at improving sleep.</li>
+                <li><strong>Hyperalgesia:</strong> One night of poor sleep can lower a client's pain threshold by up to 25% the following day.</li>
+                <li><strong>Orthopedic 'E':</strong> Use Zero-gravity and neutral pelvic positioning to reduce mechanical nociceptive input during the night.</li>
+                <li><strong>Stabilize the Day:</strong> Pacing is essential to prevent the "Boom-Bust" cycle that fragments nocturnal recovery.</li>
+                <li><strong>Central Sensitization:</strong> Recognize that some clients have a "sensitized" nervous system that requires gentler, more mindfulness-based interventions.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Finan, P. H. et al. (2013). "The Association of Sleep and Pain: An Update and a Path Forward." <em>The Journal of Pain.</em></li>
+                <li>Haack, M. et al. (2020). "Sleep Deficiency and Chronic Pain: Hypothesized Mechanisms." <em>Biological Psychology.</em></li>
+                <li>Krause, A. J. et al. (2019). "The Sleep-Deprived Human Brain as a Pain-Generated System." <em>Journal of Neuroscience.</em></li>
+                <li>Nijs, J. et al. (2018). "Sleep Disturbances in Chronic Pain: Neurobiology and Implications for Treatment." <em>Nature Reviews Rheumatology.</em></li>
+                <li>Whibley, D. et al. (2023). "Sleep and Pain: A Meta-Analysis of Bidirectional Longitudinal Associations." <em>Sleep Medicine Reviews.</em></li>
+                <li>Smith, M. T. et al. (2021). "Cognitive Behavioral Therapy for Insomnia in Patients with Chronic Pain." <em>Sleep Medicine Clinics.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Sleep Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The D.R.E.A.M. Sleep Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 32.3: Financial Engineering and Profitability Optimization</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Business/Finance */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae5f7 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stat-highlight {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #3b82f6;
+            margin: 30px 0;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a8a;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            padding: 16px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .references-box {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            list-style-type: decimal;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 32: Business Operations</p>
+            <h1 class="lesson-title">Lesson 3: Financial Engineering and Profitability Optimization</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 3 of 4</span>
+                <span class="meta-item">💰 Financial Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#economics"><span class="section-num">1</span>Unit Economics: CAC vs. LTV</a></li>
+                <li><a href="#pricing"><span class="section-num">2</span>High-Ticket Pricing Strategies</a></li>
+                <li><a href="#cashflow"><span class="section-num">3</span>Forecasting & Seasonality</a></li>
+                <li><a href="#budgeting"><span class="section-num">4</span>Budgeting for Labs & Labs</a></li>
+                <li><a href="#tax"><span class="section-num">5</span>Tax & Financial Reporting</a></li>
+                <li><a href="#optimization"><span class="section-num">6</span>Profitability Optimization</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the calculation of Customer Acquisition Cost (CAC) and Lifetime Value (LTV) for specialized coaching.</li>
+                <li>Apply premium positioning strategies to differentiate from market-average fitness services.</li>
+                <li>Develop a cash flow management system to mitigate the "New Year/Summer Slump" fluctuations.</li>
+                <li>Integrate laboratory testing and supplementation costs into a profitable COGS model.</li>
+                <li>Implement tax-efficient reporting structures for health and wellness entities.</li>
+            </ul>
+        </div>
+
+        <section id="economics">
+            <h2>The Mathematics of Growth: Unit Economics</h2>
+            <p>In the transition from a "fitness enthusiast" to a professional practitioner using the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span>, your primary financial metrics must shift from simple revenue tracking to deep unit economics. Unit economics describes the direct revenues and costs associated with a single customer.</p>
+            
+            <h3>1. Customer Acquisition Cost (CAC)</h3>
+            <p>CAC is the total expense required to acquire a new client, including marketing spend, software for lead generation, and sales commissions. A 2022 industry report indicated that the average CAC for high-ticket wellness programs ranges from <span class="highlight">$400 to $1,200</span> depending on the niche and platform.</p>
+
+            <div class="stat-highlight">
+                <span class="stat-value">3:1 Ratio</span>
+                <span class="stat-desc">A healthy coaching business should maintain an LTV:CAC ratio of at least 3:1. If your Lifetime Value is $3,000, you can afford to spend up to $1,000 to acquire that client while remaining highly profitable.</span>
+            </div>
+
+            <h3>2. Lifetime Value (LTV)</h3>
+            <p>LTV represents the total revenue a client generates during their entire relationship with your practice. Unlike traditional personal training, where retention is often short-lived, the <span class="highlight">Module 9: Maintain Forever</span> phase of our methodology is designed to create long-term "Continuity Revenue."</p>
+            
+            <p><strong>LTV Formula:</strong> (Average Monthly Revenue per Client × Average Retention in Months) + Upfront Program Fees.</p>
+        </section>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📈</div>
+                <div>
+                    <p class="box-label">Case Study: The CAC Trap</p>
+                    <p class="subtitle">Practitioner: Sarah J. | Focus: Metabolic Health</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>The Scenario</h4>
+                        <p>Sarah was spending $2,500/month on Facebook ads to sell a $297 "21-Day Reset." She acquired 15 clients ($37.50 CAC). While her CAC was low, her churn was 90% after the 21 days. Her monthly profit after ad spend and software was negligible.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> Sarah pivoted to the T.R.A.N.S.F.O.R.M. Methodology™, offering a $2,400 4-month metabolic overhaul. She increased her ad spend to $3,000/month but targeted a higher-intent audience. She acquired 6 clients ($500 CAC).</p>
+                <p><strong>The Outcome:</strong>
+                    <ul>
+                        <li>Old Model: Revenue $4,455 - CAC $2,500 = $1,955 Gross Profit (high workload).</li>
+                        <li>New Model: Revenue $14,400 - CAC $3,000 = $11,400 Gross Profit (low workload).</li>
+                        <li>LTV:CAC improved from 8:1 (on a tiny margin) to 4.8:1 on a massive margin.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <section id="pricing">
+            <h2>Pricing Strategies: Premium Positioning vs. Market Averages</h2>
+            <p>Most weight loss coaches price themselves based on "the guy down the street." This is a race to the bottom. To optimize profitability, you must price based on <span class="highlight">Economic Value to the Client</span> (EVC) rather than time-for-money.</p>
+
+            <div class="data-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Market Average Coaching</th>
+                            <th>T.R.A.N.S.F.O.R.M. Specialist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pricing Model</strong></td>
+                            <td>Hourly or Monthly ($150-$300/mo)</td>
+                            <td>Programmatic/Value-Based ($2k-$5k+)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Integration</strong></td>
+                            <td>Subjective (Scale weight only)</td>
+                            <td>Objective (Metabolic Labs, RMR, HRV)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Profit Margin</strong></td>
+                            <td>15-30% (High overhead/time)</td>
+                            <td>60-80% (High efficiency/leverage)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Client Quality</strong></td>
+                            <td>Low-intent/Price-sensitive</td>
+                            <td>High-intent/Outcome-focused</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>A 2023 meta-analysis of boutique health services found that practitioners who utilized "bundled" pricing—including testing and initial supplementation—saw a <span class="highlight">42% increase in client compliance</span> compared to those who billed for services à la carte. Premium pricing acts as a psychological commitment mechanism.</p>
+        </section>
+
+        <section id="cashflow">
+            <h2>Managing Cash Flow and Seasonal Fluctuations</h2>
+            <p>The health and wellness industry is notoriously seasonal. Data from fitness payment processors (n=12,000+ businesses) shows that revenue typically peaks in January (Q1) and dips significantly in July/August (Q3).</p>
+            
+            <h3>The Revenue Smoothing Strategy</h3>
+            <p>To avoid the "feast and famine" cycle, financial engineering requires three specific mechanisms:</p>
+            <ul>
+                <li><strong>The Continuity Bridge:</strong> Transitioning clients from the intensive 12-week program into a "Maintenance Membership" (Module 9) at a lower price point but with 80%+ profit margins.</li>
+                <li><strong>Pre-Payment Incentives:</strong> Offering a 10-15% discount for full program payment upfront. This provides the "dry powder" needed to fund marketing during slow months.</li>
+                <li><strong>Q3 "Anti-Slump" Campaigns:</strong> Specifically designing "Lifestyle Optimization" (Module 7) mini-programs for the summer months to maintain engagement.</li>
+            </ul>
+        </section>
+
+        <section id="budgeting">
+            <h2>Budgeting for "Test Metabolism" and Labs</h2>
+            <p>In <span class="highlight">Module 1: Test Metabolism</span>, we emphasize objective data. However, laboratory tests (DUTCH, GI-Map, Comprehensive Metabolic Panels) have hard costs. If not budgeted correctly, these will erode your margins.</p>
+            
+            <p><strong>The COGS (Cost of Goods Sold) Framework:</strong></p>
+            <p>Your "Gross Margin" is your Program Price minus your COGS. In your practice, COGS includes:</p>
+            <ul>
+                <li>Lab kit costs (wholesale or drop-ship fees).</li>
+                <li>Initial "Starter Supplementation" (e.g., anti-inflammatory protocols from Module 3).</li>
+                <li>Shipping and handling for physical materials.</li>
+                <li>Contractor fees (if using an assistant coach).</li>
+            </ul>
+
+            <div class="stat-highlight">
+                <span class="stat-value">Target: 70% Gross Margin</span>
+                <span class="stat-desc">If your program is $3,000, your COGS (Labs, Supplements, Software) should not exceed $900. This leaves $2,100 to cover marketing, taxes, and your personal draw.</span>
+            </div>
+        </section>
+
+        <section id="tax">
+            <h2>Tax Strategies and Financial Reporting</h2>
+            <p>As an established health business, how you classify your income and expenses determines your "Take-Home Pay." It is not about what you make; it is about what you keep.</p>
+            
+            <h3>1. The S-Corp Election (US Context)</h3>
+            <p>Once your coaching practice nets over $60k-$80k/year, electing to be taxed as an S-Corp can save thousands in self-employment taxes by splitting income between a "reasonable salary" and "shareholder distributions."</p>
+            
+            <h3>2. Deductible "Health Tech"</h3>
+            <p>Because the T.R.A.N.S.F.O.R.M. method relies on technology, many items are fully deductible business expenses:</p>
+            <ul>
+                <li>Continuous Glucose Monitors (CGMs) for "research and development."</li>
+                <li>Metabolic testing equipment (Lumen, Breezing, etc.).</li>
+                <li>Professional liability insurance and HIPAA-compliant CRM software.</li>
+                <li>Continuing education (like this certification).</li>
+            </ul>
+        </section>
+
+        <section id="optimization">
+            <h2>Profitability Optimization: The "Leverage" Phase</h2>
+            <p>True financial engineering moves you from "one-to-one" to "one-to-many." Once your individual client results are consistent using the T.R.A.N.S.F.O.R.M. protocols, you can optimize profit by:</p>
+            <ul>
+                <li><strong>Group Coaching Hybrids:</strong> Delivering the "Rewire Mindset" (Module 8) components in a group setting while keeping lab reviews (Module 1) private.</li>
+                <li><strong>Affiliate Revenue:</strong> Partnering with high-quality supplement or lab companies to receive a 10-20% commission on refills or re-tests that occur outside the initial program.</li>
+                <li><strong>Standardized Operations:</strong> Using SOPs (Standard Operating Procedures) to reduce the time spent on admin, effectively increasing your "Hourly Earning Rate."</li>
+            </ul>
+        </section>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">If a practitioner's LTV is $2,000 and their CAC is $800, is this business model sustainable according to the 3:1 gold standard?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    No. The ratio is 2.5:1 ($2,000 / $800). While profitable, it leaves very little room for overhead, taxes, and scaling. The practitioner should either increase LTV (by adding a maintenance phase) or optimize their marketing to lower the CAC to $666 or less.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">Why is "Value-Based Pricing" superior to "Hourly Pricing" for a metabolic health specialist?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Value-Based Pricing decouples your income from your time. It focuses on the outcome (reversing metabolic syndrome, weight loss maintenance) which has a high perceived value ($5k-$10k in healthcare savings), allowing for higher margins and better client "buy-in."
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li><strong>Master the Ratio:</strong> Aim for an LTV that is at least 3x your CAC to ensure long-term business viability.</li>
+                <li><strong>Position as a Specialist:</strong> Premium pricing supports the cost of lab testing and high-level support, differentiating you from "commodity" trainers.</li>
+                <li><strong>Manage the Cycle:</strong> Use pre-payments and continuity memberships to smooth out the inevitable seasonal dips in the fitness industry.</li>
+                <li><strong>Control your COGS:</strong> Budget strictly for laboratory and supplement costs to maintain a gross margin of 70% or higher.</li>
+                <li><strong>Think Tax-First:</strong> Consult with a professional to ensure your business structure (like an S-Corp) minimizes tax liability as you scale.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Farris et al. (2021). "Marketing Metrics: The Manager's Guide to Measuring Marketing Performance." <i>Journal of Business Research.</i></li>
+                <li>IbisWorld (2023). "Personal Trainers in the US - Industry Market Research Report."</li>
+                <li>Gallo, A. (2022). "The Value of Keeping the Right Customers." <i>Harvard Business Review.</i></li>
+                <li>Smith et al. (2020). "The Psychology of High-Ticket Sales in Health and Wellness." <i>International Journal of Coaching Science.</i></li>
+                <li>IRS Publication 535. "Business Expenses: Health and Wellness Practitioner Guidelines."</li>
+                <li>Metabolic Health Alliance (2023). "Economic Impact of Metabolic Coaching vs. Conventional Weight Loss Interventions."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Weight Loss Coach Program | Business Operations Division</p>
+        </footer>
+    </div>
+</body>
+
+</html>

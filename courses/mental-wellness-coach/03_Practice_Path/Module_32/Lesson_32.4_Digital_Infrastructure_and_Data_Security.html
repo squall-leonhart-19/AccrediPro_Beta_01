@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 32.4: Digital Infrastructure and Data Security</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Operations & Security */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🛡️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+            background: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 32: Business Operations</p>
+            <h1 class="lesson-title">Lesson 4: Digital Infrastructure and Data Security</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 4 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Practice Management & EHR</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Automating the Client Journey</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Secure Communication Protocols</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Data Privacy Audits</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Digital Contingency Planning</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Ethical Tech Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate and select HIPAA/GDPR-compliant software for mental wellness coaching.</li>
+                <li>Design an automated client journey that maintains the "human-centric" M.I.N.D.F.U.L. approach.</li>
+                <li>Implement encryption standards for all messaging, video, and file-sharing protocols.</li>
+                <li>Develop a comprehensive digital contingency plan for data breaches and system failures.</li>
+                <li>Perform regular privacy audits of third-party integrations to ensure continuous compliance.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Practice Management & EHR Systems</h2>
+        <p>In the digital age, a Mental Wellness Coach’s infrastructure is more than just a convenience—it is the <span class="highlight">foundation of clinical integrity</span>. While general project management tools (like Trello or Notion) are excellent for internal organization, they often lack the "Privacy by Design" required for handling sensitive mental health data.</p>
+        
+        <p>A <strong>Practice Management Software (PMS)</strong> or <strong>Electronic Health Record (EHR)</strong> serves as the central nervous system of your business. For coaches, these systems must bridge the gap between business efficiency and regulatory compliance (HIPAA in the US, GDPR in the EU, and PIPEDA in Canada).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard Business Tools (e.g., Google Workspace)</th>
+                        <th>Compliant EHR/PMS (e.g., SimplePractice, Jane)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Storage</strong></td>
+                        <td>Server-side encryption only</td>
+                        <td>Zero-knowledge or end-to-end encryption options</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BAA Availability</strong></td>
+                        <td>Only on Enterprise/Paid tiers</td>
+                        <td>Standard inclusion in all tiers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Portal</strong></td>
+                        <td>Often requires third-party plugins</td>
+                        <td>Integrated, secure, and encrypted</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit Logs</strong></td>
+                        <td>Limited visibility on file access</td>
+                        <td>Detailed logs of who viewed/edited data and when</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A <span class="stat-highlight">2023 analysis</span> of digital health privacy found that 88% of standard consumer apps shared user data with third parties, whereas dedicated EHR systems maintained a 99.4% containment rate for Protected Health Information (PHI). Selecting a platform that offers a <strong>Business Associate Agreement (BAA)</strong> is non-negotiable for professional practitioners.</p>
+
+        <h2 id="section2">2. Automating the Client Journey</h2>
+        <p>Automation is not about removing the human element; it is about <span class="highlight">removing the friction</span> that prevents the human element from shining. By automating administrative tasks, you preserve your cognitive bandwidth for the <strong>M.I.N.D.F.U.L. Wellness Method™</strong> implementation.</p>
+
+        <h3>The 5-Stage Automated Workflow</h3>
+        <ol class="content-list">
+            <li><strong>Lead Generation:</strong> A secure contact form on your website that feeds into your CRM, triggering an immediate (automated) welcome email with a link to a discovery call.</li>
+            <li><strong>Onboarding:</strong> Once a client books, the system automatically sends the <span class="highlight">Informed Consent</span>, Liability Waiver, and initial "Map Mental Patterns" intake assessment.</li>
+            <li><strong>Coaching Phase:</strong> Automated session reminders (SMS/Email) reduce no-show rates by an average of <span class="stat-highlight">22-30%</span>, while automated post-session "homework" prompts keep the client engaged in their neuroplasticity work.</li>
+            <li><strong>Billing/Payments:</strong> Recurring invoices and automated payment processing ensure financial stability without the "awkward" money conversations during therapeutic sessions.</li>
+            <li><strong>Offboarding:</strong> An automated 3-month and 6-month follow-up survey to track long-term resilience outcomes and request testimonials.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The Burnout Pivot</p>
+                    <p style="margin:0; color:white; font-size:12px;">Coach: Sarah J. | Practice: Integrative Mind-Body Coaching</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Problem:</strong> Sarah was spending 12 hours per week on manual scheduling, billing, and sending intake PDF forms. She reported high stress and "administrative fatigue," which began to affect her presence during client sessions.</p>
+                <p><strong>Intervention:</strong> Sarah migrated to a HIPAA-compliant PMS (SimplePractice) and automated her "M.I.N.D.F.U.L. Intake" process. She integrated her calendar with her website and set up automated billing.</p>
+                <p><strong>Outcomes:</strong>
+                    <ul>
+                        <li>Administrative time reduced from 12 hours to 2 hours per week.</li>
+                        <li>Client "homework" completion rate increased by 45% due to automated SMS prompts.</li>
+                        <li>Sarah reported a 30% increase in "Session Presence" scores (self-evaluated).</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Secure Communication Protocols</h2>
+        <p>Communication in mental wellness coaching often involves the disclosure of deep-seated traumas, sensitive health data, and "Automatic Negative Thoughts" (ANTs). If this data is intercepted, the damage to the client-coach relationship is often irreparable.</p>
+
+        <p><strong>Encryption Standards:</strong> You must ensure that any platform you use employs <span class="highlight">AES-256 bit encryption</span> (Advanced Encryption Standard). This is the same standard used by banks and military organizations. Furthermore, aim for <strong>End-to-End Encryption (E2EE)</strong>, where only the sender and receiver can decrypt the messages—not even the service provider.</p>
+
+        <h3>Communication Requirements Checklist:</h3>
+        <ul class="content-list">
+            <li><strong>Video Conferencing:</strong> Use platforms like Zoom for Healthcare, Doxy.me, or the integrated video tool in your EHR. Standard Zoom or Skype accounts are generally insufficient for professional coaching.</li>
+            <li><strong>Messaging:</strong> Discourage clients from using standard SMS or WhatsApp. Instead, use the <span class="highlight">Secure Client Portal</span> provided by your PMS or encrypted apps like Signal (if a BAA is in place).</li>
+            <li><strong>File Sharing:</strong> Never email sensitive documents (like brain-health assessments). Upload them to a secure portal where the client must log in to view them.</li>
+        </ul>
+
+        <h2 id="section4">4. Data Privacy Audits & Third-Party Integrations</h2>
+        <p>Even if your primary software is secure, your "Digital Ecosystem" might have weak links. A <strong>Data Privacy Audit</strong> is a systematic review of every tool that touches client data.</p>
+        
+        <p>A <span class="stat-highlight">2022 cybersecurity report</span> found that 60% of data breaches in small professional services occurred through a "third-party integration" (e.g., a non-secure email marketing tool connected to a secure database).</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">Audit Terminology</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Principle of Least Privilege (PoLP)</p>
+                    <p class="definition">Giving staff or software only the minimum level of access necessary to perform their function.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Data Mapping</p>
+                    <p class="definition">The process of identifying exactly where client data enters your business, where it is stored, and who has access to it.</p>
+                </div>
+            </div>
+        </div>
+
+        <p><strong>Audit Steps for Coaches:</strong>
+            <ol>
+                <li><strong>List all software:</strong> Email, Calendar, Payment Processors, CRM, Video Tools.</li>
+                <li><strong>Verify BAA status:</strong> Do you have a signed Business Associate Agreement for each?</li>
+                <li><strong>Review Permissions:</strong> If you have a Virtual Assistant, do they have access to clinical notes they don't need?</li>
+                <li><strong>Check Payment Compliance:</strong> Ensure your payment processor (Stripe, Square) is <span class="highlight">PCI-DSS Level 1</span> compliant.</li>
+            </ol>
+        </p>
+
+        <h2 id="section5">5. Digital Contingency Planning</h2>
+        <p>In the digital world, it is not a matter of <em>if</em> a failure will occur, but <em>when</em>. A Digital Contingency Plan ensures that your practice remains operational and your clients remain safe during a crisis.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "3-2-1" Backup Strategy</div>
+            <p class="principle-text">To prevent data loss (which can be devastating for a coach tracking long-term progress), follow this protocol:</p>
+            <ul>
+                <li><strong>3 copies</strong> of your data (Original + 2 backups).</li>
+                <li><strong>2 different media</strong> (e.g., Cloud storage + Encrypted external drive).</li>
+                <li><strong>1 copy off-site</strong> (A separate secure cloud provider).</li>
+            </ul>
+        </div>
+
+        <h3>Breach Response Protocol</h3>
+        <p>If you suspect a data breach (e.g., your email is hacked), you must follow a legal and ethical response chain:</p>
+        <ul class="content-list">
+            <li><strong>Containment:</strong> Change all passwords immediately and enable Multi-Factor Authentication (MFA).</li>
+            <li><strong>Assessment:</strong> Determine exactly what data was accessed (names, emails, or clinical notes?).</li>
+            <li><strong>Notification:</strong> Under HIPAA/GDPR, you have a legal obligation to notify affected clients within a specific timeframe (usually 72 hours for GDPR).</li>
+            <li><strong>Documentation:</strong> Keep a log of the breach, your response, and the steps taken to prevent recurrence.</li>
+        </ul>
+
+        <h2 id="section6">6. Ethical Tech Implementation</h2>
+        <p>As a Mental Wellness Coach, your use of technology must align with the <strong>M.I.N.D.F.U.L. Wellness Method™</strong>. Technology should <span class="highlight">Foster Connection</span> (Module 5), not create a barrier. If a client is "tech-averse" or suffers from "Digital Anxiety," forcing them into a complex portal may hinder their progress.</p>
+
+        <p>Always offer a "Low-Tech Alternative" for clients who need it, while maintaining security on your end. This might mean mailing physical journals and then scanning them into your secure system yourself, rather than requiring the client to use an app.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is a standard Google Workspace or Dropbox account often insufficient for storing client session notes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Standard accounts usually do not include a Business Associate Agreement (BAA) by default and may not meet the specific audit-logging and encryption requirements of HIPAA/GDPR for sensitive health data.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the "Principle of Least Privilege" (PoLP) and how does it apply to a coaching practice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">PoLP means giving individuals (like a Virtual Assistant) the minimum level of access they need. In coaching, this means an assistant might have access to the schedule but NOT to the sensitive clinical notes or intake forms.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Compliance is the baseline:</strong> Never use non-compliant tools for sensitive client data; always secure a BAA.</li>
+                <li><strong>Automation equals Presence:</strong> Automating the "Client Journey" frees up mental space for high-quality coaching.</li>
+                <li><strong>Encryption is non-negotiable:</strong> Use AES-256 and E2EE for all digital communication to protect the "sanctity of the session."</li>
+                <li><strong>Audit and Back-up:</strong> Conduct quarterly privacy audits and follow the 3-2-1 backup rule to ensure data integrity.</li>
+                <li><strong>Human-Centric Tech:</strong> Ensure your digital infrastructure supports the client's wellness goals rather than adding to their stress.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>IBM Security (2023). "Cost of a Data Breach Report 2023." Ponemon Institute.</li>
+                <li>HHS.gov (2022). "Health Insurance Portability and Accountability Act (HIPAA) Security Rule." U.S. Department of Health & Human Services.</li>
+                <li>Hall, J. L., & McGraw, D. (2014). "For-Profit Health Data: The Use and Abuse of Health Information." <em>Journal of Medical Internet Research</em>.</li>
+                <li>European Data Protection Board (2021). "Guidelines on the concepts of controller and processor in the GDPR." EDPB.</li>
+                <li>Shore, J. H., et al. (2018). "Best Practices in Videoconferencing-Based Telemental Health." <em>American Journal of Psychiatry</em>.</li>
+                <li>PCI Security Standards Council (2022). "Payment Card Industry Data Security Standard (PCI DSS) v4.0."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Mental Wellness Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary M.I.N.D.F.U.L. Wellness Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

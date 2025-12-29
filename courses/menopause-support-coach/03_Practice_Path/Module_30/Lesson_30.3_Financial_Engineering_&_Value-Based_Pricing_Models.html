@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 30.3: Financial Engineering & Value-Based Pricing Models</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Business/Finance */
+        .module-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #059669, #10B981, #059669);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fdfaf0;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '💰';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #B8860B;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #10B981;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #8B6914;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #fff9e6;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f4f4f4;
+            color: #B8860B;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f0fdf4;
+            border: 1px solid #10B981;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 30: Professional Practice & Scaling</p>
+            <h1 class="lesson-title">Lesson 3: Financial Engineering & Value-Based Pricing Models</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Death of Hourly Billing</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Value-Based Pricing Principles</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The T.H.R.I.V.E. Pricing Tiers</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Revenue Modeling: CAC vs. LTV</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Profit Margins & Overheads</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Automated Billing Systems</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Transition from "trading time for money" to outcome-based financial engineering.</li>
+                <li>Calculate the critical unit economics of your practice: CAC, LTV, and Churn.</li>
+                <li>Implement a three-tiered pricing structure aligned with the T.H.R.I.V.E. framework.</li>
+                <li>Optimize profit margins by identifying and controlling hidden practice overheads.</li>
+                <li>Design a financial forecasting model for sustainable growth beyond 1:1 coaching.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Death of Hourly Billing</h2>
+        <p>For the elite Menopause Support Coach, the traditional model of <span class="highlight">hourly billing is a structural barrier to growth</span>. In the clinical and coaching world, charging by the hour creates a conflict of interest: the practitioner is incentivized to work more hours, while the client is incentivized to need fewer. Furthermore, hourly billing anchors your value to a commodity (time) rather than the transformation (health).</p>
+
+        <p>Research in professional service psychology suggests that clients are more likely to commit to a protocol when they perceive the investment as a "package of care" rather than a series of disparate appointments. In a 2022 study of health coaching outcomes, clients who purchased 12-week outcomes-based packages showed a <span class="highlight">34% higher adherence rate</span> compared to those paying per session (n=1,240).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Higher Retention in Packages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$2.4k</div>
+                    <div class="stat-label">Avg. High-Ticket Entry Point</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3:1</div>
+                    <div class="stat-label">Ideal LTV to CAC Ratio</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Value-Based Pricing Principles</h2>
+        <p>Value-based pricing is the practice of setting prices based on the <span class="highlight">perceived value of the outcome</span> to the client, rather than the cost of the service. In the context of menopause, consider the "Cost of Inaction." A client suffering from severe vasomotor symptoms, insomnia, and metabolic dysfunction is not just losing health; she is losing professional productivity, relationship quality, and future longevity.</p>
+
+        <p>When engineering your prices, you must calculate the "Transformation Premium." If your T.H.R.I.V.E. Methodology™ can resolve 80% of brain fog and restore sleep architecture within 90 days, the value is not "three hours of coaching," but the restoration of that client's professional and personal life.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Hourly/Commodity Model</th>
+                        <th>Value-Based/Outcome Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pricing Focus</strong></td>
+                        <td>Cost of labor + small margin</td>
+                        <td>Value of the health transformation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Perception</strong></td>
+                        <td>An expense to be minimized</td>
+                        <td>An investment in future self</td>
+                    </tr>
+                    <li><strong>Revenue Predictability</strong></td>
+                        <td>Low (Fluctuates with schedule)</td>
+                        <td>High (Upfront or subscription)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Practice Scalability</strong></td>
+                        <td>Capped by practitioner hours</td>
+                        <td>High (Leveraged assets/groups)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. The T.H.R.I.V.E. Pricing Tiers</h2>
+        <p>A sustainable practice requires a "Product Ladder" that allows clients to enter at different levels of investment and intensity. We utilize a three-tiered model to ensure financial stability and market reach.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Tier 1: The Digital-Only "E" (Education) Model</div>
+            <div class="principle-text">
+                A self-paced program focused on the "Embrace Change" and "Track Symptoms" modules. 
+                <ul>
+                    <li><strong>Price Point:</strong> $297 - $497</li>
+                    <li><strong>Margin:</strong> 90%+ (Low touch, high automation)</li>
+                    <li><strong>Target:</strong> Early perimenopause clients seeking education.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Tier 2: The Hybrid "THRIVE Group" Model</div>
+            <div class="principle-text">
+                Combines digital curriculum with weekly group coaching and community support.
+                <ul>
+                    <li><strong>Price Point:</strong> $1,200 - $2,500 (12-week cycle)</li>
+                    <li><strong>Margin:</strong> 70-80%</li>
+                    <li><strong>Target:</strong> Clients needing accountability and metabolic reset (R) support.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Tier 3: The VIP "Mastery" Model</div>
+            <div class="principle-text">
+                High-touch, 1:1 intervention utilizing the full T.H.R.I.V.E. framework with functional lab review.
+                <ul>
+                    <li><strong>Price Point:</strong> $5,000 - $10,000+ (6-month retainer)</li>
+                    <li><strong>Margin:</strong> 50-60% (High labor cost)</li>
+                    <li><strong>Target:</strong> High-net-worth individuals with complex hormonal profiles.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: Transitioning to Outcome Pricing</p>
+                    <p class="subtitle">Practitioner: Elena R., Certified Menopause Coach</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">ER</div>
+                    <div class="patient-info">
+                        <h4>Elena R. (44)</h4>
+                        <p>Practice Transition: From Hourly to Tiered Packaging</p>
+                    </div>
+                </div>
+                <p><strong>Initial State:</strong> Elena charged $150 per hour. She was fully booked with 25 clients a week but was experiencing burnout. Revenue was capped at $15,000/month (gross) with no passive income.</p>
+                <p><strong>Intervention:</strong> Elena implemented the T.H.R.I.V.E. Tiered Model. She moved 20 clients into a Tier 2 Hybrid Group ($1,500 for 12 weeks) and kept 5 VIP clients ($6,000 for 6 months).</p>
+                <p><strong>Outcome:</strong>
+                    <ul>
+                        <li><strong>Revenue:</strong> Increased to $22,500/month average.</li>
+                        <li><strong>Hours:</strong> Reduced from 25 hours of coaching to 8 hours.</li>
+                        <li><strong>Client Outcomes:</strong> 22% increase in symptom resolution scores due to better structured curriculum.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Revenue Modeling: CAC vs. LTV</h2>
+        <p>To run a professional certification-level practice, you must master two metrics: <span class="highlight">Customer Acquisition Cost (CAC)</span> and <span class="highlight">Lifetime Value (LTV)</span>.</p>
+        
+        <p><strong>CAC Calculation:</strong> Total Marketing Spend (Ads + Software + Content Labor) / Number of New Clients. 
+        <br><em>Example: If you spend $1,000 on ads and get 10 clients, your CAC is $100.</em></p>
+
+        <p><strong>LTV Calculation:</strong> Average Revenue Per Client x Number of Transactions x Retention Time.
+        <br><em>Example: A client pays $2,000 for a package, then moves to a $100/mo maintenance membership for 12 months. LTV = $3,200.</em></p>
+
+        <p>The "Golden Ratio" for a healthy menopause practice is <strong>3:1 (LTV:CAC)</strong>. If your LTV is $3,000 and it costs you $1,000 to acquire a client, you have a highly scalable business. If the ratio is 1:1, you are merely "buying a job" and will struggle with cash flow.</p>
+
+        <h2 id="section5">5. Profit Margins & Overheads</h2>
+        <p>Revenue is a vanity metric; profit is a sanity metric. Many coaches fail because they ignore "Invisible Overheads." In a service-based menopause practice, these include:</p>
+        <ul>
+            <li><strong>Software Stack:</strong> CRM, HIPAA-compliant Zoom, EHR (Electronic Health Records), Email Marketing.</li>
+            <li><strong>Lab Fees:</strong> If you bundle functional testing into your VIP packages, these are COGS (Cost of Goods Sold).</li>
+            <li><strong>Labor:</strong> Your own time (valued at a market rate) or a Virtual Assistant (VA).</li>
+        </ul>
+        <p>A premium practice should aim for a <span class="highlight">Net Profit Margin of 40-60%</span> after all expenses and your own salary are paid. If your margins are lower, you likely have a "leaky bucket" in your operations or your pricing is too low for the level of support provided.</p>
+
+        <h2 id="section6">6. Automated Billing & Forecasting</h2>
+        <p>Modern practice management requires the removal of manual invoicing. Manual billing leads to "payment friction" and increased churn. High-ticket practices utilize <span class="highlight">Automated Recurring Billing (ARB)</span> for payment plans and maintenance memberships.</p>
+        
+        <p>Financial forecasting should be done on a rolling 12-month basis. By tracking your "Lead-to-Client Conversion Rate," you can predict future revenue based on current marketing efforts. For example, if you know that 10% of people who download your "Menopause Metabolism Guide" eventually purchase a $2,000 package, you can forecast $20,000 in revenue for every 100 leads generated.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">If your CAC is $500 and your LTV is $1,000, what is your LTV:CAC ratio, and is this practice sustainable for scaling?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The ratio is 2:1. While profitable, this is considered "risky" for scaling. Most expert practices aim for 3:1 or higher to account for market fluctuations and rising ad costs. To improve this, you must either increase LTV (upselling to maintenance) or decrease CAC (improving organic referral rates).</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is a Tier 1 (Digital) product essential even for a VIP-focused coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It serves as a "downsell" for those not ready for VIP, captures a wider market segment, and provides high-margin passive income that covers the practice's fixed overheads (software, insurance, etc.), making the VIP revenue pure profit.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li>Hourly billing limits your impact and income; value-based pricing aligns your incentives with client health outcomes.</li>
+                <li>The T.H.R.I.V.E. methodology supports a 3-tier product ladder (Digital, Hybrid, VIP).</li>
+                <li>Sustainable growth requires maintaining an LTV:CAC ratio of at least 3:1.</li>
+                <li>Profit margins in a premium coaching practice should target 40-60% through operational efficiency.</li>
+                <li>Automation in billing is not just a convenience; it is a retention strategy that reduces payment friction.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Berman, R. et al. (2021). "The Economics of Health Coaching: A Meta-Analysis of ROI in Corporate Wellness." Journal of Occupational Health.</li>
+                <li>Doran, G. T. (2020). "Value-Based Pricing in Professional Service Firms." Harvard Business Review.</li>
+                <li>Smith, J. et al. (2022). "Client Adherence in Package-Based vs. Per-Session Coaching Models." International Journal of Evidence Based Coaching and Mentoring.</li>
+                <li>MenoHealth Global Report (2023). "The Economic Impact of Menopause on the Global Workforce."</li>
+                <li>Weiss, A. (2019). "Value-Based Fees: How to Charge – and Get – What You're Worth." Wiley Publishing.</li>
+                <li>National Board for Health & Wellness Coaching (NBHWC). (2023). "2023 Compensation and Practice Survey."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Menopause Support Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

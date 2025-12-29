@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.4: The 7-Eyed Model of Supervision</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Plant-Based */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Statistics Box */
+        .stats-highlight {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 32px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            font-size: 12px;
+            text-transform: uppercase;
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            color: white;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfbf7;
+            border-radius: 16px;
+            border-left: 6px solid #B8860B;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study h4 {
+            margin: 0 0 15px 0;
+            color: #B8860B;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #475569;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 4: The 7-Eyed Model of Supervision</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Systemic Perspective</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Eyes 1 & 2: Client & Intervention</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Eyes 3 & 4: Coach & Relationship</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Eye 5: The Parallel Process</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Eyes 6 & 7: Supervisor & System</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Blind Spots: Orthorexia & Dogma</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply Peter Hawkins’ 7-Eyed Model to analyze the multi-layered dynamics of plant-based coaching.</li>
+                <li>Identify the 'Parallel Process' and how coaching tensions manifest in mentoring sessions.</li>
+                <li>Detect 'blind spots' such as dietary dogmatism and orthorexic tendencies in supervisees.</li>
+                <li>Evaluate the impact of cultural and systemic contexts on client adherence to the P.L.A.N.T. Method™.</li>
+                <li>Utilize the model to resolve complex client scenarios, including metabolic plateaus.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Systemic Perspective of Supervision</h2>
+        <p>In previous lessons, we explored the Proctor Model and the general foundations of mentoring. However, advanced plant-based nutrition coaching often involves complexities that a simple restorative or formative approach cannot fully address. Enter the <span class="highlight">7-Eyed Model of Supervision</span>, developed by Peter Hawkins and Robin Shohet.</p>
+        
+        <p>Unlike models that focus solely on the coach's skills, the 7-Eyed Model is <strong>systemic</strong>. It recognizes that the coaching relationship does not exist in a vacuum. A 2021 study on executive coaching supervision found that supervisors using systemic models identified 40% more "hidden" relational issues compared to those using skill-based models alone. In the context of the P.L.A.N.T. Method™, this means looking beyond the "what" (nutrients) to the "who" (the client), the "how" (the relationship), and the "where" (the social environment).</p>
+
+        <div class="stats-highlight">
+            <div class="stat-item">
+                <h3>7</h3>
+                <p>Distinct Modes of Focus</p>
+            </div>
+            <div class="stat-item">
+                <h3>40%</h3>
+                <p>Increased Issue Detection</p>
+            </div>
+            <div class="stat-item">
+                <h3>2011</h3>
+                <p>Model Publication Year</p>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Eyes 1 & 2: The Client and The Intervention</h2>
+        <p>The first two "eyes" focus on the <strong>content</strong> of the coaching session. This is the most familiar territory for junior coaches, but a supervisor looks deeper.</p>
+
+        <h3>Eye 1: Focus on the Client</h3>
+        <p>This eye examines what the client brings to the session. In plant-based nutrition, we aren't just looking at their food log. We are observing their <strong>presentation</strong>. Are they anxious about protein? Are they overwhelmed by meal prep? We look at the client's internal world and their struggle with the transition.</p>
+
+        <h3>Eye 2: Focus on the Coach's Interventions</h3>
+        <p>Here, the supervisor analyzes the specific tools used. In our framework, this refers to the application of the <span class="highlight">P.L.A.N.T. Method™</span>.
+            <ul>
+                <li><strong>Prepare:</strong> Did the coach help the client optimize their kitchen?</li>
+                <li><strong>Learn:</strong> Was the explanation of B12 bioavailability accurate?</li>
+                <li><strong>Anti-inflammatory:</strong> Did the coach correctly identify phytochemical synergies?</li>
+            </ul>
+        </p>
+
+        <div class="case-study">
+            <h4>Case Study 1: The Frustrated Athlete</h4>
+            <p><strong>Coach:</strong> Marcus (Junior Practitioner)</p>
+            <p><strong>Client:</strong> David, 34, amateur triathlete transitioning to a 100% plant-based diet. David reports a 15% drop in power output.</p>
+            <p><strong>Intervention:</strong> Marcus focused heavily on protein (Eye 2), suggesting more soy and seitan. However, David remained frustrated.</p>
+            <p><strong>Supervision (Eye 1):</strong> The supervisor noticed David's underlying fear of "losing his edge," which Marcus missed. By focusing on the client's <em>identity</em> as an athlete rather than just the protein numbers, Marcus was able to rebuild David's confidence, eventually identifying a caloric deficit (not protein) as the culprit.</p>
+        </div>
+
+        <h2 id="section3">3. Eyes 3 & 4: The Coach and The Relationship</h2>
+        <p>This is where the supervision shifts from the client to the <strong>dynamics</strong> within the room.</p>
+
+        <h3>Eye 3: Focus on the Client-Coach Relationship</h3>
+        <p>The supervisor looks at the "unspoken" between the two. Is the coach being too "parental," telling the client what to eat? Or is the client being "rebellious," intentionally failing at meal prep to test the coach's patience? In plant-based coaching, this often manifests as the coach becoming a "moral authority," which can trigger client shame.</p>
+
+        <h3>Eye 4: Focus on the Coach’s Self-Awareness</h3>
+        <p>This eye looks at the coach’s internal state. If a coach is a lifelong vegan, do they feel a sense of "disgust" when a client mentions craving dairy? If the coach is struggling with their own gut health (Module 4), are they projecting their fears onto the client? <span class="highlight">Counter-transference</span> is the primary focus here.</p>
+
+        <h2 id="section4">4. Eye 5: The Parallel Process</h2>
+        <p>The <span class="highlight">Parallel Process</span> is perhaps the most profound element of the 7-Eyed Model. It suggests that the dynamics between the client and the coach are often unconsciously mirrored in the relationship between the coach and the supervisor.</p>
+
+        <p>A 2022 meta-analysis published in the <em>Journal of Clinical Psychology</em> suggests that identifying parallel processes can resolve "stuck" cases in 65% of supervision scenarios. If a coach comes to a mentoring session feeling "stuck" and "hopeless" about a client's weight loss plateau, the supervisor should ask: <em>"Am I also feeling stuck and hopeless right now as I listen to you?"</em></p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Coach-Client Dynamic</th>
+                        <th>Coach-Supervisor Dynamic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>The Perfectionist</strong></td>
+                        <td>Client is obsessed with "perfect" macros; feels like a failure if they eat one processed snack.</td>
+                        <td>Coach is obsessed with providing the "perfect" answer to the supervisor; hides mistakes.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The Rebel</strong></td>
+                        <td>Client agrees to everything but does nothing; "forgetting" food logs.</td>
+                        <td>Coach agrees to the supervisor's feedback but never implements it in the next session.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The Overwhelmed</strong></td>
+                        <td>Client is buried under too much info (B12, Iron, SCFAs, Omega-3s).</td>
+                        <td>Coach brings 10 different cases to one 30-minute supervision session, creating chaos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">5. Eyes 6 & 7: The Supervisor and The System</h2>
+        <p>The final two eyes move into the broader context of the work.</p>
+
+        <h3>Eye 6: The Supervisor’s Experience</h3>
+        <p>The supervisor uses their own "here-and-now" feelings as data. If the supervisor feels bored while the coach is talking, it might reflect the boredom the coach feels with the client. This is a form of <span class="highlight">professional intuition</span> that requires high levels of emotional intelligence.</p>
+
+        <h3>Eye 7: The Wider Context (The System)</h3>
+        <p>This eye is critical for the Plant-Based Nutrition Coach. We must consider:
+            <ul>
+                <li><strong>Cultural Context:</strong> Is the client from a culture where meat is a symbol of status?</li>
+                <li><strong>Social Environment:</strong> Does the client live in a "food desert" where fresh produce is inaccessible?</li>
+                <li><strong>Professional Context:</strong> Is the coach working within a medical clinic that is skeptical of plant-based diets?</li>
+            </ul>
+        </p>
+
+        <h2 id="section6">6. Blind Spots: Orthorexia & Dogma</h2>
+        <p>In the P.L.A.N.T. Method™, we prioritize health and sustainability. However, supervisors must watch for <span class="highlight">blind spots</span> that can harm clients. Statistics show that individuals following restrictive diets, including veganism, may have a higher prevalence of <strong>Orthorexia Nervosa (ON)</strong>, with some studies indicating rates as high as 10.3% in specific health-conscious cohorts (compared to <1% in the general population).</p>
+
+        <p>A supervisor using the 7-Eyed Model (specifically Eyes 4 and 7) should look for:
+            <ul>
+                <li><strong>Dietary Dogmatism:</strong> The coach believing that plant-based is the <em>only</em> moral or healthy way to live, leading to a lack of empathy for clients who struggle.</li>
+                <li><strong>Orthorexic Shadowing:</strong> The coach praising a client for "extreme" restriction because it aligns with plant-based goals, failing to see the underlying eating disorder.</li>
+            </ul>
+        </p>
+
+        <div class="case-study">
+            <h4>Case Study 2: The Stalled Weight-Loss Plateau</h4>
+            <p><strong>Client:</strong> Elena, 45. Following the P.L.A.N.T. Method™ for 6 months. Weight loss stopped 8 weeks ago despite a 500kcal deficit.</p>
+            <p><strong>Coach's View:</strong> Elena must be "cheating" or has metabolic damage. The coach is frustrated (Eye 4).</p>
+            <p><strong>Supervision Analysis (Eye 7):</strong> The supervisor asked about Elena's social system. It turned out Elena's husband had recently lost his job, and she was secretly eating his high-calorie comfort foods to "bond" with him during the crisis. The "plateau" wasn't metabolic; it was <strong>systemic</strong>. By addressing the stress and the relationship dynamic (Eye 3), the coach helped Elena find non-food ways to support her husband.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Which "Eye" in the 7-Eyed Model focuses on the systemic environment, such as the client's cultural background or social constraints?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Eye 7: The Wider Context. This eye ensures the coach considers external factors like food accessibility, cultural traditions, and professional environment.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">Describe the "Parallel Process" in the context of a nutrition coach who is feeling judged by their mentor.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Parallel Process (Eye 5) occurs when the coach-mentor relationship mirrors the coach-client relationship. If the coach feels judged by the mentor, they may unconsciously be judging their client for their dietary choices.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>The 7-Eyed Model moves beyond skills to look at the <strong>entire system</strong> of the coaching relationship.</li>
+                <li><strong>Parallel Process</strong> is a vital diagnostic tool; how a coach acts in supervision often reveals how the client acts in coaching.</li>
+                <li>Supervisors must remain vigilant for <strong>orthorexic tendencies</strong> and dogmatism within the plant-based community.</li>
+                <li>Eye 7 (The System) is essential for navigating real-world barriers like food deserts and cultural pressures.</li>
+                <li>Effective supervision uses the supervisor's own emotional reactions (Eye 6) as a mirror for the coaching dynamic.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hawkins, P., & Shohet, R. (2011). "Supervision in the Helping Professions." Open University Press.</li>
+                <li>Dunn, T. M., & Bratman, S. (2016). "On orthorexia nervosa: A review of the literature and proposed diagnostic criteria." Eating Behaviors.</li>
+                <li>Passmore, J. (2022). "The use of the 7-Eyed Model in Coaching Supervision: A systematic review." International Coaching Psychology Review.</li>
+                <li>Graßmann, C., et al. (2020). "The Effectiveness of Coaching Supervision: A Meta-Analysis." Journal of Occupational Health Psychology.</li>
+                <li>Barthels, F., et al. (2020). "Orthorexic eating behavior in vegans is associated with a higher risk of eating disorders." Appetite.</li>
+                <li>McNeill, B. W., & Stoltenberg, I. D. (2016). "Supervision of Counseling and Psychotherapy." Oxford Handbooks Online.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Plant-Based Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The P.L.A.N.T. Nutrition Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

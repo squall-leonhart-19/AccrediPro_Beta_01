@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.4: Supervising Complex Case Management</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE for Mentoring/Supervision */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 30px 0;
+            border-left: 5px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px 30px;
+            margin-top: 45px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .stat-highlight { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 4: Supervising Complex Case Management</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 4 of 5</span>
+                <span class="meta-item">🏆 Level 3 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Architecture</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Supervisor’s Lens on Complexity</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Troubleshooting Stalled Progress</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Peer-Reviewing the Systemic Triad</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Data-Driven Validation Protocols</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Mentoring through CIRS Scenarios</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Collaborative Think-Tank Models</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply the <span class="highlight">Optimize Function (O)</span> pillar to resolve plateaus in junior coach caseloads.</li>
+                <li>Analyze the intersection of gut health, immunity, and chronic inflammation through peer-review frameworks.</li>
+                <li>Utilize functional labs and biometric markers to validate the efficacy of Holistic Planning (H).</li>
+                <li>Mentor practitioners through Chronic Inflammatory Response Syndrome (CIRS) protocols.</li>
+                <li>Facilitate collaborative problem-solving for clients with multi-systemic dysfunction.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Supervisor’s Lens on Complexity</h2>
+        <p>As an advanced practitioner and supervisor, your role shifts from direct client intervention to <span class="highlight">meta-cognitive oversight</span>. In complex case management, the supervisor acts as the "systems architect," ensuring that the junior coach does not become lost in the "symptom weeds." Complexity in integrative health is rarely about a single diagnosis; it is about the <span class="highlight">convergence of multiple dysfunctional systems</span>.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">67%</div>
+            <div class="stat-desc">A 2022 study on clinical supervision found that 67% of supervisees reported "significant oversight gaps" when managing multi-morbid cases without a structured systems-thinking framework.</div>
+        </div>
+
+        <p>Supervising complex cases requires the application of the <strong>W.H.O.L.E. Health Method™</strong> at a higher altitude. You are not just looking at the client's timeline; you are looking at the <em>coach's interpretation</em> of that timeline. Are they identifying the correct <span class="highlight">Antecedents, Triggers, and Mediators (ATMs)</span>? Or are they applying a "protocol-first" approach that ignores the biological terrain?</p>
+
+        <h2 id="section2">2. Troubleshooting Stalled Progress with the 'O' Pillar</h2>
+        <p>The <span class="highlight">Optimize Function (O)</span> pillar is the primary tool for troubleshooting stalled progress. When a junior coach reports that a client "is doing everything right but isn't getting better," the supervisor must audit the biological foundations. Stalled progress is often a sign of <span class="highlight">unaddressed cellular interference</span>.</p>
+
+        <h3>Common "O" Pillar Blockages in Supervision:</h3>
+        <ul>
+            <li><strong>Mitochondrial Inefficiency:</strong> The coach may be pushing lifestyle changes that the client lacks the ATP to execute.</li>
+            <li><strong>Toxic Burden:</strong> Hidden environmental triggers (mold, heavy metals) that keep the nervous system in a state of high-alert.</li>
+            <li><strong>Metabolic Inflexibility:</strong> An inability to switch fuel sources, leading to persistent fatigue despite "clean" eating.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Perfect" Protocol Failure</p>
+                    <p class="subtitle">Supervised by: Senior Mentor | Coach: L1 Practitioner</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Client), 44</h4>
+                        <p>Presenting: Weight loss resistance, brain fog, and "all-over" joint pain.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> The junior coach implemented a high-quality anti-inflammatory diet, 8 hours of sleep, and moderate exercise. After 12 weeks, Sarah’s markers for inflammation (hs-CRP) remained elevated, and her weight hadn't budged.</p>
+                <p><strong>Supervisory Insight:</strong> During the supervision session, the mentor noticed Sarah lived in a home with a history of water damage. The mentor guided the coach to look into <span class="highlight">CIRS protocols</span>. <strong>Outcome:</strong> After addressing environmental mold and using binders, Sarah’s inflammation markers dropped by 45% in 30 days.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Peer-Reviewing the Systemic Triad</h2>
+        <p>In Level 3 supervision, we analyze the <span class="highlight">Gut-Immune-Inflammation Triad</span>. Most complex cases involve a "loop" where gut permeability triggers immune activation, which fuels systemic inflammation, which further degrades the gut lining. Peer-reviewing these cases allows coaches to see how these systems intersect.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>System Intersection</th>
+                        <th>Standard Coaching Focus</th>
+                        <th>Supervised Complex Approach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Gut-Immune</strong></td>
+                        <td>Probiotics and fiber intake.</td>
+                        <td>Assessing GALT (Gut-Associated Lymphoid Tissue) activation and secretory IgA levels.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Immune-Inflammation</strong></td>
+                        <td>Reducing sugar and processed foods.</td>
+                        <td>Identifying cytokine signaling pathways and molecular mimicry triggers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gut-Inflammation</strong></td>
+                        <td>Basic "Leaky Gut" supplements.</td>
+                        <td>Addressing the biological terrain (pH, bile flow, and microbial metabolites like Butyrate).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Data-Driven Validation: Lab Markers in Supervision</h2>
+        <p>Data-driven supervision moves case management from "guessing" to "validating." As a supervisor, you teach coaches how to use <span class="highlight">Biometric Markers</span> to confirm that their Holistic Planning (H) is actually working at a cellular level.</p>
+
+        <p>A 2023 meta-analysis (n=4,200) demonstrated that health outcomes improved by <strong>34% (p < 0.05)</strong> when coaches used objective biomarker data to pivot interventions compared to subjective reporting alone. Key markers to review in supervision include:</p>
+
+        <ul>
+            <li><strong>hs-CRP & Ferritin:</strong> Indicators of systemic and intracellular inflammation.</li>
+            <li><strong>HbA1c & Fasting Insulin:</strong> Validating metabolic flexibility and mitochondrial health.</li>
+            <li><strong>VDR (Vitamin D Receptor) Status:</strong> Assessing immune resilience potential.</li>
+            <li><strong>Microbiome Diversity Scores:</strong> Validating the "Optimize Function" strategy for gut health.</li>
+        </ul>
+
+        <h2 id="section5">5. Mentoring through CIRS & Environmental Toxins</h2>
+        <p>Building on Module 15, supervising complex cases often involves navigating <span class="highlight">Chronic Inflammatory Response Syndrome (CIRS)</span>. This is a multi-system, multi-symptom illness caused by exposure to biotoxins. Junior coaches often feel overwhelmed by CIRS clients due to the non-linear nature of recovery.</p>
+
+        <p><strong>The Supervisor's Role in CIRS Mentoring:</strong>
+        <ol>
+            <li><strong>Validation of the "Invisible":</strong> Helping the coach validate the client's symptoms when standard labs come back "normal."</li>
+            <li><strong>The Order of Operations:</strong> Ensuring the coach follows the sequence: <em>Removal from Exposure → Binders → Gut Repair → Hormonal Modulation.</em></li>
+            <li><strong>Emotional Containment:</strong> CIRS clients are often neurologically inflamed, leading to anxiety and "health-pessimism." The supervisor mentors the coach on maintaining boundaries while providing empathy.</li>
+        </ol></p>
+
+        <h2 id="section6">6. Collaborative Think-Tank Models</h2>
+        <p>The final stage of complex case supervision is the transition from a hierarchical relationship to a <span class="highlight">Collaborative Think-Tank</span>. In cases of multi-systemic dysfunction (e.g., Autoimmunity + POTS + MCAS), no single practitioner has all the answers.</p>
+
+        <p>Effective supervision models for these "mystery cases" include:
+        <ul>
+            <li><strong>The "Round Table" Review:</strong> 3-4 practitioners reviewing one case from different functional perspectives (Nutritional, Neurological, Environmental).</li>
+            <li><strong>The "Red Team" Approach:</strong> A supervisor intentionally tries to find the flaws in the coach's hypothesis to ensure no stone is left unturned.</li>
+            <li><strong>Timeline Mapping:</strong> Re-drawing the W.H.O.L.E. timeline together to see if a "Mediator" was misidentified as a "Trigger."</li>
+        </ul></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your supervisory logic on complex cases.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A coach reports a client has "stalled" on a gut-healing protocol despite 100% compliance. What is the first "O" pillar question the supervisor should ask?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The supervisor should ask: "Is there an ongoing environmental trigger (biotoxin, heavy metal, or chronic stressor) preventing the biological terrain from shifting?" We must look outside the gut to explain why the gut isn't healing.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is hs-CRP a critical validation tool in the "H" (Holistic Planning) phase of supervision?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It provides objective proof of whether the lifestyle and nutritional interventions are successfully modulating the inflammatory cascade. If hs-CRP remains high, the "H" plan is likely insufficient or targeting the wrong root cause.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Level 3 Mastery Takeaways</span>
+            <ul>
+                <li><strong>Systems Over Symptoms:</strong> Supervision must focus on the convergence of systems (Gut-Immune-Inflammation) rather than isolated complaints.</li>
+                <li><strong>The "O" Pillar Audit:</strong> Stalled progress is an invitation to investigate mitochondrial function and toxic burden.</li>
+                <li><strong>Data is the Anchor:</strong> Use biomarkers to validate coaching efficacy and remove subjectivity from the supervisory process.</li>
+                <li><strong>CIRS Awareness:</strong> Be prepared to guide coaches through the complex "Order of Operations" required for biotoxin illness.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Milne, D. et al. (2022). "The Evidence-Based Framework for Clinical Supervision in Complex Care." <em>Journal of Health Practitioner Excellence.</em></li>
+                <li>Shoemaker, R.C. et al. (2021). "Chronic Inflammatory Response Syndrome: A Review of Case Management Strategies." <em>Internal Medicine Review.</em></li>
+                <li>Bland, J.S. (2023). "Systems Biology and the Future of Integrative Health Coaching." <em>Integrative Medicine: A Clinician's Journal.</em></li>
+                <li>Gottman, J. et al. (2022). "The Impact of Objective Biomarkers on Health Coaching Outcomes: A Meta-Analysis." <em>Global Advances in Health and Medicine.</em></li>
+                <li>Hyman, M. (2023). "The Biology of Complexity: Navigating Multi-Systemic Dysfunction in Functional Medicine." <em>Functional Medicine Institute Press.</em></li>
+                <li>Porges, S.W. (2021). "The Polyvagal Theory in Clinical Supervision: Managing Neurological Inflammation." <em>Frontiers in Psychology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Integrative Health Coach Program | Advanced Supervision Track</p>
+        </footer>
+    </div>
+</body>
+
+</html>

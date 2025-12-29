@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.2: Body Composition Analysis for Athletes</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Results Tracking */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f8fafc;
+            border: 1px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-right: 15px;
+        }
+
+        .stat-text {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: R: Results Tracking</p>
+            <h1 class="lesson-title">Lesson 6.2: Body Composition Analysis for Athletes</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#phys-comp"><span class="section-num">1</span>Physiology of Composition</a></li>
+                <li><a href="#lab-gold"><span class="section-num">2</span>Laboratory Gold Standards</a></li>
+                <li><a href="#field-methods"><span class="section-num">3</span>Field Methods & Skinfolds</a></li>
+                <li><a href="#standardization"><span class="section-num">4</span>The Standardization Protocol</a></li>
+                <li><a href="#power-weight"><span class="section-num">5</span>Power-to-Weight Dynamics</a></li>
+                <li><a href="#sport-specific"><span class="section-num">6</span>Sport-Specific Thresholds</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between 2-compartment and multi-compartment body composition models.</li>
+                <li>Evaluate the accuracy and limitations of DEXA, Hydrostatic Weighing, and BIA in athletic populations.</li>
+                <li>Implement the PERFORM™ Standardization Protocol to minimize measurement error.</li>
+                <li>Calculate Fat-Free Mass Index (FFMI) and Power-to-Weight ratios for performance forecasting.</li>
+                <li>Identify sport-specific body fat ranges while accounting for individual physiological variance.</li>
+            </ul>
+        </div>
+
+        <h2 id="phys-comp">1. The Physiology of Athletic Body Composition</h2>
+        <p>In the <span class="highlight">PERFORM Athletic Method™</span>, we move beyond the scale. While total body mass matters for weight-class athletes, the <em>quality</em> of that mass dictates performance. We view body composition through the lens of <span class="highlight">compartmental modeling</span>.</p>
+        
+        <p>Most field methods use a <strong>2-compartment (2C) model</strong>, which divides the body into Fat Mass (FM) and Fat-Free Mass (FFM). However, elite sports nutrition requires an understanding of the <strong>4-compartment (4C) model</strong>, which further divides FFM into bone mineral, total body water, and residual lean tissue (muscle/organs). This is critical because an athlete’s hydration status or glycogen storage can fluctuate by 2–4 kg, leading a 2C model (like BIA) to erroneously report a gain in "muscle."</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">±1.5%</div>
+            <div class="stat-text">The typical margin of error for a 4-compartment model, the highest standard in athletic research.</div>
+        </div>
+
+        <h2 id="lab-gold">2. Laboratory Gold Standards: DEXA and Hydrostatic Weighing</h2>
+        <p>When high-stakes decisions are being made—such as determining an athlete's minimum competitive weight or assessing bone density after a stress fracture—laboratory methods are required.</p>
+
+        <p><strong>Dual-Energy X-ray Absorptiometry (DEXA):</strong> Long considered the "gold standard" for its ability to provide regional data (e.g., how much muscle is in the left leg vs. the right). DEXA measures bone mineral density, lean soft tissue, and fat mass. However, it is sensitive to <span class="highlight">glycogen and hydration</span>. A 2022 study showed that a single high-carbohydrate loading phase could "increase" lean mass readings on a DEXA by up to 1.2 kg due to water binding with glycogen.</p>
+
+        <p><strong>Hydrostatic Weighing & BodPod:</strong> These rely on densitometry (Body Density = Mass / Volume). While highly accurate, they assume a constant density of fat-free mass (1.100 g/cm³). This assumption often fails in athletes with high bone density (like weightlifters) or those with low bone density (some endurance athletes), potentially overestimating or underestimating fat percentages.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Standard Error (SEE)</th>
+                        <th>Primary Pros</th>
+                        <th>Primary Cons</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>DEXA</td>
+                        <td>1.2 - 2.5%</td>
+                        <td>Regional analysis, Bone density</td>
+                        <td>Radiation, Cost, Hydration sensitive</td>
+                    </tr>
+                    <tr>
+                        <td>BodPod</td>
+                        <td>2.0 - 3.5%</td>
+                        <td>Fast, Non-invasive</td>
+                        <td>Sensitive to air in hair/clothing</td>
+                    </tr>
+                    <tr>
+                        <td>Skinfolds</td>
+                        <td>3.0 - 5.0%</td>
+                        <td>Portable, Cost-effective</td>
+                        <td>Technician dependent</td>
+                    </tr>
+                    <tr>
+                        <td>BIA</td>
+                        <td>3.5 - 8.0%</td>
+                        <td>Easy to use</td>
+                        <td>Highly hydration dependent</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="field-methods">3. Field Methods: Skinfolds and BIA</h2>
+        <p>For the Sports Nutrition Coach, consistency usually trumps absolute accuracy. This is where <span class="highlight">Skinfold Calipers</span> shine. When performed by an ISAK-trained (International Society for the Advancement of Kinanthropometry) practitioner, skinfolds provide a direct measure of subcutaneous fat.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip: Use Raw Sums</p>
+            <p>Avoid converting skinfold millimeters into "Body Fat %" using equations (like Jackson-Pollock). These equations were developed for general populations. Instead, track the <strong>Sum of 7 or 8 Skinfolds</strong>. If the sum drops from 80mm to 72mm, the athlete has lost fat, regardless of what a flawed percentage formula says.</p>
+        </div>
+
+        <p><strong>Bioelectrical Impedance Analysis (BIA):</strong> BIA measures the resistance to an electrical current. Since muscle is ~75% water and fat is ~10-15% water, the current moves faster through muscle. While convenient, BIA is notoriously unreliable in athletes due to post-exercise fluid shifts and skin temperature changes. It should only be used under strict standardization.</p>
+
+        <h2 id="standardization">4. The PERFORM™ Standardization Protocol</h2>
+        <p>To ensure the "R" in Results Tracking is valid, coaches must enforce a strict measurement protocol. Without this, you are tracking noise, not progress.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Morning Baseline" Protocol</div>
+            <div class="principle-text">
+                All measurements must be taken:
+                <ul>
+                    <li><strong>Time:</strong> Upon waking, after first void (urination).</li>
+                    <li><strong>Nutrition:</strong> Fasted (no food or water for 8-12 hours).</li>
+                    <li><strong>Exercise:</strong> At least 12-24 hours post-intense exercise (to avoid inflammation/edema).</li>
+                    <li><strong>Cycle:</strong> For female athletes, measurements should ideally occur during the same phase of the menstrual cycle (e.g., Early Follicular) to account for hormonal water retention.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "False" Muscle Gain</p>
+                    <p class="subtitle">BIA Inaccuracy in Competition Prep</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 24</h4>
+                        <p>Natural Bodybuilder | 4 Weeks Out</p>
+                    </div>
+                </div>
+                <p>Marcus used a high-end multi-frequency BIA scale to track his progress. During a "refeed" week where carbohydrate intake was doubled, the scale reported he gained 3.2 lbs of muscle and lost 1.5% body fat in 48 hours.</p>
+                <p><strong>The Reality:</strong> Marcus had not built 3 lbs of contractile tissue in two days. The increase in muscle glycogen pulled water into the intracellular space. The BIA device interpreted this increased conductivity (water) as "Lean Tissue."</p>
+                <p><strong>Outcome:</strong> By using the <span class="highlight">PERFORM™ Method</span>, his coach focused on skinfold sums, which remained stable, confirming the "gain" was merely metabolic water, preventing Marcus from prematurely cutting calories.</p>
+            </div>
+        </div>
+
+        <h2 id="power-weight">5. Power-to-Weight Dynamics & FFMI</h2>
+        <p>In sports like cycling, rock climbing, or sprinting, the <strong>Power-to-Weight Ratio (W/kg)</strong> is the ultimate metric. However, simply being "lighter" isn't always better. If weight loss comes from Lean Body Mass (LBM), absolute power drops, often leading to a net decrease in the ratio.</p>
+
+        <p><strong>Fat-Free Mass Index (FFMI):</strong> This is a more useful metric than BMI for athletes. It accounts for muscle mass relative to height.
+            <br><em>Formula: FFMI = [LBM (kg) / Height (m)²]</em>
+        </p>
+        <p>A typical natural athlete may max out at an FFMI of 22–25. Tracking FFMI helps a coach determine if an athlete is near their genetic ceiling for muscle mass, which shifts the focus from "building" to "optimizing" metabolic efficiency.</p>
+
+        <h2 id="sport-specific">6. Sport-Specific Body Composition Ranges</h2>
+        <p>There is no "perfect" body fat percentage. A male offensive lineman in the NFL with 12% body fat would likely be underpowered and under-recovered, while a marathoner at 18% would be carrying unnecessary "dead weight."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sport/Position</th>
+                        <th>Male BF% Range</th>
+                        <th>Female BF% Range</th>
+                        <th>Performance Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Distance Running</td>
+                        <td>5 - 10%</td>
+                        <td>12 - 18%</td>
+                        <td>Economy / Thermoregulation</td>
+                    </tr>
+                    <tr>
+                        <td>Basketball</td>
+                        <td>8 - 12%</td>
+                        <td>16 - 22%</td>
+                        <td>Vertical Leap / Agility</td>
+                    </tr>
+                    <tr>
+                        <td>Rugby (Forwards)</td>
+                        <td>15 - 20%</td>
+                        <td>22 - 28%</td>
+                        <td>Momentum / Force Production</td>
+                    </tr>
+                    <tr>
+                        <td>Bodybuilding (Comp)</td>
+                        <td>3 - 6%</td>
+                        <td>8 - 12%</td>
+                        <td>Aesthetics (Non-functional)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>As a coach, you must balance the <span class="highlight">Performance Threshold</span> (the leanest an athlete can be while still performing well) with the <span class="highlight">Health Threshold</span> (the leanest an athlete can be before hormonal dysfunction, such as RED-S, occurs). We will dive deeper into RED-S in Module 6, Lesson 4.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "Sum of Skinfolds" often preferred over "Body Fat Percentage" in elite athletic tracking?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Skinfold equations (like Jackson-Pollock) are generalized and often inaccurate for muscular athletes. Tracking the raw sum of millimeters provides a direct, objective measure of subcutaneous fat changes without the error introduced by population-based formulas.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">An athlete undergoes a DEXA scan while severely dehydrated. How will this likely affect the "Lean Mass" reading?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It will likely show a false decrease in Lean Mass. DEXA identifies lean soft tissue partly by its water content; dehydration reduces the volume of that tissue, causing the scanner to underestimate muscle mass.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Weight is a Proxy:</strong> Composition (LBM vs. FM) is the true driver of athletic potential and power-to-weight ratios.</li>
+                <li><strong>Standardization is King:</strong> Without controlling for hydration, glycogen, and time of day, body comp data is largely unusable.</li>
+                <li><strong>Context Matters:</strong> Use 4-compartment thinking to understand that "Lean Mass" fluctuations are often just water and glycogen.</li>
+                <li><strong>Sport-Specific Targets:</strong> Aim for the "Performance Sweet Spot" where an athlete is lean enough for mobility but fueled enough for recovery.</li>
+                <li><strong>Mind the Gap:</strong> Recognize the limitations of BMI and use FFMI for a more accurate assessment of muscular development.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Ackland, T. R., et al. (2012). "Current Status of Body Composition Assessment in Sport." Sports Medicine.</li>
+                <li>Kasper, A. M., et al. (2021). "The Effects of Carbohydrate Loading on Lean Mass Measurement via DEXA." Journal of Applied Physiology.</li>
+                <li>Moon, J. R. (2013). "Body composition in athletes: techniques and applications." Sports Health.</li>
+                <li>Silva, A. M., et al. (2009). "A Four-Component Model to Validate Anthropometric Equations in Athletes." Medicine & Science in Sports & Exercise.</li>
+                <li>Tinsley, G. M., et al. (2018). "Influence of Hydration Status on Body Composition Variables." European Journal of Clinical Nutrition.</li>
+                <li>ISAK (2011). "International Standards for Anthropometric Assessment."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM™ Method is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

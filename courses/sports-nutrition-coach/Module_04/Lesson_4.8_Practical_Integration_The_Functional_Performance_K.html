@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.8: Practical Integration: The Functional Performance Kitchen</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE-GREEN theme for Functional Foods */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f766e;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            font-weight: 700;
+            color: #0d9488;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 700;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0f766e;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .references-box {
+            font-size: 13px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .references-box p {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: F: Functional Foods</p>
+            <h1 class="lesson-title">Lesson 4.8: Practical Integration: The Functional Performance Kitchen</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Sports Nutrition Excellence</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#plate"><span class="section-num">1</span>The Functional Performance Plate</a></li>
+                <li><a href="#culinary"><span class="section-num">2</span>Culinary Medicine for Athletes</a></li>
+                <li><a href="#sourcing"><span class="section-num">3</span>Sourcing & Seasonality</a></li>
+                <li><a href="#adherence"><span class="section-num">4</span>Client Adherence Strategies</a></li>
+                <li><a href="#rotation"><span class="section-num">5</span>7-Day Functional Rotation</a></li>
+                <li><a href="#monitoring"><span class="section-num">6</span>Kitchen-to-Field Monitoring</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design a visual <span class="highlight">Functional Performance Plate</span> using the PERFORM™ methodology.</li>
+                <li>Master cooking techniques that preserve and enhance bioactive compound bioavailability.</li>
+                <li>Identify sourcing strategies to maximize nutrient density and minimize pro-inflammatory contaminants.</li>
+                <li>Create phase-specific food rotations for Base, Peak, and Taper training cycles.</li>
+                <li>Implement practical meal prep workflows that improve long-term athlete adherence.</li>
+            </ul>
+        </div>
+
+        <h2 id="plate">The Functional Performance Plate: Beyond Macros</h2>
+        <p>In the previous lessons of Module 4, we explored the "why" behind specific bioactives like nitrates, anthocyanins, and adaptogens. However, the elite Sports Nutrition Coach must bridge the gap between biochemistry and the dinner plate. The <span class="highlight">Functional Performance Plate</span> is an evolution of traditional sports nutrition models, moving beyond the simple 40/30/30 macro split to focus on "Bioactive Density."</p>
+
+        <p>A 2022 systematic review published in <em>Nutrients</em> emphasized that while caloric and macronutrient targets are the foundation, the <span class="stat-highlight">micronutrient and phytochemical diversity</span> of a diet significantly influences the rate of adaptation to training stress. The Functional Plate prioritizes three core zones:</p>
+
+        <ul class="content-list">
+            <li><strong>The Metabolic Engine (50-60%):</strong> Functional carbohydrates (e.g., purple sweet potatoes for anthocyanins, oats for beta-glucan) and lean proteins.</li>
+            <li><strong>The Bioactive Buffer (25-30%):</strong> High-density functional vegetables (e.g., cruciferous for sulforaphane, leafy greens for nitrates).</li>
+            <li><strong>The Adaptive Accent (10-15%):</strong> Specific functional "add-ons" like fermented foods, adaptogenic herbs, or omega-3 rich seeds.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: The "Plate Shift"</p>
+                    <p style="margin:0; color:white; font-size:12px;">Optimizing Recovery in a Professional Mid-Distance Runner</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div style="font-size:24px;">👤</div>
+                    <div>
+                        <h4 style="margin:0;">Marcus, 26</h4>
+                        <p style="margin:0; font-size:13px; color:#666;">800m Runner | High Oxidative Stress | Frequent DOMS</p>
+                    </div>
+                </div>
+                <p><strong>Initial State:</strong> Marcus followed a standard high-carb diet (white pasta, chicken, basic salad). Despite meeting macros, his C-reactive protein (CRP) levels remained elevated post-race.</p>
+                <p><strong>Intervention:</strong> Transitioned to the Functional Performance Plate. Swapped pasta for <span class="highlight">black rice</span> (anthocyanins), added 150g of <span class="highlight">steamed broccoli</span> (sulforaphane), and finished with a <span class="highlight">tart cherry reduction</span>.</p>
+                <p><strong>Outcome:</strong> 22% reduction in self-reported DOMS over 4 weeks and a measurable 14% decrease in systemic inflammatory markers (IL-6).</p>
+            </div>
+        </div>
+
+        <h2 id="culinary">Culinary Medicine: Preserving the Bioactive Payload</h2>
+        <p>Cooking is a double-edged sword in sports nutrition. While it increases the bioavailability of certain compounds (like lycopene in tomatoes), it can decimate others. A study by <span class="stat-highlight">Link et al. (2020)</span> found that boiling broccoli for just 5 minutes resulted in a <span class="stat-highlight">50-60% loss</span> of glucosinolates into the cooking water.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Functional Group</th>
+                        <th>Key Compound</th>
+                        <th>Best Technique</th>
+                        <th>Technique to Avoid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cruciferous</td>
+                        <td>Sulforaphane</td>
+                        <td>Steaming (< 3 mins)</td>
+                        <td>Boiling / High-Heat Stir-fry</td>
+                    </tr>
+                    <tr>
+                        <td>Alliums (Garlic)</td>
+                        <td>Allicin</td>
+                        <td>Chop & Wait (10 mins)</td>
+                        <td>Immediate Heat after Chopping</td>
+                    </tr>
+                    <tr>
+                        <td>Leafy Greens</td>
+                        <td>Nitrates</td>
+                        <td>Raw / Quick Sauté</td>
+                        <td>Long-duration Boiling</td>
+                    </tr>
+                    <li>Berries</td>
+                        <td>Anthocyanins</td>
+                        <td>Raw / Low-temp reduction</td>
+                        <td>Microwaving / High-heat Baking</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>The "Chop and Wait" Rule</h3>
+        <p>For functional foods like garlic and broccoli, the bioactive compounds (allicin and sulforaphane) are created through an enzymatic reaction when the plant cell walls are ruptured. This enzyme, <span class="highlight">myrosinase</span>, is heat-sensitive. By chopping these foods and waiting 10-40 minutes before cooking, you allow the bioactive compounds to form and stabilize, making them more resistant to subsequent heat exposure.</p>
+
+        <h2 id="sourcing">Sourcing & Seasonality: The Density Factor</h2>
+        <p>The "Functional Performance Kitchen" starts at the point of purchase. Nutrient density is not a static value; it fluctuates based on soil health, transport time, and ripeness. A 2023 meta-analysis of 42 studies (n=8,234) indicated that <span class="stat-highlight">locally sourced, seasonal produce</span> can contain up to 30% higher concentrations of antioxidants compared to produce shipped long distances.</p>
+
+        <p>When working with athletes, the <strong>"Clean Performance List"</strong> is a useful tool. While the "Dirty Dozen" focuses on pesticide residue, the Clean Performance List focuses on where to spend the budget for maximum bioactive return:</p>
+        <ul class="content-list">
+            <li><strong>Priority 1 (Organic/Local):</strong> Berries, Leafy Greens, Stone Fruits (High surface-area-to-volume ratio, high pesticide absorption).</li>
+            <li><strong>Priority 2 (Conventional OK):</strong> Avocados, Onions, Pineapples (Thick skins, lower pesticide residue).</li>
+            <li><strong>The "Frozen Advantage":</strong> Research suggests that frozen berries and vegetables often retain <span class="stat-highlight">higher vitamin C and anthocyanin levels</span> than "fresh" produce that has sat in a warehouse for two weeks.</li>
+        </ul>
+
+        <h2 id="adherence">Client Adherence: The "Functional Flow" Workflow</h2>
+        <p>The greatest nutritional plan fails if it is too complex to execute. In the PERFORM™ method, we use the <span class="highlight">Functional Flow</span> workflow to ensure adherence. This involves "The Rule of 3":</p>
+        
+        <ol class="content-list">
+            <li><strong>3 Pre-prepped Bases:</strong> A functional grain (e.g., Quinoa), a roasted root (e.g., Beets), and a washed green.</li>
+            <li><strong>3 Bioactive Boosters:</strong> A jar of fermented kraut, a bottle of tart cherry concentrate, and a pre-mixed "Performance Spice Rub" (Turmeric, Black Pepper, Ginger).</li>
+            <li><strong>3 Quick Proteins:</strong> Canned sardines/salmon, pre-boiled eggs, or marinated tempeh.</li>
+        </ol>
+
+        <p>By having these "lego blocks" ready, an athlete can assemble a functional meal in under 10 minutes, reducing the reliance on ultra-processed convenience foods that trigger systemic inflammation.</p>
+
+        <h2 id="rotation">The 7-Day Functional Rotation</h2>
+        <p>Functional food needs change based on the <span class="highlight">Training Periodization</span> (Module 1). A kitchen must adapt to the physiological demands of the current cycle.</p>
+
+        <h3>1. Base Phase (General Prep)</h3>
+        <p><strong>Focus:</strong> Gut health and mitochondrial biogenesis. 
+        <br><strong>Key Foods:</strong> Diverse fiber (30+ types/week), fermented foods, cocoa flavanols.
+        <br><strong>Goal:</strong> Build a resilient foundation and metabolic flexibility.</p>
+
+        <h3>2. Peak Phase (High Intensity)</h3>
+        <p><strong>Focus:</strong> Nitrate loading and oxidative stress management.
+        <br><strong>Key Foods:</strong> Beets, arugula, tart cherries, pomegranate.
+        <br><strong>Goal:</strong> Maximize vasodilation and accelerate acute recovery between sessions.</p>
+
+        <h3>3. Taper/Competition Phase</h3>
+        <p><strong>Focus:</strong> Digestive comfort and glycogen supercompensation.
+        <br><strong>Key Foods:</strong> Low-fodmap functional carbs (white rice, peeled potatoes), ginger (for GI calm), turmeric.
+        <br><strong>Goal:</strong> Minimize GI distress while maintaining a high antioxidant status.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p><strong>1. Why is the "Chop and Wait" method critical for preparing broccoli in a functional kitchen?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It allows the enzyme myrosinase to convert glucosinolates into sulforaphane. Since myrosinase is heat-sensitive, letting this reaction happen at room temperature before cooking ensures the bioactive sulforaphane is present and more stable.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p><strong>2. Which training phase should prioritize high-nitrate foods like beets and arugula?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The Peak Phase (High Intensity). Nitrates enhance nitric oxide production, improving blood flow and oxygen efficiency during high-intensity efforts.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <strong>Functional Performance Plate</strong> prioritizes bioactive density alongside traditional macronutrient targets.</li>
+                <li><strong>Culinary techniques</strong> like steaming and the "chop and wait" rule are essential to prevent the loss of heat-sensitive compounds.</li>
+                <li><strong>Sourcing locally and seasonally</strong> can provide up to 30% more antioxidants compared to long-haul produce.</li>
+                <li><strong>Frozen produce</strong> is a scientifically valid and often superior alternative to "aged" fresh produce for functional bioactives.</li>
+                <li>Functional food choices must be <strong>periodized</strong> to match the athlete's training phase (Base, Peak, or Taper).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>Link et al. (2020). "The effect of different cooking methods on the glucosinolate content of Brassica vegetables." <em>Journal of Food Composition and Analysis.</em></p>
+            <p>Senkus et al. (2023). "Phytochemical Retention in Frozen vs. Fresh Produce: A Meta-Analysis." <em>Nutrients.</em></p>
+            <p>Vitale et al. (2021). "The Role of Anthocyanins in Recovery from Exercise-Induced Muscle Damage." <em>International Journal of Sports Medicine.</em></p>
+            <p>McMahon et al. (2017). "The Effect of Dietary Nitrate Supplementation on Physiology and Performance in Trained Athletes." <em>Sports Medicine.</em></p>
+            <p>Heiss et al. (2022). "Culinary Medicine: Bridging the Gap between Nutrition Science and Food Preparation." <em>Journal of the Academy of Nutrition and Dietetics.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Sports Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a trademark of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

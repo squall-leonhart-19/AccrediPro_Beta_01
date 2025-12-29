@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.5: Lactate Dynamics and the Anaerobic Threshold</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Energy Systems */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e40af;
+            background: #f0f4ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: E: Energy Systems</p>
+            <h1 class="lesson-title">Lesson 2.5: Lactate Dynamics and the Anaerobic Threshold</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#myth"><span class="section-num">1</span>The Lactic Acid Myth</a></li>
+                <li><a href="#fuel"><span class="section-num">2</span>Lactate as a Mobile Fuel</a></li>
+                <li><a href="#cori"><span class="section-num">3</span>The Cori Cycle</a></li>
+                <li><a href="#thresholds"><span class="section-num">4</span>LT1, LT2, and MLSS</a></li>
+                <li><a href="#fibers"><span class="section-num">5</span>Fiber Type & Lactate</a></li>
+                <li><a href="#nutrition"><span class="section-num">6</span>Nutritional Interventions</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Deconstruct the "lactic acid" myth and understand lactate's role as a metabolic buffer and fuel source.</li>
+                <li>Explain the biochemical mechanism of the Cori Cycle and its impact on endurance performance.</li>
+                <li>Differentiate between Lactate Threshold 1 (LT1), Lactate Threshold 2 (LT2), and the Onset of Blood Lactate Accumulation (OBLA).</li>
+                <li>Identify how muscle fiber distribution influences lactate production and clearance rates.</li>
+                <li>Apply specific nutritional strategies to enhance lactate buffering and clearance in competitive athletes.</li>
+            </ul>
+        </div>
+
+        <h2 id="myth">1. Debunking the 'Lactic Acid' Myth</h2>
+        <p>For decades, lactate was the "villain" of exercise physiology. Coaches and athletes blamed it for the "burn" during high-intensity intervals and the delayed onset muscle soreness (DOMS) felt days later. However, modern metabolic science has completely overturned this paradigm. Within the <span class="highlight">PERFORM Athletic Method™</span>, we view lactate not as a metabolic waste product, but as a vital metabolic intermediate.</p>
+        
+        <p>Chemically, the human body does not produce "lactic acid" in any significant quantity. At physiological pH (roughly 7.4 in blood and 7.0 in muscle), the acid dissociates immediately into <span class="highlight">lactate</span> and a hydrogen ion (H+). It is the accumulation of these <span class="highlight">protons (H+)</span>—not the lactate itself—that lowers intracellular pH, interferes with calcium binding in muscle contraction, and causes metabolic fatigue.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧪</div>
+                <div>
+                    <p class="box-label">Scientific Insight: The Buffer Effect</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Research indicates that lactate production actually <strong>delays</strong> acidosis rather than causing it. The production of lactate consumes a proton (H+) and requires the consumption of two protons during its transport out of the cell via Monocarboxylate Transporters (MCTs). Therefore, lactate acts as a <span class="highlight">metabolic buffer</span>, allowing glycolysis to continue longer than it otherwise would.</p>
+            </div>
+        </div>
+
+        <h2 id="fuel">2. Lactate as a Mobile Fuel Source</h2>
+        <p>Lactate is perhaps the most efficient mobile fuel in the body. Through the <span class="highlight">Cell-to-Cell Lactate Shuttle</span>, lactate produced in glycolytic (Type IIb) muscle fibers is transported to oxidative (Type I) fibers, the heart, and the brain, where it is converted back into pyruvate and oxidized for ATP production. A 2022 study found that in well-trained endurance athletes, up to <span class="stat-highlight">75-80%</span> of lactate produced during exercise is immediately oxidized as fuel.</p>
+
+        <h3>The Intracellular Shuttle</h3>
+        <p>Lactate doesn't just move between cells; it moves within them. Lactate produced in the cytosol can be taken up directly by the mitochondria of the same cell. This mechanism ensures that even during high-intensity efforts, the "overflow" from glycolysis is captured and used by the aerobic system, highlighting the synergy between the energy systems we discussed in Lessons 2 and 3.</p>
+
+        <h2 id="cori">3. The Cori Cycle: Hepatic Recycling</h2>
+        <p>When lactate production exceeds the local muscle's ability to oxidize it, it enters the bloodstream. From here, it travels to the liver to participate in the <span class="highlight">Cori Cycle</span> (also known as the Lactic Acid Cycle). This is a masterpiece of metabolic efficiency:</p>
+        
+        <ol class="content-list">
+            <li><strong>Release:</strong> Muscle cells produce lactate during intense anaerobic glycolysis.</li>
+            <li><strong>Transport:</strong> Lactate travels through the blood to the liver.</li>
+            <li><strong>Gluconeogenesis:</strong> The liver uses ATP to convert lactate back into glucose.</li>
+            <li><strong>Return:</strong> This "new" glucose is released back into the blood to be used by the working muscles again.</li>
+        </ol>
+
+        <p>This cycle is energetically "expensive" for the liver, but it is a critical survival and performance mechanism that prevents blood lactate levels from reaching toxic levels while simultaneously sparing muscle glycogen.</p>
+
+        <h2 id="thresholds">4. Identifying LT1, LT2, and MLSS</h2>
+        <p>As a Sports Nutrition Coach, understanding the "breakpoints" in lactate accumulation is essential for periodizing nutrition. We categorize these into two primary thresholds:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Definition</th>
+                        <th>Typical Blood Lactate</th>
+                        <th>Nutritional Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>LT1 (Aerobic Threshold)</strong></td>
+                        <td>The first initial rise in blood lactate above resting levels.</td>
+                        <td>~1.5 - 2.0 mmol/L</td>
+                        <td>Fat oxidation, metabolic flexibility.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LT2 (Anaerobic Threshold)</strong></td>
+                        <td>The point where lactate production equals maximal clearance.</td>
+                        <td>~4.0 mmol/L (Variable)</td>
+                        <td>Glycogen sparing, exogenous CHO.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MLSS</strong></td>
+                        <td>Maximal Lactate Steady State; the highest intensity maintainable without continual rise.</td>
+                        <td>Individualized</td>
+                        <td>Intra-workout fueling, buffering.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OBLA</strong></td>
+                        <td>Onset of Blood Lactate Accumulation; sharp, exponential rise.</td>
+                        <td>Fixed at 4.0 mmol/L</td>
+                        <td>High-intensity buffering (Bicarbonate).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Training at or near <span class="highlight">LT2</span> is a hallmark of elite endurance programming. From a nutritional perspective, an athlete's ability to maintain a high power output at LT2 depends heavily on <span class="highlight">glycogen availability</span> and the efficiency of their <span class="highlight">MCT transporters</span>.</p>
+
+        <h2 id="fibers">5. Muscle Fiber Type and Lactate Dynamics</h2>
+        <p>The relationship between fiber type and lactate is binary: Type II fibers are "producers," and Type I fibers are "consumers."</p>
+        
+        <ul class="content-list">
+            <li><strong>Type IIx (Fast-Twitch Glycolytic):</strong> High concentration of LDH-A (Lactate Dehydrogenase) enzymes, which favor the conversion of pyruvate to lactate. These fibers possess high levels of <span class="highlight">MCT4</span> transporters, which are specialized for exporting lactate out of the cell.</li>
+            <li><strong>Type I (Slow-Twitch Oxidative):</strong> High concentration of LDH-B enzymes, which favor the conversion of lactate back into pyruvate for entry into the Krebs Cycle. These fibers are rich in <span class="highlight">MCT1</span> transporters, specialized for importing lactate into the cell for fuel.</li>
+        </ul>
+
+        <p>In the <span class="highlight">PERFORM Athletic Method™</span>, we recognize that "Lactate Clearance" is actually a measure of Type I fiber efficiency and mitochondrial density. An athlete with a high percentage of Type II fibers will produce more lactate at lower relative intensities, necessitating a higher carbohydrate intake to sustain those efforts.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Diesel" vs. The "Turbo"</p>
+                    <p class="subtitle">Endurance Capacity vs. Glycolytic Power</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 34</h4>
+                        <p>Ironman Triathlete | High Mitochondrial Density</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Marcus has an exceptionally high LT1 (78% of VO2 max) but struggles with "top-end" speed. His blood lactate at race pace is a steady 2.2 mmol/L.</p>
+                <p><strong>Intervention:</strong> To improve his "Turbo" (glycolytic capacity), we implemented "Lactate Stack" intervals fueled by targeted carbohydrate micro-dosing (60g/hr) and 6.4g/day of Beta-Alanine to increase carnosine stores.</p>
+                <p><strong>Outcome:</strong> After 12 weeks, Marcus increased his power at LT2 by <span class="stat-highlight">12%</span>, while maintaining his efficient lactate clearance, allowing him to handle the surges required for uphill climbs without "blowing up."</p>
+            </div>
+        </div>
+
+        <h2 id="nutrition">6. Nutritional Interventions for Lactate Management</h2>
+        <p>While training is the primary driver of lactate dynamics, nutrition provides the chemical environment for success. We focus on three pillars:</p>
+
+        <h3>A. Intracellular and Extracellular Buffering</h3>
+        <p>To manage the H+ ions that accompany lactate, we utilize specific ergogenic aids:</p>
+        <ul class="content-list">
+            <li><strong>Beta-Alanine:</strong> Increases muscle <span class="highlight">carnosine</span> levels, which acts as an intracellular buffer. A meta-analysis of 40 studies (n=1,461) showed a <span class="stat-highlight">2.85%</span> improvement in exercise capacity for efforts lasting 1-4 minutes.</li>
+            <li><strong>Sodium Bicarbonate:</strong> Increases blood pH, creating a "pH gradient" that pulls H+ ions out of the muscle more rapidly. Recommended dose: 0.2-0.3g per kg of body weight, taken 60-90 minutes pre-exercise.</li>
+        </ul>
+
+        <h3>B. Nitrates and Mitochondrial Efficiency</h3>
+        <p>As explored in Module 4, dietary nitrates (from beetroot juice) improve the efficiency of mitochondrial respiration. By reducing the oxygen cost of exercise, nitrates allow an athlete to stay below their LT2 for a longer duration, effectively "pushing the threshold to the right."</p>
+
+        <h3>C. Glycogen Management</h3>
+        <p>High lactate production requires high glucose flux. If glycogen stores are low, the athlete cannot reach the intensities required to produce the "lactate stimulus" needed for adaptation. Conversely, "Lactate Clearance" sessions (low-intensity recovery) are best performed in a glycogen-sufficient state to ensure the heart and Type I fibers have the metabolic intermediates needed to process circulating lactate.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of lactate dynamics before moving to Module 3.</p>
+            
+            <div class="question-item">
+                <p class="question-text">Which enzyme is primarily responsible for converting lactate back into pyruvate in oxidative (Type I) muscle fibers?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Lactate Dehydrogenase B (LDH-B). Unlike LDH-A (found in Type II fibers), LDH-B has a high affinity for lactate and facilitates its conversion back into pyruvate for oxidation in the mitochondria.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">During the Cori Cycle, where does the conversion of lactate to glucose occur, and what is the energetic cost?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This occurs in the <strong>Liver</strong>. The process (gluconeogenesis) is energetically expensive, costing approximately 6 ATP molecules to produce one molecule of glucose from two molecules of lactate.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Lactate is Fuel:</strong> It is a high-energy intermediate that can be oxidized by the heart, brain, and slow-twitch muscles.</li>
+                <li><strong>H+ is the Villain:</strong> Fatigue is caused by acidosis (hydrogen ion accumulation), not the lactate molecule itself.</li>
+                <li><strong>The Shuttle:</strong> MCT1 (import) and MCT4 (export) transporters are the "gatekeepers" of lactate performance.</li>
+                <li><strong>Thresholds Matter:</strong> LT1 marks the end of pure aerobic efficiency, while LT2/MLSS marks the limit of metabolic stability.</li>
+                <li><strong>Buffering:</strong> Nutritional strategies like Beta-Alanine and Sodium Bicarbonate directly enhance the body's ability to handle high lactate flux.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Brooks, G. A. (2018). "The Science and Translation of Lactate Shuttle Theory." <em>Cell Metabolism</em>.</li>
+                <li>Ferguson, S. K., et al. (2022). "Lactate Metabolism: Historical Context, Current Understanding, and Future Directions." <em>Journal of Physiology</em>.</li>
+                <li>San-Millán, I., & Brooks, G. A. (2017). "Assessment of Metabolic Flexibility by Means of Measuring Blood Lactate, Fat, and CHO Oxidation." <em>Sports Medicine</em>.</li>
+                <li>Robergs, R. A., et al. (2004). "Biochemistry of exercise-induced metabolic acidosis." <em>American Journal of Physiology-Regulatory, Integrative and Comparative Physiology</em>.</li>
+                <li>Saunders, B., et al. (2017). "Beta-alanine supplementation to improve exercise capacity and performance: a systematic review and meta-analysis." <em>British Journal of Sports Medicine</em>.</li>
+                <li>Hall, M. M., et al. (2016). "Lactate Threshold Training: Physiological Basis and Practical Applications." <em>Strength & Conditioning Journal</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The PERFORM Athletic Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

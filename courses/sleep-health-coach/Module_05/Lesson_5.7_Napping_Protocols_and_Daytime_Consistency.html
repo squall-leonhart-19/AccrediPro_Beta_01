@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.7: Napping Protocols and Daytime Consistency</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .takeaways-box {
+            background: #eef2ff;
+            border-left: 5px solid #1e3a8a;
+            padding: 25px;
+            border-radius: 0 14px 14px 0;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: Master Sleep Hygiene</p>
+            <h1 class="lesson-title">Lesson 7: Napping Protocols and Daytime Consistency</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 30 min read</span>
+                <span class="meta-item">🎓 Advanced Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>The Neurobiology of Napping</a></li>
+                <li><a href="#power-vs-cycle"><span class="section-num">2</span>Power Nap vs. Full Cycle</a></li>
+                <li><a href="#nap-a-latte"><span class="section-num">3</span>The 'Nap-a-Latte' Strategy</a></li>
+                <li><a href="#pressure"><span class="section-num">4</span>Protecting Sleep Pressure</a></li>
+                <li><a href="#consistency"><span class="section-num">5</span>The 15-Minute Rule</a></li>
+                <li><a href="#formula"><span class="section-num">6</span>The 10-3-2-1-0 Formula</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the physiological impacts of short "power naps" and full 90-minute sleep cycles.</li>
+                <li>Master the timing and pharmacology of the "Caffeine Nap" for high-performance clients.</li>
+                <li>Apply the "15-Minute Rule" to mitigate social jetlag and maintain circadian stability.</li>
+                <li>Evaluate when to contraindicate napping to preserve homeostatic sleep drive in insomniac phenotypes.</li>
+                <li>Implement the 10-3-2-1-0 framework as a foundational client daily anchor.</li>
+            </ul>
+        </div>
+
+        <h2 id="neurobiology">The Neurobiology of Napping: Managing Adenosine</h2>
+        <p>In the <span class="highlight">D.R.E.A.M. Sleep Method™</span>, we view napping not as a luxury, but as a strategic tool for modulating <span class="highlight">homeostatic sleep pressure</span>. As we discussed in Lesson 5.2, adenosine builds up in the basal forebrain every hour we are awake. Napping acts as a "pressure release valve," clearing a portion of this adenosine before it reaches critical levels.</p>
+
+        <p>However, napping is a double-edged sword. If done incorrectly, it triggers <span class="highlight">sleep inertia</span>—that groggy, disoriented feeling caused by waking up during Stage 3 (Deep/Slow-Wave Sleep). This occurs because the brain has not yet completed the transition from high-amplitude delta waves back to beta and alpha wakefulness. A 2022 study published in <i>Sleep Medicine Reviews</i> found that sleep inertia can impair cognitive performance for up to 60 minutes post-awakening, making napping protocols critical for safety-sensitive professions.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">34%</span>
+                    <span class="stat-label">Increase in Alertness</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">54%</span>
+                    <span class="stat-label">Improvement in Performance</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">20 min</span>
+                    <span class="stat-label">Ideal Power Nap</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="power-vs-cycle">The Power Nap vs. The Full Cycle</h2>
+        <p>As a Sleep Health Coach, you must prescribe nap durations based on the client's specific needs and the time available. There are two "Golden Windows" for napping that minimize the risk of sleep inertia.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nap Type</th>
+                        <th>Duration</th>
+                        <th>Sleep Stages Reached</th>
+                        <th>Best For...</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>The Power Nap</strong></td>
+                        <td>10–20 Minutes</td>
+                        <td>Stage 1 & 2 (Light Sleep)</td>
+                        <td>Immediate alertness, motor skill memory, quick refresh.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The "Danger Zone"</strong></td>
+                        <td>30–60 Minutes</td>
+                        <td>Enters Stage 3 (Deep Sleep)</td>
+                        <td><strong>Avoid.</strong> High risk of severe sleep inertia and grogginess.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The Full Cycle</strong></td>
+                        <td>90 Minutes</td>
+                        <td>Full cycle (Light, Deep, REM)</td>
+                        <td>Emotional processing, creativity, and recovering from sleep debt.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The 90-minute nap is particularly useful for athletes or parents of newborns, as it allows for a complete <span class="highlight">ultradian cycle</span>. By waking up at the end of REM sleep, the client bypasses the deep sleep awakening that causes "nap hangovers."</p>
+
+        <h2 id="nap-a-latte">The 'Nap-a-Latte' (Caffeine Nap): Pharmacology in Action</h2>
+        <p>The "Caffeine Nap" is a sophisticated strategy for shift workers, long-haul drivers, and high-performance executives. The protocol leverages the 20-minute <span class="highlight">pharmacokinetic delay</span> of caffeine absorption.</p>
+
+        <p><strong>The Protocol:</strong>
+            <ol>
+                <li>The client consumes a dose of caffeine (approx. 100–200mg, ideally a cold espresso or caffeine pill for speed).</li>
+                <li>They immediately lie down for a 20-minute nap.</li>
+                <li>As they sleep, the body naturally clears a small amount of adenosine.</li>
+                <li>Just as they wake up, the caffeine reaches the brain and occupies the now-vacant adenosine receptors.</li>
+            </ol>
+        </p>
+
+        <p>A landmark study by Loughborough University found that the combination of caffeine and a short nap was significantly more effective at reducing driving errors than caffeine or napping alone. In the DREAM Method, we use this as a "rescue strategy," not a daily habit.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Executive Burnout</p>
+                    <p class="subtitle">Client: Marcus, 44 | Occupation: VP of Operations</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Marcus reported a "2 PM crash" so severe he was consuming 3-4 cups of coffee in the afternoon, which then disrupted his sleep onset at 11 PM (The Caffeine Cycle).</p>
+                <p><strong>Intervention:</strong> We replaced his 2 PM coffee with a 15-minute "Nap-a-Latte" at 1:30 PM. We restricted all other afternoon caffeine. We utilized the 10-3-2-1-0 formula to anchor his evenings.</p>
+                <p><strong>Outcome:</strong> Within 14 days, Marcus reported a 40% increase in afternoon focus. His sleep onset latency dropped from 45 minutes to 12 minutes because his total caffeine load was reduced, and his sleep pressure was preserved for the night.</p>
+            </div>
+        </div>
+
+        <h2 id="pressure">Protecting Sleep Pressure: When to Say "No" to Naps</h2>
+        <p>While napping is beneficial for the "sleep-deprived," it is often contraindicated for the "insomniac." In <span class="highlight">Cognitive Behavioral Therapy for Insomnia (CBT-I)</span>, which informs our DREAM methodology, we must protect the homeostatic drive.</p>
+
+        <p>If a client struggles with <span class="highlight">sleep onset latency</span> (taking >30 minutes to fall asleep at night), a daytime nap—even a 10-minute one—can reduce the "sleep hunger" necessary to fall asleep quickly. As a coach, you must assess the client's phenotype:
+            <ul>
+                <li><strong>The Sleep Deprived:</strong> High sleep drive, falls asleep easily, just needs more total time. (Prescribe Naps).</li>
+                <li><strong>The Insomniac:</strong> High hyperarousal, low sleep efficiency, struggles to initiate sleep. (Restrict Naps).</li>
+            </ul>
+        </p>
+
+        <h2 id="consistency">Consistency as the Anchor: The '15-Minute Rule'</h2>
+        <p>Circadian rhythms crave predictability. The <span class="highlight">Suprachiasmatic Nucleus (SCN)</span>, which we studied in Module 2, relies on "zeitgebers" (time-givers) to stay synced. The most powerful anchor is the wake-up time.</p>
+
+        <p>Many clients fall victim to "Social Jetlag"—waking up at 6 AM during the week and 10 AM on weekends. This 4-hour shift is biologically equivalent to flying from New York to Los Angeles and back every single week. It creates "Circadian Desynchrony," leading to "Monday Morning Blues."</p>
+
+        <p><strong>The 15-Minute Rule:</strong> Advise clients to keep their weekend wake-up time within 15 to 30 minutes of their weekday time. If they are exhausted, they should "pay back" the sleep debt via an early afternoon nap (20 mins) rather than sleeping in late, which shifts the entire circadian phase and makes Sunday night sleep nearly impossible.</p>
+
+        <h2 id="formula">The 10-3-2-1-0 Formula: Daily Implementation</h2>
+        <p>To make sleep hygiene "sticky" for clients, we use the 10-3-2-1-0 framework. This provides a clear, countdown-style checklist that integrates everything we've learned in Module 5.</p>
+
+        <div class="principle-card" style="background: #fff; border-left: 5px solid #1e3a8a; padding: 20px; margin: 20px 0;">
+            <p><strong>10 Hours Before Bed:</strong> No more caffeine (Allows for 2 half-lives of clearance).</p>
+            <p><strong>3 Hours Before Bed:</strong> No more food or alcohol (Prevents metabolic interference and fragmentation).</p>
+            <p><strong>2 Hours Before Bed:</strong> No more work/stressful tasks (The "Buffer Zone" for cognitive offloading).</p>
+            <p><strong>1 Hour Before Bed:</strong> No more blue light/screens (Protects melatonin synthesis).</p>
+                <p><strong>0:</strong> The number of times the snooze button is hit in the morning (Preserves sleep architecture and avoids fragmented REM).</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Why is a 45-minute nap generally discouraged for most clients?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A 45-minute nap typically places the sleeper in Stage 3 (Deep Sleep). Waking up from this stage causes significant sleep inertia (grogginess), which can impair cognitive function for up to an hour after waking.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">What is the biological goal of the "15-Minute Rule" for weekend wake times?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The goal is to prevent "Social Jetlag" and circadian phase-shifting. By keeping wake times consistent, the Suprachiasmatic Nucleus (SCN) maintains a stable rhythm, ensuring that melatonin onset occurs at the same time on Sunday night as it does during the week.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Timing is Everything:</strong> Naps should be kept to under 20 minutes or exactly 90 minutes to avoid the "Danger Zone" of sleep inertia.</li>
+                <li><strong>The Caffeine Nap:</strong> Use the 20-minute absorption window of caffeine to create a synergistic alertness boost.</li>
+                <li><strong>Protect the Night:</strong> Never prescribe naps for clients with primary insomnia; instead, use sleep restriction to build homeostatic pressure.</li>
+                <li><strong>The Anchor:</strong> Consistency in wake-up times (The 15-Minute Rule) is more important for the circadian clock than consistency in bedtimes.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Milner, C. E., & Cote, K. A. (2009). "Benefits of napping and an extended model of sleep homeostasis." <i>Sleep Medicine Reviews</i>.</li>
+                <li>Mednick, S. C., et al. (2003). "The restorative effect of naps on perceptual deterioration." <i>Nature Neuroscience</i>.</li>
+                <li>Horne, J. A., & Reyner, L. A. (1996). "Counteracting daytime sleepiness with beverages and napping." <i>Psychophysiology</i>.</li>
+                <li>Vogel, M., et al. (2015). "The effects of social jetlag on adolescent health." <i>Chronobiology International</i>.</li>
+                <li>Lovato, N., & Lack, L. (2010). "The effects of napping on cognitive functioning." <i>Progress in Brain Research</i>.</li>
+                <li>Centofanti, S., et al. (2020). "Establishing the optimal nap duration for shift workers." <i>Sleep</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Sleep Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Proprietary D.R.E.A.M. Sleep Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

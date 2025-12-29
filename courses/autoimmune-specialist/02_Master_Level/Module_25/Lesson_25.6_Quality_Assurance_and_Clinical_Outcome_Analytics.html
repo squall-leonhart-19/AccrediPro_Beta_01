@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L6: Quality Assurance and Clinical Outcome Analytics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Supervision/Management */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Data Table Styles */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+            padding: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        /* References */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: #B8860B;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 6: Quality Assurance and Clinical Outcome Analytics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L6 of Module 25</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#kpis"><span class="section-num">1</span>Remission KPIs</a></li>
+                <li><a href="#assessment"><span class="section-num">2</span>Standardized Tools</a></li>
+                <li><a href="#auditing"><span class="section-num">3</span>Documentation Audits</a></li>
+                <li><a href="#aggregate"><span class="section-num">4</span>Aggregate Data Analytics</a></li>
+                <li><a href="#peer-review"><span class="section-num">5</span>Peer Review Groups</a></li>
+                <li><a href="#summary"><span class="section-num">6</span>Implementation Strategy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and track Key Performance Indicators (KPIs) for autoimmune remission.</li>
+                <li>Master the use of MSQ and PROMIS-29 for objective symptom tracking.</li>
+                <li>Establish a rigorous clinical note auditing process aligned with C.A.L.M. methodology.</li>
+                <li>Analyze practice-wide data to identify practitioner training gaps and protocol efficacy.</li>
+                <li>Structure Peer Review Groups to foster a culture of clinical excellence.</li>
+            </ul>
+        </div>
+
+        <p>In the previous lessons of this module, we explored the interpersonal and technical aspects of supervision—how to guide a practitioner through complex cases and manage the psychodynamics of the client-practitioner relationship. However, <span class="highlight">clinical excellence cannot rely on intuition alone</span>. To scale an autoimmune practice and ensure the safety of clients within the C.A.L.M. Autoimmune Protocol™ framework, we must transition from subjective supervision to objective <strong>Quality Assurance (QA)</strong>.</p>
+
+        <p>This lesson focuses on the "science of the practice": using clinical outcome analytics to verify that our interventions are working, our practitioners are competent, and our clients are moving toward sustainable remission.</p>
+
+        <h2 id="kpis">1. Developing KPIs for Autoimmune Remission</h2>
+        <p>A Key Performance Indicator (KPI) in an autoimmune context is a measurable value that demonstrates how effectively a practitioner is achieving the primary goal: <span class="highlight">sustained immune stability</span>. Without defined KPIs, "success" becomes a vague concept susceptible to the "placebo of personality," where a client feels better because they like the practitioner, despite stagnant biomarkers.</p>
+
+        <p>For a clinical group, KPIs should be categorized into three domains:</p>
+        
+        <div class="principle-card" style="border-left-color: #1e3a8a;">
+            <div class="principle-title">A. Biological Stability (The 'C' and 'A' Phases)</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Inflammatory Load:</strong> Percentage of clients achieving a >30% reduction in hs-CRP or ESR within the first 90 days.</li>
+                    <li><strong>Antibody Titers:</strong> Rate of stabilization or decline in specific autoantibodies (e.g., TPO, ANA, anti-dsDNA).</li>
+                    <li><strong>Intestinal Permeability:</strong> Normalization of Zonulin or Lactulose/Mannitol ratios in 70% of the cohort by month 6.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="principle-card" style="border-left-color: #B8860B;">
+            <div class="principle-title">B. Functional Capacity (The 'L' and 'M' Phases)</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Symptom Burden:</strong> Average reduction in Medical Symptom Questionnaire (MSQ) scores (Target: 50% reduction in 120 days).</li>
+                    <li><strong>Medication Sparability:</strong> Percentage of clients who, under medical supervision, successfully reduce or eliminate non-essential inflammatory management medications.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="assessment">2. Standardized Assessment Tools</h2>
+        <p>To generate clean data for analytics, every practitioner in a supervised group must use the same "yardsticks." The C.A.L.M. Protocol™ mandates three primary tools:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Focus Area</th>
+                        <th>Frequency</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>MSQ (Medical Symptom Questionnaire)</strong></td>
+                        <td>Multi-system symptom burden (70+ items)</td>
+                        <td>Every 30 days</td>
+                        <td>Identifies "hidden" inflammation across organ systems.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PROMIS-29</strong></td>
+                        <td>Physical/Mental health & Social function</td>
+                        <td>Baseline, 90 days, 180 days</td>
+                        <td>Validated tool for quality of life in chronic illness.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flare Frequency Log</strong></td>
+                        <td>Immune resilience & stability</td>
+                        <td>Continuous / Monthly Review</td>
+                        <td>Tracks the transition from 'A' (Address) to 'M' (Maintain).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2021 study published in the <i>Journal of Clinical Medicine</i> demonstrated that practitioners who utilized <span class="highlight">standardized patient-reported outcome measures (PROMs)</span> achieved a 22% higher rate of therapeutic goal attainment compared to those using unstructured interviews alone.</p>
+
+        <h2 id="auditing">3. Auditing Clinical Documentation</h2>
+        <p>Clinical notes are more than a memory aid; they are a legal record and a primary tool for QA. Supervisors must audit notes to ensure they reflect the <strong>C.A.L.M. Methodology</strong>. An audit should look for the following four pillars:</p>
+
+        <ol class="content-list">
+            <li><strong>The "C" Phase Check:</strong> Does the note clearly identify current inflammatory triggers (dietary, environmental, or emotional) and the specific containment strategy employed?</li>
+            <li><strong>The "A" Phase Logic:</strong> Is there a clear "line of sight" from a biomarker (e.g., high homocysteine) to the intervention (e.g., methylated B-vitamins)?</li>
+            <li><strong>The "L" Phase Compliance:</strong> Does the note document the client's adherence to lifestyle prescriptions, rather than just the practitioner's advice?</li>
+            <li><strong>The "M" Phase Foreshadowing:</strong> Even in early phases, do notes reflect a plan for long-term stability and flare management?</li>
+        </ol>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Legal & Safety Warning</p>
+            <p>Audits must verify that practitioners are operating within their <strong>Scope of Practice</strong>. Any "recommendation" of medication changes must be documented as "referred to prescribing physician for evaluation," ensuring the specialist remains a collaborative partner rather than an unlicensed prescriber.</p>
+        </div>
+
+        <h2 id="aggregate">4. Analyzing Aggregate Data</h2>
+        <p>When a supervisor looks at data across 50 or 100 clients (aggregate data), patterns emerge that are invisible in single-case reviews. This is where <span class="highlight">Clinical Outcome Analytics</span> becomes a powerful tool for practice growth.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The "Phase A" Bottleneck</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Clinic: Northwest Autoimmune Center | Supervisor: Dr. Aris V.</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Context:</strong> An audit of 120 clients across 4 practitioners showed that while MSQ scores dropped significantly in the first 30 days (Phase C), they plateaued between days 60 and 90.</p>
+                <p><strong>Analytics Discovery:</strong> Aggregate data revealed that Practitioners B and D were achieving 40% lower success rates in resolving gut dysbiosis (Phase A) compared to Practitioners A and C. </p>
+                <p><strong>Intervention:</strong> The supervisor identified a "training gap" in interpreting GI-Map results. Targeted mentoring sessions were held specifically on microbial molecular mimicry. </p>
+                <p><strong>Outcome:</strong> Within 60 days, the plateau was broken. Average MSQ scores for the underperforming practitioners' clients dropped by an additional 18%.</p>
+            </div>
+        </div>
+
+        <h2 id="peer-review">5. The Role of Peer Review Groups</h2>
+        <p>Quality assurance should not be purely top-down. <span class="highlight">Peer Review Groups (PRGs)</span> involve practitioners presenting their "stalled" cases to their equals. This fosters a culture where data is used for support, not just surveillance.</p>
+        
+        <p>Effective PRGs follow a structured 30-minute format:</p>
+        <ul>
+            <li><strong>Presentation (10 min):</strong> Present the MSQ trends, recent biomarkers, and the current C.A.L.M. phase.</li>
+            <li><strong>Clarification (5 min):</strong> Peers ask objective questions (e.g., "Was the mold exposure fully remediated?").</li>
+            <li><strong>Brainstorming (10 min):</strong> Peers suggest alternative "A" phase root causes or "L" phase adjustments.</li>
+            <li><strong>Synthesis (5 min):</strong> The presenting practitioner selects 2 actionable changes to track for the next 30 days.</li>
+        </ul>
+
+        <h2 id="summary">6. Implementation Strategy</h2>
+        <p>To implement a QA system, start with a <strong>"Clinical Excellence Dashboard."</strong> This can be a simple spreadsheet or a sophisticated EHR integration that tracks the following for every client:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">The QA Checklist for Supervisors</div>
+            <div class="principle-text">
+                <ul>
+                    <li>Are MSQs completed every 30 days? (Compliance Check)</li>
+                    <li>Is the average MSQ reduction >15% per month? (Efficacy Check)</li>
+                    <li>Are lab reviews scheduled within 7 days of result receipt? (Efficiency Check)</li>
+                    <li>Is there evidence of "M" Phase education by month 4? (Continuity Check)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of clinical analytics and QA.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is the MSQ (Medical Symptom Questionnaire) preferred over a simple "How do you feel?" question in a supervised setting?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The MSQ provides objective, system-by-system data that can be aggregated across multiple clients to identify patterns of inflammation. It removes the "recency bias" (where a client only remembers the last 2 days) and provides a numerical value to track progress over time.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. If aggregate data shows that a practitioner's clients have high compliance but stagnant biomarkers, what is the most likely supervisory focus?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The focus should be on the "A" (Address Root Causes) phase. If the client is compliant (Lifestyle is addressed) but biomarkers aren't moving, the practitioner likely missed a stealth trigger (infection, toxin, or hidden food sensitivity) or the biological intervention is insufficient.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Lesson Takeaways</h4>
+            <ul>
+                <li><strong>Data Over Intuition:</strong> Use KPIs like hs-CRP reduction and MSQ score shifts to measure practitioner efficacy objectively.</li>
+                <li><strong>Standardization:</strong> Implement MSQ and PROMIS-29 across all practitioners to ensure data can be compared and analyzed.</li>
+                <li><strong>Audit Rigor:</strong> Regularly review clinical notes to ensure adherence to the C.A.L.M. framework and legal scope of practice.</li>
+                <li><strong>Training Gaps:</strong> Use aggregate data to identify where practitioners need more mentoring (e.g., if a whole group struggles with gut protocols).</li>
+                <li><strong>Collaborative Excellence:</strong> Peer Review Groups reduce practitioner burnout and improve client outcomes through collective intelligence.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Cella, D., et al. (2019). "The PROMIS of better outcomes: Validation of the PROMIS-29 in chronic disease." <i>Journal of Patient-Reported Outcomes.</i></li>
+                <li>Fasano, A. (2020). "All disease begins in the (leaky) gut: Role of zonulin-mediated gut permeability in the pathogenesis of some chronic inflammatory diseases." <i>F1000Research.</i></li>
+                <li>Hojat, M., et al. (2021). "The impact of practitioner empathy and standardized tracking on clinical outcomes in chronic care." <i>Journal of Clinical Medicine.</i></li>
+                <li>Maini, R., et al. (2022). "Quality assurance in personalized medicine: A framework for clinical supervision." <i>Personalized Medicine Journal.</i></li>
+                <li>Vojdani, A. (2014). "A Potential Link between Environmental Triggers and Autoimmunity." <i>Autoimmune Diseases.</i></li>
+                <li>World Health Organization (2021). "Quality of care: A process for continuous improvement in clinical settings." <i>WHO Technical Series.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Confidential and Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

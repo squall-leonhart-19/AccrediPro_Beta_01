@@ -96,6 +96,22 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
     "lgbtq": "lgbtq-life-coach-certification",
     "affirming": "lgbtq-life-coach-certification",
 
+    // 10. Women's Hormone Health (WH)
+    "womens hormone": "womens-hormone-health-coach-certification",
+    "women's hormone": "womens-hormone-health-coach-certification",
+    "hormone health": "womens-hormone-health-coach-certification",
+    "wh-certification": "womens-hormone-health-coach-certification",
+    "wh-pro-accelerator": "wh-pro-accelerator",
+    "wh pro accelerator": "wh-pro-accelerator",
+
+    // 11. Gut Health & Microbiome (GH)
+    "gut health": "gut-health-microbiome-coach-certification",
+    "microbiome": "gut-health-microbiome-coach-certification",
+    "digestive": "gut-health-microbiome-coach-certification",
+    "gh-certification": "gut-health-microbiome-coach-certification",
+    "gh-pro-accelerator": "gh-pro-accelerator",
+    "gh pro accelerator": "gh-pro-accelerator",
+
     // Pro Accelerator ($397 XMAS)
     "fm-pro-accelerator": "fm-pro-accelerator",
     "pro accelerator": "fm-pro-accelerator",
@@ -120,6 +136,12 @@ const PRODUCT_PRICES: Record<string, number> = {
     // Holistic Nutrition
     "holistic-nutrition-coach-certification": 97,
     "hn-pro-accelerator": 397,
+    // Women's Hormone Health
+    "womens-hormone-health-coach-certification": 97,
+    "wh-pro-accelerator": 397,
+    // Gut Health & Microbiome
+    "gut-health-microbiome-coach-certification": 97,
+    "gh-pro-accelerator": 397,
 };
 
 const PRODUCT_NAMES: Record<string, string> = {
@@ -131,6 +153,12 @@ const PRODUCT_NAMES: Record<string, string> = {
     // Holistic Nutrition
     "holistic-nutrition-coach-certification": "Certified Holistic Nutrition Coach",
     "hn-pro-accelerator": "HN Pro Accelerator™ - Advanced, Master & Practice Path",
+    // Women's Hormone Health
+    "womens-hormone-health-coach-certification": "Certified Women's Hormone Health Coach",
+    "wh-pro-accelerator": "WH Pro Accelerator™ - Advanced, Master & Practice Path",
+    // Gut Health & Microbiome
+    "gut-health-microbiome-coach-certification": "Certified Gut Health & Microbiome Coach",
+    "gh-pro-accelerator": "GH Pro Accelerator™ - Advanced, Master & Practice Path",
 };
 
 // Hash PII for Meta

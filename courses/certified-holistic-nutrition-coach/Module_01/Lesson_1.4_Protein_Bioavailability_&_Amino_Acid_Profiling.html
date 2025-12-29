@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.4: Protein Bioavailability & Amino Acid Profiling</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Foundations */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2c5282;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: N: Nutritional Foundations</p>
+            <h1 class="lesson-title">Lesson 1.4: Protein Bioavailability & Amino Acid Profiling</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Amino Acid Architecture</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The DIAAS Revolution</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Leucine Threshold</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Plant vs. Animal Bioavailability</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Metabolic Demand & Requirements</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between essential, non-essential, and conditionally essential amino acids.</li>
+                <li>Evaluate protein quality using the DIAAS metric over the traditional PDCAAS.</li>
+                <li>Understand the role of the Leucine Threshold in triggering Muscle Protein Synthesis (MPS).</li>
+                <li>Identify anti-nutrients in plant proteins that hinder amino acid absorption.</li>
+                <li>Calculate individualized protein requirements based on metabolic demand and age.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Amino Acid Architecture: Beyond "Building Blocks"</h2>
+        <p>In our previous lessons, we explored how carbohydrates provide the fuel and metabolic synergy drives energy production. However, protein represents the <span class="highlight">structural architecture</span> of the human body. While often simplified as "building blocks," amino acids act as precursors to neurotransmitters, hormones, and enzymes that dictate every biochemical reaction in the NOURISH Method™ framework.</p>
+
+        <p>There are 20 primary amino acids used in human protein synthesis. These are traditionally categorized into three groups:</p>
+        <ul>
+            <li><strong>Essential Amino Acids (EAAs):</strong> Nine amino acids that the body cannot synthesize de novo. They must be obtained through the diet.</li>
+            <li><strong>Non-Essential Amino Acids (NEAAs):</strong> Amino acids the body can produce from other nitrogen sources.</li>
+            <li><strong>Conditionally Essential:</strong> Amino acids (like Glutamine or Arginine) that become essential during periods of physiological stress, trauma, or chronic illness.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">9</span>
+                    <span class="stat-label">Essential Amino Acids</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.5g</span>
+                    <span class="stat-label">Leucine Trigger</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">42%</span>
+                    <span class="stat-label">Anabolic Resistance in Seniors</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Protein Quality Metrics: The DIAAS Revolution</h2>
+        <p>For decades, the <span class="highlight">PDCAAS</span> (Protein Digestibility Corrected Amino Acid Score) was the gold standard. However, the Food and Agriculture Organization (FAO) now recommends the <span class="highlight">DIAAS</span> (Digestible Indispensable Amino Acid Score). The critical difference lies in where digestibility is measured.</p>
+
+        <p>PDCAAS measures digestibility over the entire digestive tract (fecal), which can be skewed by bacterial metabolism in the colon. DIAAS measures digestibility at the end of the small intestine (ileal), providing a much more accurate representation of the amino acids actually absorbed into the bloodstream.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Protein Source</th>
+                        <th>DIAAS Score</th>
+                        <th>Limiting Amino Acid</th>
+                        <th>Bioavailability Class</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Whole Milk Powder</td>
+                        <td>1.43</td>
+                        <td>None</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Whey Isolate</td>
+                        <td>1.09</td>
+                        <td>None</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Beef</td>
+                        <td>1.10</td>
+                        <td>None</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Soy Isolate</td>
+                        <td>0.90</td>
+                        <td>Methionine</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td>Pea Protein</td>
+                        <td>0.82</td>
+                        <td>Methionine</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td>Cooked Rice</td>
+                        <td>0.37</td>
+                        <td>Lysine</td>
+                        <td>Low</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. The Leucine Threshold & Anabolic Signaling</h2>
+        <p>The most significant breakthrough in modern protein science is the discovery of the <span class="highlight">Leucine Threshold</span>. Leucine is not just a building block; it is a nutrient sensor that activates the <strong>mTORC1</strong> (mammalian Target of Rapamycin) pathway, the primary driver of Muscle Protein Synthesis (MPS).</p>
+
+        <p>A 2021 meta-analysis (n=1,240) demonstrated that for younger adults, approximately 2.0g to 2.5g of Leucine per meal is required to "flip the switch" on MPS. For older adults experiencing <span class="highlight">anabolic resistance</span>, this threshold may rise to 3.0g or even 4.0g per meal. This has profound implications for the "N" (Nutritional Foundations) of our method—if a client consumes small amounts of protein throughout the day without hitting this threshold, they may remain in a net catabolic state despite meeting their total daily protein RDA.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Arthur (Age 72)</p>
+                    <p class="subtitle">Sarcopenia & Anabolic Resistance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">A</div>
+                    <div class="patient-info">
+                        <h4>Arthur M.</h4>
+                        <p>Symptoms: Muscle wasting, fatigue, slow wound healing, low grip strength.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Arthur was consuming the RDA of 0.8g/kg, mostly through small snacks. We shifted his intake to 1.5g/kg, focusing on three "bolus" doses of 40g of protein each (hitting ~3.5g Leucine per meal).</p>
+                <p><strong>Outcome:</strong> Within 12 weeks, Arthur showed a 4.2% increase in lean body mass and significant improvements in functional mobility scores. This demonstrates that for the elderly, <em>timing and leucine density</em> are as critical as total quantity.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Plant-Based vs. Animal Proteins: Bioavailability Challenges</h2>
+        <p>In holistic nutrition, we often encourage plant-predominant diets. However, as clinicians, we must account for the <span class="highlight">bioavailability gap</span>. Plant proteins are often sequestered within fibrous cell walls and contain anti-nutrients that inhibit digestion.</p>
+
+        <h3>The Anti-Nutrient Factor</h3>
+        <ul>
+            <li><strong>Trypsin Inhibitors:</strong> Found in legumes, these prevent the enzyme trypsin from breaking down proteins into absorbable peptides.</li>
+            <li><strong>Phytates:</strong> These can bind to minerals and proteins, forming complexes that are resistant to digestive enzymes.</li>
+            <li><strong>Glucosinolates:</strong> Found in cruciferous vegetables, these can interfere with protein utilization if consumed in isolation in very high amounts.</li>
+        </ul>
+
+        <p>A 2023 study published in <em>The Journal of Nutrition</em> found that even when total protein was matched, plant-based groups required 20-30% more total protein to achieve the same amino acid appearance in the blood compared to whey or beef groups. For a vegan client, this means the RDA is likely insufficient.</p>
+
+        <h2 id="section5">5. Metabolic Demand: Calculating Precision Requirements</h2>
+        <p>The current RDA of 0.8g/kg is designed to prevent <span class="highlight">deficiency</span> in 97.5% of the healthy population. It is not designed for <em>optimal health</em>, athletic recovery, or metabolic repair.</p>
+
+        <p>Based on the NOURISH Method™, we categorize protein requirements into three tiers:</p>
+        <ol>
+            <li><strong>Maintenance Tier (0.8 - 1.2g/kg):</strong> Sedentary individuals with healthy metabolic markers.</li>
+            <li><strong>Optimized Tier (1.2 - 1.6g/kg):</strong> Active individuals, those in a calorie deficit (to prevent muscle loss), and those over age 60.</li>
+            <li><strong>Performance/Repair Tier (1.6 - 2.2g/kg):</strong> Strength athletes, individuals recovering from surgery/trauma, and those with significant metabolic dysregulation.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is DIAAS considered superior to PDCAAS for evaluating protein quality?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">DIAAS measures amino acid absorption at the ileum (end of the small intestine), whereas PDCAAS measures it at the end of the digestive tract (fecal). Fecal measurements are less accurate because colon bacteria can metabolize amino acids, giving a false impression of what the human body actually absorbed.</p>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">A vegan athlete consumes 25g of pea protein. Why might they still fail to trigger Muscle Protein Synthesis (MPS)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Pea protein has a lower Leucine content (~6-8%) compared to whey (~11%). 25g of pea protein might only provide 1.5-1.8g of Leucine, falling short of the ~2.5g "Leucine Threshold" required to activate the mTOR pathway for MPS.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Clinical Application: The N.O.U.R.I.S.H. Integration</h2>
+        <p>As you move into Module 2 (Optimize Digestion), remember that protein is only as good as your ability to break it down. <span class="highlight">Hypochlorhydria</span> (low stomach acid) is the primary roadblock to protein bioavailability. Without adequate HCl, the enzyme pepsinogen cannot convert to pepsin, leaving large protein chains intact and leading to putrefaction in the gut.</p>
+
+        <p>When working with clients, always assess the <strong>"Three Ts" of Protein:</strong></p>
+        <ul>
+            <li><strong>Type:</strong> Is the amino acid profile complete for their specific goal?</li>
+            <li><strong>Total:</strong> Are they hitting the 1.2-1.6g/kg range for optimal health?</li>
+            <li><strong>Timing:</strong> Are they distributing protein in 30-50g boluses to maximize the Leucine trigger?</li>
+        </ul>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Amino Acids are Signaling Molecules:</strong> They don't just build tissue; they signal the body to enter an anabolic (growth) or catabolic (breakdown) state.</li>
+                <li><strong>The Leucine Trigger:</strong> Aim for 2.5g+ of Leucine per meal to ensure the mTOR pathway is activated.</li>
+                <li><strong>Quality Over Quantity:</strong> DIAAS scores show that animal proteins generally have higher bioavailability and better EAA profiles than plant proteins.</li>
+                <li><strong>Individualized Needs:</strong> The RDA is a floor, not a ceiling. Most clients require 1.2g/kg to 1.6g/kg for metabolic health.</li>
+                <li><strong>Digestive Context:</strong> Protein bioavailability is dependent on stomach acid and protease enzyme activity.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>FAO et al. (2013). "Dietary protein quality evaluation in human nutrition." FAO Food and Nutrition Paper.</li>
+                <li>Morton, R. W., et al. (2018). "A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength." British Journal of Sports Medicine.</li>
+                <li>Herreman, L., et al. (2020). "Comprehensive overview of the DIAAS of various animal- and plant-based proteins." British Journal of Nutrition.</li>
+                <li>Phillips, S. M. (2017). "Current Concepts and Unresolved Questions in Dietary Protein Requirements and Supplements in Adults." Frontiers in Nutrition.</li>
+                <li>Gorissen, S. H., et al. (2016). "Protein content and amino acid composition of commercially available plant-based protein isolates." Amino Acids Journal.</li>
+                <li>Wolfe, R. R. (2017). "The role of dietary protein in optimizing muscle mass, function and health outcomes in older individuals." British Journal of Nutrition.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The N.O.U.R.I.S.H. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

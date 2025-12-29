@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.7: Advanced Sleep Architecture & Thermoregulation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP INDIGO theme for Vitality/Sleep */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #312e81;
+        }
+
+        .stat-highlight {
+            color: #4c1d95;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fcfcfc;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .case-study-header {
+            background: #4c1d95;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            border-bottom: 2px solid #4c1d95;
+            color: #4c1d95;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eef2ff;
+            border-radius: 6px;
+            color: #3730a3;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f3ff;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #374151;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Advanced Menopause Physiology</p>
+            <h1 class="lesson-title">Lesson 7: Advanced Sleep Architecture & Thermoregulation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>The Hypothalamic Thermostat</a></li>
+                <li><a href="#architecture"><span class="section-num">2</span>Sleep Architecture Disruptions</a></li>
+                <li><a href="#metabolic"><span class="section-num">3</span>Metabolic Triggers: Sugar & Alcohol</a></li>
+                <li><a href="#vitality"><span class="section-num">4</span>The 'V' Protocol for Circadian Alignment</a></li>
+                <li><a href="#interventions"><span class="section-num">5</span>Non-Pharmacological Strategies</a></li>
+                <li><a href="#coaching"><span class="section-num">6</span>Clinical Application & Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the neurobiological mechanisms of the "Narrowed Thermoneutral Zone" in the hypothalamus.</li>
+                <li>Evaluate the impact of estrogen withdrawal on N3 (Deep Sleep) and REM sleep architecture.</li>
+                <li>Identify the biochemical pathways through which alcohol and glucose destabilize nocturnal temperature.</li>
+                <li>Implement the 'Vitality Boost' (V) protocol for optimizing melatonin-cortisol rhythms.</li>
+                <li>Design a comprehensive non-pharmacological sleep and cooling plan for perimenopausal clients.</li>
+            </ul>
+        </div>
+
+        <h2 id="neurobiology">1. The Neurobiology of Hot Flashes: A Hypersensitive Thermostat</h2>
+        <p>For decades, vasomotor symptoms (VMS)—hot flashes and night sweats—were viewed simply as "hormonal fluctuations." Advanced neurobiology now reveals a more complex picture involving the <span class="highlight">preoptic area of the hypothalamus</span>. In the presence of stable estrogen, the body maintains a wide "thermoneutral zone"—a range of ambient temperatures where we neither sweat nor shiver.</p>
+
+        <p>As estrogen declines, this zone narrows significantly. A 2022 study published in <i>The Lancet</i> noted that in symptomatic menopausal women, the <span class="highlight">thermoneutral zone can shrink by as much as 60-80%</span>. This means even a microscopic rise in core body temperature (as little as 0.05°C) can trigger a massive cooling response: vasodilation, intense sweating, and a subsequent chill.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Mechanism Spotlight: The KNDy Neurons</strong>
+            </div>
+            <div class="case-study-content">
+                <p>Estrogen acts as a "brake" on a specific group of neurons in the hypothalamus known as <strong>KNDy neurons</strong> (Kisspeptin, Neurokinin B, and Dynorphin). When estrogen drops, these neurons become hypertrophied and hyperactive. They over-stimulate the thermoregulatory center, leading to the sensation of "internal combustion" even in a cool room.</p>
+            </div>
+        </div>
+
+        <h2 id="architecture">2. Sleep Architecture: The Loss of Deep Sleep and REM</h2>
+        <p>Menopause doesn't just cause "insomnia"; it fundamentally alters <span class="highlight">sleep architecture</span>. Sleep is not a monolithic state but a series of cycles consisting of Light Sleep (N1, N2), Deep Sleep (N3/Slow Wave Sleep), and REM (Rapid Eye Movement).</p>
+
+        <p>Research indicates that the transition into post-menopause is associated with a <span class="stat-highlight">20-30% reduction in Slow Wave Sleep (SWS)</span>. SWS is the phase responsible for physical restoration, growth hormone secretion, and the clearance of metabolic waste via the glymphatic system. Furthermore, estrogen withdrawal shortens REM latency and duration, which impacts emotional processing and memory consolidation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sleep Phase</th>
+                        <th>Pre-Menopause Function</th>
+                        <th>Menopausal Shift</th>
+                        <th>Clinical Symptom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N3 (Deep Sleep)</strong></td>
+                        <td>Physical repair, GH release</td>
+                        <td>Reduced by 20-30%</td>
+                        <td>Waking up unrefreshed, muscle aches</td>
+                    </tr>
+                    <tr>
+                        <td><strong>REM Sleep</strong></td>
+                        <td>Emotional regulation, memory</td>
+                        <td>Fragmented by VMS</td>
+                        <td>Increased anxiety, irritability, brain fog</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sleep Latency</strong></td>
+                        <td>Falling asleep in &lt;20 mins</td>
+                        <td>Increased due to anxiety</td>
+                        <td>"Tired but wired" sensation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WASO*</strong></td>
+                        <td>Minimal awakenings</td>
+                        <td>Increased by 40-50%</td>
+                        <td>Frequent night sweats/awakenings</td>
+                    </tr>
+                </tbody>
+            </table>
+            <small>*Wake After Sleep Onset</small>
+        </div>
+
+        <h2 id="metabolic">3. Metabolic Disruptors: The Alcohol and Sugar Connection</h2>
+        <p>In our <strong>THRIVE Methodology™</strong>, we emphasize the "R" (Reset Metabolism) because metabolic health directly dictates thermoregulation. Two primary culprits exacerbate nocturnal temperature spikes: <span class="highlight">Alcohol and Refined Sugar</span>.</p>
+
+        <h3>The Alcohol Trap</h3>
+        <p>While many women use alcohol to "fall asleep," it is a potent disruptor of sleep architecture. Alcohol is a <span class="highlight">vasodilator</span>; it initially warms the skin but causes a rebound drop in core temperature and a subsequent spike in heart rate. A meta-analysis of 20 studies found that even moderate alcohol consumption reduces REM sleep and increases sympathetic nervous system activity during the second half of the night, precisely when VMS are most likely to occur.</p>
+
+        <h3>The Glucose-Thermoregulation Link</h3>
+        <p>Nocturnal hypoglycemia (low blood sugar) is a common, overlooked trigger for night sweats. If a client consumes high-glycemic foods in the evening, the resulting insulin spike may cause blood sugar to crash at 3:00 AM. The body responds to this "emergency" by releasing <span class="highlight">cortisol and adrenaline</span> to mobilize glucose. These hormones are thermogenic—they raise body temperature and trigger a hot flash.</p>
+
+        <h2 id="vitality">4. The 'V' (Vitality Boost) Protocol for Circadian Alignment</h2>
+        <p>Within the <strong>T.H.R.I.V.E. framework</strong>, the Vitality Boost focuses on re-syncing the master clock (the Suprachiasmatic Nucleus). Circadian disruption is a hallmark of the menopausal transition, as estrogen receptors are present throughout the circadian system.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 'V' Protocol Pillars:</div>
+            <ul class="content-list">
+                <li><strong>Anchor the Morning:</strong> 10-20 minutes of direct sunlight within 30 minutes of waking to suppress melatonin and set the 16-hour countdown for evening sleep.</li>
+                <li><strong>The 3-2-1 Rule:</strong> No food 3 hours before bed, no work 2 hours before bed, and no blue light 1 hour before bed.</li>
+                <li><strong>Magnesium Loading:</strong> Utilizing Magnesium Glycinate or Bisglycinate (300-400mg) in the evening to support GABAergic pathways and lower core body temperature.</li>
+                <li><strong>Temperature Minimum:</strong> Ensuring the bedroom is kept between 16-18°C (60-65°F) to facilitate the natural drop in core temperature required for sleep onset.</li>
+            </ul>
+        </div>
+
+        <h2 id="interventions">5. Non-Pharmacological Interventions for Night Sweats</h2>
+        <p>While HRT is the gold standard for VMS, many clients require or prefer non-pharmacological adjuncts. As a Menopause Support Coach, you must be versed in evidence-based "cooling" technologies and behavioral interventions.</p>
+
+        <p><strong>Paced Respiration:</strong> A 2023 clinical trial demonstrated that "Paced Breathing" (inhaling for 5 seconds, exhaling for 5 seconds) for 15 minutes twice daily can reduce the frequency of hot flashes by up to <span class="stat-highlight">44%</span>. This practice modulates the autonomic nervous system, shifting the body from sympathetic (fight/flight) to parasympathetic (rest/digest) dominance.</p>
+
+        <p><strong>Cooling Technology:</strong> Recommend moisture-wicking fabrics (bamboo, Tencel) rather than cotton, which traps moisture. Advanced tools like "chilled mattress pads" or "bed fans" that provide continuous convective cooling have shown significant efficacy in reducing WASO (Wake After Sleep Onset) in menopausal populations.</p>
+
+        <h2 id="coaching">6. Clinical Application: Case Study</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study: The "Internal Combustion" Client</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👤</div>
+                    <div class="patient-info">
+                        <h4>Elena, Age 52</h4>
+                        <p>Perimenopausal | Executive | Chronic Fatigue</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Elena reported waking 4-5 times per night drenched in sweat. She felt "wired" at 10 PM but exhausted by 3 PM. She was consuming 2 glasses of wine nightly to "unwind."</p>
+                <p><strong>Intervention (THRIVE Method):</strong>
+                    <ul>
+                        <li><strong>Track (T):</strong> Elena mapped her sweats to her wine consumption and high-sugar evening snacks.</li>
+                        <li><strong>Reset (R):</strong> Replaced wine with tart cherry juice (natural melatonin source) and a handful of walnuts (protein/fat for blood sugar stability).</li>
+                        <li><strong>Vitality (V):</strong> Implemented 10 minutes of morning sunlight and switched to bamboo bedding.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within 3 weeks, Elena’s night sweats reduced from 5 per night to 1. Her "Sleep Efficiency" (time asleep vs. time in bed) improved from 68% to 84%.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why does a drop in blood sugar at night trigger a hot flash?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Hypoglycemia triggers the release of cortisol and adrenaline (the "stress" response) to raise blood sugar. These hormones are thermogenic and stimulate the hypothalamus, which is already hypersensitive due to low estrogen, triggering a vasomotor cooling response (hot flash).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the specific impact of menopause on N3 (Deep Sleep)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Menopause typically causes a 20-30% reduction in N3/Slow Wave Sleep. This leads to impaired physical restoration, reduced growth hormone secretion, and less efficient glymphatic clearance of brain toxins.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The Narrowed Zone:</strong> Menopause shrinks the thermoneutral zone, making the body hyper-reactive to tiny temperature changes.</li>
+                <li><strong>The KNDy Connection:</strong> Hyperactive neurons in the hypothalamus are the biological drivers of hot flashes.</li>
+                <li><strong>Sleep Architecture:</strong> Menopause reduces Deep Sleep and fragments REM, leading to cognitive and emotional decline.</li>
+                <li><strong>Metabolic Triggers:</strong> Alcohol and sugar are the "fuel" for night sweats; stabilizing blood sugar is essential for nocturnal peace.</li>
+                <li><strong>The 'V' Protocol:</strong> Circadian alignment through light, temperature, and magnesium is the foundation of menopausal vitality.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li>Crandall et al. (2023). "Management of Menopausal Symptoms: A Review." <i>JAMA</i>.</li>
+                <li>Monteleone et al. (2022). "The Menopause Transition and Sleep: Mechanisms and Interventions." <i>The Lancet Diabetes & Endocrinology</i>.</li>
+                <li>Stuenkel et al. (2021). "Treatment of Vasomotor Symptoms: The Endocrine Society Guidelines." <i>Journal of Clinical Endocrinology & Metabolism</i>.</li>
+                <li>Baker et al. (2020). "Sleep Architecture Changes Across the Menopausal Transition." <i>Sleep Medicine Reviews</i>.</li>
+                <li>Nappi et al. (2023). "KNDy Neurons and the Pathophysiology of Hot Flashes." <i>Nature Reviews Endocrinology</i>.</li>
+                <li>Zhu et al. (2022). "Alcohol Consumption and Sleep Quality in Midlife Women: A Large-Scale Meta-Analysis." <i>Maturitas</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Menopause Support Coach Program | Advanced Module 11</p>
+        </footer>
+    </div>
+</body>
+
+</html>

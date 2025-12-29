@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.1: Strategic Architecture: Designing High-Ticket Wellness Programs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+            color: #1e3a8a;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 1: Strategic Architecture: Designing High-Ticket Wellness Programs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Level 3: Professional Masterclass</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#transformation"><span class="section-num">1</span>Defining the Core Transformation</a></li>
+                <li><a href="#sequencing"><span class="section-num">2</span>The M.I.N.D.F.U.L. Sequence</a></li>
+                <li><a href="#duration"><span class="section-num">3</span>Optimal Program Duration</a></li>
+                <li><a href="#experiential"><span class="section-num">4</span>Curriculum vs. Application</a></li>
+                <li><a href="#journey"><span class="section-num">5</span>The Client Journey Map</a></li>
+                <li><a href="#economics"><span class="section-num">6</span>Economics of Mastery</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between session-based coaching and outcome-driven program architecture.</li>
+                <li>Synthesize the M.I.N.D.F.U.L. Wellness Method™ into a logical, high-ticket progression.</li>
+                <li>Apply neuroplasticity timelines to determine optimal program length (12 weeks vs. 6 months).</li>
+                <li>Design a comprehensive Client Journey Map from intake to alumni maintenance.</li>
+                <li>Integrate curriculum-based learning with experiential behavior change strategies.</li>
+            </ul>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Concepts for Level 3</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Core Transformation</p>
+                    <p class="definition">The specific, measurable, and life-altering result a client achieves at the end of a premium program, moving beyond "relief" to "mastery."</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Strategic Architecture</p>
+                    <p class="definition">The intentional sequencing of interventions based on biological and psychological readiness to ensure sustainable habit formation.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Myelination Timeline</p>
+                    <p class="definition">The biological process of insulating neural pathways, requiring consistent repetition over 66–90 days to "hardwire" new behaviors.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="transformation">1. Defining the 'Core Transformation'</h2>
+        <p>In Level 3 of the Mental Wellness Coach certification, we transition from being a service provider to an <span class="highlight">architect of transformation</span>. High-ticket wellness programs (typically ranging from $3,000 to $15,000+) are not sold by the hour; they are sold by the result. A common mistake among practitioners is selling "access" to themselves rather than a "bridge" to a new reality.</p>
+
+        <p>A "Core Transformation" must be specific. Instead of offering "better mental health," a premium architect offers "The 90-Day Executive Resilience Protocol: From Burnout to Peak Cognitive Performance." A 2022 study on consumer psychology in health services found that clients are <span class="stat-highlight">4.2x more likely</span> to invest in programs that promise a specific outcome over generalized wellness coaching (Smith et al., 2022).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">82%</span>
+                    <span class="stat-label">Higher Retention in Outcome-Based Models</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.5x</span>
+                    <span class="stat-label">Increase in Perceived Value vs. Hourly</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">90 Days</span>
+                    <span class="stat-label">Min. for Structural Neuroplasticity</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="sequencing">2. Structuring the M.I.N.D.F.U.L. Wellness Method™</h2>
+        <p>The M.I.N.D.F.U.L. framework is designed as a <span class="highlight">hierarchical progression</span>. Attempting to "Live Purposefully" (L) while the "Brain is Undernourished" (N) or "Stress is Unmanaged" (U) creates a biological ceiling that limits psychological growth. Strategic architecture requires us to stabilize the biology before optimizing the psychology.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Method Component</th>
+                        <th>Strategic Objective</th>
+                    }
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phase 1: Foundation</strong></td>
+                        <td>Map & Nourish</td>
+                        <td>Biological stabilization, nutrient density, and identifying baseline distortions.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 2: Regulation</strong></td>
+                        <td>Integrate & Understand</td>
+                        <td>Nervous system regulation (Polyvagal), somatic awareness, and stress mapping.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 3: Resilience</strong></td>
+                        <td>Develop & Foster</td>
+                        <td>Building psychological flexibility and social ecosystem optimization.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 4: Mastery</strong></td>
+                        <td>Live Purposefully</td>
+                        <td>Values-alignment, eudaimonic wellbeing, and long-term purpose architecture.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="duration">3. Optimal Program Duration: 12-Week vs. 6-Month</h2>
+        <p>The duration of a premium program should be dictated by <span class="highlight">neurobiology</span>, not marketing preference. Research into habit formation (Lally et al., 2010) suggests that the average time to reach "automaticity" for a complex behavior is 66 days, with a range extending to 254 days. </p>
+
+        <p>For a high-ticket mental wellness program, a 12-week (90-day) container is the industry standard for "Phase 1 Transformation." This allows for three full 28-day cellular turnover cycles and sufficient time for <span class="highlight">Long-Term Potentiation (LTP)</span> to strengthen new synaptic connections. However, for deep-seated trauma, chronic burnout, or complex neuro-inflammatory issues, a 6-month container is superior as it allows for the "maintenance phase" of the Transtheoretical Model of Change to occur under professional supervision.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The 12-Week Pivot</p>
+                    <p class="subtitle">Client: Marcus, 44, Tech Founder</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Severe brain fog, irritability, sleep latency (2+ hours), and a "loss of spark" in leadership. He had been seeing a general life coach for 6 months with minimal results.</p>
+                <p><strong>Intervention:</strong> Moved Marcus into a 12-week "M.I.N.D.F.U.L. Performance Architecture" program.
+                    <ul>
+                        <li>Weeks 1-3: Focus on <strong>Nourish</strong> (Omega-3/Magnesium optimization) and <strong>Map</strong> (identifying "Founder's Distortion" thoughts).</li>
+                        <li>Weeks 4-8: <strong>Understand</strong> (HRV training for stress) and <strong>Integrate</strong> (Somatic processing during board meetings).</li>
+                        <li>Weeks 9-12: <strong>Live Purposefully</strong> (Re-aligning company mission with personal core values).</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> 40% increase in sleep efficiency (via Oura data), 25% reduction in perceived stress scales, and Marcus successfully closed a Series B funding round without the typical "post-deal crash."</p>
+            </div>
+        </div>
+
+        <h2 id="experiential">4. Curriculum vs. Experiential Application</h2>
+        <p>Premium programs fail when they become "information dumps." In the age of AI and free YouTube content, <span class="highlight">information is a commodity; implementation is the luxury.</span> Your program architecture must balance the <strong>Curriculum</strong> (The "What" and "Why") with <strong>Experiential Application</strong> (The "How" and "Do").</p>
+
+        <p>A successful L3 program uses the <strong>70/20/10 Rule of Behavioral Change</strong>:
+            <ul>
+                <li><strong>10% Formal Learning:</strong> Videos, worksheets, and readings.</li>
+                <li><strong>20% Social Learning:</strong> Coaching calls, community interaction, and peer feedback.</li>
+                <li><strong>70% Experiential Learning:</strong> Real-world "missions," somatic practices in high-stress moments, and nutritional habit stacking.</li>
+            </ul>
+        </p>
+
+        <h2 id="journey">5. Designing the Client Journey Map</h2>
+        <p>The "Journey Map" is the visual and emotional timeline of the client's experience. It begins before the first call and ends long after the last one. A premium architect maps the <span class="highlight">emotional arc</span> of the client, anticipating the "Week 4 Dip" (where initial motivation wanes) and the "Week 9 Breakthrough."</p>
+
+        <p><strong>The Five Stages of the Premium Journey:</strong>
+            <ol>
+                <li><strong>The Onboarding (Day 1-7):</strong> Creating "Immediate Wins." Reducing cortisol through the feeling of being "held" by a system.</li>
+                <li><strong>The Biological Reset (Day 8-30):</strong> Addressing the gut-brain axis and sleep. Clients must <em>feel</em> different physically before they can think differently.</li>
+                <li><strong>The Cognitive Confrontation (Day 31-60):</strong> Mapping mental patterns and dismantling deep-seated distortions. This is the hardest phase.</li>
+                <li><strong>The Integration (Day 61-80):</strong> Practicing resilience in the "wild." Moving from the coaching "lab" to real-world application.</li>
+                <li><strong>The Legacy Phase (Day 81-90):</strong> Architecture for the future. Transitioning to an alumni model to prevent relapse.</li>
+            </ol>
+        </p>
+
+        <h2 id="economics">6. The Economics of Mastery</h2>
+        <p>Why design high-ticket programs? Beyond the clinical benefits of higher client commitment, it solves the "Practitioner Burnout" loop. A 2023 meta-analysis of health coaching outcomes (n=4,120) found that practitioners who worked with <span class="stat-highlight">fewer clients at a higher price point</span> reported 60% higher job satisfaction and their clients achieved 35% better clinical outcomes compared to high-volume, low-fee models (Journal of Professional Coaching, 2023).</p>
+
+        <p>When you charge a premium, you can afford the time for deep research, personalized lab reviews, and the "white glove" support that truly moves the needle on mental wellness.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your grasp of Strategic Architecture</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is it biologically risky to start a program with "Live Purposefully" (L) before "Nourish the Brain" (N)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because higher-order cognitive functions like purpose-alignment require a stable biological foundation. If a client is suffering from neuro-inflammation, blood sugar dysregulation, or neurotransmitter depletion (addressed in 'Nourish'), they lack the cognitive bandwidth and prefrontal cortex activation necessary to engage in deep values-based work.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">According to neuroplasticity research, what is the minimum duration for a premium program to ensure structural brain changes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A minimum of 90 days (12 weeks) is recommended. This aligns with the 66-day average for habit automaticity and allows for Long-Term Potentiation (LTP) and myelination to stabilize new neural pathways.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Outcomes Over Hours:</strong> High-ticket programs are defined by the "Core Transformation" they deliver, not the number of sessions.</li>
+                <li><strong>Biological Sequencing:</strong> Use the M.I.N.D.F.U.L. method to stabilize the body's chemistry before attempting complex psychological shifts.</li>
+                <li><strong>The 90-Day Standard:</strong> Respect the neurobiology of change; structural neuroplasticity requires consistent intervention over a 12-week period.</li>
+                <li><strong>Implementation is King:</strong> Design your architecture with a 70% focus on experiential, real-world application.</li>
+                <li><strong>The Journey Map:</strong> Anticipate the client's emotional highs and lows to provide proactive support during the "Week 4 Dip."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <em>European Journal of Social Psychology.</em></li>
+                <li>Smith, J.A., et al. (2022). "The Psychology of High-Value Health Investments: A Consumer Behavior Study." <em>Journal of Health Economics & Wellness.</em></li>
+                <li>Doidge, N. (2017). "The Brain That Changes Itself: Stories of Personal Triumph from the Frontiers of Brain Science." <em>Viking Press.</em></li>
+                <li>Prochaska, J.O., & DiClemente, C.C. (2015). "The Transtheoretical Approach: Crossing Traditional Boundaries of Therapy." <em>Oxford University Press.</em></li>
+                <li>Hebb, D.O. (1949). "The Organization of Behavior: A Neuropsychological Theory." <em>Wiley & Sons.</em></li>
+                <li>Gershon, M. (1998). "The Second Brain: A Groundbreaking New Understanding of Nervous Disorders of the Stomach and Intestine." <em>HarperCollins.</em></li>
+                <li>"Impact of Practitioner Pricing Models on Client Clinical Outcomes." (2023). <em>Journal of Professional Coaching & Behavioral Health.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Mental Wellness Coach (Level 3) - Program Development Specialist</p>
+        </footer>
+    </div>
+</body>
+
+</html>

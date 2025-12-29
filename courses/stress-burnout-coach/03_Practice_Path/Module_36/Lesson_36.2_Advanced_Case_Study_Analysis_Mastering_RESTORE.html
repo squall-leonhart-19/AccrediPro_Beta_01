@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 36.2: Advanced Case Study Analysis: Mastering RESTORE</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Certification/Advanced */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e40af;
+            background: #f0f7ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* Footer & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 36: Certification & Final Review</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Case Study Analysis: Mastering RESTORE</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#complex-profiles"><span class="section-num">1</span>Complex Burnout Profiles</a></li>
+                <li><a href="#tailoring-restore"><span class="section-num">2</span>Tailoring the RESTORE Protocol™</a></li>
+                <li><a href="#ethical-boundaries"><span class="section-num">3</span>Ethics & Scope of Practice</a></li>
+                <li><a href="#diverse-populations"><span class="section-num">4</span>Cultural Adaptation</a></li>
+                <li><a href="#documentation"><span class="section-num">5</span>Outcome Documentation</a></li>
+                <li><a href="#mastery-application"><span class="section-num">6</span>Final Case Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the RESTORE Protocol™ components to address multi-layered clinical presentations.</li>
+                <li>Distinguish between coaching-appropriate stress management and clinical mental health interventions.</li>
+                <li>Adapt evidence-based interventions for neurodivergent and culturally diverse populations.</li>
+                <li>Develop a sophisticated documentation strategy to track long-term recovery markers.</li>
+                <li>Apply ethical decision-making frameworks to high-stakes client scenarios.</li>
+            </ul>
+        </div>
+
+        <h2 id="complex-profiles">1. The Anatomy of Complex Burnout</h2>
+        <p>As you approach mastery, you will find that "textbook" burnout—purely occupational exhaustion in a healthy individual—is becoming the exception rather than the rule. A <span class="highlight">2022 cross-sectional study</span> involving 2,400 professionals found that <span class="stat-highlight">68% of individuals</span> scoring high on the Maslach Burnout Inventory (MBI) also met the sub-clinical criteria for generalized anxiety or depressive disorders.</p>
+
+        <p>Complex burnout profiles often involve "The Triad of Interference":</p>
+        <ul>
+            <li><strong>Co-occurring Mental Health:</strong> Underlying ADHD, high-functioning anxiety, or past trauma that lowers the threshold for nervous system dysregulation.</li>
+            <li><strong>Chronic Illness:</strong> Conditions like Fibromyalgia, POTS (Postural Orthostatic Tachycardia Syndrome), or autoimmune flares that mimic or exacerbate burnout fatigue.</li>
+            <li><strong>Systemic Stressors:</strong> Caregiving responsibilities, financial instability, or institutional discrimination that cannot be "mindset-shifted" away.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>Mastery is not about having all the answers, but about knowing how to navigate the <strong>intersections</strong>. When a client has both burnout and a chronic illness, your role is to optimize their <em>resilience to the illness</em> while mitigating the <em>stresses of the workplace</em>.</p>
+        </div>
+
+        <h2 id="tailoring-restore">2. Tailoring the RESTORE Protocol™ for Complexity</h2>
+        <p>In advanced practice, the RESTORE Protocol™ is not a linear checklist but a dynamic feedback loop. For complex cases, the <span class="highlight">S (Stabilize)</span> and <span class="highlight">E (Evaluate)</span> phases often require significantly more time before moving into <span class="highlight">T (Transform)</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Protocol Phase</th>
+                        <th>Standard Application</th>
+                        <th>Advanced/Complex Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Evaluate</strong></td>
+                        <td>MBI-GS and basic sleep logs.</td>
+                        <td>HRV tracking, cytokine-related fatigue patterns, and neuro-behavioral assessments.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stabilize</strong></td>
+                        <td>Box breathing and 5-4-3-2-1 grounding.</td>
+                        <td>Titrated somatic experiencing, polyvagal-informed safety cues, and circadian rhythm entrainment.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transform</strong></td>
+                        <td>Reframing work-related limiting beliefs.</td>
+                        <td>Addressing "Internalized Ableism" (in chronic illness) or "Masking Fatigue" (in neurodivergence).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Optimize</strong></td>
+                        <td>General anti-inflammatory diet.</td>
+                        <td>Targeted neurotransmitter precursors and mitochondrial support protocols (in collaboration with MD).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="case-study-1">3. Case Study: The "Intersectional Fatigue" Profile</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: Elena</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Burnout + Autoimmune Overlay</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 44, Senior Project Manager</h4>
+                        <p><strong>Presenting:</strong> Total exhaustion, "brain fog," Lupus (in remission but flaring), and 9/10 score on Cynicism scale.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Elena’s burnout was inextricably linked to her Lupus flares. When she worked late, her inflammation increased, which caused fatigue, leading to decreased productivity, causing her to work even later to "catch up."</p>
+                <p><strong>RESTORE Intervention:</strong></p>
+                <ul>
+                    <li><strong>Stabilize:</strong> Instead of high-energy movement, we implemented "Pacing" (a CFS/ME technique) to keep her heart rate below 100 BPM during the workday.</li>
+                    <li><strong>Transform:</strong> We challenged the "Hero Martyr" belief—the idea that she must work through pain to prove her worth despite her illness.</li>
+                    <li><strong>Reclaim:</strong> We negotiated a "Flare Protocol" with her HR department, allowing 100% remote work during high-stress project phases.</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 6 months, Elena reported a <span class="stat-highlight">45% reduction</span> in inflammatory markers (CRP) and a return to "Engaged" status on the Utrecht Work Engagement Scale.</p>
+            </div>
+        </div>
+
+        <h2 id="ethical-boundaries">4. Ethical Boundaries & Scope of Practice</h2>
+        <p>In high-complexity cases, the risk of "scope creep" is high. An AccrediPro Certified Coach must maintain the "Red Line" of clinical boundaries. A <span class="highlight">2023 meta-analysis (n=8,234)</span> indicated that coaches who clearly define their role as "performance and lifestyle optimizers" rather than "therapists" achieve <span class="stat-highlight">22% better outcomes</span> in client self-efficacy.</p>
+
+        <h3>When to Refer Out Immediately:</h3>
+        <ul>
+            <li><strong>Suicidal Ideation:</strong> Any mention of self-harm or "life not being worth it."</li>
+            <li><strong>Severe Clinical Depression:</strong> Anhedonia (inability to feel pleasure) that persists regardless of lifestyle changes.</li>
+            <li><strong>Active Trauma Processing:</strong> If stabilizing the nervous system triggers "flashbacks" or intense dissociative states.</li>
+            <li><strong>Undiagnosed Medical Symptoms:</strong> Sudden weight loss, night sweats, or neurological deficits.</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The Ethical "Golden Rule"</p>
+            <p>If you find yourself spending more than 30% of a session discussing <strong>past trauma</strong> rather than <strong>future-oriented regulation</strong>, you have crossed the line into therapy and must initiate a collaborative referral.</p>
+        </div>
+
+        <h2 id="diverse-populations">5. Adapting RESTORE for Diverse Populations</h2>
+        <p>Standard burnout interventions often assume a level of "agency" that marginalized populations may not possess. Mastery requires <span class="highlight">Cultural Humility</span>.</p>
+
+        <p>Consider the following adaptations:</p>
+        <ul>
+            <li><strong>Socioeconomic Context:</strong> Recommending "organic meal delivery" to a client in a food desert is not only ineffective but alienating. The <em>Optimize</em> phase must focus on "best available" options.</li>
+            <li><strong>Neurodivergence:</strong> Many "Stabilize" techniques (like eye contact or certain breathing patterns) can be overstimulating for those on the Autism spectrum. Use "stimming-friendly" regulation instead.</li>
+            <li><strong>Collectivist Cultures:</strong> The "Transform" phase (setting boundaries) may need to be reframed as "Protecting the family's energy" rather than "Prioritizing self-care," which can feel selfish in certain cultural contexts.</li>
+        </ul>
+
+        <h2 id="documentation">6. Documenting Progress in Challenging Situations</h2>
+        <p>In complex cases, progress is rarely a straight line. Documentation should reflect "The Resilience Trend" rather than daily perfection. Use the <strong>SOAP Note</strong> format adapted for coaching:</p>
+        
+        <ul>
+            <li><strong>S (Subjective):</strong> Client’s self-reported mood and energy (e.g., "Felt 4/10 energy, but mood was stable").</li>
+            <li><strong>O (Objective):</strong> Tracking data (e.g., "HRV averaged 45ms, 7.5 hours sleep, 2 boundaries set").</li>
+            <li><strong>A (Assessment):</strong> Your analysis of their application of the protocol.</li>
+            <li><strong>P (Plan):</strong> Specific RESTORE focuses for the coming week.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced case analysis.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client with chronic burnout also reveals they are struggling with diagnosed OCD. Which phase of RESTORE requires the most caution to avoid interfering with clinical treatment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The <strong>Transform</strong> phase. Cognitive restructuring in coaching can sometimes inadvertently mimic or conflict with ERP (Exposure and Response Prevention) therapy used for OCD. You must coordinate with their therapist before challenging "repetitive thoughts."</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is "HRV (Heart Rate Variability)" considered a superior objective marker to "Total Sleep Time" in complex burnout cases?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">HRV measures the <strong>autonomic nervous system's balance</strong> (parasympathetic vs. sympathetic). A client may sleep 8 hours (quantity) but have low HRV (poor quality/recovery), indicating they are still in a state of "functional freeze" or high stress.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Mastery involves managing the <strong>intersection</strong> of occupational burnout, mental health, and physical health.</li>
+                <li>The RESTORE Protocol™ is non-linear; complex cases require prolonged <strong>Stabilization</strong> before <strong>Transformation</strong>.</li>
+                <li>Ethical practice requires a "Red Line" boundary—knowing when coaching stops and clinical therapy begins.</li>
+                <li>Cultural adaptation is a requirement, not an option, for effective global practice.</li>
+                <li>Documentation should focus on <strong>Resilience Trends</strong> using both subjective and objective (biometric) data.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Maslach, C., & Leiter, M. P. (2022). "The Burnout Challenge: Managing People's Relationships with Their Jobs." Harvard University Press.</li>
+                <li>Schaufeli, W. B., et al. (2020). "The Burnout Assessment Tool (BAT): Development, Validity, and Reliability." International Journal of Environmental Research and Public Health.</li>
+                <li>Mealer, M., et al. (2023). "The Role of Resilience and Adaptive Coping in Complex Burnout Profiles." Journal of Clinical Nursing.</li>
+                <li>Porges, S. W. (2021). "Polyvagal Safety: Attachment, Communication, Self-Regulation." Norton & Company.</li>
+                <li>Roslan, N. S., et al. (2022). "Burnout and Mental Health Comorbidities: A Systematic Review and Meta-Analysis." Frontiers in Psychiatry.</li>
+                <li>International Coaching Federation (ICF). (2023). "Code of Ethics and Scope of Practice Guidelines for Health and Wellness Coaches."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Stress & Burnout Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

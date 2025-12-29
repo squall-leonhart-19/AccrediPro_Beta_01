@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 36.2: Advanced Case Study Analysis: Complex Client Profiles</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Gold/Emerald theme for Mastery */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a34 0%, #2d5a4c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a34;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a34;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #1e3a34;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a34;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 26px;
+            color: #1e3a34;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d5a4c;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a34;
+            font-weight: 700;
+            background: #f0fdf4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #d1fae5;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fbf9;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #1e3a34;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e3a34;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #fcfcfc;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a34;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #1e3a34;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 36: Certification & Final Review</p>
+            <h1 class="lesson-title">Advanced Case Study Analysis: Complex Client Profiles</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 45 min read</span>
+                <span class="meta-item">🎓 Level 4 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Multi-Faceted Client</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Metabolic Adaptation vs. Habit Loops</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Autoimmune Considerations (A & N)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Troubleshooting S & O Pillars</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Data-Driven Pivoting</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Peer Review Simulation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the TRANSFORM Weight Method™ to resolve concurrent metabolic and psychological barriers.</li>
+                <li>Analyze the intersection of autoimmune inflammation and nutritional satiety (A & N pillars).</li>
+                <li>Develop troubleshooting protocols for resistance training (S) and sleep (O) non-responders.</li>
+                <li>Execute strategic "pivots" based on longitudinal client tracking data.</li>
+                <li>Evaluate case interventions against the AccrediPro Gold Standard for professional coaching.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Multi-Faceted Client: Beyond the Linear Path</h2>
+        <p>In the early stages of a coaching career, most clients present with straightforward requirements: a caloric deficit, increased movement, and basic habit formation. However, the <span class="highlight">Master Weight Loss Coach</span> is defined by their ability to navigate the "Complex Profile." These are clients for whom the standard math of "Calories In vs. Calories Out" has failed due to biological, psychological, or environmental interference.</p>
+        
+        <p>A 2022 systematic review published in <em>Obesity Reviews</em> noted that <span class="stat-highlight">up to 35% of weight loss attempts</span> are complicated by "metabolic adaptation," where the body reduces its basal metabolic rate (BMR) disproportionately to the weight lost. When this biological reality meets a client with emotional eating patterns (The Dopamine Loop), the coach must move from being a "cheerleader" to a "clinical strategist."</p>
+
+        <h2 id="section2">2. Metabolic Adaptation vs. Emotional Eating Patterns</h2>
+        <p>When a client "stalls," the coach must determine if the barrier is <span class="highlight">Physiological (T Pillar)</span> or <span class="highlight">Behavioral (R Pillar)</span>. Often, it is both. Metabolic adaptation—often termed "Starvation Response"—can trigger intense hunger signals, which then exacerbate existing emotional eating habits.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>CASE STUDY 1: The "Stalled" High-Achiever</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Sarah, 44 | <strong>Weight:</strong> 185 lbs (Stalled for 6 weeks) | <strong>History:</strong> Chronic dieting for 15 years.
+                </div>
+                <p><strong>The Challenge:</strong> Sarah is strictly following a 1,400-calorie plan and lifting weights 4x/week (S Pillar). However, her weight has not moved. Her "Reset Habits" (R) logs show "perfect" compliance during the week, but her "Nourish & Satisfy" (N) scores are low due to constant hunger. On Sunday evenings, she experiences "loss of control" eating.</p>
+                <p><strong>The TRANSFORM Intervention:</strong>
+                    <ul>
+                        <li><strong>T (Test):</strong> Indirect calorimetry revealed an RMR 15% lower than predicted for her lean mass.</li>
+                        <li><strong>The Pivot:</strong> Instead of cutting calories further, the coach implemented a 2-week "Metabolic Recovery" phase, increasing calories to maintenance (2,100 kcal) focusing on the <strong>Protein Leverage Hypothesis</strong> (Module 4).</li>
+                        <li><strong>Outcome:</strong> Sarah's Sunday binges ceased as her physiological hunger (Ghrelin) stabilized. After the 2-week reset, her RMR rebounded by 8%, and fat loss resumed at 1.2 lbs/week on a higher caloric intake (1,750 kcal).</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Applying 'A' and 'N' Pillars to Autoimmune Considerations</h2>
+        <p>Clients with autoimmune conditions (e.g., Hashimoto’s, Rheumatoid Arthritis) face a unique hurdle: <span class="highlight">Systemic Inflammation</span>. Inflammation isn't just a symptom; it is a driver of insulin resistance. In these cases, the "Anti-Inflammatory Diet" (A) and "Nourish & Satisfy" (N) pillars must be integrated with clinical precision.</p>
+        
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that individuals with high C-Reactive Protein (CRP) levels—a marker of inflammation—exhibited <span class="stat-highlight">22% less fat oxidation</span> during exercise compared to age-matched controls. For these clients, the goal is not "eating less," but "eating for cellular safety."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pillar Focus</th>
+                        <th>Standard Client Approach</th>
+                        <th>Complex Autoimmune Approach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>A: Anti-Inflammatory</strong></td>
+                        <td>General reduction of processed sugars and seed oils.</td>
+                        <td>Strict elimination of A1 casein, gluten, and nightshades (temporary) to lower CRP.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N: Nourish & Satisfy</strong></td>
+                        <td>Focus on high volume (fiber) and protein.</td>
+                        <td>Focus on Omega-3/Omega-6 ratio (1:1 target) and polyphenols to modulate Th1/Th2 immune response.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>F: Fix Hormones</strong></td>
+                        <td>Focus on Insulin sensitivity via carb timing.</td>
+                        <td>Focus on Cortisol-Thyroid axis; preventing over-training which triggers flares.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Strategic Troubleshooting: When 'S' and 'O' Fail</h2>
+        <p>The "Strengthen" (S) and "Optimize Lifestyle" (O) pillars are usually the "accelerants" of fat loss. However, in complex profiles, they can sometimes become stressors. If a client is lifting heavy (S) but sleeping poorly (O), the resulting <span class="highlight">Cortisol-Insulin Axis</span> dysfunction can lead to visceral adiposity (belly fat) even in a deficit.</p>
+
+        <h3>The "Stress-Resistance" Protocol:</h3>
+        <p>When fat loss stalls despite high activity, evaluate the following:</p>
+        <ul>
+            <li><strong>The Cortisol Spike:</strong> Are they doing high-intensity interval training (HIIT) on top of a high-stress job? This may be keeping insulin elevated.</li>
+            <li><strong>Sleep Architecture:</strong> A 2021 study in <em>Nature Communications</em> showed that even one night of 4-hour sleep reduced insulin sensitivity by <span class="stat-highlight">up to 30%</span> the following day.</li>
+            <li><strong>The Muscle-Metabolism Gap:</strong> If the client is gaining muscle but not losing fat, the "T" pillar (Metabolism) is working, but the "A" pillar (Inflammation) may be causing water retention (Edema).</li>
+        </ul>
+
+        <h2 id="section5">5. Data-Driven Decision Making: The Mid-Program Pivot</h2>
+        <p>A Master Coach does not wait for the end of a 12-week program to change course. By using the <span class="highlight">TRANSFORM Client Log</span>, you can identify patterns that necessitate a "Pivot."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>CASE STUDY 2: The "Inflamed" Professional</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> James, 52 | <strong>Symptoms:</strong> Joint pain, brain fog, weight gain around midsection. | <strong>Diagnosis:</strong> Psoriatic Arthritis.
+                </div>
+                <p><strong>Initial Strategy:</strong> Standard resistance training (S) and 40/30/30 macro split.</p>
+                <p><strong>Data Analysis (Week 4):</strong> James’s HRV (Heart Rate Variability) trended downward, and his fasting glucose rose from 95 to 108 mg/dL despite no change in diet. This indicated a <span class="highlight">Sympathetic Overdrive</span>.</p>
+                <p><strong>The Pivot:</strong>
+                    <ul>
+                        <li>Reduced S Pillar from 5 days to 3 days of low-eccentric lifting.</li>
+                        <li>Shifted O Pillar to include 20 minutes of daily NSDR (Non-Sleep Deep Rest).</li>
+                        <li>Enhanced A Pillar with high-dose EPA/DHA (3g/day).</li>
+                    </ul>
+                </p>
+                <p><strong>Outcomes:</strong> Within 14 days, joint pain decreased by 60%, and James lost 4 lbs of fluid/fat as his cortisol levels stabilized.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Peer Review Simulation: The AccrediPro Gold Standard</h2>
+        <p>In your final certification exam, you will be asked to review a case study and provide a TRANSFORM-aligned intervention. The difference between a "Pass" and a "Mastery" score lies in your ability to <span class="highlight">link the pillars</span>. You must demonstrate how a change in the 'O' pillar (Sleep) directly impacts the 'F' pillar (Leptin/Ghrelin) and the 'R' pillar (Habit adherence).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to troubleshoot complex client data.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client is hitting their protein targets (N) and lifting weights (S) but reports increased irritability and "night-time raids" on the pantry. What is the most likely physiological cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Clinical Analysis</button>
+                <div class="answer-text">
+                    This suggests <strong>Low Energy Availability (LEA)</strong>. The brain is sensing a caloric gap that is too wide, triggering a "survival drive" (R Pillar failure) via increased Neuropeptide Y and decreased Serotonin. The intervention should be a <strong>Refeed Day</strong> or a slight increase in complex carbohydrates (A Pillar) at dinner to boost tryptophan transport and serotonin production.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">If a client's RMR (T Pillar) is significantly lower than their estimated TDEE, should you decrease their calories to match the RMR?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Clinical Analysis</button>
+                <div class="answer-text">
+                    <strong>No.</strong> Cutting calories to match a suppressed RMR often leads to further metabolic adaptation and hormonal downregulation (F Pillar). The "Master" approach is <strong>Reverse Dieting</strong> or <strong>Metabolic Priming</strong>: slowly increasing calories while prioritizing the S Pillar to "re-teach" the metabolism to burn energy.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Metabolic Adaptation</strong> is a biological reality; it requires "Metabolic Recovery" phases, not just steeper deficits.</li>
+                <li><strong>Autoimmune clients</strong> require the 'A' and 'N' pillars to be prioritized to lower systemic inflammation before fat loss can occur efficiently.</li>
+                <li><strong>The Pivot</strong> is a coaching superpower—use HRV, fasting glucose, and satiety scores to change course mid-program.</li>
+                <li><strong>Inter-Pillar Connectivity:</strong> Never view a symptom in isolation; a sleep issue (O) is often the root of a sugar craving (R).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hall et al. (2021). "Energy expenditure and body composition changes after an isocaloric ketogenic diet." <em>The American Journal of Clinical Nutrition.</em></li>
+                <li>Martins et al. (2022). "Metabolic adaptation to weight loss: A systematic review." <em>Obesity Reviews.</em></li>
+                <li>Fasshauer et al. (2023). "Adipokines in health and disease." <em>Trends in Pharmacological Sciences.</em></li>
+                <li>Walker et al. (2021). "Sleep deprivation and the human metabolic response." <em>Nature Communications.</em></li>
+                <li>AccrediPro Academy. (2024). "The TRANSFORM Weight Method™ Clinical Guidelines." <em>Internal Practitioner Manual.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Weight Loss Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential Mastery Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

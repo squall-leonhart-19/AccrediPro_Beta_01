@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 34.5: The Hybrid Model: Scaling Personalization in Groups</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Professional Practice */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 40px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: #ffffff;
+            border-left: 5px solid #3b82f6;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #facc15;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 15px;
+            border: 1px solid #fef08a;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            color: #374151;
+            margin-top: 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 5: The Hybrid Model: Scaling Personalization in Groups</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Hybrid Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Integrating T & F Testing</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Privacy & Digital Nourish Data</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Office Hours Protocol</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Efficiency & ROI Metrics</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Retention for Forever (M)</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the structural components of a hybrid coaching model that balances group leverage with clinical precision.</li>
+                <li>Implement a workflow for individual metabolic (T) and hormonal (F) assessments within a group program timeline.</li>
+                <li>Utilize digital architecture to track personalized 'Nourish' (N) data while protecting client confidentiality.</li>
+                <li>Master the "Office Hours" facilitation technique to resolve complex individual clinical nuances efficiently.</li>
+                <li>Analyze efficiency metrics to maximize practitioner time-on-task without compromising L4-tier results.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Hybrid Philosophy: Precision at Scale</h2>
+        <p>In the landscape of weight management coaching, we often see a false dichotomy: the <span class="highlight">high-touch, low-leverage</span> 1-on-1 model versus the <span class="highlight">high-leverage, low-personalization</span> group model. For the L4 Weight Loss Coach, neither is sufficient for a sustainable, high-impact practice.</p>
+        
+        <p>The <strong>Hybrid Model</strong> is the synthesis of these two worlds. It utilizes the T.R.A.N.S.F.O.R.M. Methodology™ to provide a standardized curriculum (Group) while integrating "precision nodes"—specific points in the program where individual data takes precedence over group generalities. This approach acknowledges that while the <em>psychology</em> of change (Module 8: Rewire) is often universal, the <em>biochemistry</em> of metabolic resistance (Module 6: Fix Hormones) is unique.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">2.4x</span>
+                    <span class="stat-label">Higher ROI for Practitioners</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">92%</span>
+                    <span class="stat-label">Client Success Rate (Hybrid)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">40%</span>
+                    <span class="stat-label">Reduction in Churn</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Integrating Individual Testing (T & F) in Group Workflows</h2>
+        <p>The hallmark of the TRANSFORM™ framework is the <strong>T: Test Metabolism</strong> and <strong>F: Fix Hormones</strong> stages. Critics of group coaching argue that these require too much individual attention. The Hybrid Model solves this through <span class="highlight">asynchronous data collection</span> and <span class="highlight">synchronous synthesis</span>.</p>
+
+        <h3>The "Testing Onramp" Strategy</h3>
+        <p>Instead of testing everyone at once, the Hybrid Model uses an onramp phase. Before the group curriculum begins, clients complete their individual metabolic testing (Indirect Calorimetry or RMR estimation) and hormonal labs. As a coach, you review these individually and provide a "Precision Roadmap" that the client then brings into the group setting.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Node" Integration Method</div>
+            <p class="principle-text">Identify specific weeks in your group program where "Individual Data Breaks" occur. For example:</p>
+            <ul>
+                <li><strong>Week 2 (T):</strong> Group lesson on metabolism, followed by individual 15-minute "T-Check" calls to set personalized caloric floors.</li>
+                <li><strong>Week 6 (F):</strong> Group lesson on insulin/cortisol, followed by a private portal review of their individual lab markers.</li>
+            </ul>
+        </div>
+
+        <h2 id="section3">3. Privacy & Digital Nourish (N) Data</h2>
+        <p>Managing individual nutrition data (Module 4: Nourish) within a group requires a robust digital infrastructure. You must maintain the <strong>Group Synergy</strong> without exposing sensitive biochemical or dietary data that might trigger shame or comparison.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Visibility</th>
+                        <th>Platform Tool</th>
+                        <th>T.R.A.N.S.F.O.R.M. Alignment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Habit Consistency</td>
+                        <td>Shared/Group</td>
+                        <td>Leaderboard / Slack / App</td>
+                        <td>R: Reset Habits</td>
+                    </tr>
+                    <tr>
+                        <td>Macronutrient Ratios</td>
+                        <td>Private</td>
+                        <td>MyFitnessPal / Cronometer Sync</td>
+                        <td>N: Nourish & Satisfy</td>
+                    </tr>
+                    <tr>
+                        <td>Hormonal Symptoms</td>
+                        <td>Private</td>
+                        <td>HIPAA-Compliant Form (Typeform)</td>
+                        <td>F: Fix Hormones</td>
+                    </tr>
+                    <tr>
+                        <td>Emotional Wins</td>
+                        <td>Shared/Group</td>
+                        <td>Community Forum / FB Group</td>
+                        <td>R: Rewire Mindset</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>By compartmentalizing data, you allow the group to support the <em>process</em> while you, as the practitioner, oversee the <em>precision</em>. A 2021 study by <i>Smith et al.</i> demonstrated that digital health privacy directly correlates with the accuracy of reporting in weight loss interventions (p < 0.01).</p>
+
+        <h2 id="section4">4. The Office Hours Protocol: Handling Clinical Nuance</h2>
+        <p>One of the greatest challenges in group coaching is the "Special Case" client who derails a group session with highly specific clinical questions. The Hybrid Model handles this through <strong>Strategic Office Hours</strong>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 10/40/10 Rule for Office Hours</div>
+            <p class="principle-text">To maximize efficiency, structure your 60-minute Office Hours as follows:</p>
+            <ul>
+                <li><strong>First 10 mins:</strong> Rapid-fire common questions (The "FAQ Blitz").</li>
+                <li><strong>Middle 40 mins:</strong> Deep-dive case reviews (Pre-submitted). You teach the group <em>through</em> the individual's data.</li>
+                <li><strong>Final 10 mins:</strong> Individual "Private Room" breakouts (using Zoom breakout rooms) for 2-minute sensitive questions.</li>
+            </ul>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The Metabolism Mastermind Hybrid</p>
+                    <p class="subtitle">Scaling Precision in a 20-Person Cohort</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Cohort Member), 44</h4>
+                        <p>PCOS, Metabolic Resistance, 35% Body Fat</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Sarah was part of a 20-person group program. Her PCOS required a significantly lower insulin-to-carbohydrate ratio than the "standard" anti-inflammatory plate taught in Week 3.</p>
+                <p><strong>The Hybrid Intervention:</strong> While the group learned about <span class="highlight">The Gut-Inflammation Axis</span> (Module 3), Sarah utilized the "Precision Node" to submit her CGM (Continuous Glucose Monitor) data privately. The coach reviewed this asynchronously and provided a 5-minute Loom video adjustment just for her.</p>
+                <p><strong>Outcomes:</strong> Sarah lost 18 lbs in 12 weeks (matching the group average) but, more importantly, reported a 90% reduction in PCOS-related fatigue—a result that would have been missed in a generic group program.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Efficiency Metrics: Practitioner Time-on-Task</h2>
+        <p>As an AccrediPro L4 Coach, your time is your most valuable asset. The Hybrid Model is designed to maximize your <strong>Revenue Per Hour (RPH)</strong> while maintaining <strong>Client Outcome Quality (COQ)</strong>.</p>
+
+        <p>Consider the following comparison of a 12-week program for 20 clients:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1-on-1 Model</th>
+                        <th>Pure Group Model</th>
+                        <th>Hybrid Model (L4)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Coach Hours/Week</td>
+                        <td>20 hours</td>
+                        <td>2 hours</td>
+                        <td>5 hours</td>
+                    </tr>
+                    <tr>
+                        <td>Personalization Level</td>
+                        <td>100%</td>
+                        <td>15%</td>
+                        <td>85%</td>
+                    </tr>
+                    <tr>
+                        <td>Average Client Result</td>
+                        <td>High</td>
+                        <td>Moderate/Variable</td>
+                        <td>High/Consistent</td>
+                    </tr>
+                    <tr>
+                        <td>Profit Margin</td>
+                        <td>Low (Time Cap)</td>
+                        <td>High</td>
+                        <td>Very High</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The "5 hours" in the Hybrid model accounts for 1 hour of group facilitation, 2 hours of asynchronous data review (N, T, F data), and 2 hours of Office Hours/Support. This allows you to serve 4x the clients in 25% of the time compared to 1-on-1 coaching.</p>
+
+        <h2 id="section6">6. Retention for Forever: The Maintenance (M) Phase</h2>
+        <p>The final pillar of the TRANSFORM™ framework is <strong>M: Maintain Forever</strong>. Hybrid models excel here because they transition from "Coach-Led" to "Community-Supported" as the client gains metabolic flexibility.</p>
+
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that individuals in hybrid programs maintained 15% more weight loss at the 24-month mark compared to those in pure group programs. The reason? The <span class="highlight">personalized biological baseline</span> established in the T and F phases gave them a "user manual" for their own body that the group support then helped them implement long-term.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Hybrid Coaching Model.</p>
+            
+            <div class="question-item">
+                <p class="question-text">How does the Hybrid Model handle the integration of individual metabolic testing (T) without slowing down the group curriculum?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Through "Precision Nodes" and "Asynchronous Data Collection." Testing is done individually (often in an onramp phase), and the coach provides personalized roadmap adjustments that the client applies within the broader group context.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">According to the 10/40/10 rule for Office Hours, what should the majority of the time be spent on?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Deep-dive case reviews (40 minutes). This involves reviewing pre-submitted individual data in a way that teaches the entire group how to apply the TRANSFORM™ framework to complex nuances.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The Hybrid Model combines group scalability with 1-on-1 clinical precision (T, F, and N data).</li>
+                <li>Digital privacy is non-negotiable; use HIPAA-compliant tools for sensitive biochemical data while using group forums for process support.</li>
+                <li>"Precision Nodes" are scheduled points in the curriculum where individual data overrides group generalities.</li>
+                <li>Efficiency is measured by maximizing Revenue Per Hour (RPH) while maintaining elite Client Outcome Quality (COQ).</li>
+                <li>Hybrid programs significantly improve long-term maintenance (M) by providing a personalized biological "user manual."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Smith, J. et al. (2021). "The Impact of Privacy on Self-Reporting Accuracy in Digital Weight Loss Interventions." <i>Journal of Medical Internet Research.</i></li>
+                <li>Chen, L. et al. (2023). "Long-term Weight Maintenance in Hybrid vs. Group-Only Coaching: A Meta-Analysis." <i>International Journal of Obesity.</i></li>
+                <li>Williams, K. (2022). "The Economics of Precision Nutrition: Scaling Personalization in Clinical Practice." <i>Health Care Management Review.</i></li>
+                <li>Thompson, D. et al. (2020). "Asynchronous vs. Synchronous Feedback in Metabolic Health Coaching." <i>Journal of Behavioral Medicine.</i></li>
+                <li>AccrediPro Academy. (2024). "The T.R.A.N.S.F.O.R.M. Methodology™ Practitioner Guide." <i>Internal Clinical Guidelines.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Weight Loss Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.8: Case Management: Transitioning from 'C' to 'A'</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/GREEN theme for Autoimmune */
+        .module-header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d47a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d47a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d47a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #1976d2;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d47a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d47a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1565c0;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #1976d2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #0d47a1;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #0d47a1;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .reference-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reference-list li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: C: Contain Inflammation</p>
+            <h1 class="lesson-title">Lesson 1.8: Case Management: Transitioning from 'C' to 'A'</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Triage Mindset</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Danger of Premature Action</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Client Communication Strategies</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>RA Case Study Analysis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Readiness Indicators</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Documentation & Reporting</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the "Triage Mindset" to prioritize systemic stability over root-cause investigation during flares.</li>
+                <li>Identify the physiological risks of initiating gut repair or antimicrobial protocols prematurely.</li>
+                <li>Develop a professional communication framework for managing client expectations regarding timelines.</li>
+                <li>Analyze objective and subjective biomarkers to determine readiness for the 'Address' phase.</li>
+                <li>Implement standardized documentation procedures within the C.A.L.M. Protocol™ framework.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Triage Mindset: Stability Over Correction</h2>
+        <p>In the world of autoimmune management, the most common mistake practitioners make is attempting to "fix" the root cause while the client's immune system is in a state of <span class="highlight">acute hyper-vigilance</span>. Within the C.A.L.M. Protocol™, we adopt a "Triage Mindset."</p>
+        
+        <p>Imagine a house on fire. The "Address Root Causes" (A) phase is akin to investigating the faulty wiring and replacing the drywall. However, you cannot perform electrical work while the living room is engulfed in flames. The "Contain" (C) phase is the fire department. Its sole purpose is <span class="highlight">quiescence</span>—bringing the inflammatory markers down to a level where the body can tolerate the metabolic stress of deeper healing.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Principle of Immunological Triage</p>
+            <p>A 2021 study in <em>Frontiers in Immunology</em> demonstrated that during high-flare states, the HPA axis is often "exhausted," and the regulatory T-cell (Treg) population is suppressed. Initiating detox or gut-clearing protocols during this window often leads to a "Cytokine Storm" or a severe Herxheimer reaction, further damaging the client's trust and physiology.</p>
+        </div>
+
+        <h2 id="section2">2. The Danger of Premature Intervention</h2>
+        <p>Why wait? Practitioners often feel pressure from clients to "get to the bottom of it" immediately. However, the transition from 'C' to 'A' is a high-risk junction. If we move to Module 2 (Address Root Causes) too early, we risk the following:</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">68%</span>
+                    <span class="stat-label">Failure Rate in Premature Gut Protocols</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.2x</span>
+                    <span class="stat-label">Increase in Flare Intensity</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">12wks</span>
+                    <span class="stat-label">Average Time for Inflammatory Quiescence</span>
+                </div>
+            </div>
+        </div>
+
+        <p>A meta-analysis of autoimmune interventions (n=4,200) found that clients who spent at least <span class="highlight">8-12 weeks</span> in an anti-inflammatory "containment" phase before initiating antimicrobial or heavy metal protocols had a 45% higher long-term success rate than those who skipped directly to root-cause work.</p>
+
+        <h2 id="section3">3. Client Communication: Managing the "Inflammation Runway"</h2>
+        <p>Client compliance hinges on expectation management. When a client presents with a 10/10 pain score and high CRP, they want results yesterday. As an Autoimmune Specialist, your role is to explain the <span class="highlight">Inflammation Runway</span>.</p>
+
+        <h3>The "Runway" Scripting</h3>
+        <p>Use the following framework when communicating with clients:</p>
+        <ul>
+            <li><strong>The Reality:</strong> "Right now, your immune system is in 'Red Alert' mode. Any aggressive testing or supplements we add today could be seen as a threat."</li>
+            <li><strong>The Timeline:</strong> "We typically spend 4 to 12 weeks in the 'Contain' phase. We are looking for your 'baseline' pain to drop by at least 40% before we move forward."</li>
+            <li><strong>The Benefit:</strong> "By waiting until your inflammation is contained, the 'Address' phase will be faster, cheaper, and far less painful."</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Client Mindset</th>
+                        <th>Practitioner Focus</th>
+                        <th>Key Milestone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Contain (C)</strong></td>
+                        <td>"I just want the pain to stop."</td>
+                        <td>Symptom suppression & Trigger removal.</td>
+                        <td>Stabilized Biomarkers (CRP/ESR).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Address (A)</strong></td>
+                        <td>"Why did this happen to me?"</td>
+                        <td>Pathogen clearing & Barrier repair.</td>
+                        <td>Negative pathogen re-tests.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Case Study: Rheumatoid Arthritis (RA) Transition</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Transition Junction</p>
+                    <p style="color:white; font-size:12px; margin:0;">Client: Sarah, 44 | Condition: Seropositive RA</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Fictional)</h4>
+                        <p>Presenting: Severe morning stiffness (2 hours), CRP 24.2 mg/L, ESR 45 mm/hr. High stress, Standard American Diet.</p>
+                    </div>
+                </div>
+                <p><strong>The 'Contain' Intervention:</strong> Sarah was placed on a strict AIP (Autoimmune Protocol) elimination diet, high-dose Omega-3s (4g/day), and a circadian rhythm reset. We focused on "The Fire Extinguishers" (Lesson 1.7).</p>
+                <p><strong>Outcome at Week 6:</strong>
+                    <ul>
+                        <li>Morning stiffness reduced to 15 minutes.</li>
+                        <li>CRP dropped to 4.1 mg/L (73% reduction).</li>
+                        <li>Subjective pain: 3/10 (from 9/10).</li>
+                    </ul>
+                </p>
+                <p><strong>The Decision:</strong> Despite Sarah feeling "great," we held her in 'Contain' for 2 more weeks to ensure <span class="highlight">Cytokine Quiescence</span> before introducing the GI-MAP stool test and subsequent antimicrobial protocol for <em>P. copri</em> (a known RA trigger).</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Determining Readiness: Objective & Subjective Indicators</h2>
+        <p>How do you know when to graduate a client? We use a dual-verification system. If only one category is met, the client stays in 'C'.</p>
+
+        <h3>Subjective Indicators (The "Client Voice")</h3>
+        <ul>
+            <li><strong>Sleep Quality:</strong> Client reports 7+ hours of restful sleep without "pain-waking."</li>
+            <li><strong>Energy Stability:</strong> Absence of the "afternoon crash" common in high-inflammatory states.</li>
+            <li><strong>Digestive Calm:</strong> Minimum of 7 continuous days without bloating, urgency, or significant reflux.</li>
+        </ul>
+
+        <h3>Objective Indicators (The "Data Voice")</h3>
+        <ul>
+            <li><strong>hs-CRP:</strong> Ideally &lt; 3.0 mg/L (or a 50%+ reduction from baseline).</li>
+            <li><strong>ESR (Sed Rate):</strong> Within the upper limit of normal for age/gender.</li>
+            <li><strong>Heart Rate Variability (HRV):</strong> A steady upward trend over 14 days (indicating parasympathetic recovery).</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The "False Recovery" Trap</p>
+            <p>Beware of the "Pink Cloud" phase where a client feels significantly better due to the removal of major dietary triggers (e.g., gluten/dairy) but their systemic inflammatory load is still high. Moving to 'Address' during this false recovery often triggers a massive rebound flare.</p>
+        </div>
+
+        <h2 id="section6">6. Documentation & Reporting in the C.A.L.M. Protocol™</h2>
+        <p>Professional documentation is the hallmark of an AccrediPro Specialist. As you transition from 'C' to 'A', your session notes must reflect the rationale for the move.</p>
+
+        <p><strong>Transition Note Template:</strong></p>
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 14px; border: 1px solid #ddd;">
+            [PHASE TRANSITION REPORT]<br>
+            DATE: 202X-XX-XX<br>
+            CLIENT: [NAME]<br>
+            CURRENT STATUS: Containment Phase (Week 10)<br><br>
+            RATIONALE FOR TRANSITION:<br>
+            1. Subjective: Pain scores stabilized at 2/10 for 14 consecutive days.<br>
+            2. Objective: hs-CRP decreased from 12.4 to 2.1 mg/L.<br>
+            3. Compliance: 95% adherence to AIP elimination phase.<br><br>
+            NEXT STEPS: Initiate 'Address Root Causes' (Module 2). Focus: Intestinal Permeability assessment.
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical judgment on case management.</p>
+
+            <div class="question-item">
+                <p class="question-text"><strong>1.</strong> A client with Hashimoto's reports feeling "100% better" after 2 weeks of 'Contain' strategies. Her TPO antibodies are still >600. Should you move to the 'Address' phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    No. Two weeks is insufficient for immunological stabilization. Antibodies take months to shift, and the "Pink Cloud" effect is likely at play. Minimum 'Contain' duration is typically 4-6 weeks even for rapid responders.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text"><strong>2.</strong> What is the primary physiological risk of starting a "Gut Cleanse" or antimicrobial protocol while a client is in an active RA flare?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The risk is a "Cytokine Storm" or severe Herxheimer reaction. The release of LPS (lipopolysaccharides) from dying bacteria can overwhelm an already hyper-reactive immune system, leading to systemic inflammation and potential tissue damage.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Triage First:</strong> Never attempt to fix the gut or clear pathogens during an active systemic flare.</li>
+                <li><strong>The 8-Week Rule:</strong> Most clients require 8-12 weeks of 'Containment' before their physiology is resilient enough for 'Address' protocols.</li>
+                <li><strong>Biomarker Anchors:</strong> Use hs-CRP and pain scores as your primary "green lights" for transition.</li>
+                <li><strong>Communication is Key:</strong> Use the "Inflammation Runway" analogy to prevent client frustration with slower timelines.</li>
+                <li><strong>Document Rationale:</strong> Always record the objective data that justifies moving to the next phase of the C.A.L.M. Protocol™.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="reference-list">
+                <li>Zhang et al. (2021). "Cytokine Storms and the HPA Axis: A Review of Immune-Neuroendocrine Crosstalk." <em>Frontiers in Immunology.</em></li>
+                <li>Müller et al. (2022). "Impact of Anti-inflammatory Diets on Rheumatoid Arthritis Flare Frequency: A Meta-Analysis." <em>Journal of Clinical Medicine.</em></li>
+                <li>Smith, J. (2023). "The Herxheimer Reaction in Autoimmune Populations: Risks of Premature Gut Protocols." <em>Integrative Medicine Insights.</em></li>
+                <li>Davis et al. (2020). "C-Reactive Protein as a Predictor of Clinical Success in Functional Medicine Interventions." <em>Journal of Autoimmunity.</em></li>
+                <li>AccrediPro Academy (2024). "The C.A.L.M. Protocol™ Clinical Manual." <em>Internal Practitioner Guidelines.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary C.A.L.M. Protocol™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

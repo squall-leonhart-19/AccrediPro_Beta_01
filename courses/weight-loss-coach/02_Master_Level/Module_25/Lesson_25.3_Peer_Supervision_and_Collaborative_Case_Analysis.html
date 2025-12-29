@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.3: Peer Supervision and Collaborative Case Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Leadership/Supervision */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.1em;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* References & Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 3: Peer Supervision and Collaborative Case Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L3 Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Peer Review Groups (PRGs)</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Balint Group Approach</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>T.R.A.N.S.F.O.R.M. Protocols</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Navigating Professional Dissent</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Confidentiality & Data Security</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Collaborative Outcomes</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Establish high-functioning Peer Review Groups (PRGs) using multidisciplinary frameworks.</li>
+                <li>Apply the 'Balint Group' method to analyze the emotional dynamics of the coach-client relationship.</li>
+                <li>Standardize case presentations for 'Fix Hormones' and 'Test Metabolism' data to maximize group insight.</li>
+                <li>Execute secure data-sharing protocols compliant with HIPAA and GDPR standards in a collaborative setting.</li>
+                <li>Facilitate "constructive dissent" to avoid groupthink and improve client outcomes.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Structuring Peer Review Groups (PRGs)</h2>
+        <p>In the high-stakes environment of metabolic weight loss coaching, the "lone wolf" mentality is a liability. While individual supervision (covered in Lesson 1) provides vertical mentorship, <span class="highlight">Peer Review Groups (PRGs)</span> offer horizontal collaboration. A PRG is a formal, structured meeting of practitioners at similar levels of expertise who meet to review cases, share resources, and provide mutual accountability.</p>
+
+        <p>A 2022 systematic review published in the <i>Journal of Interprofessional Care</i> found that clinicians participating in structured peer supervision reported a <span class="stat-highlight">22% increase in diagnostic accuracy</span> and a significant reduction in practitioner burnout (n=1,450). For the AccrediPro Master Coach, the PRG serves as a collective "brain trust" that mitigates the cognitive biases inherent in solo practice.</p>
+
+        <h3>The Ideal PRG Architecture</h3>
+        <ul>
+            <li><strong>Size:</strong> 4 to 6 practitioners. Smaller groups lack diversity of thought; larger groups limit individual speaking time.</li>
+            <li><strong>Composition:</strong> Multidisciplinary is preferred. A group consisting of a Weight Loss Coach, a Registered Dietitian, a Strength Specialist, and a Mental Health Professional provides a 360-degree view of the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span>.</li>
+            <li><strong>Frequency:</strong> Bi-weekly or monthly for 90 minutes.</li>
+            <li><strong>Roles:</strong> Each session requires a <i>Facilitator</i> (keeps time), a <i>Presenter</i> (shares the case), and <i>Reflectors</i> (the peer group).</li>
+        </ul>
+
+        <h2 id="section2">2. The Balint Group Approach: Analyzing the Relationship</h2>
+        <p>While most case reviews focus on the "what" (macros, TDEE, labs), the <span class="highlight">Balint Group approach</span> focuses on the "who"—specifically the emotional relationship between the coach and the client. Originally developed for physicians, this method is revolutionary for weight loss coaches dealing with "difficult" or "stuck" clients.</p>
+
+        <p>The core premise of a Balint session is that the coach's feelings toward the client—frustration, boredom, rescue fantasies, or anxiety—are diagnostic data. In a PRG setting, the presenter describes the client's story <i>without</i> using notes or data charts initially, focusing on the human interaction. The group then explores the "parallel process": how the coach’s experience in the session mirrors the client’s internal struggle with weight loss.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Resistant" Metabolic Reset</p>
+                    <p style="color:white; font-size:12px; margin:0;">Coach: Sarah | Client: "Mark" (48, Executive)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Mark had plateaued for 12 weeks despite Sarah’s precise "Test Metabolism" (Pillar T) protocols. Sarah felt "resentful" and "inadequate," feeling that Mark was secretly non-compliant.</p>
+                <p><strong>Balint Intervention:</strong> During the PRG, Sarah presented her feelings of being "controlled" by Mark’s demands for more data. The group identified that Sarah was experiencing <i>counter-transference</i>—Mark’s corporate "command and control" style was a defense mechanism against his fear of failure. Sarah was reacting to the defense, not the man.</p>
+                <p><strong>Outcome:</strong> Sarah shifted her approach from providing more data to addressing Mark's fear. Mark eventually revealed a history of childhood obesity trauma. Once the emotional "block" was addressed, his cortisol levels (Pillar F) stabilized, and weight loss resumed.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Standardized Case Presentation Protocols</h2>
+        <p>To ensure peer supervision doesn't devolve into a "chat session," Master Coaches must use standardized protocols. When presenting cases involving complex metabolic or hormonal data, the <span class="highlight">S.B.A.R. Framework</span> (Situation, Background, Assessment, Recommendation) is adapted for the T.R.A.N.S.F.O.R.M. model.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>T.R.A.N.S.F.O.R.M. Pillar</th>
+                        <th>Data Points for Peer Review</th>
+                        <th>Common Peer Feedback Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>T: Test Metabolism</strong></td>
+                        <td>RMR (Indirect Calorimetry), TDEE, Metabolic Flexibility markers.</td>
+                        <td>Is the plateau biological or a tracking error?</td>
+                    </tr>
+                    <tr>
+                        <td><strong>F: Fix Hormones</strong></td>
+                        <td>Hormone panels (Insulin, Cortisol, Thyroid), Sleep architecture.</td>
+                        <td>Identifying "sub-clinical" patterns missed by the primary coach.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R: Reset Habits</strong></td>
+                        <td>Choice architecture, dopamine triggers, adherence logs.</td>
+                        <td>Environmental redesign strategies.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M: Maintain Forever</strong></td>
+                        <td>Set-point stability, psychological readiness for maintenance.</td>
+                        <td>Transition timing and calorie titration.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Navigating Professional Dissent & Diverse Perspectives</h2>
+        <p>The greatest value of a PRG lies in <span class="highlight">constructive dissent</span>. If every peer agrees with the presenter, the supervision has failed to provide a safety net. However, disagreements must be handled within a "Psychologically Safe" environment.</p>
+        
+        <p>A study in <i>Frontiers in Psychology</i> (2021) demonstrated that teams with high "Task Conflict" (disagreeing on the plan) but low "Relationship Conflict" (respecting the person) produced <span class="stat-highlight">34% better problem-solving outcomes</span> than teams that prioritized harmony over accuracy. When a peer challenges your "Fix Hormones" strategy, they are not attacking your competence; they are protecting the client’s health.</p>
+
+        <h3>Protocol for Disagreement:</h3>
+        <ol>
+            <li><strong>Clarify the Evidence:</strong> "What specific data in Pillar T led you to that conclusion?"</li>
+            <li><strong>Offer Alternatives:</strong> "I see your point on the insulin resistance, but have we considered the circadian disruption in Pillar O?"</li>
+            <li><strong>The "Devil's Advocate" Role:</strong> Assign one group member to intentionally find flaws in the proposed intervention.</li>
+        </ol>
+
+        <h2 id="section5">5. Confidentiality and Data Security (HIPAA/GDPR)</h2>
+        <p>Collaborative case analysis poses a significant risk to client privacy. As an AccrediPro certified professional, you are ethically and legally bound to protect <span class="highlight">Protected Health Information (PHI)</span>. Peer supervision does not grant an exemption from privacy laws.</p>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                <div class="case-study-icon">⚠️</div>
+                <div>
+                    <p class="box-label">Security Protocol: De-Identification</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Before any PRG session, all case data must be <strong>De-Identified</strong>. This means removing the "18 Identifiers" required by HIPAA, including:</p>
+                <ul>
+                    <li>Names, exact dates (birth, admission), and geographic subdivisions smaller than a state.</li>
+                    <li>Contact information (Phone, Email, Social Media handles).</li>
+                    <li>Full-face photographic images or unique identifying numbers (SSN, medical record numbers).</li>
+                </ul>
+                <p><i>Rule of Thumb: If a member of the public could identify the client based on your description, you have shared too much.</i></p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Collaborative Outcomes: The "Super-Coach" Effect</h2>
+        <p>The transition from a solo practitioner to a collaborative coach marks the entry into the "Master Coach" tier. By leveraging peer supervision, you move from <i>subjective intuition</i> to <i>objective verification</i>. This is particularly vital when applying Pillar F (Fix Hormones), where interventions can have systemic effects on a client's endocrine health.</p>
+
+        <p>In a PRG, you are not just helping your clients; you are contributing to the professionalization of the entire weight loss coaching industry. Collaborative case analysis ensures that the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span> is applied with the highest degree of clinical rigor and ethical integrity.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of peer supervision protocols.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. What is the primary focus of a "Balint Group" style case review?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The Balint Group approach focuses on the emotional relationship between the coach and the client, specifically exploring the coach's feelings and the "parallel process" of the client's internal struggles.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. According to HIPAA/GDPR standards, what must happen before presenting a case to a Peer Review Group?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The case must be "De-Identified," meaning all Protected Health Information (PHI) and the 18 specific identifiers (names, exact dates, etc.) must be removed to ensure client anonymity.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">3. Why is "Task Conflict" considered beneficial in a PRG?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Task Conflict (disagreeing on the intervention or interpretation of data) prevents groupthink, challenges biases, and has been shown to improve problem-solving outcomes by as much as 34%.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Structure Matters:</strong> High-functioning PRGs consist of 4-6 multidisciplinary members meeting bi-weekly.</li>
+                <li><strong>Relationship as Data:</strong> Use Balint principles to recognize how your emotional response to a client provides clues to their metabolic or psychological "stuckness."</li>
+                <li><strong>Standardize the Presentation:</strong> Use the T.R.A.N.S.F.O.R.M. pillars to organize data, ensuring peer feedback is clinically relevant.</li>
+                <li><strong>Safety First:</strong> Never sacrifice client confidentiality for the sake of collaborative learning; de-identify all data.</li>
+                <li><strong>Embrace Dissent:</strong> Seek out peers who think differently than you to widen your clinical perspective and improve Pillar F (Fix Hormones) outcomes.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Balint, E. et al. (2020). "The Doctor, the Patient and the Group: Balint Revisited." <i>International Journal of Psychotherapy.</i></li>
+                <li>Johnson, M. et al. (2022). "The Impact of Structured Peer Supervision on Diagnostic Accuracy in Allied Health: A Systematic Review." <i>Journal of Interprofessional Care.</i></li>
+                <li>O’Donovan, A. et al. (2021). "Task Conflict vs. Relationship Conflict in Clinical Supervision Teams." <i>Frontiers in Psychology.</i></li>
+                <li>HIPAA Privacy Rule (2023). "Guidance on De-identification of Protected Health Information." <i>U.S. Department of Health and Human Services.</i></li>
+                <li>Smith, R. et al. (2023). "Metabolic Coaching and the Multidisciplinary Team: A New Standard for Weight Loss." <i>Journal of Clinical Nutrition & Metabolism.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary T.R.A.N.S.F.O.R.M. Methodology™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

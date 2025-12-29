@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.2: Advanced Sleep Diary Analysis & Metrics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 700;
+            border-radius: 4px;
+            border: 1px solid #dbeafe;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 60px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Advanced Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Sleep Diary Analysis & Metrics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Consensus Sleep Diary (CSD)</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Core Arithmetic of Sleep Metrics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Sleep Efficiency (SE) Analysis</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The 'Tired but Wired' Phenotype</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Circadian Pattern Recognition</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Validating Subjective Quality</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the administration and interpretation of the <span class="highlight">Consensus Sleep Diary (CSD)</span> for longitudinal tracking.</li>
+                <li>Calculate and interpret Sleep Efficiency (SE) to determine eligibility for behavioral interventions.</li>
+                <li>Distinguish between Time in Bed (TIB) and Total Sleep Time (TST) to identify psychophysiological arousal.</li>
+                <li>Identify circadian disruptions, including "social jetlag" and weekend catch-up patterns.</li>
+                <li>Correlate subjective client reports with objective diary data to address paradoxical insomnia.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Consensus Sleep Diary (CSD): The Gold Standard</h2>
+        <p>While the questionnaires discussed in Lesson 1 provide a retrospective snapshot of sleep health, the <span class="highlight">Consensus Sleep Diary (CSD)</span> offers a prospective, high-fidelity look at a client's actual sleep-wake patterns. Developed by a group of sleep experts in 2012, the CSD was designed to standardize how sleep data is collected across clinical and research settings.</p>
+        
+        <p>In the D.R.E.A.M. Sleep Method™, the CSD is our primary tool for the <span class="highlight">"D" (Diagnose)</span> phase. Unlike memory-based assessments, which are prone to "recollection bias," the diary is completed every morning within 30 minutes of waking. A 2017 meta-analysis found that subjective sleep diaries, when used correctly, correlate with actigraphy (wearable tracking) with a coefficient of <span class="stat-highlight">0.82 to 0.89</span>, making them a robust clinical tool without the need for expensive hardware.</p>
+
+        <h2 id="section2">Core Arithmetic of Sleep Metrics</h2>
+        <p>To move beyond "I slept poorly," we must translate diary entries into actionable data. As a Sleep Health Coach, you must be proficient in calculating the following metrics using at least 7 to 14 days of consecutive data.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Definition</th>
+                        <th>Calculation Formula</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TIB</strong> (Time in Bed)</td>
+                        <td>Total duration from lights out to final out-of-bed time.</td>
+                        <td>Out of Bed Time - Lights Out Time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SOL</strong> (Sleep Onset Latency)</td>
+                        <td>Time taken to fall asleep after lights out.</td>
+                        <td>Time of Sleep - Lights Out Time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WASO</strong> (Wake After Sleep Onset)</td>
+                        <td>Total minutes spent awake after initially falling asleep.</td>
+                        <td>Sum of all nocturnal awakenings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TST</strong> (Total Sleep Time)</td>
+                        <td>Actual time spent sleeping.</td>
+                        <td>TIB - (SOL + WASO + EMA*)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SE</strong> (Sleep Efficiency)</td>
+                        <td>Percentage of time in bed spent sleeping.</td>
+                        <td>(TST / TIB) x 100</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 12px; padding: 10px;">*EMA: Early Morning Awakening (time awake before planned rise time).</p>
+        </div>
+
+        <h2 id="section3">Sleep Efficiency (SE) and SRT Eligibility</h2>
+        <p>Sleep Efficiency is arguably the most critical metric for determining the direction of your coaching. In healthy sleepers, SE is typically <span class="stat-highlight">>85-90%</span>. When SE drops below <span class="stat-highlight">80%</span>, it indicates a significant mismatch between the client's biological need for sleep and the time they are spending in bed.</p>
+        
+        <p>This metric is the gatekeeper for <span class="highlight">Sleep Restriction Therapy (SRT)</span>, which we will cover in Module 8. You should never implement SRT without at least two weeks of diary data confirming an SE below 85%. Conversely, if a client reports "exhaustion" but their diary shows an SE of 95% with a TST of only 5 hours, the issue isn't insomnia—it's <span class="highlight">sleep deprivation</span> (insufficient sleep opportunity), requiring a different intervention strategy under the "M" (Master Sleep Hygiene) pillar.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Fragmented Sleeper</p>
+                    <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.8)">Client: Robert, 52 | Primary Complaint: Maintenance Insomnia</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presentation:</strong> Robert spends 9 hours in bed (10 PM to 7 AM) to "make sure he gets enough rest." He reports waking up 4-5 times a night.</p>
+                <p><strong>Diary Analysis (7-day average):</strong>
+                    <ul>
+                        <li>TIB: 540 minutes (9 hours)</li>
+                        <li>SOL: 20 minutes</li>
+                        <li>WASO: 110 minutes</li>
+                        <li>TST: 410 minutes (approx. 6.8 hours)</li>
+                        <li><strong>Calculated SE:</strong> (410 / 540) * 100 = <span class="stat-highlight">75.9%</span></li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> This data revealed that Robert was spending 130 minutes (over 2 hours) awake in bed every night. By using the diary to show Robert that his "9-hour window" was actually diluting his sleep drive, the coach successfully implemented a 7-hour sleep window, raising his SE to 88% within three weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Identifying the 'Tired but Wired' Phenotype</h2>
+        <p>Advanced diary analysis allows us to identify <span class="highlight">psychophysiological arousal</span>. This is often seen in clients who have a high TIB but a very high SOL (Sleep Onset Latency). A consistent SOL of <span class="stat-highlight">>30 minutes</span> across 3 or more nights a week is a hallmark of the "Tired but Wired" phenotype.</p>
+        
+        <p>When analyzing these diaries, look for the "Lights Out" vs. "Sleep Onset" gap. If the client is also recording high "Subjective Alertness" ratings in the evening, you are likely looking at an overactive HPA axis (Module 4). The diary data here serves as a mirror, helping the client realize that their efforts to "force" sleep are actually fueling the arousal that keeps them awake.</p>
+
+        <h2 id="section5">Pattern Recognition: Social Jetlag & Weekend Catch-up</h2>
+        <p>One of the most valuable aspects of the 14-day diary is the visual representation of circadian stability. We look for <span class="highlight">Social Jetlag</span>—the discrepancy between sleep timing on workdays versus free days. A 2019 study involving over 100,000 participants found that every hour of social jetlag is associated with an <span class="stat-highlight">11% increase</span> in the likelihood of heart disease.</p>
+
+        <h3>The "Weekend Shift" Analysis</h3>
+        <p>If a client wakes at 6:00 AM Monday through Friday but shifts to 10:00 AM on Saturday and Sunday, they are effectively flying from New York to California and back every single weekend. This creates <span class="highlight">circadian phase delay</span>, making Sunday night sleep onset nearly impossible. In your analysis, calculate the "Midpoint of Sleep" for weekdays vs. weekends. A shift of <span class="stat-highlight">>60 minutes</span> indicates a need for the "R" (Reset Circadian Rhythm) protocols.</p>
+
+        <h2 id="section6">Validating or Challenging Subjective Sleep Quality</h2>
+        <p>There is often a significant gap between a client's *perception* of sleep and the *reality* recorded in the diary. This is known as <span class="highlight">Paradoxical Insomnia</span> or Sleep State Misperception. A client may state, "I didn't sleep a wink last night," but their diary (and perhaps a wearable) shows 6 hours of sleep.</p>
+        
+        <p>As a coach, your role isn't to tell them they are wrong, but to use the diary to highlight these discrepancies. Research shows that clients who underestimate their sleep often have higher levels of <span class="highlight">cortical arousal</span> during NREM sleep, meaning they are "conscious" of being "unconscious."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. A client spends 8 hours in bed (480 mins). They take 45 mins to fall asleep and wake up for 45 mins during the night. What is their Sleep Efficiency (SE)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    TST = 480 - (45 + 45) = 390 minutes. <br>
+                    SE = (390 / 480) * 100 = <strong>81.25%</strong>. <br>
+                    This client would likely benefit from Stimulus Control or Sleep Compression.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the clinical significance of a "Midpoint of Sleep" shift of 2 hours between Wednesday and Saturday?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    This indicates significant <strong>Social Jetlag</strong>. It suggests the client's circadian rhythm is being destabilized weekly, likely leading to "Sunday Night Insomnia" and Monday morning grogginess (sleep inertia).
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li>The <strong>Consensus Sleep Diary (CSD)</strong> is the gold standard for prospective, longitudinal sleep data collection.</li>
+                <li><strong>Sleep Efficiency (SE)</strong> below 85% is a primary indicator for behavioral interventions like Sleep Restriction Therapy.</li>
+                <li>The <strong>'Tired but Wired'</strong> phenotype is characterized by a high Sleep Onset Latency (SOL) despite significant sleep debt.</li>
+                <li><strong>Social Jetlag</strong> (weekend shifts in sleep timing) is a major contributor to circadian disruption and metabolic risk.</li>
+                <li>Diary data helps distinguish between <strong>insomnia</strong> (inability to sleep) and <strong>sleep deprivation</strong> (lack of opportunity).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Carney, C.E., et al. (2012). "The Consensus Sleep Diary: Standardizing Prospective Sleep Self-Monitoring." <i>Sleep</i>.</li>
+                <li>Maich, K.H., et al. (2018). "The Utility of the Consensus Sleep Diary in Clinical Practice." <i>Journal of Sleep Research</i>.</li>
+                <li>Roenneberg, T., et al. (2019). "Social Jetlag and Health: A Large-Scale Study." <i>Current Biology</i>.</li>
+                <li>Dietch, J.R., et al. (2017). "The Reliability and Validity of Subjective Sleep Diaries vs. Actigraphy." <i>Sleep Medicine</i>.</li>
+                <li>Harvey, A.G., & Tang, N.K. (2012). "(Mis)perception of Sleep in Insomnia: A Puzzle and a Resolution." <i>Psychological Bulletin</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Advanced Assessment Module</p>
+        </footer>
+    </div>
+</body>
+
+</html>

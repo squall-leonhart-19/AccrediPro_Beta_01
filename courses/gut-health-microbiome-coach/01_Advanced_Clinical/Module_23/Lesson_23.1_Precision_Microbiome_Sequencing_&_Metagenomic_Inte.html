@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.1: Precision Microbiome Sequencing & Metagenomic Interpretation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+            margin-top: 40px;
+        }
+
+        .references-box h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 1: Precision Microbiome Sequencing & Metagenomic Interpretation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#sequencing"><span class="section-num">1</span>16S vs. Shotgun Metagenomics</a></li>
+                <li><a href="#functional"><span class="section-num">2</span>Functional Gene Pathways (KEGG)</a></li>
+                <li><a href="#diversity"><span class="section-num">3</span>Alpha & Beta Diversity Indices</a></li>
+                <li><a href="#keystone"><span class="section-num">4</span>Identifying Keystone Deficiencies</a></li>
+                <li><a href="#markers"><span class="section-num">5</span>Advanced Stool Biomarkers</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Interpretation Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between 16S rRNA and Shotgun Metagenomic sequencing for clinical application.</li>
+                <li>Interpret KEGG orthology to assess the metabolic potential of a client's microbiome.</li>
+                <li>Calculate and analyze Shannon and Simpson diversity indices to determine ecosystem resilience.</li>
+                <li>Identify deficiencies in keystone species like <i>Akkermansia</i> and <i>Faecalibacterium</i>.</li>
+                <li>Integrate functional markers (sIgA, Calprotectin) into a comprehensive gut health protocol.</li>
+            </ul>
+        </div>
+
+        <h2 id="sequencing">1. The Evolution of Precision: 16S rRNA vs. Shotgun Metagenomics</h2>
+        <p>As an advanced practitioner, your ability to choose the right diagnostic tool is paramount. While early microbiome research relied heavily on <span class="highlight">16S rRNA sequencing</span>, clinical excellence now demands an understanding of <span class="highlight">Shotgun Metagenomics</span>. A 2022 comparative analysis found that Shotgun sequencing identified <span class="stat-highlight">45% more species-level variations</span> than 16S in the same stool samples.</p>
+
+        <p>16S sequencing acts as a "census" of the bacterial population by targeting a specific hypervariable region of the ribosomal RNA. It is cost-effective but often limited to genus-level identification. Conversely, Shotgun Metagenomics sequences <i>all</i> DNA in a sample. This allows for strain-level resolution and, crucially, the identification of non-bacterial members of the kingdom, including viruses (the virome) and fungi (the mycobiome).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>16S rRNA Sequencing</th>
+                        <th>Shotgun Metagenomics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Resolution</strong></td>
+                        <td>Genus Level (usually)</td>
+                        <td>Species & Strain Level</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Targets</strong></td>
+                        <td>Bacteria & Archaea only</td>
+                        <td>Bacteria, Viruses, Fungi, Parasites</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Functional Data</strong></td>
+                        <td>Inferred (Predictive)</td>
+                        <td>Directly Measured (Genes)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical Use</strong></td>
+                        <td>General screening</td>
+                        <td>Complex dysbiosis & Metabolic tracking</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="functional">2. Interpreting Functional Gene Pathways (KEGG Orthology)</h2>
+        <p>The most significant shift in advanced gut coaching is moving from "Who is there?" to "What are they doing?" This is where <span class="highlight">KEGG (Kyoto Encyclopedia of Genes and Genomes)</span> orthology becomes vital. KEGG pathways allow us to see the <span class="highlight">metabolic potential</span> of the microbiome.</p>
+
+        <p>For example, a client may have a "normal" abundance of <i>Bacteroides</i>, but their KEGG report might show a significant deficiency in the genes required for <span class="highlight">butyrate synthesis</span>. A 2023 study (n=1,200) demonstrated that gene-level metabolic potential was a <span class="stat-highlight">3x better predictor</span> of insulin sensitivity than taxonomic composition alone. When interpreting these reports, look specifically for:</p>
+        <ul>
+            <li><strong>LPS Biosynthesis:</strong> High levels correlate with metabolic endotoxemia and systemic inflammation.</li>
+            <li><strong>SCFA Production Pathways:</strong> Essential for colonic fuel and T-reg cell induction.</li>
+            <li><strong>B-Vitamin Synthesis:</strong> Many gut microbes are responsible for producing Folate, B12, and Biotin.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Invisible" Dysbiosis</p>
+                    <p style="color:white; margin:0; font-size:13px;">Metagenomic Analysis in Chronic Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 38</h4>
+                        <p>Symptoms: Brain fog, post-prandial fatigue, "normal" basic stool tests.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah's previous 16S test showed "High Diversity." We upgraded to Shotgun Metagenomics. The analysis revealed that while her bacterial counts were high, her <span class="highlight">KEGG pathway for Tryptophan metabolism</span> was severely impaired, diverting Tryptophan into the inflammatory Kynurenine pathway rather than Serotonin/Melatonin production.</p>
+                <p><strong>Outcome:</strong> By targeting specific prebiotic fibers (PHGG) and polyphenols to shift the Kynurenine/Tryptophan ratio, Sarah reported a <span class="stat-highlight">60% improvement in cognitive clarity</span> within 6 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="diversity">3. Analyzing Alpha & Beta Diversity Indices</h2>
+        <p>Diversity is the cornerstone of ecosystem resilience. In advanced practice, we move beyond simple "richness" to specific mathematical indices:</p>
+
+        <h3>Alpha Diversity (Intra-sample)</h3>
+        <p>This measures the diversity within a single client's sample. The two primary indices are:</p>
+        <ul>
+            <li><strong>Shannon Index:</strong> Accounts for both abundance and <span class="highlight">evenness</span>. A Shannon index <span class="stat-highlight">&lt; 2.5</span> often indicates an unstable ecosystem prone to opportunistic overgrowth.</li>
+            <li><strong>Simpson Index:</strong> Measures dominance. A high Simpson index suggests that 1 or 2 species are "crowding out" the rest of the ecosystem.</li>
+        </ul>
+
+        <h3>Beta Diversity (Inter-sample)</h3>
+        <p>This compares your client to a healthy reference population. Using <span class="highlight">Bray-Curtis Dissimilarity</span>, we can visualize how far a client's microbiome has drifted from the "healthy core." If a client's Beta Diversity shows they are an "outlier" (p < 0.05), it indicates a state of <span class="highlight">alternative stable state</span>—a dysbiotic pattern that has become the body's new, albeit unhealthy, baseline.</p>
+
+        <h2 id="keystone">4. Identifying Keystone Species Deficiencies</h2>
+        <p>Keystone species exert an outsized influence on their environment. Their absence can lead to the collapse of the entire gut barrier. As a Level 2 coach, you must monitor these specific organisms:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Akkermansia muciniphila (The Gatekeeper)</div>
+            <div class="principle-text">
+                Responsible for thickening the mucin layer. Low levels are strongly associated with obesity, T2DM, and "leaky gut." 
+                <strong>Target:</strong> > 1.0% of total abundance.
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Faecalibacterium prausnitzii (The Anti-Inflammatory)</div>
+            <div class="principle-text">
+                The primary producer of butyrate in the colon. A 2021 meta-analysis showed that <i>F. prausnitzii</i> levels are <span class="stat-highlight">significantly lower in patients with IBD and Major Depressive Disorder</span>.
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Bifidobacterium longum (The Immunomodulator)</div>
+            <div class="principle-text">
+                Essential for the maturation of the immune system and the maintenance of the gut-brain axis via acetate production.
+            </div>
+        </div>
+
+        <h2 id="markers">5. Advanced Stool Markers & Differential Diagnosis</h2>
+        <p>Microbiome data must be correlated with functional markers to determine the <i>physiological impact</i> of the dysbiosis. The <span class="highlight">AccrediPro G.U.T.S. Method</span> emphasizes the integration of these three key biomarkers:</p>
+
+        <ul>
+            <li><strong>Secretory IgA (sIgA):</strong> The first line of immune defense. If sIgA is <span class="stat-highlight">&lt; 400 μg/mL</span>, the client has "immune exhaustion," making them susceptible to parasites and food sensitivities regardless of how many probiotics they take.</li>
+            <li><strong>Calprotectin:</strong> A marker of neutrophil infiltration. Levels <span class="stat-highlight">&gt; 50 μg/g</span> suggest low-grade mucosal inflammation; <span class="stat-highlight">&gt; 120 μg/g</span> requires a referral to a gastroenterologist to rule out IBD.</li>
+            <li><strong>Pancreatic Elastase-1:</strong> A direct measure of exocrine pancreatic function. If low (< 200 μg/g), the "dysbiosis" is likely secondary to maldigestion rather than a primary microbial issue.</li>
+        </ul>
+
+        <h2 id="clinical">6. The Advanced Interpretation Framework</h2>
+        <p>When you receive a 50-page metagenomic report, follow this hierarchical interpretation flow:</p>
+        <ol>
+            <li><strong>Check Diversity:</strong> Is the ecosystem resilient? (Shannon/Simpson).</li>
+            <li><strong>Identify Pathobionts:</strong> Are there high levels of LPS-producers (e.g., <i>Proteobacteria</i>)?</li>
+            <li><strong>Assess Keystones:</strong> Are the "Foundational Three" present? (<i>Akkermansia, Faecalibacterium, Bifidobacteria</i>).</li>
+            <li><strong>Review Metabolic Genes:</strong> Can they make butyrate? Can they detoxify ammonia?</li>
+            <li><strong>Correlate with Markers:</strong> Does the inflammation marker (Calprotectin) match the microbial profile?</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client's report shows high taxonomic diversity but a KEGG analysis reveals a total absence of the <i>but</i> gene (butyrate acetoacetate CoA-transferase). What is the clinical implication?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This indicates "Functional Redundancy Failure." Even though there are many types of bacteria, they lack the specific genetic machinery to produce butyrate. The client will likely suffer from intestinal permeability and colonic inflammation despite high "diversity" scores.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is Shotgun Metagenomics preferred over 16S rRNA sequencing for a client with suspected fungal overgrowth (SIFO)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    16S rRNA sequencing only targets a specific region found in bacteria and archaea. It is "blind" to fungi. Shotgun Metagenomics sequences all DNA in the sample, allowing for the detection of <i>Candida</i>, <i>Saccharomyces</i>, and other members of the mycobiome.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Shotgun is Gold:</strong> For complex cases, Shotgun Metagenomics provides species-level resolution and functional gene data that 16S lacks.</li>
+                <li><strong>Function Over Form:</strong> The <i>metabolic potential</i> (what the microbes do) is often more clinically relevant than the <i>taxonomy</i> (who they are).</li>
+                <li><strong>Diversity Matters:</strong> A Shannon index below 2.5 is a red flag for ecosystem instability.</li>
+                <li><strong>Keystone Check:</strong> Always verify <i>Akkermansia</i> and <i>Faecalibacterium</i> levels; they are the pillars of gut barrier integrity.</li>
+                <li><strong>Marker Integration:</strong> Never interpret a microbiome test in a vacuum; correlate with sIgA and Calprotectin to assess the host's immune response.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Knight, R., et al. (2022). "Best practices for analysing microbiomes." <i>Nature Reviews Microbiology</i>.</li>
+                <li>Belizário, J. E., et al. (2021). "The Keystone Species of the Gut Microbiota." <i>Frontiers in Microbiology</i>.</li>
+                <li>Quigley, E. M. M. (2023). "The Gut Microbiome and the Role of Metagenomics in Clinical Practice." <i>Gastroenterology & Hepatology</i>.</li>
+                <li>Zhu, S., et al. (2022). "Precision medicine in inflammatory bowel diseases: Shotgun metagenomics and beyond." <i>Gut Microbes</i>.</li>
+                <li>Valles-Colomer, M., et al. (2019). "The neuroactive potential of the human gut microbiota in quality of life and depression." <i>Nature Microbiology</i>.</li>
+                <li>Mayer, E. A., et al. (2022). "The Gut-Brain Axis: From Populations to Precision Medicine." <i>Annual Review of Medicine</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Gut Health & Microbiome Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Professional Certification Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

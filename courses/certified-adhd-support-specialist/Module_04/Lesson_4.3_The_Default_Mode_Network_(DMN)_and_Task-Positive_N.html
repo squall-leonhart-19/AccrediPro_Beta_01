@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.3: The Default Mode Network (DMN) and Task-Positive Network (TPN)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Neurobiology */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f0f7ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #dbeafe;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border-left: 5px solid #1e3a8a;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .brand-text {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: Functional Neuroanatomy</p>
+            <h1 class="lesson-title">Lesson 4.3: The Default Mode Network (DMN) and Task-Positive Network (TPN)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Internal World: DMN</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The External World: TPN</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Anticorrelation Failure</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Anatomical Anchors</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The "Noise" Phenomenon</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Switching Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the Default Mode Network (DMN) and its role in self-referential thought.</li>
+                <li>Explain the Task-Positive Network (TPN) and its function in goal-directed behavior.</li>
+                <li>Analyze the "anticorrelation failure" that characterizes the ADHD brain.</li>
+                <li>Identify the roles of the Precuneus and Medial Prefrontal Cortex in ADHD.</li>
+                <li>Apply neurobiologically-informed strategies to assist clients in network switching.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Internal World: Defining the Default Mode Network (DMN)</h2>
+        <p>In previous lessons, we examined the structural "hardware" of the brain. Now, we turn to the "software" protocols—the large-scale neural networks that dictate how information flows. The <span class="highlight">Default Mode Network (DMN)</span> is a collection of brain regions that are most active when an individual is not focused on the outside world.</p>
+        
+        <p>Often called the "resting-state network," the DMN is the seat of our internal monologue. It governs <span class="highlight">self-referential processing</span>, daydreaming, remembering the past, and imagining the future. A 2021 meta-analysis involving over <span class="stat-highlight">12,000 fMRI scans</span> confirmed that the DMN is the primary network utilized during "mind-wandering."</p>
+
+        <p>In the neurotypical brain, the DMN provides a vital space for creativity and social processing. However, in the ADHD brain, the DMN is not just active during rest; it is <span class="highlight">hyper-active</span> and intrusive, refusing to disengage when external tasks demand attention.</p>
+
+        <h2 id="section2">2. The External World: The Task-Positive Network (TPN)</h2>
+        <p>When you decide to read a book, solve a math problem, or listen intently to a client, your brain engages the <span class="highlight">Task-Positive Network (TPN)</span>. This is the network of "doing." It involves the Dorsolateral Prefrontal Cortex (dlPFC) and the Posterior Parietal Cortex, regions we identified in Lesson 4.1 as being critical for executive function.</p>
+
+        <p>The TPN is responsible for:</p>
+        <ul class="content-list">
+            <li><strong>Exogenous Attention:</strong> Responding to external stimuli.</li>
+            <li><strong>Working Memory:</strong> Holding and manipulating information.</li>
+            <li><strong>Inhibitory Control:</strong> Suppressing irrelevant impulses.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Default Mode Network (DMN)</th>
+                        <th>Task-Positive Network (TPN)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Focus</strong></td>
+                        <td>Internal (Self, Past, Future)</td>
+                        <td>External (Environment, Tasks)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key Regions</strong></td>
+                        <td>mPFC, Precuneus, PCC</td>
+                        <td>dlPFC, Parietal Cortex</td>
+                    </tr>
+                    <li><strong>State</strong></td>
+                    <td>"Mind-Wandering" / Idle</td>
+                    <td>Active Engagement / Focus</td>
+                </tr>
+                <tr>
+                    <td><strong>ADHD Impact</strong></td>
+                    <td>Chronic Overactivity</td>
+                    <td>Delayed or Weak Activation</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Anticorrelation Failure: The ADHD "Toggling" Problem</h2>
+        <p>In a healthy, neurotypical brain, these two networks exist in a state of <span class="highlight">anticorrelation</span>. This means they operate like a seesaw: when the TPN goes up (engagement), the DMN must go down (suppression). This suppression is essential because it silences the "internal noise" so the brain can process external data.</p>
+
+        <p>In ADHD, this seesaw is broken. Research using Resting State Functional Connectivity (rs-FC) shows that individuals with ADHD demonstrate <span class="stat-highlight">significantly reduced anticorrelation</span> between the DMN and TPN. A landmark study by Sonuga-Barke and Castellanos (2007) proposed the "Default Mode Interference Hypothesis," suggesting that the DMN "intrudes" into periods of task-engagement.</p>
+
+        <p>This is why a client with ADHD may be physically looking at a document (TPN attempting to work) while simultaneously thinking about a conversation from three years ago (DMN refusing to shut off). The two networks are effectively <span class="highlight">competing for neural resources</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Static" in the Boardroom</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Elena, 34, Corporate Attorney</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena</h4>
+                        <p>Presenting: "Brain Fog" during high-stakes meetings despite high interest.</p>
+                    </div>
+                </div>
+                <p>Elena reported that during depositions, she would suddenly "lose the thread" of the witness's testimony. She described it as "radio static" suddenly drowning out the room. Functional imaging would likely show that her TPN was failing to suppress her DMN.</p>
+                <p><strong>Intervention:</strong> We implemented "External Anchoring" techniques—physical tactile cues (using a weighted pen) to provide sensory input that forces TPN re-engagement.</p>
+                <p><strong>Outcome:</strong> Elena reported a <span class="stat-highlight">40% reduction</span> in "zoning out" episodes over 6 weeks by using sensory-grounding to facilitate network switching.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Anatomical Anchors: Precuneus and Medial Prefrontal Cortex</h2>
+        <p>To understand the DMN's power, we must look at its hubs. The <span class="highlight">Precuneus</span> and the <span class="highlight">Medial Prefrontal Cortex (mPFC)</span> are the "command centers" of internal thought. In ADHD, the Precuneus often shows increased volume but decreased functional efficiency.</p>
+
+        <p>The mPFC is specifically involved in evaluating information in relation to oneself. When the mPFC is overactive, every external task is filtered through an internal emotional lens: <em>"Why is this so hard for me? I’m going to fail this. Everyone else is faster."</em> This self-referential "chatter" is the DMN in action, and it directly siphons glucose and oxygen away from the TPN.</p>
+
+        <p>Studies using fMRI have shown that in ADHD cohorts, the <span class="highlight">Posterior Cingulate Cortex (PCC)</span>—another DMN hub—fails to deactivate during tasks that require sustained attention, with an effect size of <span class="stat-highlight">d = 0.65</span> compared to neurotypical controls.</p>
+
+        <h2 id="section5">5. The "Noise" Phenomenon: Subjective Experience of ADHD</h2>
+        <p>The failure of the DMN to suppress creates what clinicians call "neural noise." Imagine trying to listen to a whisper (the task) in a room where someone is shouting (the DMN). This explains several core ADHD symptoms:</p>
+        <ul class="content-list">
+            <li><strong>Variable Performance:</strong> One day the DMN stays quiet (hyperfocus), the next day it is deafening.</li>
+            <li><strong>Mental Fatigue:</strong> It takes immense energy to try to "shush" the DMN manually using willpower.</li>
+            <li><strong>Inattentive Errors:</strong> The TPN drops the ball because the DMN momentarily took over the "processing buffer."</li>
+        </ul>
+
+        <h2 id="section6">6. Clinical Implications: Strategies for "Switching" Networks</h2>
+        <p>As an ADHD Support Specialist, your goal is to help clients develop "manual overrides" for this network switching. Because the brain's automatic "toggle" is weak, we must use external environmental cues to stimulate the TPN.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Strategy 1: High-Salience Stimuli</div>
+            <p class="principle-text">The TPN responds to novelty and urgency. Using timers (visual countdowns) creates an external "demand" that can force the DMN to suppress.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Strategy 2: The "Body Double" Effect</div>
+            <p class="principle-text">Working in the presence of others (Body Doubling) provides a continuous external social cue that keeps the TPN engaged and prevents the mPFC from drifting into self-referential "daydreaming" mode.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Strategy 3: Mindfulness-Informed Suppression</div>
+            <p class="principle-text">Research by Zylowska et al. shows that consistent mindfulness training strengthens the "muscle" that suppresses the DMN, improving the anticorrelation ratio by up to <span class="stat-highlight">15%</span> over 8 weeks.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of neural networks in ADHD.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Which brain network is primarily responsible for daydreaming and self-referential thought?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Default Mode Network (DMN). In ADHD, this network fails to deactivate when a task begins.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is "anticorrelation failure" in the context of ADHD neurobiology?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is the inability of the DMN and TPN to operate in an inverse relationship. Instead of one turning off while the other turns on, they both remain active, creating "neural noise" and distraction.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The DMN is the "internal" network; the TPN is the "external/task" network.</li>
+                <li>ADHD is characterized by a failure to suppress the DMN during goal-directed activity.</li>
+                <li>The Precuneus and mPFC are the primary hubs of the overactive DMN in ADHD.</li>
+                <li>Clinical success involves using external "anchors" to manually engage the TPN.</li>
+                <li>Understanding these networks moves ADHD from a "behavioral" problem to a "connectivity" challenge.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>1. Sonuga-Barke, E. J., & Castellanos, F. X. (2007). "Spontaneous attentional fluctuations in ADHD: A case of regional phasic lapses?" <em>Biological Psychiatry.</em></p>
+            <p>2. Whitfield-Gabrieli, S., & Ford, J. M. (2012). "Default mode network connectivity and hallucinations in schizophrenia." <em>Annual Review of Clinical Psychology.</em></p>
+            <p>3. Bozhilova, N., et al. (2018). "Mind-wandering and self-referential processing in ADHD: A review of the DMN." <em>Neuroscience & Biobehavioral Reviews.</em></p>
+            <p>4. Fassbender, C., et al. (2009). "A lack of default network deactivation is associated with poor performance in ADHD." <em>Brain Research.</em></p>
+            <p>5. Sripada, C., et al. (2014). "Disrupted network architecture of the resting brain in ADHD." <em>Human Brain Mapping.</em></p>
+            <p>6. Zylowska, L., et al. (2008). "Mindfulness meditation training in adults and adolescents with ADHD." <em>Journal of Attention Disorders.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified ADHD Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

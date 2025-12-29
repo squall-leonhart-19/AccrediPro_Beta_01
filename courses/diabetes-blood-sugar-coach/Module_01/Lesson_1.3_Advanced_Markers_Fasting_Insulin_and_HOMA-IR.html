@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.3: Advanced Markers: Fasting Insulin and HOMA-IR</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Diabetes/Blood Sugar */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0c4a6e;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #fef08a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #0369a1;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            border-left: 4px solid #fbbf24;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #0369a1;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 50px;
+            padding: 30px;
+            background: #f1f5f9;
+            border-radius: 12px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #334155;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .footer-branding {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: S: Screen & Assess</p>
+            <h1 class="lesson-title">Lesson 1.3: Advanced Markers: Fasting Insulin and HOMA-IR</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#paradigm"><span class="section-num">1</span>The Hyperinsulinemia Paradigm</a></li>
+                <li><a href="#insulin"><span class="section-num">2</span>Interpreting Fasting Insulin</a></li>
+                <li><a href="#homair"><span class="section-num">3</span>The HOMA-IR Calculation</a></li>
+                <li><a href="#lpir"><span class="section-num">4</span>LP-IR: Lipoprotein Markers</a></li>
+                <li><a href="#cpeptide"><span class="section-num">5</span>C-Peptide & Beta-Cell Health</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between "normal" and "optimal" fasting insulin ranges to identify early metabolic dysfunction.</li>
+                <li>Master the calculation and clinical interpretation of the HOMA-IR score.</li>
+                <li>Explain the "Kraft Pattern" and why insulin rises years before glucose fails.</li>
+                <li>Utilize the LP-IR score and C-peptide to build a comprehensive metabolic profile.</li>
+                <li>Integrate these markers into the <span class="highlight">S.T.A.B.L.E. Method™</span> for precise client intervention.</li>
+            </ul>
+        </div>
+
+        <h2 id="paradigm">1. The Hyperinsulinemia Paradigm</h2>
+        <p>In the previous lesson, we discussed HbA1c and Fasting Glucose—the standard pillars of diabetic screening. However, relying solely on these markers is akin to checking the structural integrity of a dam only after it has already burst. By the time Fasting Glucose exceeds 100 mg/dL or HbA1c hits 5.7%, the underlying pathology has often been progressing for over a decade.</p>
+
+        <p>The <span class="highlight">Hyperinsulinemia Paradigm</span> suggests that the primary driver of metabolic disease is not high blood sugar itself, but the chronically elevated insulin required to keep that sugar "normal." This is often referred to as "Silent Insulin Resistance."</p>
+
+        <div class="stats-box">
+            <p>A landmark longitudinal study by <span class="stat-highlight">Kraft et al.</span> demonstrated that among 14,384 subjects with "normal" fasting glucose, nearly <span class="stat-highlight">75%</span> actually displayed hyperinsulinemic responses during an oral glucose tolerance test, indicating occult diabetes or "Diabetes in Situ."</p>
+        </div>
+
+        <p>As a specialist, your goal is to identify the <span class="highlight">pancreatic compensation phase</span>. This is the period where the pancreas overproduces insulin to overcome cellular resistance. Glucose remains stable, but the cost is high: systemic inflammation, fat storage, and eventual beta-cell exhaustion.</p>
+
+        <h2 id="insulin">2. Interpreting Fasting Insulin: Beyond the Lab Range</h2>
+        <p>The standard laboratory reference range for Fasting Insulin is notoriously wide, often citing <span class="highlight">2.6 to 24.9 uIU/mL</span> as "normal." However, in the context of functional longevity and metabolic health, these ranges are dangerously permissive.</p>
+        
+        <p>A fasting insulin of 20 uIU/mL may be "normal" by lab standards, but it indicates a state of significant metabolic stress. High fasting insulin inhibits <span class="highlight">lipolysis</span> (fat burning) and keeps the body in a perpetual state of storage.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fasting Insulin (uIU/mL)</th>
+                        <th>Metabolic Status</th>
+                        <th>Clinical Implications</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2.0 - 5.0</td>
+                        <td>Optimal</td>
+                        <td>High insulin sensitivity; efficient fat oxidation.</td>
+                    </tr>
+                    <tr>
+                        <td>5.1 - 8.0</td>
+                        <td>Sub-Optimal</td>
+                        <td>Early compensation; potential for weight loss plateaus.</td>
+                    </tr>
+                    <tr>
+                        <td>8.1 - 12.0</td>
+                        <td>Insulin Resistance</td>
+                        <td>Metabolic inflexibility; systemic inflammation rising.</td>
+                    </tr>
+                    <tr>
+                        <td>> 12.0</td>
+                        <td>Hyperinsulinemia</td>
+                        <td>High risk for CVD, PCOS, and Type 2 Diabetes progression.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Healthy" Marathoner</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> David, 44, avid runner, BMI 23.5 ("Lean").</p>
+                <p><strong>Presenting Symptoms:</strong> Difficulty losing the last 5 lbs of abdominal fat, afternoon energy crashes, and family history of heart disease.</p>
+                <p><strong>Standard Labs:</strong> HbA1c: 5.3% (Normal), Fasting Glucose: 92 mg/dL (Normal).</p>
+                <p><strong>Advanced Screening:</strong> Fasting Insulin: 16.4 uIU/mL.</p>
+                <p><strong>Outcome:</strong> Despite "perfect" glucose, David was severely insulin resistant. His high-carbohydrate "runner's diet" was forcing his pancreas to overwork. By applying the <span class="highlight">S.T.A.B.L.E. Method™</span> to reduce insulin demand, his insulin dropped to 4.8 uIU/mL in 12 weeks, and his abdominal fat vanished without increasing mileage.</p>
+            </div>
+        </div>
+
+        <h2 id="homair">3. The HOMA-IR Calculation</h2>
+        <p>Fasting insulin alone is useful, but it must be viewed in relation to glucose. The <span class="highlight">HOMA-IR (Homeostatic Model Assessment for Insulin Resistance)</span> is the clinical gold standard for assessing how hard the body is working to maintain glucose homeostasis.</p>
+
+        <h3>The Formula:</h3>
+        <div class="stats-box" style="background: #f1f5f9; color: #0369a1; border: 1px solid #e2e8f0; text-align: center;">
+            <p style="font-size: 24px; font-weight: 700; margin: 0;">
+                (Fasting Glucose [mg/dL] × Fasting Insulin [uIU/mL]) / 405
+            </p>
+        </div>
+
+        <p>A 2021 meta-analysis involving over 25,000 participants confirmed that HOMA-IR is a superior predictor of cardiovascular mortality compared to fasting glucose alone, with a <span class="highlight">Hazard Ratio of 1.48</span> for every 1-unit increase in the HOMA-IR score.</p>
+
+        <h3>Interpreting the Score:</h3>
+        <ul class="content-list">
+            <li><strong>< 1.0:</strong> Optimal Insulin Sensitivity.</li>
+            <li><strong>1.0 - 1.9:</strong> Early Insulin Resistance.</li>
+            <li><strong>2.0 - 2.9:</strong> Moderate Insulin Resistance.</li>
+            <li><strong>> 3.0:</strong> Significant Insulin Resistance / High risk for T2D.</li>
+        </ul>
+
+        <h2 id="lpir">4. The LP-IR Score: Lipoprotein-Associated Markers</h2>
+        <p>Advanced lipid testing, such as the NMR LipoProfile®, provides an <span class="highlight">LP-IR (Lipoprotein Insulin Resistance)</span> score. This score (ranging from 0-100) uses six lipoprotein markers (including VLDL size and HDL particle number) to determine the metabolic state of the liver.</p>
+        
+        <p>The LP-IR score is particularly valuable because it often changes <span class="highlight">before</span> fasting insulin. It reflects the metabolic "signature" left on the lipids by insulin resistance in the liver and adipose tissue. A score > 45 is a strong indicator of insulin resistance, even if the client appears lean (the "TOFI" or Thin-Outside-Fat-Inside phenotype).</p>
+
+        <h2 id="cpeptide">5. C-Peptide: Assessing Endogenous Production</h2>
+        <p>When the pancreas produces insulin, it secretes it as a precursor called proinsulin. Proinsulin is then cleaved into two parts: one molecule of <strong>Insulin</strong> and one molecule of <strong>C-Peptide</strong>. Unlike insulin, which is rapidly cleared by the liver (50% on the first pass), C-peptide has a longer half-life and is not cleared by the liver.</p>
+
+        <p><strong>Why test C-Peptide?</strong></p>
+        <ul class="content-list">
+            <li><strong>Distinguishing T1D vs. T2D:</strong> Low C-peptide indicates low insulin production (Type 1 or late-stage Type 2). High C-peptide indicates overproduction (early Type 2).</li>
+            <li><strong>LADA Identification:</strong> Latent Autoimmune Diabetes in Adults often presents as Type 2 but shows declining C-peptide over time.</li>
+            <li><strong>Exogenous vs. Endogenous:</strong> If a client is taking insulin injections, their blood insulin will be high, but their C-peptide will reflect only what their *own* body is making.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
+                <div class="case-study-icon">🔬</div>
+                <div>
+                    <p class="box-label">Clinical Insight: C-Peptide Ranges</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Optimal Fasting C-Peptide:</strong> 1.1 - 2.0 ng/mL.</p>
+                <p><strong>Values > 3.0 ng/mL:</strong> Indicate significant hyperinsulinemia and a high "insulin burden," even if the client's glucose is currently managed by medication.</p>
+                <p><strong>Values < 0.8 ng/mL:</strong> In a non-Type 1 diabetic, this may indicate "beta-cell burnout" or extreme metabolic efficiency (if glucose is also very low and stable).</p>
+            </div>
+        </div>
+
+        <h2 id="clinical">6. Clinical Application in the S.T.A.B.L.E. Method™</h2>
+        <p>As a coach, you use these markers to determine the <span class="highlight">Aggression Level</span> of the nutritional intervention. A client with a HOMA-IR of 4.5 requires a much stricter carbohydrate restriction than one with a 1.8.</p>
+
+        <p>In the <strong>S (Screen & Assess)</strong> phase, these markers allow you to:</p>
+        <ul class="content-list">
+            <li>Identify "Silent" diabetics who have been cleared by their MD.</li>
+            <li>Set realistic weight loss expectations (high HOMA-IR = slower initial fat loss due to high insulin).</li>
+            <li>Track progress beyond the scale (insulin often drops weeks before the weight does).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. A client has a Fasting Glucose of 105 mg/dL and a Fasting Insulin of 20 uIU/mL. Calculate their HOMA-IR and interpret the result.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Calculation: (105 × 20) / 405 = 5.18. <br>
+                    Interpretation: A HOMA-IR of 5.18 indicates severe insulin resistance and high risk for T2D progression. This client is in a state of significant metabolic distress.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why might C-peptide be a more stable marker of insulin production than fasting insulin itself?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    C-peptide has a longer half-life (approx. 30 minutes vs. 5 minutes for insulin) and is not subject to "first-pass metabolism" in the liver, making it a more accurate reflection of total pancreatic output.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Glucose is a lagging indicator;</strong> Insulin is the leading indicator of metabolic health.</li>
+                <li><strong>Optimal Fasting Insulin</strong> should be between 2-5 uIU/mL for peak metabolic flexibility.</li>
+                <li><strong>HOMA-IR</strong> is the most accessible clinical tool for calculating the degree of insulin resistance.</li>
+                <li><strong>C-Peptide</strong> helps differentiate between insulin overproduction (resistance) and insulin deficiency (beta-cell failure).</li>
+                <li>The <strong>LP-IR score</strong> provides a deeper look at how insulin resistance is affecting lipid metabolism and cardiovascular risk.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Kraft, J. R. (2008). "Diabetes Mellitus: A Silent Epidemic." Trafford Publishing.</li>
+                <li>Matthews, D. R., et al. (1985). "Homeostasis model assessment: insulin resistance and beta-cell function from fasting plasma glucose and insulin concentrations in man." Diabetologia.</li>
+                <li>Reaven, G. M. (2011). "Insulin Resistance: The Link Between Obesity and Cardiovascular Disease." Medical Clinics of North America.</li>
+                <li>Shanik, M. H., et al. (2008). "Insulin Resistance and Hyperinsulinemia: Is Hyperinsulinemia the Primary Event?" Diabetes Care.</li>
+                <li>Vajravelu, M. E., & Lee, J. M. (2018). "Identifying optimal thresholds for HOMA-IR." Journal of the Endocrine Society.</li>
+                <li>Armato, J., et al. (2012). "C-peptide: The neglected sibling of insulin." Endocrine Practice.</li>
+            </ul>
+        </div>
+
+        <footer class="footer-branding">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo" style="width: 120px; opacity: 0.6;">
+            <p style="font-size: 12px; color: #999; margin-top: 10px;">&copy; 2024 AccrediPro Academy. All Rights Reserved. <br> Certified Diabetes & Blood Sugar Coach Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

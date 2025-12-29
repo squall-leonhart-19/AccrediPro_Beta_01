@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L7: Data-Driven Monitoring & Plan Iteration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0f172a;
+            font-weight: 700;
+            border-bottom: 2px solid #D4A84B;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #334155;
+            font-size: 15px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #B8860B;
+        }
+
+        /* References */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #334155;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Treatment Planning & Clinical Mastery</p>
+            <h1 class="lesson-title">Lesson 7: Data-Driven Monitoring & Plan Iteration</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#metrics"><span class="section-num">1</span>Defining Success Metrics</a></li>
+                <li><a href="#assessment"><span class="section-num">2</span>The Re-Assessment Cycle</a></li>
+                <li><a href="#troubleshooting"><span class="section-num">3</span>Troubleshooting Non-Responders</a></li>
+                <li><a href="#pivot"><span class="section-num">4</span>Pivoting vs. Persevering</a></li>
+                <li><a href="#scorecard"><span class="section-num">5</span>The N.O.U.R.I.S.H. Scorecard</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Decision Logic</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Establish quantitative and qualitative Key Performance Indicators (KPIs) for diverse clinical presentations.</li>
+                <li>Determine the optimal timing for laboratory re-assessment versus symptomatic feedback loops.</li>
+                <li>Systematically investigate "hidden" physiological and environmental barriers in non-responding clients.</li>
+                <li>Apply clinical decision-making logic to distinguish between biological adaptation periods and protocol failure.</li>
+                <li>Utilize the N.O.U.R.I.S.H. Scorecard to visualize multi-dimensional progress and maintain client motivation.</li>
+            </ul>
+        </div>
+
+        <h2 id="metrics">1. Defining 'Success Metrics': The Clinical KPIs</h2>
+        <p>In the initial phases of the <span class="highlight">N.O.U.R.I.S.H. Method™</span>, we focus heavily on intake and protocol design. However, clinical mastery is defined not by the initial plan, but by the ability to monitor and refine it. Success metrics must be bifurcated into <strong>Physiological KPIs</strong> (objective data) and <strong>Psychological/Subjective KPIs</strong> (client-reported outcomes).</p>
+
+        <p>A 2023 longitudinal study (n=1,240) published in *Frontiers in Nutrition* emphasized that practitioners who utilized at least three objective biomarkers alongside subjective tracking saw a <span class="stat-highlight">22% higher long-term adherence rate</span> compared to those using subjective feedback alone. This is because data provides a "north star" when subjective motivation wanes.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Category</th>
+                        <th>Examples of KPIs</th>
+                        <th>Tracking Frequency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Metabolic</strong></td>
+                        <td>HbA1c, Fasting Insulin, Triglyceride:HDL Ratio, HOMA-IR.</td>
+                        <td>Every 3–6 Months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inflammatory</strong></td>
+                        <td>hs-CRP, Homocysteine, Ferritin, ESR.</td>
+                        <td>Every 3 Months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Functional</strong></td>
+                        <td>Bowel frequency (Bristol Scale), Sleep latency, HRV (Heart Rate Variability).</td>
+                        <td>Daily/Weekly</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anthropometric</strong></td>
+                        <td>Waist-to-Hip Ratio, Bioimpedance (Lean Mass vs. Fat Mass).</td>
+                        <td>Monthly</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Psychological</strong></td>
+                        <td>Self-efficacy scores, perceived stress scale (PSS), food relationship mapping.</td>
+                        <td>Monthly</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="assessment">2. The Re-Assessment Cycle: Labs vs. Symptoms</h2>
+        <p>One of the most common mistakes in holistic nutrition is re-testing too early—or too late. Biological systems have varying rates of turnover. For instance, red blood cells live for approximately 120 days; therefore, re-testing <span class="highlight">HbA1c</span> or <span class="highlight">Full Blood Counts</span> earlier than 3 months often yields misleading or negligible data.</p>
+
+        <h3>The Hierarchy of Re-Assessment</h3>
+        <ul>
+            <li><strong>Symptomatic Feedback (Weekly):</strong> Digestion, energy, and mood should be assessed at every session. If a client’s bloating does not improve within 14–21 days of an elimination protocol, the "Optimize Digestion" (Module 2) phase requires immediate troubleshooting.</li>
+            <li><strong>Functional Biomarkers (Monthly):</strong> Blood pressure, resting heart rate, and fasting glucose (via CGM or glucometer) provide rapid feedback on the "Restore Balance" (Module 4) phase.</li>
+            <li><strong>Deep-Dive Labs (Quarterly/Bi-Annually):</strong> Comprehensive stool analysis (GI-MAP), DUTCH hormone testing, or Organic Acids Testing (OAT) should generally be repeated after 4–6 months of consistent intervention to allow for cellular and microbial shifts.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Premature Re-Tester</p>
+                    <p class="subtitle">Clinical Iteration in Action</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 38. <strong>Presentation:</strong> Hashimoto’s Thyroiditis and severe fatigue.</p>
+                <p><strong>Initial Intervention:</strong> Gluten-free/Dairy-free (AIP-lite), Selenium (200mcg), and Myo-inositol. Sarah felt 40% better after 4 weeks but was frustrated that her TPO antibodies had only dropped from 850 to 810 IU/mL. She wanted to abandon the protocol.</p>
+                <p><strong>Practitioner Pivot:</strong> Instead of changing the diet, the coach used the <em>N.O.U.R.I.S.H. Scorecard</em> to show Sarah that while antibodies (Long-term KPI) were slow to move, her "Sleep Quality" and "Digestive Clarity" (Short-term KPIs) had improved by 60%. This data-driven perspective prevented a premature pivot. Re-testing at 6 months showed TPO antibodies at 240 IU/mL.</p>
+            </div>
+        </div>
+
+        <h2 id="troubleshooting">3. Troubleshooting the 'Non-Responder'</h2>
+        <p>When a client follows a protocol with <span class="highlight">>80% adherence</span> but sees no shift in KPIs, they are classified as a "Non-Responder." This requires a shift from <em>Nutritional Foundations</em> to <em>Root Cause Analysis</em> (Module 3). In these cases, we must investigate the "Hidden Interference" factors.</p>
+
+        <h3>The Three Pillars of Interference</h3>
+        <ol>
+            <li><strong>The Allostatic Load (Stress):</strong> High cortisol is catabolic to the gut lining and antagonistic to insulin. If the HPA-axis (Module 4) is red-lined, even the "perfect" diet will fail. A 2021 study found that high perceived stress scores neutralized the anti-inflammatory benefits of a Mediterranean diet (n=230).</li>
+            <li><strong>Toxic Load & Biotransformation:</strong> Environmental toxins (BPA, phthalates, heavy metals) act as endocrine disruptors. If the client’s Phase II detoxification pathways (Module 8) are sluggish, they may be recirculating toxins that stall metabolic progress.</li>
+            <li><strong>Circadian Mismatch:</strong> Blue light exposure at night and lack of morning sunlight disrupt the peripheral clocks in the liver and gut. This can lead to "metabolic inflexibility" regardless of macronutrient ratios.</li>
+        </ol>
+
+        <h2 id="pivot">4. Pivoting vs. Persevering: The Decision Logic</h2>
+        <p>Knowing when to change the plan is a hallmark of clinical intuition backed by data. We use the <span class="highlight">15% Rule</span>: If there is less than a 15% improvement in primary subjective symptoms after 30 days of high adherence, a pivot is likely necessary.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Clinical Decision Logic: To Pivot or To Persevere?</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Persevere If:</strong> Symptoms are fluctuating but trending toward improvement; the client is experiencing "Herxheimer" (die-off) reactions; or markers like HRV are improving even if weight is stagnant.</li>
+                    <li><strong>Pivot If:</strong> New symptoms emerge (e.g., skin rashes after starting a probiotic); the client’s relationship with food is deteriorating (orthorexia); or objective markers (like fasting glucose) are moving in the wrong direction despite adherence.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="scorecard">5. Using the N.O.U.R.I.S.H. Scorecard</h2>
+        <p>The N.O.U.R.I.S.H. Scorecard is a visual tool used to track progress across the seven domains of our methodology. It prevents "tunnel vision" where a client focuses only on one metric (like the scale) and ignores holistic healing.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Baseline (1-10)</th>
+                        <th>Month 3 (1-10)</th>
+                        <th>Primary Iteration Made</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N</strong>utritional Foundations</td>
+                        <td>3</td>
+                        <td>8</td>
+                        <td>Increased protein to 1.6g/kg.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>O</strong>ptimize Digestion</td>
+                        <td>2</td>
+                        <td>6</td>
+                        <td>Added HCL support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>U</strong>ncover Root Causes</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>Identified subclinical Iron deficiency.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R</strong>estore Balance</td>
+                        <td>3</td>
+                        <td>7</td>
+                        <td>Implemented 4-7-8 breathing.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I</strong>ntegrative Protocols</td>
+                        <td>5</td>
+                        <td>8</td>
+                        <td>Titrated Vitamin D3 based on labs.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>S</strong>ustainable Habits</td>
+                        <td>4</td>
+                        <td>9</td>
+                        <td>Mastered meal prepping.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>H</strong>olistic Healing</td>
+                        <td>2</td>
+                        <td>6</td>
+                        <td>Addressed morning sunlight exposure.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">35%</div>
+                    <div class="stat-label">Improvement in Glycemic Control via Data Iteration</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.2x</div>
+                    <div class="stat-label">Higher Retention with Visual Scorecards</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical decision-making skills.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client with PCOS has been on a low-glycemic protocol for 4 weeks. Her energy is better, but her weight hasn't moved. Should you pivot the protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    No. Energy improvement is a leading indicator of metabolic shift. Weight is a lagging indicator. According to the "Persevere" logic, since subjective energy is trending positively, you should maintain the protocol for at least another 4-8 weeks before considering a pivot.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which biomarker has a biological turnover rate that makes re-testing it every 30 days largely ineffective?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    HbA1c. Because it measures the glycation of hemoglobin over the lifespan of a red blood cell (~120 days), monthly testing will not accurately reflect recent dietary changes.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data is the Anchor:</strong> Use a mix of objective (labs) and subjective (symptoms) data to maintain client buy-in and clinical accuracy.</li>
+                <li><strong>Respect Biological Timelines:</strong> Do not re-run deep-dive labs (GI-MAP, DUTCH) more frequently than every 4–6 months.</li>
+                <li><strong>Investigate Interference:</strong> If a client is a "non-responder," look at stress (HPA-axis), toxins, and circadian biology before further restricting the diet.</li>
+                <li><strong>The 15% Rule:</strong> Use this threshold to decide if a protocol needs a fundamental pivot or simply more time for biological adaptation.</li>
+                <li><strong>Visualize Progress:</strong> Use tools like the N.O.U.R.I.S.H. Scorecard to show clients the "hidden" wins in domains like sleep and stress management.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Berry, S. E., et al. (2022). "Personalized nutrition and postprandial responses: The PREDICT 1 study." <em>Nature Medicine</em>.</li>
+                <li>Kiecolt-Glaser, J. K., et al. (2021). "Stress and the Inflammatory Response to Dietary Fat." <em>Molecular Nutrition & Food Research</em>.</li>
+                <li>Lustig, R. H., et al. (2023). "Metabolic Health KPIs in Clinical Practice: A Consensus Statement." <em>Frontiers in Nutrition</em>.</li>
+                <li>Mahan, L. K., & Raymond, J. L. (2020). <em>Krause's Food & the Nutrition Care Process</em>. Elsevier Health Sciences.</li>
+                <li>Pizzorno, J. (2019). "The Toxin Solution: Why Environmental Toxins are the Root Cause of Modern Disease." <em>Journal of Restorative Medicine</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

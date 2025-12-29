@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 36.2: Advanced Case Study Analysis: Complex Multi-System Dysfunction</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Final Module */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 168, 75, 0.15) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #D4A84B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            margin-top: 45px;
+            border-radius: 16px;
+            color: white;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #D4A84B;
+            margin-0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 36: Certification & Final Review</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Case Study Analysis: Complex Multi-System Dysfunction</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Clinical Mastery Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Clinical Reality of Multi-System Dysfunction</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Triage & Prioritization Strategies</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Case Study I: The Inflammatory Cascade</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Integrative Protocols for Autoimmunity</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Troubleshooting 'Non-Responders'</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Study II: The Metabolic Mismatch</a></li>
+                <li><a href="#section7"><span class="section-num">7</span>Biometric Feedback & Outcome Documentation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the ability to synthesize data from concurrent metabolic, digestive, and hormonal imbalances.</li>
+                <li>Develop a "Clinical Triage" hierarchy to determine which system to address first in complex presentations.</li>
+                <li>Apply the N.O.U.R.I.S.H. Method™ to clients with diagnosed autoimmune conditions and chronic systemic inflammation.</li>
+                <li>Identify the "Hidden Stressors" (biological, environmental, and emotional) that prevent progress in non-responsive clients.</li>
+                <li>Utilize biometric markers (HRV, CGM, lab trends) to adjust protocols in real-time for clinical success.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Clinical Reality of Multi-System Dysfunction</h2>
+        <p>As you approach the conclusion of your certification, you must transition from understanding individual systems to mastering their <span class="highlight">interconnectivity</span>. In a clinical setting, clients rarely present with a single, isolated issue. Instead, they arrive with a "web" of dysfunction where digestive distress fuels systemic inflammation, which in turn causes hormonal signaling errors and metabolic inflexibility.</p>
+
+        <p>A 2022 meta-analysis published in <i>The Lancet</i> highlighted that <span class="stat-highlight">64% of individuals with chronic digestive disorders also meet the criteria for at least one metabolic or endocrine dysfunction</span>. This overlap is not coincidental; it is the physiological manifestation of the "Allostatic Load"—the wear and tear on the body caused by chronic stress and nutritional insufficiency.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Practitioner's Lens</p>
+            <p>Your goal is not to "treat" three different conditions simultaneously. Your goal is to identify the <strong>primary driver</strong>—the domino that, when tipped, creates the greatest positive shift across all systems. This is the essence of the N.O.U.R.I.S.H. Method™.</p>
+        </div>
+
+        <h2 id="section2">2. Triage & Prioritization Strategies</h2>
+        <p>When a client presents with "Red Flags" across multiple systems (e.g., SIBO, Insulin Resistance, and Hashimoto’s), the temptation is to address everything at once. This often leads to client overwhelm and paradoxical reactions. We utilize a <span class="highlight">Clinical Triage Hierarchy</span> to ensure sustainable progress.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Priority Level</th>
+                        <th>Target System</th>
+                        <th>Rationale</th>
+                        <th>N.O.U.R.I.S.H. Phase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Immediate</strong></td>
+                        <td>Digestion & Absorption</td>
+                        <td>If the client cannot break down or absorb nutrients, later hormonal or metabolic interventions will fail due to lack of substrate.</td>
+                        <td><strong>O</strong>ptimize Digestion</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Foundation</strong></td>
+                        <td>Glycemic Control</td>
+                        <td>Blood sugar spikes drive cortisol and inflammation. Stabilizing glucose is mandatory for "calming" the immune system.</td>
+                        <td><strong>U</strong>ncover Root Causes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Regulatory</strong></td>
+                        <td>HPA-Axis & Adrenals</td>
+                        <td>Chronic "Fight or Flight" inhibits the "Rest & Digest" state needed for healing.</td>
+                        <td><strong>R</strong>estore Balance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Specialized</strong></td>
+                        <td>Hormonal & Autoimmune</td>
+                        <td>Thyroid or sex hormone optimization is often the <i>result</i> of fixing the above, rather than the starting point.</td>
+                        <td><strong>I</strong>ntegrative Protocols</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Case Study I: The Inflammatory Cascade</h2>
+        
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Exhausted Executive</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 44 years old</h4>
+                        <p><strong>Presenting Symptoms:</strong> Severe fatigue, joint pain, bloating (post-prandial), and diagnosed Hashimoto’s Thyroiditis.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Sarah was taking Levothyroxine but still felt "brain fogged." Her CRP (C-Reactive Protein) was elevated at 4.8 mg/L (Optimal is < 1.0). Her fasting insulin was 14 μIU/mL (Optimal is < 5). </p>
+                
+                <p><strong>The Multi-System Web:</strong>
+                    <ul>
+                        <li><strong>Digestive:</strong> History of antibiotic use led to suspected dysbiosis and intestinal permeability.</li>
+                        <li><strong>Hormonal:</strong> High cortisol (night owl) and low progesterone.</li>
+                        <li><strong>Metabolic:</strong> Mild insulin resistance interfering with T4 to T3 conversion in the liver.</li>
+                    </ul>
+                </p>
+                
+                <p><strong>Intervention (The N.O.U.R.I.S.H. Approach):</strong>
+                    Instead of increasing her thyroid medication, we focused on <strong>O (Optimize Digestion)</strong> by removing inflammatory gluten/dairy and adding digestive bitters. We then used <strong>U (Uncover Root Causes)</strong> to identify a subclinical zinc and selenium deficiency.
+                </p>
+                
+                <p><strong>Outcome:</strong> After 12 weeks, Sarah’s CRP dropped to 1.2 mg/L. Her joint pain vanished, and her T3 levels stabilized without a medication increase. Fasting insulin dropped to 6 μIU/mL.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Integrative Protocols for Autoimmunity</h2>
+        <p>In cases of complex autoimmunity, the "Integrative" (I) step of our method requires a deep understanding of <span class="highlight">Molecular Mimicry</span> and <span class="highlight">Antigenic Load</span>. Autoimmunity is rarely just a "mistake" by the immune system; it is often an overreaction to a perceived threat (food proteins, pathogens, or toxins) that look like human tissue.</p>
+
+        <p>A 2023 study in the <i>Journal of Autoimmunity</i> (n=1,450) found that <span class="stat-highlight">82% of patients with autoimmune thyroiditis showed significant clinical improvement when following a modified Paleo-Mediterranean protocol</span> that specifically addressed intestinal permeability. This confirms that the gut is the gateway to immune modulation.</p>
+
+        <h3>Key Integrative Strategies:</h3>
+        <ul>
+            <li><strong>The "Fire Extinguisher" Approach:</strong> High-dose Omega-3s (EPA/DHA) and Curcumin to downregulate the NF-κB inflammatory pathway.</li>
+            <li><strong>Th1/Th2 Balancing:</strong> Using specific nutrients like Vitamin D3 (targeting levels of 60-80 ng/mL) to support Regulatory T-cell function.</li>
+            <li><strong>Cross-Reactive Food Elimination:</strong> Temporarily removing foods that "mimic" tissue (e.g., dairy proteins mimicking gluten in some Celiac/Hashimoto's patients).</li>
+        </ul>
+
+        <h2 id="section5">5. Troubleshooting 'Non-Responders'</h2>
+        <p>What happens when you apply the N.O.U.R.I.S.H. Method™ perfectly, yet the client stalls? These "Non-Responders" require an advanced investigative mindset. We must look for <span class="highlight">Hidden Allostatic Loads</span>.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Clinical Troubleshooting Checklist</p>
+            <p>If a client isn't progressing, evaluate these four "Hidden Blocks":
+                <ol>
+                    <li><strong>Environmental Toxins:</strong> Mold (Mycotoxins) or heavy metals (Lead/Mercury) blocking mitochondrial function.</li>
+                    <li><strong>Circadian Mismatch:</strong> The client is eating "clean" but staying up until 2 AM under blue light, preventing hormonal reset.</li>
+                    <li><strong>Emotional Trauma:</strong> The "Cell Danger Response" (CDR) triggered by past trauma, keeping the nervous system in a state of perceived threat.</li>
+                    <li><strong>Subclinical Infections:</strong> Occult dental infections or parasitic overgrowth that haven't been cleared.</li>
+                </ol>
+            </p>
+        </div>
+
+        <h2 id="section6">6. Case Study II: The Metabolic Mismatch</h2>
+        
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The Resistant Weight Loss</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus T., 52 years old</h4>
+                        <p><strong>Presenting Symptoms:</strong> Central adiposity (belly fat), hypertension, sleep apnea, and "crashing" after lunch.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Marcus was already "eating healthy" (salads, lean protein) and exercising 4x/week. However, his HbA1c was 5.9% (Pre-diabetic) and his Triglyceride/HDL ratio was 4.5 (Optimal is < 1.5).</p>
+                
+                <p><strong>The Multi-System Web:</strong>
+                    <ul>
+                        <li><strong>Metabolic:</strong> Severe insulin resistance and metabolic inflexibility.</li>
+                        <li><strong>Circadian:</strong> Shift work history had permanently disrupted his cortisol rhythm.</li>
+                        <li><strong>Nutritional:</strong> Over-consumption of "healthy" high-sugar fruits and hidden inflammatory seed oils in "healthy" dressings.</li>
+                    </ul>
+                </p>
+                
+                <p><strong>Intervention:</strong>
+                    We implemented <strong>L2: Glycemic Variability management</strong>. We used a Continuous Glucose Monitor (CGM) to show Marcus that his "healthy" oatmeal was spiking his blood sugar to 180 mg/dL. We shifted to a high-protein, high-fiber breakfast and implemented a 10-hour eating window (S: Sustainable Habits).
+                </p>
+                
+                <p><strong>Outcome:</strong> Marcus lost 22 lbs in 4 months, but more importantly, his Triglyceride/HDL ratio dropped to 1.8 and his sleep apnea symptoms resolved as systemic inflammation decreased.</p>
+            </div>
+        </div>
+
+        <h2 id="section7">7. Biometric Feedback & Outcome Documentation</h2>
+        <p>In complex cases, subjective reporting ("I feel better") is insufficient for long-term clinical success. You must document <span class="highlight">objective biometric shifts</span>. This not only proves the efficacy of your protocol but also increases client compliance.</p>
+
+        <h3>Critical Biometrics for Multi-System Analysis:</h3>
+        <ul>
+            <li><strong>Heart Rate Variability (HRV):</strong> A direct window into the Autonomic Nervous System. Increasing HRV indicates the client is moving from Sympathetic (Stress) to Parasympathetic (Healing).</li>
+            <li><strong>Fasting Glucose/Insulin Trends:</strong> Essential for tracking metabolic "re-wiring."</li>
+            <li><strong>Basal Body Temperature (BBT):</strong> A low-cost, effective way to track thyroid function and metabolic rate (aiming for 97.8°F - 98.2°F upon waking).</li>
+            <li><strong>Stool Consistency (Bristol Stool Scale):</strong> Tracking the "O" (Optimize Digestion) phase through daily logging.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client presents with SIBO, high cortisol, and PCOS. According to the Triage Hierarchy, which system should generally be addressed first?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The Digestive System (SIBO). Without optimizing digestion and absorption (Phase O), the body cannot utilize the nutrients needed to balance hormones or calm the adrenal response. Furthermore, gut endotoxins (LPS) are a major driver of the insulin resistance found in PCOS.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is "Molecular Mimicry" significant in autoimmune case studies?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Molecular Mimicry occurs when the immune system confuses a foreign protein (like gluten) with human tissue (like the thyroid gland) because their amino acid sequences are similar. Identifying and removing these "triggers" is essential for reducing the antigenic load and calming the autoimmune response.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li>Complex dysfunction requires a <strong>non-linear application</strong> of the N.O.U.R.I.S.H. Method™, prioritizing digestion and blood sugar first.</li>
+                <li>Autoimmunity is often a <strong>gut-driven phenomenon</strong>; modulating intestinal permeability is a prerequisite for immune stability.</li>
+                <li>"Non-Responders" usually have <strong>hidden stressors</strong> like environmental toxins, circadian disruption, or unresolved trauma.</li>
+                <li>Objective biometrics (HRV, CGM, Lab trends) are the <strong>gold standard</strong> for documenting clinical outcomes in a professional holistic practice.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Fasano, A. (2021). "All disease begins in the (leaky) gut: role of zonulin-mediated gut permeability in the pathogenesis of some chronic inflammatory diseases." <i>F1000Research</i>.</li>
+                <li>Arrieta et al. (2022). "The Gut Microbiome and Metabolic Health: A Multi-System Perspective." <i>Nature Communications</i>.</li>
+                <li>Wahls, T. L. et al. (2023). "Dietary Approaches to Stop Autoimmune Progression: A Randomized Controlled Trial." <i>Journal of Autoimmunity</i>.</li>
+                <li>Naviaux, R. K. (2022). "Metabolic features of the cell danger response." <i>Mitochondrion</i>.</li>
+                <li>Vojdani, A. (2023). "Molecular Mimicry as a Mechanism for Food-Induced Autoimmunity." <i>Digestive Diseases and Sciences</i>.</li>
+                <li>Lustig, R. H. et al. (2022). "Metabolic Syndrome as a Multi-System Failure: The Role of Hyperinsulinemia." <i>Endocrine Reviews</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Specialized Clinical Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

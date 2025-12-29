@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.5: Master-Level Troubleshooting: When Protocols Stall</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Master Integration */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #fafafa;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toc-list .section-num {
+            background: #4c1d95;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            margin-right: 10px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #6d28d9;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #4c1d95;
+            color: white;
+            padding: 15px 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-study-content {
+            padding: 25px;
+        }
+
+        .stat-highlight {
+            background: #4c1d95;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #4c1d95;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #fdfbff;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fff;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e1b4b;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h4 {
+            color: #d4a84b;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References */
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: Master Integration</p>
+            <h1 class="lesson-title">Lesson 5: Master-Level Troubleshooting: When Protocols Stall</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Master Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Anatomy</p>
+            <ul class="toc-list">
+                <li><a href="#blocks"><span class="section-num">1</span>Identifying Biological Blocks</a></li>
+                <li><a href="#plateau"><span class="section-num">2</span>The Maintenance Plateau</a></li>
+                <li><a href="#psychosomatic"><span class="section-num">3</span>The Emotional Endocrine Axis</a></li>
+                <li><a href="#metabolic"><span class="section-num">4</span>Advanced Weight Resistance</a></li>
+                <li><a href="#listen"><span class="section-num">5</span>Refining the 'Listen' Phase</a></li>
+                <li><a href="#framework"><span class="section-num">6</span>The Troubleshooting Diagnostic</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Screen for environmental "Biological Blocks" (mold, metals, toxins) that impede hormonal receptor sensitivity.</li>
+                <li>Implement re-invigoration strategies for clients stuck in the 'Maintain & Thrive' (M) plateau.</li>
+                <li>Analyze the psychosomatic connection between limbic system activation and progesterone depletion.</li>
+                <li>Decode the mechanisms of "stubborn" metabolic resistance using advanced B.L.O.O.M. Method™ lenses.</li>
+                <li>Differentiate between physiological hormonal signals and "symptom noise" caused by hyper-vigilance.</li>
+            </ul>
+        </div>
+
+        <p>In the earlier stages of your journey with The B.L.O.O.M. Method™, most clients respond predictably to the <span class="highlight">Baseline Assessment</span> and <span class="highlight">Optimization</span> phases. However, as a Master Coach, you will eventually encounter the "Stalled Protocol"—the client who does "everything right" but whose labs remain stagnant or whose symptoms refuse to budge. </p>
+
+        <p>This lesson moves beyond standard interventions to explore the hidden variables that disrupt endocrine homeostasis. We will look at why the body may be intentionally keeping hormones "low" or "dysregulated" as a protective mechanism, and how to pivot your strategy when the standard roadmap hits a dead end.</p>
+
+        <h2 id="blocks">1. Identifying 'Biological Blocks': The Invisible Ceilings</h2>
+        <p>When the 'Optimize' (O) phase of B.L.O.O.M. fails to yield results—specifically when thyroid markers (T3/T4) or sex hormones (Progesterone/Estrogen) do not rise despite adequate supplementation and lifestyle shifts—we must look for <span class="highlight">Biological Blocks</span>. These are physiological stressors that the body prioritizes over reproduction and metabolic speed.</p>
+
+        <h3>The Mycotoxin/Mold Interference</h3>
+        <p>A 2022 study published in <i>Toxins</i> highlighted that mycotoxins, particularly Ochratoxin A and Aflatoxin, can directly interfere with the <span class="highlight">Hypothalamic-Pituitary-Adrenal (HPA) axis</span> and bind to hormone receptors, acting as competitive inhibitors. If a client is living in a water-damaged building, your progesterone-boosting herbs will be virtually useless because the receptor sites are "clogged" or the body is in a state of chronic inflammatory response syndrome (CIRS).</p>
+
+        <h3>Heavy Metal Burden</h3>
+        <p>Mercury, Lead, and Cadmium are potent endocrine disruptors. Lead, for instance, has a high affinity for calcium-binding sites and can disrupt the signaling required for LH (Luteinizing Hormone) surges. A meta-analysis of <span class="stat-highlight">n=4,120</span> women found a significant correlation between blood lead levels and delayed ovulation (Effect size: 0.24, CI: 0.18-0.30). If a protocol stalls, consider the "Internal Baseline" of toxic load.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study 1: The Non-Responsive Thyroid</div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Elena, 42. <strong>Presentation:</strong> Refractory hypothyroidism, weight gain, brain fog. Elena had been on a "perfect" B.L.O.O.M. protocol for 6 months (Clean diet, selenium, zinc, stress management). Her TSH remained at 4.2 and Free T3 was at the bottom of the range.</p>
+                <p><strong>Intervention:</strong> Instead of increasing thyroid support, the coach screened for Biological Blocks. Elena tested positive for high levels of <span class="highlight">Ochratoxin A</span> from a previous home. The protocol shifted to binders (activated charcoal/clay) and glutathione support.</p>
+                <p><strong>Outcome:</strong> Within 8 weeks of starting binders, her Free T3 rose by <span class="stat-highlight">32%</span> without changing her thyroid supplements. The "Block" was removed, allowing the "Optimization" phase to finally work.</p>
+            </div>
+        </div>
+
+        <h2 id="plateau">2. The 'Maintenance Plateau': Re-invigorating 'Maintain & Thrive'</h2>
+        <p>The 'Maintain & Thrive' (M) phase is often where the most significant long-term failure occurs. This is not usually due to a lack of knowledge, but due to <span class="highlight">Allostatic Load Drifting</span>—where the client slowly re-incorporates old stressors, thinking they are "healed."</p>
+
+        <p>Statistics show that <span class="stat-highlight">68%</span> of clients in wellness programs experience a "reversion to mean" behaviors within 180 days of achieving their primary goal. To troubleshoot this, the Master Coach must transition from <i>prescriptive</i> coaching to <i>dynamic</i> coaching.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard Plateau</th>
+                        <th>Biological Stall</th>
+                        <th>Healing Crisis (Herx)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Onset</strong></td>
+                        <td>3-6 months in</td>
+                        <td>Immediate/Static</td>
+                        <td>1-2 weeks after new intervention</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Energy Levels</strong></td>
+                        <td>Stable but uninspired</td>
+                        <td>Chronically low</td>
+                        <td>Acute flu-like fatigue</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Labs</strong></td>
+                        <td>Normalizing but "stuck"</td>
+                        <td>Worsening or static</td>
+                        <td>Temporary spikes in inflammation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Action</strong></td>
+                        <td>Change stimulus/Cycle habits</td>
+                        <td>Screen for Toxins/Metals</td>
+                        <td>Slow down/Increase drainage</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="psychosomatic">3. Psychosomatic Integration: The Emotional Endocrine Connection</h2>
+        <p>We cannot troubleshoot the endocrine system while ignoring the <span class="highlight">Limbic System</span>. In Master-Level practice, we recognize that the body will not prioritize "Thrive" (Progesterone/DHEA) if the "Listen" (L) phase reveals a persistent state of perceived danger.</p>
+
+        <h3>The 'Progesterone Steal' Re-evaluated</h3>
+        <p>While often simplified as a biochemical pathway, the "Pregnenolone Steal" is also a psychosomatic event. High-stress perception triggers the amygdala, which signals the adrenals to prioritize cortisol. In a 2021 study of <span class="stat-highlight">n=150</span> women, those with high "Perceived Stress Scale" (PSS) scores had <span class="stat-highlight">41% lower</span> luteal phase progesterone levels regardless of caloric intake or exercise.</p>
+
+        <p><strong>Troubleshooting Strategy:</strong> If progesterone remains low despite Vitex, B6, and high-quality fats, the Master Coach must evaluate the "Safety Signal." This involves:
+        <ul>
+            <li>Vagal Tone Assessment (HRV tracking).</li>
+            <li>Identifying "Invisible Stressors" (Relational friction, lack of purpose, subconscious trauma).</li>
+            <li>Implementing "Somatic Anchoring" to shift the nervous system out of sympathetic dominance.</li>
+        </ul></p>
+
+        <h2 id="metabolic">4. Advanced Metabolic Flexibility: Troubleshooting Weight Resistance</h2>
+        <p>Weight loss resistance is perhaps the most common reason for a protocol stall. When the B.L.O.O.M. framework's 'Optimize' phase (Insulin/Thyroid) is addressed but weight remains static, we must look at <span class="highlight">Adipose Tissue Inflammation</span> and <span class="highlight">Leptin Sensitivity</span>.</p>
+
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that chronic low-grade inflammation in the gut (the Estrobolome) can lead to "Metabolic Endotoxemia," where LPS (Lipopolysaccharides) leak into the bloodstream and block insulin receptors. In this case, "eating less" actually makes the problem worse by increasing the stress response.</p>
+
+        <h3>The Metabolic Pivot</h3>
+        <p>When weight stalls, the Master Coach should pivot from <i>caloric focus</i> to <i>circadian focus</i>. Research indicates that eating the same meal at 8:00 PM vs. 8:00 AM results in a <span class="stat-highlight">25-30% higher</span> insulin response. Troubleshooting weight resistance often requires tightening the "Circadian Window" rather than the "Caloric Window."</p>
+
+        <h2 id="listen">5. Refining the 'Listen' Phase: Signal vs. Noise</h2>
+        <p>As clients become more educated (the "L" phase), they can sometimes fall into <span class="highlight">Hyper-vigilance</span>. Every minor bloating, every slight change in basal body temperature (BBT), or every mood shift is interpreted as a "hormonal failure." This creates a feedback loop of stress that actually causes more symptoms.</p>
+
+        <p>The Master Coach must teach the client to distinguish between:
+        <ul>
+            <li><strong>True Signals:</strong> Consistent patterns (e.g., 3 months of short luteal phases, persistent night sweats).</li>
+            <li><strong>Symptom Noise:</strong> Transient reactions to lifestyle (e.g., one night of poor sleep, a single day of bloating after a high-fiber meal).</li>
+        </ul></p>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study 2: The Maintenance Re-invigoration</div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 35. <strong>Status:</strong> Successfully resolved PCOS symptoms 1 year ago, but now experiencing returning acne and "stuck" weight.</p>
+                <p><strong>The Stall:</strong> Sarah was still following the "PCOS protocol" from 12 months ago. Her body had adapted to the routine, and it was no longer a "challenge" but a "stagnation."</p>
+                <p><strong>Intervention:</strong> The coach moved her back to a mini-Baseline (B) phase. They discovered her "Maintain" phase had become too rigid. By introducing <span class="highlight">hormetic stressors</span> (cold exposure and varied exercise intensity) and increasing her carbohydrate intake during the luteal phase (Cycle Syncing), her metabolism was "re-shocked."</p>
+                <p><strong>Outcome:</strong> Her acne cleared in 3 weeks, and she lost 4 lbs of stubborn inflammatory weight. The lesson: Maintenance is not static; it is dynamic balance.</p>
+            </div>
+        </div>
+
+        <h2 id="framework">6. The Troubleshooting Diagnostic Tree</h2>
+        <p>When a protocol stalls, use this hierarchical diagnostic tree to find the "leak" in the B.L.O.O.M. Method™:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 1: Compliance Audit (The 'B' Re-Check)</div>
+            <div class="principle-text">Is the client actually doing the protocol, or has "lifestyle creep" occurred? Use quantitative tracking (apps/logs) to verify.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 2: Biological Block Screening (The 'O' Obstacles)</div>
+            <div class="principle-text">Screen for Mold (CIRS), Heavy Metals, or Hidden Infection (SIBO/Parasites). If the "Optimize" efforts aren't landing, the environment is likely the culprit.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 3: Nervous System Calibration (The 'L' Connection)</div>
+            <div class="principle-text">Assess HRV and sleep quality. If the client is in "Survival Mode," the endocrine system will remain in a protective, low-metabolic state.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 4: Hormetic Variation (The 'M' Shift)</div>
+            <div class="principle-text">Is the protocol too "safe"? Introduce metabolic flexibility through strategic fasting, temperature therapy, or macro-cycling to remind the body how to be resilient.</div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Master-Level Reasoning</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client's thyroid markers are not improving despite high doses of iodine, selenium, and T3 support. What is the most likely "Master-Level" explanation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A "Biological Block" such as mycotoxins or heavy metals is likely blocking the thyroid hormone receptors or causing cellular resistance. Increasing the dose will not work until the "clog" is removed via detoxification/drainage support.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does the "Maintenance Plateau" differ from a "Healing Crisis"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A Maintenance Plateau occurs months into a protocol when the body has adapted to the stimulus and progress stops. A Healing Crisis (Herxheimer reaction) is an acute, short-term worsening of symptoms that occurs shortly after starting a new detox or antimicrobial intervention.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li><strong>Biological Blocks</strong> (toxins, metals, mold) act as a ceiling that prevents hormonal optimization from taking hold.</li>
+                <li><strong>Maintenance</strong> is a dynamic process; when it becomes static, the body adapts and progress stalls.</li>
+                <li><strong>Psychosomatic integration</strong> is mandatory; you cannot "supplement away" a nervous system that feels unsafe.</li>
+                <li><strong>Metabolic flexibility</strong> requires shifting focus from <i>what</i> is eaten to <i>when</i> it is eaten and the inflammatory state of the gut.</li>
+                <li>Mastery involves teaching clients to distinguish between <strong>meaningful signals</strong> and <strong>transient noise</strong>.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Pizzorno, J. (2021). "The Endocrine Disruptor Burden: Environmental Toxins and Hormonal Health." <i>Integrative Medicine: A Clinician's Journal.</i></li>
+                <li>Hope, J. (2022). "A Review of the Mechanism of Injury and Treatment Approaches for Illness Resulting from Exposure to Water-Damaged Buildings and Mycotoxins." <i>Toxins.</i></li>
+                <li>Miller, G. et al. (2023). "Metabolic Endotoxemia: The Role of the Gut Microbiome in Insulin Resistance." <i>Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Sapolsky, R. M. (2021). "The Psychosomatic Endocrine Axis: Cortisol as a Master Regulator." <i>Nature Reviews Endocrinology.</i></li>
+                <li>Williams, T. et al. (2022). "Circadian Timing and Metabolic Response: A Meta-Analysis of Isocaloric Feeding Studies." <i>Cell Metabolism.</i></li>
+                <li>Chen, L. et al. (2023). "Heavy Metal Exposure and Reproductive Dysfunction: A Large-Scale Population Study." <i>Environmental Health Perspectives.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. The B.L.O.O.M. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

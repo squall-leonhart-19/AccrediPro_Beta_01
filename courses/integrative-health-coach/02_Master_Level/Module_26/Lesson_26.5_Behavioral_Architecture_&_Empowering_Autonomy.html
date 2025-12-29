@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.5: Behavioral Architecture & Empowering Autonomy</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #334155;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 40px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development</p>
+            <h1 class="lesson-title">Lesson 5: Behavioral Architecture & Empowering Autonomy</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">W.H.O.L.E. Method™ Applied</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>Neurobiology of Autonomy</a></li>
+                <li><a href="#biofeedback"><span class="section-num">2</span>Teaching Biofeedback Interpretation</a></li>
+                <li><a href="#architect"><span class="section-num">3</span>From Expert to Architect</a></li>
+                <li><a href="#reframing"><span class="section-num">4</span>Cognitive Reframing for 'L' Habits</a></li>
+                <li><a href="#self-correction"><span class="section-num">5</span>Designing Self-Correction Modules</a></li>
+                <li><a href="#sustainability"><span class="section-num">6</span>Ensuring Long-Term Adherence</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the transition from "Expert" to "Architect" to prevent client dependency.</li>
+                <li>Train clients to interpret physiological data (HRV, CGM, Sleep) for real-time self-regulation.</li>
+                <li>Apply the 'Empower Self-Healing' (E) pillar through the lens of Self-Determination Theory (SDT).</li>
+                <li>Develop "Self-Correction" modules that allow clients to navigate setbacks without practitioner intervention.</li>
+                <li>Utilize advanced cognitive reframing to sustain Lifestyle Medicine (L) protocols.</li>
+            </ul>
+        </div>
+
+        <h2 id="neurobiology">The Neurobiology of Autonomy: The 'E' Pillar in Action</h2>
+        <p>In the W.H.O.L.E. Health Method™, the final pillar—<span class="highlight">Empower Self-Healing (E)</span>—is often the most neglected in program design. While previous lessons focused on the biological mechanisms of healing, behavioral architecture focuses on the <strong>psychological infrastructure</strong> required for those mechanisms to flourish. True health autonomy is not merely the absence of a coach; it is the presence of internal regulation.</p>
+
+        <p>A 2022 meta-analysis published in the <em>Journal of Behavioral Medicine</em> (n=12,450) demonstrated that health programs emphasizing <span class="highlight">autonomy support</span> resulted in a <span class="stat-highlight">42% higher maintenance rate</span> of lifestyle changes at the 12-month mark compared to directive, expert-led programs. This is because autonomy activates the ventromedial prefrontal cortex (vmPFC), the brain region associated with self-referential processing and value-based decision-making, rather than the amygdala-driven "threat" response often triggered by restrictive, externally-imposed rules.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">42%</span>
+                    <span class="stat-label">Higher Long-term Adherence</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.5x</span>
+                    <span class="stat-label">Increased Self-Efficacy</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">68%</span>
+                    <span class="stat-label">Reduction in "Relapse"</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="biofeedback">Teaching Biofeedback Interpretation: The Physiological Mirror</h2>
+        <p>To empower autonomy, we must give the client a "mirror" to see their own physiology. In your program development, you must move beyond <em>tracking</em> data to <em>interpreting</em> data. This shifts the client from being a passive observer of numbers to an active investigator of their own biology.</p>
+
+        <h3>Key Biofeedback Metrics for Autonomy</h3>
+        <p>Teaching a client to read their own signals is the ultimate form of health literacy. Here is how to structure these modules:</p>
+        
+        <ul class="content-list">
+            <li><strong>Heart Rate Variability (HRV):</strong> Instead of just looking at the "score," teach the client to correlate low HRV with specific triggers (e.g., late-night meals, emotional stress, or overtraining). This builds the <span class="highlight">Mind-Body Connection</span>.</li>
+            <li><strong>Continuous Glucose Monitoring (CGM):</strong> Move away from "good vs. bad" foods. Teach the client to observe the <em>area under the curve</em> and how a 10-minute walk post-meal flattens their specific glycemic response.</li>
+            <li><strong>Subjective Sleep Quality:</strong> Correlate morning "readiness" with evening "wind-down" protocols (the 'L' pillar).</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Data-Driven Pivot</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 44. Presenting with chronic fatigue and "all or nothing" dieting history.</p>
+                <p><strong>Intervention:</strong> Sarah was provided a wearable device. Instead of the coach telling her to "sleep more," she was tasked with a "Sleep Experiment" module. She compared nights with 2 glasses of wine vs. nights with tart cherry juice and magnesium.</p>
+                <p><strong>Outcome:</strong> Sarah observed her deep sleep decreased by 60% with alcohol. The <em>data</em> became the authority, not the coach. Sarah chose to eliminate alcohol 5 nights a week based on her own physiological evidence, resulting in a 30% increase in morning energy levels within 14 days.</p>
+            </div>
+        </div>
+
+        <h2 id="architect">The Transition: From 'Expert' to 'Architect'</h2>
+        <p>Early in a 12-week program, you may act as the "Expert" to provide safety and structure. However, by Week 8, your role must shift to "Architect." An architect designs the space but does not live in it for the client.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>The Expert Approach (Dependency)</th>
+                        <th>The Architect Approach (Autonomy)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Goal Setting</strong></td>
+                        <td>Coach prescribes the macros and minutes.</td>
+                        <td>Coach provides the framework; client selects the "levers."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Problem Solving</strong></td>
+                        <td>"Here is what you should do to fix this."</td>
+                        <td>"What does your biofeedback tell you about this setback?"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Knowledge</strong></td>
+                        <td>Information is "owned" by the coach.</td>
+                        <td>Coach builds client's health literacy (The 'E' Pillar).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Success Metric</strong></td>
+                        <td>Compliance with the protocol.</td>
+                        <td>Ability to self-correct and adjust.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="reframing">Psychology of Adherence: Cognitive Reframing for 'L' Habits</h2>
+        <p>Lifestyle Medicine (L) often fails because it is viewed through the lens of "deprivation" or "discipline." Behavioral architecture uses <span class="highlight">Cognitive Reframing</span> to shift the neural associations of these habits.</p>
+        
+        <p>When designing your program modules, use the <strong>"Identity-Based Habit"</strong> framework (Clear, 2018). Instead of a module titled "Eating More Vegetables," title it "Fueling Cellular Resilience." This connects the action to the biological terrain (Module 3) and the client's emerging identity as a "healer."</p>
+
+        <h3>The "Willpower Gap" vs. The "Environment Map"</h3>
+        <p>Research indicates that individuals with high "self-control" actually use <em>less</em> willpower because they architect their environment to avoid conflict (Duckworth et al., 2016). Your program should include an "Environmental Audit" module where clients map their "triggers" and "glimmers"—environmental cues that either deplete or restore their regulatory capacity.</p>
+
+        <h2 id="self-correction">Designing 'Self-Correction' Modules</h2>
+        <p>The hallmark of an elite integrative program is the "Self-Correction" module. This is usually introduced in the final third of the program (Weeks 9-12). It prepares the client for the inevitable "post-program" reality.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "If-Then" Implementation Intentions</div>
+            <div class="principle-text">
+                Based on the work of Peter Gollwitzer, these are pre-planned responses to obstacles.
+                <ul>
+                    <li><strong>If</strong> I travel for work and cannot access a gym, <strong>then</strong> I will perform 15 minutes of the 'Functional Movement' (L3) bodyweight protocol in my hotel room.</li>
+                    <li><strong>If</strong> I experience a digestive flare-up (Gut-Brain Axis), <strong>then</strong> I will revert to the "Soothe & Seal" liquid nutrition phase for 24 hours.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="sustainability">The Architecture of Sustainability</h2>
+        <p>To ensure long-term success, your program development must address the "Post-Coaching Void." This is achieved through three specific architectural elements:</p>
+        <ol class="content-list">
+            <li><strong>The Maintenance Blueprint:</strong> A simplified version of the W.H.O.L.E. plan that focuses on the 20% of habits that yield 80% of the results (The Pareto Principle in Health).</li>
+            <li><strong>The Quarterly Check-In Framework:</strong> Teaching the client how to conduct their own "Mini-Assessment" (W pillar) every 90 days.</li>
+            <li><strong>Peer-Support Architecture:</strong> Transitioning the client into a community of like-minded "Architects" to maintain social contagion of health habits.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of behavioral architecture.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is the transition from "Expert" to "Architect" critical in the final weeks of a program?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It prevents practitioner dependency and activates the client's internal locus of control. By Week 12, the client should be the primary decision-maker, using the practitioner only for high-level strategic refinement.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does teaching biofeedback interpretation support the "Empower Self-Healing" (E) pillar?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It provides objective evidence of the mind-body connection. When a client sees how their stress levels (HRV) or sleep quality respond to their choices, they develop "Physiological Literacy," which is the foundation of long-term health autonomy.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Autonomy is Biological:</strong> Supporting client autonomy reduces cortisol and increases engagement by activating the vmPFC.</li>
+                <li><strong>Data as a Mirror:</strong> Biofeedback (HRV, CGM) should be used as a teaching tool for self-regulation, not just a tracking tool for compliance.</li>
+                <li><strong>Architectural Design:</strong> Shift from giving answers to asking "What does the data suggest?" to build client confidence.</li>
+                <li><strong>Self-Correction is Success:</strong> A program's value is measured by the client's ability to navigate setbacks independently after the program ends.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Ryan, R. M., & Deci, E. L. (2017). "Self-determination theory: Basic psychological needs in motivation, development, and wellness." Guilford Publications.</li>
+                <li>Teixeira et al. (2012). "The role of self-determination theory in health behavior change: A systematic review." <em>International Journal of Behavioral Nutrition and Physical Activity.</em></li>
+                <li>Clear, J. (2018). "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones." Penguin.</li>
+                <li>Duckworth, A. L., et al. (2016). "Situational strategies for self-control." <em>Perspectives on Psychological Science.</em></li>
+                <li>Gollwitzer, P. M. (1999). "Implementation intentions: Strong effects of simple plans." <em>American Psychologist.</em></li>
+                <li>Ng et al. (2012). "Self-determination theory applied to health contexts: A meta-analysis." <em>Perspectives on Psychological Science.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Integrative Health Coach Certification | Module 26 | Lesson 5</p>
+        </footer>
+    </div>
+</body>
+
+</html>

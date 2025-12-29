@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 16.7: The 'TOFI' Client: Thin on the Outside, Fat on the Inside</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Clinical/Advanced */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Highlight & Stats */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.1em;
+        }
+
+        /* Table Styling */
+        .data-table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #f3e8d2;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border-left: 5px solid #1e3a8a;
+        }
+
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 16: Advanced Case Studies</p>
+            <h1 class="lesson-title">Lesson 16.7: The 'TOFI' Client: Thin on the Outside, Fat on the Inside</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Pro-Level Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#phenomenon">The TOFI Phenomenon</a></li>
+                <li><a href="#screening">Screening Beyond BMI</a></li>
+                <li><a href="#liver">The Liver-First Logic</a></li>
+                <li><a href="#nutrition">Nutritional Drivers of VAT</a></li>
+                <li><a href="#movement">Movement Strategies</a></li>
+                <li><a href="#case-study">Advanced Case Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the <span class="highlight">TOFI</span> (Thin on the Outside, Fat on the Inside) phenotype and its metabolic risks.</li>
+                <li>Utilize the <span class="highlight">S.T.A.B.L.E. Method™</span> to identify visceral adipose tissue (VAT) in non-obese clients.</li>
+                <li>Analyze the pathophysiology of <span class="highlight">Lean NAFLD</span> and its impact on insulin sensitivity.</li>
+                <li>Design targeted nutritional and movement protocols to resolve internal adiposity and liver fat.</li>
+            </ul>
+        </div>
+
+        <h2 id="phenomenon">1. The TOFI Phenomenon: The Deception of BMI</h2>
+        <p>In clinical practice, the Body Mass Index (BMI) is often treated as a proxy for metabolic health. However, as advanced practitioners, we must recognize its profound limitations. The term <span class="highlight">TOFI</span> (Thin on the Outside, Fat on the Inside), scientifically known as <span class="highlight">Metabolically Obese Normal Weight (MONW)</span>, describes individuals who appear lean by external standards but harbor significant amounts of <span class="highlight">Visceral Adipose Tissue (VAT)</span> and ectopic fat within organs like the liver and pancreas.</p>
+
+        <p>A landmark study published in <i>The Lancet</i> highlighted that approximately <span class="stat-highlight">15-20% of individuals</span> with a "normal" BMI (18.5–24.9 kg/m²) are metabolically unhealthy, exhibiting insulin resistance, dyslipidemia, and hypertension. Conversely, some individuals with "obese" BMIs remain metabolically healthy—a phenomenon known as MHO (Metabolically Healthy Obese). The danger for the TOFI client is <span class="highlight">clinical invisibility</span>; because they do not "look" the part of a diabetic, their underlying metabolic decay often goes undetected until a major cardiovascular event or Type 2 Diabetes diagnosis occurs.</p>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Metabolically Healthy Lean</th>
+                        <th>TOFI (MONW)</th>
+                        <th>Metabolically Healthy Obese (MHO)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BMI (kg/m²)</td>
+                        <td>18.5 – 24.9</td>
+                        <td>18.5 – 24.9</td>
+                        <td>> 30.0</td>
+                    </tr>
+                    <tr>
+                        <td>Visceral Fat (VAT)</td>
+                        <td>Low</td>
+                        <td><span class="stat-highlight">High</span></td>
+                        <td>Low/Moderate</td>
+                    </tr>
+                    <tr>
+                        <td>Insulin Sensitivity</td>
+                        <td>High</td>
+                        <td><span class="stat-highlight">Low (Resistant)</span></td>
+                        <td>High/Moderate</td>
+                    </tr>
+                    <tr>
+                        <td>Liver Fat (IHTG)</td>
+                        <td>< 5%</td>
+                        <td><span class="stat-highlight">> 5% (Lean NAFLD)</span></td>
+                        <td>Variable</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="screening">2. Screen & Assess (S): Identifying the Invisible Risk</h2>
+        <p>To identify the TOFI client, we must move beyond the scale. The <span class="highlight">S.T.A.B.L.E. Screen & Assess</span> protocol focuses on markers that reveal internal architecture. While DEXA scans and MRIs are the gold standard for measuring VAT, they are often inaccessible for routine coaching. Instead, we use a combination of anthropometrics and blood chemistry.</p>
+
+        <h3>Anthropometric Markers</h3>
+        <p>The <span class="highlight">Waist-to-Height Ratio (WHtR)</span> is a superior predictor of metabolic risk than BMI. A ratio <span class="stat-highlight">> 0.50</span> suggests excessive visceral fat, regardless of total body weight. For a TOFI client, a "lean" person with a height of 180cm but a waist circumference of 92cm has a WHtR of 0.51, placing them in the high-risk category.</p>
+
+        <h3>Blood Chemistry Red Flags</h3>
+        <p>In Module 1, we discussed the importance of the <span class="highlight">TG:HDL Ratio</span>. For the TOFI client, this is often the first "smoke" before the fire. A ratio <span class="stat-highlight">> 2.0</span> (in mg/dL) or <span class="stat-highlight">> 0.87</span> (in mmol/L) is a strong indicator of insulin resistance and the presence of small, dense LDL particles, even if the total cholesterol looks "normal." Additionally, elevations in <span class="highlight">ALT (Alanine Aminotransferase)</span>, even within the upper "normal" range (e.g., >25 U/L in men), can signal early-stage liver fat accumulation.</p>
+
+        <h2 id="liver">3. The Liver-First Logic: Lean NAFLD</h2>
+        <p>The core of the TOFI pathology usually resides in the liver. <span class="highlight">Non-Alcoholic Fatty Liver Disease (NAFLD)</span> in lean individuals is often driven by a failure of subcutaneous adipose tissue (SAT) to expand. Every individual has a "Personal Fat Threshold." When a TOFI client exceeds their limited ability to store fat safely under the skin, the excess lipids spill over into the liver and viscera.</p>
+
+        <p>Once the liver becomes "fatty," it becomes resistant to insulin's signal to stop producing glucose. This leads to elevated <span class="highlight">Fasting Blood Glucose</span>, even in individuals who exercise regularly. Furthermore, the fatty liver begins exporting triglycerides as VLDL, worsening the lipid profile and driving systemic inflammation. A 2022 meta-analysis found that lean NAFLD patients actually have a <span class="stat-highlight">higher mortality rate</span> than obese NAFLD patients, likely due to delayed diagnosis and a more aggressive inflammatory phenotype.</p>
+
+        <h2 id="nutrition">4. Transform Nutrition (T): The Fructose & Seed Oil Nexus</h2>
+        <p>For the TOFI client, the "Transform Nutrition" phase of the S.T.A.B.L.E. Method™ must be surgical. We aren't just looking at calories; we are looking at <span class="highlight">De Novo Lipogenesis (DNL)</span>—the process by which the liver turns nutrients into fat.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Fructose Trap</div>
+            <p class="principle-text">Unlike glucose, which can be used by every cell in the body, fructose is processed almost exclusively by the liver. In a TOFI client, high intakes of refined fructose (HFCS, agave, excessive fruit juices) act as a primary driver of liver fat. A 2023 study (n=120) demonstrated that reducing fructose intake for just 9 days decreased liver fat by <span class="stat-highlight">20%</span> without significant weight loss.</p>
+        </div>
+
+        <p>Furthermore, the consumption of <span class="highlight">Ultra-Processed Seed Oils</span> (high in Linoleic Acid) in the presence of high-glycemic carbohydrates creates a "metabolic storm." These oils are easily oxidized, leading to mitochondrial dysfunction in the hepatocytes (liver cells). This impairs the liver's ability to "burn" fat (beta-oxidation), effectively locking the fat inside the organ.</p>
+
+        <h2 id="movement">5. Activate Movement (A): Beyond "Chronic Cardio"</h2>
+        <p>Many TOFI clients are actually quite active. It is common to see marathon runners or cyclists with fatty livers. This is often due to the "Athlete's Paradox" gone wrong: they believe their high caloric expenditure justifies a high-sugar, ultra-processed diet. In these cases, <span class="highlight">Activate Movement</span> must shift focus.</p>
+
+        <ul>
+            <li><strong>The Resistance Imperative:</strong> Building muscle mass increases the "glucose sink." For a TOFI client, muscle quality is more important than aerobic capacity. Resistance training improves <span class="highlight">GLUT4 translocation</span>, allowing the body to clear glucose without relying solely on high insulin levels.</li>
+            <li><strong>Zone 2 Training:</strong> Low-intensity steady-state (LISS) exercise in "Zone 2" (60-70% Max HR) specifically targets mitochondrial flexibility and the ability to oxidize fatty acids.</li>
+            <li><strong>NEAT Optimization:</strong> TOFI clients often have high "planned exercise" but low <span class="highlight">Non-Exercise Activity Thermogenesis (NEAT)</span>. Sitting for 10 hours a day followed by a 1-hour run does not undo the metabolic damage of sedentary behavior.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Marathoner's Metabolic Crisis</p>
+                    <p class="subtitle">Applying the S.T.A.B.L.E. Method™ to Lean Insulin Resistance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Mark, 38, Amateur Marathon Runner</h4>
+                        <p>BMI: 21.2 | Waist: 36" | Height: 5'11" | Weight: 152 lbs</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Mark presented with "unexplained" fatigue, brain fog, and a Fasting Glucose of 108 mg/dL. He runs 30–40 miles per week and considers his diet "healthy" (high-carb, low-fat, lots of "energy" gels and pasta).</p>
+                
+                <p><strong>The 'Screen & Assess' (S) Findings:</strong></p>
+                <ul>
+                    <li><strong>TG:HDL Ratio:</strong> 3.8 (High risk).</li>
+                    <li><strong>Fasting Insulin:</strong> 18 μIU/mL (HOMA-IR: 4.8 - Significant Resistance).</li>
+                    <li><strong>ALT:</strong> 42 U/L (Elevated for his phenotype).</li>
+                    <li><strong>Fatty Liver Index (FLI):</strong> 72 (Scores >60 indicate high probability of NAFLD).</li>
+                </ul>
+
+                <p><strong>The Intervention:</strong></p>
+                <ul>
+                    <li><strong>Transform Nutrition (T):</strong> Eliminated running gels (fructose/maltodextrin). Switched to a "Protein-First" approach with <span class="highlight">30g protein/meal</span> to leverage the glucagon-insulin balance.</li>
+                    <li><strong>Activate Movement (A):</strong> Reduced running volume by 40%. Introduced 3 days of heavy compound lifting (Squats, Deadlifts).</li>
+                    <li><strong>Lifestyle Reset (L):</strong> Mark was a "night owl" runner. We moved his exercise to the morning to align with his cortisol rhythm and improved sleep hygiene.</li>
+                </ul>
+
+                <p><strong>Outcome (12 Weeks):</strong> Mark's weight remained stable (153 lbs), but his waist circumference dropped to 32". Fasting Insulin fell to 6 μIU/mL, and his ALT normalized to 19 U/L. His "marathon fatigue" vanished, and he set a personal best time despite "training less."</p>
+            </div>
+        </div>
+
+        <h2 id="case-study">6. The S.T.A.B.L.E. Strategy for TOFI Resolution</h2>
+        <p>Working with a TOFI client requires a psychological shift. They often feel they don't "need" to change because the scale isn't moving. As a coach, your role is to use the data to show them the internal reality. Use the following hierarchy of intervention:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">1. Liver De-Fatting (The Priority)</div>
+            <p class="principle-text">Aggressive reduction of liquid sugars and industrial seed oils. Increase <span class="highlight">Choline-rich foods</span> (eggs, liver) to support VLDL export from the liver.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">2. Muscle Hypertrophy</div>
+            <p class="principle-text">The TOFI client is often "Skinny Fat." They need more "metabolic real estate" (muscle) to store glycogen, reducing the burden on the liver.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">3. Stress Management</div>
+            <p class="principle-text">Chronic cortisol elevation drives visceral fat deposition. In lean individuals, stress-induced gluconeogenesis is a major contributor to high fasting sugars.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on the TOFI phenotype</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is a TOFI client at higher risk for cardiovascular mortality than a "Metabolically Healthy Obese" individual?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">TOFI clients often have higher levels of Visceral Adipose Tissue (VAT) and organ fat, which are more inflammatory and metabolically active than the subcutaneous fat found in MHO individuals. Additionally, they are often diagnosed much later due to their "normal" external appearance.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Which blood marker ratio is most indicative of insulin resistance in a lean individual with a normal HbA1c?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The TG:HDL ratio. A ratio > 2.0 (mg/dL) is a powerful indicator of insulin resistance and the presence of atherogenic small, dense LDL, even when other markers appear normal.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>BMI is Deceptive:</strong> 15-20% of normal-weight individuals are metabolically unhealthy (TOFI).</li>
+                <li><strong>VAT is the Enemy:</strong> Visceral fat and liver fat drive insulin resistance, not just total body fat percentage.</li>
+                <li><strong>The S.T.A.B.L.E. Screen:</strong> Use Waist-to-Height ratio (>0.5) and TG:HDL ratio (>2.0) to identify TOFI clients.</li>
+                <li><strong>Nutrition Focus:</strong> Prioritize the elimination of refined fructose and seed oils to "de-fat" the liver.</li>
+                <li><strong>Movement Shift:</strong> Prioritize resistance training and Zone 2 over high-intensity "chronic cardio."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bell, J. D., et al. (2021). "The TOFI Phenotype: Visceral Adiposity in Normal-Weight Individuals." <i>Nature Reviews Endocrinology.</i></li>
+                <li>Longato, E., et al. (2022). "Lean NAFLD: A Distinct Entity with Higher Mortality." <i>Journal of Hepatology.</i></li>
+                <li>Lustig, R. H., et al. (2023). "Isocaloric Fructose Restriction and Liver Fat in Children." <i>Gastroenterology.</i></li>
+                <li>Stefan, N., et al. (2020). "Metabolically Healthy and Unhealthy Obesity." <i>The Lancet Diabetes & Endocrinology.</i></li>
+                <li>Thomas, E. L., et al. (2012). "The 'Thrifty' Phenotype and the TOFI: A Study of Body Fat Distribution." <i>International Journal of Obesity.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The S.T.A.B.L.E. Method™ is a trademarked protocol.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

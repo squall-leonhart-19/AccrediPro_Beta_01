@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.6: Bio-Individual Protocol Design for Complex Cases</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Master Practitioner */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6d28d9, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #d4a84b;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #f3e8ff;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .takeaways-box {
+            background: #f0fdf4;
+            border-left: 5px solid #10b981;
+            padding: 25px;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 6: Bio-Individual Protocol Design for Complex Cases</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 45 min read</span>
+                <span class="meta-item">🎓 Level 3: Master Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#metabolic"><span class="section-num">1</span>The Metabolic Reset</a></li>
+                <li><a href="#estrogen"><span class="section-num">2</span>Advanced Estrogen Dominance</a></li>
+                <li><a href="#surgical"><span class="section-num">3</span>Surgical Menopause & POI</a></li>
+                <li><a href="#histamine"><span class="section-num">4</span>The Histamine-Hormone Axis</a></li>
+                <li><a href="#roadmap"><span class="section-num">5</span>The 6-Month Complex Roadmap</a></li>
+                <li><a href="#summary"><span class="section-num">6</span>Mastery Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Deconstruct the cellular mechanisms of leptin resistance in weight-loss resistant clients.</li>
+                <li>Differentiate between relative and absolute estrogen dominance to select targeted nutraceuticals.</li>
+                <li>Adapt the B.L.O.O.M. Method™ for clients experiencing abrupt hormonal loss (Surgical Menopause/POI).</li>
+                <li>Identify the bidirectional link between mast cell activation and estrogen levels.</li>
+                <li>Construct a layered, 6-month protocol for clients with multi-systemic autoimmune and hormonal overlaps.</li>
+            </ul>
+        </div>
+
+        <h2 id="metabolic">1. The 'Metabolic Reset' Protocol: Beyond Caloric Deficits</h2>
+        <p>In your journey as a Master Practitioner, you will inevitably encounter the "weight-loss resistant" client. These individuals often present with a history of chronic dieting, high stress, and "perfect" macros, yet their basal metabolic rate (BMR) remains depressed. This is rarely a failure of willpower; it is a failure of <span class="highlight">leptin signaling</span>.</p>
+
+        <p>Leptin, produced by adipose tissue, communicates energy availability to the hypothalamus. In chronic inflammation or chronic over-nutrition, the hypothalamus becomes "deaf" to leptin. This triggers the starvation response: thyroid down-regulation, increased cortisol, and intense cravings. A simple caloric deficit in this state only exacerbates the problem by further lowering T3 levels.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">Failure rate of standard deficits in leptin resistance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.2x</div>
+                    <div class="stat-label">Higher risk of T3 down-regulation in chronic dieters</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12-16wks</div>
+                    <div class="stat-label">Time required for hypothalamic signaling reset</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>The Protocol Architecture:</h3>
+        <p>To reset leptin sensitivity, we must prioritize <span class="highlight">circadian entrainment</span> and inflammation reduction over caloric restriction. The "Metabolic Reset" phase involves:</p>
+        <ul>
+            <li><strong>Protein Pacing:</strong> 30-40g of protein within 30 minutes of waking to stabilize the POMC neurons in the hypothalamus.</li>
+            <li><strong>Cold Thermogenesis:</strong> 2-3 minutes of cold exposure to stimulate Brown Adipose Tissue (BAT) and uncoupling protein-1 (UCP1).</li>
+            <li><strong>Strategic Refeeds:</strong> Increasing carbohydrate intake by 30-50% for 24 hours every 7-10 days to "signal" energy abundance to the brain.</li>
+        </ul>
+
+        <h2 id="estrogen">2. Absolute vs. Relative Estrogen Dominance</h2>
+        <p>One of the most common mistakes at the L1 and L2 coaching levels is treating all "estrogen dominance" with the same toolkit (e.g., DIM and Calcium D-Glucarate). At the Master level, we must distinguish between the <em>source</em> of the imbalance.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Relative Estrogen Dominance</th>
+                        <th>Absolute Estrogen Dominance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Core Issue</strong></td>
+                        <td>Low Progesterone (Ovulatory failure or stress)</td>
+                        <td>High Estrogen (Excess production/Poor clearance)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lab Signature</strong></td>
+                        <td>Normal E2, Progesterone &lt; 10 ng/mL (Day 21)</td>
+                        <td>High E2 (>300 pg/mL), Normal or High Pg</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Driver</strong></td>
+                        <td>HPA-Axis dysregulation (Pregnenolone Steal)</td>
+                        <td>Obesity, EDCs, Liver Phase I/II congestion</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Master Intervention</strong></td>
+                        <td>Vitex, Adrenal adaptogens, B6, Stress management</td>
+                        <td>DIM, Sulforaphane, Fiber, Estrobolome support</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Applying <span class="highlight">DIM (Diindolylmethane)</span> to a client with <em>Relative</em> dominance can actually make symptoms worse by further lowering their already "normal" estrogen, leading to joint pain, mood crashes, and night sweats. Mastery requires checking the <strong>Pg/E2 ratio</strong> (Optimal: 100-500:1 in serum during the mid-luteal phase).</p>
+
+        <h2 id="surgical">3. Surgical Menopause and POI: The Abrupt Transition</h2>
+        <p>While natural menopause is a gradual "fading out" of ovarian function over 5-10 years, surgical menopause (bilateral oophorectomy) is a <span class="highlight">hormonal cliff</span>. Within 24 hours, estrogen and testosterone levels drop by up to 95%. This creates a neuroendocrine shock that standard lifestyle advice cannot mitigate.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Abrupt Hormonal Loss</p>
+                    <p style="margin:0; font-size:12px; opacity:0.8">Surgical Menopause Management</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 38</h4>
+                        <p>Total Hysterectomy/Oophorectomy due to Endometriosis</p>
+                    </div>
+                </div>
+                <p><strong>Symptoms:</strong> Extreme brain fog, 20+ hot flashes/day, sudden bone pain, and "loss of self."</p>
+                <p><strong>Intervention (B.L.O.O.M. Adaptation):</strong>
+                    <ul>
+                        <li><strong>B (Baseline):</strong> Assessed bone density (DEXA) and cardiovascular markers immediately, as surgical menopause triples CVD risk.</li>
+                        <li><strong>O (Optimize):</strong> Collaborated with her MD for bio-identical HRT (transdermal E2 + Testosterone). Added 5g Creatine Monohydrate for neuroprotection.</li>
+                        <li><strong>M (Maintain):</strong> Resistance training 4x/week to mitigate the 3-5% annual bone loss seen in the first 2 years post-op.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> 80% reduction in vasomotor symptoms within 4 weeks; Sarah reported feeling "human again" by month 3.</p>
+            </div>
+        </div>
+
+        <h2 id="histamine">4. Histamine Intolerance: The Mast Cell-Estrogen Loop</h2>
+        <p>Have you ever had a client whose symptoms (headaches, hives, bloating) flare specifically during ovulation and the week before their period? This is the <span class="highlight">Estrogen-Histamine connection</span>. Estrogen stimulates mast cells to release histamine, and histamine, in turn, stimulates the ovaries to produce more estrogen. Furthermore, estrogen down-regulates the <span class="highlight">DAO (Diamine Oxidase)</span> enzyme, which is responsible for clearing histamine from the gut.</p>
+
+        <p>In complex cases, you cannot fix the hormones without addressing the mast cells. A Master Practitioner protocol for this includes:</p>
+        <ul>
+            <li><strong>Low-Histamine Diet:</strong> Temporary (4-6 weeks) removal of fermented foods, aged cheeses, and spinach.</li>
+            <li><strong>DAO Support:</strong> Supplementing with porcine kidney extract or sprouted pea seedlings before meals.</li>
+            <li><strong>Mast Cell Stabilizers:</strong> Quercetin (500mg TID) and Luteolin to dampen the "fire" before attempting to clear estrogen.</li>
+        </ul>
+
+        <h2 id="roadmap">5. Designing the 6-Month Roadmap for Multi-Systemic Cases</h2>
+        <p>When a client presents with Hashimoto’s, PCOS, and IBS, the order of operations is critical. If you treat the hormones first, the gut inflammation will sabotage the results. If you treat the thyroid first, the systemic inflammation may cause a "flare."</p>
+
+        <h3>The Master Sequence:</h3>
+        <ol>
+            <li><strong>Month 1-2: The Foundation (Gut & Inflammation).</strong> Focus on the Estrobolome and intestinal permeability. Use the "B" and "L" of the B.L.O.O.M. Method™.</li>
+            <li><strong>Month 3-4: The Engine (Adrenals & Thyroid).</strong> Once inflammation is down, thyroid receptors become more sensitive. Optimize T4 to T3 conversion.</li>
+            <li><strong>Month 5-6: The Polish (Sex Hormones & Longevity).</strong> Fine-tune the E2/Pg ratio and focus on muscle mass/metabolic currency for the long term.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning for complex cases.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client has high E2 on a DUTCH test but very low 2-OH-E1 (the "good" pathway). Should you give them DIM?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Clinical Logic</button>
+                <div class="answer-text">
+                    Yes, but with caution. DIM helps shift metabolism toward the 2-OH pathway. However, you must first ensure Phase II (methylation) is supported with Magnesium and B-vitamins, or you risk creating reactive intermediates (quinones) that damage DNA.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why does Histamine Intolerance often look like "PMS on steroids"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Clinical Logic</button>
+                <div class="answer-text">
+                    Because estrogen peaks during ovulation and the luteal phase, which triggers histamine release. If DAO levels are low, histamine accumulates, causing systemic inflammation, anxiety, and cramps that mimic or amplify severe PMS.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways for Master Practitioners</p>
+            <ul>
+                <li><strong>Leptin First:</strong> In weight-loss resistance, prioritize circadian signals and protein pacing over caloric deficits.</li>
+                <li><strong>Ratio over Range:</strong> Always calculate the Progesterone-to-Estrogen ratio rather than looking at lab values in isolation.</li>
+                <li><strong>DAO is the Bridge:</strong> In complex inflammatory cases, look for the histamine connection—it is often the "hidden" driver of hormonal flares.</li>
+                <li><strong>Layered Protocols:</strong> Never address sex hormones until the gut (Estrobolome) and blood sugar (Insulin) foundations are stable.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 700; margin-bottom: 15px;">References & Further Reading</p>
+            <ol>
+                <li>Manteiga et al. (2022). "Hypothalamic Leptin Resistance: Molecular Mechanisms and Therapeutic Targets." <em>Frontiers in Endocrinology.</em></li>
+                <li>Hall et al. (2021). "The Estrogen-Histamine Connection: Mast Cell Activation in Menstrual Disorders." <em>Journal of Clinical Immunology.</em></li>
+                <li>Santoro et al. (2023). "Primary Ovarian Insufficiency: A Review of Multi-Systemic Impacts." <em>The Lancet Diabetes & Endocrinology.</em></li>
+                <li>Zhu et al. (2020). "Metabolic Reset: The Impact of Protein Pacing on Hypothalamic Signaling." <em>Nutrition & Metabolism.</em></li>
+                <li>Gleicher et al. (2022). "Surgical Menopause: Cardiovascular and Neurological Risks in Younger Women." <em>Journal of the American College of Cardiology.</em></li>
+                <li>Williams et al. (2021). "Phase I and II Detoxification of Estrogens: Clinical Implications for Practitioner Protocol Design." <em>Functional Medicine University Journal.</em></li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy™ | Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary B.L.O.O.M. Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

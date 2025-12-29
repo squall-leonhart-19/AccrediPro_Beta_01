@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.4: Advanced Meal Planning & Batch Cooking Systems</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Plant-Based */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #10B981;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #10B981;
+            margin: 25px 0;
+            font-weight: 500;
+            color: #065f46;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: P: Prepare & Plan</p>
+            <h1 class="lesson-title">Lesson 1.4: Advanced Meal Planning & Batch Cooking Systems</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Strategic Shift</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Component vs. Recipe Prep</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The P.L.A.N.T. Plate™ Method</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Prep Power Hour</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Storage & Reheating Science</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Digital Systems & Scaling</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between component cooking and recipe-based prep to customize client strategies.</li>
+                <li>Master the 'Prep Power Hour' framework for maximum efficiency through parallel processing.</li>
+                <li>Apply the P.L.A.N.T. Plate™ Method to ensure macronutrient and micronutrient density.</li>
+                <li>Implement safe food storage and reheating protocols that preserve nutrient bioavailability.</li>
+                <li>Utilize digital tools to automate grocery lists and meal scheduling for long-term adherence.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Strategic Shift: Preparation as a Biological Safeguard</h2>
+        <p>In Lesson 1.1, we explored the psychology of the plant-based transition, noting that decision fatigue is a primary driver of dietary relapse. Advanced meal planning is not merely about "saving time"; it is a <span class="highlight">biological safeguard</span>. When a client is hungry and lacks a plan, the brain defaults to high-calorie, low-nutrient convenience foods due to the survival-based "optimal foraging" mechanism.</p>
+
+        <div class="stat-highlight">
+            A 2017 study published in the <i>International Journal of Behavioral Nutrition and Physical Activity</i> (n=40,554) found that individuals who planned their meals were 13% less likely to be overweight and had a 21% lower risk of obesity compared to those who did not.
+        </div>
+
+        <p>As a coach, your goal is to move the client from "What's for dinner?" (reactive) to "Which components am I combining?" (proactive). This shift reduces the cognitive load of plant-based eating, making it the path of least resistance. We build upon the kitchen optimization strategies from Lesson 1.2 and the pantry foundations from Lesson 1.3 to execute a seamless, sustainable system.</p>
+
+        <h2 id="section2">2. Component Cooking vs. Recipe-Based Prep</h2>
+        <p>One size does not fit all in meal planning. As a practitioner, you must assess your client’s lifestyle to determine which of the two primary systems—<span class="highlight">Component Cooking</span> or <span class="highlight">Recipe-Based Prep</span>—will yield the highest adherence.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Component Cooking</th>
+                        <th>Recipe-Based Prep</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Definition</strong></td>
+                        <td>Prepping individual building blocks (grains, proteins, sauces).</td>
+                        <td>Cooking full meals (stews, casseroles, pre-portioned bowls).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flexibility</strong></td>
+                        <td>High: Mix and match based on daily cravings.</td>
+                        <td>Low: Meal is fixed; less variety mid-week.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time Investment</strong></td>
+                        <td>Moderate: 60-90 minutes of active prep.</td>
+                        <td>High: 2-3 hours of active cooking.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td>Families, creative eaters, "bored" palates.</td>
+                        <td>Busy professionals, calorie counters, beginners.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nutrient Retention</strong></td>
+                        <td>Higher (components are often fresher).</td>
+                        <td>Moderate (reheating full meals can degrade texture).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Component cooking is the cornerstone of <strong>The P.L.A.N.T. Nutrition Method™</strong>. By prepping a "trio of grains," a "duo of legumes," and a "rainbow of roasted vegetables," clients can create hundreds of permutations, preventing the "boredom wall" that often leads to plant-based abandonment.</p>
+
+        <h2 id="section3">3. The P.L.A.N.T. Plate™ Method</h2>
+        <p>Planning requires a visual framework to ensure nutritional adequacy without obsessive tracking. The P.L.A.N.T. Plate™ serves as a mental shortcut for every meal. This method ensures that even when a client is "assembling" a meal from components, they are meeting critical nutrient targets.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The P.L.A.N.T. Plate™ Composition</div>
+            <p class="principle-text">
+                <ul>
+                    <li><strong>50% Non-Starchy Vegetables:</strong> Greens, cruciferous, peppers, mushrooms (Micronutrient focus).</li>
+                    <li><strong>25% Plant-Based Protein:</strong> Tempeh, lentils, beans, edamame (Amino acid focus).</li>
+                    <li><strong>25% Whole Grains/Starchy Veg:</strong> Quinoa, sweet potato, farro (Energy/Fiber focus).</li>
+                    <li><strong>The "Flavor Cap":</strong> 1-2 tbsp of healthy fats (avocado, nuts, seeds) + fermented foods (kimchi, kraut).</li>
+                </ul>
+            </p>
+        </div>
+
+        <p>This visual ratio naturally promotes a high <span class="highlight">nutrient-to-calorie ratio</span>. In upcoming modules, we will dive deeper into the specific biochemistry of these categories (e.g., Lesson 2.1 on Protein), but for now, the planning system focuses on the physical presence of these categories in the fridge.</p>
+
+        <h2 id="section4">4. The 'Prep Power Hour' Framework</h2>
+        <p>Efficiency is the enemy of excuses. The 'Prep Power Hour' uses <span class="highlight">parallel processing</span> to maximize output. Instead of cooking one dish at a time, we utilize all kitchen "real estate" simultaneously: the oven, the stovetop, and the countertop.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Time-Poor Executive</p>
+                    <p class="subtitle">Applying Parallel Processing for Marcus (Age 42)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 42</h4>
+                        <p>High-stress role, 60-hour work weeks, history of ordering takeout 5 nights/week.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of complex recipes, we implemented a 60-minute Sunday "Component Blitz."</p>
+                <ul>
+                    <li><strong>Minutes 0-10:</strong> Start 2 grains (Instant Pot quinoa, stovetop brown rice). Chop root vegetables.</li>
+                    <li><strong>Minutes 10-20:</strong> Root vegetables into the oven. Drain/rinse 3 types of canned beans.</li>
+                    <li><strong>Minutes 20-40:</strong> Blend two "Master Sauces" (Lemon-Tahini and Spicy Peanut). Wash/spin greens.</li>
+                    <li><strong>Minutes 40-60:</strong> Portion grains and beans. Clean as you go.</li>
+                </ul>
+                <p><strong>Outcome:</strong> Marcus reduced takeout to 0 nights/week. His food costs dropped by 45%, and he reported "significantly higher" afternoon energy levels due to the consistent fiber intake.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Storage Science & Micronutrient Retention</h2>
+        <p>A common concern in batch cooking is the loss of nutrients. While some degradation occurs, the benefit of eating a home-prepped plant-based meal far outweighs the nutrient loss of a processed alternative. However, we can optimize retention through science-backed storage.</p>
+
+        <p><strong>USDA Guidelines & Best Practices:</strong></p>
+        <ul>
+            <li><strong>Cooked Grains & Legumes:</strong> 3–4 days in the refrigerator; up to 6 months in the freezer.</li>
+            <li><strong>Roasted Vegetables:</strong> 3–5 days. Note that cruciferous vegetables (broccoli/kale) may develop a stronger sulfur smell over time.</li>
+            <li><strong>Chopped Raw Veg:</strong> 2–3 days (vitamin C degrades quickly once the surface area is exposed to oxygen).</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Critical Safety Note: Bacillus Cereus</p>
+            <p>Cooked rice is a high-risk food for <i>Bacillus cereus</i>. It must be cooled quickly and refrigerated within 1 hour of cooking. Never leave rice at room temperature for extended periods, as spores can survive the initial cooking process and germinate.</p>
+        </div>
+
+        <p><strong>Reheating for Nutrient Preservation:</strong> To maintain <span class="highlight">bioavailability</span>, advise clients to avoid "nuking" vegetables until they are mushy. A quick steam or a light sauté is superior to prolonged microwaving for preserving water-soluble vitamins (C and B-complex).</p>
+
+        <h2 id="section6">6. Digital Systems & Scaling</h2>
+        <p>In 2024, the "pen and paper" grocery list is an inefficiency. As a professional coach, you should guide clients toward digital ecosystems that automate the tedious parts of planning. This allows them to focus on the <i>habit</i> rather than the <i>logistics</i>.</p>
+
+        <p><strong>Recommended Tech Stack:</strong></p>
+        <ul>
+            <li><strong>Mealime:</strong> Excellent for recipe-based prep with automated, store-aisle-organized grocery lists.</li>
+            <li><strong>Paprika:</strong> The "Gold Standard" for advanced users. It scrapes recipes from any site, scales servings, and manages pantry inventory.</li>
+            <li><strong>Cronometer:</strong> For clients needing specific micronutrient tracking (e.g., ensuring B12 or Iron targets are met during the transition).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of advanced planning systems.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client complains they are "bored" of eating the same three meals they prepped on Sunday. Which system should you pivot them toward?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Component Cooking. By prepping individual building blocks (grains, proteins, veggies) instead of fixed recipes, the client can vary their sauces and combinations daily, significantly increasing dietary variety and adherence.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary safety concern regarding the storage of cooked rice in a meal-prep context?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Bacillus cereus contamination. Because rice can contain heat-resistant spores, it must be cooled and refrigerated quickly (within 1 hour) to prevent bacterial growth and potential food poisoning.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Preparation is Protection:</strong> Meal planning is a biological safeguard against decision fatigue and the "optimal foraging" default.</li>
+                <li><strong>Flexibility Wins:</strong> Use Component Cooking for clients who value variety; use Recipe-Based Prep for those who value simplicity and portion control.</li>
+                <li><strong>The 60-Minute Standard:</strong> Teach the 'Prep Power Hour' to show clients that a week of nutrition can be secured in minimal time.</li>
+                <li><strong>P.L.A.N.T. Plate Mastery:</strong> Use the 50/25/25 ratio to ensure micronutrient density and satiety without complex calculations.</li>
+                <li><strong>Safety First:</strong> Follow USDA guidelines for storage (3-4 days for most cooked items) and emphasize rapid cooling for grains.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Ducrot et al. (2017). "Meal planning is associated with food variety, diet quality and body weight status in a large sample of French adults." <i>International Journal of Behavioral Nutrition and Physical Activity</i>.</li>
+                <li>USDA Food Safety and Inspection Service (2023). "Leftovers and Food Safety." <i>USDA Clinical Guidelines</i>.</li>
+                <li>Hiza et al. (2013). "Diet Quality of Americans Differs by Age, Sex, Race/Ethnicity, and Income." <i>Journal of the Academy of Nutrition and Dietetics</i>.</li>
+                <li>Rickman et al. (2007). "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds." <i>Journal of the Science of Food and Agriculture</i>.</li>
+                <li>Greger, M. (2020). "How Not to Diet: The Groundbreaking Science of Healthy, Permanent Weight Loss." <i>Flatiron Books</i>.</li>
+                <li>Academy of Nutrition and Dietetics (2021). "Practice Paper: Promoting and Supporting a Plant-Based Diet." <i>J Acad Nutr Diet</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Plant-Based Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The P.L.A.N.T. Nutrition Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

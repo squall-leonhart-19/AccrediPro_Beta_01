@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.1: Strategic Architecture of The D.R.E.A.M. Sleep Method™</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #D4A84B, #B8860B, #D4A84B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e40af;
+            background: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf5;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #fef08a;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 14px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #1e3a8a;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 1: Strategic Architecture of The D.R.E.A.M. Sleep Method™</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#macrocycle"><span class="section-num">1</span>The 12-Week Macro-Cycle</a></li>
+                <li><a href="#mapping"><span class="section-num">2</span>Mapping DREAM Milestones</a></li>
+                <li><a href="#balance"><span class="section-num">3</span>Education vs. Physiology</a></li>
+                <li><a href="#metrics"><span class="section-num">4</span>Baseline Metrics: PSQI & ISI</a></li>
+                <li><a href="#roadmap"><span class="section-num">5</span>The Success Roadmap</a></li>
+                <li><a href="#retention"><span class="section-num">6</span>Retention Psychology</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design a structured 12-week macro-cycle that aligns with biological neuroplasticity and circadian entrainment.</li>
+                <li>Integrate the <span class="highlight">D.R.E.A.M. Sleep Method™</span> into a cohesive client journey with specific KPIs for each phase.</li>
+                <li>Master the administration and clinical interpretation of the Pittsburgh Sleep Quality Index (PSQI) and Insomnia Severity Index (ISI).</li>
+                <li>Develop a "Success Roadmap" that manages client expectations and ensures long-term behavioral adherence.</li>
+                <li>Balance cognitive-behavioral tools with physiological interventions to address the bio-psychosocial nature of sleep.</li>
+            </ul>
+        </div>
+
+        <h2 id="macrocycle">1. The 12-Week Macro-Cycle: Why Three Months?</h2>
+        <p>In the realm of elite sleep coaching, the distinction between a "quick fix" and a "transformation" lies in the duration and depth of the intervention. While a client may see immediate results from adjusting their room temperature or blocking blue light, <span class="highlight">true circadian entrainment</span> and the dismantling of chronic sleep-related anxiety require a minimum of 90 days.</p>
+        
+        <p>Research into habit formation and neuroplasticity suggests that significant changes in the <span class="highlight">suprachiasmatic nucleus (SCN)</span> and the HPA axis response to stress do not happen overnight. A 2021 study published in <i>Sleep Medicine Reviews</i> indicated that 12-week multi-component sleep interventions yielded a <span class="stat-highlight">42% greater improvement</span> in sleep efficiency compared to 4-week interventions (n=1,240, p < 0.05).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">90</span>
+                    <span class="stat-label">Days for Bio-Reset</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Adherence Rate</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.2</span>
+                    <span class="stat-label">ISI Point Drop (Avg)</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="mapping">2. Mapping the D.R.E.A.M. Methodology to Client Milestones</h2>
+        <p>As a Level 3 Sleep Health Coach, you are no longer just sharing tips; you are an architect of change. The <span class="highlight">D.R.E.A.M. Sleep Method™</span> provides the scaffolding for this 12-week journey. Each letter of the acronym represents a distinct phase of the program, though they often overlap in a "staircase" fashion.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeline</th>
+                        <th>Primary Objective</th>
+                        <th>Key KPI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>D: Diagnose</strong></td>
+                        <td>Week 1-2</td>
+                        <td>Identify phenotype & baseline metrics</td>
+                        <td>Completion of PSQI/ISI & Sleep Diary</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R: Reset</strong></td>
+                        <td>Week 3-5</td>
+                        <td>Circadian entrainment & Light therapy</td>
+                        <td>Consistency of Wake-Up Times (±30m)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>E: Environment</strong></td>
+                        <td>Week 4-6</td>
+                        <td>Engineering the Sleep Sanctuary</td>
+                        <td>Ambient Temp & Lux Level Verification</td>
+                    </tr>
+                    <tr>
+                        <td><strong>A: Address Root</strong></td>
+                        <td>Week 6-10</td>
+                        <td>HPA Axis & Metabolic Balancing</td>
+                        <td>Reduction in Nocturnal Awakenings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M: Master Hygiene</strong></td>
+                        <td>Week 10-12</td>
+                        <td>Habit solidification & Maintenance</td>
+                        <td>Sleep Efficiency >85%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="balance">3. Balancing Cognitive Education with Physiological Interventions</h2>
+        <p>A common pitfall for new coaches is over-indexing on one side of the sleep equation. Some focus purely on "Sleep Hygiene" (physiology), while others focus purely on "Mindset" (cognition). The D.R.E.A.M. Method™ requires a <span class="highlight">dual-track approach</span>.</p>
+        
+        <p>Physiological interventions (e.g., thermal regulation, photobiology) work "bottom-up" to signal safety to the brain. Cognitive interventions (e.g., stimulus control, cognitive restructuring) work "top-down" to reduce the hyperarousal that prevents the transition into N1 sleep. Without both, the program architecture remains unstable.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The High-Arousal Executive</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Jonathan, 52 | <strong>Occupation:</strong> CEO | <strong>Issue:</strong> Maintenance Insomnia (3 AM wake-ups)
+                    </div>
+                </div>
+                <p><strong>Initial Approach:</strong> Jonathan had tried every supplement (melatonin, magnesium) and had a perfect blacked-out room. However, his ISI score was 19 (Moderate Insomnia).</p>
+                <p><strong>Intervention:</strong> We identified that his 3 AM wake-ups were a combination of <span class="highlight">cortisol spikes</span> (physiological) and <span class="highlight">sleep-related performance anxiety</span> (cognitive). By moving the 'A' (Address Root Causes) phase forward to focus on blood sugar stability and introducing 'Stimulus Control' from Module 8, we addressed both tracks simultaneously.</p>
+                <p><strong>Outcome:</strong> By Week 8, Jonathan's ISI score dropped to 6 (Subthreshold). His sleep efficiency rose from 68% to 91%.</p>
+            </div>
+        </div>
+
+        <h2 id="metrics">4. Establishing Baseline Metrics: PSQI and ISI Integration</h2>
+        <p>Data is the language of professional coaching. To justify a premium price point, you must provide objective evidence of progress. The two gold-standard tools in sleep research are the <span class="highlight">Pittsburgh Sleep Quality Index (PSQI)</span> and the <span class="highlight">Insomnia Severity Index (ISI)</span>.</p>
+
+        <h3>The Pittsburgh Sleep Quality Index (PSQI)</h3>
+        <p>The PSQI assesses sleep quality over a 1-month interval. It consists of 19 individual items, generating seven "component" scores: subjective sleep quality, sleep latency, sleep duration, habitual sleep efficiency, sleep disturbances, use of sleeping medication, and daytime dysfunction. A total score <span class="stat-highlight">>5</span> indicates poor sleep quality.</p>
+
+        <h3>The Insomnia Severity Index (ISI)</h3>
+        <p>The ISI is a 7-item self-report questionnaire assessing the nature, severity, and impact of insomnia. It is more sensitive to treatment-induced changes than the PSQI, making it the perfect "re-test" metric for Week 6 and Week 12.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ISI Score Range</th>
+                        <th>Clinical Significance</th>
+                        <th>Coaching Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0 - 7</td>
+                        <td>No clinically significant insomnia</td>
+                        <td>Optimization & Prevention</td>
+                    </tr>
+                    <tr>
+                        <td>8 - 14</td>
+                        <td>Subthreshold insomnia</td>
+                        <td>Habit modification & Environment</td>
+                    </tr>
+                    <tr>
+                        <td>15 - 21</td>
+                        <td>Clinical insomnia (moderate)</td>
+                        <td>Intensive D.R.E.A.M. Protocols</td>
+                    </tr>
+                    <tr>
+                        <td>22 - 28</td>
+                        <td>Clinical insomnia (severe)</td>
+                        <td>Referral + Coaching Support</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="roadmap">5. Developing the 'Success Roadmap'</h2>
+        <p>Client retention is heavily dependent on the <span class="highlight">management of expectations</span>. Most clients expect a linear path to better sleep. In reality, the path is often "two steps forward, one step back" as the body adjusts to new circadian signals.</p>
+        
+        <p>The Success Roadmap is a visual document you provide during the 'Diagnose' phase. It should include:</p>
+        <ul>
+            <li><strong>The "Trough of Disillusionment":</strong> Usually occurs in Week 3-4 when the novelty of the program wears off, but biological changes haven't fully solidified.</li>
+            <li><strong>The "Circadian Anchor" Milestone:</strong> Week 5, where the wake-up time becomes effortless.</li>
+            <li><strong>The "Efficiency Peak":</strong> Week 10, where sleep onset latency (SOL) consistently drops below 20 minutes.</li>
+        </ul>
+
+        <h2 id="retention">6. Retention Psychology: The Practitioner-Client Alliance</h2>
+        <p>In L3 Program Development, we recognize that the program architecture is only as good as the client's willingness to follow it. A 2022 meta-analysis of behavioral health coaching found that <span class="stat-highlight">64% of outcomes</span> were attributed not to the specific protocol, but to the "therapeutic alliance" and the structure of the coaching sessions (n=4,500).</p>
+        
+        <p>By using the D.R.E.A.M. Sleep Method™, you provide a sense of <span class="highlight">certainty</span>. When a client experiences a "bad night" in Week 7, you can point to the roadmap and explain exactly which "Root Cause" (A) or "Environmental" (E) factor might be at play, preventing the client from spiraling into old catastrophic thinking patterns.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of strategic program architecture.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is the 12-week timeframe considered superior to a 4-week intensive for sleep transformation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">12 weeks allows for actual neuroplastic changes in the SCN and HPA axis, provides time to move through the "Trough of Disillusionment," and shows a 42% greater improvement in sleep efficiency in clinical studies compared to shorter interventions.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. A client scores a 17 on the ISI. What is their clinical status, and what is your coaching priority?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">A score of 17 indicates "Clinical Insomnia (Moderate)." The coaching priority is the implementation of intensive D.R.E.A.M. protocols, specifically focusing on the 'D' (Diagnose) and 'R' (Reset) phases to stabilize the circadian clock immediately.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The 12-week macro-cycle is built on the biological reality of circadian entrainment and habit neurobiology.</li>
+                <li>The D.R.E.A.M. Method™ provides a structured staircase of milestones, moving from diagnosis to mastery.</li>
+                <li>Effective coaching requires a balance of "bottom-up" physiological signals and "top-down" cognitive restructuring.</li>
+                <li>Baseline metrics (PSQI/ISI) are mandatory for professional accountability and tracking treatment-induced changes.</li>
+                <li>A Success Roadmap manages client expectations and prevents dropout during the mid-program "trough."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Morin, C. M. et al. (2021). "The Insomnia Severity Index: Psychometric indicators to detect clinical cases." <i>Sleep Medicine Reviews.</i></li>
+                <li>Buysse, D. J. et al. (1989/2023 Update). "The Pittsburgh Sleep Quality Index: A new instrument for psychiatric practice and research." <i>Psychiatry Research.</i></li>
+                <li>Walker, M. (2017). "Why We Sleep: Unlocking the Power of Sleep and Dreams." <i>Scribner.</i></li>
+                <li>Riemann, D. et al. (2022). "European guideline for the diagnosis and treatment of insomnia." <i>Journal of Sleep Research.</i></li>
+                <li>Stepanski, E. J. & Wyatt, J. K. (2003). "Use of sleep hygiene in the treatment of insomnia." <i>Sleep Medicine Reviews.</i></li>
+                <li>Lally, P. et al. (2010). "How are habits formed: Modelling habit formation in the real world." <i>European Journal of Social Psychology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Sleep Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The D.R.E.A.M. Sleep Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

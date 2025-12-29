@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.3: TDEE and the Power of NEAT</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Metabolism */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* References & Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: T: Test Metabolism</p>
+            <h1 class="lesson-title">Lesson 1.3: TDEE and the Power of NEAT</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 3 of 4</span>
+                <span class="meta-item">🔬 Evidence-Based</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The TDEE Architecture</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The NEAT Variable</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Sedentary Behavior & Metabolism</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Compensation Effect</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Intermittent Movement Strategy</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the calculation of Total Daily Energy Expenditure (TDEE) using Physical Activity Levels (PAL).</li>
+                <li>Analyze the physiological impact of Non-Exercise Activity Thermogenesis (NEAT) on metabolic flexibility.</li>
+                <li>Identify the "Sedentary Trap" and its effect on Lipoprotein Lipase (LPL) activity.</li>
+                <li>Design "Intermittent Movement" protocols to bypass metabolic adaptation during caloric restriction.</li>
+                <li>Quantify the variance in NEAT across different occupations and lifestyles.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The TDEE Architecture: Beyond Resting Metabolism</h2>
+        <p>In the previous lesson, we established that <span class="highlight">Resting Metabolic Rate (RMR)</span> constitutes the largest portion of daily energy expenditure for most individuals (60-75%). However, RMR is relatively static. To achieve sustainable weight loss within the <strong>T.R.A.N.S.F.O.R.M. Methodology™</strong>, we must master the dynamic components of the <strong>Total Daily Energy Expenditure (TDEE)</strong> equation.</p>
+
+        <p>TDEE is the sum of four distinct metabolic components:</p>
+        <ol>
+            <li><strong>Basal/Resting Metabolic Rate (BMR/RMR):</strong> Energy for vital organ function.</li>
+            <li><strong>Thermic Effect of Food (TEF):</strong> Energy required for digestion (approx. 10% of total intake).</li>
+            <li><strong>Exercise Activity Thermogenesis (EAT):</strong> Intentional, structured physical activity.</li>
+            <li><strong>Non-Exercise Activity Thermogenesis (NEAT):</strong> Energy expended for everything that is not sleeping, eating, or sports-like exercise.</li>
+        </ol>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">2,000</span>
+                    <span class="stat-label">Kcal/Day NEAT Variance</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10%</span>
+                    <span class="stat-label">TEF Contribution</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">15-30%</span>
+                    <span class="stat-label">Activity Component</span>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2022 systematic review of metabolic variability (n=6,421) confirmed that while BMR is largely determined by fat-free mass, the <span class="highlight">Physical Activity Level (PAL)</span> multiplier is the primary driver of weight maintenance success. For coaches, calculating TDEE involves applying a PAL multiplier to the measured or estimated RMR.</p>
+
+        <h2 id="section2">2. NEAT: The Undervalued Lever in Weight Loss</h2>
+        <p>NEAT includes walking to work, typing, performing yard work, fidgeting, and even maintaining posture. While Exercise Activity Thermogenesis (EAT) often gets the spotlight in weight loss programs, it typically accounts for less than 5% of TDEE for the average person. In contrast, <span class="highlight">NEAT can account for 15% to 50%</span> of TDEE depending on lifestyle.</p>
+
+        <p>The "NEAT Gap" explains why two individuals of the same age, weight, and gender can have drastically different caloric needs. Research by Levine et al. demonstrated that lean individuals sit for approximately <strong>150 minutes less per day</strong> than individuals with obesity, translating to an additional 350 calories burned through incidental movement alone.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Activity Component</th>
+                        <th>Definition</th>
+                        <th>% of TDEE (Sedentary)</th>
+                        <th>% of TDEE (Active)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RMR</strong></td>
+                        <td>Maintenance of life</td>
+                        <td>75%</td>
+                        <td>50-60%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TEF</strong></td>
+                        <td>Digestion/Absorption</td>
+                        <td>10%</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NEAT</strong></td>
+                        <td>Daily life movement</td>
+                        <td>10-15%</td>
+                        <td>25-40%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EAT</strong></td>
+                        <td>Structured exercise</td>
+                        <td>0-5%</td>
+                        <td>5-15%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Quantifying the Sedentary Trap</h2>
+        <p>Sedentary behavior is not merely the absence of exercise; it is a distinct physiological state. When a client sits for prolonged periods, <span class="highlight">Lipoprotein Lipase (LPL) activity</span>—an enzyme crucial for capturing fat from the bloodstream to be used as fuel—drops by up to 90% in the lower body.</p>
+
+        <p>This leads to <strong>Metabolic Inflexibility</strong>, where the body loses its efficiency in switching between burning carbohydrates and fats. A 2023 meta-analysis of 42 studies (n=8,234) found that even among those who meet federal exercise guidelines (150 min/week), high levels of sedentary time ( >8 hours/day) significantly blunted the metabolic benefits of their workouts.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Active Sedentary" Client</p>
+                    <p class="subtitle">Structured Exercise vs. Total Daily Movement</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Mark S., 44 | Software Engineer</h4>
+                        <p><strong>Goal:</strong> Lose 15 lbs. <strong>Stall:</strong> 3 months of strict HIIT 5x/week with no weight change.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Mark's RMR was 1,850 kcal. He performed 45 minutes of HIIT (EAT ~400 kcal). However, his wearable data showed he averaged only 2,800 steps/day. His job required 10 hours of sitting.</p>
+                <p><strong>Intervention:</strong> Instead of increasing exercise intensity, we focused on "NEAT Stacking." We implemented a standing desk and a "10-minute walk after every meal" protocol. We did not change his HIIT schedule.</p>
+                <p><strong>Outcome:</strong> Mark's daily step count rose to 10,500. Without further caloric restriction, he lost 8 lbs in 6 weeks. His TDEE increased by an estimated 450 kcal/day—more than his entire HIIT session provided.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Compensation Effect: Why Weight Loss Stalls</h2>
+        <p>As a Weight Loss Coach, you will encounter the "Metabolic Adaptation" wall. One of the most insidious aspects of caloric restriction is the <span class="highlight">subconscious downregulation of NEAT</span>. When the body senses a caloric deficit, it attempts to conserve energy by making the individual less likely to fidget, stand, or move spontaneously.</p>
+
+        <p>This is often referred to as <strong>Adaptive Thermogenesis</strong>. A study published in <em>The American Journal of Clinical Nutrition</em> showed that during a 10% weight loss, TDEE decreased by 15-20%—a drop much larger than predicted by the loss of body mass alone. Most of this "unexplained" drop was found to be a reduction in NEAT.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Practitioner Note</p>
+            <p>If a client reports feeling "lethargic" or "lazy" after starting a diet, it is likely their NEAT is crashing. This is a survival mechanism. Increasing exercise (EAT) in this state often leads to further NEAT compensation, resulting in a net-zero change in TDEE.</p>
+        </div>
+
+        <h2 id="section5">5. The 'Intermittent Movement' Strategy</h2>
+        <p>To combat the sedentary trap and NEAT compensation, we utilize the <strong>Intermittent Movement Strategy</strong>. This involves breaking up sedentary bouts with "metabolic snacks"—short bursts of activity that re-engage LPL activity and signal the brain that energy is available for movement.</p>
+
+        <p>Research suggests that <span class="highlight">2 minutes of light walking every 30 minutes</span> is more effective at managing post-prandial glucose and insulin levels than one 30-minute walk at the end of the day. For clients, this strategy is more sustainable than "grinding" in the gym.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Micro-Movement Protocols</div>
+            <ul class="principle-text">
+                <li><strong>Phone Call Pacing:</strong> Always stand or pace during voice calls.</li>
+                <li><strong>The "Inconvenience" Rule:</strong> Park at the back of the lot; use the upstairs restroom.</li>
+                <li><strong>Posture Shifts:</strong> Changing positions every 15 minutes to engage core stabilizers.</li>
+                <li><strong>Trigger-Based NEAT:</strong> 20 air squats after every bathroom break.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">6. Integration into the T.R.A.N.S.F.O.R.M. Methodology™</h2>
+        <p>In the <strong>T (Test Metabolism)</strong> phase of our methodology, we don't just calculate a number; we analyze the <em>source</em> of expenditure. Using PAL multipliers is the standard, but as an elite coach, you must look for the "NEAT Signature" of your client.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Activity Level</th>
+                        <th>PAL Multiplier</th>
+                        <th>Client Profile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sedentary</td>
+                        <td>1.2</td>
+                        <td>Office job, little to no intentional exercise.</td>
+                    </tr>
+                    <tr>
+                        <td>Lightly Active</td>
+                        <td>1.375</td>
+                        <td>Light exercise/sports 1-3 days/week.</td>
+                    </tr>
+                    <tr>
+                        <td>Moderately Active</td>
+                        <td>1.55</td>
+                        <td>Moderate exercise 3-5 days/week + active job.</td>
+                    </tr>
+                    <tr>
+                        <td>Very Active</td>
+                        <td>1.725</td>
+                        <td>Hard exercise 6-7 days/week + physically demanding job.</td>
+                    </tr>
+                    <tr>
+                        <td>Extra Active</td>
+                        <td>1.9</td>
+                        <td>Professional athlete or heavy labor (construction).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of TDEE and NEAT dynamics.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why does a high-intensity workout (EAT) sometimes fail to produce weight loss in a sedentary client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is due to the <strong>NEAT Compensation Effect</strong>. The body may subconsciously reduce spontaneous movement (NEAT) for the remaining 23 hours of the day to "protect" energy stores, often resulting in a net TDEE that remains unchanged despite the workout.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What physiological enzyme is specifically suppressed during prolonged sitting, and what is its role?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    <strong>Lipoprotein Lipase (LPL)</strong>. It is responsible for capturing fats from the blood to be used by muscles for fuel. Its suppression leads to metabolic inflexibility and increased fat storage.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>NEAT is the most variable</strong> component of TDEE and can differ by up to 2,000 calories per day between individuals.</li>
+                <li><strong>Sedentary behavior</strong> is a metabolic disease state that blunts the benefits of structured exercise through LPL suppression.</li>
+                <li><strong>Adaptive Thermogenesis</strong> primarily manifests as a subconscious drop in NEAT during caloric restriction.</li>
+                <li><strong>Intermittent Movement</strong> (metabolic snacks) is a superior coaching strategy for maintaining metabolic flexibility compared to exercise alone.</li>
+                <li><strong>Successful coaching</strong> requires moving the client from "Active Sedentary" to "Metabolically Integrated" through NEAT optimization.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>1. Levine, J.A. et al. (2006). "Non-exercise activity thermogenesis: the crouching tiger hidden dragon of societal weight gain." <em>Arteriosclerosis, Thrombosis, and Vascular Biology.</em></p>
+            <p>2. Pontzer, H. et al. (2021). "Daily energy expenditure through the human life course." <em>Science.</em></p>
+            <p>3. Hall, K.D. et al. (2012). "Energy balance and its components: implications for body weight regulation." <em>American Journal of Clinical Nutrition.</em></p>
+            <p>4. Hamilton, M.T. et al. (2007). "Role of low energy expenditure and sitting in obesity, metabolic syndrome, type 2 diabetes, and cardiovascular disease." <em>Diabetes.</em></p>
+            <p>5. Villablanca, P.A. et al. (2015). "Nonexercise activity thermogenesis in obesity management." <em>Mayo Clinic Proceedings.</em></p>
+            <p>6. Chung, N. et al. (2018). "Non-exercise activity thermogenesis (NEAT): a component of total daily energy expenditure." <em>Journal of Exercise Nutrition & Biochemistry.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary T.R.A.N.S.F.O.R.M. Methodology™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

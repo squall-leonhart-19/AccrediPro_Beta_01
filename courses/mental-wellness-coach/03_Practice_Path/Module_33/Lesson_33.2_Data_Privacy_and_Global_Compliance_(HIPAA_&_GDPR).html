@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 33.2: Data Privacy and Global Compliance (HIPAA & GDPR)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Legal/Compliance */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚖️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f0f4ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 33: Legal & Compliance</p>
+            <h1 class="lesson-title">Lesson 2: Data Privacy and Global Compliance (HIPAA & GDPR)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hipaa"><span class="section-num">1</span>HIPAA Standards for Coaches</a></li>
+                <li><a href="#gdpr"><span class="section-num">2</span>GDPR & European Data Rights</a></li>
+                <li><a href="#sensitive"><span class="section-num">3</span>Securing 'Integrate' (I) Data</a></li>
+                <li><a href="#encryption"><span class="section-num">4</span>Encryption & Cloud Storage</a></li>
+                <li><a href="#international"><span class="section-num">5</span>Cross-Border Data Transfers</a></li>
+                <li><a href="#breach"><span class="section-num">6</span>Data Breach Response Plans</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Establish HIPAA-compliant workflows including the execution of Business Associate Agreements (BAAs).</li>
+                <li>Navigate GDPR requirements including data minimization and Subject Access Requests (SARs).</li>
+                <li>Implement specific legal protections for biometric and psychophysiological data collected during the 'Integrate Mind-Body' phase.</li>
+                <li>Apply AES-256 encryption standards to digital communications and Electronic Health Records (EHR).</li>
+                <li>Develop a comprehensive Data Breach Response Plan aligned with global notification timelines.</li>
+            </ul>
+        </div>
+
+        <h2 id="hipaa">1. HIPAA Standards: Beyond the Medical Office</h2>
+        <p>In Lesson 1, we established that while coaches are not always "Covered Entities" under the Health Insurance Portability and Accountability Act (HIPAA), the <span class="highlight">professional gold standard</span> for the M.I.N.D.F.U.L. Wellness Method™ requires HIPAA-level protection. This is especially true when mapping mental patterns (M) or integrating mind-body biometrics (I), as this information constitutes Protected Health Information (PHI).</p>
+
+        <p>The core of HIPAA compliance for a coach lies in the <span class="highlight">Business Associate Agreement (BAA)</span>. If you use a third-party service (like a scheduling app, a cloud storage provider, or an EHR system), that provider is your "Business Associate." Without a signed BAA, you are legally liable for any data breach occurring on their platform.</p>
+
+        <div class="alert-box info">
+            <span class="alert-label">Pro Tip: The BAA Requirement</span>
+            <p>A 2023 analysis of wellness tech providers found that only <span class="stat-highlight">34%</span> of entry-level coaching apps offer a BAA on their standard tier. As a professional, you must ensure your tech stack (Zoom, Google Workspace, Calendly, etc.) is on a tier that includes a signed BAA.</p>
+        </div>
+
+        <h2 id="gdpr">2. GDPR: The Sovereignity of European Data</h2>
+        <p>If you serve clients in the European Union (EU) or United Kingdom (UK), you are subject to the <span class="highlight">General Data Protection Regulation (GDPR)</span>. Unlike HIPAA, which focuses on health information, GDPR protects *all* personal data. It is built on the principle that the client owns their data, and you are merely its temporary steward.</p>
+
+        <h3>Key GDPR Pillars for Coaches:</h3>
+        <ul>
+            <li><strong>Data Minimization:</strong> You must only collect the data strictly necessary for the coaching engagement. If you are working on "Nourishing the Brain" (N), you may need dietary logs, but you likely don't need their social security number.</li>
+            <li><strong>Subject Access Requests (SARs):</strong> Clients have the right to request a full copy of every note, recording, and data point you have on them. You must provide this within 30 days.</li>
+            <li><strong>The Right to be Forgotten:</strong> Upon request, you must delete all client data, provided it doesn't conflict with local tax or legal record-keeping requirements.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>HIPAA (USA)</th>
+                        <th>GDPR (EU/UK)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Focus</strong></td>
+                        <td>Protected Health Information (PHI)</td>
+                        <td>All Personal Data (PII)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consent</strong></td>
+                        <td>Implicit for treatment/payment/ops</td>
+                        <td>Explicit, "Opt-in" required</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Breach Notice</strong></td>
+                        <td>Within 60 days</td>
+                        <td>Within 72 hours</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Right to Delete</strong></td>
+                        <td>Limited by medical record laws</td>
+                        <td>"Right to be Forgotten" is central</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="sensitive">3. Securing 'Integrate Mind-Body' (I) Data</h2>
+        <p>The M.I.N.D.F.U.L. Wellness Method™ often involves the collection of <span class="highlight">biometric data</span>—Heart Rate Variability (HRV), sleep architecture, and even genetic methylation reports (for Module 3: Nourish the Brain). This data is classified as "Sensitive Personal Data" under GDPR and "High-Risk PHI" under HIPAA.</p>
+
+        <p>When a client shares their wearable data (e.g., Oura, Whoop, Apple Health) with you, you are moving from general wellness coaching into the realm of <span class="highlight">Data Processing</span>. Legal protections must include:</p>
+        <ul>
+            <li><strong>Specific Informed Consent:</strong> A separate signature acknowledging the risks of sharing biometric data.</li>
+            <li><strong>Anonymization:</strong> Where possible, keep biometric spreadsheets identified by a client ID number rather than their full name.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Unsecured Wearable</p>
+                    <p style="color:white; font-size:12px; margin:0;">Client: Elena (42) | US-based Coach</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> A coach asked Elena to email screenshots of her HRV and sleep data from her wearable app to track progress in Module 2 (Integrate Mind-Body). The coach saved these images in a standard Google Drive folder (Personal tier, no BAA).</p>
+                <p><strong>Outcome:</strong> The coach's personal email was compromised in a credential-stuffing attack. Elena’s health data, including heart rate patterns during high-stress periods, was leaked. Because there was no BAA and no encryption, the coach was held liable for a <span class="stat-highlight">$15,000</span> settlement for negligence.</p>
+                <p><strong>Intervention:</strong> The coach migrated to a HIPAA-compliant EHR (e.g., Practice Better or SimplePractice) that uses AES-256 encryption and provides a BAA.</p>
+            </div>
+        </div>
+
+        <h2 id="encryption">4. Encryption Standards: AES-256 and Beyond</h2>
+        <p>To protect the "Architecture of the Mind" (Module 1: Map Mental Patterns), your digital fortress must be built on <span class="highlight">End-to-End Encryption (E2EE)</span>. This ensures that even if a data packet is intercepted, it is unreadable without the unique decryption key.</p>
+
+        <p>Professional standards require <strong>AES-256 (Advanced Encryption Standard)</strong>. This is the same level used by the U.S. military and banks. A 2024 cybersecurity report noted that it would take a supercomputer <span class="stat-highlight">billions of years</span> to crack a 256-bit AES key through brute force.</p>
+
+        <h3>Encryption Checklist for Coaches:</h3>
+        <ul>
+            <li><strong>At Rest:</strong> Data stored on your hard drive or cloud should be encrypted. (BitLocker for Windows, FileVault for Mac).</li>
+            <li><strong>In Transit:</strong> Use TLS 1.2 or higher for all web traffic. Ensure your website has an SSL certificate (the "lock" icon).</li>
+            <li><strong>Communication:</strong> Avoid standard SMS or unencrypted email. Use secure portals or Signal/WhatsApp (only if permitted by your local jurisdiction's health laws).</li>
+        </ul>
+
+        <h2 id="international">5. Cross-Border Data Transfers</h2>
+        <p>In a globalized coaching economy, you may be a US-based coach with a client in Germany. Sending that client's data back to your US server is legally a "transfer." Under GDPR, the US is considered a "third country" without adequate protections unless specific frameworks are used.</p>
+
+        <p>The <span class="highlight">EU-U.S. Data Privacy Framework (DPF)</span>, established in 2023, is the current mechanism allowing for this transfer. You must ensure your software providers are certified under this framework. If not, you must use <strong>Standard Contractual Clauses (SCCs)</strong>—pre-approved legal templates—to bridge the gap.</p>
+
+        <h2 id="breach">6. Developing a Data Breach Response Plan</h2>
+        <p>It is not a matter of *if* a security incident might occur, but *when*. A professional Data Breach Response Plan is a requirement for both legal compliance and client trust (Module 5: Foster Connection).</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 4-Step Breach Response</div>
+            <div class="principle-text">
+                <ol>
+                    <li><strong>Identification & Containment:</strong> Change all passwords, disconnect the affected device from the internet, and determine what data was accessed.</li>
+                    <li><strong>Risk Assessment:</strong> Was PHI involved? Was the data encrypted? If the data was encrypted with AES-256 and the keys were not stolen, it may not count as a "breach" under HIPAA's Safe Harbor.</li>
+                    <li><strong>Notification:</strong> Under GDPR, you have <span class="stat-highlight">72 hours</span> to notify the supervisory authority. Under HIPAA, you have 60 days, but professional ethics suggest immediate notification.</li>
+                    <li><strong>Mitigation:</strong> Offer the client identity theft monitoring and update your security protocols to prevent recurrence.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. You use a popular scheduling tool to book sessions. Why is a Business Associate Agreement (BAA) necessary?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A BAA is legally required because the scheduler handles client names and contact info (PII) and potentially session topics (PHI). It shifts and defines liability, ensuring the provider also adheres to HIPAA-level security standards.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. A client in France asks you to delete all their session notes from three years ago. Under GDPR, what is this called?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is the "Right to be Forgotten" (or Right to Erasure). As a coach, you must comply unless you can prove a "compelling legitimate interest" or a legal requirement (like tax records) to keep specific parts of that data.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Professional Baseline:</strong> Always treat client data as PHI, regardless of your official "Covered Entity" status.</li>
+                <li><strong>The BAA is Non-Negotiable:</strong> Never use a digital tool for client work that refuses to sign a Business Associate Agreement.</li>
+                <li><strong>Encryption is the Shield:</strong> AES-256 encryption at rest and in transit is the minimum technical requirement for the M.I.N.D.F.U.L. Method™.</li>
+                <li><strong>Global Reach = Global Responsibility:</strong> If you coach internationally, you must comply with the most stringent regulation involved (usually GDPR).</li>
+                <li><strong>Preparation Prevents Panic:</strong> Have a written Breach Response Plan ready *before* you need it.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>HHS.gov (2023). "Health Information Privacy: Business Associate Contracts." U.S. Department of Health & Human Services.</li>
+                <li>European Commission (2024). "Rules for the protection of personal data inside and outside the EU." GDPR Official Portal.</li>
+                <li>IBM Security (2023). "Cost of a Data Breach Report 2023." IBM Corporation.</li>
+                <li>Mayer et al. (2022). "Privacy and Security in Wellness Apps: A Systematic Review." Journal of Medical Internet Research.</li>
+                <li>NIST (2023). "Advanced Encryption Standard (AES) Fact Sheet." National Institute of Standards and Technology.</li>
+                <li>Standard Contractual Clauses (SCCs) (2021). "Implementing Decision on standard contractual clauses for the transfer of personal data to third countries." European Union.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Mental Wellness Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

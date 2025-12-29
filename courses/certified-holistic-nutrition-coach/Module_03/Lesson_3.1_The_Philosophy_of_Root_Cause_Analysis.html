@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.1: The Philosophy of Root Cause Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/GOLD theme for Root Causes */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #0d9488;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #0d9488;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional { background: #fff5f5; border-top-color: #c62828; }
+        .comparison-card.functional { background: #f0fdfa; border-top-color: #0d9488; }
+
+        .comparison-card .card-label {
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0f766e;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: U: Uncover Root Causes</p>
+            <h1 class="lesson-title">Lesson 3.1: The Philosophy of Root Cause Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#upstream"><span class="section-num">1</span>Upstream vs. Downstream</a></li>
+                <li><a href="#web"><span class="section-num">2</span>The Physiological Web</a></li>
+                <li><a href="#functional"><span class="section-num">3</span>Functional vs. Allopathic</a></li>
+                <li><a href="#epigenetics"><span class="section-num">4</span>Epigenetics & Lifestyle</a></li>
+                <li><a href="#atm"><span class="section-num">5</span>The ATM Framework</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the "Upstream" methodology and its priority in the N.O.U.R.I.S.H. Method™.</li>
+                <li>Analyze the "Web of Physiological Systems" to identify how local imbalances become systemic.</li>
+                <li>Differentiate between symptom suppression and root-cause resolution in clinical practice.</li>
+                <li>Explain the mechanism of epigenetics as the mediator between environment and gene expression.</li>
+                <li>Utilize the Antecedents, Triggers, and Mediators (ATM) framework for client assessment.</li>
+            </ul>
+        </div>
+
+        <h2 id="upstream">1. The 'Upstream' vs. 'Downstream' Approach</h2>
+        <p>In the world of conventional medicine, the primary objective is often the rapid management of symptoms. If a client has a headache, they are given an analgesic; if they have acid reflux, they are given a proton pump inhibitor. This is what we call <span class="highlight">downstream medicine</span>—it addresses the manifestation of the problem after it has already occurred.</p>
+        
+        <p>As a Holistic Nutrition Coach using the <strong>N.O.U.R.I.S.H. Method™</strong>, you are trained to look <strong>upstream</strong>. Imagine a river where people are falling in and drowning. A downstream approach builds a rescue station at the bottom of the waterfall. An upstream approach walks miles up the river to find out why people are falling in—perhaps a bridge is broken or a path is slippery.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">Clinical Concept: The River Analogy</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>A 2021 study published in the <em>Journal of Personalized Medicine</em> noted that while acute care (downstream) is highly effective for trauma and infections, it fails to address the <span class="stat-highlight">86% of healthcare costs</span> driven by chronic, lifestyle-related conditions. Root cause analysis seeks to identify the biological "broken bridge" rather than just providing a life jacket at the waterfall.</p>
+            </div>
+        </div>
+
+        <h2 id="web">2. The 'Web of Physiological Systems'</h2>
+        <p>One of the most profound shifts in holistic nutrition is moving away from organ-specific silos. In conventional models, the cardiologist manages the heart, the gastroenterologist manages the gut, and the dermatologist manages the skin. However, the human body does not function in isolation; it functions as a <span class="highlight">Web of Physiological Systems</span>.</p>
+        
+        <p>Consider the connection between the gut and the skin. A client presenting with acne (downstream symptom) may actually be suffering from <span class="highlight">intestinal permeability</span> (Module 2 concept), which triggers systemic inflammation, which then alters sebum production in the skin. If you only treat the skin, you are ignoring the web.</p>
+
+        <h3>Interconnected Nodes of the Web:</h3>
+        <ul class="content-list">
+            <li><strong>The Gut-Brain Axis:</strong> 90% of serotonin is produced in the gut; therefore, "mental" symptoms like anxiety often have "digestive" root causes.</li>
+            <li><strong>The HPA-Thyroid-Gonadal Axis:</strong> Chronic stress (HPA axis) can suppress thyroid function and disrupt sex hormones simultaneously.</li>
+            <li><strong>Immune-Metabolic Link:</strong> Chronic inflammation (Module 3, Lesson 4) is a primary driver of insulin resistance.</li>
+        </ul>
+
+        <h2 id="functional">3. Symptom Management vs. Root Cause Resolution</h2>
+        <p>It is vital to distinguish between <em>allopathic nutrition</em> (using a supplement to replace a drug) and <em>functional nutrition</em> (resolving the underlying dysfunction). If a client has high cholesterol and you simply give them Red Yeast Rice without asking <em>why</em> the cholesterol is high (e.g., is it poor biliary clearance? Hypothyroidism? Chronic inflammation?), you are still practicing downstream medicine.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Allopathic/Conventional Model</th>
+                        <th>Functional/Holistic Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Symptom suppression & disease diagnosis.</td>
+                        <td>Restoring physiological function & balance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Perspective</strong></td>
+                        <td>Organ-based silos (Specialties).</td>
+                        <td>Systems-based biology (The Web).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assessment</strong></td>
+                        <td>Reference ranges (Normal vs. Abnormal).</td>
+                        <td>Optimal ranges (Function vs. Dysfunction).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intervention</strong></td>
+                        <td>Pharmaceuticals or surgery.</td>
+                        <td>Nutritional synergy, lifestyle, & environment.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timeline</strong></td>
+                        <td>Reactive (wait for disease).</td>
+                        <td>Proactive (address subclinical shifts).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="epigenetics">4. Epigenetics: The Bridge Between Nature and Nurture</h2>
+        <p>A common hurdle in coaching is the client who believes they are "destined" for a disease because of their family history. This is the myth of genetic determinism. While genetics provide the "blueprint," <span class="highlight">epigenetics</span> determines which parts of the blueprint are actually built.</p>
+        
+        <p>A 2023 meta-analysis of over <span class="stat-highlight">12,000 participants</span> found that lifestyle factors—including phytonutrient intake, sleep quality, and stress management—could modify the expression of genes associated with Type 2 Diabetes by up to <strong>70%</strong>. As a practitioner, you are an "Epigenetic Engineer," helping clients use food and lifestyle to "silence" disease-promoting genes and "activate" health-promoting ones.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: Beyond the Diagnosis</p>
+                    <p class="subtitle">Client: Sarah, 42 | Symptom: Chronic Migraines</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (42)</h4>
+                        <p>History of monthly migraines, bloating, and cold intolerance.</p>
+                    </div>
+                </div>
+                <p><strong>Downstream Approach:</strong> Sarah was prescribed Sumatriptan for the pain. The migraines persisted every month.</p>
+                <p><strong>Upstream Analysis:</strong> Using the N.O.U.R.I.S.H. Method™, we looked at the <strong>Web</strong>. Her migraines were cyclical (Hormonal), she had bloating (Gut), and cold intolerance (Thyroid).
+                <ul>
+                    <li><strong>Root Cause:</strong> Poor estrogen detoxification in the liver (Phase II) coupled with subclinical hypothyroidism.</li>
+                    <li><strong>Intervention:</strong> Support glucuronidation (cruciferous veggies), optimize iodine/selenium, and heal the gut lining.</li>
+                    <li><strong>Outcome:</strong> Migraine frequency reduced by 90% within 3 months without medication.</li>
+                </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="atm">5. The ATM Framework: Antecedents, Triggers, and Mediators</h2>
+        <p>To "Uncover Root Causes" (the 'U' in NOURISH), we use a clinical tool known as the <strong>ATM Framework</strong>. This allows you to categorize a client's history into a logical timeline of dysfunction.</p>
+
+        <div class="key-terms-box">
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Antecedents (The Soil)</p>
+                    <p class="definition">Factors that predispose an individual to a condition. Examples: Genetics, birth via C-section (lack of microbiome seeding), or childhood trauma.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Triggers (The Spark)</p>
+                    <p class="definition">Discrete events that initiate the symptoms. Examples: A severe viral infection, a period of extreme stress, or a course of broad-spectrum antibiotics.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Mediators (The Fuel)</p>
+                    <p class="definition">Factors that keep the symptoms going. Examples: Ongoing poor diet, chronic lack of sleep, hidden food sensitivities, or persistent emotional stress.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="clinical">6. Clinical Application: The Practitioner's Mindset</h2>
+        <p>Your role is to be a health detective. When a client says, "I have brain fog," your internal response should not be "What supplement clears brain fog?" but rather "What system in the web is failing to support the brain?"</p>
+        
+        <p>Is it <strong>Metabolic</strong> (Insulin Resistance)? Is it <strong>Digestive</strong> (Gut-Brain inflammation)? Is it <strong>Nutritional</strong> (B12 deficiency)? By the end of this module, you will be able to distinguish these subclinical shifts before they manifest as diagnosable disease. This is the essence of <span class="highlight">Clinical Mastery</span>.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your grasp of the Root Cause Philosophy</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client has a family history of heart disease and believes they are "doomed" to have a heart attack. Which concept best helps you coach them through this mindset?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text"><strong>Epigenetics.</strong> You would explain that while they have the genes (the blueprint), their nutrition and lifestyle (the environment) act as the switches that determine whether those genes are expressed or silenced.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">In the ATM framework, if a client developed eczema immediately after a stressful divorce and a course of antibiotics, how would you classify the divorce/antibiotics?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text"><strong>Triggers.</strong> These are the discrete events that "sparked" the onset of the symptoms, likely by disrupting the gut microbiome and immune balance.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Upstream Thinking:</strong> Always look for the "Why" behind the "What." Symptoms are the body's smoke; root causes are the fire.</li>
+                <li><strong>The Web:</strong> No symptom exists in isolation. The gut, hormones, and brain are intimately connected.</li>
+                <li><strong>Epigenetic Influence:</strong> Lifestyle and nutrition account for roughly 70-90% of chronic disease expression, far outweighing static genetics.</li>
+                <li><strong>ATM Framework:</strong> Use Antecedents, Triggers, and Mediators to map out a client's health journey and identify where to intervene.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Bland, J. S. (2014). "The Disease Delusion: Conquering the Causes of Chronic Illness." Harper Wave.</li>
+                <li>Hyman, M. A. (2019). "The Functional Medicine Approach to Chronic Disease." Journal of Clinical Medicine, 8(4).</li>
+                <li>Jones, D. S., et al. (2018). "Textbook of Functional Medicine." Institute for Functional Medicine.</li>
+                <li>Olden, K., et al. (2007). "Epigenetics: The New Biology of Health and Disease." CA: A Cancer Journal for Clinicians.</li>
+                <li>Egger, G., & Dixon, J. (2014). "Beyond obesity and lifestyle: A review of 21st century chronic disease determinants." BMC Public Health.</li>
+                <li>CDC (2022). "About Chronic Diseases." National Center for Chronic Disease Prevention and Health Promotion.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. The N.O.U.R.I.S.H. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

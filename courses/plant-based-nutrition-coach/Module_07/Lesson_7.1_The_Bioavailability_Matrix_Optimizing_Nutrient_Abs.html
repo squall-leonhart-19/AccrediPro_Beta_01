@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.1: The Bioavailability Matrix: Optimizing Nutrient Absorption</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DARK GREEN theme for Bioavailability */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #064e3b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #064e3b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #059669;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f8f1;
+            color: #064e3b;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Advanced Nutrient Dynamics</p>
+            <h1 class="lesson-title">Lesson 7.1: The Bioavailability Matrix: Optimizing Nutrient Absorption</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 4</span>
+                <span class="meta-item">Deep Dive Level 1</span>
+            </div>
+        </header>
+
+        <div class="welcome-box">
+            <h3>From Intake to Uptake</h3>
+            <p>In the foundational modules, we explored <i>what</i> nutrients are present in plants. In this deep dive, we shift our focus to the <strong>Bioavailability Matrix</strong>—the complex interplay of food chemistry, preparation methods, and digestive physiology that determines how much of those nutrients actually reach the bloodstream. As a P.L.A.N.T. Nutrition Coach™, your ability to troubleshoot a client's nutrient status depends on mastering these mechanisms.</p>
+        </div>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#inhibitors"><span class="section-num">1</span>The Mechanics of Nutrient Inhibitors</a></li>
+                <li><a href="#iron-synergy"><span class="section-num">2</span>The Vitamin C-Iron Synergy</a></li>
+                <li><a href="#prep-science"><span class="section-num">3</span>Advanced Preparation Techniques</a></li>
+                <li><a href="#lipid-facilitated"><span class="section-num">4</span>Lipid-Facilitated Absorption</a></li>
+                <li><a href="#clinical-apps"><span class="section-num">5</span>Clinical Coaching Applications</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the biochemical mechanisms of phytates, oxalates, and tannins in plant tissues.</li>
+                <li>Quantify the impact of ascorbic acid on non-heme iron absorption rates using clinical data.</li>
+                <li>Evaluate the efficacy of soaking, sprouting, and fermentation in reducing "anti-nutrients."</li>
+                <li>Implement lipid-facilitated protocols for fat-soluble vitamins and carotenoids.</li>
+                <li>Design specific dietary interventions for clients with marginal nutrient status or malabsorption.</li>
+            </ul>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Terminology</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Bioavailability</p>
+                    <p class="definition">The fraction of an ingested nutrient that is absorbed and becomes available for metabolic use or storage.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Chelation</p>
+                    <p class="definition">The process where a substance (like phytate) binds to a mineral (like zinc), forming a complex that the body cannot absorb.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Non-Heme Iron</p>
+                    <p class="definition">The form of iron found in plant foods, which is more sensitive to inhibitors and enhancers than heme iron.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Micelle Formation</p>
+                    <p class="definition">The process where dietary fats and bile salts surround fat-soluble nutrients to facilitate transport across the intestinal wall.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="inhibitors">1. The Mechanics of Nutrient Inhibitors</h2>
+        <p>In the plant kingdom, certain compounds serve as defense mechanisms against pests or as storage vessels for minerals. While often labeled "anti-nutrients," these compounds frequently possess their own health benefits (such as antioxidant properties). However, for the P.L.A.N.T. Method™ practitioner, understanding their inhibitory effects is paramount.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50-80%</div>
+                    <div class="stat-label">Reduction in Zinc Absorption by Phytates</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9x</div>
+                    <div class="stat-label">Lower Calcium Absorption in Spinach vs. Kale</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Iron Inhibition by Tea Tannins</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Phytates (Phytic Acid)</h3>
+        <p>Found primarily in grains, legumes, nuts, and seeds, <span class="highlight">phytates</span> are the primary storage form of phosphorus. Their chemical structure allows them to bind strongly to divalent cations, particularly <strong>zinc, iron, and calcium</strong>. In the acidic environment of the stomach, these bonds are tight; in the neutral pH of the small intestine, they form insoluble precipitates that pass through the digestive tract unabsorbed.</p>
+
+        <h3>Oxalates (Oxalic Acid)</h3>
+        <p>Oxalates are most concentrated in spinach, Swiss chard, and beet greens. Unlike phytates, oxalates primarily target <strong>calcium</strong>. A 2021 study demonstrated that while a cup of cooked spinach contains ~250mg of calcium, the high oxalate content reduces fractional absorption to a mere <span class="highlight">5%</span>, compared to 32% for low-oxalate cruciferous vegetables like bok choy.</p>
+
+        <h3>Tannins and Polyphenols</h3>
+        <p>While celebrated for their anti-inflammatory role (as discussed in Module 3), tannins in tea, coffee, and red wine can inhibit iron absorption by up to 60% when consumed with a meal. They form complex phenolic-iron ligands that are too large for the intestinal transporters to recognize.</p>
+
+        <h2 id="iron-synergy">2. The Vitamin C-Iron Synergy</h2>
+        <p>The most powerful tool in the P.L.A.N.T. Nutrition Matrix is the synergy between <span class="highlight">Ascorbic Acid (Vitamin C)</span> and non-heme iron. This is not merely a "good idea"; it is a physiological necessity for plant-based athletes and menstruating individuals.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Meal Type</th>
+                        <th>Vitamin C Added</th>
+                        <th>Iron Absorption Increase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>High-Phytate (Legumes/Grains)</td>
+                        <td>25 mg</td>
+                        <td>~2x (100% increase)</td>
+                    </tr>
+                    <tr>
+                        <td>High-Phytate (Legumes/Grains)</td>
+                        <td>75 mg</td>
+                        <td>~3-4x (300% increase)</td>
+                    </tr>
+                    <tr>
+                        <td>Low-Phytate (Vegetables)</td>
+                        <td>50 mg</td>
+                        <td>~1.5x (50% increase)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p><strong>The Mechanism:</strong> Ascorbic acid acts in two ways. First, it reduces ferric iron (Fe3+) to the more soluble ferrous iron (Fe2+). Second, it forms a chelate with iron in the stomach's acidic environment, which remains stable and soluble even as it enters the more alkaline small intestine, effectively "shielding" the iron from phytates and tannins.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Iron-Deficient Vegan Athlete</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Optimizing Non-Heme Uptake</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 28</h4>
+                        <p>Distance Runner | 3 years Plant-Based | Symptoms: Fatigue, breathlessness</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Serum ferritin at 12 ng/mL (clinical deficiency). Diet was high in iron (lentils, spinach, fortified oats) but also high in inhibitors (coffee with breakfast, tea with lunch).</p>
+                <p><strong>Intervention:</strong>
+                <ul>
+                    <li>Separated coffee/tea from meals by 90 minutes.</li>
+                    <li>Added 1/2 red bell pepper (approx. 95mg Vit C) to every bean-based meal.</li>
+                    <li>Switched from raw spinach to steamed kale (lower oxalates).</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> After 12 weeks, serum ferritin rose to 34 ng/mL without iron supplementation. Sarah reported a significant increase in training volume and recovery speed.</p>
+            </div>
+        </div>
+
+        <h2 id="prep-science">3. Advanced Preparation Techniques</h2>
+        <p>A core pillar of the <strong>P: Prepare & Plan</strong> phase of our method is utilizing traditional food processing techniques that have a modern scientific backing for improving nutrient density.</p>
+
+        <h3>Soaking and Sprouting</h3>
+        <p>Soaking activates the enzyme <span class="highlight">phytase</span>, which begins the breakdown of phytic acid. Sprouting (germination) takes this further. A 2022 meta-analysis of grain processing found that sprouting for 48 hours reduced phytate levels in chickpeas by 62% and increased the bioaccessibility of zinc by 44%.</p>
+
+        <h3>Fermentation</h3>
+        <p>Fermentation is the "gold standard" for bioavailability. Lactic acid bacteria produce organic acids that lower the pH, further activating endogenous phytases and providing a pre-digested matrix. In fermented soy (tempeh vs. unfermented tofu), the iron is significantly more bioavailable due to the reduction of soy's native inhibitors.</p>
+
+        <h2 id="lipid-facilitated">4. Lipid-Facilitated Absorption</h2>
+        <p>The absorption of fat-soluble vitamins (A, D, E, K) and health-promoting carotenoids (beta-carotene, lycopene, lutein) is strictly dependent on the presence of dietary lipids.</p>
+
+        <p>A landmark study by White et al. (2017) demonstrated that when participants ate salads with fat-free dressing, the absorption of carotenoids was <span class="highlight">negligible</span>. However, adding just 3-5 grams of monounsaturated fat (e.g., avocado or extra virgin olive oil) triggered the secretion of bile salts and the formation of <strong>micelles</strong>, increasing absorption by over 400%.</p>
+
+        <h3>The Carotenoid Matrix</h3>
+        <p>Cooking also plays a role here. While Vitamin C is heat-sensitive, the bioavailability of <strong>lycopene</strong> (found in tomatoes) increases significantly with heat. Cooking breaks down the tough plant cell walls (the cellulose matrix), releasing the lycopene into the accompanying fat source.</p>
+
+        <h2 id="clinical-apps">5. Clinical Coaching Applications</h2>
+        <p>As a coach, you must move beyond "eat more iron" to "optimize the environment for iron." Use the following Bioavailability Matrix Checklist when working with clients:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">1. The 90-Minute Rule</div>
+            <p class="principle-text">Advise clients to keep tea, coffee, and cocoa at least 90 minutes away from major iron-containing meals.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">2. The Vitamin C Anchor</div>
+            <p class="principle-text">Every meal containing beans, lentils, or whole grains should be "anchored" with a high-Vitamin C food (citrus, peppers, broccoli, or strawberries).</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">3. The Lipid Bridge</div>
+            <p class="principle-text">Never consume "dry" vegetables. Ensure fat-soluble nutrients have a lipid carrier (walnuts on a salad, tahini on steamed greens, avocado in a smoothie).</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Bioavailability Matrix.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client is eating plenty of spinach for calcium but their levels remain low. Based on the lesson, what is the most likely biochemical reason?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Spinach is high in oxalates, which bind to calcium and reduce its absorption to ~5%. Switching to low-oxalate greens like kale or bok choy (where absorption is ~32%) would be a more effective strategy.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which preparation method is most effective at reducing phytates in legumes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Fermentation is generally the most effective, followed by a combination of soaking and sprouting, which activates the enzyme phytase to break down the phytic acid.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Intake ≠ Absorption:</strong> Nutrient density on paper does not always translate to nutrient status in the blood.</li>
+                <li><strong>Phytates & Oxalates:</strong> These inhibitors primarily affect minerals (Iron, Zinc, Calcium) through chelation.</li>
+                <li><strong>Vitamin C Power:</strong> Adding 75mg of Vitamin C can overcome the inhibitory effects of phytates, increasing iron absorption by up to 400%.</li>
+                <li><strong>Fat is Essential:</strong> Carotenoids and fat-soluble vitamins require a "lipid bridge" (3-5g of fat) for micelle formation and absorption.</li>
+                <li><strong>Preparation Matters:</strong> Sprouting and fermenting are clinical-grade tools for increasing the "bioaccessibility" of plant nutrients.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Gibson et al. (2020). "Dietary strategies to improve the bioavailability of iron and zinc, with special reference to populations eating plant-based diets." <i>The American Journal of Clinical Nutrition.</i></li>
+                <li>White et al. (2017). "Modeling the dose-response of dietary fat on vitamin A and carotenoid absorption." <i>American Journal of Clinical Nutrition.</i></li>
+                <li>Gupta et al. (2021). "Reduction of phytic acid and enhancement of bioavailable micronutrients in food grains." <i>Journal of Food Science and Technology.</i></li>
+                <li>Armah et al. (2015). "Fractional iron absorption from a phytate-rich meal is increased by the addition of small amounts of ascorbic acid." <i>Journal of Nutrition.</i></li>
+                <li>Sandberg, A. S. (2022). "Bioavailability of minerals in plant-based foods: Recent advances." <i>Current Opinion in Food Science.</i></li>
+                <li>Heaney, R. P. et al. (2021). "Absorbability of Calcium from Brassica Vegetables: A Comparative Study." <i>Journal of Food Science.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Plant-Based Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The P.L.A.N.T. Nutrition Method™ is a trademark of AccrediPro Academy.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple script for the reveal buttons if needed for more complex interactions
+        // but currently handled by inline onclick for reliability.
+    </script>
+</body>
+
+</html>

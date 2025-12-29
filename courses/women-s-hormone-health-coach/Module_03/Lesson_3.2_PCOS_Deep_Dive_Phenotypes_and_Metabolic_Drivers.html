@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.2: PCOS Deep Dive: Phenotypes and Metabolic Drivers</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/GREEN theme */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #134e4a;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0d9488;
+            font-weight: 700;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #0d9488;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #0d9488;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: #134e4a;
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin: 40px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-num {
+            display: block;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 13px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #0d9488;
+        }
+
+        /* Footer & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            border-left: 5px solid #0d9488;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Advanced Endocrine Pathologies</p>
+            <h1 class="lesson-title">Lesson 3.2: PCOS Deep Dive: Phenotypes and Metabolic Drivers</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#phenotypes"><span class="section-num">1</span>The Four PCOS Phenotypes</a></li>
+                <li><a href="#insulin"><span class="section-num">2</span>The Insulin-Androgen Connection</a></li>
+                <li><a href="#adrenal"><span class="section-num">3</span>Adrenal PCOS & HPA Axis</a></li>
+                <li><a href="#postpill"><span class="section-num">4</span>Post-Pill PCOS Dynamics</a></li>
+                <li><a href="#inflammation"><span class="section-num">5</span>Inflammation & Follicular Arrest</a></li>
+                <li><a href="#interventions"><span class="section-num">6</span>Evidence-Based Interventions</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the four distinct PCOS phenotypes beyond the basic Rotterdam Criteria.</li>
+                <li>Explain the biochemical mechanism of how hyperinsulinemia stimulates ovarian androgen production.</li>
+                <li>Identify the role of DHEA-S and adrenal involvement in non-insulin resistant PCOS cases.</li>
+                <li>Analyze the temporary vs. chronic nature of post-pill androgen surges.</li>
+                <li>Implement nutritional strategies to improve insulin sensitivity and lower systemic inflammation.</li>
+            </ul>
+        </div>
+
+        <h2 id="phenotypes">Beyond the Rotterdam Criteria: The Four Phenotypes</h2>
+        <p>Polycystic Ovary Syndrome (PCOS) is the most common endocrine disorder in women of reproductive age, yet it remains one of the most misunderstood. For decades, it was viewed as a "fertility issue" or a "weight issue." As practitioners, we must move beyond the surface-level diagnosis. While the <span class="highlight">Rotterdam Criteria</span> (requiring 2 out of 3: irregular cycles, androgen excess, and polycystic ovaries on ultrasound) is the clinical gold standard, it fails to capture the underlying <em>why</em>.</p>
+
+        <p>A 2021 large-scale study published in <em>The Journal of Clinical Endocrinology & Metabolism</em> confirmed that PCOS is not a monolith but a spectrum of four distinct phenotypes, each with varying metabolic risks:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phenotype</th>
+                        <th>Clinical Features</th>
+                        <th>Metabolic Risk Profile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phenotype A (Classic)</strong></td>
+                        <td>Hyperandrogenism + Ovulatory Dysfunction + Polycystic Ovaries</td>
+                        <td>Highest risk for insulin resistance, obesity, and cardiovascular disease.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phenotype B (Hyperandrogenic)</strong></td>
+                        <td>Hyperandrogenism + Ovulatory Dysfunction</td>
+                        <td>High risk; often presents with significant metabolic dysfunction despite ultrasound findings.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phenotype C (Ovulatory)</strong></td>
+                        <td>Hyperandrogenism + Polycystic Ovaries</td>
+                        <td>Moderate risk; cycles may appear regular, but androgen levels drive pathology.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phenotype D (Non-Androgenic)</strong></td>
+                        <td>Ovulatory Dysfunction + Polycystic Ovaries</td>
+                        <td>Lowest metabolic risk; often "Lean PCOS" or driven by HPO-axis stress.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-box">
+            <div class="stat-item">
+                <span class="stat-num">1 in 10</span>
+                <span class="stat-desc">Women affected globally</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">70%</span>
+                <span class="stat-desc">Remain undiagnosed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">~75%</span>
+                <span class="stat-desc">Have Insulin Resistance</span>
+            </div>
+        </div>
+
+        <h2 id="insulin">The Insulin-Androgen Connection</h2>
+        <p>In the majority of PCOS cases, the primary driver is <span class="highlight">Hyperinsulinemia</span>. It is critical to understand that insulin is not just a blood sugar regulator; in the context of the female reproductive system, insulin acts as a <span class="highlight">co-gonadotropin</span>. This means it amplifies the effects of Luteinizing Hormone (LH) on the ovaries.</p>
+
+        <h3>The Mechanism of Action:</h3>
+        <ol>
+            <li><strong>Theca Cell Overstimulation:</strong> High levels of circulating insulin bind to receptors on the ovarian theca cells. This stimulates the enzyme <em>CYP17</em>, which accelerates the conversion of cholesterol into androstenedione and testosterone.</li>
+            <li><strong>Suppression of SHBG:</strong> Insulin travels to the liver and suppresses the production of Sex Hormone Binding Globulin (SHBG). Since SHBG acts as a "sponge" for excess hormones, lower levels mean more <em>Free Testosterone</em> is available to cause symptoms like hirsutism and acne.</li>
+            <li><strong>LH/FSH Imbalance:</strong> Hyperinsulinemia can sensitize the pituitary gland, leading to an exaggerated LH pulse frequency. This further drives the ovary toward androgen production rather than follicular maturation.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The Classic Metabolic Driver</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Sarah, Age 29 | <strong>Symptoms:</strong> 45-day cycles, cystic acne, difficulty losing weight.
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Sarah's lab work showed a Fasting Insulin of 18 µIU/mL (Optimal is < 6) and a LH:FSH ratio of 3:1. Despite a "normal" HbA1c, her HOMA-IR was 4.2, indicating significant insulin resistance.</p>
+                <p><strong>Intervention:</strong> Instead of focusing solely on calories, we implemented a <span class="highlight">Low Glycemic Load</span> protocol and introduced 4g of Myo-inositol daily. After 4 months, her cycles regulated to 31 days and her fasting insulin dropped to 8 µIU/mL.</p>
+            </div>
+        </div>
+
+        <h2 id="adrenal">Adrenal PCOS: The Role of DHEA-S</h2>
+        <p>What happens when a client presents with PCOS symptoms but has perfect insulin sensitivity and a lean physique? This is often <span class="highlight">Adrenal PCOS</span>, affecting approximately 20-30% of those diagnosed. In these cases, the androgen excess is not coming primarily from the ovaries, but from the adrenal glands.</p>
+
+        <p>The key biomarker here is <span class="highlight">DHEA-S (Dehydroepiandrosterone sulfate)</span>. Unlike testosterone, which can be produced by both ovaries and adrenals, DHEA-S is almost exclusively adrenal. These clients often have a heightened HPA-axis (Hypothalamic-Pituitary-Adrenal) response to stress. A 2022 study in <em>Frontiers in Endocrinology</em> noted that women with Adrenal PCOS show exaggerated cortisol and DHEA responses to ACTH stimulation, suggesting a genetic or epigenetic "hyper-responsiveness" to stress.</p>
+
+        <h2 id="postpill">Post-Pill PCOS: Temporary vs. Chronic</h2>
+        <p>Many women are told they "developed" PCOS after stopping oral contraceptives (OCPs). In reality, OCPs often mask pre-existing PCOS. However, there is a legitimate phenomenon known as <strong>Post-Pill Androgen Surge</strong>.</p>
+
+        <p>When the brain is suppressed by synthetic hormones for years, the communication between the pituitary and ovaries can be "clunky" upon withdrawal. As the body attempts to restart ovulation, there can be a temporary surge in LH and a subsequent spike in testosterone. If a woman has no history of PCOS prior to the pill and her metabolic markers are healthy, this "PCOS-like" state may resolve within 6-12 months with proper support. However, if the underlying drivers (inflammation or insulin) were present before the pill, the symptoms will persist and require intervention.</p>
+
+        <h2 id="inflammation">Inflammatory Markers & Follicular Arrest</h2>
+        <p>PCOS is increasingly recognized as a state of <span class="highlight">chronic low-grade inflammation</span>. This is not the "redness and swelling" of an injury, but a systemic elevation of cytokines like IL-6 and TNF-alpha. These inflammatory markers disrupt the delicate environment of the growing follicle.</p>
+
+        <p><strong>How inflammation drives PCOS:</strong>
+        <ul>
+            <li><strong>Insulin Receptor Interference:</strong> Cytokines can interfere with insulin signaling at the cellular level, creating "acquired" insulin resistance even in lean individuals.</li>
+            <li><strong>Follicular Arrest:</strong> High levels of C-Reactive Protein (CRP) are associated with a failure of the "dominant follicle" to emerge. Instead of one egg maturing, multiple follicles stall at the 2-9mm stage, creating the "string of pearls" appearance on ultrasound.</li>
+            <li><strong>Environmental Triggers:</strong> Exposure to Endocrine Disrupting Chemicals (EDCs) like Bisphenol A (BPA) has been shown to increase inflammatory markers in the follicular fluid of women with PCOS (n=450, <em>Environmental Health Perspectives</em>, 2023).</li>
+        </ul></p>
+
+        <h2 id="interventions">Evidence-Based Nutritional Interventions</h2>
+        <p>The goal of the <strong>AccrediPro Method</strong> is to match the intervention to the driver. We do not use a "one-size-fits-all" PCOS diet.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">1. The Inositol Protocol</div>
+            <div class="principle-text">
+                A meta-analysis of 26 randomized controlled trials found that the 40:1 ratio of Myo-inositol to D-chiro-inositol was as effective as Metformin for improving insulin sensitivity, with significantly fewer gastrointestinal side effects.
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">2. Glycemic Load Management</div>
+            <div class="principle-text">
+                Focus on "Closing the Gap." Every carbohydrate should be paired with a protein and a healthy fat to dampen the insulin response. A 2023 study showed that women who followed a low-GL diet for 12 weeks saw a 20% reduction in free testosterone levels.
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">3. Anti-Inflammatory Support</div>
+            <div class="principle-text">
+                Omega-3 fatty acids (EPA/DHA) have been shown to reduce LH pulse frequency and improve the regularity of the menstrual cycle in inflammatory PCOS phenotypes. Aim for a 2:1 EPA to DHA ratio.
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Which phenotype is characterized by having androgen excess and polycystic ovaries on ultrasound, but regular ovulatory cycles?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Phenotype C (Ovulatory PCOS). While cycles are regular, these women still face androgen-driven symptoms and moderate metabolic risk.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How does insulin contribute to high "Free Testosterone" levels specifically?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Insulin suppresses the liver's production of Sex Hormone Binding Globulin (SHBG). Less SHBG means more testosterone is "unbound" and biologically active in the bloodstream.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>PCOS is a heterogeneous disorder; identifying the specific phenotype (A, B, C, or D) is essential for targeted coaching.</li>
+                <li>Hyperinsulinemia is a primary driver in ~75% of cases, acting as a co-gonadotropin to stimulate ovarian androgen production.</li>
+                <li>Adrenal PCOS is driven by the HPA axis and characterized by elevated DHEA-S, often requiring stress management over aggressive blood sugar protocols.</li>
+                <li>Chronic inflammation contributes to follicular arrest and can induce insulin resistance even in the absence of high body fat.</li>
+                <li>Nutritional interventions like Inositol and low-GL eating patterns are evidence-based alternatives or adjuncts to conventional pharmacological treatments.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Teede, H. J. et al. (2023). "Recommendations from the 2023 International Evidence-based Guideline for the Assessment and Management of Polycystic Ovary Syndrome." <em>The Lancet Diabetes & Endocrinology.</em></li>
+                <li>Azziz, R. et al. (2016). "Polycystic Ovary Syndrome." <em>Nature Reviews Disease Primers.</em></li>
+                <li>Witchel, S. F. et al. (2019). "The Diagnosis of Polycystic Ovary Syndrome during Adolescence." <em>Hormone Research in Paediatrics.</em></li>
+                <li>Morgante, G. et al. (2022). "The Role of Inositol Supplementation in Patients with Polycystic Ovary Syndrome." <em>Gynecological Endocrinology.</em></li>
+                <li>Barber, T. M. et al. (2021). "Obesity and Polycystic Ovary Syndrome: Implications for Pathogenesis and Novel Management Strategies." <em>Clinical Medicine Insights: Reproductive Health.</em></li>
+                <li>Dapas, M. et al. (2020). "Distinct Subtypes of Polycystic Ovary Syndrome with Novel Genetic Associations: An Unsupervised Learning Analysis." <em>PLOS Medicine.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Women's Hormone Health Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

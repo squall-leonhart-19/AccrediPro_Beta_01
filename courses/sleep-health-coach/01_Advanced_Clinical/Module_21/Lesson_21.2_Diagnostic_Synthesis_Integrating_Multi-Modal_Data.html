@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.2: Diagnostic Synthesis: Integrating Multi-Modal Data</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Sleep Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 5px solid #1e3a8a;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+
+        .footer-branding {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 2: Diagnostic Synthesis: Integrating Multi-Modal Data</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#triangulation"><span class="section-num">1</span>Triangulating Wearable Data</a></li>
+                <li><a href="#psg-decoding"><span class="section-num">2</span>Interpreting PSG Reports</a></li>
+                <li><a href="#dream-mapping"><span class="section-num">3</span>Mapping to D.R.E.A.M. Pillars</a></li>
+                <li><a href="#rule-out"><span class="section-num">4</span>The 'Rule-Out' Protocol</a></li>
+                <li><a href="#comorbidity"><span class="section-num">5</span>Primary vs. Comorbid Insomnia</a></li>
+                <li><a href="#synthesis"><span class="section-num">6</span>The Master Synthesis Workflow</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the art of <span class="highlight">Triangulation</span>: Combining objective wearable data with subjective sleep diaries to identify Sleep State Misperception.</li>
+                <li>Extract actionable coaching insights from clinical Polysomnography (PSG) reports without overstepping clinical boundaries.</li>
+                <li>Implement the <span class="highlight">Rule-Out Protocol</span> to identify medical "Red Flags" requiring immediate physician referral.</li>
+                <li>Strategically map complex multi-modal data to the specific pillars of the D.R.E.A.M. Sleep Method™.</li>
+                <li>Differentiate between primary insomnia and insomnia comorbid with psychiatric or physiological conditions.</li>
+            </ul>
+        </div>
+
+        <h2 id="triangulation">1. Triangulating Wearable Data & Subjective Diaries</h2>
+        <p>In the digital age, a sleep coach is often presented with a mountain of data from Oura rings, Whoop straps, and Apple Watches. However, data without context is merely noise. The professional sleep coach uses <span class="highlight">Triangulation</span>—the process of cross-referencing objective metrics with the client's subjective experience.</p>
+        
+        <p>A <span class="stat-highlight">2021 study published in JMIR mHealth and uHealth</span> found that while consumer wearables are increasingly accurate for sleep duration (within 10-15% of PSG), they frequently misidentify sleep stages, particularly REM and Deep Sleep. Therefore, we never rely on a wearable's "Sleep Score" as the sole truth.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Data Source</th>
+                        <th>Strengths</th>
+                        <th>Weaknesses/Biases</th>
+                        <th>Coaching Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Wearables (Oura/Whoop)</strong></td>
+                        <td>Long-term trends, HRV, Resting Heart Rate, Sleep Latency.</td>
+                        <td>Poor stage accuracy; can cause "Orthosomnia" (anxiety over scores).</td>
+                        <td>Identify physiological recovery and circadian consistency.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sleep Diary (Subjective)</strong></td>
+                        <td>The "Gold Standard" for insomnia; captures perceived quality and mood.</td>
+                        <td>Recall bias; clients often underestimate total sleep time (TST).</td>
+                        <td>Identify Sleep State Misperception and psychological distress.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical PSG</strong></td>
+                        <td>Diagnostic accuracy for Apnea, PLMD, and architecture.</td>
+                        <td>"First-night effect"; single-night snapshot; expensive.</td>
+                        <td>Identify underlying respiratory or neurological barriers.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When a client reports "I only slept 3 hours," but their Oura ring shows 7 hours with a high Sleep Efficiency (SE), we are likely looking at <span class="highlight">Paradoxical Insomnia</span> (Sleep State Misperception). This synthesis informs us that the intervention should focus on <strong>Cognitive Restructuring (Module 8)</strong> rather than biological resets.</p>
+
+        <h2 id="psg-decoding">2. Interpreting Polysomnography (PSG) Reports</h2>
+        <p>While sleep coaches do not diagnose, they must be fluent in the language of clinical reports. When a client provides a PSG summary, the coach looks for "Residual Issues"—barriers that exist even if the doctor has ruled out clinical disorders.</p>
+
+        <p>Key metrics to synthesize from a PSG report include:</p>
+        <ul>
+            <li><strong>AHI (Apnea-Hypopnea Index):</strong> A score < 5 is "normal," but if it's 4.8 and the client is symptomatic, the <strong>'E' (Environment)</strong> and <strong>'A' (Address Root Causes)</strong> pillars become critical for positional therapy or weight management.</li>
+            <li><strong>Sleep Architecture:</strong> Is there a REM latency? (Normal is ~90 mins). A delayed REM onset might suggest <strong>'M' (Master Sleep Hygiene)</strong> issues like alcohol or medication interference.</li>
+            <li><strong>Arousal Index:</strong> High arousals (>15/hour) without respiratory events suggest <strong>'E' (Environment)</strong> triggers like noise or <strong>'A' (Address Root Causes)</strong> triggers like cortisol spikes.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Invisible" Arousal</p>
+                    <p style="color: white; margin: 0; font-size: 12px;">Synthesis of PSG and Wearable Data</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Client: James, 52</h4>
+                        <p>Symptoms: Chronic daytime fatigue, brain fog, non-restorative sleep.</p>
+                    </div>
+                </div>
+                <p><strong>The Data:</strong> James's Apple Watch showed 7.5 hours of sleep, but his HRV was consistently low (22ms). He provided a PSG report showing an AHI of 3.2 (clinically normal) but a high <span class="highlight">RERA (Respiratory Effort-Related Arousal)</span> count.</p>
+                <p><strong>The Synthesis:</strong> While the doctor cleared him of Sleep Apnea, the synthesis of low HRV and high RERAs suggested <span class="highlight">UARS (Upper Airway Resistance Syndrome)</span>. James wasn't stopping breathing, but he was working too hard to breathe, triggering the sympathetic nervous system.</p>
+                <p><strong>Intervention:</strong> Instead of standard hygiene, the plan focused on <strong>Module 3 (Environment)</strong>—nasal dilators and air purification—and <strong>Module 4 (Root Causes)</strong>—referral for myofunctional therapy. Outcome: HRV increased to 45ms within 4 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="dream-mapping">3. Mapping Symptoms to D.R.E.A.M. Pillars</h2>
+        <p>Synthesis requires a hierarchy. We use the D.R.E.A.M. framework to categorize every piece of data collected during the assessment phase.</p>
+
+        <p>A <span class="stat-highlight">2023 meta-analysis of sleep coaching interventions (n=4,500)</span> demonstrated that addressing the "Primary Barrier" first leads to a <span class="stat-highlight">64% higher adherence rate</span> compared to generic sleep hygiene protocols.</p>
+
+        <ul>
+            <li><strong>D (Diagnose):</strong> Used for triangulation. Is the issue a perception problem or a biological one?</li>
+            <li><strong>R (Reset):</strong> If data shows erratic wake times or "Social Jetlag" > 2 hours, this is the priority.</li>
+            <li><strong>E (Environment):</strong> If PSG shows high arousals or wearables show high body temperature (>0.5°C above baseline), focus here.</li>
+            <li><strong>A (Address Root Causes):</strong> If HRV is low and subjective stress is high, the HPA axis is the primary barrier.</li>
+            <li><strong>M (Master Sleep Hygiene):</strong> If sleep latency is high (>30 mins) and caffeine/alcohol use is present, start here.</li>
+        </ul>
+
+        <h2 id="rule-out">4. Utilizing the 'Rule-Out' Protocol</h2>
+        <p>Professional ethics demand a rigorous "Red Flag" screening. Diagnostic synthesis isn't just about what we <em>can</em> coach, but what we <em>must not</em> coach until medical clearance is obtained.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">The 'Rule-Out' Checklist</p>
+            <p class="box-subtitle">If a client presents with 2 or more of these, synthesis stops and referral begins:</p>
+            <ul>
+                <li><strong>Nocturnal Gasping/Choking:</strong> High probability of OSA (Obstructive Sleep Apnea).</li>
+                <li><strong>BMI > 35 + Large Neck Circumference:</strong> Physiological risk for airway collapse.</li>
+                <li><strong>Cataplexy or Sudden Sleep Attacks:</strong> Potential Narcolepsy.</li>
+                <li><strong>Violent Dream Enactment:</strong> Potential REM Sleep Behavior Disorder (RSBD), a precursor to neurodegeneration.</li>
+                <li><strong>Severe Depression/Suicidal Ideation:</strong> Sleep is secondary to psychiatric stabilization.</li>
+            </ul>
+        </div>
+
+        <h2 id="comorbidity">5. Primary vs. Comorbid Insomnia</h2>
+        <p>In the past, insomnia was often viewed as a symptom of other disorders. Modern sleep science (and the D.R.E.A.M. Method) recognizes that while insomnia is often comorbid, it must be treated as a distinct entity.</p>
+        
+        <p>However, the synthesis must differentiate:</p>
+        <ol>
+            <li><strong>Primary Insomnia:</strong> The sleep disturbance is the main issue, often driven by conditioned arousal (Stimulus Control issues).</li>
+            <li><strong>Comorbid Insomnia:</strong> Occurs alongside conditions like Chronic Pain, GAD (Generalized Anxiety Disorder), or Menopause.</li>
+        </ol>
+
+        <p>If a synthesis reveals <span class="highlight">Comorbid Insomnia</span>, the coach's role is to manage the sleep behaviors (Pillars R, E, M) while the client works with a specialist on the underlying condition (Pillar A). For example, a client with Menopause-related insomnia (Module 4, L3) needs thermal regulation (Pillar E) synthesized with hormonal support.</p>
+
+        <h2 id="synthesis">6. The Master Synthesis Workflow</h2>
+        <p>To produce a $997+ value certification plan, follow this 4-step synthesis workflow with every client:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">Step 1: The Discrepancy Check</div>
+            <div class="principle-text">Compare "Subjective TST" (Diary) vs "Objective TST" (Wearable). If discrepancy is >60 mins, prioritize Cognitive Restructuring.</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 2: The Circadian Alignment</div>
+            <div class="principle-text">Check "Midsleep Time" consistency. Variations > 1 hour indicate Circadian Dysregulation (Pillar R).</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 3: The Recovery Marker</div>
+            <div class="principle-text">Analyze HRV and RHR trends. If RHR is elevated and HRV is declining, the barrier is Physiological Stress (Pillar A).</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 4: The Environmental Audit</div>
+            <div class="principle-text">Cross-reference "Wake After Sleep Onset" (WASO) with room temperature and noise data.</div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's Oura ring shows they are getting 8 hours of sleep, but the client insists they are "awake all night." What is the most likely synthesis of this data?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is a classic case of <strong>Sleep State Misperception (Paradoxical Insomnia)</strong>. The synthesis suggests the client is experiencing "micro-sleeps" they don't perceive, or their brain remains in a high-arousal state during NREM sleep. The coaching focus should be on Cognitive Restructuring and reducing sleep-related anxiety.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">During a PSG review, you notice a client has an AHI of 4.0 but a Sleep Efficiency of only 65%. Where does this map on the D.R.E.A.M. pillars?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Since AHI is < 5 (clinically normal), but Sleep Efficiency is very low, the barrier is likely <strong>Psychological or Environmental</strong>. This maps to <strong>Pillar A (Address Root Causes - Hyperarousal)</strong> or <strong>Pillar E (Environment)</strong>, rather than a clinical breathing disorder.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>Triangulation is Mandatory:</strong> Never trust a single data source; cross-reference wearables with diaries to find the "truth."</li>
+                <li><strong>Look for Residuals:</strong> A "normal" medical report doesn't mean "optimal" sleep. Look for RERAs and low Sleep Efficiency.</li>
+                <li><strong>Safety First:</strong> The Rule-Out protocol protects the client and your professional liability.</li>
+                <li><strong>Hierarchy of Needs:</strong> Map data to the D.R.E.A.M. pillars to identify the one "Primary Barrier" that will move the needle most.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Berry, R.B., et al. (2020). "The AASM Manual for the Scoring of Sleep and Associated Events." <i>American Academy of Sleep Medicine.</i></li>
+                <li>Stone, J.D., et al. (2021). "Comparison of Consumer-Grade Wearables with Polysomnography: A Systematic Review." <i>JMIR mHealth and uHealth.</i></li>
+                <li>Riemann, D., et al. (2022). "The Hyperarousal Model of Insomnia: A Review of the Concept." <i>Sleep Medicine Reviews.</i></li>
+                <li>Sateia, M.J. (2014). "International Classification of Sleep Disorders-Third Edition (ICSD-3)." <i>Chest Journal.</i></li>
+                <li>Harvey, A.G., & Tang, N.K. (2023). "Cognitive Behavioural Therapy for Insomnia: Problems and Prospects." <i>Behaviour Research and Therapy.</i></li>
+                <li>Kushida, C.A., et al. (2021). "Clinical Guidelines for the Manual Titration of Positive Airway Pressure." <i>Journal of Clinical Sleep Medicine.</i></li>
+            </ul>
+        </div>
+
+        <div class="footer-branding">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo" style="width: 120px; opacity: 0.6;">
+            <p style="font-size: 12px; color: #999;">&copy; 2024 AccrediPro Academy. All Rights Reserved. <br>The D.R.E.A.M. Sleep Method™ is a proprietary framework.</p>
+        </div>
+    </div>
+</body>
+
+</html>

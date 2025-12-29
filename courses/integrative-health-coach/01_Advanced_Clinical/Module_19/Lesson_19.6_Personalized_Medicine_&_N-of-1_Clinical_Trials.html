@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 19.6: Personalized Medicine & N-of-1 Clinical Trials</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Research & Evidence */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #ede9e0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .references-box h3 {
+            font-size: 16px;
+            color: #1e3a8a;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .ref-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+            color: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-top: 40px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 19: L2: Research & Evidence</p>
+            <h1 class="lesson-title">Lesson 6: Personalized Medicine & N-of-1 Clinical Trials</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Limits of the "Average"</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>N-of-1 Methodology</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Real-World Evidence (RWE)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Tracking Longitudinal Data</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Role of Wearables</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Validating Individual Progress</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define N-of-1 clinical trials and their application in the W.H.O.L.E. Health Method™.</li>
+                <li>Differentiate between population-based RCT data and personalized Real-World Evidence (RWE).</li>
+                <li>Identify key biomarkers (CRP, HbA1c, HRV) for longitudinal client tracking.</li>
+                <li>Utilize Patient-Reported Outcome Measures (PROMs) to quantify subjective health improvements.</li>
+                <li>Evaluate the validity of wearable technology data in a clinical coaching context.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Limits of the "Average": Why RCTs Aren't Enough</h2>
+        <p>In previous lessons, we established the Randomized Controlled Trial (RCT) as the "gold standard" of clinical research. However, for the integrative practitioner, RCTs have a significant flaw: they are designed to find the <span class="highlight">average effect</span> across a large population. While this is vital for public health policy, it often fails the individual client sitting in front of you.</p>
+        
+        <p>A 2021 review in <i>The Lancet</i> noted that for many common chronic conditions, the "Number Needed to Treat" (NNT) for standard pharmaceutical interventions can be as high as 20 or 50. This means for every 50 people taking the drug, only one benefits as described in the trial. The other 49 may experience no effect or, worse, adverse side effects. This discrepancy is known as <span class="highlight">inter-individual variability</span>.</p>
+
+        <p>In the <strong>W.H.O.L.E. Health Method™</strong>, we recognize that bio-individuality—driven by genetics, the microbiome, and environmental triggers (the 'W' Wellness Assessment)—requires a more granular approach to evidence. This is where personalized medicine and N-of-1 trials bridge the gap between "what works for most" and "what works for this person."</p>
+
+        <h2 id="section2">2. N-of-1 Methodology: The Single-Subject Trial</h2>
+        <p>An <span class="highlight">N-of-1 trial</span> is a multi-period crossover trial conducted in a single individual. Instead of comparing a group of people taking "Supplement A" to a group taking a placebo, we compare "Supplement A" to a placebo (or a different intervention) within the <span class="highlight">same person</span> over multiple time blocks.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard RCT (N=Many)</th>
+                        <th>N-of-1 Trial (N=1)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Generalizability to populations</td>
+                        <td>Optimal treatment for the individual</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Control</strong></td>
+                        <td>Parallel group (Placebo vs. Active)</td>
+                        <td>Self-control (Individual acts as own control)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Focus</strong></td>
+                        <td>Mean (Average) results</td>
+                        <td>Individual variance & specific response</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Applicability</strong></td>
+                        <td>Guidelines & Policy</td>
+                        <td>Precision Coaching & Clinical Decision Making</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The methodology typically involves:</p>
+        <ul class="content-list">
+            <li><strong>Baseline Phase:</strong> Establishing the current state using the Wellness Assessment (W).</li>
+            <li><strong>Intervention Phase:</strong> Introducing the lifestyle change or supplement (L).</li>
+            <li><strong>Washout Phase:</strong> A period where the intervention is removed to ensure effects don't carry over.</li>
+            <li><strong>Re-Testing:</strong> Repeating the cycle to confirm that the observed changes weren't due to chance.</li>
+        </ul>
+
+        <h2 id="section3">3. Real-World Evidence (RWE) & PROMs</h2>
+        <p>As an Integrative Health Coach, you are often operating in the realm of <span class="highlight">Real-World Evidence (RWE)</span>. This is data collected outside of highly controlled laboratory settings. While some critics argue RWE is "messy," modern data analytics suggests it is often more reflective of how interventions work in actual life.</p>
+
+        <p>A critical component of RWE is the use of <span class="highlight">Patient-Reported Outcome Measures (PROMs)</span>. These are validated tools that allow clients to quantify subjective experiences. For example, using the <i>Visual Analogue Scale (VAS)</i> for pain or the <i>Medical Outcomes Study (MOS) Sleep Scale</i> provides "hard data" on "soft symptoms."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: N-of-1 for Migraine Identification</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Elena, 42. Chronic migraines (3-4x per month).</p>
+                <p><strong>Challenge:</strong> Elena suspected gluten was a trigger, but her Celiac tests were negative. Standard RCT data on Non-Celiac Gluten Sensitivity (NCGS) is contradictory.</p>
+                <p><strong>Intervention:</strong> We designed a 12-week N-of-1 trial. 
+                    <br>• Weeks 1-4: Gluten-free (GF).
+                    <br>• Weeks 5-8: Controlled reintroduction (Gluten).
+                    <br>• Weeks 9-12: Gluten-free again.</p>
+                <p><strong>Outcome:</strong> During GF weeks, Elena’s migraine frequency dropped to 0. During the reintroduction, she experienced 3 migraines within 72 hours of ingestion. Her HRV (measured via Oura) dropped by 15ms on gluten days. This <span class="stat-highlight">personalized evidence</span> gave her the conviction to maintain a lifestyle change that population data couldn't definitively support for her.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Tracking Longitudinal Data: Correlating Lifestyle with Biomarkers</h2>
+        <p>To validate an N-of-1 trial, we must move beyond "feeling better" and look at <span class="highlight">longitudinal biomarkers</span>. This involves tracking specific labs over months to see the biological response to the 'H' (Holistic Planning) and 'L' (Lifestyle Medicine) phases of the W.H.O.L.E. Method.</p>
+
+        <p>Key markers for the Integrative Practitioner include:</p>
+        <ul class="content-list">
+            <li><strong>hs-CRP (High-Sensitivity C-Reactive Protein):</strong> A marker of systemic inflammation. A 2022 meta-analysis showed that personalized dietary interventions could reduce hs-CRP by an average of <span class="stat-highlight">23% (p < 0.05)</span> in patients with metabolic syndrome.</li>
+            <li><strong>HbA1c:</strong> Tracking glycemic control over 3-month windows. This is the ultimate "report card" for metabolic flexibility (Module 7).</li>
+            <li><strong>HRV (Heart Rate Variability):</strong> A real-time marker of autonomic nervous system balance. High HRV correlates with better resilience and lower stress levels.</li>
+        </ul>
+
+        <p>By plotting these markers against lifestyle interventions (e.g., "Started 16:8 Intermittent Fasting on June 1st"), you create a <span class="highlight">correlational map</span> of the client's health journey. This is the essence of "Evidence-Based Coaching."</p>
+
+        <h2 id="section5">5. The Role of Wearable Technology</h2>
+        <p>Wearables have revolutionized N-of-1 trials by providing high-frequency data (n=thousands of data points per day) rather than a single point in time (a lab draw). A 2023 study of <span class="stat-highlight">n=8,234</span> participants published in <i>Nature Medicine</i> demonstrated that wearable data could predict the onset of inflammatory conditions days before clinical symptoms appeared.</p>
+
+        <p>Tools for the Practitioner:</p>
+        <ul class="content-list">
+            <li><strong>Continuous Glucose Monitors (CGM):</strong> The "gold standard" for N-of-1 metabolic trials. Seeing how a specific meal (e.g., oatmeal) spikes blood sugar in Client A but not Client B proves bio-individuality.</li>
+            <li><strong>Smart Rings/Watches:</strong> Tracking sleep architecture (Deep vs. REM) and its correlation with daytime performance and mood.</li>
+            <li><strong>Bio-impedance Scales:</strong> Tracking visceral fat and muscle mass changes during 'Functional Movement' (L3) interventions.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>Always remember that wearable data is a <i>proxy</i>, not a diagnosis. Use it to identify <strong>trends</strong> and <strong>deviations from baseline</strong> rather than absolute values. If a client's resting heart rate (RHR) jumps by 10 beats per night, it is a trigger to investigate "The Total Human" (W1.2)—is it overtraining, an incoming virus, or acute stress?</p>
+        </div>
+
+        <h2 id="section6">6. Validating Individual Progress: When Data Conflicts</h2>
+        <p>What do you do when a major RCT says "Saturated fat has no effect on cardiovascular risk," but your client's ApoB and LDL-P skyrocket after they start a high-fat ketogenic diet? This is where <span class="highlight">clinical judgment</span> meets personalized evidence.</p>
+
+        <p>In a 2018 study (the DIETFITS trial, n=609), researchers found that there was no significant difference in weight loss between low-carb and low-fat diets <i>on average</i>. However, the individual range was massive: some lost 60 lbs, while others <i>gained</i> 20 lbs on the exact same protocol. This study effectively ended the "one size fits all" diet debate in the scientific community.</p>
+
+        <p>To validate progress when RCT data is contradictory:</p>
+        <ol class="content-list">
+            <li><strong>Prioritize the Client’s Biology:</strong> If the biomarkers (CRP, Lipids, Glucose) are trending negatively, the intervention is wrong for <i>that</i> person, regardless of what the latest meta-analysis says.</li>
+            <li><strong>Use the "Rule of Three":</strong> Look for three points of convergence—Subjective (PROM), Objective (Lab), and Functional (Wearable/Performance). If all three align, the evidence is robust.</li>
+            <li><strong>Acknowledge the Placebo/Nocebo Effect:</strong> In N-of-1 trials, the client's belief in the intervention (Empower Self-Healing - Module 5) is a variable, not a nuisance.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of personalized research methodologies.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why might an N-of-1 trial be superior to a traditional RCT for a client with a complex, multi-systemic chronic illness?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    RCTs focus on the "average" response and often exclude patients with comorbidities (multiple conditions). N-of-1 trials allow for the tracking of a specific individual's unique bio-individual response to multiple interventions, accounting for their specific triggers and mediators (Mapping the Health Timeline).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary purpose of a "washout phase" in a personalized N-of-1 protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    The washout phase ensures that the physiological effects of the first intervention have completely left the body before the next phase begins. This prevents "carryover effects" from skewing the data of the subsequent period.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Lesson Takeaways</span>
+            <ul>
+                <li><strong>The Average is a Myth:</strong> Population data (RCTs) informs the starting point, but N-of-1 trials determine the destination.</li>
+                <li><strong>W.H.O.L.E. Integration:</strong> Use the Wellness Assessment (W) to establish the baseline and Lifestyle Medicine (L) as the variable in your client's personal clinical trial.</li>
+                <li><strong>Triangulate Data:</strong> Combine PROMs (subjective), Labs (objective), and Wearables (functional) to validate progress.</li>
+                <li><strong>RWE is Vital:</strong> Real-World Evidence provides a more accurate picture of how lifestyle changes integrate into a client's actual life compared to clinical settings.</li>
+                <li><strong>Bio-individuality is Measurable:</strong> Use longitudinal tracking of CRP, HbA1c, and HRV to turn "coaching" into "precision health."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <ul class="ref-list">
+                <li>Guyatt, G. et al. (2020). "N-of-1 Randomized Trials: A Guide for Clinicians." <i>Journal of the American Medical Association (JAMA).</i></li>
+                <li>Lillie, E. O. et al. (2011). "The Role of N-of-1 Trials in Personalized Medicine." <i>Personalized Medicine Journal.</i></li>
+                <li>Schork, N. J. (2015). "Personalized Medicine: Time for One-Person Trials." <i>Nature.</i></li>
+                <li>Gardner, C. D. et al. (2018). "Effect of Low-Fat vs Low-Carbohydrate Diet on 12-Month Weight Loss: The DIETFITS Randomized Clinical Trial." <i>JAMA.</i></li>
+                <li>Quer, G. et al. (2023). "Wearable Sensor Data and Personalized Health Monitoring." <i>Nature Medicine.</i></li>
+                <li>Davidson, K. W. et al. (2021). "N-of-1 Trials for Precision Medicine: Theory and Practice." <i>The Lancet.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Integrative Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The W.H.O.L.E. Health Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

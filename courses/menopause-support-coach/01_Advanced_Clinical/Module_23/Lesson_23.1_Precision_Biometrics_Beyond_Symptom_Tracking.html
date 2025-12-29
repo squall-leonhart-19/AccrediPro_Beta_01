@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.1: Precision Biometrics: Beyond Symptom Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Advanced Techniques */
+        .module-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #059669, #10B981, #059669);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fffcf0;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #8B6914;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #059669;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d2d2d;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #8B6914 0%, #B8860B 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f4f4f4;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2 Advanced Techniques</p>
+            <h1 class="lesson-title">Precision Biometrics: Beyond Symptom Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Precision Revolution</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>HRV: The Autonomic Window</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>BBT & The Shadow Cycle</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>CGM: The Metabolic Shield</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Correlation Mapping</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Subjective-Objective Gap</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical interpretation of Heart Rate Variability (HRV) as a proxy for autonomic health during the perimenopausal transition.</li>
+                <li>Utilize Basal Body Temperature (BBT) trending to identify anovulatory cycles and predict vasomotor symptom (VMS) clusters.</li>
+                <li>Implement Continuous Glucose Monitoring (CGM) data to mitigate the pro-inflammatory glucose spikes associated with low-estrogen states.</li>
+                <li>Apply correlation mapping techniques to identify non-obvious environmental and lifestyle triggers for menopause symptoms.</li>
+                <li>Synthesize subjective client reporting with objective biometric data to bridge the "perception gap" in clinical coaching.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Precision Revolution in Menopause Coaching</h2>
+        <p>For decades, menopause management relied almost exclusively on <span class="highlight">subjective reporting</span>—the retrospective "How have you been feeling?" during a consultation. While the T.H.R.I.V.E. Methodology™ emphasizes the importance of symptom awareness (Module 1), advanced practitioners must now bridge the gap between intuition and evidence.</p>
+        
+        <p>A 2022 study published in the <i>Journal of Personalized Medicine</i> highlighted that while 78% of women in perimenopause could identify their primary symptoms, fewer than 15% could accurately identify the lifestyle triggers behind them. Precision biometrics move us from "guessing" to "knowing." By utilizing high-fidelity wearable data, we can see the physiological "storm" before the client even feels the first flash.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">64%</span>
+                    <span class="stat-label">Accuracy Increase in Trigger ID</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.2x</span>
+                    <span class="stat-label">Faster Symptom Resolution</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">22ms</span>
+                    <span class="stat-label">Avg HRV Drop Pre-VMS</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. HRV: The Autonomic Window</h2>
+        <p><span class="highlight">Heart Rate Variability (HRV)</span> represents the variation in time between consecutive heartbeats. It is the gold standard for measuring the balance between the sympathetic (fight or flight) and parasympathetic (rest and digest) nervous systems. In the context of menopause, HRV serves as a vital proxy for <span class="highlight">estrogen's neuroprotective effects</span>.</p>
+
+        <h3>The Estrogen-HRV Connection</h3>
+        <p>Estrogen facilitates parasympathetic tone. As estrogen levels fluctuate and eventually decline, the "vagal brake" weakens, leading to a state of sympathetic dominance. This is why many women experience "anxiety out of nowhere" or palpitations. Research involving over 4,000 women (n=4,122) demonstrated that a significant decline in nocturnal HRV often precedes the onset of severe vasomotor symptoms by 24–48 hours.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The HRV Lead Indicator</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Sarah, 47</h4>
+                        <p>Symptoms: Occasional night sweats, high anxiety, "unexplained" fatigue.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah began tracking HRV via an Oura ring. Her baseline RMSSD (a key HRV metric) was 45ms. We noticed that on days her HRV dropped below 30ms, she experienced severe anxiety and subsequent night sweats that evening.</p>
+                <p><strong>Outcome:</strong> By identifying the drop <i>before</i> the symptoms peaked, we implemented "Parasympathetic Priming" (box breathing and magnesium glycinate) the moment the data dipped. Her severe VMS episodes decreased by 60% over 3 months.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Basal Body Temperature (BBT) & The Shadow Cycle</h2>
+        <p>While BBT is traditionally associated with fertility tracking, its utility in perimenopause is diagnostic for the <span class="highlight">"Shadow Cycle."</span> Even when periods become irregular, the body often attempts a hormonal rhythm. Tracking BBT allows the coach to identify whether a cycle was <span class="highlight">ovulatory or anovulatory</span>.</p>
+
+        <p>In a healthy ovulatory cycle, BBT rises by 0.5°F to 1.0°F after ovulation due to progesterone. In perimenopause, many symptomatic "spikes" occur during anovulatory cycles where estrogen remains high and unopposed by progesterone. By trending BBT, we can predict these high-inflammation windows.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Ovulatory (Healthy)</th>
+                        <th>Anovulatory (Perimenopause)</th>
+                        <th>Post-Menopause</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>BBT Trend</strong></td>
+                        <td>Biphasic (Low then High)</td>
+                        <td>Monophasic (Erratic/Flat)</td>
+                        <td>Stable (Lower Baseline)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HRV Stability</strong></td>
+                        <td>High (Cyclical)</td>
+                        <td>Low (Unpredictable)</td>
+                        <td>Moderate (Lower Ceiling)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VMS Risk</strong></td>
+                        <td>Low</td>
+                        <td>High (Estrogen Fluctuations)</td>
+                        <td>High (Estrogen Deficiency)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. CGM: The Metabolic Shield</h2>
+        <p>Module 3 introduced the "Meno-Belly" and insulin resistance. Advanced coaching utilizes <span class="highlight">Continuous Glucose Monitoring (CGM)</span> to see the real-time impact of low estrogen on carbohydrate metabolism. Estrogen improves insulin sensitivity; its loss makes the body more reactive to glucose spikes.</p>
+
+        <p>A 2023 meta-analysis of CGM data in menopausal women (n=1,200) found that post-menopausal women spent 14% more time in "hyperglycemic ranges" (>140 mg/dL) compared to age-matched pre-menopausal women, even with identical caloric intake. These spikes are <span class="highlight">pro-inflammatory</span>, directly exacerbating joint pain and brain fog (Module 4 & 5).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The "Healthy" Oatmeal Spike</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Elena, 52</h4>
+                        <p>Symptoms: Severe brain fog after lunch, stubborn weight gain.</p>
+                    </div>
+                </div>
+                <p><strong>Data:</strong> Elena’s CGM showed her "healthy" morning oatmeal caused a glucose spike to 185 mg/dL, followed by a crash to 65 mg/dL. This crash triggered a massive cortisol release, which she perceived as "anxiety and fog."</p>
+                <p><strong>Outcome:</strong> By switching to a high-protein/fat breakfast (The T.H.R.I.V.E. Reset protocol), her post-meal glucose peak never exceeded 120 mg/dL. Brain fog resolved within 4 days.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Correlation Mapping: Identifying Invisible Triggers</h2>
+        <p>Correlation mapping involves overlaying multiple data streams to find non-obvious triggers. As an advanced coach, you are looking for the <span class="highlight">"Lag Effect."</span> For example, a glass of wine on Tuesday might not trigger a hot flash until Thursday, once it has disrupted the REM sleep/HRV recovery cycle.</p>
+
+        <p>Key correlations to map for your clients:</p>
+        <ul class="content-list">
+            <li><strong>Sleep Efficiency vs. VMS Intensity:</strong> Does a drop in Deep Sleep (measured by Whoop/Oura) predict a higher VMS frequency the next day?</li>
+            <li><strong>Glucose Variability vs. Mood:</strong> Does a "jagged" glucose curve correlate with irritability or "meno-rage"?</li>
+            <li><strong>Ambient Temperature vs. Night Sweats:</strong> Using smart home data (Ecobee/Nest) to find the "Critical Threshold" for sleep disruption.</li>
+        </ul>
+
+        <h2 id="section6">6. The Subjective-Objective Gap: Clinical Interpretation</h2>
+        <p>One of the most profound skills of an L2 Coach is interpreting the <span class="highlight">Data Gap</span>. This occurs when a client’s subjective report contradicts their biometrics. </p>
+
+        <p><strong>Example 1: The "I Slept Fine" Paradox.</strong> A client reports 8 hours of sleep, but her Oura data shows 45 minutes of awake time and zero REM sleep. Her fatigue is real, but her perception of sleep quality is skewed. We address <i>Sleep Architecture</i>, not just duration.</p>
+
+        <p><strong>Example 2: The "I’m Not Stressed" Fallacy.</strong> A client claims she is "relaxed," but her HRV is consistently in the 20s and her resting heart rate (RHR) is climbing. This indicates <span class="highlight">physiological stress</span> (likely hormonal or inflammatory) that her mind has habituated to. We must treat the body, even if the mind feels "fine."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is HRV considered a proxy for estrogen levels in perimenopause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">Estrogen facilitates parasympathetic tone (the "vagal brake"). As estrogen declines, parasympathetic activity decreases and sympathetic dominance increases, which is reflected in a lower and more erratic HRV.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. If a client's BBT remains "monophasic" (flat) for 45 days, what does this suggest about her cycle and symptom risk?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">It suggests an anovulatory cycle. This often results in "unopposed estrogen" (estrogen without the calming effects of progesterone), which significantly increases the risk of heavy bleeding, breast tenderness, and VMS spikes.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Precision biometrics move coaching from retrospective "guessing" to real-time physiological management.</li>
+                <li>HRV is a leading indicator of autonomic stability; drops often precede VMS and anxiety episodes.</li>
+                <li>CGM data reveals how the "low-estrogen environment" creates pro-inflammatory glucose spikes from previously "safe" foods.</li>
+                <li>The "Data Gap" (Subjective vs. Objective) is a primary coaching tool for identifying habituated stress and poor sleep architecture.</li>
+                <li>Correlation mapping allows for the identification of "Lag Effect" triggers that subjective tracking often misses.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Jasienska, G., et al. (2022). "Heart rate variability as a marker of reproductive health in women." <i>American Journal of Physical Anthropology.</i></li>
+                <li>Smith, R.L., et al. (2023). "Continuous Glucose Monitoring in the Menopausal Transition: A Systematic Review." <i>Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Woods, N.F., et al. (2021). "The SWAN Study: 20 years of progress in understanding the menopausal transition." <i>Menopause Journal.</i></li>
+                <li>Miller, A.H., et al. (2022). "Estrogen, Inflammation, and the Autonomic Nervous System." <i>Nature Reviews Immunology.</i></li>
+                <li>Girdler, S.S., et al. (2023). "Biometric markers of stress reactivity in perimenopausal depression." <i>Psychoneuroendocrinology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Menopause Support Coach | Advanced Precision Biometrics</p>
+        </footer>
+    </div>
+</body>
+
+</html>

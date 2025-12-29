@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.8: Professional Implementation: Delivering the C.A.L.M. Specialist Program</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Professional Implementation */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '💼';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #334155;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid #334155;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            flex-shrink: 0;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #334155;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ref-list li {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #0f172a;
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #D4A84B;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 13px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 8: Professional Implementation: Delivering the C.A.L.M. Specialist Program</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Level 3 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The High-Ticket Architecture</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Collaborative Care Networks</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Ethical Boundaries & Scope</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Program Evolution Loop</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Finalizing Your Specialist Portfolio</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design a structured 4-6 month high-ticket C.A.L.M. program delivery model.</li>
+                <li>Master the professional language required to collaborate with medical providers.</li>
+                <li>Define the legal and ethical boundaries between health coaching and clinical medicine.</li>
+                <li>Implement a data-driven feedback loop to continuously refine program outcomes.</li>
+                <li>Consolidate all previous L3 learnings into a market-ready professional portfolio.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The High-Ticket Architecture: Structuring L3 Engagements</h2>
+        <p>In the previous lessons of Module 26, we focused on the clinical decision trees and protocol layering that define an <span class="highlight">Autoimmune Specialist</span>. However, clinical brilliance is ineffective without a delivery structure that ensures client adherence and long-term transformation. A "high-ticket" program is not merely a high-price service; it is a high-support, high-accountability container designed to move a client from chronic flare to sustained remission.</p>
+
+        <p>Research indicates that for complex chronic conditions like autoimmunity, outcomes improve significantly when interventions last <span class="highlight">at least 16 to 24 weeks</span>. This allows sufficient time for the "C" (Contain) and "A" (Address Root Causes) phases to take effect before transitioning into "L" (Lifestyle) and "M" (Maintenance).</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">82%</div>
+            <div class="stat-desc">A 2022 study on health coaching for systemic inflammation found that 82% of participants required 4+ months of consistent support to achieve measurable reductions in CRP and ESR biomarkers.</div>
+        </div>
+
+        <h3>The Recommended Delivery Format</h3>
+        <p>As an L3 Specialist, your program should balance intensive 1:1 clinical strategy with scalable digital support. A typical structure includes:</p>
+        <ul>
+            <li><strong>The Clinical Deep Dive (Week 1):</strong> A 90-minute session to review history, labs, and finalize the "C" phase triggers.</li>
+            <li><strong>Bi-Weekly Implementation Sprints (Weeks 2-16):</strong> 45-minute sessions focusing on sequencing root cause address (Phase 2) and lifestyle reprogramming (Phase 3).</li>
+            <li><strong>Asynchronous Support:</strong> Secure messaging for "flare rescue" protocols and real-time nutritional adjustments.</li>
+            <li><strong>The Remission Roadmap (Final Month):</strong> Focus on strategic reintroduction and long-term monitoring (Phase 4).</li>
+        </ul>
+
+        <h2 id="section2">2. Building a Collaborative Care Network</h2>
+        <p>One of the hallmarks of a Level 3 Specialist is the ability to communicate effectively with a client's medical team. Autoimmune clients are often managed by multiple specialists—Rheumatologists, Endocrinologists, and Primary Care Physicians (PCPs). Your role is to serve as the <span class="highlight">integrative bridge</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stakeholder</th>
+                        <th>Their Primary Focus</th>
+                        <th>Your Collaborative Contribution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rheumatologist</td>
+                        <td>Disease suppression via biologics/DMARDs.</td>
+                        <td>Tracking lifestyle triggers that influence flare frequency.</td>
+                    </tr>
+                    <tr>
+                        <td>Endocrinologist</td>
+                        <td>Hormonal replacement (e.g., Levothyroxine).</td>
+                        <td>Optimizing nutrient density to improve hormone conversion.</td>
+                    </tr>
+                    <tr>
+                        <td>PCP / Internal Med</td>
+                        <td>General health & acute symptom management.</td>
+                        <td>Detailed environmental exposome & gut health data.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When communicating with a physician, use clinical terminology and present data clearly. Instead of saying, "The client is eating better," state: "The client has implemented the C.A.L.M. elimination protocol, resulting in a 35% reduction in self-reported joint stiffness and a downward trend in high-sensitivity C-Reactive Protein (hs-CRP)."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🩺</div>
+                <div>
+                    <p class="box-label">Case Study: The Collaborative Bridge</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Practitioner: Sarah J. | Client: Michael (RA)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Michael, 44</h4>
+                        <p>Rheumatoid Arthritis | Stalled on Methotrexate</p>
+                    </div>
+                </div>
+                <p>Michael’s Rheumatologist was skeptical of "lifestyle programs." Sarah, an L3 Specialist, sent a professional introductory letter outlining the C.A.L.M. framework and Michael’s baseline KPIs. When Michael’s inflammation markers dropped significantly after 3 months of gut-immune axis work, the Rheumatologist reached out to Sarah to discuss the "non-pharmacological variables" she was managing. This led to a formal referral relationship.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Ethical Boundaries and Scope of Practice</h2>
+        <p>As you implement high-level programs, maintaining clear ethical boundaries is paramount. The C.A.L.M. Autoimmune Protocol™ is a <span class="highlight">supportive health-coaching framework</span>, not a medical treatment plan. Your L3 designation signifies expertise in lifestyle-based immune regulation, not the license to diagnose or prescribe.</p>
+
+        <h3>The Specialist's "Red Lines"</h3>
+        <ul>
+            <li><strong>Diagnosis:</strong> You do not diagnose specific autoimmune diseases. You interpret how systemic imbalances (gut, toxic load, stress) contribute to the client's *known* condition.</li>
+            <li><strong>Medication:</strong> You NEVER advise a client to stop or change the dosage of a prescribed medication (e.g., Prednisone or Biologics). You refer them to their MD to discuss medication changes as their health improves.</li>
+            <li><strong>Laboratory Orders:</strong> Depending on your jurisdiction and other credentials, you may suggest "functional markers" for the client to request from their doctor or order through authorized channels, but these are for educational/coaching purposes.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro-Tip: Use "Educational Inference"</p>
+            <p>Instead of saying "You have leaky gut," use language like: "Your symptom profile and history suggest intestinal permeability may be a contributing factor to your systemic inflammation. Our protocol will focus on supporting mucosal integrity."</p>
+        </div>
+
+        <h2 id="section4">4. The 'Program Evolution' Loop: Data-Driven Optimization</h2>
+        <p>Your L3 program should not be static. It must evolve based on the Clinical KPIs discussed in Lesson 7. This "Evolution Loop" ensures that your proprietary version of the C.A.L.M. protocol stays at the cutting edge of autoimmune recovery.</p>
+
+        <p><strong>Step 1: Aggregate Data.</strong> Every 6 months, review the outcomes of your active clients. Which "Root Cause" interventions (Phase 2) yielded the fastest reduction in symptoms? Which reintroductions (Phase 4) were most frequently failed?</p>
+        <p><strong>Step 2: Refine the Protocol.</strong> If 70% of your clients with Hashimoto's struggle with the same environmental trigger, move that trigger's identification earlier into your "Contain" phase.</p>
+        <p><strong>Step 3: Update Client Assets.</strong> Use your findings to create better guides, recipes, and nervous system regulation tools. This increases the "perceived value" and actual efficacy of your high-ticket offer.</p>
+
+        <h2 id="section5">5. Finalizing the Specialist Portfolio</h2>
+        <p>The final step in professional implementation is the consolidation of your work into a cohesive <span class="highlight">Specialist Portfolio</span>. This is your "Clinical Playbook" that demonstrates your authority to clients and collaborators.</p>
+        
+        <p>Your portfolio should include:</p>
+        <ul>
+            <li><strong>The C.A.L.M. Roadmap:</strong> A visual representation of how you move clients through the four phases.</li>
+            <li><strong>Assessment Suite:</strong> Your proprietary intake forms, exposome checklists, and symptom trackers.</li>
+            <li><strong>The Evidence Library:</strong> A curated collection of peer-reviewed studies (like the ones at the end of these lessons) that support your methodology.</li>
+            <li><strong>Outcome Summaries:</strong> De-identified data showing the average improvement in client "Quality of Life" scores over your 4-6 month program.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is a 4-6 month engagement considered the "gold standard" for an L3 Autoimmune Program?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Autoimmune pathology involves complex systemic changes. A 4-6 month window allows for the physiological time required to reduce inflammatory load (Phase 1), address deep-seated root causes like dysbiosis (Phase 2), reprogram the nervous system (Phase 3), and safely navigate the reintroduction of foods (Phase 4) without triggering a major flare.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How should an L3 Specialist handle a client who wants to stop their medication because they "feel great" on your protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Specialist must maintain strict scope-of-practice boundaries. You should validate their progress but state clearly that medication adjustments must be managed exclusively by their prescribing physician. You can offer to provide a summary of their improved health data for the client to bring to their next medical appointment.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li>High-ticket L3 programs are defined by the depth of support and the length of the transformation container (16-24 weeks).</li>
+                <li>Professionalism is built on a "Collaborative Care" mindset—speaking the language of doctors while providing the lifestyle data they lack.</li>
+                <li>Scope of practice is your legal shield; focus on "educational inference" rather than medical diagnosis.</li>
+                <li>Use the "Program Evolution Loop" to turn client data into a proprietary, high-value methodology.</li>
+                <li>Your Specialist Portfolio is the ultimate tool for establishing authority and securing referrals.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Arloski, M. (2022). "Health Coaching for Chronic Conditions: A Meta-Analysis of Long-Term Outcomes." <i>Journal of Integrative Health & Wellness.</i></li>
+                <li>Bodenheimer, T. et al. (2021). "The Role of the Health Coach in Chronic Disease Management." <i>American Journal of Lifestyle Medicine.</i></li>
+                <li>Institute for Functional Medicine (2023). "Collaborative Care Models: Bridging the Gap Between Coaching and Clinical Practice." <i>IFM Clinical Guidelines.</i></li>
+                <li>Jordan, M. et al. (2020). "The Efficacy of Health Coaching in Patients with Autoimmune Disease: A Randomized Controlled Trial." <i>Journal of Clinical Rheumatology.</i></li>
+                <li>Wolever, R. Q. et al. (2021). "Health and Wellness Coaching: Evidence-Based Frameworks for Practice." <i>Global Advances in Health and Medicine.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Training Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.7: Strategic Light & Darkness Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep/Circadian */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-highlight {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: R: Reset Circadian Rhythm</p>
+            <h1 class="lesson-title">Lesson 2.7: Strategic Light & Darkness Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#blt"><span class="section-num">1</span>Bright Light Therapy (BLT)</a></li>
+                <li><a href="#blueblock"><span class="section-num">2</span>Blue-Blocking Technology</a></li>
+                <li><a href="#sunset"><span class="section-num">3</span>The Virtual Sunset Protocol</a></li>
+                <li><a href="#darkness"><span class="section-num">4</span>Total Darkness Interventions</a></li>
+                <li><a href="#travel"><span class="section-num">5</span>Pre-adjustment for Travel</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the technical specifications of Bright Light Therapy (BLT) for clinical phase advancement.</li>
+                <li>Evaluate the efficacy of blue-blocking hardware versus software filters in melatonin preservation.</li>
+                <li>Design a "Virtual Sunset" environment to optimize the dim-light melatonin onset (DLMO).</li>
+                <li>Implement total darkness strategies to enhance REM stability and sleep continuity.</li>
+                <li>Apply light-timing protocols for preventing jet lag and managing rapid time-zone transitions.</li>
+            </ul>
+        </div>
+
+        <h2 id="blt">1. Bright Light Therapy (BLT): The Biological Anchor</h2>
+        <p>As we established in Lesson 2.2, light is the primary <span class="highlight">zeitgeber</span> (time-giver) that synchronizes the Suprachiasmatic Nucleus (SCN). However, for clients with significant circadian misalignment—such as Delayed Sleep Phase Disorder (DSPD)—ambient room light is often insufficient to trigger the necessary phase shift. This is where Bright Light Therapy (BLT) becomes a clinical necessity.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10,000</div>
+                    <div class="stat-label">Target Lux</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30-60</div>
+                    <div class="stat-label">Duration (Min)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">460nm</div>
+                    <div class="stat-label">Peak Sensitivity</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2022 systematic review published in <i>Sleep Medicine Reviews</i> found that 10,000 lux exposure for 30 minutes upon waking resulted in a <span class="stat-highlight">mean phase advance of 1.2 hours</span> over a 14-day period. For the Sleep Health Coach, the protocol must be precise:</p>
+        
+        <ul>
+            <li><strong>Positioning:</strong> The light box should be placed 12–18 inches from the face, angled at 45 degrees to ensure light hits the <span class="highlight">intrinsically photosensitive Retinal Ganglion Cells (ipRGCs)</span> in the lower retina.</li>
+            <li><strong>Timing:</strong> For phase advancement (moving sleep earlier), exposure must occur immediately upon waking. For phase delay (moving sleep later), exposure occurs in the early evening.</li>
+            <li><strong>Safety:</strong> Clients with retinal conditions or bipolar disorder (due to potential hypomania induction) must consult a physician before initiating BLT.</li>
+        </ul>
+
+        <h2 id="blueblock">2. The Science of Blue-Blocking Technology</h2>
+        <p>While morning light anchors the rhythm, evening light—specifically in the short-wavelength blue spectrum (450–490 nm)—is the primary disruptor of sleep. Modern "blue light filters" on smartphones often only reduce blue light by 15-30%, which may be insufficient for highly sensitive individuals.</p>
+
+        <p>Research by Shechter et al. (2018) demonstrated that wearing <span class="highlight">amber-tinted lenses</span> (which block >90% of blue light) for two hours before bed significantly improved sleep quality and duration compared to clear lenses. As a coach, you must distinguish between:</p>
+        
+        <ol>
+            <li><strong>Software Filters (Night Shift/f.lux):</strong> Useful for reducing eye strain, but often leave enough blue/green light to suppress melatonin by up to 50% if brightness is high.</li>
+            <li><strong>Amber Lenses (Blue Blockers):</strong> These create a "biological dark" environment. For maximum efficacy, the lenses must wrap around the eyes to prevent peripheral light leakage.</li>
+        </ol>
+
+        <h2 id="sunset">3. The Virtual Sunset: Tiered Lighting Protocols</h2>
+        <p>The "Virtual Sunset" is a proprietary strategy within the <span class="highlight">The D.R.E.A.M. Sleep Method™</span> that transitions the client from the high-intensity light of the day to the total darkness of the night. This mimics the natural solar progression that our ancestors experienced.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timing</th>
+                        <th>Light Source & Intensity</th>
+                        <th>Biological Goal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Active Evening</strong></td>
+                        <td>3-4 hrs before bed</td>
+                        <td>Overhead lights off; use floor lamps with warm bulbs (&lt;2700K).</td>
+                        <td>Initial reduction in cortisol; slow rise in DLMO.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biological Twilight</strong></td>
+                        <td>1-2 hrs before bed</td>
+                        <td>Amber lenses on; only red-spectrum light (low level).</td>
+                        <td>Maximal melatonin synthesis; SCN transition to "night mode."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Immersion</strong></td>
+                        <td>At bedtime</td>
+                        <td>0 Lux environment; blackout curtains + sleep mask.</td>
+                        <td>REM stability and prevention of nocturnal awakenings.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="darkness">4. Total Darkness and REM Stability</h2>
+        <p>Even microscopic amounts of light can penetrate the eyelids and disrupt sleep architecture. A study by Cho et al. (2013) found that exposure to even <span class="stat-highlight">5 lux of light</span> (the equivalent of a nightlight) during sleep increased the number of arousals and decreased the percentage of deep slow-wave sleep.</p>
+        
+        <p>In the "E" (Environment) module, we will dive deeper into physical room modifications, but from a "Reset" perspective, total darkness is an intervention for <span class="highlight">circadian stability</span>. If a client wakes at 3:00 AM and sees a sliver of light from under the door, their SCN may interpret this as a "false dawn," prematurely suppressing melatonin and making it impossible to return to sleep.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Night Owl" Executive</p>
+                    <p class="subtitle">Managing Delayed Sleep Phase Disorder (DSPD)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 42</h4>
+                        <p>Tech Executive | Chronic 2:00 AM Bedtime | Morning Brain Fog</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Marcus struggled to fall asleep before 2:00 AM but was forced to wake at 7:00 AM for meetings. He relied on 400mg of caffeine daily and felt "wired but tired" at night.</p>
+                <p><strong>Intervention:</strong> We implemented a 14-day Circadian Reset:</p>
+                <ul>
+                    <li>10,000 Lux BLT for 20 minutes at 7:15 AM (while eating breakfast).</li>
+                    <li>Amber-tinted blue blockers starting at 9:00 PM.</li>
+                    <li>"Virtual Sunset" protocol: All overhead lights disabled after 8:00 PM.</li>
+                </ul>
+                <p><strong>Outcome:</strong> By day 10, Marcus’s <span class="highlight">Dim Light Melatonin Onset (DLMO)</span> shifted 90 minutes earlier. His sleep onset moved to 11:45 PM, and his morning subjective alertness score increased from 3/10 to 8/10.</p>
+            </div>
+        </div>
+
+        <h2 id="travel">5. Pre-adjustment Strategies for Travel & Jet Lag</h2>
+        <p>Jet lag is essentially <span class="highlight">acute circadian dysrhythmia</span>. The Sleep Health Coach can mitigate this by manipulating light exposure *before* the client leaves. The rule of thumb is that the body can shift approximately 1 hour per day.</p>
+        
+        <p><strong>Eastward Travel (Phase Advance):</strong> 
+        The goal is to move the clock earlier. For three days prior to departure, the client should seek bright light earlier each morning and avoid evening light (using blue blockers) 1-2 hours earlier each night.</p>
+
+        <p><strong>Westward Travel (Phase Delay):</strong> 
+        The goal is to move the clock later. The client should seek bright light in the late afternoon/early evening and avoid early morning light.</p>
+
+        <h2 id="clinical">6. Implementation: The Practitioner's Checklist</h2>
+        <p>When working with clients, do not assume they understand "darkness." You must provide specific, actionable directives:</p>
+        <ul class="content-list">
+            <li><strong>The "Hand Test":</strong> If you hold your hand 12 inches from your face in your bedroom and can see it, the room is not dark enough.</li>
+            <li><strong>The "Blue Light Audit":</strong> Identify all LEDs (chargers, humidifiers, smoke detectors) and cover them with black electrical tape or "LightDims."</li>
+            <li><strong>The "Morning Anchor":</strong> Establish a "First Light" time that remains consistent within 30 minutes, even on weekends, to prevent <span class="highlight">Social Jetlag</span> (covered in Lesson 2.6).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on light protocols</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client is traveling from New York to London (Eastward). When should they seek bright light to minimize jet lag?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">They should seek bright light in the early morning (local time) to facilitate a phase advance. Pre-travel, they should seek light earlier each day for 3 days before departure.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is positioning the light box at a 45-degree angle above the eyes more effective than having it at chest level?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The ipRGCs (melanopsin-containing cells) are most densely concentrated in the inferior (lower) retina, which is biologically designed to receive light from the sky (above).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>10,000 Lux</strong> is the clinical gold standard for morning light therapy to drive a phase advance.</li>
+                <li><strong>Amber Lenses</strong> are superior to software filters because they provide a physical barrier against all peripheral blue light.</li>
+                <li><strong>The Virtual Sunset</strong> bridges the gap between high-noon activity and nocturnal recovery by lowering the light's height and intensity.</li>
+                <li><strong>Total Darkness (0 Lux)</strong> is essential for REM stability; even 5-10 lux can trigger micro-arousals.</li>
+                <li><strong>Circadian Shifting</strong> for travel should begin 3 days prior to departure at a rate of 1 hour per day.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Zeitzer, J. M., et al. (2000). "Sensitivity of the human circadian pacemaker to nocturnal light: Melatonin phase resetting and suppression." <i>Journal of Physiology.</i></li>
+                <li>Shechter, A., et al. (2018). "Blocking nocturnal blue light for insomnia: A randomized controlled trial." <i>Journal of Psychiatric Research.</i></li>
+                <li>Blume, C., et al. (2019). "Effects of light on human circadian rhythms, sleep and mood." <i>Somnologie.</i></li>
+                <li>Lockley, S. W., et al. (2003). "High sensitivity of the human circadian melatonin rhythm to short-wavelength light." <i>The Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Cho, J. R., et al. (2013). "Let there be no light: The effect of bedside light on sleep quality and alertness." <i>Sleep Medicine.</i></li>
+                <li>Duffy, J. F., & Czeisler, C. A. (2009). "Effect of Light on Human Circadian Physiology." <i>Sleep Medicine Clinics.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Strategic Light Protocols</p>
+        </footer>
+    </div>
+</body>
+
+</html>

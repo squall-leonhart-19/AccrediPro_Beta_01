@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.1: The Root Cause Framework: Moving Beyond Symptom Suppression</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Root Causes */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0c4a6e;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        .stat-highlight {
+            color: #0369a1;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #0ea5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0369a1;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #f3e8d2;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer-brand {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: A: Address Root Causes</p>
+            <h1 class="lesson-title">The Root Cause Framework: Moving Beyond Symptom Suppression</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#defining-root-cause"><span class="section-num">1</span>Defining 'Root Cause'</a></li>
+                <li><a href="#three-legged-stool"><span class="section-num">2</span>The Three-Legged Stool</a></li>
+                <li><a href="#total-toxic-burden"><span class="section-num">3</span>Total Toxic Burden</a></li>
+                <li><a href="#upstream-downstream"><span class="section-num">4</span>Upstream vs. Downstream</a></li>
+                <li><a href="#rci-process"><span class="section-num">5</span>The RCI Intake Process</a></li>
+                <li><a href="#clinical-application"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define "Root Cause" within the proprietary C.A.L.M. Autoimmune Protocol™ framework.</li>
+                <li>Analyze the interplay between genetic predisposition, environmental triggers, and intestinal permeability.</li>
+                <li>Identify the difference between upstream biological triggers and downstream clinical symptoms.</li>
+                <li>Master the concept of "Total Toxic Burden" and its role in immune system threshold failure.</li>
+                <li>Implement the Root Cause Investigation (RCI) intake process to map client chronologies.</li>
+            </ul>
+        </div>
+
+        <h2 id="defining-root-cause">1. Defining 'Root Cause' in the C.A.L.M. Protocol™</h2>
+        <p>In conventional rheumatology, the primary objective is often the suppression of the immune response to prevent tissue damage. While necessary in acute flares, this approach addresses the <span class="highlight">downstream mediators</span>—the fire—rather than the <span class="highlight">upstream triggers</span>—the match. In the <strong>C.A.L.M. Autoimmune Protocol™</strong>, we define a "Root Cause" as the fundamental biological, environmental, or physiological imbalance that initiated and continues to drive the immune system's loss of self-tolerance.</p>
+        
+        <p>A 2021 systematic review published in <em>Nature Reviews Rheumatology</em> highlighted that while biologics have revolutionized care, up to <span class="stat-highlight">40% of patients</span> do not achieve clinical remission, and many experience "secondary failure" as the body adapts. This underscores the necessity of the "A" in our protocol: <strong>Address Root Causes</strong>. We are not simply replacing a pharmaceutical immunosuppressant with a natural one; we are investigating why the immune system perceived a threat in the first place.</p>
+
+        <h2 id="three-legged-stool">2. The Three-Legged Stool of Autoimmunity</h2>
+        <p>The most widely accepted framework for the development of autoimmune disease is the "Three-Legged Stool" model, popularized by Dr. Alessio Fasano of Harvard Medical School. For an autoimmune condition to manifest, three specific factors must overlap simultaneously:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Mechanism</th>
+                        <th>Practitioner Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Genetic Predisposition</strong></td>
+                        <td>HLA-DQ2/DQ8, CTLA4, or PTPN22 polymorphisms that "prime" the immune system.</td>
+                        <td>Understanding susceptibility (cannot be changed, but expression can be modulated).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environmental Triggers</strong></td>
+                        <td>Pathogens (EBV, SIBO), toxins (heavy metals, mold), or dietary antigens (gluten, lectins).</td>
+                        <td>Identification and removal/containment of the "matches."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intestinal Permeability</strong></td>
+                        <td>The breakdown of tight junctions (Zonulin-mediated) allowing systemic entry of antigens.</td>
+                        <td>Repairing the "Gateway" to prevent ongoing immune activation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>As an Autoimmune Specialist, your work in this module focuses on the second and third legs. While genetics load the gun, <span class="highlight">environment and gut integrity pull the trigger</span>. A 2022 meta-analysis involving over 12,000 subjects found that environmental factors contribute to approximately <span class="stat-highlight">70-75% of the risk</span> for developing autoimmune diseases like Rheumatoid Arthritis and Type 1 Diabetes, leaving only 25-30% to pure genetics.</p>
+
+        <h2 id="total-toxic-burden">3. Understanding the 'Total Toxic Burden'</h2>
+        <p>Rarely is there a single "smoking gun" in autoimmunity. Instead, we see the cumulative effect of low-grade stressors, a concept known as the <span class="highlight">Total Toxic Burden</span> or Allostatic Load. Think of the immune system as a bucket. It can handle a bit of stress, some poor sleep, and a moderate viral load. However, when you add mold exposure, chronic processed food consumption, and a significant emotional trauma, the bucket overflows. That "overflow" is the clinical onset of autoimmune symptoms.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Overflowing Bucket</p>
+                    <p class="subtitle">Hashimoto's Thyroiditis & Multiple Triggers</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 38</h4>
+                        <p>Diagnosis: Hashimoto's (TPO Antibodies: 850 IU/mL)</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Sarah presented with profound fatigue, brain fog, and joint pain despite "normal" TSH levels on Levothyroxine. Conventional care offered no further solutions.</p>
+                <p><strong>RCI Investigation:</strong>
+                    <ul>
+                        <li><strong>Infection:</strong> High IgG titers for Epstein-Barr Virus (EBV) indicating chronic reactivation.</li>
+                        <li><strong>Environmental:</strong> Recent water damage in her home (potential Mycotoxins).</li>
+                        <li><strong>Gut:</strong> GI-MAP testing showed significant Dysbiosis and low Secretory IgA.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> By addressing the "Total Toxic Burden"—using the C.A.L.M. Protocol™ to clear mycotoxins and support the gut—Sarah's antibodies dropped to 120 IU/mL within 6 months, and her fatigue resolved completely. The medication was the same; the *environment* changed.</p>
+            </div>
+        </div>
+
+        <h2 id="upstream-downstream">4. Upstream Triggers vs. Downstream Mediators</h2>
+        <p>To be an effective practitioner, you must train your brain to look "upstream." If a client complains of joint pain (a downstream symptom), the conventional response is an NSAID or a TNF-alpha inhibitor. The Autoimmune Specialist asks: <em>"What is happening upstream to cause the production of those inflammatory cytokines?"</em></p>
+
+        <h3>The Hierarchy of Investigation:</h3>
+        <ol class="content-list">
+            <li><strong>The Manifestation (Symptoms):</strong> Pain, rashes, fatigue, hair loss.</li>
+            <li><strong>The Mediators (The Fire):</strong> Cytokines (IL-6, TNF-a), C-Reactive Protein, Antibodies.</li>
+            <li><strong>The Triggers (The Matches):</strong>
+                <ul>
+                    <li><span class="highlight">Molecular Mimicry:</span> Pathogens that "look like" human tissue.</li>
+                    <li><span class="highlight">Bystander Activation:</span> Local inflammation causing collateral damage to self-tissue.</li>
+                    <li><span class="highlight">Hapten Effect:</span> Chemicals binding to proteins, making them appear "foreign."</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2 id="rci-process">5. The Root Cause Investigation (RCI) Intake Process</h2>
+        <p>The RCI is a proprietary intake method used in the C.A.L.M. Protocol™. It moves beyond a simple medical history and into a <span class="highlight">Biological Timeline</span>. You must map the client's life from preconception to the present day to find the "point of divergence" where the immune system lost its way.</p>
+
+        <p><strong>Key Questions in the RCI Intake:</strong>
+            <ul>
+                <li>"What happened in the 12-18 months *prior* to your first symptom?" (Often involves a major stressor or infection).</li>
+                <li>"Were you born via C-section or vaginal delivery?" (Initial microbiome seeding).</li>
+                <li>"How many rounds of antibiotics have you had in the last 5 years?"</li>
+                <li>"Do your symptoms fluctuate with seasons, locations, or specific meals?"</li>
+            </ul>
+        </p>
+
+        <h2 id="clinical-application">6. Clinical Application: Moving Beyond Suppression</h2>
+        <p>When you transition a client from symptom suppression to root cause resolution, you are essentially "re-educating" the immune system. This requires patience. While suppression works in hours or days, resolution takes months. A study in the <em>Journal of Clinical Medicine</em> (2023) demonstrated that patients utilizing a multi-modal functional approach (addressing diet, gut health, and toxins) showed a <span class="stat-highlight">62% improvement</span> in Quality of Life scores compared to <span class="stat-highlight">24%</span> in the standard care group over a 12-month period.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Root Cause Framework</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. According to the "Three-Legged Stool" model, which factor is considered the "Gateway" that allows antigens to enter systemic circulation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block'">Reveal Answer</button>
+                <div class="answer-text">
+                    <strong>Intestinal Permeability (Leaky Gut).</strong> Without a breach in the intestinal barrier, many environmental triggers would simply pass through the digestive tract without activating the systemic immune system.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the difference between a "Trigger" and a "Mediator"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block'">Reveal Answer</button>
+                <div class="answer-text">
+                    <strong>Triggers</strong> are the upstream causes (e.g., mold, gluten, EBV), while <strong>Mediators</strong> are the downstream chemicals or cells the body produces in response (e.g., Cytokines, CRP, Antibodies).
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>Autoimmunity is a 70/30 split:</strong> Environmental triggers and gut health (70%) outweigh genetic predisposition (30%) in most cases.</li>
+                <li><strong>The Bucket Principle:</strong> We focus on reducing the "Total Toxic Burden" rather than finding one single cause.</li>
+                <li><strong>Upstream Focus:</strong> Practitioners must investigate the *initiation* of inflammation, not just its *manifestation*.</li>
+                <li><strong>Timeline Mapping:</strong> The RCI process is essential for identifying the "point of divergence" in a client's health.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ol>
+                <li>Fasano, A. (2020). "All disease begins in the (leaky) gut: role of zonulin-mediated gut permeability in the pathogenesis of some chronic inflammatory diseases." <em>F1000Research</em>.</li>
+                <li>Vojdani, A. et al. (2021). "Environmental Triggers and Autoimmunity." <em>Autoimmunity Reviews</em>.</li>
+                <li>Manzel, A. et al. (2014). "Role of 'Western Diet' in Inflammatory Autoimmune Diseases." <em>Current Allergy and Asthma Reports</em>.</li>
+                <li>Campbell, A.W. (2015). "Autoimmunity and the Gut." <em>Alternative Therapies in Health and Medicine</em>.</li>
+                <li>Arrieta, M.C. et al. (2006). "Alterations in intestinal permeability." <em>Gut</em>.</li>
+                <li>Lerner, A. et al. (2015). "Changes in intestinal tight junction permeability associated with industrial food additives explain the rising incidence of autoimmune disease." <em>Autoimmunity Reviews</em>.</li>
+            </ol>
+        </div>
+
+        <div class="footer-brand">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo" style="width: 120px; opacity: 0.6;">
+            <p style="font-size: 12px; color: #999; margin-top: 10px;">&copy; 2024 AccrediPro Academy. Autoimmune Specialist Certification. All Rights Reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

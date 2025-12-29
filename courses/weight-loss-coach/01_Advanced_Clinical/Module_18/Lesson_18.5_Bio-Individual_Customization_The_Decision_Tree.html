@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.5: Bio-Individual Customization: The Decision Tree</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Integration/Synthesis */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #4c1d95;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #111827;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #6d28d9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border-left: 4px solid #4c1d95;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #2d2d2d;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 18.5: Bio-Individual Customization: The Decision Tree</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 45 min read</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hierarchy"><span class="section-num">1</span>The Clinical Decision Hierarchy</a></li>
+                <li><a href="#hpa-axis"><span class="section-num">2</span>Hormones (F) vs. Strength (S)</a></li>
+                <li><a href="#autoimmune"><span class="section-num">3</span>Customizing the Anti-Inflammatory (A)</a></li>
+                <li><a href="#archetypes"><span class="section-num">4</span>Mindset (R) Personality Archetypes</a></li>
+                <li><a href="#adaptive"><span class="section-num">5</span>The Adaptive Coaching Loop</a></li>
+                <li><a href="#synthesis"><span class="section-num">6</span>Synthesis: The Master Decision Tree</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Construct a clinical decision-making hierarchy to prioritize TRANSFORM interventions for complex cases.</li>
+                <li>Determine when to prioritize HPA-axis recovery (Fix Hormones) over muscle hypertrophy (Strengthen) using objective biomarkers.</li>
+                <li>Differentiate Anti-Inflammatory (A) protocols between metabolic-driven and autoimmune-driven inflammation.</li>
+                <li>Modify cognitive-behavioral interventions (Rewire Mindset) based on four specific client personality archetypes.</li>
+                <li>Apply real-time adjustments to the TRANSFORM methodology based on the "Adaptive Coaching Loop."</li>
+            </ul>
+        </div>
+
+        <h2 id="hierarchy">1. The Clinical Decision Hierarchy</h2>
+        <p>In the early stages of weight loss coaching, we often follow a linear path: test metabolism, then reset habits, then fix the diet. However, at the <span class="highlight">Professional Level 2</span>, we must acknowledge that complex clients rarely present with a single issue. A 2023 meta-analysis published in <em>Nature Medicine</em> (n=12,450) highlighted that individualized metabolic responses to the same dietary intervention varied by as much as <span class="stat-highlight">40%</span> due to genetic, microbiome, and lifestyle interactions.</p>
+
+        <p>The <strong>Clinical Decision Tree</strong> is a heuristic tool that allows you to determine which pillar of the <span class="highlight">T.R.A.N.S.F.O.R.M. Method™</span> requires immediate attention. We use a "Safe-to-Push" vs. "Need-to-Protect" framework. If a client’s physiological foundation is crumbling (high inflammation, high cortisol, poor sleep), pushing "Strengthen" (S) or "Test Metabolism" (T) via caloric restriction will lead to metabolic adaptation and burnout.</p>
+
+        <div class="principle-card" style="border-left-color: #4c1d95; background: #f5f3ff;">
+            <p class="principle-title">The "Foundation First" Rule</p>
+            <p class="principle-text">Before increasing metabolic demand (S) or decreasing metabolic supply (T/N), you must ensure the <strong>Hormonal (F)</strong> and <strong>Lifestyle (O)</strong> pillars are stable enough to handle the stress. A system under threat will prioritize survival over fat oxidation.</p>
+        </div>
+
+        <h2 id="hpa-axis">2. Prioritizing 'Fix Hormones' (F) vs. 'Strengthen' (S)</h2>
+        <p>One of the most common dilemmas for an advanced coach is whether to prescribe intensive resistance training to a client who is already chronically stressed. While <span class="highlight">Skeletal Muscle is an Endocrine Organ</span> (as discussed in Module 5), it is also a metabolically expensive tissue that requires significant recovery resources.</p>
+
+        <p>In clients with high <span class="highlight">HPA-axis dysfunction</span> (Hypothalamic-Pituitary-Adrenal), the cortisol-to-DHEA ratio is often skewed. A study in the <em>Journal of Clinical Endocrinology & Metabolism</em> found that individuals with high baseline cortisol levels experienced <span class="stat-highlight">22% less muscle protein synthesis</span> following resistance training compared to low-stress controls.</p>
+
+        <h3>The Decision Criteria:</h3>
+        <ul>
+            <li><strong>Push 'Strengthen' (S) if:</strong> HRV (Heart Rate Variability) is stable, sleep quality is >7 hours, and RPE (Rate of Perceived Exertion) on daily tasks is low.</li>
+            <li><strong>Prioritize 'Fix Hormones' (F) if:</strong> Waking cortisol is flat or excessively high, client reports "wired but tired" sensations, or there is significant visceral adiposity (the "stress belly").</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Burned-Out Executive</p>
+                    <p class="subtitle">HPA-Axis Overload vs. Hypertrophy Goals</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 48</h4>
+                        <p>CEO, high stress, 25lbs overweight, struggling with "stubborn" midsection fat.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Approach:</strong> Marcus was performing 5 days of HIIT and heavy lifting. Despite a caloric deficit, his weight was stagnant, and his fasting glucose was rising (105 mg/dL).</p>
+                <p><strong>The Decision Tree Pivot:</strong> We identified <span class="highlight">Stage II HPA dysfunction</span>. We halted the "Strengthen" (S) protocol and moved to "Fix Hormones" (F) and "Optimize Lifestyle" (O). We replaced HIIT with Zone 2 walking and prioritized 15 minutes of non-sleep deep rest (NSDR).</p>
+                <p><strong>Outcome:</strong> Within 4 weeks, Marcus's fasting glucose dropped to 88 mg/dL, and he lost 6 lbs of visceral fat without changing his caloric intake. By "protecting" the system first, we re-opened the window for fat oxidation.</p>
+            </div>
+        </div>
+
+        <h2 id="autoimmune">3. Customizing 'Anti-Inflammatory' (A) Protocols</h2>
+        <p>Not all inflammation is created equal. In the <span class="highlight">T.R.A.N.S.F.O.R.M. Method™</span>, the "Anti-Inflammatory" (A) pillar must be customized based on the <em>source</em> of the immune activation. We distinguish between <strong>Metabolic Inflammation (Meta-inflammation)</strong> and <strong>Autoimmune-Driven Inflammation</strong>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Metabolic Inflammation</th>
+                        <th>Autoimmune Inflammation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Driver</strong></td>
+                        <td>Adipocyte hypertrophy, insulin resistance, LPS leakage.</td>
+                        <td>Molecular mimicry, loss of self-tolerance (e.g., Hashimoto's, RA).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key 'A' Focus</strong></td>
+                        <td>Glycemic variability & Omega 3:6 ratios.</td>
+                        <td>Identifying specific food triggers (Lectins, Nightshades, Gluten).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nutritional Priority</strong></td>
+                        <td>High fiber, polyphenols, low-glycemic load.</td>
+                        <td>Elimination-reintroduction (AIP) and gut barrier repair.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Success Metric</strong></td>
+                        <td>Reduction in Hs-CRP and Triglyceride/HDL ratio.</td>
+                        <td>Reduction in antibodies and symptomatic flares.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>For a client with metabolic syndrome, the "Anti-Inflammatory" plate focuses heavily on <span class="highlight">Fiber and Phytonutrients</span> to modulate the microbiome. For the autoimmune client, we may need to be more restrictive initially (e.g., removing eggs or nightshades) to calm the systemic immune response before focusing on nutrient density.</p>
+
+        <h2 id="archetypes">4. Mindset (R) Personality Archetypes</h2>
+        <p>A "one-size-fits-all" approach to <span class="highlight">Rewire Mindset (R)</span> often fails because cognitive processing styles vary. Based on the <em>Big Five Personality Traits</em> and their correlation with weight loss success (a 2021 study showed <span class="stat-highlight">Conscientiousness</span> as the strongest predictor of long-term maintenance), we categorize clients into four archetypes:</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card functional">
+                <p class="card-label">The Data-Driven Optimizer</p>
+                <p class="card-text">Needs: Metrics, charts, and "the why."<br><strong>Strategy:</strong> Use CGM (Continuous Glucose Monitoring) and HRV data to drive mindset shifts.</p>
+            </div>
+            <div class="comparison-card functional" style="border-top-color: #0ea5e9;">
+                <p class="card-label">The Emotional Connector</p>
+                <p class="card-text">Needs: Empathy, values-based coaching, and identity work.<br><strong>Strategy:</strong> Focus on "Identity Reframing" (Module 8) and somatic awareness.</p>
+            </div>
+        </div>
+        <div class="comparison-grid">
+            <div class="comparison-card functional" style="border-top-color: #f59e0b;">
+                <p class="card-label">The Rebel/Autonomy-Seeker</p>
+                <p class="card-text">Needs: Choice, flexibility, and lack of "rules."<br><strong>Strategy:</strong> Use "Choice Architecture" (Module 2) and collaborative goal setting.</p>
+            </div>
+            <div class="comparison-card functional" style="border-top-color: #ec4899;">
+                <p class="card-label">The Perfectionist/Achiever</p>
+                <p class="card-text">Needs: Perfection, structure, but prone to "all-or-nothing."<br><strong>Strategy:</strong> Focus on "The Messy Middle" and 80/20 cognitive reframing.</p>
+            </div>
+        </div>
+
+        <h2 id="adaptive">5. The Adaptive Coaching Loop</h2>
+        <p>The Decision Tree is not a static document; it is an <strong>Adaptive Loop</strong>. As a Level 2 coach, you should evaluate the client's progress every 14–21 days using the following flow:</p>
+
+        <ol class="content-list">
+            <li><strong>Bio-Feedback Audit:</strong> Check sleep, hunger, energy, and mood (SHEM).</li>
+            <li><strong>Objective Metric Review:</strong> Weight, waist circumference, and (if available) blood markers or wearable data.</li>
+            <li><strong>The "Pivot" Question:</strong> Is the current bottleneck physiological (T/F), behavioral (R), or environmental (O)?</li>
+            <li><strong>Intervention Adjustment:</strong> Move up or down the TRANSFORM hierarchy.</li>
+        </ol>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip: The 2-Week Rule</p>
+            <p>Never pivot a strategy in less than 14 days unless there is a safety concern. Metabolic systems have significant "noise" (water retention, hormonal cycles). You need a minimum of 14 data points to see a true signal in the Decision Tree.</p>
+        </div>
+
+        <h2 id="synthesis">6. Synthesis: The Master Decision Tree</h2>
+        <p>To synthesize everything you have learned in the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span>, imagine the following hierarchy when a client hits a plateau:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Step 1: The Safety Check (Lifestyle/Hormones)</p>
+            <p class="principle-text">Is the client sleeping <7 hours or reporting high stress? If yes, <strong>Stop</strong> pushing 'T' and 'S'. <strong>Focus on 'O' and 'F'.</strong></p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Step 2: The Inflammation Check (Anti-Inflammatory)</p>
+            <p class="principle-text">Is the client experiencing joint pain, brain fog, or digestive distress? If yes, <strong>Tighten 'A'</strong> protocols (Elimination or AIP).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Step 3: The Satiety Check (Nourish & Satisfy)</p>
+            <p class="principle-text">Is hunger high (>7/10)? If yes, <strong>Increase 'N'</strong> (Protein and Fiber) before lowering 'T' (Calories).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Step 4: The Metabolic Check (Test Metabolism)</p>
+            <p class="principle-text">If Steps 1-3 are optimized, <strong>Decrease 'T'</strong> or <strong>Increase 'S'</strong> intensity to break the plateau.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client has high visceral fat, poor sleep, and is currently doing 6 days of heavy strength training but has stopped losing weight. What is the first move in the Decision Tree?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The first move is to prioritize 'Fix Hormones' (F) and 'Optimize Lifestyle' (O). High visceral fat combined with poor sleep suggests HPA-axis dysfunction. Pushing 'Strengthen' (S) further may increase cortisol and exacerbate metabolic resistance. You should reduce training volume and focus on recovery.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does the 'Anti-Inflammatory' (A) protocol differ for a client with Hashimoto’s (Autoimmune) vs. a client with Type 2 Diabetes (Metabolic)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">For Hashimoto’s, the focus is on identifying immune-triggering proteins (lectins, gluten, dairy) and gut barrier repair. For Type 2 Diabetes, the focus is on glycemic variability, fiber density, and balancing Omega 3:6 ratios to reduce systemic meta-inflammation.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Bio-individuality</strong> is not just a buzzword; it is a measurable variance in metabolic and psychological responses.</li>
+                <li><strong>Priority Hierarchy:</strong> Always stabilize the HPA-axis and sleep (O/F) before increasing metabolic demand (S) or decreasing intake (T).</li>
+                <li><strong>Inflammation Mapping:</strong> Distinguish between autoimmune and metabolic triggers to customize the 'A' pillar effectively.</li>
+                <li><strong>Psychological Archetypes:</strong> Tailor your coaching language in 'Rewire Mindset' (R) to match the client's personality (e.g., Data-Driven vs. Rebel).</li>
+                <li><strong>The 14-Day Rule:</strong> Use a minimum of two weeks of data before making a significant pivot in the Decision Tree.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Berry, S. E., et al. (2020). "Human postprandial responses to food and potential for personalized nutrition." <em>Nature Medicine</em>.</li>
+                <li>Pervanidou, P., & Chrousos, G. P. (2022). "Metabolic consequences of stress during childhood and adolescence." <em>Metabolism</em>.</li>
+                <li>Ziemssen, T., & Kern, S. (2021). "The Role of the HPA Axis in Hypertrophy and Metabolic Adaptation." <em>Journal of Clinical Endocrinology & Metabolism</em>.</li>
+                <li>Bostjancic, A., et al. (2023). "Personality Traits and Long-term Weight Loss Maintenance: A Prospective Study." <em>International Journal of Behavioral Nutrition and Physical Activity</em>.</li>
+                <li>Lucan, S. C., et al. (2022). "Inflammation-Specific Nutritional Protocols: Autoimmune vs. Metabolic Syndrome." <em>Frontiers in Nutrition</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Weight Loss Coach Program | Advanced Level 2 Integration</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.6: Identifying Plateaus & Data Trends</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Results Tracking */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 16px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfcfb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #f8fafc;
+            border: 2px solid #1e3a8a;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #e0e7ff;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .brand-name {
+            color: #1e3a8a;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: R: Results Tracking</p>
+            <h1 class="lesson-title">Lesson 6.6: Identifying Plateaus & Data Trends</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 7</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#signal-noise"><span class="section-num">1</span>Signal vs. Noise</a></li>
+                <li><a href="#lag-effect"><span class="section-num">2</span>The Physiology of the Lag Effect</a></li>
+                <li><a href="#metabolic-adaptation"><span class="section-num">3</span>Metabolic Adaptation & NEAT</a></li>
+                <li><a href="#statistical-significance"><span class="section-num">4</span>Statistical Significance in N=1</a></li>
+                <li><a href="#three-week-rule"><span class="section-num">5</span>The Three-Week Rule</a></li>
+                <li><a href="#practitioner-application"><span class="section-num">6</span>Practitioner Communication</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the use of moving averages to filter out daily physiological "noise" in athlete data.</li>
+                <li>Identify the "Lag Effect" and explain why nutritional interventions do not yield immediate results.</li>
+                <li>Recognize the signs of metabolic adaptation and compensatory shifts in NEAT.</li>
+                <li>Apply the "Three-Week Rule" to distinguish between temporary stalls and genuine plateaus.</li>
+                <li>Synthesize quantitative data with qualitative biofeedback to make precision adjustments.</li>
+            </ul>
+        </div>
+
+        <h2 id="signal-noise">1. Signal vs. Noise: The Moving Average Mastery</h2>
+        <p>In the <strong>R: Results Tracking</strong> phase of the <strong>PERFORM™ Method</strong>, the greatest challenge for a Sports Nutrition Coach is not the lack of data, but the overabundance of <span class="highlight">noise</span>. Daily body weight, for instance, is a highly volatile metric influenced by glycogen storage, hydration status, inflammation, and digestive transit.</p>
+        
+        <p>A single high-sodium meal or a particularly grueling hypertrophy session can cause a 1–2% shift in body mass due to water retention. To the untrained athlete, this looks like a failure of the nutrition plan. To the expert coach, this is simply noise. We utilize <span class="highlight">Moving Averages</span> (typically 7-day or 14-day) to smooth these fluctuations and reveal the true physiological trend.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">1-2%</span>
+                    <span class="stat-label">Daily Weight Variance</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">7 Days</span>
+                    <span class="stat-label">Min. Data for Trend</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500g</span>
+                    <span class="stat-label">Avg. Glycogen Fluid Shift</span>
+                </div>
+            </div>
+        </div>
+
+        <p>By focusing on the <span class="highlight">Rate of Change (RoC)</span> over multiple weeks rather than daily scale numbers, you maintain the athlete's psychological buy-in and prevent "knee-jerk" adjustments that disrupt the metabolic environment.</p>
+
+        <h2 id="lag-effect">2. The Physiology of the Lag Effect</h2>
+        <p>The human body is a homeostatic machine. It does not respond to a caloric deficit or surplus linearly. The <span class="highlight">Lag Effect</span> describes the temporal gap between a nutritional intervention and the measurable physiological outcome. This is often driven by hormonal regulation, specifically the leptin-ghrelin axis and cortisol levels.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Mechanism</p>
+            <p>When you reduce calories, the body initially compensates by increasing water retention (via cortisol) and slowing digestive speed. This can mask fat loss for 10–14 days. This is the "Whoosh Effect" phenomenon where weight remains stable for two weeks before dropping significantly in 48 hours.</p>
+        </div>
+
+        <p>A 2021 study on athletic populations found that metabolic markers of fat loss often lagged behind caloric restriction by an average of 9.2 days. If a coach adjusts too early, they may inadvertently drive the athlete into an unnecessarily deep deficit, increasing the risk of <span class="highlight">Lean Body Mass (LBM)</span> loss.</p>
+
+        <h2 id="metabolic-adaptation">3. Metabolic Adaptation & NEAT Shifts</h2>
+        <p>As an athlete progresses through a fat loss phase (The "R" phase often involves refining body composition), the body initiates <span class="highlight">Adaptive Thermogenesis</span>. This is a survival mechanism where Total Daily Energy Expenditure (TDEE) drops more than what can be explained by the loss of body mass alone.</p>
+
+        <h3>The Components of the Decline:</h3>
+        <ul>
+            <li><strong>BMR Reduction:</strong> As mass decreases, the energy required to maintain that mass drops.</li>
+            <li><strong>TEF Reduction:</strong> Lower food intake means less energy spent on digestion.</li>
+            <li><strong>NEAT Suppression:</strong> This is the most significant and insidious factor. The athlete subconsciously moves less—fidgeting decreases, posture changes, and they may choose the elevator over stairs.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Normal Variance</th>
+                        <th>Signal of Plateau</th>
+                        <th>Action Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Body Weight</td>
+                        <td>±0.5% daily</td>
+                        <td>&lt;0.2% change over 14 days</td>
+                        <td>Assess NEAT & Adherence</td>
+                    </tr>
+                    <tr>
+                        <td>Training Volume</td>
+                        <td>±5% weekly</td>
+                        <td>&gt;10% drop in RPE-matched load</td>
+                        <td>Increase CHO / Recovery</td>
+                    </tr>
+                    <li>
+                        <td>Sleep Quality</td>
+                        <td>7-9 hours</td>
+                        <td>&lt;6 hours for 3+ nights</td>
+                        <td>Cortisol Management</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="statistical-significance">4. Statistical Significance in N=1 Data</h2>
+        <p>In clinical research, we look for <em>p-values</em>. In coaching, we look for <span class="highlight">Magnitude of Effect</span>. A change is statistically significant for your athlete when it exceeds the standard deviation of their baseline data. For most athletes, a change is "real" when it persists for three consecutive data points on a 7-day moving average.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="box-label">Case Study: The "False Plateau"</span>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Athlete:</strong> Sarah, 28, CrossFit Competitor<br>
+                    <strong>Goal:</strong> Body Fat Reduction (65kg to 62kg for weight class)<br>
+                    <strong>Intervention:</strong> 15% Caloric Deficit
+                </div>
+                <p><strong>The Data:</strong> In Week 3, Sarah’s weight stalled at 64.1kg for 10 days despite 100% adherence. Her stress levels (biofeedback) were high due to work, and her HRV (Heart Rate Variability) was trending downward.</p>
+                <p><strong>The Analysis:</strong> The coach recognized this as <em>water retention masking fat loss</em> due to elevated cortisol. Instead of cutting calories further, the coach implemented a 2-day "Refeed" (increasing carbohydrates to maintenance).</p>
+                <p><strong>The Outcome:</strong> 48 hours after the refeed, Sarah dropped 1.2kg. The "plateau" was a data illusion; the refeed lowered cortisol, allowing the body to release stored water.</p>
+            </div>
+        </div>
+
+        <h2 id="three-week-rule">5. The Three-Week Rule for Plateaus</h2>
+        <p>To avoid the "Lag Effect" trap, the <strong>PERFORM™ Method</strong> utilizes the <strong>Three-Week Rule</strong>. We do not categorize a stall as a genuine plateau until three specific criteria are met over a 21-day period:</p>
+        
+        <ol class="content-list">
+            <li><strong>Week 1 (Observation):</strong> Data stalls. We check for environmental variables (travel, menstrual cycle, sodium intake).</li>
+            <li><strong>Week 2 (Audit):</strong> Data remains stalled. We audit <span class="highlight">Adherence</span> and <span class="highlight">NEAT</span>. Are they actually eating what is tracked? Has their step count dropped?</li>
+            <li><strong>Week 3 (Confirmation):</strong> Data remains stalled despite confirmed adherence. This is a genuine metabolic plateau.</li>
+        </ol>
+
+        <p>Only after Week 3 do we make a "Phase Shift" adjustment—either a caloric reduction, an increase in activity, or a planned diet break to restore hormonal health.</p>
+
+        <h2 id="practitioner-application">6. Practitioner Communication: Managing the Athlete's Mindset</h2>
+        <p>Data tracking is as much about psychology as it is about physiology. When an athlete sees a plateau, they often experience "diet fatigue" and a loss of motivation. Your role is to reframe the data.</p>
+        
+        <p>Explain that a plateau is often a sign of <span class="highlight">Metabolic Homeostasis</span>—the body finding a new "set point." Use "Non-Scale Victories" (NSVs) during these times: improved gym performance, better sleep, or clothes fitting differently. This maintains the <strong>Mental Edge (M)</strong> required to reach the long-term goal.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is a 7-day moving average superior to daily weight tracking for an athlete in a fat loss phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Daily weight is "noisy" due to glycogen, water, and inflammation. A moving average filters this noise to show the true physiological trend (the signal), preventing premature or incorrect nutritional adjustments.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">An athlete's weight has been stable for 14 days, but their gym performance is increasing and their waist circumference is decreasing. Is this a plateau?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">No. This is likely body recomposition (simultaneous fat loss and muscle gain/retention). If performance and measurements are improving, the nutritional protocol is working regardless of the scale.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Signal Over Noise:</strong> Never make a change based on a single day's data; use weekly averages.</li>
+                <li><strong>Respect the Lag:</strong> Physiological changes often take 7–14 days to manifest in measurable data.</li>
+                <li><strong>NEAT is the Silent Killer:</strong> Metabolic adaptation often manifests as a subconscious reduction in daily movement.</li>
+                <li><strong>The 3-Week Rule:</strong> Wait for 21 days of stalled data before declaring a genuine plateau and adjusting variables.</li>
+                <li><strong>Context is King:</strong> Always weigh quantitative data (weight/macros) against qualitative biofeedback (sleep/stress/hunger).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Trexler, E. T., et al. (2014). "Metabolic adaptation to weight loss: implications for the athlete." Journal of the International Society of Sports Nutrition.</li>
+                <li>Hall, K. D., et al. (2011). "Quantification of the effect of energy imbalance on bodyweight." The Lancet.</li>
+                <li>Helms, E. R., et al. (2014). "Evidence-based recommendations for natural bodybuilding contest preparation: nutrition and supplementation." Journal of the International Society of Sports Nutrition.</li>
+                <li>Maclean, P. S., et al. (2011). "Biology's response to dieting: the impetus for weight regain." American Journal of Physiology-Regulatory, Integrative and Comparative Physiology.</li>
+                <li>Peos, J. J., et al. (2019). "Intermittent Dieting: Theoretical Considerations for the Athlete." Sports.</li>
+                <li>Chaston, T. B., et al. (2007). "Changes in posture and non-exercise activity thermogenesis." International Journal of Obesity.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a trademarked framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

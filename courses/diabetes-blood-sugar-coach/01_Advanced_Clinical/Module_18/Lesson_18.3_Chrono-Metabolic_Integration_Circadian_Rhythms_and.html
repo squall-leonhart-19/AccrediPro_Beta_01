@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.3: Chrono-Metabolic Integration: Circadian Rhythms and Glucose Flux</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Chrono-Metabolism */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d3748;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Alert/Info Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2 Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 3: Chrono-Metabolic Integration: Circadian Rhythms and Glucose Flux</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level Synthesis</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The SCN-Pancreas Axis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>TRF and Peripheral Clocks</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Melatonin-Insulin Paradox</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Dawn vs. Somogyi Differential</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Shift Work Coaching Strategies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The S.T.A.B.L.E. Synthesis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the neurological and endocrine pathways connecting the Suprachiasmatic Nucleus (SCN) to pancreatic beta-cell function.</li>
+                <li>Synthesize 'Lifestyle' (L) and 'Nutrition' (T) interventions using Time-Restricted Feeding to optimize peripheral clock gene expression.</li>
+                <li>Identify the biochemical mechanisms of the Melatonin-Insulin crosstalk and its clinical implications for late-night feeding.</li>
+                <li>Differentiate between the Dawn Phenomenon and the Somogyi Effect using advanced data triangulation.</li>
+                <li>Develop high-level coaching protocols for shift workers to mitigate metabolic disruption.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Master Clock and the Pancreas: The SCN-Pancreas Axis</h2>
+        <p>In the previous modules, we examined the "L" (Lifestyle) and "B" (Balance) components of the <span class="highlight">S.T.A.B.L.E. Method™</span>. Now, we integrate them. Metabolic health is not just a product of <i>what</i> and <i>how much</i> we eat, but fundamentally <i>when</i> we eat in relation to our internal biological clock.</p>
+        
+        <p>The <span class="highlight">Suprachiasmatic Nucleus (SCN)</span>, located in the hypothalamus, acts as the central pacemaker, synchronized primarily by light-dark cycles. However, we now know that every metabolic organ—including the pancreas—possesses its own "peripheral clock." A 2021 study published in <i>Nature Communications</i> demonstrated that pancreatic beta-cells have an autonomous circadian rhythm that dictates the <span class="stat-highlight">anticipatory secretion of insulin</span>.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Mechanism</p>
+            <p>During the day (the active phase), the SCN signals the pancreas to increase insulin sensitivity and secretion capacity. Conversely, during the biological night, the SCN induces a state of physiological insulin resistance to preserve blood glucose for the brain during fasting. Disrupting this—by eating when the SCN expects sleep—creates a "circadian mismatch" that elevates postprandial glucose by <span class="stat-highlight">up to 37%</span> compared to the same meal consumed during the day.</p>
+        </div>
+
+        <h2 id="section2">2. Synthesizing 'L' and 'T': Time-Restricted Feeding (TRF)</h2>
+        <p>Integration at Level 2 requires combining nutritional architecture with lifestyle timing. <span class="highlight">Time-Restricted Feeding (TRF)</span> is the bridge. TRF doesn't just limit calories; it resets the <span class="highlight">BMAL1 and CLOCK genes</span> in peripheral tissues.</p>
+
+        <p>A 2023 meta-analysis of 42 studies (n=2,450) found that early TRF (eating window ending before 4:00 PM) improved 24-hour glucose levels significantly more than late TRF (eating window ending after 8:00 PM), even when caloric intake was identical. This highlights the <span class="stat-highlight">Chrono-Metabolic Efficiency</span> of the early window.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: Chrono-Metabolic Misalignment</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Client: Jonathan (Age 48)</h4>
+                        <p>HbA1c: 6.4% | Fasting Glucose: 112 mg/dL | Occupation: Corporate Executive</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Jonathan followed a low-carb diet ("T") but consumed 60% of his calories between 8:00 PM and 11:00 PM due to work stress ("L"). Despite low carb intake, his fasting glucose remained high.</p>
+                <p><strong>Intervention:</strong> Shifted his 8-hour window from 1:00 PM – 9:00 PM to 9:00 AM – 5:00 PM. No change in macronutrients.</p>
+                <p><strong>Outcome:</strong> Within 3 weeks, his fasting glucose dropped to <span class="stat-highlight">94 mg/dL</span> and his mean amplitude of glycemic excursions (MAGE) decreased by <span class="stat-highlight">22%</span>.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Melatonin-Insulin Crosstalk: The Midnight Carb Trap</h2>
+        <p>One of the most critical L2 syntheses is understanding the <span class="highlight">Melatonin-Insulin Antagonism</span>. Melatonin, the "hormone of darkness," is secreted by the pineal gland as light fades. Recent genomic research has identified that a common variant in the <span class="highlight">MTNR1B receptor gene</span> (carried by ~30% of the population) significantly increases the risk of Type 2 Diabetes by making pancreatic cells hypersensitive to melatonin's inhibitory effects on insulin.</p>
+
+        <p>When melatonin levels rise, insulin secretion is naturally suppressed to prevent hypoglycemia during the overnight fast. If a client consumes carbohydrates during this high-melatonin window, the pancreas cannot respond adequately. This results in prolonged hyperglycemia and elevated <span class="highlight">Advanced Glycation End-products (AGEs)</span>, which we discussed in Module 9.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Daytime (Biological Day)</th>
+                        <th>Nighttime (Biological Night)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Melatonin Levels</strong></td>
+                        <td>Low</td>
+                        <td>High</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Insulin Sensitivity</strong></td>
+                        <td>High (Peak mid-morning)</td>
+                        <td>Low (Nadir at 3:00 AM)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GLP-1 Response</strong></td>
+                        <td>Robust</td>
+                        <td>Diminished</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Glucose Clearance</strong></td>
+                        <td>Rapid</td>
+                        <td>Sluggish</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Differential Diagnosis: Dawn Phenomenon vs. Somogyi Effect</h2>
+        <p>As an advanced coach, you must be able to distinguish between two common causes of high morning blood sugar. Failure to differentiate these can lead to dangerous intervention errors.</p>
+
+        <h3>The Dawn Phenomenon</h3>
+        <p>A natural rise in blood sugar (usually between 4:00 AM and 8:00 AM) caused by the surge of <span class="highlight">cortisol, growth hormone, and catecholamines</span>. This is the body preparing for wakefulness. In individuals with insulin resistance, the liver overproduces glucose (gluconeogenesis) and the pancreas cannot compensate.</p>
+
+        <h3>The Somogyi Effect (Rebound Hyperglycemia)</h3>
+        <p>A defensive reaction to <span class="highlight">nocturnal hypoglycemia</span>. If blood sugar drops too low during the night (often due to excessive evening insulin or alcohol), the body releases stress hormones to dump glucose into the bloodstream, resulting in a high morning reading.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">L2 Synthesis: The 3:00 AM Test</div>
+            <div class="principle-text">
+                To differentiate, have the client use a CGM or check manual glucose at 3:00 AM:
+                <ul>
+                    <li><strong>3:00 AM Glucose is LOW:</strong> It is the <span class="highlight">Somogyi Effect</span>. Intervention: Reduce evening insulin or add a small protein-fat snack before bed.</li>
+                    <li><strong>3:00 AM Glucose is NORMAL/HIGH:</strong> It is the <span class="highlight">Dawn Phenomenon</span>. Intervention: Increase evening activity, improve sleep hygiene, or move the last meal earlier.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Shift Work and Metabolic Chaos: Advanced Coaching</h2>
+        <p>Shift workers represent the ultimate challenge in Chrono-Metabolic integration. They face a permanent state of "Social Jetlag." Research shows that shift workers have a <span class="stat-highlight">60% higher risk</span> of developing Type 2 Diabetes compared to day workers.</p>
+
+        <p>For these clients, the S.T.A.B.L.E. Method™ must be adapted. We cannot fix the light-dark cycle, so we must anchor the peripheral clocks through <strong>Nutritional Consistency</strong>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Night Shift Nurse</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Client: Sarah (Age 34)</h4>
+                        <p>Works 7:00 PM – 7:00 AM | Weight Gain: 15 lbs in 1 year | Pre-diabetic</p>
+                    </div>
+                </div>
+                <p><strong>The Chaos:</strong> Sarah ate "lunch" at 2:00 AM (high carb) and a large breakfast at 8:00 AM before sleeping.</p>
+                <p><strong>The L2 Strategy:</strong> 
+                    1. <strong>The "Dark Window":</strong> No calories between 1:00 AM and 6:00 AM (even while awake) to respect the pancreatic melatonin inhibition.
+                    2. <strong>Protein Anchor:</strong> High protein/fat meal at 6:00 PM before shift.
+                    3. <strong>Light Management:</strong> Blue-blocking glasses for the drive home and blackout curtains for sleep.
+                </p>
+                <p><strong>Outcome:</strong> Sarah lost 12 lbs in 10 weeks and her fasting glucose (measured after her longest sleep) stabilized from 108 to 92 mg/dL.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The S.T.A.B.L.E. Synthesis: Integrating the Whole</h2>
+        <p>To conclude this integration, we look at how Chrono-Metabolism touches every pillar:</p>
+        <ul class="content-list">
+            <li><strong>Screen (S):</strong> We look for patterns in CGM data—not just averages, but <i>when</i> the spikes occur relative to light exposure.</li>
+            <li><strong>Transform (T):</strong> We prioritize carbohydrate loading during high-insulin-sensitivity windows (mid-day).</li>
+            <li><strong>Activate (A):</strong> We use "Postprandial Contractions" (10-minute walks) specifically after the latest meal to blunt the melatonin-suppressed insulin response.</li>
+            <li><strong>Balance (B):</strong> we address the Cortisol-Melatonin rhythm to ensure the liver isn't overproducing glucose at night.</li>
+            <li><strong>Lifestyle (L):</strong> We optimize light hygiene to protect the SCN's signaling to the pancreas.</li>
+            <li><strong>Empower (E):</strong> we teach clients to read their own "Circadian Signature" in their data.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is late-night carbohydrate consumption particularly damaging for individuals with the MTNR1B gene variant?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The MTNR1B variant makes pancreatic beta-cells more sensitive to melatonin. Since melatonin levels are high at night and naturally inhibit insulin secretion, consuming carbs during this time leads to exaggerated and prolonged hyperglycemia because the pancreas cannot "unlock" enough insulin.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client presents with a fasting glucose of 135 mg/dL. Their 3:00 AM glucose check is 65 mg/dL. Which phenomenon are they experiencing?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is the <strong>Somogyi Effect</strong>. The low reading at 3:00 AM (hypoglycemia) triggered a counter-regulatory hormonal surge (cortisol/glucagon), causing the rebound high in the morning.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The pancreas has an autonomous clock that anticipates food during the day and prioritizes fasting at night.</li>
+                <li>Melatonin and insulin are physiological antagonists; eating during high melatonin windows is a recipe for metabolic dysfunction.</li>
+                <li>Early Time-Restricted Feeding (eTRF) is superior to late TRF for glucose control due to alignment with circadian insulin sensitivity.</li>
+                <li>Differentiating Dawn Phenomenon from Somogyi Effect is a critical skill for preventing intervention errors in insulin-using or high-risk clients.</li>
+                <li>Shift workers require a "metabolic anchor"—consistent eating windows even when sleep-wake cycles are disrupted.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Garaulet, M., et al. (2022). "Interplay of Dinner Timing and MTNR1B Genetic Risk Variant on Glucose Tolerance." <i>Diabetes Care</i>.</li>
+                <li>Panda, S. (2021). "Circadian Physiology of Metabolism." <i>Science</i>.</li>
+                <li>Manoogian, E. N. C., et al. (2019). "Time-Restricted Eating for the Prevention and Management of Metabolic Diseases." <i>Endocrine Reviews</i>.</li>
+                <li>Poggiogalle, E., et al. (2018). "Circadian Regulation of Glucose, Lipid, and Energy Metabolism in Humans." <i>Metabolism</i>.</li>
+                <li>Kalsbeek, A., et al. (2014). "Circadian Control of Glucose Metabolism." <i>Molecular Metabolism</i>.</li>
+                <li>Xie, Z., et al. (2023). "Effects of Time-Restricted Feeding on Glycemic Control: A Systematic Review and Meta-analysis." <i>JAMA Network Open</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Specialized Professional Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

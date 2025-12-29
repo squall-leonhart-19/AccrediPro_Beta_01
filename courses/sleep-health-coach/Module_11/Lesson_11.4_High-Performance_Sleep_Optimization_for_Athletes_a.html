@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.4: High-Performance Sleep: Optimization for Athletes and Executives</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            color: #1e3a8a;
+            font-weight: 700;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin-top: 14px;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            list-style-type: decimal;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Advanced Sleep Mastery</p>
+            <h1 class="lesson-title">Lesson 11.4: High-Performance Sleep: Optimization for Athletes and Executives</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level: Elite Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>Neurobiology of Performance</a></li>
+                <li><a href="#recovery"><span class="section-num">2</span>Recovery Periodization</a></li>
+                <li><a href="#executive"><span class="section-num">3</span>The CEO Brain: Decision-Making</a></li>
+                <li><a href="#thermoregulation"><span class="section-num">4</span>Advanced Thermoregulation</a></li>
+                <li><a href="#travel"><span class="section-num">5</span>Elite Travel & Jet Lag Protocols</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the mechanics of sleep-dependent motor skill learning and memory consolidation.</li>
+                <li>Implement recovery periodization strategies based on physical and cognitive load.</li>
+                <li>Analyze the impact of REM and N3 sleep on executive decision-making and risk assessment.</li>
+                <li>Apply thermoregulatory interventions to decrease sleep onset latency in high-stress clients.</li>
+                <li>Design precise eastward vs. westward travel protocols for elite performers.</li>
+            </ul>
+        </div>
+
+        <h2 id="neurobiology">1. Neurobiology of Performance: Motor Learning & Memory</h2>
+        <p>For the elite athlete, sleep is not merely downtime; it is an <span class="highlight">active neurological state</span> where performance gains are solidified. While the physical body repairs tissues during N3 (Deep Sleep), the brain "rehearses" motor patterns during <span class="highlight">Stage 2 (N2)</span> and <span class="highlight">REM sleep</span>.</p>
+        
+        <p>A landmark 2011 study on Stanford basketball players demonstrated that extending sleep to 10 hours per night resulted in a <span class="stat-highlight">9% increase in free-throw accuracy</span> and a <span class="stat-highlight">0.7-second improvement</span> in 282-foot sprints. This isn't just due to rest; it’s the result of <span class="highlight">sleep spindles</span>—brief bursts of brain activity in N2 sleep that facilitate the transfer of motor information from the hippocampus to the motor cortex.</p>
+
+        <p>For executives, the focus shifts to <span class="highlight">relational memory</span> and <span class="highlight">creative problem-solving</span>. REM sleep allows the brain to form novel connections between seemingly unrelated pieces of information, a process essential for strategic vision. Research indicates that sleep-deprived individuals are <span class="stat-highlight">40% less effective</span> at consolidating new information compared to those with a full 8-hour architecture.</p>
+
+        <h2 id="recovery">2. Recovery Periodization: Adjusting for Load</h2>
+        <p>In the D.R.E.A.M. Sleep Method™, we move beyond the "one-size-fits-all" 8-hour recommendation. High-performance coaching requires <span class="highlight">Recovery Periodization</span>—aligning sleep duration with the client's current physical or cognitive strain.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Load Level</th>
+                        <th>Target Sleep</th>
+                        <th>Key Focus</th>
+                        <th>Biomarker Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Maintenance</strong></td>
+                        <td>7.5 - 8.5 Hours</td>
+                        <td>Consistency & Circadian Alignment</td>
+                        <td>HRV Baseline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>High Intensity (Training/M&A)</strong></td>
+                        <td>9.0 - 10.0 Hours</td>
+                        <td>N3 (Deep) for Physical; REM for Emotional</td>
+                        <td>Lowered Resting Heart Rate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Taper/Integration</strong></td>
+                        <td>8.0 - 9.0 Hours</td>
+                        <td>Sleep Quality > Quantity</td>
+                        <td>High Sleep Efficiency (>90%)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that <span class="highlight">sleep banking</span>—intentionally increasing sleep duration in the week leading up to a high-stress event—significantly mitigates the performance decline usually seen during subsequent sleep restriction. This is a critical tool for athletes during "Hell Week" or executives during a high-stakes merger.</p>
+
+        <h2 id="executive">3. The CEO Brain: Decision-Making & REM Architecture</h2>
+        <p>The prefrontal cortex (PFC), responsible for executive functions like impulse control, risk assessment, and strategic planning, is the most sleep-sensitive region of the brain. When an executive is sleep-deprived, the <span class="highlight">amygdala</span> (the brain's emotional center) becomes <span class="stat-highlight">60% more reactive</span>, while its connection to the PFC weakens.</p>
+
+        <p>This "neurological decoupling" leads to what we call "CEO Tunnel Vision." A sleep-deprived leader is more likely to:</p>
+        <ul class="content-list">
+            <li>Misinterpret neutral social cues as threatening.</li>
+            <li>Take unnecessary financial risks due to impaired reward-processing.</li>
+            <li>Struggle with "Cognitive Flexibility"—the ability to pivot strategy when data changes.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The Fragmented Executive</p>
+                    <p class="subtitle">Cognitive Optimization for a Fortune 500 VP</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 48</h4>
+                        <p>High-stakes decision maker; 5 hours average sleep; High caffeine reliance.</p>
+                    </div>
+                </div>
+                <p><strong>Symptoms:</strong> Executive burnout, irritability during board meetings, and "brain fog" starting at 2:00 PM. Elena reported making uncharacteristic errors in financial forecasting.</p>
+                <p><strong>Intervention:</strong> Using the DREAM Method, we focused on <span class="highlight">R (Reset)</span> and <span class="highlight">M (Mastering Hygiene)</span>. We implemented a strict 10:30 PM "Digital Sunset" and introduced a 20-minute "NSDR" (Non-Sleep Deep Rest) protocol at 1:00 PM to clear adenosine.</p>
+                <p><strong>Outcomes:</strong> After 4 weeks, Elena's REM sleep increased from 12% to 22%. She reported a <span class="stat-highlight">30% improvement</span> in subjective clarity and successfully navigated a $50M acquisition without the usual "decision fatigue."</p>
+            </div>
+        </div>
+
+        <h2 id="thermoregulation">4. Advanced Thermoregulation: The Passive Heating Protocol</h2>
+        <p>A core tenet of the <span class="highlight">E (Environment)</span> phase of the DREAM method is thermal regulation. However, for high-performers, we can use <span class="highlight">passive body heating</span> to "hack" the circadian rhythm. The goal is to facilitate a rapid drop in core body temperature, which is a biological trigger for sleep onset.</p>
+
+        <p>Research published in <i>Sleep Medicine Reviews</i> suggests that a warm bath or shower (40-42°C / 104-108°F) taken <span class="stat-highlight">1-2 hours before bedtime</span> significantly improves sleep quality. This works through <span class="highlight">vasodilation</span>—blood is drawn to the surface of the skin (hands and feet), allowing core heat to escape rapidly once the person enters a cool bedroom environment.</p>
+
+        <p><strong>The "Warm-to-Cool" Strategy:</strong>
+        <ol>
+            <li><strong>The Heat:</strong> 15 minutes of passive heating (bath, shower, or sauna).</li>
+            <li><strong>The Buffer:</strong> 60-90 minutes of "cool down" in dim light.</li>
+            <li><strong>The Sanctuary:</strong> Room temperature set strictly to 18°C (64.4°F).</li>
+        </ol>
+
+        <h2 id="travel">5. Elite Travel: The Eastward vs. Westward Protocol</h2>
+        <p>For the international performer, jet lag is a physiological tax. The body's master clock (SCN) can only shift by approximately <span class="highlight">60-90 minutes per day</span>. Traveling eastward is notoriously more difficult because it requires "advancing" the clock, which goes against the natural ~24.2-hour human circadian period.</p>
+
+        <h3>The "Eastward" Advance Protocol (Traveling NYC to London)</h3>
+        <ul class="content-list">
+            <li><strong>3 Days Pre-Flight:</strong> Shift bedtime 30 minutes earlier each night.</li>
+            <li><strong>Light Exposure:</strong> Seek bright light in the early morning; avoid light in the evening.</li>
+            <li><strong>Melatonin:</strong> Micro-dose (0.3mg - 0.5mg) 5-6 hours before the target bedtime in the new time zone to "pull" the clock forward.</li>
+        </ul>
+
+        <h3>The "Westward" Delay Protocol (Traveling London to NYC)</h3>
+        <ul class="content-list">
+            <li><strong>Light Exposure:</strong> Seek bright light in the late afternoon/evening to "push" the clock back.</li>
+            <li><strong>Strategic Caffeine:</strong> Use only in the morning of the new time zone; avoid after 12:00 PM to prevent interference with the first night's sleep.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏅</div>
+                <div>
+                    <p class="box-label">Case Study: The Jet-Lagged Pro Athlete</p>
+                    <p class="subtitle">Olympic Swimmer Travel Management</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 24</h4>
+                        <p>Professional Swimmer; traveling 9 time zones East for World Championships.</p>
+                    </div>
+                </div>
+                <p><strong>Challenge:</strong> Marcus traditionally suffered from "Heavy Limb Syndrome" and 3:00 AM insomnia when traveling East, leading to poor qualifying times.</p>
+                <p><strong>Intervention:</strong> We implemented a 5-day "Phase Advance" protocol. Marcus used blue-light-emitting glasses for 30 minutes upon waking and took 0.3mg of melatonin at 6:00 PM pre-departure. On the flight, he used a light-blocking mask and avoided all "in-flight entertainment" screens.</p>
+                <p><strong>Outcomes:</strong> Marcus synchronized to the new time zone in <span class="stat-highlight">2 days</span> (vs. the typical 6-9 days). He achieved a Personal Best (PB) in his second event, citing "zero leg heaviness" upon waking.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of high-performance sleep optimization.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is traveling Eastward generally more difficult for the circadian rhythm than traveling Westward?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Eastward travel requires "phase advancing" the clock (shortening the day). Because the human circadian rhythm is naturally slightly longer than 24 hours (~24.2), it is physiologically easier to "delay" (stay up later) than to "advance" (go to bed earlier).</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How do sleep spindles in N2 sleep specifically benefit an elite athlete?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Sleep spindles facilitate the transfer of motor skill information from the temporary storage of the hippocampus to the permanent long-term storage of the motor cortex, effectively "hard-wiring" the day's physical practice into muscle memory.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sleep is Practice:</strong> Motor skills are consolidated during N2 and REM; without sleep, the day's training is largely lost.</li>
+                <li><strong>The PFC is Vulnerable:</strong> Executives lose strategic depth and emotional regulation when sleep-deprived due to amygdala hyper-reactivity.</li>
+                <li><strong>Thermal Hacking:</strong> Use passive heating 90 minutes before bed to trigger the core temperature drop necessary for fast sleep onset.</li>
+                <li><strong>Periodize the Pillow:</strong> Adjust sleep duration (up to 10 hours) during periods of peak physical or cognitive load.</li>
+                <li><strong>Travel Precision:</strong> Use light and micro-dose melatonin strategically to shift the SCN based on the direction of travel.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Mah, C. D., et al. (2011). "The Effects of Sleep Extension on the Athletic Performance of Collegiate Basketball Players." <i>Sleep</i>.</li>
+                <li>Walker, M. P. (2017). "Why We Sleep: Unlocking the Power of Sleep and Dreams." <i>Scribner</i>.</li>
+                <li>Haghayegh, S., et al. (2019). "Before-bedtime passive body heating by warm shower or bath to improve sleep: A systematic review and meta-analysis." <i>Sleep Medicine Reviews</i>.</li>
+                <li>Vitale, K. C., et al. (2019). "Sleep Hygiene for Optimizing Recovery in Athletes: Review and Recommendations." <i>International Journal of Sports Medicine</i>.</li>
+                <li>Harrison, Y., & Horne, J. A. (2000). "The impact of sleep deprivation on decision making: A review." <i>Journal of Experimental Psychology: Applied</i>.</li>
+                <li>Walsh, N. P., et al. (2021). "Sleep and the athlete: Narrative review and 2021 expert consensus recommendations." <i>British Journal of Sports Medicine</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | High-Performance Module</p>
+        </footer>
+    </div>
+</body>
+
+</html>

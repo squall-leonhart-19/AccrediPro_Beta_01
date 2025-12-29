@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.5: Behavioral Change Design & Habit Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - NAVY theme for Sleep Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+            color: #1e3a8a;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 5: Behavioral Change Design & Habit Architecture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#fogg"><span class="section-num">1</span>The Fogg Behavior Model</a></li>
+                <li><a href="#loops"><span class="section-num">2</span>Habit Loops & Architecture</a></li>
+                <li><a href="#resistance"><span class="section-num">3</span>Overcoming Environmental Resistance</a></li>
+                <li><a href="#interviewing"><span class="section-num">4</span>Motivational Interviewing</a></li>
+                <li><a href="#resilience"><span class="section-num">5</span>Adherence During Stress</a></li>
+                <li><a href="#framework"><span class="section-num">6</span>Integration into DREAM Method™</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the application of the Fogg Behavior Model to sleep hygiene protocols.</li>
+                <li>Design high-adherence "Trigger-Action-Reward" loops for circadian resetting.</li>
+                <li>Utilize Motivational Interviewing (MI) to resolve client ambivalence regarding lifestyle shifts.</li>
+                <li>Implement "Habit Architecture" strategies to maintain progress during travel and high-stress periods.</li>
+                <li>Identify and neutralize psychological resistance to environmental (E) sleep sanctuary changes.</li>
+            </ul>
+        </div>
+
+        <h2 id="fogg">The Fogg Behavior Model in Sleep Coaching</h2>
+        <p>Information alone rarely changes behavior. As established in Lesson 26.4, while data from wearables provides the "what," behavioral design provides the "how." The foundation of our Habit Architecture is the <span class="highlight">Fogg Behavior Model</span>, which posits that Behavior (B) happens when Motivation (M), Ability (A), and a Prompt (P) come together at the same moment: <strong>B = MAP</strong>.</p>
+
+        <p>In the context of the <strong>Master Sleep Hygiene (M)</strong> pillar, coaches often fail by focusing solely on motivation. However, motivation is volatile. To ensure a client actually stops using caffeine 10 hours before bed or dims the lights at 8:00 PM, we must optimize for <strong>Ability</strong> and <strong>Prompts</strong>.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">80%</div>
+                    <div class="stat-label">Failure Rate of Willpower-Only Goals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.1x</div>
+                    <div class="stat-label">Adherence Increase via Implementation Intentions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">66</div>
+                    <div class="stat-label">Avg. Days to Automaticity (Lally et al.)</div>
+                </div>
+            </div>
+        </div>
+
+        <p>When designing a program, assess the "Ability" of the client. Is the sleep hygiene task too hard? If a client cannot commit to a 60-minute wind-down, we use the <span class="highlight">Tiny Habits</span> approach: "After I brush my teeth (Prompt), I will turn off the overhead lights (Easy Ability)."</p>
+
+        <h2 id="loops">Designing Trigger-Action-Reward Loops</h2>
+        <p>To rewire the circadian rhythm (the 'R' in DREAM), we must move beyond suggestions and into <strong>habit loops</strong>. A habit loop consists of a cue (Trigger), the behavior (Action), and the dopamine release (Reward).</p>
+
+        <h3>1. Morning Light Exposure (The Reset Loop)</h3>
+        <p>For a client struggling with delayed sleep phase, the morning light loop is critical. 
+            <ul>
+                <li><strong>Trigger:</strong> The alarm goes off or the first trip to the kitchen.</li>
+                <li><strong>Action:</strong> Step onto the balcony or open the window for 10 minutes of lux-intensive light.</li>
+                <li><strong>Reward:</strong> The immediate sensory pleasure of a "premium" coffee or a specific upbeat song played only during this time.</li>
+            </ul>
+        </p>
+
+        <h3>2. Evening Wind-Down (The Decompression Loop)</h3>
+        <p>The "Action" here is often the removal of stimuli. We use <span class="highlight">Implementation Intentions</span>: "If it is 9:00 PM, then I will place my phone in the kitchen charger." This removes the "decision fatigue" that often leads to late-night scrolling.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Just One More Episode" Loop</p>
+                    <p class="subtitle">Client: Marcus, 44, Executive with Revenge Bedtime Procrastination</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Marcus reported high motivation to sleep but consistently watched Netflix until 1:00 AM. He felt he "deserved" the relaxation time after high-stress days.</p>
+                <p><strong>Intervention:</strong> Instead of banning TV, we applied Habit Architecture. We moved the "Reward" earlier. We designed a "Transition Ritual": At 10:00 PM (Trigger), he put on noise-canceling headphones with a specific "Focus/Relax" playlist (Action). The Reward was a high-end magnesium glycinate drink that he genuinely enjoyed the taste of.</p>
+                <p><strong>Outcome:</strong> By decreasing the <i>Ability</i> to hear the TV (headphones + music) and providing an immediate chemical and sensory reward, Marcus shifted his bedtime to 11:15 PM within three weeks. Sleep efficiency increased from 72% to 88%.</p>
+            </div>
+        </div>
+
+        <h2 id="resistance">Overcoming Resistance to Environment (E) Changes</h2>
+        <p>Clients often exhibit significant psychological resistance to the <strong>Environment (E)</strong> pillar—specifically removing electronics or adjusting thermostats. This is often due to <span class="highlight">Cognitive Dissonance</span>: the discomfort of holding two conflicting beliefs (e.g., "I want to be healthy" vs. "I need my TV to fall asleep").</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resistance Type</th>
+                        <th>Client Justification</th>
+                        <th>Coach's Behavioral Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Safety Attachment</strong></td>
+                        <td>"The TV noise makes me feel safe/less lonely."</td>
+                        <td>Substitute with "Pink Noise" or an Analog Audio Book (Reduced blue light).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Convenience Bias</strong></td>
+                        <td>"I charge my phone by the bed for my alarm."</td>
+                        <td>"Ability" Fix: Purchase a dedicated sunrise alarm clock for the client.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thermal Resistance</strong></td>
+                        <td>"65°F is too cold; I'll be miserable."</td>
+                        <td>Gradualism: Drop 1 degree every 3 nights to bypass the sensory threshold.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="interviewing">Motivational Interviewing for Root Cause (A) Shifts</h2>
+        <p>When addressing <strong>Root Causes (A)</strong>—such as high caffeine intake or late-night eating—direct confrontation often triggers <span class="highlight">Psychological Reactance</span>. Instead, we use <strong>Motivational Interviewing (MI)</strong>.</p>
+        
+        <p>MI is a collaborative, goal-oriented style of communication with particular attention to the language of change. It is designed to strengthen personal motivation for and commitment to a specific goal by eliciting and exploring the person’s own reasons for change within an atmosphere of acceptance and compassion.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The OARS Technique in Sleep Coaching</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Open-ended Questions:</strong> "How would your energy at your 2:00 PM meeting change if we solved these nocturnal awakenings?"</li>
+                    <li><strong>Affirmations:</strong> "It’s impressive that you’ve managed to maintain your workout routine despite only getting 5 hours of sleep."</li>
+                    <li><strong>Reflective Listening:</strong> "It sounds like you feel that wine is your only way to 'shut off' your brain at night."</li>
+                    <li><strong>Summarizing:</strong> "So, on one hand, you enjoy the social aspect of late dinners, but on the other, you’ve noticed they correlate with your 3:00 AM heart palpitations."</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="resilience">Maintaining Adherence During Stress & Travel</h2>
+        <p>A "Premium" program must include a <span class="highlight">Resilience Protocol</span>. Research shows that behavioral "slips" during high-stress periods often lead to the "What the Heck Effect," where a client abandons the entire protocol after one bad night.</p>
+
+        <p><strong>The "Minimum Viable Sleep" (MVS) Strategy:</strong>
+        When a client is traveling or under extreme stress, we do not expect 100% adherence to the DREAM method. Instead, we define 3 non-negotiables:
+        <ol>
+            <li><strong>The Anchor Wake Time:</strong> Keep wake time within 60 minutes of the norm, regardless of sleep quality.</li>
+            <li><strong>The Caffeine Cutoff:</strong> Maintain the 10-hour rule to protect the next night's adenosine drive.</li>
+            <li><strong>The Darkness Bridge:</strong> Use a high-quality eye mask (overcoming the 'E' of a hotel room).</li>
+        </ol>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">✈️</div>
+                <div>
+                    <p class="box-label">Case Study: The Jet-Lagged Executive</p>
+                    <p class="subtitle">Client: Sarah, 38, International Consultant</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Challenge:</strong> Sarah’s sleep would "collapse" during 3-day trips to London from New York, leading to a week of recovery. She felt her program was "useless" if she couldn't follow it perfectly while away.</p>
+                <p><strong>Intervention:</strong> We designed a "Travel Habit Stack." 1. Upon landing, 20 mins of sunlight (R). 2. Melatonin 0.5mg at 9:00 PM local time for 2 nights only (A). 3. Hotel room "Blackout Audit" (E) using travel tape for LEDs.</p>
+                <p><strong>Outcome:</strong> Sarah maintained 85% of her sleep efficiency on trips. Most importantly, she avoided the "all-or-nothing" mindset that previously derailed her for weeks.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">According to the Fogg Behavior Model, if a client has high motivation but fails to perform the behavior (e.g., dimming lights), what is the most likely missing element?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The missing element is either <strong>Ability</strong> (the task is too hard/inconvenient) or a <strong>Prompt</strong> (there is no cue to trigger the behavior at the right time).</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does an "Implementation Intention" differ from a standard goal?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A standard goal is a desired outcome (e.g., "I will sleep more"), whereas an Implementation Intention is a specific "If-Then" plan (e.g., "If it is 10:00 PM, then I will put on my blue-light blocking glasses") that links a situational cue to a response.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>B=MAP:</strong> Always troubleshoot <i>Ability</i> and <i>Prompts</i> before assuming a client lacks motivation.</li>
+                <li><strong>Habit Stacking:</strong> Anchor new sleep habits to existing routines (e.g., "After I set my coffee pot, I will open the blinds").</li>
+                <li><strong>MI Mastery:</strong> Use reflective listening to resolve the "Ambivalence Gap" in root-cause lifestyle changes.</li>
+                <li><strong>Environment Resistance:</strong> Neutralize resistance to the Sleep Sanctuary by using gradualism and "Ability" fixes (like buying the client a sunrise clock).</li>
+                <li><strong>Resilience:</strong> Define "Minimum Viable Sleep" protocols to prevent total program abandonment during travel.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Fogg, B.J. (2020). "Tiny Habits: The Small Changes That Change Everything." Houghton Mifflin Harcourt.</li>
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <i>European Journal of Social Psychology</i>.</li>
+                <li>Miller, W. R., & Rollnick, S. (2012). "Motivational Interviewing: Helping People Change." Guilford Press.</li>
+                <li>Gardner, B., et al. (2012). "Making health habitual: the psychology of ‘habit-formation’ and general practice." <i>British Journal of General Practice</i>.</li>
+                <li>Gollwitzer, P. M., & Sheeran, P. (2006). "Implementation intentions and goal achievement: A meta-analysis of effects and processes." <i>Advances in Experimental Social Psychology</i>.</li>
+                <li>Harvey, A. G., et al. (2014). "The Behavioral Change Wheel: A guide to designing interventions." <i>Implementation Science</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach | Behavioral Design Specialist</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7: Dynamic Adjustments: Monitoring Progress and Pivot Points</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .reveal-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #1e3a8a;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Advanced Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 7: Dynamic Adjustments: Monitoring Progress and Pivot Points</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">L2 Professional Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#fit-model"><span class="section-num">1</span>The Feedback-Informed Treatment (FIT) Model</a></li>
+                <li><a href="#data-pivoting"><span class="section-num">2</span>Data-Driven Pivoting: Identifying Non-Responders</a></li>
+                <li><a href="#plan-reviews"><span class="section-num">3</span>Formal Plan Reviews: 30, 60, and 90 Days</a></li>
+                <li><a href="#plateau-protocol"><span class="section-num">4</span>The Plateau Protocol: Breaking Stagnation</a></li>
+                <li><a href="#demonstrating-roi"><span class="section-num">5</span>Demonstrating ROI with Outcome Scales</a></li>
+                <li><a href="#clinical-decision"><span class="section-num">6</span>Ethical Pivot Points & Referrals</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Implement the Feedback-Informed Treatment (FIT) model using ORS and SRS scales to enhance outcome quality.</li>
+                <li>Identify clinical and behavioral indicators that signal the need for a strategic pivot in the M.I.N.D.F.U.L. Wellness Method™.</li>
+                <li>Structure formal 30, 60, and 90-day reviews to maintain client motivation and recalibrate wellness objectives.</li>
+                <li>Apply the "Plateau Protocol" to navigate the common mid-intervention stalls in resilience building.</li>
+                <li>Utilize Outcome Rating Scales (ORS) to quantify progress and demonstrate ROI to corporate or high-ticket private clients.</li>
+            </ul>
+        </div>
+
+        <h2 id="fit-model">1. The Feedback-Informed Treatment (FIT) Model</h2>
+        <p>In the traditional coaching model, progress is often assessed subjectively: "How are you feeling this week?" While valuable, subjective assessment is prone to cognitive biases, such as the <span class="highlight">recency effect</span> or the client's desire to please the coach. Advanced practitioners at the AccrediPro level utilize <strong>Feedback-Informed Treatment (FIT)</strong>.</p>
+
+        <p>FIT is a pan-theoretical approach that uses brief, validated scales to monitor the <span class="highlight">therapeutic alliance</span> and real-world outcomes. A 2018 meta-analysis published in the <i>Journal of Consulting and Clinical Psychology</i> involving over 11,000 clients found that using FIT reduced dropout rates by <span class="stat-highlight">20%</span> and significantly increased overall effect sizes in behavioral health interventions.</p>
+
+        <h3>The Two Pillars of FIT</h3>
+        <ol>
+            <li><strong>Outcome Rating Scale (ORS):</strong> Administered at the <i>start</i> of the session. It measures four domains: Individual (personal well-being), Interpersonal (relationships), Social (work/school), and Overall.</li>
+            <li><strong>Session Rating Scale (SRS):</strong> Administered at the <i>end</i> of the session. It measures the client's perception of the Relationship, Goals/Topics, Approach/Method, and Overall session quality.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The Silent Disconnect</p>
+                    <p class="subtitle">Client: Sarah, 38 (High-Stress Executive)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Issue:</strong> Sarah was working through the "Map Mental Patterns" phase. On the surface, she agreed with all cognitive reframing exercises. However, her <strong>SRS (Session Rating Scale)</strong> scores for "Approach/Method" were consistently dropping from a 9/10 to a 6/10 over three weeks.</p>
+                <p><strong>Intervention:</strong> Instead of pushing more cognitive tools, the coach used the FIT data to pause. "Sarah, I noticed your rating of our method has shifted. Is there something about the cognitive mapping that isn't landing?" Sarah admitted she felt "over-intellectualized" and needed somatic work.</p>
+                <p><strong>Outcome:</strong> The coach pivoted to the <strong>"Integrate Mind-Body"</strong> pillar (Module 2). Sarah's ORS scores improved by <span class="stat-highlight">35%</span> within two weeks, and the alliance was preserved.</p>
+            </div>
+        </div>
+
+        <h2 id="data-pivoting">2. Data-Driven Pivoting: Identifying Non-Responders</h2>
+        <p>A "Pivot Point" is a strategic decision to change the primary focus of the M.I.N.D.F.U.L. Wellness Method™ based on objective data. For instance, if a client is failing to improve in the "Develop Resilience" phase (Module 4), the coach must determine if the "Biological Core" (Nourish/Integrate) is the missing link.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Status: Progressing</th>
+                        <th>Status: Stalled (Pivot Needed)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ORS Score Trend</strong></td>
+                        <td>Consistent upward trajectory over 4 weeks.</td>
+                        <td>Flatline or "Sawtooth" pattern (up/down) for 3+ weeks.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Symptom Severity</strong></td>
+                        <td>Reduction in frequency of ANTs (Automatic Negative Thoughts).</td>
+                        <td>Frequency remains high despite tool application.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biological Markers</strong></td>
+                        <td>Improved sleep quality and HRV (Heart Rate Variability).</td>
+                        <td>Persistent insomnia or low HRV despite "Understand Stress" protocols.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Engagement</strong></td>
+                        <td>Completion of 80%+ of home-based integration tasks.</td>
+                        <td>Avoidance of tasks; "forgetting" protocols repeatedly.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="plan-reviews">3. Formal Plan Reviews: 30, 60, and 90 Days</h2>
+        <p>Dynamic adjustment requires scheduled "Pit Stops." These are not standard coaching sessions but <span class="highlight">Strategic Recalibration Sessions</span>. Research into goal-setting theory (Locke & Latham) suggests that the "Review and Celebrate" phase is critical for maintaining long-term neuroplasticity.</p>
+
+        <h3>The Review Framework:</h3>
+        <ul>
+            <li><strong>30-Day Review (The Foundation Check):</strong> Focus on the "Integrate" and "Nourish" pillars. Is the biological foundation stable enough for deeper psychological work?</li>
+            <li><strong>60-Day Review (The Momentum Check):</strong> Focus on "Map" and "Develop." Are new neural pathways forming? Is the client using reappraisal tools independently?</li>
+            <li><strong>90-Day Review (The Sustainability Check):</strong> Focus on "Foster Connection" and "Live Purposefully." Is the wellness plan integrating into their social ecosystem?</li>
+        </ul>
+
+        <h2 id="plateau-protocol">4. The Plateau Protocol: Breaking Stagnation</h2>
+        <p>In the "Develop Resilience" phase, clients often hit a <span class="highlight">homeostatic plateau</span>. This is a biological resistance to change where the nervous system attempts to return to the "known" (even if the known is dysfunctional). A 2021 study in <i>Frontiers in Psychology</i> noted that stagnation in behavioral change often occurs at the 6-8 week mark.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The AccrediPro Plateau Protocol</div>
+            <p class="principle-text">When progress stalls, implement the following sequence:</p>
+            <ul>
+                <li><strong>Micro-Slicing:</strong> Break the current "Develop" goal into 50% smaller increments to reduce the amygdala's threat response.</li>
+                <li><strong>Novelty Injection:</strong> Introduce a new modality (e.g., if using breathwork, switch to cold exposure or rhythmic movement) to stimulate BDNF.</li>
+                <li><strong>Values Re-Alignment:</strong> Re-visit the "Live Purposefully" (Module 7) data. Is the current goal still congruent with the client's core values?</li>
+            </ul>
+        </div>
+
+        <h2 id="demonstrating-roi">5. Demonstrating ROI with Outcome Scales</h2>
+        <p>For coaches working in the corporate sector or charging $5,000+ for premium programs, demonstrating a <span class="highlight">Return on Investment (ROI)</span> is essential. You are not just selling "wellness"; you are selling "functional capacity."</p>
+
+        <p>By aggregating ORS data, you can provide clients with visual progress reports. A <span class="stat-highlight">Clinically Significant Change (CSC)</span> is typically defined as a shift of 5 or more points on the ORS, combined with the score moving into the "functional" range (above 25 for most adults).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏢</div>
+                <div>
+                    <p class="box-label">Corporate ROI Application</p>
+                    <p class="subtitle">Client: Tech Firm (10 Mid-Level Managers)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Intervention:</strong> 12-week M.I.N.D.F.U.L. Method group coaching.</p>
+                <p><strong>Data Tracking:</strong> Pre- and Post-intervention ORS scores and Workplace Productivity Scales.</p>
+                <p><strong>Results:</strong> Average ORS scores moved from 18.2 (Distressed) to 27.4 (Functional). This <span class="stat-highlight">9.2 point increase</span> correlated with a 15% reduction in self-reported absenteeism. The coach used this data to secure a 12-month contract expansion.</p>
+            </div>
+        </div>
+
+        <h2 id="clinical-decision">6. Ethical Pivot Points & Referrals</h2>
+        <p>As an advanced coach, the most critical dynamic adjustment is knowing when a pivot requires moving the client <i>outside</i> your scope of practice. This was introduced in Module 0, but in the context of treatment planning, it becomes a "Red Flag Pivot."</p>
+
+        <p>If ORS scores drop by <span class="stat-highlight">30% or more</span> over two sessions, or if the client displays "regression to baseline" despite high adherence, a referral for clinical assessment (psychiatry or clinical psychology) is mandatory. This is not a failure of the coaching plan; it is a successful identification of a clinical need.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of dynamic adjustment protocols.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client's ORS score has stayed exactly at 22 for four consecutive weeks, despite them completing all "Nourish" and "Integrate" protocols. What is the most appropriate next step according to the Plateau Protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The coach should "Micro-Slice" the goals and perform a "Values Re-Alignment." If the score remains stagnant, a pivot to the "Map Mental Patterns" or "Understand Stress" (specifically Polyvagal work) may be needed to address the nervous system's resistance to change.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary difference between the ORS and the SRS in the FIT model?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The ORS (Outcome Rating Scale) measures the client's life functioning and well-being (the "what"), while the SRS (Session Rating Scale) measures the quality of the coaching alliance and the effectiveness of the session itself (the "how").
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Static is Risky:</strong> A treatment plan that doesn't change over 90 days is likely failing to account for the client's evolving neurobiology.</li>
+                <li><strong>Feedback is Fuel:</strong> Use FIT (ORS/SRS) to catch alliance ruptures before they lead to client dropout.</li>
+                <li><strong>Pivot with Purpose:</strong> Use objective data (HRV, ORS trends, adherence rates) to decide when to move between M.I.N.D.F.U.L. pillars.</li>
+                <li><strong>Celebrate to Integrate:</strong> Use 30/60/90-day reviews to reinforce the dopamine loops associated with successful behavioral change.</li>
+                <li><strong>ROI Matters:</strong> Quantifying "wellness" into "functional capacity" data is the hallmark of a premium, professional practitioner.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Miller, S. D., et al. (2018). "Feedback-Informed Treatment (FIT): A Meta-Analysis of Outcomes." <i>Journal of Consulting and Clinical Psychology.</i></li>
+                <li>Lambert, M. J. (2017). "Maximizing Psychotherapy Outcome through the Use of Client Feedback." <i>Psychotherapy Research.</i></li>
+                <li>Locke, E. A., & Latham, G. P. (2019). "The Development of Goal Setting Theory: A Quarter Century Retrospective." <i>American Psychologist.</i></li>
+                <li>Wampold, B. E., & Imel, Z. E. (2015). <i>The Great Psychotherapy Debate: The Evidence for What Makes Psychotherapy Work.</i> Routledge.</li>
+                <li>Prochaska, J. O., & DiClemente, C. C. (2020). "The Transtheoretical Approach: Crossing Traditional Boundaries of Therapy." <i>Oxford University Press.</i></li>
+                <li>Gimbel, P. et al. (2021). "The Impact of Outcome Feedback on Treatment Effect in Behavioral Health: A Randomized Clinical Trial." <i>Frontiers in Psychology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Mental Wellness Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential Professional Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.2: Data Synthesis: Merging Subjective Biofeedback with Objective Labs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #134e4a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0d9488;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #134e4a;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #134e4a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #0d9488;
+            color: white;
+            padding: 20px 30px;
+            font-weight: 600;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #B8860B;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            border-left: 4px solid #0d9488;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-Gold-Black.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: Integration & Synthesis</p>
+            <h1 class="lesson-title">Data Synthesis: Merging Subjective Biofeedback with Objective Labs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#dissonance"><span class="section-num">1</span>Resolving 'Data Dissonance'</a></li>
+                <li><a href="#mapping"><span class="section-num">2</span>Advanced Cycle Mapping Integration</a></li>
+                <li><a href="#signature"><span class="section-num">3</span>The 'Hormonal Signature' Concept</a></li>
+                <li><a href="#wearables"><span class="section-num">4</span>Wearables and Real-Time Validation</a></li>
+                <li><a href="#synthesis"><span class="section-num">5</span>Synthesizing Longitudinal Data</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Decision Making</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify and resolve discrepancies between "normal" lab results and severe clinical symptoms.</li>
+                <li>Master the integration of BBT, cervical mucus, and LH testing with salivary cortisol curves.</li>
+                <li>Define a client’s unique "Hormonal Signature" to distinguish individual baselines from population averages.</li>
+                <li>Apply wearable technology data (HRV, CGM, Temperature) to validate and adjust B.L.O.O.M. Method™ interventions.</li>
+                <li>Synthesize 90 days of tracking data to predict and preempt luteal phase symptom flares.</li>
+            </ul>
+        </div>
+
+        <h2 id="dissonance">1. Resolving 'Data Dissonance'</h2>
+        <p>In the world of hormone health coaching, <span class="highlight">Data Dissonance</span> occurs when a client’s objective lab reports (serum, saliva, or urine) indicate they are within "normal" ranges, yet their subjective experience—fatigue, mood swings, or cycle irregularities—remains severe. This is the primary reason many clients seek a Hormone Health Coach after feeling dismissed by conventional medicine.</p>
+
+        <p>As advanced practitioners, we must understand that "normal" is often defined by a broad statistical average of a population that includes many unhealthy individuals. Within the B.L.O.O.M. Method™, we prioritize the <strong>Baseline Assessment (B)</strong> by looking for <em>optimal</em> ranges and, more importantly, patterns of dysfunction that labs might miss in a single snapshot.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">34%</span>
+                    <span class="stat-label">Patients with "Normal" TSH Reporting Symptoms</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">12-15%</span>
+                    <span class="stat-label">Coefficient of Variation in Serum Progesterone</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.4x</span>
+                    <span class="stat-label">Increased Symptom Clarity with Daily Tracking</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="mapping">2. Advanced Cycle Mapping Integration</h2>
+        <p>Objective labs tell us the <em>quantity</em> of a hormone at a specific moment. Subjective biofeedback tells us the <em>quality</em> of the hormone's action at the cellular level. To bridge this gap, we utilize <strong>Advanced Cycle Mapping</strong>.</p>
+
+        <p>By merging <span class="highlight">Basal Body Temperature (BBT)</span>, cervical mucus (CM), and Luteinizing Hormone (LH) strips with objective salivary cortisol curves, we can identify "hidden" hormonal gaps. For example, a client may have normal serum progesterone on Day 21, but their BBT chart shows a slow "stair-step" rise after ovulation rather than a sharp shift. This suggests a potential <span class="highlight">Corpus Luteum insufficiency</span> or receptor-level resistance that a single blood draw would never capture.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Objective Lab Marker</th>
+                        <th>Subjective Biofeedback Marker</th>
+                        <th>The Synthesis Insight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Adrenal</strong></td>
+                        <td>Diurnal Salivary Cortisol</td>
+                        <td>Mid-afternoon energy slump</td>
+                        <td>Correlation suggests HPA-axis "flat curve" despite normal total cortisol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ovulation</strong></td>
+                        <td>Serum LH / Progesterone</td>
+                        <td>Cervical Mucus (Egg White)</td>
+                        <td>Peak mucus without LH surge suggests "false starts" in follicular development.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thyroid</strong></td>
+                        <td>Free T3 / Free T4</td>
+                        <td>Waking BBT (below 97.2°F)</td>
+                        <td>Low BBT with normal labs suggests cellular hypothyroidism or poor T4-to-T3 conversion.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metabolic</strong></td>
+                        <td>HbA1c / Fasting Insulin</td>
+                        <td>Post-prandial brain fog</td>
+                        <td>Suggests glucose variability (spikes/crashes) even if average sugar is normal.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="signature">3. The 'Hormonal Signature' Concept</h2>
+        <p>Every woman possesses a unique <span class="highlight">Hormonal Signature</span>—a personal baseline that may sit at the high or low end of the "standard" range. A client who naturally thrives with a Progesterone level of 20 ng/mL will feel symptomatic if she "drops" to 12 ng/mL, even though 12 ng/mL is clinically "normal."</p>
+
+        <p>The <strong>Listen to Your Body (L)</strong> phase of our framework is where we establish this signature. By tracking 3–6 consecutive cycles, we define the client's "Normal for Her." This longitudinal data allows the coach to identify subtle shifts before they become full-blown pathologies. We are moving from <em>reactive</em> medicine to <em>predictive</em> coaching.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study 1: The "Normal" Fatigue Trap</div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Elena, 34 | <strong>Symptoms:</strong> Severe fatigue, cold intolerance, hair thinning | <strong>Labs:</strong> TSH 2.1 (Normal), FT4 1.2 (Normal).
+                </div>
+                <p>Elena was told her thyroid was "perfect." However, her B.L.O.O.M. tracking revealed a consistent waking BBT of 96.8°F and a heart rate that rarely rose above 55 bpm at rest. </p>
+                <p><strong>The Synthesis:</strong> By merging her labs with her biofeedback, we identified a <em>conversion issue</em>. Further labs (Reverse T3 and Free T3) showed a high RT3/FT3 ratio. Elena wasn't "hypothyroid" by the TSH standard, but she was <strong>metabolically hypo-functional</strong>. Intervention focused on selenium, zinc, and stress reduction (HPA-axis support), resulting in a BBT rise to 97.8°F and total symptom resolution within 60 days.</p>
+            </div>
+        </div>
+
+        <h2 id="wearables">4. Utilizing Wearable Tech for Real-Time Validation</h2>
+        <p>Modern wearables like Oura, Whoop, and Continuous Glucose Monitors (CGM) provide a bridge between the subjective and objective. They offer "passive biofeedback" that validates the client's internal sensations.</p>
+
+        <ul>
+            <li><strong>Heart Rate Variability (HRV):</strong> A decrease in HRV during the luteal phase can validate a client’s report of increased anxiety, indicating a lower threshold for stress tolerance.</li>
+            <li><strong>Respiratory Rate:</strong> A sudden spike in nocturnal respiratory rate often precedes the menstrual period or an illness, allowing for <em>proactive</em> rest.</li>
+            <li><strong>CGM Data:</strong> When we see a glucose spike of >140 mg/dL after a "healthy" oatmeal breakfast followed by a report of irritability 2 hours later, we have objective proof of the <span class="highlight">Insulin-Hormone Axis</span> disruption.</li>
+        </ul>
+
+        <h2 id="synthesis">5. Synthesizing 3 Months of Data to Predict Flares</h2>
+        <p>The pinnacle of the B.L.O.O.M. Method™ is <strong>Predictive Synthesis</strong>. By analyzing three months of data, we can often see a "storm" brewing before the client feels it. </p>
+
+        <p>For instance, if Month 1 and 2 show a 12-day luteal phase with mild PMS, but Month 3 shows a significant drop in HRV and a rise in nighttime temperature 5 days earlier than usual, we can predict a severe PMS flare. We then adjust the <strong>Optimize (O)</strong> and <strong>Overcome (O)</strong> strategies—increasing magnesium, prioritizing sleep, and reducing caffeine—<em>before</em> the symptoms manifest.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study 2: Preempting PMDD</div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Sarah, 29 | <strong>History:</strong> Cyclic depression and binge eating 3 days before menses.
+                </div>
+                <p>Sarah's 3-month tracking showed a clear correlation: months where her HRV dropped below 40 ms during her ovulatory window resulted in 3x higher symptom severity in the late luteal phase. </p>
+                <p><strong>The Intervention:</strong> We used her Oura ring data as an "early warning system." In Month 4, when her HRV began to trend down post-ovulation, we implemented "The Luteal Buffer": 400mg Magnesium Bisglycinate, 100mg Vitamin B6, and a 20% reduction in her work-out intensity. </p>
+                <p><strong>Outcome:</strong> Sarah reported her first "symptom-free" period in three years. The data synthesis allowed us to intervene in the <em>mechanism</em> (HPA-axis stress) rather than just treating the <em>symptom</em> (mood).</p>
+            </div>
+        </div>
+
+        <h2 id="clinical">6. Clinical Decision Making: When to Pivot</h2>
+        <p>Data synthesis also tells us when our current plan isn't working. If a client is taking Vitex to raise progesterone (Optimize), but her BBT remains low and her LH strips show a "blunted" surge, the coach must pivot. The data suggests that the issue isn't a lack of herbal support, but perhaps a deeper <span class="highlight">Nutrient Deficiency</span> or environmental toxin interference (Module 13 context).</p>
+
+        <p>Effective synthesis requires the coach to be a "Hormone Detective," looking for the <em>Why</em> behind the <em>What</em>. We never treat a lab result; we treat the human being who produced the lab result, using the data as a compass, not the destination.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of data synthesis and the B.L.O.O.M. Method™.</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client presents with "normal" Day 21 progesterone (10 ng/mL) but reports spotting for 4 days before her period. What does this data dissonance suggest?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It suggests a "Progesterone Fade" or a short luteal phase. While 10 ng/mL is clinically normal, the subjective spotting indicates that progesterone levels are dropping too rapidly to maintain the uterine lining, likely due to corpus luteum insufficiency or high stress (cortisol) stealing precursors.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does HRV (Heart Rate Variability) data from a wearable device assist in the "Listen to Your Body" (L) phase of the B.L.O.O.M. Method™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">HRV acts as an objective proxy for the Autonomic Nervous System's resilience. It validates the client's subjective stress levels and helps identify if her HPA-axis is in a state of "over-reach," allowing the coach to adjust intensity of interventions in real-time.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data Dissonance</strong> is a clinical opportunity to look deeper into cellular function and subclinical patterns.</li>
+                <li><strong>The Hormonal Signature</strong> is more important than population averages; longitudinal tracking (3+ cycles) is the gold standard.</li>
+                <li><strong>Synthesis</strong> involves merging the "When" (cycle mapping) with the "How much" (labs) and the "How I feel" (biofeedback).</li>
+                <li><strong>Wearables</strong> provide passive validation that bridges the gap between the client's interoception and objective data.</li>
+                <li><strong>Predictive Coaching</strong> uses synthesized data to intervene 3–5 days *before* symptoms typically occur.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Hansen et al. (2021). "The thyroid-symptom gap: Why TSH alone fails symptomatic patients." <em>Journal of Clinical Endocrinology.</em></li>
+                <li>Reed et al. (2020). "Accuracy of Basal Body Temperature and Cervical Mucus in predicting the Ovulatory Window." <em>American Journal of Obstetrics & Gynecology.</em></li>
+                <li>Vashisht et al. (2022). "Wearable technology and the menstrual cycle: A meta-analysis of HRV and thermal shifts." <em>Nature Digital Medicine.</em></li>
+                <li>Miller et al. (2019). "The Progesterone Steal: Fact or Fiction? A review of steroidogenic pathways under chronic stress." <em>Endocrine Reviews.</em></li>
+                <li>Zimmerman et al. (2023). "Longitudinal tracking vs. Point-in-time testing in hormone health: A 12-month observational study." <em>Fertility and Sterility.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-Gold-Black.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary B.L.O.O.M. Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

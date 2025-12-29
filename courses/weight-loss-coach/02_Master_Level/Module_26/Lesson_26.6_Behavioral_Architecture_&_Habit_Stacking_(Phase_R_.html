@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.6: Behavioral Architecture & Habit Stacking (Phase R & O)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Behavioral Architecture */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #1e293b;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #1e293b;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e293b;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #1e293b;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border-left: 5px solid #1e293b;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 6: Behavioral Architecture & Habit Stacking (Phase R & O)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Program Design L3</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Reset Habits (R) Blueprint</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Choice Architecture & Food-Scapes</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Sleep Hygiene Engineering</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Stress Resilience Systems</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Digital Coaching Integration</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Program Synthesis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design a structured 4-week habit-stacking sequence for the "Reset Habits" (R) phase.</li>
+                <li>Apply "Choice Architecture" principles to audit and redesign client environments.</li>
+                <li>Engineer sleep protocols that optimize metabolic hormones (Leptin/Ghrelin).</li>
+                <li>Integrate stress resilience tools directly into a weekly fat-loss program flow.</li>
+                <li>Utilize digital systems to automate accountability and habit tracking.</li>
+            </ul>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Concepts</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Habit Stacking</p>
+                    <p class="definition">The practice of anchoring a new behavior to an existing, ingrained habit to increase adherence.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Choice Architecture</p>
+                    <p class="definition">The design of the different ways in which choices can be presented to consumers, influencing decision-making.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Phase R & O</p>
+                    <p class="definition">The 'Reset' and 'Optimize' components of the TRANSFORM Methodology™ focusing on behavior and lifestyle.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">1. The Reset Habits (R) Blueprint</h2>
+        <p>While previous lessons focused on the <i>what</i> of metabolism and nutrition, Phase R (Reset Habits) addresses the <i>how</i>. Success in weight management is rarely a failure of knowledge; it is a failure of <span class="highlight">behavioral consistency</span>. As a Level 3 practitioner, you must transition from "giving advice" to "designing systems."</p>
+        
+        <p>A 2021 study published in <i>Psychological Review</i> demonstrated that habit formation is not merely about repetition, but about the <span class="highlight">context-response association</span>. To facilitate this, we utilize a 4-week habit-stacking sequence within the TRANSFORM framework.</p>
+
+        <h3>The 4-Week Habit Sequence</h3>
+        <p>We do not introduce all habits at once. We layer them to prevent cognitive overload and decision fatigue.</p>
+        
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Week</th>
+                        <th>Focus Area</th>
+                        <th>Core Habit Anchor</th>
+                        <th>Metabolic Objective</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Hydration & Awareness</td>
+                        <td>First wake-up action</td>
+                        <td>Cortisol regulation & cellular hydration</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>The Protein Anchor</td>
+                        <td>First bite of every meal</td>
+                        <td>Satiety signaling (GLP-1/PYY)</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Movement Snacking</td>
+                        <td>Post-meal transition</td>
+                        <td>Post-prandial glucose clearance</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>The Digital Sunset</td>
+                        <td>Phone charger placement</td>
+                        <td>Melatonin synthesis & CNS down-regulation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Choice Architecture & Food-Scapes</h2>
+        <p>The environment is the invisible hand that shapes human behavior. In the TRANSFORM Methodology™, we use <span class="highlight">Choice Architecture</span> to reduce the friction of healthy choices and increase the friction of sabotaging ones. Research indicates that individuals make over 200 food-related decisions daily, most of them subconscious.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Nudge Principle</p>
+            <p>If a client has to use willpower to avoid a cookie in their own pantry, they have already lost. The goal of behavioral architecture is to make the "right" choice the "easiest" choice.</p>
+        </div>
+
+        <p>Redesigning the "Food-Scape" involves three primary zones:</p>
+        <ul>
+            <li><strong>Zone 1: The Visual Field (Countertops).</strong> Only items that support Phase A (Anti-Inflammatory) should be visible (e.g., fruit bowl, hydration station).</li>
+            <li><strong>Zone 2: The Eye-Level Shelf (Pantry/Fridge).</strong> Nutrient-dense, pre-prepped proteins and vegetables must occupy the central shelf.</li>
+            <li><strong>Zone 3: The High-Friction Zone.</strong> Any ultra-processed foods kept for other family members must be in opaque containers, on high shelves, or in separate rooms.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">3.1x</div>
+                    <div class="stat-label">Higher likelihood of obesity if snacks are visible</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25%</div>
+                    <div class="stat-label">Reduction in intake via smaller plate sizes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">66</div>
+                    <div class="stat-label">Average days to reach habit automaticity</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Sleep Hygiene Engineering (Phase O)</h2>
+        <p>Phase O (Optimize Lifestyle) focuses heavily on <span class="highlight">Circadian Biology</span>. Sleep is not a passive state; it is a metabolic regulator. A single night of partial sleep deprivation (4 hours) has been shown to increase ghrelin levels by 28% and decrease leptin by 18%, leading to a caloric surplus of approximately 300-550 kcal the following day.</p>
+
+        <h3>The 10-3-2-1-0 Sleep Protocol</h3>
+        <p>When developing a client's lifestyle program, integrate this structured protocol:</p>
+        <ul>
+            <li><strong>10 Hours before bed:</strong> No more caffeine (adenosine receptor clearance).</li>
+            <li><strong>3 Hours before bed:</strong> No more food or alcohol (digestive rest/insulin drop).</li>
+            <li><strong>2 Hours before bed:</strong> No more work (cognitive down-regulation).</li>
+            <li><strong>1 Hour before bed:</strong> No more blue light (melatonin protection).</li>
+            <li><strong>0:</strong> The number of times the snooze button is hit in the morning.</li>
+        </ul>
+
+        <h2 id="section4">4. Stress Resilience Systems</h2>
+        <p>Stress is the "metabolic brake" of the TRANSFORM system. Chronic elevation of cortisol promotes visceral adiposity and insulin resistance through gluconeogenesis. To counter this, your program must include <span class="highlight">Active Recovery Anchors</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Marcus, 44</p>
+                    <p class="subtitle">High-Cortisol Executive / Weight Loss Plateau</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Background</h4>
+                        <p>CEO, 55-hour work weeks, struggling with midsection fat despite strict Phase A dieting.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of adding more cardio (which would spike cortisol further), we implemented "Stress Stacking." We anchored 4-count box breathing to his transition from office to car, and 10 minutes of restorative yoga to his "Digital Sunset."</p>
+                <p><strong>Outcome:</strong> Within 3 weeks, Marcus's resting heart rate (RHR) dropped by 6 bpm, and his weight loss resumed at a rate of 1.2 lbs/week without further caloric restriction.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Digital Coaching Integration</h2>
+        <p>In L3 Program Development, we leverage technology to close the "Accountability Loop." The more frequent the touchpoints, the higher the adherence. A meta-analysis of 42 studies (n=8,234) found that <span class="highlight">digital self-monitoring</span> significantly increases weight loss outcomes compared to traditional methods.</p>
+
+        <h3>The Digital Architecture</h3>
+        <p>Your coaching system should automate the following:</p>
+        <ol>
+            <li><strong>Habit Check-ins:</strong> Daily push notifications for the current "Week Focus" habit.</li>
+            <li><strong>Biometric Syncing:</strong> Integrating wearable data (Oura, Whoop, Apple Watch) to monitor Phase O (Sleep/Recovery).</li>
+            <li><strong>Photo-Food Journaling:</strong> Moving away from calorie counting to "Phase Alignment" photos, reducing the friction of tracking.</li>
+        </ol>
+
+        <h2 id="section6">6. Program Synthesis: The Master Flow</h2>
+        <p>The final step in L3 development is synthesizing these layers into a cohesive weekly flow for the client. This is the <span class="highlight">Behavioral Architecture Master Plan</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time Block</th>
+                        <th>Phase Action</th>
+                        <th>Psychological Trigger</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Morning (06:00-08:00)</td>
+                        <td>Phase T (Hydrate) + Phase S (Strength)</td>
+                        <td>"Win the morning" dopamine spike</td>
+                    </tr>
+                    <tr>
+                        <td>Mid-Day (12:00-13:00)</td>
+                        <td>Phase N (Nourish) + Phase O (Light)</td>
+                        <td>Circadian anchoring via sunlight exposure</td>
+                    </tr>
+                    <tr>
+                        <td>Evening (18:00-20:00)</td>
+                        <td>Phase A (Anti-Inflammatory) + Phase R (Stack)</td>
+                        <td>Family connection & kitchen shutdown</td>
+                    </tr>
+                    <tr>
+                        <td>Night (21:00-22:00)</td>
+                        <td>Phase O (Optimize Sleep)</td>
+                        <td>Parasympathetic nervous system activation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of behavioral architecture.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "10-3-2-1-0" protocol specifically relevant to Phase O of the TRANSFORM Methodology?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It addresses the biological foundations of metabolism by protecting melatonin synthesis and ensuring digestive rest, which prevents the ghrelin/leptin imbalance caused by circadian disruption.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to Choice Architecture, what should be the primary focus when auditing a client's kitchen counter?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Visual Field (Zone 1). By ensuring only health-promoting items are visible, we reduce decision fatigue and the need for willpower, making the path of least resistance the healthiest one.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li><strong>Systems over Advice:</strong> Success is built on behavioral architecture, not just metabolic knowledge.</li>
+                <li><strong>Habit Stacking:</strong> Anchor new behaviors (Phase R) to existing routines to ensure long-term adherence.</li>
+                <li><strong>Environment as Destiny:</strong> Redesign the client's "food-scape" to eliminate friction for Phase A and N protocols.</li>
+                <li><strong>Hormonal Sleep:</strong> Use structured protocols like 10-3-2-1-0 to manage the ghrelin-leptin axis.</li>
+                <li><strong>Digital Loops:</strong> Leverage technology to maintain a continuous accountability loop with the client.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <i>European Journal of Social Psychology.</i></li>
+                <li>Thaler, R. H., & Sunstein, C. R. (2021). "Nudge: The Final Edition." <i>Yale University Press.</i></li>
+                <li>Spiegel, K., et al. (2004). "Sleep curtailment in healthy young men is associated with decreased leptin levels, elevated ghrelin levels, and increased hunger and appetite." <i>Annals of Internal Medicine.</i></li>
+                <li>Wansink, B., et al. (2016). "Slim by Design: Mindless Eating Solutions for Everyday Life." <i>Journal of Marketing Research.</i></li>
+                <li>Gardner, B., et al. (2012). "Making health habitual: the psychology of ‘habit-formation’ and general practice." <i>British Journal of General Practice.</i></li>
+                <li>Greer, S. M., et al. (2013). "The impact of sleep deprivation on food desire in the human brain." <i>Nature Communications.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Weight Loss Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

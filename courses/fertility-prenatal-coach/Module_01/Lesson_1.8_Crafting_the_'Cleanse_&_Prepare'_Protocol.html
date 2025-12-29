@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.8: Crafting the 'Cleanse & Prepare' Protocol</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Cleanse & Prepare */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d2d2d;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #10B981;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: C: Cleanse & Prepare</p>
+            <h1 class="lesson-title">Lesson 1.8: Crafting the 'Cleanse & Prepare' Protocol</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#assessment"><span class="section-num">1</span>Toxic Load Assessment</a></li>
+                <li><a href="#phased"><span class="section-num">2</span>The Phased Protocol Approach</a></li>
+                <li><a href="#timeline"><span class="section-num">3</span>The 12-Week Integration</a></li>
+                <li><a href="#herxheimer"><span class="section-num">4</span>Managing Detox Reactions</a></li>
+                <li><a href="#kpis"><span class="section-num">5</span>Measuring Success (KPIs)</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Conduct a comprehensive 'Toxic Load' assessment to personalize client protocols.</li>
+                <li>Master the transition from 'Removal' of environmental toxins to 'Replenishment' of nutrient stores.</li>
+                <li>Identify and manage the 'Herxheimer' reaction to ensure client safety and compliance.</li>
+                <li>Strategically integrate the 'Cleanse' phase into the 12-week C.O.N.C.E.I.V.E. Framework™.</li>
+                <li>Establish Key Performance Indicators (KPIs) for evaluating preconception readiness.</li>
+            </ul>
+        </div>
+
+        <h2 id="assessment">1. The Preconception 'Toxic Load' Assessment</h2>
+        <p>Before a single supplement is recommended or a dietary change implemented, the Fertility Coach must act as a clinical detective. The <span class="highlight">Total Toxic Load (TTL)</span> is the cumulative burden of environmental chemicals, metabolic waste, and microbial toxins that an individual's detoxification systems must process.</p>
+
+        <p>In the C.O.N.C.E.I.V.E. Framework™, we utilize a multi-modal assessment strategy to quantify this load. This isn't about "guessing"—it's about gathering data points that indicate how much pressure the liver, kidneys, and gut are under.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">200+</span>
+                    <span class="stat-label">Chemicals in Cord Blood</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">42%</span>
+                    <span class="stat-label">Reduced Sperm Count</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.5x</span>
+                    <span class="stat-label">Higher Miscarriage Risk</span>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2021 study published in <i>Human Reproduction Update</i> analyzed the impact of cumulative EDC exposure, finding that women in the highest quartile of "toxic load" had a 3.5x higher risk of pregnancy loss compared to the lowest quartile. As a coach, your assessment should include:</p>
+        <ul class="content-list">
+            <li><strong>Environmental Audit:</strong> Reviewing personal care products, household cleaners, and water filtration.</li>
+            <li><strong>Occupational History:</strong> Identifying exposure to solvents, heavy metals, or radiation.</li>
+            <li><strong>Symptom Clustering:</strong> Identifying "Detox Congestion" signs: brain fog, acne, chemical sensitivities, and PMS.</li>
+            <li><strong>Elimination Efficiency:</strong> Tracking bowel regularity and hydration levels.</li>
+        </ul>
+
+        <h2 id="phased">2. The Phased Architecture: Removal to Replenishment</h2>
+        <p>The biggest mistake in "cleansing" is jumping straight to aggressive supplementation without addressing the <span class="highlight">foundations of elimination</span>. If the "exit doors" (gut and kidneys) are closed, mobilizing toxins from the fat cells only leads to re-circulation and systemic inflammation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Primary Goal</th>
+                        <th>Key Actions</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phase 1: Removal</strong></td>
+                        <td>Stop the Inflow</td>
+                        <td>EDC audit, organic transition, filtered water, air purification.</td>
+                        <td>Weeks 1-3</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 2: Support</strong></td>
+                        <td>Open Exit Channels</td>
+                        <td>Fiber intake (35g+), hydration, lymphatic drainage, Phase I/II liver support.</td>
+                        <td>Weeks 4-8</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 3: Replenish</strong></td>
+                        <td>Restore Nutrients</td>
+                        <td>High-dose antioxidants, fat-soluble vitamins (A, D, E, K), trace minerals.</td>
+                        <td>Weeks 9-12</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>By following this phased approach, we ensure that the body is not overwhelmed. We move from <span class="highlight">Exogenous Removal</span> (external environment) to <span class="highlight">Endogenous Clearance</span> (internal pathways) to <span class="highlight">Cellular Saturation</span> (nutrient loading).</p>
+
+        <h2 id="timeline">3. Integrating 'Cleanse' into the 12-Week Framework</h2>
+        <p>The 90-day window is non-negotiable because it takes approximately 90-100 days for an oocyte to mature and for spermatogenesis to complete. The 'Cleanse & Prepare' phase occupies the first third of the C.O.N.C.E.I.V.E. Framework™ but sets the stage for everything that follows.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">COACHING TIP</p>
+            <p>Remind clients that they are not "detoxing for weight loss," but "cleansing for cellular integrity." This mindset shift increases compliance during the more restrictive Phase 1 removal of inflammatory foods and endocrine disruptors.</p>
+        </div>
+
+        <p>During the first 4 weeks, we prioritize the <strong>Gut-Fertility Axis</strong>. As discussed in Lesson 1.3, the estrobolome must be balanced to ensure that estrogen metabolites are excreted rather than reabsorbed. If this phase is skipped, the "O" (Optimize Hormones) phase will fail because the hormonal "noise" from recirculating toxins will drown out the body's natural signaling.</p>
+
+        <h2 id="herxheimer">4. Managing the Herxheimer (Detox) Reaction</h2>
+        <p>The <span class="highlight">Jarisch-Herxheimer reaction</span> occurs when toxins are released into the bloodstream faster than the liver and kidneys can process them. This is often seen when clients begin microbial balancing or aggressive liver support.</p>
+
+        <h3>Common Symptoms of "Detox Flare":</h3>
+        <ul class="content-list">
+            <li>Flu-like symptoms (fatigue, muscle aches).</li>
+            <li>Headaches (especially at the base of the skull).</li>
+            <li>Skin breakouts (acne or rashes).</li>
+            <li>Changes in bowel habits (temporary constipation or diarrhea).</li>
+        </ul>
+
+        <p>To manage this, the coach must implement "titration." Start low and go slow. If a client experiences a Herxheimer reaction, the protocol should be dialed back by 50% until symptoms resolve, while increasing <span class="highlight">binders</span> (such as activated charcoal or modified citrus pectin) to catch the mobilized toxins in the GI tract.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">CASE STUDY: Managing the 'Herx' Flare</p>
+                    <p class="subtitle">Clinical Application of Titration</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34</h4>
+                        <p>History of PCOS and Chronic Fatigue. Goal: Preconception priming.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah began a Phase II liver support protocol including NAC and sulforaphane. By day 4, she reported severe migraines and cystic acne.</p>
+                <p><strong>Outcome:</strong> The protocol was paused for 48 hours. We introduced Epsom salt baths (lymphatic support) and increased water intake to 3L/day. We restarted the protocol at 25% dosage and added 500mg of Bamboo Silica as a gentle binder. Sarah's symptoms resolved within 3 days, and her energy levels subsequently reached a 2-year high.</p>
+            </div>
+        </div>
+
+        <h2 id="kpis">5. KPIs for the 'Cleanse & Prepare' Phase</h2>
+        <p>How do we know if the protocol is working? We track Key Performance Indicators that reflect metabolic and reproductive health. Vague claims of "feeling better" are insufficient for a professional certification program.</p>
+
+        <ul class="content-list">
+            <li><strong>Bowel Regularity:</strong> Goal: 1-3 complete evacuations daily (Bristol Stool Scale 3 or 4).</li>
+            <li><strong>Cervical Mucus (CM):</strong> Observation of "Egg White" CM during the fertile window. Toxic load often manifests as "dry" or "hostile" mucus.</li>
+            <li><strong>Energy Stability:</strong> Elimination of the "3 PM crash," indicating improved blood sugar and mitochondrial function.</li>
+            <li><strong>Basal Body Temperature (BBT):</strong> A steady, non-erratic follicular phase temperature (typically 97.2°F–97.8°F).</li>
+            <li><strong>Skin Clarity:</strong> Reduction in inflammatory acne, particularly along the jawline (hormonal/detox zone).</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">WARNING: RED FLAGS</p>
+            <p>If a client experiences rapid weight loss (>2 lbs/week) during the cleanse phase, slow down. Adipose tissue is a primary storage site for EDCs; rapid breakdown can flood the system with legacy toxins like DDT and PCBs, which are highly embryotoxic.</p>
+        </div>
+
+        <h2 id="application">6. Integrating Protocol into Client Lifestyle</h2>
+        <p>A protocol is only as good as its execution. To ensure success, the 'Cleanse & Prepare' phase must be integrated into the client's daily rhythms. This involves "habit stacking"—linking new detox habits to existing routines.</p>
+        
+        <p>For example, dry brushing (lymphatic support) can be stacked before the morning shower. Taking liver support supplements can be stacked with the first meal of the day. This reduces the cognitive load on the client and prevents "protocol fatigue."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of protocol crafting.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is Phase 1 (Removal) prioritized over Phase 3 (Replenishment)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Because mobilizing toxins into a nutrient-depleted system with "closed" exit channels (poor elimination) leads to re-circulation and systemic inflammation, potentially damaging oocytes.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the clinical significance of a Herxheimer reaction in a fertility context?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It indicates that the toxin mobilization rate exceeds the clearance rate. In fertility, this oxidative stress must be managed quickly to prevent DNA damage to the maturing eggs or sperm.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The 'Cleanse' phase is the foundation of the C.O.N.C.E.I.V.E. Framework™, focusing on reducing the Total Toxic Load (TTL).</li>
+                <li>Never begin aggressive mobilization of toxins until the gut and lymphatic "exit channels" are open and functioning.</li>
+                <li>The 90-day window is essential for protecting the full cycle of gamete maturation.</li>
+                <li>Track measurable KPIs like cervical mucus quality and bowel regularity to validate protocol efficacy.</li>
+                <li>Manage Herxheimer reactions by titrating dosages and utilizing binders to ensure client safety.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Gaskins, A. J., et al. (2021). "Environment and fertility: a review of the recent literature." <i>Human Reproduction Update</i>.</li>
+                <li>Pizzorno, J. (2018). "The Toxin Solution: How Hidden Poisons in the Air, Water, Food, and Products We Use Are Destroying Our Health." <i>Journal of Restorative Medicine</i>.</li>
+                <li>Rinaudo, P., et al. (2022). "The impact of environmental toxins on the follicular microenvironment." <i>Fertility and Sterility</i>.</li>
+                <li>Sears, M. E., et al. (2012). "Arsenic, Cadmium, Lead, and Mercury in Sweat: A Systematic Review." <i>Journal of Environmental and Public Health</i>.</li>
+                <li>Zhu, J., et al. (2023). "The Estrobolome: How the Gut Microbiome Regulates Estrogen Levels and Impacts Reproductive Health." <i>Microbiome Journal</i>.</li>
+                <li>Crinnion, W. J. (2011). "The Role of Environmental Toxins in the Etiology of Infertility." <i>Alternative Medicine Review</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Fertility & Prenatal Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary C.O.N.C.E.I.V.E. Framework™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

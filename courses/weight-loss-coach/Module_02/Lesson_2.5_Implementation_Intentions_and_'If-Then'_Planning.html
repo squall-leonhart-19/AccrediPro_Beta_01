@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.5: Implementation Intentions and 'If-Then' Planning</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Reset Habits */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #334155;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #334155;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #D4A84B;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            color: #334155;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: R: Reset Habits</p>
+            <h1 class="lesson-title">Lesson 2.5: Implementation Intentions and 'If-Then' Planning</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Gollwitzer Framework</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Neurobiology of Automation</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Combatting Decision Fatigue</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Scripting High-Risk Scenarios</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Two-Minute Rule</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Priming the Environment</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the science of <span class="highlight">Implementation Intentions</span> to bridge the "intention-behavior gap."</li>
+                <li>Develop personalized 'If-Then' scripts for a client's specific metabolic and social triggers.</li>
+                <li>Identify how pre-deciding preserves cognitive resources and prevents "Ego Depletion."</li>
+                <li>Apply the 'Two-Minute Rule' to lower the activation energy for new health behaviors.</li>
+                <li>Utilize visual cues and priming to trigger desired habit responses automatically.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Gollwitzer Framework: Bridging the Gap</h2>
+        <p>In the previous lessons of the <span class="highlight">Reset Habits</span> module, we explored the neurobiology of cravings and the architecture of our environment. However, even with a clean environment and an understanding of dopamine, many clients struggle with the execution of their goals. This is known as the <strong>Intention-Behavior Gap</strong>.</p>
+        
+        <p>Dr. Peter Gollwitzer, a prominent psychologist, introduced the concept of <span class="highlight">Implementation Intentions</span>. Unlike "goal intentions" (e.g., "I want to lose weight"), implementation intentions specify the <em>when, where, and how</em> of goal-striving. By using an <strong>"If-Then"</strong> structure, we link a situational cue directly to a goal-directed response.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">2x-3x</div>
+                    <div class="stat-label">Higher Success Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.65</div>
+                    <div class="stat-label">Effect Size (d)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">91%</div>
+                    <div class="stat-label">Follow-through (Exercise)</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A meta-analysis of 94 studies involving over 8,000 participants found that implementation intentions had a medium-to-large effect size (d = 0.65) on goal attainment. In one famous study on exercise, participants who used "If-Then" planning had a 91% follow-through rate, compared to only 38% in the control group.</p>
+
+        <h2 id="section2">2. The Neurobiology of Automation</h2>
+        <p>Why is this simple linguistic shift so powerful? It shifts the burden of behavior from the <span class="highlight">Prefrontal Cortex (PFC)</span>—the slow, energy-expensive part of the brain—to the more primitive, faster-acting associative centers. When a client creates an "If-Then" plan, they are essentially <strong>outsourcing the control of behavior to the environment</strong>.</p>
+
+        <p>The "If" part of the statement primes the brain to scan for the situational cue. Once that cue is encountered, the "Then" response is activated with significantly less conscious effort. This is critical for weight management because high-stress situations often lead to "cognitive load," which impairs the PFC's ability to make healthy choices.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Goal Intention</th>
+                        <th>Implementation Intention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Format</strong></td>
+                        <td>"I intend to achieve X"</td>
+                        <td>"If situation Y occurs, then I will do Z"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cognitive Effort</strong></td>
+                        <td>High (Requires constant willpower)</td>
+                        <td>Low (Becomes semi-automated)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reliability</strong></td>
+                        <td>Low during stress/fatigue</td>
+                        <td>High (Triggered by the environment)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Focus</strong></td>
+                        <td>Desired Outcome</td>
+                        <td>Specific Action & Context</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Combatting Decision Fatigue through Pre-Deciding</h2>
+        <p>As a coach using the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span>, you must recognize that willpower is a finite resource. This is known as <strong>Decision Fatigue</strong>. Every time a client has to decide whether to eat the office donut or go to the gym after work, they expend "metabolic currency" from the brain.</p>
+        
+        <p>By the time 6:00 PM arrives, most clients have made hundreds of decisions, leaving them in a state of "Ego Depletion." Pre-deciding—the essence of "If-Then" planning—removes the need for deliberation. If the decision is already made at 8:00 AM, the brain doesn't have to "argue" with itself when the temptation arises later.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Executive Social Loop</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8);">Managing High-Pressure Business Dinners</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 48</h4>
+                        <p>Tech Executive | BMI: 32 | High Decision Fatigue</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Marcus consistently overate during business dinners, often consuming 1,500+ calories in a single sitting due to peer pressure and fatigue.</p>
+                <p><strong>The Intervention:</strong> We implemented three specific "If-Then" scripts:</p>
+                <ul>
+                    <li><em>Script 1:</em> "<strong>If</strong> the waiter asks for a drink order, <strong>then</strong> I will immediately order sparkling water with lime before looking at the wine list."</li>
+                    <li><em>Script 2:</em> "<strong>If</strong> bread is placed on the table, <strong>then</strong> I will move it to the far side of the table and take a sip of water."</li>
+                    <li><em>Script 3:</em> "<strong>If</strong> I am looking at the menu, <strong>then</strong> I will choose the protein-and-vegetable option (e.g., salmon/steak) before others order."</li>
+                </ul>
+                <p><strong>Outcome:</strong> Over 4 weeks, Marcus reduced his dinner caloric intake by an estimated 40% and reported feeling "in control" without needing to exert massive willpower.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Scripting High-Risk Scenarios</h2>
+        <p>To be an effective coach, you must help your clients audit their "high-risk scenarios"—those specific moments where their metabolic goals go to die. Common triggers include late-night stress, holiday parties, and emotional boredom.</p>
+
+        <p>A "Master Script" for weight loss follow-through usually targets three areas:</p>
+        <ul>
+            <li><strong>The Social Script:</strong> Handling pressure from "food pushers." <em>"If someone offers me dessert, then I will say, 'It looks great, but I'm full, thank you.'"</em></li>
+            <li><strong>The Stress Script:</strong> Managing emotional eating. <em>"If I feel the urge to snack after a stressful meeting, then I will perform 2 minutes of box breathing first."</em></li>
+            <li><strong>The Logistics Script:</strong> Ensuring consistency. <em>"If it is 5:30 PM on Tuesday, then I will put on my gym shoes immediately, regardless of how tired I feel."</em></li>
+        </ul>
+
+        <h2 id="section5">5. The Two-Minute Rule: Lowering Activation Energy</h2>
+        <p>In the <span class="highlight">Reset Habits</span> framework, we often encounter "paralysis by analysis." Clients want to start a 60-minute workout routine but feel overwhelmed by the effort. This is where the <strong>Two-Minute Rule</strong> (popularized by James Clear and B.J. Fogg) becomes a vital "If-Then" component.</p>
+        
+        <p>The goal is to make the "Then" response so small that it is impossible to say no to. You are not optimizing for the <em>result</em>; you are optimizing for the <em>start</em>. </p>
+        
+        <p><strong>Examples of the Two-Minute Rule in Action:</strong></p>
+        <ul>
+            <li>"If it's time to workout, then I will just put on my shoes and walk to the end of the driveway."</li>
+            <li>"If I am preparing dinner, then I will chop just one vegetable for a salad."</li>
+            <li>"If I want to start a meditation habit, then I will sit and close my eyes for 60 seconds."</li>
+        </ul>
+        <p>By lowering the <span class="highlight">Activation Energy</span>, you prevent the amygdala from triggering a "threat" response to a massive lifestyle change. Once the first two minutes are complete, the momentum usually carries the client through the rest of the task.</p>
+
+        <h2 id="section6">6. Visual Cues and Priming</h2>
+        <p>The "If" in our If-Then plan is much stronger when it is physically visible. <span class="highlight">Priming</span> is a non-conscious form of human memory concerned with perceptual identification of words and objects. In weight management, we use physical objects to "prime" the desired If-Then response.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Visual Bridge" Strategy</div>
+            <p class="principle-text">
+                Don't rely on memory. Use the environment to scream the "If" at the client.
+                <ul>
+                    <li><strong>Hydration:</strong> Place a 1L water bottle on the desk at night. <em>"If I sit down at my desk, then I will take three sips of water."</em></li>
+                    <li><strong>Movement:</strong> Place the yoga mat in the middle of the living room floor. <em>"If I walk into the living room, then I will do three stretches."</em></li>
+                    <li><strong>Nutrition:</strong> Move the fruit bowl to eye level and hide the crackers. <em>"If I open the pantry, then I will see the fruit first."</em></li>
+                </ul>
+            </p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why are Implementation Intentions more effective than simple Goal Intentions during periods of high stress?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High stress causes decision fatigue and impairs the Prefrontal Cortex. Implementation Intentions outsource behavior to the environment, allowing the brain to bypass conscious deliberation and act on a pre-programmed "If-Then" script.</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary purpose of the 'Two-Minute Rule' in habit formation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The primary purpose is to lower the "Activation Energy" required to start a habit. By making the initial step incredibly easy, you overcome the mental resistance to starting and focus on the "entry point" of the behavior.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Implementation Intentions use the <strong>"If [Situation], Then [Action]"</strong> format to automate healthy behaviors.</li>
+                <li>They are scientifically proven to double follow-through rates by reducing the load on the prefrontal cortex.</li>
+                <li><strong>Pre-deciding</strong> is the ultimate antidote to decision fatigue and "Ego Depletion" in the evenings.</li>
+                <li>The <strong>Two-Minute Rule</strong> focuses on the first 120 seconds of a habit to ensure the "entry point" is mastered.</li>
+                <li>Environmental <strong>Priming</strong> (visual cues) acts as the physical trigger for the "If" part of the script.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ol>
+                <li>Gollwitzer, P. M. (1999). "Implementation intentions: Strong effects of simple plans." American Psychologist.</li>
+                <li>Adriaanse, M. A., et al. (2011). "When planning is not enough: Fighting unhealthy snacking habits by implementation intentions." British Journal of Health Psychology.</li>
+                <li>Clear, J. (2018). "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones." Penguin Publishing.</li>
+                <li>Baumeister, R. F., et al. (2007). "The Strength Model of Self-Control." Current Directions in Psychological Science.</li>
+                <li>Milkman, K. L., et al. (2021). "Megastudies in health behavior change: Implementation intentions for vaccination." Nature.</li>
+                <li>Fogg, B. J. (2019). "Tiny Habits: The Small Changes That Change Everything." Houghton Mifflin Harcourt.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The T.R.A.N.S.F.O.R.M. Methodology™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

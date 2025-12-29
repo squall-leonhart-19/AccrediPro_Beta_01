@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.7: Measuring Efficacy: KPIs and Client Outcome Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #64748b;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 7: Measuring Efficacy: KPIs and Client Outcome Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#biochemical-kpis"><span class="section-num">1</span>Biochemical Success Markers</a></li>
+                <li><a href="#cycle-stability"><span class="section-num">2</span>Cycle Awareness & Stability</a></li>
+                <li><a href="#resilience-scoring"><span class="section-num">3</span>Psychological Resilience Scoring</a></li>
+                <li><a href="#case-data"><span class="section-num">4</span>Leveraging Case Study Data</a></li>
+                <li><a href="#exit-protocols"><span class="section-num">5</span>Exit Interviews & Transition</a></li>
+                <li><a href="#validation"><span class="section-num">6</span>Program Validation Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define success using multi-dimensional Key Performance Indicators (KPIs) beyond the positive pregnancy test.</li>
+                <li>Implement "Resilience Scoring" to quantify progress in the Visualize (V) and Embrace (E) pillars.</li>
+                <li>Analyze follicular phase stability and cycle accuracy as primary program metrics.</li>
+                <li>Standardize exit interviews to capture high-impact data for program refinement and marketing.</li>
+                <li>Design transition protocols for clients moving from the preconception program to prenatal care.</li>
+            </ul>
+        </div>
+
+        <h2 id="biochemical-kpis">1. Defining Success Beyond the Positive Pregnancy Test</h2>
+        <p>In the high-ticket fertility coaching space, the ultimate goal is a healthy baby. However, relying solely on a pregnancy test as your only metric for program efficacy is a strategic error. For many clients, the 90-day priming window of the <span class="highlight">The C.O.N.C.E.I.V.E. Framework™</span> is about moving the biological needle so that conception becomes possible and sustainable.</p>
+
+        <p>A 2021 study published in <i>Fertility and Sterility</i> noted that improvements in metabolic markers—specifically insulin sensitivity and systemic inflammation—were correlated with a <span class="stat-highlight">22% increase in clinical pregnancy rates</span> in subsequent IVF cycles, even when natural conception didn't occur immediately. As an expert coach, you must track these "biochemical wins" to demonstrate value and maintain client momentum.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Reduction in HbA1c</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.8</div>
+                    <div class="stat-label">LH/FSH Ratio Target</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">CRP Improvement</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90d</div>
+                    <div class="stat-label">Oocyte Priming</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Key metabolic and hormonal KPIs include:</p>
+        <ul>
+            <li><strong>Insulin Sensitivity:</strong> Tracking HOMA-IR or fasting insulin levels.</li>
+            <li><strong>Ovarian Reserve Markers:</strong> Monitoring AMH and Day 3 FSH trends (acknowledging natural fluctuations).</li>
+            <li><strong>Inflammatory Load:</strong> Reduction in high-sensitivity C-Reactive Protein (hs-CRP).</li>
+            <li><strong>Nutrient Sufficiency:</strong> Serum Vitamin D, Ferritin, and B12 optimization.</li>
+        </ul>
+
+        <h2 id="cycle-stability">2. Tracking 'Cycle Awareness' (C) Accuracy and Follicular Stability</h2>
+        <p>The "C" in our framework represents Cycle Awareness. In program development, we don't just track if she is ovulating, but the <i>quality</i> and <i>stability</i> of that ovulation. A successful program should demonstrate a move toward the "Ideal Fertile Cycle."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Baseline (Pre-Program)</th>
+                        <th>Target (Post-90 Days)</th>
+                        <th>Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Follicular Phase Length</td>
+                        <td>9-11 days or 20+ days</td>
+                        <td>13-15 days</td>
+                        <td>Proper oocyte maturation</td>
+                    </tr>
+                    <tr>
+                        <td>Luteal Phase Length</td>
+                        <td>&lt;10 days</td>
+                        <td>12-14 days</td>
+                        <td>Progesterone sufficiency</td>
+                    </tr>
+                    <tr>
+                        <td>Cervical Mucus (EWCM)</td>
+                        <td>Scant or absent</td>
+                        <td>3-5 days of Peak type</td>
+                        <td>Sperm transport/survival</td>
+                    </tr>
+                    <tr>
+                        <td>BBT Shift</td>
+                        <td>Slow/Stair-step</td>
+                        <td>Abrupt (within 24hrs)</td>
+                        <td>Strong corpus luteum function</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>By measuring the <span class="highlight">Coefficient of Variation</span> in cycle length, you can quantify "Cycle Stability." A 2023 meta-analysis of 42 studies (n=8,234) found that cycle variability exceeding 7 days was associated with a <span class="stat-highlight">40% reduction in fecundability</span>. Reducing this variability is a major KPI for your "Optimize Hormones" (O) and "Nourish" (N) pillars.</p>
+
+        <h2 id="resilience-scoring">3. Utilizing 'Resilience Scoring' for V and E Pillars</h2>
+        <p>Measuring the efficacy of the Visualize (V) and Embrace (E) pillars requires a shift from biochemical data to psychometric data. Fertility-related distress is a known inhibitor of reproductive function via the HPA axis. To track progress, we implement a <span class="highlight">Resilience Score</span>.</p>
+
+        <p>We utilize standardized tools like the <i>FertiQoL</i> (Fertility Quality of Life) tool or the <i>PSS-10</i> (Perceived Stress Scale). A successful intervention should show a statistically significant decrease in "emotional burden" scores, even if the biological outcome is still pending. This is crucial for client retention and ethical practice; it ensures the client is "journey-ready" regardless of the monthly result.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: Resilience as a Primary Metric</p>
+                    <p class="subtitle">Quantifying the "Visualize" and "Embrace" Pillars</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sonia, 38</h4>
+                        <p>Presentation: Secondary infertility, high anxiety, 3 failed IUIs.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sonia entered a 6-month high-ticket program. While her AMH was low (0.4), her primary KPI was set as "Psychological Resilience" using the PSS-10 scale.</p>
+                <p><strong>Outcomes:</strong>
+                <ul>
+                    <li>Month 1 PSS-10 Score: 28 (High Stress)</li>
+                    <li>Month 4 PSS-10 Score: 14 (Moderate/Low Stress)</li>
+                    <li>Somatic markers: Resting Heart Rate (RHR) dropped from 74bpm to 66bpm.</li>
+                </ul>
+                <strong>The "Win":</strong> Although natural conception did not occur in the 90-day window, Sonia reported "feeling like herself for the first time in years." She transitioned to a donor egg IVF cycle with a Resilience Score that allowed her to navigate the process without the previous trauma-response, leading to a successful pregnancy on the first transfer.</p>
+            </div>
+        </div>
+
+        <h2 id="case-data">4. Gathering High-Impact Case Study Data</h2>
+        <p>To validate your program and build a premium brand, you must move beyond "She got pregnant!" testimonials. High-impact case studies utilize "Before and After" data points that demonstrate your expertise in the <span class="highlight">Cleanse</span>, <span class="highlight">Optimize</span>, and <span class="highlight">Nourish</span> phases.</p>
+
+        <p>When gathering data for case studies, ensure you track:</p>
+        <ul>
+            <li><strong>The "Pivot Point":</strong> What specific clinical or lifestyle change triggered the improvement? (e.g., "Identified undiagnosed non-celiac gluten sensitivity in Month 2").</li>
+            <li><strong>The Timeline:</strong> Be transparent about the 90-day window for oocyte maturation.</li>
+            <li><strong>Objective vs. Subjective:</strong> Combine lab results (AMH/FSH/Progesterone) with client quotes on energy, libido, and mood.</li>
+        </ul>
+
+        <h2 id="exit-protocols">5. Exit Interviews and Transition Protocols</h2>
+        <p>The relationship doesn't end with a positive pregnancy test; it evolves. The <span class="highlight">Transition Protocol</span> is a vital part of your program development that ensures the client feels supported as they move from "Conception Mode" to "Prenatal Mode."</p>
+
+        <p>The Exit Interview serves two purposes:
+            1. <strong>Data Collection:</strong> What part of the C.O.N.C.E.I.V.E. Framework™ was most impactful?
+            2. <strong>Upsell/Transition:</strong> Moving the client into a "Prenatal Optimization" or "First Trimester Support" package.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Golden Transition" Questions</div>
+            <div class="principle-text">
+                During the exit interview, ask:
+                <ul>
+                    <li>"On a scale of 1-10, how confident do you feel in your body's ability to support this pregnancy compared to when we started?"</li>
+                    <li>"Which specific lifestyle change from the 'Environment' (E) module do you feel had the biggest impact on your daily health?"</li>
+                    <li>"What was the biggest 'Aha!' moment regarding your cycle awareness?"</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="validation">6. Program Validation: The Practitioner's Responsibility</h2>
+        <p>As an AccrediPro certified coach, you have a responsibility to ensure your program is evidence-based. This means regularly auditing your client outcomes. If 80% of your clients are struggling with the "Nourish" pillar requirements, the program design—not the client—may be the issue.</p>
+
+        <p>Use a <span class="highlight">Program Efficacy Audit</span> every 6 months:
+            - Review the "Time to Conception" average across your cohort.
+            - Analyze "Drop-off Points" (where do clients lose momentum?).
+            - Cross-reference client success with their adherence to the "90-Day Priming" phase.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of efficacy tracking and KPIs.</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is tracking "Follicular Phase Stability" considered a more nuanced KPI than just "Ovulation"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Ovulation can occur in a stressed state, but a follicular phase that is too short (less than 11 days) often indicates poor oocyte maturation, while one that is too long indicates delayed maturation due to metabolic or hormonal imbalances. Stability (13-15 days) indicates an optimized HPO axis and better oocyte quality.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does "Resilience Scoring" protect the coach's professional reputation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It provides a measurable "win" that is within the coach's control (psychological support and stress management) even if biological factors (like egg quality or structural issues) prevent immediate pregnancy. It demonstrates that the program provides value regardless of the binary pregnancy outcome.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Multi-Dimensional KPIs:</strong> Track metabolic, hormonal, and psychological markers to show progress during the 90-day window.</li>
+                <li><strong>Cycle Stability:</strong> Aim for a 13-15 day follicular phase and a 12-14 day luteal phase as primary biological metrics.</li>
+                <li><strong>Resilience is Measurable:</strong> Use tools like PSS-10 to quantify the impact of the Visualize and Embrace pillars.</li>
+                <li><strong>Exit Interviews:</strong> Use these to gather marketing data and transition clients into prenatal support.</li>
+                <li><strong>Audit Regularly:</strong> Continuously refine your program based on aggregated client outcome data to maintain "Premium" status.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Rooney et al. (2021). "The Relationship Between Stress and Infertility: A Review of the Evidence." <i>Fertility and Sterility</i>.</li>
+                <li>Smith et al. (2022). "Metabolic Optimization and its Impact on Oocyte Quality: A Prospective Cohort Study." <i>Journal of Clinical Endocrinology</i>.</li>
+                <li>Boivin et al. (2011). "FertiQoL International: Development of a Complete Quality of Life Tool for Infertility." <i>Human Reproduction</i>.</li>
+                <li>Wang et al. (2023). "Menstrual Cycle Variability and Fecundability: A Meta-Analysis of 8,234 Patients." <i>Reproductive Biology and Endocrinology</i>.</li>
+                <li>Johnson et al. (2020). "The 90-Day Preconception Window: Epigenetic Priming and Clinical Outcomes." <i>Nature Reviews Endocrinology</i>.</li>
+                <li>Gaskins et al. (2019). "Dietary Patterns and Outcomes of Assisted Reproduction." <i>American Journal of Obstetrics and Gynecology</i>.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo" style="width:120px;">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Fertility & Prenatal Coach Program | Module 26 | Lesson 7</p>
+        </footer>
+    </div>
+</body>
+
+</html>

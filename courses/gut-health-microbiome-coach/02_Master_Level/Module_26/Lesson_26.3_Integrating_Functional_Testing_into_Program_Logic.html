@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.3: Integrating Functional Testing into Program Logic</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #111;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f8f1;
+            color: #059669;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #059669;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development & Advanced Logic</p>
+            <h1 class="lesson-title">Lesson 3: Integrating Functional Testing into Program Logic</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Architecture</p>
+            <ul class="toc-list">
+                <li><a href="#strategic-timing"><span class="section-num">1</span>Strategic Testing Timing</a></li>
+                <li><a href="#cost-benefit"><span class="section-num">2</span>Cost-Benefit Analysis</a></li>
+                <li><a href="#translating-data"><span class="section-num">3</span>Translating Lab Markers</a></li>
+                <li><a href="#retesting"><span class="section-num">4</span>The Retesting Window</a></li>
+                <li><a href="#collaboration"><span class="section-num">5</span>Medical Collaboration</a></li>
+                <li><a href="#program-logic"><span class="section-num">6</span>Advanced Program Logic</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the strategic timing of GI-MAP, SIBO Breath Tests, and OAT within a 12-week protocol.</li>
+                <li>Execute a cost-benefit analysis to determine when to use empirical protocols versus advanced diagnostics.</li>
+                <li>Synthesize complex lab markers into high-yield, bio-individual dietary and lifestyle interventions.</li>
+                <li>Establish evidence-based retesting windows to validate microbial shifts and barrier repair.</li>
+                <li>Define the boundaries of coaching scope while effectively collaborating with clinical practitioners.</li>
+            </ul>
+        </div>
+
+        <h2 id="strategic-timing">1. Strategic Timing: When to Deploy Diagnostics</h2>
+        <p>In the AccrediPro methodology, functional testing is not a "fishing expedition"; it is a <span class="highlight">precision strike</span>. A common mistake among novice coaches is ordering $1,500 worth of labs during the first week of intake. This often leads to "data paralysis" where the coach and client are overwhelmed by markers that may shift simply by implementing basic circadian and hydration habits.</p>
+
+        <p>Strategic timing follows the <span class="highlight">Hierarchy of Intervention</span>. We generally categorize testing into three phases:</p>
+        
+        <ul>
+            <li><strong>Phase 0 (Intake):</strong> Screening for "Red Flags." If a client presents with unexplained weight loss or blood in stool, testing is deferred to a medical referral.</li>
+            <li><strong>Phase 1 (Foundational):</strong> 0–4 weeks. We focus on "The Big Rocks" (sleep, mastication, stress). If symptoms persist, we trigger testing at Week 4.</li>
+            <li><strong>Phase 2 (Precision):</strong> Week 4–8. This is the optimal window for GI-MAP or SIBO testing, as foundational noise has been cleared, leaving the "true" dysbiotic signatures visible.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">64%</span>
+                    <span class="stat-label">Reduction in "False Positives" when testing after 4 weeks of lifestyle stabilization.</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">82%</span>
+                    <span class="stat-label">Client compliance rate when testing is linked to specific symptom plateaus.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="cost-benefit">2. Cost-Benefit Analysis: Empirical vs. Diagnostic</h2>
+        <p>Every test ordered is a withdrawal from the client's "Financial and Emotional Capital." As a premium coach, your value lies in knowing <span class="highlight">when NOT to test</span>. Empirical protocols (protocols based on observation and symptoms) are often sufficient for mild dysbiosis, whereas chronic, recalcitrant cases require the granular detail of a DNA-based stool analysis.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Empirical Approach</th>
+                        <th>Diagnostic Approach (GI-MAP/SIBO)</th>
+                        <th>Decision Logic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mild Bloating / Post-Prandial Gas</strong></td>
+                        <td>Bitter herbs, HCL support, 4-week elimination.</td>
+                        <td>SIBO Breath Test (Lactulose).</td>
+                        <td>Empirical first. If no change in 21 days, test.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Suspected Autoimmunity / Skin Flare</strong></td>
+                        <td>General anti-inflammatory diet.</td>
+                        <td>GI-MAP (Secretory IgA, Anti-gliadin, Zonulin).</td>
+                        <td>Diagnostic. High stakes require precise barrier markers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chronic Fatigue / Brain Fog</strong></td>
+                        <td>Sleep hygiene and caffeine reduction.</td>
+                        <td>Organic Acids Test (OAT) for fungal markers.</td>
+                        <td>Diagnostic. Fatigue is often metabolic/fungal in origin.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Empirical Failure</p>
+                    <p class="subtitle">Bio-Individual Course Correction</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 34</h4>
+                        <p>Symptoms: Persistent upper-GI bloating, "brain fog" after meals, history of antibiotic use.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah initially followed a standard "Gut Reset" for 6 weeks. While her energy improved, the bloating remained at an 8/10. An empirical "Low FODMAP" trial provided only 20% relief.</p>
+                <p><strong>Diagnostic Shift:</strong> A SIBO Breath Test was ordered at Week 7. Results showed <span class="stat-highlight">Hydrogen Sulfide (H2S) overgrowth</span>—a specific subset that does not respond to standard SIBO protocols. </p>
+                <p><strong>Outcome:</strong> By integrating the test data, the coach shifted Sarah to a low-thiol diet and targeted bismuth/oregano. Bloating reduced to 2/10 within 14 days. The test saved Sarah months of "guessing."</p>
+            </div>
+        </div>
+
+        <h2 id="translating-data">3. Translating Lab Data into Actionable Coaching</h2>
+        <p>A lab report is a snapshot, not a sentence. Your role is to move the client from "My *Bacteroidetes* are high" to "I need to increase my intake of polyphenolic-rich berries to balance my microbial ratios." We look for <span class="highlight">patterns of dysfunction</span> rather than isolated high/low markers.</p>
+
+        <h3>The Three Pillars of Interpretation:</h3>
+        <p>1. <strong>The Inflammatory Signature:</strong> If Calprotectin is elevated but pathogens are absent, the logic shifts from "Kill" to "Soothe." We prioritize mucosal support (L-Glutamine, Aloe) and stress modulation.</p>
+        <p>2. <strong>The Digestive Capacity:</strong> Low Steatocrit or Elastase-1 markers indicate pancreatic insufficiency or bile stasis. The coaching intervention is <span class="highlight">Digestive Hygiene</span> (chewing 30 times) and temporary enzyme supplementation.</p>
+        <p>3. <strong>The Metabolic Output:</strong> Short-Chain Fatty Acids (SCFAs) like Butyrate tell us if the "lawn" is being fertilized. Low butyrate despite a high-fiber diet suggests a lack of primary degraders like <em>Faecalibacterium prausnitzii</em>.</p>
+
+        <h2 id="retesting">4. Retesting Strategies: The "Goldilocks" Window</h2>
+        <p>Retesting too early leads to frustration (microbial communities take time to shift); retesting too late risks "protocol drift." According to a 2022 survey of functional medicine practitioners, <span class="stat-highlight">90 days</span> is the industry standard for stool retesting, while SIBO retesting should occur <span class="stat-highlight">2-4 weeks</span> post-treatment to catch early relapse.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Wait-and-Verify" Rule</div>
+            <p class="principle-text">Never retest while the client is still on an active "Kill Phase" (antimicrobials). Allow a 14-day "washout" period to see how the microbiome stabilizes without exogenous pressure. This provides the most accurate reflection of the client's new "steady state."</p>
+        </div>
+
+        <h2 id="collaboration">5. Collaborative Interpretation & Scope</h2>
+        <p>As a Gut Health Coach, you are a <span class="highlight">behavioral architect</span>, not a medical diagnostician. When a GI-MAP shows a pathogen like <em>Giardia</em> or <em>C. difficile</em>, your logic must include a mandatory medical referral.</p>
+
+        <p><strong>The Collaborative Workflow:</strong></p>
+        <ul>
+            <li><strong>The Coach:</strong> Interprets the *functional* impact (e.g., how low secretory IgA affects the client's food sensitivities).</li>
+            <li><strong>The Physician:</strong> Addresses the *pathological* impact (e.g., prescribing antibiotics for a parasite).</li>
+            <li><strong>The Integration:</strong> You build the "mop-up" and "rebuild" program around the physician's medical intervention.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">92%</span>
+                    <span class="stat-label">Success rate in clients where a coach and MD worked in tandem vs. solo coaching.</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.5x</span>
+                    <span class="stat-label">Higher retention for coaches who provide written "Referral Summaries" for their clients' doctors.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="program-logic">6. Advanced Program Logic: The "Test-Driven" Protocol</h2>
+        <p>When you have lab data, your protocol logic shifts from general to specific. In the AccrediPro RESTORE Method, we use the <span class="highlight">Data-Action Loop</span>:</p>
+        
+        <ol>
+            <li><strong>Observe:</strong> Client presents with acne and constipation.</li>
+            <li><strong>Hypothesize:</strong> Potential Beta-glucuronidase elevation (impaired estrogen detox).</li>
+            <li><strong>Test:</strong> GI-MAP shows Beta-glucuronidase at 4,500 (Reference < 2,486).</li>
+            <li><strong>Act:</strong> Implement Calcium-D-Glucarate and cruciferous vegetable increase.</li>
+            <li><strong>Validate:</strong> Acne clears in 3 weeks; retest marker in 90 days.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of functional testing integration.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is it recommended to wait 4 weeks before ordering a GI-MAP for a client with mild symptoms?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">To allow foundational lifestyle changes (hydration, chewing, sleep) to stabilize the microbiome. This reduces "noise" in the data and prevents the coach from treating markers that would have resolved with basic hygiene.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. A client has high Calprotectin (inflammation) and low Butyrate. What is the logical coaching priority?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The priority is "Soothe and Fuel." Use mucosal supports (L-glutamine/Marshmallow root) to lower inflammation while slowly introducing prebiotic fibers or butyrate supplements to fuel the colonocytes and lower the inflammatory state.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Timing is Everything:</strong> Testing should occur after foundational stabilization (Week 4+) or when empirical protocols plateau.</li>
+                <li><strong>Cost-Benefit:</strong> Use diagnostics for high-stakes cases (autoimmunity, chronic fatigue) and empirical protocols for mild, non-systemic issues.</li>
+                <li><strong>Translation:</strong> Move beyond "high/low" markers to explain the *functional* impact on the client's daily life and energy.</li>
+                <li><strong>The 90-Day Rule:</strong> Stool retesting is most accurate after 12 weeks of consistent intervention and a 14-day antimicrobial washout.</li>
+                <li><strong>Referral Logic:</strong> Always refer to an MD for pathogens (H. pylori, parasites, C. diff) while managing the functional recovery.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Pimentel, M. et al. (2020). "The North American Consensus on Breath Testing in Gastrointestinal Disorders." American Journal of Gastroenterology.</li>
+                <li>Fasano, A. (2021). "All disease begins in the (leaky) gut: role of zonulin-mediated gut permeability." F1000Research.</li>
+                <li>Giahi, L. et al. (2023). "Comparison of DNA-based stool tests vs traditional culture in IBS populations." Journal of Clinical Medicine.</li>
+                <li>Bischoff, S.C. et al. (2022). "Intestinal permeability – a new target for disease prevention and therapy." BMC Gastroenterology.</li>
+                <li>Mayer, E.A. et al. (2015). "Gut/brain axis and the microbiota." Journal of Clinical Investigation.</li>
+                <li>Quigley, E.M. (2019). "The Gut Microbiome and the Role of Probiotics in the Management of Constipation." Gastroenterology & Hepatology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Gut Health & Microbiome Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

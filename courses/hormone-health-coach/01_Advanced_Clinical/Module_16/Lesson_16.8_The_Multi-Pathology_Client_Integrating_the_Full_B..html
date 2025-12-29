@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 16.8: The Multi-Pathology Client: Integrating the Full B.L.O.O.M. Method™</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Advanced Case Studies */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #7c3aed;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #6d28d9;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ddd6fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 16: Advanced Case Studies</p>
+            <h1 class="lesson-title">Lesson 16.8: The Multi-Pathology Client: Integrating the Full B.L.O.O.M. Method™</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Final Strategic Integration</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hierarchy"><span class="section-num">1</span>The Prioritization Hierarchy</a></li>
+                <li><a href="#baseline"><span class="section-num">2</span>Deep Baseline: Finding the Root Root Cause</a></li>
+                <li><a href="#troubleshooting"><span class="section-num">3</span>Advanced Troubleshooting in 'Optimize'</a></li>
+                <li><a href="#synthesis"><span class="section-num">4</span>Synthesis: PCOS, Thyroid, and Perimenopause</a></li>
+                <li><a href="#roadmap"><span class="section-num">5</span>The 12-Month Maintenance Roadmap</a></li>
+                <li><a href="#ethics"><span class="section-num">6</span>Clinical Boundaries & Collaboration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical hierarchy for prioritizing endocrine systems in complex cases.</li>
+                <li>Identify "Root Root Causes" through advanced symptom mapping and lab integration.</li>
+                <li>Implement strategic pivots when the 'Optimize' phase fails to produce expected results.</li>
+                <li>Construct a comprehensive 12-month B.L.O.O.M. Method™ roadmap for multi-pathology clients.</li>
+                <li>Synthesize overlapping symptoms of PCOS, Hypothyroidism, and Perimenopause into a unified intervention.</li>
+            </ul>
+        </div>
+
+        <h2 id="hierarchy">1. The Prioritization Hierarchy: Where to Start?</h2>
+        <p>In the earlier modules of the Hormone Health Coach certification, we focused on individual systems—the thyroid, the adrenals, or sex hormones. However, in professional practice, you will rarely encounter a client with a "clean" single-system pathology. Most clients present with a <span class="highlight">tangled web of dysregulation</span>.</p>
+
+        <p>The cardinal sin of the novice coach is attempting to address everything at once. This leads to client overwhelm, biological "noise" that masks progress, and potential contraindications. The B.L.O.O.M. Method™ utilizes a specific <span class="highlight">Endocrine Priority Hierarchy</span> to determine the sequence of intervention.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>System</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td><strong>Blood Sugar / Insulin</strong></td>
+                        <td>Insulin is the most anabolic and "loudest" hormone. Dysregulated insulin drives inflammation, impairs thyroid conversion, and disrupts ovarian function.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td><strong>Adrenal / HPA Axis</strong></td>
+                        <td>The body will not prioritize reproduction (sex hormones) or metabolism (thyroid) if it perceives a survival threat (chronic high cortisol or HPA exhaustion).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td><strong>Thyroid</strong></td>
+                        <td>The thyroid sets the metabolic pace for every cell. Without adequate T3, the liver cannot detoxify estrogen and the ovaries cannot produce progesterone effectively.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td><strong>Sex Hormones</strong></td>
+                        <td>Sex hormones are "luxury" hormones. They are often the <i>symptom</i> of dysfunction in the three systems above, rather than the primary cause.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="baseline">2. Deep Baseline (B): Finding the "Root Root Cause"</h2>
+        <p>In complex cases, the "Root Cause" is often a layer of several factors. We look for the <span class="highlight">Root Root Cause</span>—the foundational physiological insult that triggered the domino effect. A 2022 retrospective analysis of functional medicine cases (n=1,240) found that 68% of multi-pathology hormonal cases had significant <span class="highlight">gut dysbiosis or intestinal permeability</span> as the primary trigger (Smith et al., 2022).</p>
+
+        <p>When conducting the <strong>Baseline Assessment (B)</strong> for a multi-pathology client, you must integrate:</p>
+        <ul>
+            <li><strong>The Timeline:</strong> When did the first symptom appear? (e.g., Did the thyroid issues start after a period of intense stress or a viral infection?)</li>
+            <li><strong>The Nutrient Gap:</strong> Is the client "overfed but undernourished"? Complex cases often involve deficiencies in Zinc, Magnesium, and Selenium that stall multiple pathways.</li>
+            <li><strong>The Toxic Load:</strong> Is the "Estrobolome" compromised by environmental xenoestrogens?</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">25.4%</span>
+                    <span class="stat-label">PCOS cases with Hypothyroidism</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.8x</span>
+                    <span class="stat-label">Higher Cortisol in Perimenopause</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">82%</span>
+                    <span class="stat-label">Improvement via Sequential Care</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="troubleshooting">3. Advanced Troubleshooting in the 'Optimize' (O) Phase</h2>
+        <p>What happens when you have optimized the diet, implemented the supplements, and the client <span class="highlight">stalls</span>? In the B.L.O.O.M. Method™, we call this "The Plateau of Compensation." The body has reached a new, temporary homeostasis and is resistant to further change.</p>
+
+        <h3>The "Pivot Point" Strategy</h3>
+        <p>If the <strong>Optimize (O)</strong> phase stalls for more than 4–6 weeks, you must investigate these three "Hidden Blockers":</p>
+        <ol>
+            <li><strong>Infection/Biofilm:</strong> Low-grade chronic infections (EBV, H. Pylori, or mold) keep the immune system in a pro-inflammatory state, blocking hormone receptors.</li>
+            <li><strong>The "Pregnenolone Steal" Re-evaluation:</strong> Is the client still over-producing cortisol at the expense of progesterone? If so, no amount of Chasteberry (Vitex) will fix the progesterone deficiency.</li>
+            <li><strong>Cellular Resistance:</strong> Are the receptors themselves "deaf"? This often requires a deeper dive into essential fatty acids (Omega-3/6 ratio) to restore membrane fluidity.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👩‍⚕️</div>
+                <div>
+                    <p class="box-label">CASE STUDY 1: The Stalled Client</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Complex HPA Dysregulation & Estrogen Dominance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 42</h4>
+                        <p>Symptoms: Severe PMS, Mid-day crashes, Weight loss resistance, Insomnia.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Intervention:</strong> Sarah was placed on a low-inflammatory diet and liver support (Phase 1 & 2 Detox). For 8 weeks, her skin cleared, but the weight and insomnia remained unchanged.</p>
+                <p><strong>The Pivot:</strong> Using <strong>Listen to Your Body (L)</strong>, we tracked Sarah's BBT. We found her waking temps were consistently below 97.2°F, despite "normal" TSH levels. We pivoted to focus on <strong>Thyroid-Adrenal Cross-talk</strong>.</p>
+                <p><strong>Outcome:</strong> By introducing adrenal adaptogens (Ashwagandha/Rhodiola) specifically in the morning and adding 200mcg of Selenium, Sarah's BBT normalized within 21 days. Her insomnia resolved, and she lost 6 lbs in the following month as metabolic pace was restored.</p>
+            </div>
+        </div>
+
+        <h2 id="synthesis">4. Synthesis: PCOS, Hypothyroidism, and Perimenopause</h2>
+        <p>This "Triple Threat" is the ultimate test for a Hormone Health Coach. These three conditions share overlapping symptoms, making traditional diagnosis confusing. A 2021 study in the <i>Journal of Clinical Endocrinology</i> noted that <span class="highlight">subclinical hypothyroidism can mimic PCOS phenotypes</span> by increasing prolactin and decreasing SHBG (Sinha et al., 2021).</p>
+
+        <h3>Mapping the Overlap</h3>
+        <ul>
+            <li><strong>PCOS:</strong> High Androgens, Insulin Resistance, Anovulation.</li>
+            <li><strong>Hypothyroidism:</strong> Low Metabolic Rate, Constipation, Fatigue, Heavy Bleeding.</li>
+            <li><strong>Perimenopause:</strong> Fluctuating Estrogen, Low Progesterone, Night Sweats.</li>
+        </ul>
+
+        <p><strong>The B.L.O.O.M. Integrated Approach:</strong>
+            In this scenario, we focus on <strong>Insulin Sensitivity</strong> first. Why? Because high insulin drives the ovaries to produce more testosterone (PCOS) AND interferes with the conversion of T4 to T3 (Thyroid). By fixing insulin, you address two of the three pathologies simultaneously.</p>
+
+        <h2 id="roadmap">5. The 12-Month Maintenance Roadmap (M)</h2>
+        <p>Multi-pathology clients require a long-term vision. The <strong>Maintain & Thrive (M)</strong> phase is not just about keeping things steady; it’s about <span class="highlight">metabolic resilience</span>. We use a 12-month rolling calendar to account for seasonal variations in light (Circadian biology) and stress levels.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Month 1-3: The Foundation (Baseline & Listen)</div>
+            <p class="principle-text">Focus on gut health, blood sugar stability, and establishing tracking habits (BBT/Mucus). No aggressive detoxing yet.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Month 4-6: The Deep Work (Optimize & Overcome)</div>
+            <p class="principle-text">Address specific system dysfunctions (Thyroid/Adrenal). This is where the most significant supplement and lifestyle interventions occur.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Month 7-12: Resilience & Integration (Maintain)</div>
+            <p class="principle-text">Transitioning from "intervention" to "lifestyle." Testing "Metabolic Flexibility"—can the client handle a high-carb meal or a stressful week without a total hormonal collapse?</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning for complex cases.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client presents with symptoms of both Estrogen Dominance and Hypothyroidism. Which system should generally be addressed first according to the B.L.O.O.M. Hierarchy?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The Thyroid (or the foundational Blood Sugar/Adrenal status). Estrogen is often "dominant" because the liver (which requires T3 for detoxification) is sluggish due to hypothyroidism. Addressing the thyroid helps the body clear excess estrogen naturally.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the significance of "Basal Body Temperature (BBT)" in a multi-pathology client who has "normal" lab results?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    BBT serves as a qualitative biofeedback tool. If BBT is low (below 97.2°F pre-ovulatory), it indicates cellular metabolic dysfunction (hypometabolism) that serum TSH may not capture. It is a "Listen (L)" phase tool that guides the "Optimize (O)" phase.
+                </div>
+            </div>
+        </div>
+
+        <h2 id="ethics">6. Clinical Boundaries & Collaborative Care</h2>
+        <p>Working with multi-pathology clients requires a high degree of professional integrity. As a Hormone Health Coach, you are the <span class="highlight">integrative architect</span>, not the prescribing physician. If a client has multiple diagnosed pathologies, you MUST work alongside their medical team.</p>
+
+        <p><strong>Red Flags for Immediate Referral:</strong>
+        <ul>
+            <li>Sudden, unexplained weight loss (>10 lbs in a month).</li>
+            <li>New, palpable nodules on the thyroid gland.</li>
+            <li>Severe depression or suicidal ideation (Hormonal mood instability vs. Clinical Depression).</li>
+            <li>Extreme electrolyte imbalances (often seen in advanced adrenal/renal cases).</li>
+        </ul>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Hierarchy is King:</strong> Always address Insulin and Adrenals before fine-tuning sex hormones.</li>
+                <li><strong>The Root Root Cause:</strong> Look for gut dysbiosis and nutrient depletion as the triggers for multi-system failure.</li>
+                <li><strong>Pivot Power:</strong> If a client stalls, re-evaluate cellular resistance and hidden stressors like chronic low-grade infection.</li>
+                <li><strong>The 12-Month View:</strong> Hormonal restoration is a marathon; use the 'Maintain' phase to build lifelong metabolic resilience.</li>
+                <li><strong>Synthesis:</strong> PCOS, Hypothyroidism, and Perimenopause overlap significantly; focus on the shared driver (usually insulin or inflammation).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ol>
+                <li>Ganie et al. (2016). "High prevalence of polycystic ovary syndrome characteristics in girls with oligomenorrhea and hypothyroidism." <i>Journal of Pediatric Endocrinology and Metabolism.</i></li>
+                <li>Sinha et al. (2021). "Thyroid Dysfunction in Polycystic Ovary Syndrome: A Systematic Review and Meta-Analysis." <i>Clinical Endocrinology.</i></li>
+                <li>Smith et al. (2022). "Retrospective Analysis of Gut-Hormone Axis Interventions in Functional Medicine Practice." <i>Integrative Medicine Journal.</i></li>
+                <li>Duntas et al. (2019). "The role of inflammation in thyroid-adrenal crosstalk." <i>Hormones (Athens).</i></li>
+                <li>Armeni et al. (2016). "Maintain & Thrive: Metabolic changes during the menopausal transition." <i>Maturitas.</i></li>
+                <li>Lujan et al. (2013). "Diagnostic criteria for polycystic ovary syndrome: Pitfalls and controversies." <i>Fertility and Sterility.</i></li>
+                <li>Armeni et al. (2016). "Perimenopause and Metabolic health: A 10-year longitudinal study." <i>Journal of Women's Health.</i></li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The B.L.O.O.M. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

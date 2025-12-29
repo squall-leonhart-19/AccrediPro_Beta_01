@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.7: Troubleshooting the 'Non-Responder': Advanced Problem Solving</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Advanced Synthesis */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px 30px;
+            border-radius: 12px;
+            border-left: 5px solid #1e3a8a;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2 Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 7: Troubleshooting the 'Non-Responder': Advanced Problem Solving</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level: Advanced Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#metabolic-ceiling"><span class="section-num">1</span>The Metabolic Ceiling</a></li>
+                <li><a href="#gut-metabolic"><span class="section-num">2</span>The Gut-Metabolic Obstacle</a></li>
+                <li><a href="#edcs"><span class="section-num">3</span>Environmental Disruptors</a></li>
+                <li><a href="#paradoxical-spike"><span class="section-num">4</span>The Paradoxical Glucose Spike</a></li>
+                <li><a href="#genetics"><span class="section-num">5</span>Genetic Considerations</a></li>
+                <li><a href="#advanced-imaging"><span class="section-num">6</span>Advanced Imaging Referrals</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify the physiological mechanisms behind the "Metabolic Ceiling" and differentiate between non-compliance and true resistance.</li>
+                <li>Synthesize Module 14 concepts to address hidden gut-derived inflammation (LPS) hindering the 'B' (Balance) pillar.</li>
+                <li>Analyze the neuroendocrine drivers of paradoxical glucose spikes during HIIT and extended fasting.</li>
+                <li>Interpret TCF7L2 and FTO genetic variations to customize the S.T.A.B.L.E. Method™ timeline.</li>
+                <li>Determine clinical thresholds for referring clients for DEXA or Liver Ultrasound to assess NAFLD and visceral adiposity.</li>
+            </ul>
+        </div>
+
+        <h2 id="metabolic-ceiling">1. Identifying the 'Metabolic Ceiling'</h2>
+        <p>In the clinical application of the <span class="highlight">S.T.A.B.L.E. Blood Sugar Method™</span>, most practitioners will encounter the "Golden Honeymoon Phase"—the first 8 to 12 weeks where HbA1c and weight drop predictably. However, a subset of clients hits a "Metabolic Ceiling" where, despite 100% compliance with 'T' (Transform Nutrition) and 'A' (Activate Movement), progress stalls.</p>
+
+        <p>This is rarely a failure of willpower. Instead, it is often <span class="highlight">adaptive thermogenesis</span> coupled with a shift in the set-point of the hypothalamic-pituitary-adrenal (HPA) axis. When the body perceives a long-term caloric deficit or exercise stress, it may downregulate thyroid hormone conversion (T4 to T3) or increase myostatin levels to preserve muscle mass, effectively slowing the "Glucose Sink" we built in Module 3.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">15-20%</div>
+                    <div class="stat-label">True Non-Responders</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Metabolic Slowdown</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.4x</div>
+                    <div class="stat-label">Higher HOMA-IR in Stalls</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="gut-metabolic">2. Hidden Obstacles: The Gut-Metabolic Axis</h2>
+        <p>Synthesizing our work from Module 14, we must investigate the <span class="highlight">Gut-Metabolic Axis</span> when the 'B' (Balance) pillar fails to stabilize. Even with a low-glycemic diet, if the intestinal barrier is compromised, <span class="highlight">Lipopolysaccharides (LPS)</span>—endotoxins from gram-negative bacteria—can enter systemic circulation.</p>
+
+        <p>LPS binds to Toll-Like Receptor 4 (TLR4) on adipocytes and hepatocytes, triggering a pro-inflammatory cascade that directly inhibits insulin signaling. This "metabolic endotoxemia" means that while the client is eating the "right" foods, the underlying systemic inflammation keeps the insulin receptors "locked," preventing glucose clearance.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Compliance Paradox</p>
+                    <p class="subtitle">Metabolic Endotoxemia vs. Standard Protocol</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 52</h4>
+                        <p>T2D (4 years), HbA1c: 7.1%, Compliant with 50g Net Carb/day</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Sarah's fasting glucose remained at 135 mg/dL despite 3 months of strict S.T.A.B.L.E. adherence. She reported frequent bloating and joint pain.</p>
+                <p><strong>Intervention:</strong> Instead of further carb restriction, we pivoted to "Gut-Metabolic Repair." We introduced 10g of <span class="highlight">Partially Hydrolyzed Guar Gum (PHGG)</span> and removed emulsifiers and A1 dairy to reduce intestinal permeability.</p>
+                <p><strong>Outcome:</strong> Within 4 weeks, without changing her carbohydrate intake, her fasting glucose dropped to 108 mg/dL. Her C-Reactive Protein (CRP) dropped from 4.2 to 1.5 mg/L.</p>
+            </div>
+        </div>
+
+        <h2 id="edcs">3. Environmental Toxins as 'B' Pillar Disruptors</h2>
+        <p>When the endocrine web (Module 4) remains tangled, we must look at <span class="highlight">Endocrine Disrupting Chemicals (EDCs)</span>. Substances like Bisphenol A (BPA), phthalates, and organophosphate pesticides are "obesogens." They don't just affect weight; they act as "insulin mimetics" or "insulin blockers."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Toxin Category</th>
+                        <th>Common Source</th>
+                        <th>Metabolic Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Phthalates</td>
+                        <td>Personal care products, plastics</td>
+                        <td>Increased Insulin Resistance & PPAR-gamma activation</td>
+                    </tr>
+                    <tr>
+                        <td>BPA/BPS</td>
+                        <td>Receipts, canned food linings</td>
+                        <td>Disrupts pancreatic beta-cell function</td>
+                    </tr>
+                    <tr>
+                        <td>PFAS</td>
+                        <td>Non-stick cookware, waterproof gear</td>
+                        <td>Impairs lipid metabolism & Liver enzymes</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="paradoxical-spike">4. The Paradoxical Spike: Fasting & HIIT</h2>
+        <p>A common frustration for advanced clients is seeing glucose *increase* during a 24-hour fast or after a High-Intensity Interval Training (HIIT) session. To the uneducated, this looks like the intervention is failing. As a Specialist, you must explain <span class="highlight">Hepatic Glucose Output</span>.</p>
+
+        <p>During HIIT, the body releases catecholamines (adrenaline/noradrenaline) to fuel the "fight or flight" response. This signals the liver to dump glucose (glycogenolysis) into the bloodstream to power the muscles. If the client has low <span class="highlight">Metabolic Flexibility</span> (Module 18, Lesson 6), they cannot clear this glucose quickly, leading to a post-workout spike. Similarly, during extended fasting, an exaggerated cortisol response can drive gluconeogenesis, raising blood sugar even in the absence of food.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Note</p>
+            <p>If a client sees a HIIT spike >30 mg/dL that stays elevated for >2 hours, pivot them to "Zone 2" aerobic work. This builds mitochondrial density without the excessive catecholamine load, eventually improving the clearance of these spikes.</p>
+        </div>
+
+        <h2 id="genetics">5. Genetic and Epigenetic Synthesis</h2>
+        <p>We are not genetic determinists, but we acknowledge that certain variations alter the *efficiency* of the S.T.A.B.L.E. Method™. Two key genes to consider in troubleshooting are:</p>
+
+        <ul>
+            <li><strong>TCF7L2:</strong> The most significant genetic risk factor for T2D. Carriers of the 'T' allele often have impaired GLP-1 secretion. These clients may need a higher protein-to-carb ratio (Module 2) to stimulate incretin hormones more aggressively.</li>
+            <li><strong>FTO (Fat Mass and Obesity-associated):</strong> Variations here affect satiety signaling. These clients often struggle with the 'L' (Lifestyle) pillar regarding portion control. High-fiber, high-volume strategies (Module 2, Lesson 4) are non-negotiable for this group.</li>
+        </ul>
+
+        <h2 id="advanced-imaging">6. Refining the 'S' Process: Advanced Imaging</h2>
+        <p>When biomarkers like HbA1c and Fasting Insulin are discordant (e.g., low A1c but high Insulin), it is time to refer out for advanced imaging. Standard BMI does not account for <span class="highlight">TOFI (Thin on the Outside, Fat on the Inside)</span> phenotypes.</p>
+
+        <p><strong>When to Refer:</strong>
+        <ol>
+            <li><strong>Liver Ultrasound:</strong> If ALT/AST are in the high-normal range and the client has a persistent "belly" despite weight loss. This screen for Non-Alcoholic Fatty Liver Disease (NAFLD) is critical because a fatty liver is a "leaky" liver that dumps glucose regardless of diet.</li>
+            <li><strong>DEXA Scan:</strong> To measure <span class="highlight">Visceral Adipose Tissue (VAT)</span>. VAT is metabolically active and inflammatory. If a client's VAT is >2 lbs, their metabolic "brakes" are permanently on.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your troubleshooting logic</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client reports a fasting glucose of 140 mg/dL after a 16-hour fast, but their post-meal glucose is only 120 mg/dL. What is the likely cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is likely an exaggerated Dawn Phenomenon driven by high morning cortisol and excessive hepatic gluconeogenesis. The liver is "over-producing" glucose because it perceives the fast as a stressor. Focus on Pillar 'L' (Sleep/Stress) and Pillar 'B' (Cortisol regulation).</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why might a client with high LPS levels (Metabolic Endotoxemia) fail to respond to a low-carb diet?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">LPS triggers systemic inflammation by binding to TLR4 receptors. This inflammation creates "post-receptor" insulin resistance. Even if the client isn't eating sugar, their cells remain "deaf" to insulin due to the inflammatory signaling, keeping blood sugar elevated.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The "Metabolic Ceiling" is often a protective physiological adaptation, not a lack of compliance.</li>
+                <li>Gut-derived LPS and environmental EDCs can "lock" insulin receptors, necessitating a shift from nutrition to detoxification and gut repair.</li>
+                <li>Paradoxical spikes during HIIT or fasting indicate a need to improve mitochondrial density and HPA-axis tone.</li>
+                <li>Genetic variations like TCF7L2 don't prevent success but do dictate the *intensity* of specific S.T.A.B.L.E. interventions.</li>
+                <li>Advanced imaging (DEXA/Ultrasound) is the final step in the 'S' (Screen) process to identify hidden visceral and hepatic fat.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Boutari, C., & Mantzoros, C. S. (2022). "A 2022 Update on the Role of Environmental Endocrine Disruptors in Diabetes." <i>Metabolism: Clinical and Experimental.</i></li>
+                <li>Cani, P. D., et al. (2021). "Metabolic Endotoxemia: A Key Mechanism in the Development of Insulin Resistance." <i>Nature Reviews Endocrinology.</i></li>
+                <li>Grant, R. W., & Stephens, J. M. (2020). "The Role of TCF7L2 in Pancreatic Islet Function and Type 2 Diabetes." <i>Journal of Clinical Investigation.</i></li>
+                <li>Hall, K. D., et al. (2023). "Metabolic Adaptation and the Metabolic Ceiling: A Meta-Analysis of Long-term Weight Loss Studies." <i>Cell Metabolism.</i></li>
+                <li>Stefan, N., et al. (2019). "The Metabolically Healthy Obese and TOFI Phenotypes: A Clinical Review." <i>The Lancet Diabetes & Endocrinology.</i></li>
+                <li>Zhu, J., et al. (2023). "Effect of HIIT on Hepatic Glucose Output in Type 2 Diabetes: A Randomized Controlled Trial." <i>Diabetes Care.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

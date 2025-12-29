@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.6: PANS/PANDAS: Pediatric Autoimmune Neuropsychiatric Disorders</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/BLUE theme for Neuro-Autoimmunity */
+        .module-header {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4338ca;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4338ca;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6366f1;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4338ca;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #3730a3;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            margin: 40px 0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #4338ca;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #e5e7eb;
+            color: #4338ca;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f0fdf4;
+            border-left: 5px solid #22c55e;
+            padding: 25px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            color: #334155;
+            margin-top: 0;
+        }
+
+        .footer-logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Neuro-Autoimmunity & The Brain-Immune Axis</p>
+            <h1 class="lesson-title">Lesson 14.6: PANS/PANDAS: Pediatric Autoimmune Neuropsychiatric Disorders</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Basal Ganglia Connection</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Clinical Presentation & Phenotypes</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Diagnostic Differentiation</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The "Address Root Causes" (A) Phase</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Containment Strategies (C)</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Maintenance & Remission (M)</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the mechanism of <span class="highlight">molecular mimicry</span> between Group A Strep and the Basal Ganglia.</li>
+                <li>Identify the "On-Off Switch" clinical presentation of rapid-onset OCD and tics.</li>
+                <li>Apply the C.A.L.M. Protocol™ to identify occult infections like Lyme, Mycoplasma, and mold.</li>
+                <li>Evaluate acute containment strategies to mitigate neuro-inflammation during flares.</li>
+                <li>Develop long-term maintenance plans to protect the Blood-Brain Barrier (BBB) from relapse.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Basal Ganglia Connection: Molecular Mimicry</h2>
+        <p>In previous lessons, we discussed how <span class="highlight">BBB permeability</span> (Lesson 1) and <span class="highlight">microglial activation</span> (Lesson 2) serve as the foundation for neuro-autoimmunity. In PANDAS (Pediatric Autoimmune Neuropsychiatric Disorders Associated with Streptococcal Infections), these mechanisms converge on a specific anatomical target: the <span class="highlight">Basal Ganglia</span>.</p>
+        
+        <p>The pathophysiology begins with a Group A Streptococcal (GAS) infection. Through a process of <strong>molecular mimicry</strong>, the immune system produces antibodies against the Strep bacteria that cross-react with neuronal proteins in the basal ganglia—specifically the <span class="highlight">lysoganglioside GM1</span>, tubulin, and dopamine receptors (D1 and D2). This cross-reactivity triggers a cascade of neuro-inflammation, disrupting the circuits responsible for motor control, habit formation, and emotional regulation.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">1 in 200</span>
+                    <span class="stat-label">Estimated US Prevalence</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24-48 hrs</span>
+                    <span class="stat-label">Typical Onset Speed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Comorbidity with OCD</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Clinical Presentation: The "On-Off Switch"</h2>
+        <p>The hallmark of PANS/PANDAS is the <span class="highlight">sudden, dramatic onset</span> of symptoms. Parents often describe a child who "disappeared overnight" or "woke up as a different person." Unlike traditional OCD, which typically develops gradually, PANS/PANDAS symptoms reach peak intensity within 24 to 72 hours.</p>
+
+        <p>Core clinical manifestations include:</p>
+        <ul class="content-list">
+            <li><strong>Abrupt Onset OCD:</strong> Severe rituals, contamination fears, or intrusive thoughts.</li>
+            <li><strong>Eating Restrictions:</strong> Often due to a fear of choking, contamination, or poisoning (frequently misdiagnosed as Anorexia).</li>
+            <li><strong>Emotional Lability:</strong> Intense rage, uncontrollable crying, or "emotional storms."</li>
+            <li><strong>Motor and Vocal Tics:</strong> Sudden development of repetitive movements or sounds.</li>
+            <li><strong>Somatic Symptoms:</strong> Urinary frequency (bedwetting), sleep disturbances, and a decline in handwriting (dysgraphia).</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study 1: The "Overnight" Transformation</p>
+                <p class="subtitle">Classic PANDAS Presentation</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Leo, Age 7 | <strong>Presenting:</strong> Sudden OCD & Rage
+                    </div>
+                </div>
+                <p>Leo was a high-functioning student with no history of anxiety. Three days after a mild sore throat, he suddenly refused to enter the kitchen, claiming the "floor was lava" and "poisoned." Within 48 hours, he developed a motor tic (head jerking) and began wetting the bed nightly.</p>
+                <p><strong>Intervention:</strong> Utilizing the C.A.L.M. Protocol™, the specialist identified an elevated ASO titer (450 IU/mL) and Anti-DNase B. <strong>Containment (C)</strong> was initiated with high-dose Ibuprofen and Boswellia to reduce neuro-excitotoxicity.</p>
+                <p><strong>Outcome:</strong> Within 10 days of anti-inflammatory support and addressing the Strep infection, Leo's OCD symptoms reduced by 70%. Handwriting legibility returned to baseline within 3 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Diagnostic Differentiation: PANDAS vs. PANS</h2>
+        <p>While the terms are often used interchangeably, they represent different diagnostic scopes. As an Autoimmune Specialist, understanding the "Root Cause" (A) requires knowing which umbrella the client falls under.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>PANDAS</th>
+                        <th>PANS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Trigger</strong></td>
+                        <td>Group A Streptococcus ONLY</td>
+                        <td>Infections, metabolic triggers, environmental toxins</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Age of Onset</strong></td>
+                        <td>3 years to puberty</td>
+                        <td>No age limit (typically pediatric)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Criteria</strong></td>
+                        <td>Strictly defined by Swedo et al. (1998)</td>
+                        <td>Broad clinical symptoms (2012 criteria)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Root Causes (A)</strong></td>
+                        <td>Strep (often occult/hidden)</td>
+                        <td>Lyme, Mycoplasma, Mold, Viral (EBV, HSV)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. The "Address Root Causes" (A) Phase: Occult Infections</h2>
+        <p>In the C.A.L.M. Protocol™, the <strong>A (Address Root Causes)</strong> phase is critical because PANS is often a "multi-hit" disorder. If a child does not respond to Strep treatment, the specialist must look for <span class="highlight">stealth pathogens</span> that keep the immune system in a state of hyper-vigilance.</p>
+
+        <p>Key occult triggers include:</p>
+        <ul class="content-list">
+            <li><strong>Mycoplasma Pneumoniae:</strong> A "walking pneumonia" that can trigger neuropsychiatric symptoms without a cough.</li>
+            <li><strong>Borrelia and Co-infections:</strong> Lyme disease and Bartonella are notorious for triggering "Lyme-induced PANS" with high levels of rage and foot pain.</li>
+            <li><strong>The Environmental Exposome:</strong> As discussed in Module 7, mycotoxins from water-damaged buildings can increase BBB permeability, allowing auto-antibodies easier access to the brain.</li>
+            <li><strong>The Gut-Immune Axis:</strong> Dysbiosis and <span class="highlight">Intestinal Permeability</span> (Module 2) often precede the "Leaky Brain," providing the systemic inflammatory milieu necessary for a flare.</li>
+        </ul>
+
+        <h2 id="section5">5. Containment Strategies (C): Managing the Acute Flare</h2>
+        <p>The <strong>C (Contain Inflammation)</strong> phase focuses on quenching the "fire" in the basal ganglia. When a child is in a psychiatric crisis, addressing the infection alone is often insufficient; the neuro-inflammatory cascade must be interrupted.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Therapeutic Containment Priorities:</p>
+            <ul class="content-list">
+                <li><strong>NSAIDs:</strong> Research (Brown et al., 2017) suggests that a 3-6 week course of Ibuprofen can shorten the duration of PANS flares by reducing COX-2 mediated neuro-inflammation.</li>
+                <li><strong>Natural Immunomodulators:</strong> High-dose <span class="highlight">Curcumin (phytosomal)</span> and <span class="highlight">Boswellia</span> cross the BBB to inhibit pro-inflammatory cytokines like TNF-alpha and IL-6.</li>
+                <li><strong>Glutamate Regulation:</strong> Microglial activation leads to excess glutamate (Excitotoxicity). Utilizing Magnesium glycinate and L-Theanine can help protect neurons from overstimulation.</li>
+                <li><strong>The Vagus Nerve:</strong> As learned in Lesson 3, stimulating the Cholinergic Anti-Inflammatory Pathway can help dampen the systemic immune response during a flare.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">6. Maintenance & Remission (M): Preventing Relapse</h2>
+        <p>The <strong>M (Maintain Remission)</strong> phase is the most challenging, as children with PANS/PANDAS are highly susceptible to relapses with subsequent immune challenges. The goal is to build <span class="highlight">immune resilience</span> and maintain BBB integrity.</p>
+
+        <p>Strategies for long-term stability include:</p>
+        <ol class="content-list">
+            <li><strong>Proactive Infection Management:</strong> Family members should be screened for "asymptomatic Strep carriage" to prevent re-exposure.</li>
+            <li><strong>BBB Support:</strong> Ensuring optimal levels of Vitamin D3, Omega-3 fatty acids, and Sulforaphane to support the Tight Junction proteins of the Blood-Brain Barrier.</li>
+            <li><strong>Environmental Control:</strong> Using HEPA filtration and mold-remediation to keep the "Toxic Load" (Module 6) low.</li>
+            <li><strong>The "Flare Rescue" Plan:</strong> Having a pre-established protocol of anti-inflammatories at the first sign of a "glimmer" (a minor return of symptoms) to prevent a full-scale relapse.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why are tics and OCD the primary symptoms in PANDAS rather than joint pain or skin rashes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Because the auto-antibodies specifically target proteins within the Basal Ganglia (like dopamine receptors and lysoganglioside GM1), which is the brain region responsible for motor control and habit/ritual loops.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">In the C.A.L.M. Protocol™, what is the primary goal of the "Containment" (C) phase for a PANS client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The primary goal is to dampen acute neuro-inflammation and microglial activation to mitigate psychiatric distress and prevent excitotoxic neuronal damage while the "Root Cause" (A) is being addressed.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>PANDAS is a subset of PANS triggered specifically by Group A Strep via molecular mimicry.</li>
+                <li>The "On-Off Switch" onset of OCD, tics, and food restriction is the primary diagnostic clue.</li>
+                <li>Successful treatment requires the C.A.L.M. Protocol™: Containing inflammation (C), addressing occult pathogens (A), and maintaining the BBB (M).</li>
+                <li>The Basal Ganglia is the "ground zero" for the autoimmune attack in these disorders.</li>
+                <li>Long-term success depends on environmental control and family-wide immune screening.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Swedo, S. E., et al. (1998). "PANDAS: Clinical description of the first 50 cases." <i>American Journal of Psychiatry</i>.</li>
+                <li>Chang, K., et al. (2015). "Clinical Evaluation of PANS: Recommendations from the JCAP PANS/PANDAS Research Consortium." <i>Journal of Child and Adolescent Psychopharmacology</i>.</li>
+                <li>Cunningham, M. W. (2012). "Streptococcus and rheumatic fever: Mechanisms of molecular mimicry and therapeutic targets." <i>Journal of Molecular Medicine</i>.</li>
+                <li>Frankovich, J., et al. (2017). "Clinical Management of PANS: Part II—Therapeutic Interventions for Inflammation." <i>Journal of Child and Adolescent Psychopharmacology</i>.</li>
+                <li>Shimasaki, C., et al. (2020). "The Cunningham Panel: A diagnostic tool for identifying autoimmune neuropsychiatric disorders." <i>Journal of Neuroimmunology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

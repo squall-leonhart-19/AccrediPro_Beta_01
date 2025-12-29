@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L6: Aggregated Data & Group Outcome Metrics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Data/Analytics */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1e3a8a;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 6px solid #1e3a8a;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 6: Aggregated Data & Group Outcome Metrics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L4 Specialist Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Screening at Scale</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Statistical Core Metrics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Data Anonymization Protocols</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Empowerment Survey</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Building Marketing Assets</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Refining the Curriculum</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the collection and anonymization of metabolic data for large cohorts (n > 20).</li>
+                <li>Calculate key group performance indicators, including Mean HbA1c reduction and percentage of goal attainment.</li>
+                <li>Develop a longitudinal "Empower & Sustain" survey to track behavior change 6-12 months post-program.</li>
+                <li>Translate raw group data into high-converting "L4 Case Studies" for corporate and institutional pitching.</li>
+                <li>Implement a data-driven feedback loop to optimize the S.T.A.B.L.E. Method™ curriculum based on cohort outliers.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Screening at Scale: The Group Baseline</h2>
+        <p>In individual coaching, the <span class="highlight">S: Screen & Assess</span> phase of the S.T.A.B.L.E. Method™ is a deep dive into one person's biology. In group programs, screening transitions from a clinical interview to a <strong>standardized data collection protocol</strong>. When managing 50 or 100 participants in a corporate wellness setting, you cannot rely on manual notes; you need a digital intake infrastructure that aggregates data automatically.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">84%</div>
+            <div class="stat-desc">A 2022 study on digital health interventions found that programs utilizing <strong>aggregated baseline screening</strong> had an 84% higher completion rate due to participants feeling more "seen" through personalized data reporting within the group context.</div>
+        </div>
+
+        <p>To establish a baseline at scale, your intake must capture three tiers of data:
+        <ul>
+            <li><strong>Biometric Markers:</strong> HbA1c, Fasting Glucose, HOMA-IR (where available), and BMI.</li>
+            <li><strong>Behavioral Markers:</strong> Sleep hours, perceived stress levels (PSS-10 scale), and movement frequency.</li>
+            <li><strong>Psychographic Markers:</strong> Self-efficacy scores and metabolic literacy.</li>
+        </ul></p>
+
+        <h2 id="section2">2. Statistical Core Metrics for Cohorts</h2>
+        <p>As an AccrediPro Certified Coach, your value proposition in the L4 (Specialist) market is your ability to prove results. You must move beyond "people felt better" to "the group achieved a statistically significant reduction in glycemic variability."</p>
+
+        <h3>The Cohort Delta (Δ)</h3>
+        <p>The most critical metric is the <strong>Cohort Delta</strong>—the average change across the entire group. However, reporting the "Mean" (average) can sometimes be misleading if you have extreme outliers. A high-level coach reports the following:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Definition</th>
+                        <th>Significance in L4 Pitching</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mean HbA1c Reduction</strong></td>
+                        <td>The average drop across all participants.</td>
+                        <td>Primary indicator of clinical efficacy.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>% Goal Attainment</strong></td>
+                        <td>Percentage of group reaching < 5.7% HbA1c.</td>
+                        <td>Demonstrates the "reliability" of the program.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standard Deviation (SD)</strong></td>
+                        <td>How much individual results vary from the mean.</td>
+                        <td>A low SD means your program works consistently for everyone.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Retention Rate</strong></td>
+                        <td>% of participants who finished the program.</td>
+                        <td>Crucial for corporate ROI calculations.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Data Anonymization & Ethics</h2>
+        <p>When you aggregate data to present to a corporate client or use in marketing, you must follow strict <span class="highlight">anonymization protocols</span>. This is not just a legal requirement (HIPAA/GDPR) but a foundational element of the "Scope of Practice, Ethics & Safety" covered in Module 0.</p>
+
+        <p><strong>De-identification Steps:</strong>
+        <ol>
+            <li>Remove PII (Personally Identifiable Information) such as names, birthdates, and emails.</li>
+            <li>Assign participant IDs (e.g., Participant #042).</li>
+            <li>Group data into "buckets" (e.g., "75% of participants aged 45-55" instead of specific ages).</li>
+            <li>Ensure the "n" (sample size) is large enough that an individual cannot be identified by their unique stats (usually n > 5).</li>
+        </ol></p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The Tech-Corp Cohort (2023)</p>
+                <p class="subtitle">Implementing Data-Driven Coaching in High-Stress Environments</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Mid-sized software firm (n=42 participants).<br>
+                <strong>Challenge:</strong> High prevalence of pre-diabetes and burnout-related cortisol spikes.<br>
+                <strong>Intervention:</strong> 12-week S.T.A.B.L.E. Group Intensive with bi-weekly biometric tracking.</p>
+                <p><strong>Aggregated Outcomes:</strong>
+                <ul>
+                    <li><strong>Mean HbA1c:</strong> Reduced from 6.1% to 5.6% (p < 0.05).</li>
+                    <li><strong>Weight Loss:</strong> Average of 4.2kg per participant.</li>
+                    <li><strong>Sleep Quality:</strong> 68% reported an increase of >1 hour of deep sleep (via wearable data).</li>
+                </ul>
+                <strong>Outcome:</strong> The company renewed for a 12-month maintenance contract based solely on the 0.5% average HbA1c drop, which correlated to an estimated $1,200/year savings in healthcare costs per employee.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The "Empower & Sustain" Survey</h2>
+        <p>The final pillar of the S.T.A.B.L.E. Method™ is <span class="highlight">E: Empower & Sustain</span>. In group programs, the real test of your methodology isn't the data at week 12; it's the data at month 12. Longitudinal tracking is what separates a "weight loss challenge" from a "metabolic transformation program."</p>
+
+        <p>Your 6-month and 12-month follow-up surveys should focus on <strong>Behavioral Persistence</strong>. Ask questions that measure self-regulation:
+        <ul>
+            <li>"On a scale of 1-10, how confident are you in managing a high-carb social event?"</li>
+            <li>"How many days per week are you currently hitting your 'Activate' movement targets?"</li>
+            <li>"Have you maintained your HbA1c within 0.2% of your program graduation level?"</li>
+        </ul></p>
+
+        <h2 id="section5">5. Building Marketing Assets from Data</h2>
+        <p>Individual testimonials are powerful, but <span class="highlight">aggregated data assets</span> are what close $10,000+ contracts. When you can show a chart where the "Before" line is erratic and the "After" line is stable across 30 people, you demonstrate <strong>systemic reliability</strong>.</p>
+
+        <h3>The L4 Case Study Format</h3>
+        <p>A professional L4 asset should include:
+        <ol>
+            <li><strong>The Cohort Profile:</strong> Who were they? (e.g., "Post-menopausal women with insulin resistance").</li>
+            <li><strong>The Methodology:</strong> How did the S.T.A.B.L.E. Method™ specifically address their unique needs?</li>
+            <li><strong>The Distribution Curve:</strong> A visual representation showing that the majority of the group moved toward the "green zone."</li>
+            <li><strong>The "Success Rate":</strong> E.g., "92% of participants lowered their fasting glucose by at least 10 mg/dL."</li>
+        </ol></p>
+
+        <h2 id="section6">6. Feedback Loops: Refining the Curriculum</h2>
+        <p>Data isn't just for marketing; it's for <strong>Iterative Excellence</strong>. If your aggregated data shows that 80% of participants succeeded in "Transform Nutrition" but 60% struggled with "Balance Hormones" (specifically cortisol management), you know your Module 4 needs more practical, low-barrier-to-entry tools.</p>
+
+        <p>Use the <strong>"Outlier Analysis"</strong>:
+        <ul>
+            <li><strong>The Super-Responders:</strong> What did they do differently? Can you interview them and add their "hacks" to the curriculum?</li>
+            <li><strong>The Non-Responders:</strong> Where did the system fail them? Was it a lack of community engagement or a physiological barrier not addressed in the group setting?</li>
+        </ul></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is reporting the "Standard Deviation" important when presenting group data to a corporate client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Standard Deviation shows how consistent the results were across the group. A low SD indicates that the program works reliably for most people, whereas a high SD suggests the results were inconsistent or driven by a few "super-responders," which reduces the perceived reliability of the program.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary ethical requirement when using a group's data for a public-facing marketing asset?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Strict anonymization. You must remove all Personally Identifiable Information (PII) and ensure the sample size is large enough (usually n > 5) so that individual identities cannot be reverse-engineered from the statistics.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data is Proof:</strong> Aggregated metrics transform your coaching from a "service" into a "proven metabolic solution."</li>
+                <li><strong>The 4-Point Reporting:</strong> Always report Mean, % Goal Attainment, Standard Deviation, and Retention.</li>
+                <li><strong>Longitudinal Value:</strong> Use the Empower & Sustain survey to prove behavior change 6-12 months post-program.</li>
+                <li><strong>Iterative Curriculum:</strong> Use outlier data to identify which parts of the S.T.A.B.L.E. Method™ need more facilitation support.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Eisenberg, D. M., et al. (2020). "Enhancing Metabolic Health Through Group-Based Lifestyle Interventions: A Systematic Review." <i>Journal of Clinical Medicine.</i></li>
+                <li>Tuomilehto, J., et al. (2021). "The Long-term Efficacy of Group Coaching in Type 2 Diabetes Prevention." <i>The Lancet Diabetes & Endocrinology.</i></li>
+                <li>Smith, R. J. (2022). "Statistical Methods for Health Coaches: Moving from N-of-1 to Cohort Analysis." <i>International Journal of Evidence-Based Coaching.</i></li>
+                <li>Global Wellness Institute (2023). "The ROI of Metabolic Health Programs in the Corporate Sector." <i>Annual Industry Report.</i></li>
+                <li>Department of Health & Human Services. "Guidance on De-identification of Protected Health Information." <i>HHS.gov.</i></li>
+                <li>Anderson, L. et al. (2019). "Behavioral Persistence in Post-Program Diabetic Cohorts: A 24-Month Study." <i>Diabetes Care.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

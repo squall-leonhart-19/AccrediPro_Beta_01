@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.1: The Master Clock: Neurobiology of the SCN</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Sleep/Circadian */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: R: Reset Circadian Rhythm</p>
+            <h1 class="lesson-title">Lesson 1: The Master Clock: Neurobiology of the SCN</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Level</span>
+                <span class="meta-item">🧬 Neurobiology Focus</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#anatomy"><span class="section-num">1</span>Anatomy of the SCN</a></li>
+                <li><a href="#iprgc"><span class="section-num">2</span>The ipRGC-Melanopsin Pathway</a></li>
+                <li><a href="#molecular"><span class="section-num">3</span>Molecular Feedback Loops</a></li>
+                <li><a href="#hierarchy"><span class="section-num">4</span>The Hierarchy of Clocks</a></li>
+                <li><a href="#aging"><span class="section-num">5</span>SCN Degradation & Health</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the anatomical location and physiological function of the <span class="highlight">Suprachiasmatic Nucleus (SCN)</span>.</li>
+                <li>Explain the mechanism of light transduction via <span class="highlight">intrinsically photosensitive Retinal Ganglion Cells (ipRGCs)</span>.</li>
+                <li>Deconstruct the <span class="highlight">Transcription-Translation Feedback Loop (TTFL)</span> involving CLOCK and BMAL1 genes.</li>
+                <li>Analyze the relationship between the central master clock and peripheral oscillators in systemic health.</li>
+                <li>Evaluate how SCN desynchrony contributes to metabolic and cognitive decline.</li>
+            </ul>
+        </div>
+
+        <h2 id="anatomy">1. The Master Conductor: Anatomy of the SCN</h2>
+        <p>In Module 1, we focused on <strong>Diagnosing</strong> sleep disturbances. Now, we enter the <strong>Reset</strong> phase of the <span class="highlight">D.R.E.A.M. Sleep Method™</span>. To reset a rhythm, we must first understand the "Master Clock" that dictates it. The <span class="highlight">Suprachiasmatic Nucleus (SCN)</span> is a tiny, bilateral structure located in the anterior hypothalamus, situated immediately above the optic chiasm.</p>
+
+        <p>Despite its small size—roughly the size of a grain of rice—the SCN contains approximately <span class="highlight">20,000 neurons</span>. These neurons are unique in their ability to generate an autonomous circadian rhythm. Even when surgically removed and placed in a petri dish, SCN neurons continue to fire in a rhythmic pattern of approximately 24.2 hours. This is the biological foundation of our internal timekeeping.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">20,000</div>
+                    <div class="stat-label">Neurons in the SCN</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24.2h</div>
+                    <div class="stat-label">Intrinsic Period (Tau)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10 Lux</div>
+                    <div class="stat-label">Minimum Light Threshold</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="iprgc">2. Photobiology: The ipRGC-Melanopsin Pathway</h2>
+        <p>While the SCN has its own internal rhythm, it must be "reset" or <span class="highlight">entrained</span> daily to the 24-hour solar cycle. This is achieved through a specific pathway that bypasses the visual cortex. For decades, scientists believed that rods and cones (responsible for vision) were the only light receptors in the eye. In 2002, a groundbreaking discovery identified a third type of receptor: <span class="highlight">intrinsically photosensitive Retinal Ganglion Cells (ipRGCs)</span>.</p>
+
+        <p>These cells contain a photopigment called <span class="highlight">melanopsin</span>, which is particularly sensitive to short-wavelength "blue" light (approx. 460-480 nm). When blue light hits these cells, they send a signal through the <span class="highlight">Retinohypothalamic Tract (RHT)</span> directly to the SCN. This signal tells the master clock that it is "daytime," triggering the suppression of melatonin and the release of cortisol.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1.1: The "Indoor Office" Desynchrony</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 34, Software Engineer. Sarah works in a windowless office and spends 10 hours a day under dim artificial lighting (approx. 200 lux). She complains of "sleep inertia" in the morning and a "second wind" at 10:00 PM.</p>
+                <p><strong>Intervention:</strong> Based on SCN neurobiology, Sarah was instructed to view 15 minutes of direct sunlight (approx. 10,000+ lux) within 30 minutes of waking to stimulate her ipRGCs and reset her SCN.</p>
+                <p><strong>Outcome:</strong> Within 10 days, Sarah's endogenous melatonin onset shifted 90 minutes earlier, eliminating her morning grogginess and evening hyper-arousal.</p>
+            </div>
+        </div>
+
+        <h2 id="molecular">3. The Molecular Feedback Loop: How Cells Tell Time</h2>
+        <p>The "ticking" of the SCN occurs at a genetic level through a process known as the <span class="highlight">Transcription-Translation Feedback Loop (TTFL)</span>. This is a complex dance of proteins that takes approximately 24 hours to complete. As a Sleep Health Coach, understanding this allows you to explain to clients why sleep cannot be "caught up" on weekends—the genetic machinery requires consistent timing.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gene/Protein</th>
+                        <th>Role in the Clock</th>
+                        <th>Effect on Rhythm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CLOCK & BMAL1</strong></td>
+                        <td>Positive Activators</td>
+                        <td>They bind together to trigger the production of PER and CRY proteins.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PER (Period) & CRY (Cryptochrome)</strong></td>
+                        <td>Negative Repressors</td>
+                        <td>As they accumulate in the cell cytoplasm, they eventually re-enter the nucleus to shut down CLOCK/BMAL1.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rev-Erbα</strong></td>
+                        <td>Stabilizer</td>
+                        <td>Regulates the expression of BMAL1 to ensure the loop doesn't run too fast or slow.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When light hits the SCN via the RHT, it triggers a chemical cascade that resets the levels of <span class="highlight">PER</span> proteins, effectively "winding" the molecular clock. If this loop is disrupted by late-night light exposure or irregular eating patterns, the molecular machinery becomes desynchronized, leading to cellular dysfunction.</p>
+
+        <h2 id="hierarchy">4. The Hierarchy of Biological Clocks</h2>
+        <p>The SCN is the "Conductor," but it is not the only clock in the body. Nearly every organ—the liver, heart, lungs, and skin—contains its own <span class="highlight">peripheral oscillator</span>. Under normal conditions, the SCN synchronizes these peripheral clocks via autonomic signals, body temperature fluctuations, and hormonal secretions (like melatonin).</p>
+
+        <p>However, these peripheral clocks can be "hijacked" by other <span class="highlight">Zeitgebers</span> (time-givers), most notably <strong>food</strong>. While the SCN is primarily light-sensitive, the liver clock is highly sensitive to nutrient intake. If a client eats a large meal at 11:00 PM, their SCN (Master Clock) may say "night," but their liver clock says "day." This state of <span class="highlight">circadian misalignment</span> is a primary driver of metabolic syndrome and insulin resistance.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>A 2019 study published in <em>Cell Metabolism</em> demonstrated that just 3 days of SCN-peripheral misalignment (simulating jet lag) resulted in a 20% decrease in insulin sensitivity in healthy adults.</p>
+        </div>
+
+        <h2 id="aging">5. SCN Degradation, Aging, and Systemic Health</h2>
+        <p>As we age, the SCN undergoes physiological changes. The neurons become less "coupled," meaning they don't communicate as effectively, leading to a dampened circadian amplitude. This is why elderly individuals often experience fragmented sleep and earlier wake times.</p>
+
+        <p>Furthermore, chronic SCN desynchrony is linked to:
+        <ul class="content-list">
+            <li><strong>Neurodegeneration:</strong> The SCN regulates the glymphatic system (the brain's waste clearance). Desynchrony leads to Beta-Amyloid accumulation.</li>
+            <li><strong>Cardiovascular Stress:</strong> The SCN dictates the nocturnal "dip" in blood pressure. Without this dip, the risk of stroke increases by <span class="stat-highlight">25%</span>.</li>
+            <li><strong>Immune Dysfunction:</strong> T-cell production and cytokine release follow a strict SCN-mediated schedule.</li>
+        </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Which specific wavelength of light is the SCN most sensitive to, and which receptor detects it?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The SCN is most sensitive to short-wavelength "blue" light (approx. 460-480nm), detected by the intrinsically photosensitive Retinal Ganglion Cells (ipRGCs) containing the photopigment melanopsin.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What happens to the molecular feedback loop when PER and CRY proteins reach high concentrations in the cytoplasm?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">They translocate back into the nucleus and inhibit the activity of the CLOCK and BMAL1 proteins, effectively shutting down their own production and completing the negative half of the feedback loop.</div>
+            </div>
+        </div>
+
+        <h2 id="application">6. Clinical Application: The Reset Strategy</h2>
+        <p>As a Sleep Health Coach using the <span class="highlight">D.R.E.A.M. Sleep Method™</span>, your goal in the <strong>Reset</strong> phase is to strengthen the SCN's signal. We do this by increasing the contrast between "Biological Day" and "Biological Night."</p>
+
+        <p>If the SCN receives weak signals (dim light during the day, blue light at night), the circadian amplitude flattens. A flat amplitude results in poor sleep quality, low daytime energy, and hormonal imbalance. To fix this, we implement "Circadian Anchors"—fixed points of light exposure and nutrient intake that provide the SCN with the data it needs to coordinate the body's 30 trillion cells.</p>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <strong>SCN</strong> is the master pacemaker located in the hypothalamus, coordinating 20,000 neurons to create a ~24.2-hour rhythm.</li>
+                <li><strong>ipRGCs</strong> are the eyes' "non-visual" light sensors that communicate directly with the SCN via the Retinohypothalamic Tract.</li>
+                <li>The <strong>Molecular Clock</strong> (CLOCK/BMAL1/PER/CRY) operates in nearly every cell, but requires the SCN for systemic synchronization.</li>
+                <li><strong>Circadian Misalignment</strong> occurs when peripheral clocks (like the liver) are out of sync with the SCN, leading to metabolic disease.</li>
+                <li>Strengthening the <strong>Circadian Amplitude</strong> through light and timing is the primary goal of the "Reset" phase.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hastings, M. H., et al. (2018). "Generation of circadian rhythms in the suprachiasmatic nucleus." <em>Nature Reviews Neuroscience</em>.</li>
+                <li>Berson, D. M., et al. (2002). "Phototransduction by Retinal Ganglion Cells That Set the Circadian Clock." <em>Science</em>.</li>
+                <li>Takahashi, J. S. (2017). "Transcriptional architecture of the mammalian circadian clock." <em>Nature Reviews Genetics</em>.</li>
+                <li>Panda, S. (2016). "Circadian physiology of metabolism." <em>Science</em>.</li>
+                <li>Dijk, D. J., & Duffy, J. F. (1999). "Circadian regulation of human sleep and age-related changes in its timing, consolidation and EEG characteristics." <em>Annals of Medicine</em>.</li>
+                <li>Walker, M. P. (2017). <em>Why We Sleep: Unlocking the Power of Sleep and Dreams</em>. Scribner.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Module 2: Reset</p>
+        </footer>
+    </div>
+</body>
+
+</html>

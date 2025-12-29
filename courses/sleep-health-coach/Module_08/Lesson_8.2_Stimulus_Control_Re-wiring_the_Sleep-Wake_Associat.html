@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.2: Stimulus Control: Re-wiring the Sleep-Wake Association</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Mastery */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1e40af;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #92400e;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            font-size: 13px;
+            color: #666;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Advanced Sleep Mastery</p>
+            <h1 class="lesson-title">Lesson 8.2: Stimulus Control: Re-wiring the Sleep-Wake Association</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Pavlovian Conditioning</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Neurology of Arousal</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The 20-Minute Rule</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Implementation Strategy</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Overcoming Adherence Barriers</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the mechanism of <span class="highlight">conditioned arousal</span> and its role in chronic insomnia.</li>
+                <li>Master the clinical application of the "20-Minute Rule" within the D.R.E.A.M. Sleep Method™.</li>
+                <li>Differentiate between sleep hygiene and Stimulus Control Therapy (SCT).</li>
+                <li>Implement evidence-based strategies to increase client adherence to behavioral interventions.</li>
+                <li>Analyze complex cases where the bed has become a trigger for wakefulness.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Pavlovian Conditioning in the Bedroom</h2>
+        <p>In the world of sleep science, the bedroom is rarely just a room; it is a powerful neurobiological trigger. For a healthy sleeper, the sight of their bed triggers a cascade of <span class="highlight">parasympathetic activation</span>, signaling the brain to prepare for rest. However, for the chronic insomniac, the bed undergoes a maladaptive transformation. Through a process of classical conditioning, the bedroom environment becomes a trigger for <span class="highlight">hyperarousal</span>.</p>
+
+        <p>This is precisely the same mechanism Ivan Pavlov discovered with his dogs. While Pavlov used a bell to trigger salivation, the insomniac uses the bed to trigger cortisol. When a client spends hours lying awake, worrying about work, scrolling through their phone, or calculating how many hours of sleep they will get if they fall asleep "right now," the brain forms a strong associative bond: <strong>Bed = Wakefulness, Frustration, and Alertness.</strong></p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Practitioner's Insight</p>
+            <p>As a Sleep Health Coach, you must recognize that "trying harder" to sleep actually strengthens this negative association. Stimulus Control Therapy (SCT) is designed to break this bond by physically removing the client from the environment when sleep is not occurring.</p>
+        </div>
+
+        <h2 id="section2">2. The Neurology of Conditioned Arousal</h2>
+        <p>Conditioned arousal is not just "in the head"; it is a measurable physiological state. A 2021 study utilizing fMRI data showed that individuals with chronic insomnia exhibited heightened activity in the <span class="highlight">salience network</span> and the amygdala when presented with sleep-related stimuli (like images of a bed) compared to healthy controls.</p>
+
+        <p>When the brain associates the bed with wakefulness, the <span class="highlight">Hypothalamic-Pituitary-Adrenal (HPA) axis</span> remains active. Instead of the natural dip in core body temperature and increase in melatonin, the body maintains a state of "threat detection." This explains the "Tired but Wired" phenomenon: the client is exhausted (high sleep pressure), but their nervous system is too stimulated to allow the transition into Stage 1 sleep.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">70-80%</span>
+                    <span class="stat-label">Success rate of SCT in clinical trials</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">20 min</span>
+                    <span class="stat-label">The threshold for conditioned arousal</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">~4-6 wks</span>
+                    <span class="stat-label">Time to re-wire the association</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">3. The '20-Minute Rule' and the Time Threshold</h2>
+        <p>The cornerstone of Stimulus Control is the <span class="highlight">20-Minute Rule</span>. While the exact number of minutes can vary (some protocols suggest 15, others "when you feel frustrated"), 20 minutes serves as a practical, evidence-based threshold to prevent the consolidation of negative associations.</p>
+
+        <p>Why 20 minutes? Neurologically, this is roughly the time it takes for a person to transition from "trying to relax" to "experiencing frustration." Once frustration sets in, the brain releases norepinephrine, which effectively resets the sleep onset process. By leaving the bed before this peak of frustration, the client protects the sanctity of the sleep environment.</p>
+
+        <h3>The Core Rules of SCT:</h3>
+        <ul>
+            <li><strong>Sleep only when sleepy:</strong> Do not go to bed based on the clock; go based on biological sleepiness (heavy eyelids, nodding off).</li>
+            <li><strong>Use the bed only for sleep and sex:</strong> No reading, no laptop, no worrying, no phone.</li>
+            <li><strong>The Out-of-Bed Rule:</strong> If you are not asleep within ~20 minutes, get out of bed and go to another room.</li>
+            <li><strong>Return only when sleepy:</strong> Do not return to bed until the biological signs of sleepiness return.</li>
+            <li><strong>Consistent wake time:</strong> Regardless of how much sleep was achieved, the wake-up time remains fixed to anchor the circadian rhythm.</li>
+        </ul>
+
+        <h2 id="section4">4. Step-by-Step Implementation in the D.R.E.A.M. Method™</h2>
+        <p>In our framework, SCT fits primarily into <strong>'A' (Address Root Causes)</strong> and <strong>'M' (Master Sleep Hygiene)</strong>. It addresses the behavioral root cause of insomnia. Here is how to roll this out with a client:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Action Step</th>
+                        <th>Coaching Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Preparation</strong></td>
+                        <td>Identify a "Waiting Station" (a comfortable chair in a different room).</td>
+                        <td>Ensure the station has dim lighting and no stimulating activities.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Execution</strong></td>
+                        <td>Client leaves the bed if awake/frustrated.</td>
+                        <td>Focus on "quiet wakefulness" activities (folding laundry, light reading).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Re-Entry</strong></td>
+                        <td>Return to bed ONLY when sleepiness is undeniable.</td>
+                        <td>Discourage "checking" for sleepiness; it must be felt.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anchoring</strong></td>
+                        <td>Maintain a strict morning wake-up time.</td>
+                        <td>Explain the "Sleep Debt" concept as a tool for the next night.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">5. Common Client Barriers & Adherence Strategies</h2>
+        <p>SCT is arguably the hardest behavioral intervention to follow. Clients will complain that they are "too cold" to leave the bed, "too tired" to move, or that getting up "wakes them up more." As a coach, your role is to validate these feelings while holding the line on the science.</p>
+
+        <div class="principle-card" style="border-left-color: #f59e0b;">
+            <p class="principle-title">Strategy: The Warmth Protocol</p>
+            <p class="principle-text">One of the biggest barriers is the drop in temperature when leaving a warm bed. Advise clients to have a warm robe, slippers, and a dedicated blanket at their "Waiting Station." This minimizes the physical shock of leaving the bed.</p>
+        </div>
+
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that <span class="highlight">adherence</span> is the single greatest predictor of outcome in SCT. To boost adherence, use "Implementation Intentions" (If-Then statements). For example: "<strong>If</strong> I find myself thinking about tomorrow's meeting for more than a few minutes, <strong>then</strong> I will immediately get up and go to the armchair."</p>
+
+        <h2 id="section6">6. Case Study: Re-associating the Bed</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The 10-Year Insomniac</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Breaking a decade of conditioned arousal</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Evelyn, 52</h4>
+                        <p>Chronic Insomnia (12 years), High Anxiety, Work-from-home Executive</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Evelyn reported taking 2-3 hours to fall asleep. She admitted to answering emails in bed and watching news to "distract" her mind from the anxiety of not sleeping. Her bed had become her "office" and her "worry room."</p>
+                <p><strong>Intervention:</strong> We implemented a strict SCT protocol. For the first two weeks, Evelyn was instructed to leave the bed the moment she felt "alert." She moved her work desk out of the bedroom (Environment - 'E' in DREAM) and established a "Waiting Station" in her guest room with a book of short stories.</p>
+                <p><strong>Outcomes:</strong>
+                    <ul>
+                        <li><strong>Week 1:</strong> High frustration. Evelyn was out of bed 4-5 times per night. Total sleep was low, but sleep efficiency began to rise.</li>
+                        <li><strong>Week 4:</strong> The "Rewiring" took effect. Evelyn's brain began to associate the bed with sleep again. Sleep Latency (time to fall asleep) dropped from 150 minutes to 22 minutes.</li>
+                        <li><strong>Outcome:</strong> At the 3-month follow-up, Evelyn maintained a sleep efficiency of 88% and reported significantly lower bedtime anxiety.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is it counterproductive to stay in bed and "try to relax" if you aren't sleepy?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Staying in bed while awake and frustrated strengthens the Pavlovian association between the bed and wakefulness (Conditioned Arousal), making it harder to fall asleep in the future.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary purpose of a "Waiting Station" in the SCT protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It provides a neutral, low-stimulus environment where the client can engage in quiet wakefulness until biological sleepiness returns, preventing the bedroom from becoming a place of frustration.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li><strong>The Bed is a Trigger:</strong> In chronic insomnia, the bed triggers the HPA axis rather than the parasympathetic nervous system.</li>
+                <li><strong>SCT is Behavioral Surgery:</strong> It is designed to "cut" the association between the bed and wakefulness.</li>
+                <li><strong>Sleepiness vs. Tiredness:</strong> Clients must learn to distinguish between physical exhaustion and biological sleepiness before going to bed.</li>
+                <li><strong>Consistency is King:</strong> The fixed wake-up time is non-negotiable for re-anchoring the circadian clock while implementing SCT.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bootzin, R. R., et al. (2010). "Stimulus Control Therapy for Insomnia." <i>Nature and Science of Sleep.</i></li>
+                <li>Morin, C. M., et al. (2006). "Psychological and Behavioral Interventions for Managing Insomnia." <i>Sleep.</i></li>
+                <li>Riemann, D., et al. (2021). "Hyperarousal and Insomnia: A Review of the Neurobiological Evidence." <i>Sleep Medicine Reviews.</i></li>
+                <li>Trauer, J. M., et al. (2015). "Cognitive Behavioral Therapy for Chronic Insomnia: A Systematic Review and Meta-analysis." <i>Annals of Internal Medicine.</i></li>
+                <li>Edinger, J. D., et al. (2021). "Behavioral and Psychological Treatments for Chronic Insomnia Disorder in Adults: An American Academy of Sleep Medicine Clinical Practice Guideline." <i>Journal of Clinical Sleep Medicine.</i></li>
+                <li>Perlis, M. L., et al. (2018). "The Neurobiology of Insomnia." <i>Current Psychiatry Reports.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Certification Content | Sleep Health Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

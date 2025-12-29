@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 22.4: Confidentiality, HIPAA, and Data Integrity</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Ethics/Professionalism */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 22: Ethical Considerations</p>
+            <h1 class="lesson-title">Lesson 4: Confidentiality, HIPAA, and Data Integrity</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#landscape"><span class="section-num">1</span>The Global Regulatory Landscape</a></li>
+                <li><a href="#labs"><span class="section-num">2</span>Protecting Sensitive Hormone Data</a></li>
+                <li><a href="#digital"><span class="section-num">3</span>Digital Communication Ethics</a></li>
+                <li><a href="#group"><span class="section-num">4</span>Confidentiality in Group Settings</a></li>
+                <li><a href="#retention"><span class="section-num">5</span>Retention & Destruction Policies</a></li>
+                <li><a href="#bloom"><span class="section-num">6</span>Integrity in The B.L.O.O.M. Method™</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between HIPAA, GDPR, and PIPEDA requirements for independent hormone coaches.</li>
+                <li>Implement high-level security protocols for storing cycle logs and laboratory results.</li>
+                <li>Navigate the ethical risks of unencrypted communication channels like SMS and standard email.</li>
+                <li>Establish "Circle of Trust" boundaries for group coaching environments.</li>
+                <li>Execute legal and ethical record destruction protocols to maintain long-term data integrity.</li>
+            </ul>
+        </div>
+
+        <h2 id="landscape">1. The Global Regulatory Landscape for Coaches</h2>
+        <p>In the digital age, a Hormone Health Coach is more than a wellness guide; you are a custodian of deeply personal biological data. When you collect a client's <span class="highlight">Baseline Assessment</span> (the 'B' in the B.L.O.O.M. Method™), you are handling information that could reveal everything from reproductive struggles to metabolic disorders.</p>
+        
+        <p>While many coaches operate as independent contractors and may not technically be "Covered Entities" under the strict legal definition of HIPAA (in the US), the <span class="highlight">ethical mandate</span> remains the same. Professionalism in the $4.5 trillion global wellness industry requires adherence to the highest data protection standards, regardless of your specific legal classification.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Regulation</th>
+                        <th>Region</th>
+                        <th>Primary Focus</th>
+                        <th>Coaching Relevance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HIPAA</strong></td>
+                        <td>USA</td>
+                        <td>Portability & Accountability</td>
+                        <td>Best practice for handling PHI (Protected Health Information).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GDPR</strong></td>
+                        <td>EU/UK</td>
+                        <td>Privacy & Data Protection</td>
+                        <td>Extremely strict; requires "Right to be Forgotten" and explicit consent.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PIPEDA</strong></td>
+                        <td>Canada</td>
+                        <td>Electronic Documents Act</td>
+                        <td>Applies to private-sector organizations collecting personal info.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2022 survey found that <span class="stat-highlight">87% of consumers</span> are willing to walk away from a brand if they have concerns about its data security practices. For a hormone coach, a single breach of a cycle-tracking log or a DUTCH test result can destroy a reputation permanently.</p>
+
+        <h2 id="labs">2. Protecting Sensitive Hormone Data & Lab Results</h2>
+        <p>Within the B.L.O.O.M. Method™, the <span class="highlight">Baseline Assessment</span> often involves reviewing serum, saliva, or dried urine labs. These documents are not just "data points"—they are a client's biological blueprint. Storing these on a local hard drive or in an unencrypted cloud folder is a significant ethical lapse.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Security Protocol</p>
+            <p>Never store client lab results on a public computer or a shared family device. Use <strong>AES-256 bit encryption</strong> for all digital storage. If using cloud services (Google Workspace, Dropbox), ensure you have a signed <strong>Business Associate Agreement (BAA)</strong>, which is required for HIPAA compliance.</p>
+        </div>
+
+        <p>Data integrity also refers to the <span class="highlight">accuracy</span> of the data. When tracking the "Listen to Your Body" (L) phase, ensuring that Basal Body Temperature (BBT) and cervical mucus logs are securely synced and not altered by third-party apps is crucial for the coach's analysis. A 2023 study in the <i>Journal of Medical Internet Research</i> found that <span class="stat-highlight">42% of health apps</span> shared user data with third parties without explicit, granular consent.</p>
+
+        <h2 id="digital">3. Digital Communication Ethics: The SMS Trap</h2>
+        <p>Convenience is the enemy of confidentiality. Many clients will attempt to text photos of their ovulation predictor kits (OPKs) or email PDFs of their thyroid panels. As a practitioner, you must set the boundary from day one.</p>
+
+        <ul>
+            <li><strong>Email:</strong> Standard email (Gmail, Outlook) is like a postcard; anyone in the "sorting office" can potentially read it. Use encrypted portals like ProtonMail or dedicated coaching platforms (e.g., Practice Better, Healthie).</li>
+            <li><strong>SMS/WhatsApp:</strong> While WhatsApp is end-to-end encrypted, it often backs up to unencrypted clouds (iCloud/Google Drive). SMS is entirely unencrypted.</li>
+            <li><strong>Social Media DMs:</strong> Never discuss clinical symptoms or lab results via Instagram or Facebook DMs. These platforms are data-mining engines.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📝</div>
+                <div>
+                    <p class="box-label">Case Study: The Unsecured PDF</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Practitioner: Sarah J. | Client: "Elena" (34)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <p><strong>Scenario:</strong> Elena emailed a PDF of her comprehensive hormone panel to Sarah’s standard Gmail account. Sarah downloaded it to her laptop, which she later used at a public café on an open Wi-Fi network.</p>
+                        <p><strong>The Breach:</strong> Sarah’s laptop was compromised via a man-in-the-middle attack. Elena’s full name, date of birth, and sensitive hormonal markers (indicating early primary ovarian insufficiency) were accessed.</p>
+                        <p><strong>Outcome:</strong> Sarah had to inform Elena of the breach, leading to a loss of trust and the termination of the coaching contract. Sarah now uses a HIPAA-compliant portal for all document transfers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="group">4. Confidentiality in Group Coaching Settings</h2>
+        <p>The <span class="highlight">B.L.O.O.M. Method™</span> is often delivered in group formats to increase accessibility. However, group settings present a unique ethical challenge: you cannot legally guarantee that other participants will keep shared information confidential. Your role is to facilitate a "Circle of Trust."</p>
+
+        <p>Before any group session, you must establish "The Vegas Rule": what is said in the group stays in the group. This should be explicitly stated in the <strong>Informed Consent</strong> (covered in Lesson 2) and reiterated at the start of every call.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro-Tip</p>
+            <p>In group settings, encourage clients to use "I" statements and avoid sharing identifying details of others. If a client shares something extremely sensitive (e.g., a history of trauma or a specific medical diagnosis), acknowledge it briefly and offer to move the detailed discussion to a private 1-on-1 session.</p>
+        </div>
+
+        <h2 id="retention">5. Record Retention and Destruction Policies</h2>
+        <p>How long should you keep a client's records after they have completed the "Maintain & Thrive" (M) phase? While laws vary, the standard professional recommendation is <span class="highlight">7 years</span> for adults. For minors, records are often kept until the client reaches the age of majority plus several years.</p>
+
+        <p><strong>Secure Destruction:</strong>
+        <ol>
+            <li><strong>Physical Records:</strong> Use a cross-cut shredder. Never simply throw client intake forms in the recycling bin.</li>
+            <li><strong>Digital Records:</strong> Deleting a file isn't enough; use "wiping" software that overwrites the data multiple times. If using a cloud platform, ensure the "Delete" function truly removes data from their servers after a set period.</li>
+        </ol>
+
+        <h2 id="bloom">6. Data Integrity and The B.L.O.O.M. Method™</h2>
+        <p>Data integrity isn't just about security; it’s about the <span class="highlight">sanctity of the process</span>. In the B.L.O.O.M. framework, we rely on the progression from Baseline to Maintenance. If the data at the Baseline phase is corrupted, incomplete, or incorrectly recorded, the entire "Optimize" (O) phase will be flawed.</p>
+
+        <p>As a coach, you must ensure:
+            <ul>
+                <li><strong>Attribution:</strong> Every note is dated and signed (digitally).</li>
+                <li><strong>Legibility:</strong> Digital records are preferred over handwritten notes to avoid misinterpretation of symptoms.</li>
+                <li><strong>Contemporaneousness:</strong> Notes should be recorded immediately after a session while the information is fresh (within 24 hours).</li>
+            </ul>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
+                <div class="case-study-icon">🤝</div>
+                <div>
+                    <p class="box-label">Case Study: The Circle of Trust</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Group Program: "Hormone Harmony 101"</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Situation:</strong> During a group Zoom call, a participant (Jane) shared that she was struggling with libido issues related to her perimenopause. Another participant (Mary) later messaged Jane privately on Facebook to offer unsolicited advice.</p>
+                <p><strong>Intervention:</strong> The coach, having noticed the interaction mentioned in a subsequent call, addressed the group about the importance of "lateral boundaries." She reminded everyone that the group space is the only space for coaching-related sharing unless both parties explicitly agree otherwise.</p>
+                <p><strong>Result:</strong> The coach updated the group contract to include a clause regarding private messaging between members, preserving the integrity of the professional container.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of data integrity and ethics.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client asks to text you a photo of her lab results because she is having trouble with your secure portal. What is the most ethical response?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Politely decline the text and offer to jump on a 5-minute tech-support call to help her with the portal. Explain that her privacy is your priority and SMS is not a secure way to transmit her sensitive biological data.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which of the following is a requirement for a cloud storage service to be considered HIPAA-compliant for a US-based practitioner?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The provider must sign a Business Associate Agreement (BAA). This document legally binds the provider to protect the data according to HIPAA standards.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Ethics Over Legality:</strong> Even if you aren't legally a "Covered Entity," treating client data with HIPAA/GDPR-level security is a professional requirement.</li>
+                <li><strong>Encryption is Non-Negotiable:</strong> All hormone logs and lab results must be stored using AES-256 bit encryption and transferred via secure portals.</li>
+                <li><strong>The Circle of Trust:</strong> In group coaching, the coach is the gatekeeper of confidentiality and must set explicit lateral boundaries.</li>
+                <li><strong>Contemporaneous Records:</strong> Data integrity depends on recording notes accurately and immediately following client interactions.</li>
+                <li><strong>Destruction Protocols:</strong> Maintain records for at least 7 years and use "wiping" or cross-cut shredding for disposal.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>HHS.gov (2022). "Health Information Privacy: Summary of the HIPAA Privacy Rule." U.S. Department of Health & Human Services.</li>
+                <li>European Commission (2023). "Rules for the Protection of Personal Data Inside and Outside the EU." GDPR Official Guidelines.</li>
+                <li>Babatunde et al. (2023). "Data Privacy and Security in Mobile Health Apps: A Systematic Review." Journal of Medical Internet Research.</li>
+                <li>Office of the Privacy Commissioner of Canada (2021). "PIPEDA Self-Assessment Tool for Businesses."</li>
+                <li>Smith, A. et al. (2022). "Consumer Trust and Data Privacy in the Digital Wellness Era." International Journal of Information Management.</li>
+                <li>American Counseling Association (2014). "Section B: Confidentiality and Privacy." ACA Code of Ethics.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The B.L.O.O.M. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

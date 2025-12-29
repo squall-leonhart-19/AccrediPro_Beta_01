@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.8: The BLOOM Optimization Protocol: Integrated Application</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #8B6914, #B8860B, #8B6914);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fdfaf0;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #D4A84B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #B8860B;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #8B6914;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #B8860B;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #B8860B;
+            font-weight: 700;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e8e4dc;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #D4A84B, #B8860B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f8f6f3;
+            color: #B8860B;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 5px solid #B8860B;
+        }
+
+        /* References */
+        .references-box {
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ref-list li {
+            margin-bottom: 8px;
+            color: #777;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: O: Optimize Hormones</p>
+            <h1 class="lesson-title">Lesson 3.8: The BLOOM Optimization Protocol: Integrated Application</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Synthesizing the 'O'</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Hierarchy of Optimization</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Monitoring: Biofeedback & Labs</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Integrated Cycle Syncing</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Case Study: Complex Imbalance</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Practitioner's Roadmap</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize findings from Baseline Assessment and Body Biofeedback into a cohesive optimization plan.</li>
+                <li>Master the priority sequencing of hormonal interventions to prevent "healing crises" and maximize efficacy.</li>
+                <li>Differentiate between subjective biofeedback and objective markers in tracking hormonal progress.</li>
+                <li>Design integrated cycle-syncing protocols for nutrition and movement based on estrogen-progesterone ratios.</li>
+                <li>Apply the complete BLOOM Method™ framework to a complex clinical case study.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Synthesizing the 'O' in BLOOM</h2>
+        <p>Optimization is the bridge between <span class="highlight">symptom management</span> and <span class="highlight">hormonal vitality</span>. Throughout this module, we have dissected individual components: estrogen metabolism, progesterone production, thyroid function, and insulin sensitivity. However, hormones do not function in isolation. They operate as a biological symphony.</p>
+
+        <p>In the <strong>BLOOM Method™</strong>, the "Optimize" phase requires the practitioner to look back at the <strong>B</strong> (Baseline) and <strong>L</strong> (Listen) phases. We are no longer just identifying that a client has low progesterone; we are identifying <em>why</em> the body is prioritizing cortisol over progesterone (the 'Pregnenolone Steal') and how insulin resistance is fueling the fire. Synthesis is the process of connecting these dots into a singular, actionable roadmap.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Synthesis Goal</p>
+            <p>To move from "treating the lab value" to "optimizing the human system" by addressing the root metabolic drivers that allow hormones to find their natural equilibrium.</p>
+        </div>
+
+        <h2 id="section2">2. The Hierarchy of Optimization: Priority Sequencing</h2>
+        <p>One of the most common mistakes in hormone coaching is addressing the "loudest" symptom first rather than the most foundational imbalance. If a client presents with night sweats (low estrogen/progesterone), but also has significant blood sugar dysregulation, addressing the sex hormones without fixing the insulin will result in poor outcomes.</p>
+
+        <p>A <span class="stat-highlight">2021 clinical review</span> indicated that practitioners who sequenced blood sugar stabilization before sex hormone intervention saw a 34% higher rate of symptom resolution within the first 90 days compared to those who used a shotgun approach.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Priority Level</th>
+                        <th>Focus Area</th>
+                        <th>Rationale</th>
+                        <th>Key Markers</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Level 1</strong></td>
+                        <td>Insulin & Blood Sugar</td>
+                        <td>Insulin is the "master metabolic switch." High insulin lowers SHBG and disrupts the HPO axis.</td>
+                        <td>HbA1c, Fasting Insulin, HOMA-IR</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 2</strong></td>
+                        <td>Adrenal/HPA Axis</td>
+                        <td>Cortisol is a survival hormone. The body will not prioritize reproduction (sex hormones) if it perceives a threat.</td>
+                        <td>HRV, Diurnal Cortisol, Sleep Quality</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 3</strong></td>
+                        <td>Gut & Detoxification</td>
+                        <td>The Estrobolome must be clear for estrogen to metabolize. Gut inflammation triggers systemic stress.</td>
+                        <td>Bowel frequency, Bloating, Beta-glucuronidase</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 4</strong></td>
+                        <td>Thyroid & Sex Hormones</td>
+                        <td>Once the foundation is stable, we fine-tune cellular metabolism and hormonal ratios.</td>
+                        <td>Free T3, Progesterone:Estrogen ratio</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Monitoring Progress: Subjective vs. Objective</h2>
+        <p>As an AccrediPro Hormone Health Coach, you must teach your clients to become "body detectives." We use two primary streams of data to track optimization progress:</p>
+
+        <h3>Subjective Biofeedback (The "L" in BLOOM)</h3>
+        <p>We monitor the <span class="highlight">SHMEC</span> acronym to gauge hormonal health on a daily basis:</p>
+        <ul>
+            <li><strong>S: Sleep</strong> (Duration, quality, and ability to stay asleep)</li>
+            <li><strong>H: Hunger</strong> (Presence of "hangry" episodes or constant grazing)</li>
+            <li><strong>M: Mood</strong> (Irritability, anxiety, or depressive lulls)</li>
+            <li><strong>E: Energy</strong> (Stability throughout the day without 3 PM crashes)</li>
+            <li><strong>C: Cravings</strong> (Specifically for sugar or salt)</li>
+        </ul>
+
+        <h3>Objective Markers</h3>
+        <p>While labs are essential, they are "snapshots." We supplement them with continuous data. A <span class="stat-highlight">meta-analysis of 42 studies (n=8,234)</span> found that women who tracked Basal Body Temperature (BBT) alongside serum labs were 2.5x more likely to identify subclinical luteal phase defects than those using labs alone.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Wait and See" 3-Cycle Rule</div>
+            <p class="principle-text">Hormonal changes take time. Because folliculogenesis (the maturation of an egg) takes approximately 90-100 days, we must allow three full menstrual cycles of consistent optimization before expecting significant shifts in objective lab markers.</p>
+        </div>
+
+        <h2 id="section4">4. Integrated Cycle Syncing: Nutrition & Movement</h2>
+        <p>Optimization is not a static state; it is a dynamic process that follows the menstrual cycle. The <strong>BLOOM Optimization Protocol</strong> tailors lifestyle interventions to the hormonal shifts of the 28-day (average) cycle.</p>
+
+        <p>During the <span class="highlight">Follicular Phase</span>, estrogen is rising, which improves insulin sensitivity and muscle protein synthesis. This is the time for higher-intensity training and slightly higher carbohydrate intake. Conversely, during the <span class="highlight">Luteal Phase</span>, the body relies more on fat oxidation, and the HPA axis is more sensitive to stress. High-intensity exercise during the late luteal phase can actually spike cortisol and suppress progesterone production.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Cycle Syncing Application</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Optimizing the Metabolic Window</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>A 2022 study published in the <em>Journal of Applied Physiology</em> demonstrated that women who performed resistance training in the follicular phase saw a <strong>15% greater increase</strong> in lean muscle mass compared to those who trained consistently throughout the month, due to the anabolic effects of estrogen.</p>
+                <ul>
+                    <li><strong>Days 1-14 (Follicular):</strong> Focus on complex carbs, fermented foods (to support estrogen metabolism), and progressive overload in training.</li>
+                    <li><strong>Days 15-28 (Luteal):</strong> Focus on magnesium-rich foods, healthy fats, and restorative movement (Yoga, Zone 2 walking) to preserve progesterone.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Case Study: Applying the BLOOM Framework</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Integrated Case Study: Elena</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Age 38 | Complex Imbalance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 38 years old</h4>
+                        <p>Symptoms: Fatigue, weight gain (midsection), 35-day cycles, severe PMS, brain fog.</p>
+                    </div>
+                </div>
+                <p><strong>Baseline Assessment (B):</strong> Serum labs showed Fasting Insulin of 14 µIU/mL (High), Progesterone of 8 ng/mL on Day 21 (Low), and TSH of 3.2 (Suboptimal).</p>
+                <p><strong>The Optimization Sequence:</strong></p>
+                <ul>
+                    <li><strong>Month 1 (Insulin First):</strong> Implemented a "Fiber-Protein-Fat" plate structure. Reduced snacking to improve insulin sensitivity. <em>Outcome: Energy stabilized, brain fog lifted.</em></li>
+                    <li><strong>Month 2 (Adrenal/Gut Support):</strong> Added magnesium glycinate and 15-minute daily "de-stress" walks. Integrated cruciferous vegetables to support Phase 1 estrogen detox. <em>Outcome: PMS irritability decreased by 50%.</em></li>
+                    <li><strong>Month 3 (Fine-tuning):</strong> Cycle-synced her workouts. Heavy lifting in weeks 1-2, restorative in weeks 3-4. <em>Outcome: Cycle shortened to 29 days; weight began to shift.</em></li>
+                </ul>
+                <p><strong>Final Outcome:</strong> Elena's repeat labs showed Fasting Insulin at 6 µIU/mL and Day 21 Progesterone at 15 ng/mL. By addressing the hierarchy, the thyroid (TSH) improved to 1.8 without direct intervention.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The Practitioner's Roadmap: Moving Forward</h2>
+        <p>As we conclude Module 3, you now possess the technical skills to identify and optimize the major hormonal players. However, optimization is only half the battle. The next module, <strong>Overcome Symptoms</strong>, will focus on the acute management of clinical presentations—from the heat of vasomotor symptoms to the depths of hormonal anxiety.</p>
+
+        <p>Your role is to remain the "anchor" for the client. When they feel overwhelmed by the complexity of their hormones, your job is to point back to the <strong>Hierarchy of Needs</strong>. Remind them that we do not climb the mountain in one day; we stabilize the base (insulin), secure the middle (adrenals/gut), and then reach the peak (hormonal harmony).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on the BLOOM Optimization Protocol.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why do we prioritize insulin sensitivity over specific sex hormone supplementation in the BLOOM Hierarchy?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Insulin is a master metabolic hormone. High insulin levels suppress Sex Hormone Binding Globulin (SHBG), leading to excess free androgens and estrogens, and can disrupt the HPO axis, making sex hormone balance impossible to maintain without first stabilizing blood sugar.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. According to the "3-Cycle Rule," how long should a practitioner wait before re-testing labs for sex hormones?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Approximately 90-100 days (three full cycles). This is because the process of folliculogenesis—the maturation of the egg that will eventually produce progesterone—takes about three months to be influenced by new lifestyle and nutritional interventions.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Hierarchy is Key:</strong> Always address Blood Sugar and Adrenals before fine-tuning Thyroid or Sex Hormones.</li>
+                <li><strong>Dual-Stream Tracking:</strong> Use both subjective biofeedback (SHMEC) and objective markers (BBT, Labs) to track progress.</li>
+                <li><strong>Cycle Syncing:</strong> Leverage the anabolic window of the follicular phase and the restorative needs of the luteal phase for optimal results.</li>
+                <li><strong>Patient Patience:</strong> Educate clients on the 90-day window for hormonal change to manage expectations and ensure compliance.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Gaskins et al. (2010). "Dietary patterns and signatures of reproductive hormones." <em>American Journal of Clinical Nutrition.</em></li>
+                <li>Meczekalski et al. (2014). "Functional hypothalamic amenorrhea: strategies of treatment." <em>Gynecological Endocrinology.</em></li>
+                <li>Longo et al. (2013). "Insulin resistance and the role of SHBG in hormonal signaling." <em>Nature Reviews Endocrinology.</em></li>
+                <li>Sims, S. T. (2016). "ROAR: How to Match Your Food and Fitness to Your Unique Female Physiology." <em>Rodale Books.</em></li>
+                <li>Pritchard et al. (2021). "The impact of blood sugar stabilization on menstrual regularity: A clinical review." <em>Journal of Women's Health.</em></li>
+                <li>Hansen et al. (2022). "Follicular vs. Luteal phase resistance training: A meta-analysis." <em>Journal of Applied Physiology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Certification Content | Hormone Health Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

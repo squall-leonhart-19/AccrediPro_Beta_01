@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 19.8: The Science of Maintenance: Registry Data and Identity Shift</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Research & Evidence */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f0f9ff;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            margin: 25px 0;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a8a;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fefce8;
+            border-radius: 8px;
+            border-left: 3px solid #eab308;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 40px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ref-list li {
+            margin-bottom: 12px;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 19: L2: Research & Evidence</p>
+            <h1 class="lesson-title">Lesson 8: The Science of Maintenance: Registry Data and Identity Shift</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 8 of 8</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#registry"><span class="section-num">1</span>The National Weight Control Registry</a></li>
+                <li><a href="#behaviors"><span class="section-num">2</span>Behaviors of 'Successful Losers'</a></li>
+                <li><a href="#identity"><span class="section-num">3</span>Identity-Based Goals vs. Outcomes</a></li>
+                <li><a href="#cbte"><span class="section-num">4</span>Cognitive Restructuring & CBT-E</a></li>
+                <li><a href="#cycling"><span class="section-num">5</span>The Impact of Weight Cycling</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Application of 'M' and 'R'</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze longitudinal data from the National Weight Control Registry (NWCR) to identify the "Golden Rules" of maintenance.</li>
+                <li>Differentiate between outcome-based goals and identity-based habits within the <span class="highlight">Rewire Mindset (R)</span> pillar.</li>
+                <li>Evaluate the efficacy of Enhanced Cognitive Behavioral Therapy (CBT-E) in preventing weight regain.</li>
+                <li>Understand the physiological and cardiovascular risks associated with chronic weight cycling (yo-yo dieting).</li>
+                <li>Implement high-frequency self-monitoring protocols as part of the <span class="highlight">Maintain Forever (M)</span> strategy.</li>
+            </ul>
+        </div>
+
+        <h2 id="registry">Section 1: The National Weight Control Registry (NWCR)</h2>
+        <p>The greatest challenge in weight management is not the loss itself, but the <span class="highlight">prevention of regain</span>. To understand how some individuals defy the statistical norm of weight regain, researchers established the National Weight Control Registry (NWCR) in 1994. This longitudinal study tracks over 10,000 individuals who have lost significant weight and kept it off.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">n > 10,000</span>
+            <span class="stat-desc">The NWCR tracks individuals who have lost at least 30 pounds and maintained that loss for at least one year. On average, members have lost 66 lbs and kept it off for 5.5 years.</span>
+        </div>
+
+        <p>Analysis of this cohort reveals that maintenance is not a passive state but an active, behavioral process. The data suggests that "Successful Losers" transition from a period of intense restriction to a period of <span class="highlight">vigilant stability</span>. This aligns with our <strong>T.R.A.N.S.F.O.R.M. Methodology™</strong>, specifically the pivot from 'Test' and 'Reset' to the 'Maintain Forever' (M) phase.</p>
+
+        <h2 id="behaviors">Section 2: Common Behaviors of Successful Maintainers</h2>
+        <p>The NWCR data identifies several non-negotiable behaviors that characterize those who sustain their weight loss long-term. These are not merely suggestions; they are the evidence-based pillars of the <span class="highlight">Maintain Forever</span> strategy.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Behavioral Pillar</th>
+                        <th>NWCR Statistic</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>High-Level Activity</strong></td>
+                        <td>94% increase activity</td>
+                        <td>Average of 60-90 mins/day (often walking).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Self-Monitoring</strong></td>
+                        <td>75% weigh weekly</td>
+                        <td>Prevents "weight creep" via early detection.</td>
+                    </tr>
+                    <li><strong>Dietary Consistency</strong></td>
+                        <td>87% maintain on weekends</td>
+                        <td>Avoids the "Cheat Day" metabolic volatility.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Breakfast Consumption</strong></td>
+                        <td>78% eat breakfast daily</td>
+                        <td>Regulates hunger hormones (Ghrelin) early.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Low Sedentary Time</strong></td>
+                        <td>62% < 10hrs TV/week</td>
+                        <td>Maintains NEAT (Non-Exercise Activity Thermogenesis).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2021 review of the registry data emphasized that <span class="highlight">physical activity</span> is the strongest predictor of maintenance, whereas dietary restriction is the strongest predictor of initial loss. This confirms our 'Strengthen' (S) pillar's importance: muscle mass provides the metabolic buffer necessary to handle caloric fluctuations during maintenance.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <h3>Case Study: The Registry Prototype</h3>
+                <p>Application of NWCR behaviors in clinical practice.</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 44. <strong>Initial Weight:</strong> 215 lbs. <strong>Current Weight:</strong> 155 lbs (maintained for 3 years).</p>
+                <p>Sarah struggled with yo-yo dieting for a decade until adopting the "Vigilant Maintenance" protocol. Her routine includes:</p>
+                <ul>
+                    <li><strong>Daily Weigh-ins:</strong> She uses a 3-lb "buffer zone." If she hits 158, she immediately triggers a 3-day "Reset Habits" (R) protocol.</li>
+                    <li><strong>Identity Shift:</strong> She stopped saying "I'm on a diet" and started saying "I am a person who walks 10k steps before 6 PM."</li>
+                    <li><strong>Outcome:</strong> Sarah’s RMR (Resting Metabolic Rate) has stabilized, and her fasted insulin remains at 5.2 µIU/mL, indicating high metabolic flexibility.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="identity">Section 3: 'Rewire Mindset' (R): Transitioning to Identity-Based Goals</h2>
+        <p>In the early stages of weight loss, clients are typically motivated by <span class="highlight">outcome-based goals</span> (e.g., "I want to lose 20 lbs"). However, research in behavioral psychology suggests that once the outcome is achieved, motivation often plummets, leading to relapse.</p>
+
+        <p>The <strong>Rewire Mindset (R)</strong> pillar focuses on moving from the "what" (outcome) to the "who" (identity). A 2019 study published in the <em>Journal of Contextual Behavioral Science</em> found that participants who aligned their health behaviors with their core values and identity had a 34% higher maintenance rate at 24 months compared to those focused solely on scale weight.</p>
+
+        <h3>The Identity Shift Framework</h3>
+        <p>Identity-based habits focus on the type of person the client wishes to become, rather than the result they want to achieve. This reduces the friction of decision-making.</p>
+
+        <div class="comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 25px 0;">
+            <div style="background: #fee2e2; padding: 20px; border-radius: 12px; border: 1px solid #ef4444;">
+                <h4 style="margin-top: 0; color: #b91c1c;">Outcome-Based (Fragile)</h4>
+                <p style="font-size: 14px;">"I want to fit into a size 6 dress for my class reunion."</p>
+                <p style="font-size: 13px; color: #7f1d1d;"><em>Risk: Once the reunion passes, the "reason" for the habit disappears.</em></p>
+            </div>
+            <div style="background: #dcfce7; padding: 20px; border-radius: 12px; border: 1px solid #22c55e;">
+                <h4 style="margin-top: 0; color: #15803d;">Identity-Based (Resilient)</h4>
+                <p style="font-size: 14px;">"I am the type of person who never misses a workout two days in a row."</p>
+                <p style="font-size: 13px; color: #14532d;"><em>Benefit: The habit is a reflection of self, making it independent of external events.</em></p>
+            </div>
+        </div>
+
+        <h2 id="cbte">Section 4: Cognitive Restructuring and CBT-E Evidence</h2>
+        <p>Relapse is often preceded by <span class="highlight">dichotomous thinking</span>—the "all-or-nothing" mentality. Enhanced Cognitive Behavioral Therapy (CBT-E) provides the evidence-based framework for disrupting these thought patterns.</p>
+        
+        <p>A 2020 meta-analysis of weight loss interventions (n=4,100) demonstrated that including cognitive restructuring increased long-term maintenance by an effect size of 0.48. The primary mechanism is the reduction of <span class="highlight">cognitive restraint</span> volatility. When a client "slips" (eats off-plan), CBT-E tools help them view it as a "data point" rather than a "failure."</p>
+
+        <h3>Key CBT-E Techniques for Maintenance:</h3>
+        <ul>
+            <li><strong>Functional Analysis:</strong> Identifying the triggers (antecedents) that lead to emotional eating.</li>
+            <li><strong>Decentering:</strong> Learning to observe cravings as temporary neurological events (as discussed in Module 2: Reset Habits) rather than commands to act.</li>
+            <li><strong>Cognitive Rehearsal:</strong> Visualizing high-risk scenarios (e.g., a holiday party) and mentally practicing the "Maintain Forever" response.</li>
+        </ul>
+
+        <h2 id="cycling">Section 5: The Impact of Weight Cycling (Yo-Yo Dieting)</h2>
+        <p>Weight cycling, defined as the repeated loss and regain of body weight, is not metabolically neutral. Long-term data suggests that each cycle may make subsequent maintenance more difficult due to <span class="highlight">adaptive thermogenesis</span> and changes in body composition.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">6.6% Increase</span>
+            <span class="stat-desc">A study of 15,000+ individuals found that those with high weight variability had a 6.6% higher risk of cardiovascular mortality compared to those with stable weights, even if the stable weight was higher. (<em>New England Journal of Medicine</em>).</span>
+        </div>
+
+        <h3>The "Metabolic Cost" of Cycling:</h3>
+        <p>1. <strong>Preferential Fat Regain:</strong> During regain, the body often prioritizes adipose tissue over skeletal muscle (the "collateral fattening" effect).</p>
+        <p>2. <strong>Leptin Resistance:</strong> Repeated cycles can desensitize the hypothalamus to leptin, as explored in Module 6 (Fix Hormones), leading to a permanently elevated "set point."</p>
+        <p>3. <strong>Psychological Erosion:</strong> Every failed cycle erodes <span class="highlight">self-efficacy</span>, making the "Rewire Mindset" (R) phase significantly harder in future attempts.</p>
+
+        <h2 id="application">Section 6: Clinical Application: Integrating 'M' and 'R'</h2>
+        <p>As an expert coach, your role shifts from a "weight loss guide" to a "lifestyle architect" during the maintenance phase. You must facilitate the transition from external accountability (you) to internal accountability (the client's new identity).</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The "Check-Engine Light" Protocol</p>
+            <p class="principle-text">Based on NWCR data, establish a <strong>3-5 lb range</strong>. If the client exceeds this range, they do not "start a new diet." Instead, they return to the <strong>T.R.A.N.S.F.O.R.M.</strong> basics for 7 days:</p>
+            <ul>
+                <li><strong>T:</strong> Re-test macros or tracking for 3 days.</li>
+                <li><strong>R:</strong> Audit environmental triggers in the kitchen.</li>
+                <li><strong>A:</strong> Increase anti-inflammatory fiber intake to 35g+.</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. According to NWCR data, which behavior is the single strongest predictor of maintaining weight loss long-term?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High levels of physical activity (60-90 minutes per day) is the strongest predictor of maintenance, as it helps counteract the metabolic slowdown (adaptive thermogenesis) that follows weight loss.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the psychological risk of "Outcome-Based Goals" in the context of maintenance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Outcome-based goals are "finite." Once the goal is reached (e.g., losing 20 lbs), the motivation for the behaviors that caused the loss often disappears. Identity-based goals (e.g., "I am a healthy person") are "infinite" and provide lasting motivation.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Maintenance is Active:</strong> Data from the NWCR proves that successful maintainers are highly active, consistent on weekends, and frequent self-monitors.</li>
+                <li><strong>Identity is the Anchor:</strong> Shifting from "losing weight" to "being a healthy person" is the cornerstone of the <span class="highlight">Rewire Mindset (R)</span> pillar.</li>
+                <li><strong>CBT-E is Essential:</strong> Cognitive restructuring is required to break the dichotomous (all-or-nothing) thinking that leads to relapse.</li>
+                <li><strong>Cycling is Costly:</strong> Yo-yo dieting increases cardiovascular risk and can lead to preferential fat regain, making the <span class="highlight">Maintain Forever (M)</span> strategy a health imperative.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Wing, R. R., & Phelan, S. (2005). "Long-term weight loss maintenance." <em>The American Journal of Clinical Nutrition.</em></li>
+                <li>Hall, K. D., & Kahan, S. (2018). "Maintenance of Lost Weight and Long-Term Management of Obesity." <em>Medical Clinics of North America.</em></li>
+                <li>Fairburn, C. G. (2008). "Cognitive Behavior Therapy and Eating Disorders." <em>Guilford Press.</em></li>
+                <li>Thomas, J. G., et al. (2014). "Weight-loss maintenance for 10 years in the National Weight Control Registry." <em>American Journal of Preventive Medicine.</em></li>
+                <li>Clear, J. (2018). "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones." <em>Penguin Random House.</em> (Identity-Based Habit Theory).</li>
+                <li>Montani, J. P., et al. (2015). "Weight cycling during growth and beyond as a risk factor for later cardiovascular diseases." <em>Physiology & Behavior.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The T.R.A.N.S.F.O.R.M. Methodology™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

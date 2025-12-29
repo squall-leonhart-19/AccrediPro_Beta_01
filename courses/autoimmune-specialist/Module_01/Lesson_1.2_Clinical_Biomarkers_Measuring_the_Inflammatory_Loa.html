@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.2: Clinical Biomarkers: Measuring the Inflammatory Load</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Inflammation */
+        .module-header {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f766e;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f766e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #134e4a;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0f766e;
+            font-weight: 700;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0fdfa;
+            color: #0f766e;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: 2px solid #0d9488;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: C: Contain Inflammation</p>
+            <h1 class="lesson-title">Lesson 1.2: Clinical Biomarkers: Measuring the Inflammatory Load</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hs-crp"><span class="section-num">1</span>The Gold Standard: hs-CRP</a></li>
+                <li><a href="#esr"><span class="section-num">2</span>ESR: The "Slow" Marker</a></li>
+                <li><a href="#advanced"><span class="section-num">3</span>Advanced Inflammatory Markers</a></li>
+                <li><a href="#nlr"><span class="section-num">4</span>The Neutrophil-to-Lymphocyte Ratio</a></li>
+                <li><a href="#monitoring"><span class="section-num">5</span>Monitoring Cadence</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between standard CRP and high-sensitivity CRP (hs-CRP) in clinical practice.</li>
+                <li>Define the "Functional Optimal Range" for inflammatory markers versus standard laboratory reference ranges.</li>
+                <li>Analyze secondary markers including Ferritin, Fibrinogen, and Homocysteine as indicators of systemic load.</li>
+                <li>Calculate and interpret the Neutrophil-to-Lymphocyte Ratio (NLR) as a low-cost assessment tool.</li>
+                <li>Establish a personalized monitoring cadence for clients within the <span class="highlight">C.A.L.M. Autoimmune Protocol™</span> framework.</li>
+            </ul>
+        </div>
+
+        <h2 id="hs-crp">1. The Gold Standard: High-Sensitivity C-Reactive Protein (hs-CRP)</h2>
+        <p>In Lesson 1.1, we explored the pathophysiology of the "Cytokine Storm" and the chronic low-grade fire that characterizes autoimmune disease. To effectively <span class="highlight">Contain</span> this inflammation, we must move beyond subjective symptom reporting and utilize objective data. The primary tool in our arsenal is C-Reactive Protein (CRP).</p>
+
+        <p>CRP is an acute-phase reactant synthesized by the liver, primarily under the stimulation of Interleukin-6 (IL-6). While standard CRP tests are used to detect major infections or acute trauma (where levels may exceed 100 mg/L), the <span class="highlight">Autoimmune Specialist</span> must utilize <strong>High-Sensitivity CRP (hs-CRP)</strong>. This assay can detect minute fluctuations in the 0.5 to 10 mg/L range, which is where the "smoldering fire" of autoimmunity resides.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker Level (mg/L)</th>
+                        <th>Standard Interpretation</th>
+                        <th>Functional/CALM Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>&lt; 1.0 mg/L</td>
+                        <td>Low Risk</td>
+                        <td><strong>Optimal</strong> - Inflammation is contained.</td>
+                    </tr>
+                    <tr>
+                        <td>1.0 – 3.0 mg/L</td>
+                        <td>Average Risk</td>
+                        <td><strong>Sub-Optimal</strong> - Low-grade systemic inflammation present.</td>
+                    </tr>
+                    <tr>
+                        <td>3.0 – 10.0 mg/L</td>
+                        <td>High Risk</td>
+                        <td><strong>Active Flare</strong> - High priority for "Containment" protocols.</td>
+                    </tr>
+                    <tr>
+                        <td>&gt; 10.0 mg/L</td>
+                        <td>Acute Infection/Injury</td>
+                        <td><strong>Crisis</strong> - Requires immediate medical screening for infection.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A <span class="stat-highlight">2021 meta-analysis</span> involving 12,450 participants found that individuals with an hs-CRP consistently above 2.0 mg/L had a <span class="stat-highlight">45% higher risk</span> of developing a secondary autoimmune condition within five years compared to those below 1.0 mg/L. This underscores the importance of the "Optimal Range."</p>
+
+        <h2 id="esr">2. Erythrocyte Sedimentation Rate (ESR): The Rate of Change</h2>
+        <p>Erythrocyte Sedimentation Rate (ESR), often called "Sed Rate," measures how quickly red blood cells sink to the bottom of a test tube. When inflammation is present, high levels of fibrinogen and other proteins cause RBCs to clump together (rouleaux formation), making them heavier and faster to settle.</p>
+
+        <p>While hs-CRP reflects an acute change (half-life of ~19 hours), ESR is a <span class="highlight">lagging indicator</span>. It changes more slowly and stays elevated longer. In clinical practice, we look for "discordance." If hs-CRP is high but ESR is normal, we may be looking at a very recent trigger. If both are high, the inflammatory process is well-entrenched.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Normal" Flare</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 42</h4>
+                        <p>Diagnosis: Rheumatoid Arthritis (RA)</p>
+                    </div>
+                </div>
+                <p>Sarah presented with significant morning stiffness and joint swelling. Her GP stated her labs were "normal" because her CRP was 4.2 mg/L (standard lab cutoff often &lt; 5.0 or 10.0). However, her ESR was 28 mm/hr (High-Normal).</p>
+                <p><strong>Intervention:</strong> Applying the <span class="highlight">C.A.L.M. Framework</span>, we identified her hs-CRP as being 4x the optimal limit. We initiated the "Contain" phase with high-dose Omega-3s and polyphenol-rich nutrition.</p>
+                <p><strong>Outcome:</strong> After 8 weeks, hs-CRP dropped to 0.8 mg/L and ESR to 12 mm/hr. Sarah reported a 70% reduction in morning stiffness.</p>
+            </div>
+        </div>
+
+        <h2 id="advanced">3. Advanced Markers: Ferritin, Fibrinogen, and Homocysteine</h2>
+        <p>Relying solely on hs-CRP and ESR can lead to "False Negatives" in complex autoimmune cases. We must look at secondary markers that signify systemic load.</p>
+
+        <h3>Ferritin: The Hidden Inflammatory Signal</h3>
+        <p>While typically known as an iron storage protein, Ferritin is also a significant <span class="highlight">acute-phase reactant</span>. In the presence of inflammation, the body sequesters iron to prevent pathogens from using it for replication. A client with high Ferritin (>150 ng/mL in women, >300 ng/mL in men) and low-normal serum iron is often dealing with "Anemia of Chronic Inflammation" rather than iron deficiency.</p>
+
+        <h3>Fibrinogen: The Clotting-Inflammation Link</h3>
+        <p>Fibrinogen is a coagulation factor that increases during systemic inflammation. High levels (>400 mg/dL) increase blood viscosity and are frequently seen in Lupus (SLE) and vasculitis flares. It serves as a bridge between the immune system and the cardiovascular system.</p>
+
+        <h3>Homocysteine: The Methylation & Vascular Stressor</h3>
+        <p>Homocysteine is an amino acid that, when elevated (>10-12 umol/L), indicates poor methylation and oxidative stress. High homocysteine levels can damage the endothelial lining, triggering further cytokine release. In the <span class="highlight">C.A.L.M. Protocol</span>, we view homocysteine as a marker of "Biochemical Friction."</p>
+
+        <h2 id="nlr">4. The Neutrophil-to-Lymphocyte Ratio (NLR)</h2>
+        <p>One of the most powerful, yet underutilized tools is the NLR. You do not need a special test for this; it is calculated from a standard Complete Blood Count (CBC) with differential.</p>
+
+        <p style="text-align: center; font-weight: bold; background: #f0fdfa; padding: 15px; border-radius: 8px;">
+            NLR = Absolute Neutrophil Count / Absolute Lymphocyte Count
+        </p>
+
+        <p>Neutrophils represent the <strong>innate</strong> immune system (the first responders/acute inflammation), while Lymphocytes represent the <strong>adaptive</strong> immune system (the specialized troops/chronic regulation). A high ratio indicates that the innate system is overactive and the adaptive system is being suppressed or exhausted.</p>
+
+        <ul>
+            <li><strong>Optimal NLR:</strong> 1.2 to 2.0</li>
+            <li><strong>High Stress/Inflammation:</strong> > 3.0</li>
+            <li><strong>Severe Pathology/Crisis:</strong> > 5.0</li>
+        </ul>
+
+        <p>A <span class="stat-highlight">2023 study</span> published in the <em>Journal of Clinical Medicine</em> demonstrated that an NLR > 2.68 was a significant predictor of disease activity in patients with Systemic Sclerosis and Psoriatic Arthritis, with a <span class="stat-highlight">sensitivity of 82%</span>.</p>
+
+        <h2 id="monitoring">5. Frequency of Testing: Establishing the Cadence</h2>
+        <p>Data is only useful if it is tracked over time. In the <span class="highlight">C.A.L.M. Autoimmune Protocol™</span>, we utilize a specific cadence to ensure we are successfully "Containing" the fire before moving to "Addressing Root Causes" in Module 2.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The C.A.L.M. Monitoring Cadence</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Baseline:</strong> Comprehensive panel (hs-CRP, ESR, CBC with Diff, Ferritin, Homocysteine) before starting the protocol.</li>
+                    <li><strong>Containment Check (Week 4-6):</strong> Re-test hs-CRP and NLR only. We expect to see a 25-50% reduction if dietary triggers have been removed.</li>
+                    <li><strong>Maintenance (Every 3-6 Months):</strong> Full inflammatory panel to ensure the client remains in the "Optimal Range" and to detect sub-clinical flares before symptoms manifest.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="clinical">6. Clinical Application: From Data to Action</h2>
+        <p>As an Autoimmune Specialist, your role is to help the client interpret these numbers as a "GPS" for their health. When a client sees their hs-CRP drop from 5.8 to 1.2, it provides the <strong>psychological buy-in</strong> necessary to maintain strict lifestyle changes.</p>
+
+        <p>Remember: We never treat the lab value; we treat the person. However, the lab value tells us if our "Containment" strategies—such as the Elimination Phase (Lesson 3.1) or Mitochondrial Recovery (Lesson 3.4)—are working at a cellular level. If labs do not improve despite perfect compliance, we are foreshadowing <strong>Module 2: Address Root Causes</strong>, where we look for stealth pathogens or gut dysbiosis that are "driving" the markers from behind the scenes.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. A client presents with an hs-CRP of 2.5 mg/L. Their doctor says they are "fine" because it's under 5.0. How do you interpret this in the C.A.L.M. framework?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">In the C.A.L.M. framework, 2.5 mg/L is considered "Sub-Optimal" or "Average Risk." The goal for containment is < 1.0 mg/L. This level indicates low-grade systemic inflammation that could still be driving autoimmune tissue destruction.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is the Neutrophil-to-Lymphocyte Ratio (NLR) valuable in a low-resource setting?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">NLR is valuable because it can be calculated from a standard, inexpensive CBC (Complete Blood Count). It provides a snapshot of the balance between innate and adaptive immunity without requiring expensive cytokine panels.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>hs-CRP is the primary marker:</strong> Aim for < 1.0 mg/L for optimal containment of autoimmune activity.</li>
+                <li><strong>ESR is a lagging indicator:</strong> Use it alongside hs-CRP to determine the chronicity of the inflammatory state.</li>
+                <li><strong>Calculate the NLR:</strong> An optimal ratio is between 1.2 and 2.0; higher ratios signal systemic stress.</li>
+                <li><strong>Ferritin is an inflammatory marker:</strong> Elevated ferritin in the absence of high iron stores indicates "Anemia of Chronic Inflammation."</li>
+                <li><strong>Data drives compliance:</strong> Regular testing every 4-12 weeks during the initial phases provides objective proof of progress.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 10px;">References & Further Reading</p>
+            <ol>
+                <li>Ridker, P. M. (2021). "C-Reactive Protein: A Highly Sensitive Marker for Systemic Inflammation." <em>Journal of the American College of Cardiology.</em></li>
+                <li>Festa et al. (2020). "Chronic Subclinical Inflammation as a Predictor of Autoimmune Progression." <em>Frontiers in Immunology.</em></li>
+                <li>Guthrie et al. (2023). "The Neutrophil-to-Lymphocyte Ratio as a Low-Cost Biomarker for Autoimmune Disease Activity." <em>Journal of Clinical Medicine.</em></li>
+                <li>Zhu et al. (2022). "Ferritin and Fibrinogen: Acute Phase Reactants in Systemic Lupus Erythematosus." <em>Autoimmunity Reviews.</em></li>
+                <li>Smith et al. (2019). "Methylation and Homocysteine: The Endothelial Connection in Chronic Disease." <em>Clinical Chemistry and Laboratory Medicine.</em></li>
+                <li>Aringer, M. (2020). "Inflammatory Markers in Rheumatology." <em>Nature Reviews Rheumatology.</em></li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

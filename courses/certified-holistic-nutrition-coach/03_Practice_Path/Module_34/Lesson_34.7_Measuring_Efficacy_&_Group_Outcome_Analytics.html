@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 34.7: Measuring Efficacy & Group Outcome Analytics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL theme for Business/Analytics */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-highlight {
+            color: #fff;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            padding: 16px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0f766e;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #065f46;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #ecfdf5;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 7: Measuring Efficacy & Group Outcome Analytics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#scorecard"><span class="section-num">1</span>The NOURISH Scorecard™</a></li>
+                <li><a href="#aggregate"><span class="section-num">2</span>Identifying Cohort Trends</a></li>
+                <li><a href="#nps"><span class="section-num">3</span>NPS & Qualitative Feedback</a></li>
+                <li><a href="#roi"><span class="section-num">4</span>Reporting Outcomes & ROI</a></li>
+                <li><a href="#library"><span class="section-num">5</span>The Success Library Strategy</a></li>
+                <li><a href="#ethics"><span class="section-num">6</span>Data Ethics & Privacy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Implement pre- and post-program assessments using the seven pillars of the NOURISH Method™.</li>
+                <li>Analyze aggregate cohort data to identify demographic-specific root causes (The 'U' in NOURISH).</li>
+                <li>Utilize Net Promoter Scores (NPS) to calculate program satisfaction and referral potential.</li>
+                <li>Develop outcome reports for corporate partners that demonstrate tangible Return on Investment (ROI).</li>
+                <li>Standardize the collection of "Success Stories" to build a high-conversion marketing library.</li>
+            </ul>
+        </div>
+
+        <h2 id="scorecard">1. Quantifying Transformation: The NOURISH Scorecard™</h2>
+        <p>In the realm of holistic nutrition, "feeling better" is the goal, but "quantifiable improvement" is the currency of professional credibility. To move from a hobbyist coach to an elite practitioner, you must measure what you manifest. The <span class="highlight">NOURISH Scorecard™</span> is a proprietary assessment tool designed to track progress across all seven pillars of our methodology.</p>
+
+        <p>A 2021 study in the <i>Journal of Medical Internet Research</i> found that participants who utilized self-monitoring and progress visualization tools were <span class="stat-highlight">2.4 times more likely</span> to achieve their long-term health goals compared to those who did not. For group programs, the scorecard serves two purposes: it provides the client with a sense of "small wins" and provides you, the coach, with the data necessary to prove program efficacy.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Pillar</th>
+                        <th>Metric Example</th>
+                        <th>Quantification Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N</strong>utritional Foundations</td>
+                        <td>Macro-synergy awareness</td>
+                        <td>1-10 self-assessment scale</td>
+                    </tr>
+                    <tr>
+                        <td><strong>O</strong>ptimize Digestion</td>
+                        <td>Bristol Stool Scale / Bloating frequency</td>
+                        <td>Days per week with symptoms</td>
+                    </tr>
+                    <tr>
+                        <td><strong>U</strong>ncover Root Causes</td>
+                        <td>Inflammatory symptom burden</td>
+                        <td>MSQ (Medical Symptoms Questionnaire) score</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R</strong>estore Balance</td>
+                        <td>Blood glucose stability</td>
+                        <td>Continuous Glucose Monitor (CGM) or finger prick data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I</strong>ntegrative Protocols</td>
+                        <td>Protocol compliance rate</td>
+                        <td>Percentage of daily habits completed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>S</strong>ustainable Habits</td>
+                        <td>Choice architecture strength</td>
+                        <td>Environment audit score</td>
+                    </tr>
+                    <tr>
+                        <td><strong>H</strong>olistic Healing</td>
+                        <td>HRV (Heart Rate Variability)</td>
+                        <td>Wearable tech data (Oura/Whoop/Apple)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="aggregate">2. Aggregating Cohort Data: Identifying Root Causes (U)</h2>
+        <p>The "U" in the NOURISH Method™ stands for <span class="highlight">Uncover Root Causes</span>. In a 1-on-1 setting, this is bio-individual. In a group setting, you begin to see patterns. When you analyze data from 20, 50, or 100 participants simultaneously, you can identify "Cohort Root Causes."</p>
+
+        <p>For example, if you are running a "Post-Partum Vitality" group and 85% of your participants score high on the "Thyroid/Metabolic" section of the scorecard but low on the "Digestive" section, you can pivot your curriculum in real-time to focus on thyroid-supportive nutrients and HPA-axis restoration. This data-driven agility is what separates premium programs from static, "canned" courses.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Avg. Completion Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Reduction in MSQ Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9.2</div>
+                    <div class="stat-label">Avg. Satisfaction Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.5x</div>
+                    <div class="stat-label">Referral Multiplier</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="nps">3. NPS & Qualitative Feedback Loops</h2>
+        <p>The <span class="highlight">Net Promoter Score (NPS)</span> is a gold-standard business metric that asks one simple question: <i>"On a scale of 0-10, how likely are you to recommend this program to a friend or colleague?"</i></p>
+
+        <ul>
+            <li><strong>Promoters (9-10):</strong> Your brand ambassadors.</li>
+            <li><strong>Passives (7-8):</strong> Satisfied but unenthusiastic.</li>
+            <li><strong>Detractors (0-6):</strong> Unhappy customers who can damage your reputation.</li>
+        </ul>
+
+        <p>To calculate your score, subtract the percentage of Detractors from the percentage of Promoters. A "good" NPS in the coaching industry is anything above 50; a "world-class" score is 70+. Beyond the number, you must capture qualitative data. Use "Start, Stop, Continue" surveys at the midpoint of your program to refine the experience before the cohort ends.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">Case Study: The Corporate Reset</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Tech Solutions Inc. (Cohort of 45 Employees)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Scenario:</strong> A high-stress tech firm reported high burnout and "brain fog" among senior developers. The coach implemented a 6-week NOURISH Group Program.</p>
+                <p><strong>Intervention:</strong> Pre-program NOURISH Scorecards identified <span class="highlight">circadian disruption</span> and <span class="highlight">reactive hypoglycemia</span> as the primary "U" (Root Causes).</p>
+                <p><strong>Outcome Data:</strong>
+                    <ul>
+                        <li>62% reduction in afternoon "energy crashes."</li>
+                        <li>Average sleep quality (tracked via wearables) improved by 18%.</li>
+                        <li>The program achieved an <strong>NPS of 78</strong>.</li>
+                    </ul>
+                </p>
+                <p><strong>Business Result:</strong> The coach used this data to secure a year-long contract worth $45,000 for the entire department.</p>
+            </div>
+        </div>
+
+        <h2 id="roi">4. Reporting Outcomes to Medical & Corporate Partners</h2>
+        <p>When working with medical doctors or corporate HR departments, "heart-centered" testimonials are not enough. They require <span class="highlight">ROI (Return on Investment)</span> or <span class="highlight">VOI (Value on Investment)</span>. To present this effectively, use a "Clinical Impact Report" that summarizes:</p>
+
+        <ol>
+            <li><strong>Engagement Metrics:</strong> Attendance rates and platform logins.</li>
+            <li><strong>Biometric Shifts:</strong> Aggregate changes in weight, BP, or blood markers (if collected).</li>
+            <li><strong>Productivity Metrics:</strong> Self-reported "Presenteeism" (being present at work but not productive) using the Stanford Presenteeism Scale.</li>
+            <li><strong>Health Literacy:</strong> The increase in the participants' ability to make informed nutritional choices.</li>
+        </ol>
+
+        <p>A meta-analysis of 52 corporate wellness studies (n=12,450) found that for every $1 spent on wellness programs, medical costs fall by about $3.27 and absenteeism costs fall by about $2.73. Presenting these statistics alongside your group's specific data makes your program an essential line item rather than a luxury.</p>
+
+        <h2 id="library">5. Developing a 'Success Library'</h2>
+        <p>Data is the "bones" of your credibility, but stories are the "flesh." Every group program should yield 3-5 high-quality case studies for your <span class="highlight">Success Library</span>. Do not simply ask for a "testimonial." Instead, interview your star participants using the <strong>S.A.R. Framework</strong>:</p>
+        
+        <ul>
+            <li><strong>Situation:</strong> Where were they before the program? (e.g., "I was drinking 6 cups of coffee and still felt exhausted.")</li>
+            <li><strong>Action:</strong> What specific NOURISH pillar resonated most? (e.g., "Optimizing digestion through the North-to-South process.")</li>
+            <li><strong>Result:</strong> What is their life like now? (e.g., "I have consistent energy and no longer need caffeine to function.")</li>
+        </ul>
+
+        <h2 id="ethics">6. Data Ethics & Privacy in Group Analytics</h2>
+        <p>As you collect more data, your responsibility increases. When reporting aggregate data, ensure all individual identifiers are removed. If you are using specific case studies, you <strong>must</strong> obtain a written release from the client, even if you change their name. In the US, adhere to HIPAA-compliant storage for health data; in the EU, ensure GDPR compliance for all digital tracking tools.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of group analytics and outcome reporting.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">How do you calculate a Net Promoter Score (NPS) if you have 70% Promoters, 20% Passives, and 10% Detractors?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The NPS is 60. You subtract the percentage of Detractors (10%) from the percentage of Promoters (70%). Passives are ignored in the final calculation.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">Why is aggregate "Cohort Root Cause" analysis valuable for a nutrition coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It allows the coach to identify trends within a specific demographic, enabling real-time curriculum pivots that address the most common obstacles faced by that specific group.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Measure to Manage:</strong> Use the NOURISH Scorecard™ to turn subjective feelings into objective data points.</li>
+                <li><strong>NPS is Your Compass:</strong> High satisfaction scores are the best predictor of long-term business growth through referrals.</li>
+                <li><strong>Speak the Language of ROI:</strong> When reporting to partners, focus on productivity, absenteeism, and health literacy.</li>
+                <li><strong>Storytelling + Statistics:</strong> Combine S.A.R. case studies with aggregate data to create a powerful Success Library.</li>
+                <li><strong>Privacy is Paramount:</strong> Always anonymize data and obtain releases before sharing individual transformations.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Baicker, K., et al. (2010). "Workplace Wellness Programs Can Generate Savings." <i>Health Affairs</i>.</li>
+                <li>Lorig, K. R., et al. (2001). "Self-management Education: History, Definition, Outcomes, and Mechanisms." <i>Annals of Behavioral Medicine</i>.</li>
+                <li>Reichheld, F. F. (2003). "The One Number You Need to Grow." <i>Harvard Business Review</i>.</li>
+                <li>Sforzo, G. A., et al. (2018). "Compendium of the Health and Wellness Coaching Literature." <i>American Journal of Lifestyle Medicine</i>.</li>
+                <li>Wolever, R. Q., et al. (2013). "Effective Coaching for Health Promotion and Chronic Disease Management." <i>Global Advances in Health and Medicine</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary NOURISH Method™ Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

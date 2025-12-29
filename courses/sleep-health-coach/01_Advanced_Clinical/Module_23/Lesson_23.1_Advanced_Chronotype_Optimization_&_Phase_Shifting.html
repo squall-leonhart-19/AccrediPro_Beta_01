@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.1: Advanced Chronotype Optimization & Phase Shifting</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2c5282;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Statistics Box */
+        .stats-highlight {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfbf7;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e8e4dc;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #ecfdf5;
+            border-radius: 8px;
+            color: #065f46;
+            font-size: 15px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 1: Advanced Chronotype Optimization & Phase Shifting</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Expert</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Phase Response Curve (PRC)</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Micro-Dosing Melatonin Science</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Advanced Light Titration</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>DSPD & ASPD Clinical Protocols</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Managing Social Jetlag</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Studies & Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical application of the <strong>Phase Response Curve (PRC)</strong> for precision light and melatonin timing.</li>
+                <li>Implement advanced micro-dosing protocols (0.3mg) for chronobiotic effect vs. hypnotic effect.</li>
+                <li>Calculate <strong>Lux-hours</strong> and utilize spectral irradiance data to engineer phase shifts.</li>
+                <li>Design comprehensive interventions for <strong>Delayed Sleep Phase Disorder (DSPD)</strong> and <strong>Advanced Sleep Phase Disorder (ASPD)</strong>.</li>
+                <li>Strategize for "Social Jetlag" in high-performance populations using the D.R.E.A.M. Sleep Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Phase Response Curve (PRC): The Engine of Phase Shifting</h2>
+        <p>In earlier modules, we established that light is the primary <em>zeitgeber</em> (time-giver). However, at the advanced practitioner level, we must move beyond the "get morning light" advice to the mathematical precision of the <span class="highlight">Phase Response Curve (PRC)</span>. The PRC describes how the timing of a stimulus (light or melatonin) determines the direction and magnitude of the circadian shift.</p>
+
+        <p>The human circadian system is not equally sensitive to light throughout the 24-hour cycle. A 2021 study involving a systematic review of light-induced phase shifts (n=452) confirmed that the <strong>Core Body Temperature (CBT) minimum</strong>—usually occurring 2-3 hours before natural wake time—is the pivotal "inflection point" of the PRC.</p>
+
+        <div class="stats-highlight">
+            <span class="stat-value">2.5 Hours</span>
+            <span class="stat-desc">The typical interval between CBT Minimum and natural wake time, marking the peak sensitivity for phase advances.</span>
+        </div>
+
+        <h3>The Three Zones of the Light PRC</h3>
+        <ul class="content-list">
+            <li><strong>Phase Delay Zone:</strong> Light exposure in the evening and early night (before CBT minimum) pushes the clock later. This is the primary driver of DSPD in the modern world.</li>
+            <li><strong>Phase Advance Zone:</strong> Light exposure in the early morning (immediately after CBT minimum) pulls the clock earlier.</li>
+            <li><strong>The Dead Zone:</strong> Light exposure during the middle of the biological day (roughly 10:00 AM to 4:00 PM) has minimal impact on shifting the master clock, though it still affects mood and alertness.</li>
+        </ul>
+
+        <h2 id="section2">2. Melatonin: Chronobiotic Micro-Dosing vs. Hypnotic Dosing</h2>
+        <p>A common mistake in general sleep coaching is recommending high-dose melatonin (3mg-10mg) as a "sleep aid" (hypnotic). For <span class="highlight">Phase Shifting</span>, we utilize melatonin as a <strong>chronobiotic</strong>—a substance that shifts the timing of the biological clock.</p>
+
+        <p>Research led by Dr. Richard Wurtman at MIT demonstrated that the human brain naturally produces only about 0.3mg of melatonin per night. Pharmacological doses (5mg+) can saturate receptors for too long, potentially causing a "spillover" effect that blurs the PRC signals. For advanced phase shifting, we use <strong>micro-doses (0.3mg to 0.5mg)</strong> administered several hours before the Dim Light Melatonin Onset (DLMO).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Goal</th>
+                        <th>Melatonin Dose</th>
+                        <th>Timing (Relative to DLMO)</th>
+                        <th>Mechanism</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phase Advance</strong> (Shift earlier)</td>
+                        <td>0.3mg - 0.5mg</td>
+                        <td>5–7 hours before desired bedtime</td>
+                        <td>Mimics early evening rise; pulls the SCN clock forward.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase Delay</strong> (Shift later)</td>
+                        <td>0.3mg - 0.5mg</td>
+                        <td>At wake time (Early morning)</td>
+                        <td>Rarely used, but can push the clock later if administered at dawn.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hypnotic Effect</strong> (Sleep onset)</td>
+                        <td>1.0mg - 3.0mg</td>
+                        <td>30–60 mins before bed</td>
+                        <td>Lowers core body temperature and increases sleep pressure.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Advanced Light Titration: Lux-Hours and Spectral Irradiance</h2>
+        <p>As a Level 2 practitioner, you must understand <span class="highlight">Melanopic Lux</span>. Standard Lux measures how bright a light appears to the human eye (visual system), but our circadian system (the non-visual system) is primarily driven by <strong>intrinsically photosensitive Retinal Ganglion Cells (ipRGCs)</strong>.</p>
+
+        <p>These cells are most sensitive to short-wavelength blue light (peak sensitivity ~480nm). To achieve a significant phase shift, we calculate <strong>Lux-hours</strong>—the product of intensity and duration. A 2023 meta-analysis found that 1,000 lux of blue-enriched white light for 2 hours (2,000 Lux-hours) in the early morning produced a phase advance of 1.2 hours (95% CI: 0.8-1.6).</p>
+
+        <h3>Titration Variables for the Coach:</h3>
+        <ul class="content-list">
+            <li><strong>Intensity:</strong> 10,000 lux (standard) vs. 2,500 lux (blue-enriched).</li>
+            <li><strong>Duration:</strong> 30 to 90 minutes.</li>
+            <li><strong>Proximity:</strong> Inverse square law (doubling distance reduces intensity by 75%).</li>
+            <li><strong>Spectral Composition:</strong> Prioritizing 460-490nm wavelengths for the strongest SCN suppression.</li>
+        </ul>
+
+        <h2 id="section4">4. Clinical Protocols for DSPD and ASPD</h2>
+        <p><strong>Delayed Sleep Phase Disorder (DSPD)</strong> is characterized by a "night owl" rhythm that is shifted 2+ hours past social norms, making early morning obligations nearly impossible. <strong>Advanced Sleep Phase Disorder (ASPD)</strong> is the opposite, common in geriatric populations, where sleep occurs at 7:00 PM and wake at 3:00 AM.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Sandwich" Protocol for DSPD</div>
+            <p class="principle-text">To shift a client from a 2:00 AM bedtime to 11:00 PM, we "sandwich" the circadian clock:</p>
+            <ul>
+                <li><strong>Evening:</strong> Melatonin 0.3mg at 6:00 PM (Phase Advance signal).</li>
+                <li><strong>Night:</strong> Blue-light blocking glasses (>99% blue/green suppression) after 9:00 PM.</li>
+                <li><strong>Morning:</strong> 10,000 lux light therapy for 30 mins immediately upon waking (7:00 AM).</li>
+            </ul>
+        </div>
+
+        <h2 id="section5">5. Managing Social Jetlag in High-Performance Populations</h2>
+        <p>Social Jetlag is the discrepancy between the biological clock (internal time) and the social clock (work/social obligations). A study of 50,000+ individuals (Wittmann et al., 2006) found that <strong>every hour of social jetlag</strong> increases the risk of being overweight by 33%.</p>
+
+        <p>For executives and athletes, the goal isn't always to "fix" the chronotype, but to <strong>stabilize</strong> it. High-performance clients often "catch up" on sleep during weekends, causing a "Monday Morning Blues" effect where their clock has drifted 2 hours later by Sunday night. We use <strong>Anchor Sleep</strong>—a 4-hour window that remains consistent 7 days a week—to prevent this drift.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span>CASE STUDY: The Late-Night Executive</span>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., 44</h4>
+                        <p>Tech CEO | Chronic fatigue, "brain fog" until 11 AM</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> James naturally sleeps 1:30 AM to 8:30 AM on weekends. On weekdays, he wakes at 6:00 AM for meetings. He has 2.5 hours of Social Jetlag.</p>
+                <p><strong>Intervention (The D.R.E.A.M. Method™):</strong></p>
+                <ul>
+                    <li><strong>R (Reset):</strong> Phase Advance protocol. 0.3mg Melatonin at 7:00 PM. 10,000 lux light box on his desk at 6:15 AM while answering emails.</li>
+                    <li><strong>E (Environment):</strong> Installation of 5000K (high-blue) LED office lighting for morning hours; 2700K (low-blue) for evening.</li>
+                    <li><strong>Outcome:</strong> After 14 days, James's DLMO shifted 85 minutes earlier. Morning cortisol awakening response (CAR) improved by 22% (measured via salivary assay).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of advanced phase shifting.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. If a client wants to shift their wake time earlier (Phase Advance), when is the most effective time for light exposure according to the PRC?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Immediately after the Core Body Temperature (CBT) minimum, which is typically 2-3 hours before their natural wake time.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is 0.3mg of melatonin preferred over 5mg for chronobiotic phase shifting?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">0.3mg mimics physiological levels and prevents receptor saturation, allowing for a cleaner "timing signal" to the SCN without the prolonged sedative spillover of higher doses.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Precision Timing:</strong> Light before CBT min delays the clock; light after CBT min advances it.</li>
+                <li><strong>Micro-dosing:</strong> Use 0.3mg melatonin 5-7 hours before desired bed for the most potent phase advance.</li>
+                <li><strong>Spectral Irradiance:</strong> Blue light (480nm) is the most powerful tool for suppressing melatonin and shifting the SCN.</li>
+                <li><strong>Social Jetlag:</strong> Consistency is more important than "perfect" timing; use anchor sleep to prevent weekend drift.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul style="list-style: none; padding-left: 0;">
+                <li>Lewy, A. J., et al. (1980). "Light suppresses melatonin secretion in humans." <em>Science</em>.</li>
+                <li>Wittmann, M., et al. (2006). "Social jetlag: misalignment of biological and social time." <em>Chronobiology International</em>.</li>
+                <li>Burgess, H. J., et al. (2010). "A clinical guide to phase-shifting the human circadian clock." <em>Sleep Medicine Clinics</em>.</li>
+                <li>Wurtman, R. J., et al. (2001). "Melatonin as a chronobiotic: the MIT studies." <em>Sleep Medicine Reviews</em>.</li>
+                <li>St. Hilaire, M. A., et al. (2021). "Systematic review of light-induced phase shifts in the human circadian clock." <em>Journal of Biological Rhythms</em>.</li>
+                <li>Roenneberg, T., et al. (2019). "The real-world costs of social jetlag." <em>Frontiers in Physiology</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Advanced Level 2</p>
+        </footer>
+    </div>
+</body>
+
+</html>

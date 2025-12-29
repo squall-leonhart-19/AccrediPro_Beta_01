@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.8: Integrated Case Conceptualization: The PERFORM Method in Practice</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Advanced Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #edf2f7;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Principle Card */
+        .principle-card {
+            border-left: 5px solid #3b82f6;
+            background: #f0f7ff;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #b8860b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fdf6e3;
+            border-radius: 6px;
+            color: #856404;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            color: #d4a84b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Advanced Performance Integration</p>
+            <h1 class="lesson-title">Lesson 8: Integrated Case Conceptualization: The PERFORM Method in Practice</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱ 45 min read</span>
+                <span class="meta-item">🎓 Level 1 Deep Dive</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#macrocycle"><span class="section-num">1</span>The 12-Week Macrocycle</a></li>
+                <li><a href="#troubleshooting"><span class="section-num">2</span>Troubleshooting Non-Responders</a></li>
+                <li><a href="#travel"><span class="section-num">3</span>Elite Travel Nutrition Protocols</a></li>
+                <li><a href="#ethics"><span class="section-num">4</span>Ethics & Scope of Practice</a></li>
+                <li><a href="#synthesis"><span class="section-num">5</span>The Final PERFORM Synthesis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize all seven pillars of the PERFORM Method™ into a 12-week athletic macrocycle.</li>
+                <li>Identify metabolic and behavioral "bottlenecks" that cause athletes to plateau.</li>
+                <li>Develop a comprehensive travel nutrition strategy to mitigate circadian disruption and GI distress.</li>
+                <li>Establish clear ethical boundaries and referral triggers for the Sports Nutrition Coach.</li>
+                <li>Construct a high-performance "Game Day" protocol using synergistic nutrient timing.</li>
+            </ul>
+        </div>
+
+        <h2 id="macrocycle">1. The 12-Week Macrocycle: Integrating the P and E</h2>
+        <p>In the PERFORM Method™, <span class="highlight">Periodization (P)</span> and <span class="highlight">Energy Systems (E)</span> are the twin engines of performance. For a multi-sport or multi-event athlete (such as a CrossFit competitor or Decathlete), a 12-week macrocycle must balance contradictory demands: strength-power maintenance vs. glycolytic capacity vs. oxidative recovery.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">The "Funnel" Approach to Periodization</span>
+            <p>Early in the macrocycle (Weeks 1-4), the focus is on <strong>Metabolic Base Building</strong>. As we approach competition (Weeks 9-12), the nutrition becomes increasingly specific to the <strong>Primary Energy System</strong> used in the event.</p>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">12-15%</span>
+                    <span class="stat-label">Performance gain via periodized fueling</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">30%</span>
+                    <span class="stat-label">Reduction in injury risk (RED-S avoidance)</span>
+                </div>
+            </div>
+        </div>
+
+        <h3>Macrocycle Phase Breakdown</h3>
+        <p>A successful 12-week plan typically follows this structure:</p>
+        <ul>
+            <li><strong>Weeks 1-4 (GPP - General Physical Preparation):</strong> Focus on <span class="highlight">Metabolic Flexibility</span>. Slightly higher fat intake on low-intensity days to spare glycogen.</li>
+            <li><strong>Weeks 5-8 (SPP - Specific Physical Preparation):</strong> Focus on <span class="highlight">Glycolytic Support</span>. Carbohydrate intake scales with training volume (5-8g/kg).</li>
+            <li><strong>Weeks 9-11 (Pre-Competition):</strong> Focus on <span class="highlight">Functional Food (F) Synergy</span>. Nitrates for vasodilation and polyphenols for inflammation management.</li>
+            <li><strong>Week 12 (Taper & Peak):</strong> Focus on <span class="highlight">Hydration (O)</span> and <span class="highlight">Mental Edge (M)</span>. Glycogen supercompensation protocols.</li>
+        </ul>
+
+        <h2 id="troubleshooting">2. Troubleshooting 'Non-Responders': The Nutritional Bottleneck</h2>
+        <p>In clinical practice, you will encounter athletes who follow the protocol perfectly but fail to see results. These "non-responders" often have underlying physiological bottlenecks. Using <span class="highlight">Results Tracking (R)</span>, we must differentiate between lack of effort and metabolic adaptation.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="box-label">Case Study 1: The Plateaued Endurance Runner</span>
+                <p class="subtitle">Identifying the Metabolic Bottleneck</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div><strong>Client:</strong> Sarah, 31 | <strong>Sport:</strong> Marathon | <strong>Symptom:</strong> Chronic fatigue & plateaued PRs</div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Sarah was consuming 2,200 kcal/day for a 60-mile training week. Her <span class="highlight">Results Tracking</span> showed a decrease in Morning HRV and a rise in resting heart rate.</p>
+                <p><strong>The Bottleneck:</strong> Sarah was in a state of <strong>Low Energy Availability (LEA)</strong>. Her body had down-regulated her thyroid (T3) and metabolic rate to survive the deficit. She wasn't a "non-responder" to training; she was a "non-responder" to recovery.</p>
+                <p><strong>Intervention:</strong> Increased daily intake by 400 kcal (primarily carbohydrates) and implemented the <strong>3 Rs of Recovery (R)</strong> immediately post-run.</p>
+                <p><strong>Outcome:</strong> 3% increase in VO2 max and a 12-minute marathon PR within 10 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="travel">3. Managing Travel Nutrition: The 'O' and 'M' Factors</h2>
+        <p>Elite performance often requires international travel. This introduces three stressors: <strong>Circadian Disruption</strong>, <strong>Dehydration</strong>, and <strong>GI Pathogen Exposure</strong>. A 2022 study found that crossing more than 3 time zones can reduce peak power output by up to <span class="highlight">6-10%</span> for the first 48 hours.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Travel Stressor</th>
+                        <th>PERFORM Strategy</th>
+                        <th>Practical Protocol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cabin Dehydration</strong></td>
+                        <td>Optimize Hydration (O)</td>
+                        <td>500ml fluid/hour with 250mg sodium; avoid caffeine/alcohol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jet Lag (Circadian)</strong></td>
+                        <td>Mental Edge (M)</td>
+                        <td>High-protein breakfast in the NEW time zone; 1-3mg Melatonin at local bedtime.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hotel Dining Risks</strong></td>
+                        <td>Functional Foods (F)</td>
+                        <td>Probiotic supplementation (L. rhamnosus GG) 1 week prior to travel.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="ethics">4. The Ethics of the Sports Nutrition Coach</h2>
+        <p>As you approach certification, you must master the "Art of the Referral." Your <span class="highlight">Scope of Practice</span> allows you to optimize performance through nutrition, but it does not allow you to diagnose medical conditions or treat eating disorders.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">Red Flag Referral Triggers</span>
+            <ul>
+                <li>Suspected RED-S with amenorrhea (Refer to Sports Physician/Endocrinologist).</li>
+                <li>Disordered eating patterns or body dysmorphia (Refer to specialized Psychologist).</li>
+                <li>Abnormal blood chemistry (Anemia, Vitamin D deficiency <20ng/mL) (Refer to GP).</li>
+                <li>Chronic GI distress unresponsive to basic fiber/hydration adjustments (Refer to Gastroenterologist).</li>
+            </ul>
+        </div>
+
+        <h2 id="synthesis">5. Final Synthesis: The PERFORM 'Game Day' Protocol</h2>
+        <p>The culmination of this course is the ability to align all 7 elements for the 24 hours surrounding a "Peak Event." This is where the <strong>Synergy of Systems</strong> creates the competitive advantage.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="box-label">Case Study 2: The Tournament Game Day</span>
+                <p class="subtitle">Synthesis of all 7 PERFORM Pillars</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>P (Periodize):</strong> Supercompensation phase (8-10g CHO/kg body mass) 36 hours prior.</p>
+                <p><strong>E (Energy Systems):</strong> Pre-event meal focused on low-glycemic carbs to maintain steady glucose for the glycolytic demands.</p>
+                <p><strong>R (Recovery):</strong> Immediate co-ingestion of 0.8g/kg CHO and 0.4g/kg Protein between heats.</p>
+                <p><strong>F (Functional Foods):</strong> 500mg Tart Cherry extract and 140mmol Nitrate (Beetroot) 2 hours pre-event.</p>
+                <p><strong>O (Optimize Hydration):</strong> Individualized sweat-rate replacement + 2:1 Sodium to Potassium ratio.</p>
+                <p><strong>R (Results Tracking):</strong> Real-time monitoring of perceived exertion (RPE) and urine specific gravity.</p>
+                <p><strong>M (Mental Edge):</strong> Caffeine (3-6mg/kg) + L-Theanine for "calm focus" 45 minutes before start.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">An athlete is traveling across 6 time zones for a competition. Which macronutrient should be prioritized in their first breakfast at the destination to help reset their circadian clock?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Protein. High-protein meals in the morning stimulate the production of wakefulness-promoting neurotransmitters (like orexin), helping to align the body's internal clock with the new environment's "active" phase.
+                </div>
+            </div>
+
+            <div class="question-item" style="margin-top: 20px;">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the most likely cause of a "non-responder" who is training high volumes but losing muscle mass and experiencing frequent illness?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Low Energy Availability (LEA) or RED-S. When energy intake does not match exercise energy expenditure, the body enters a catabolic state, sacrificing muscle tissue and immune function to preserve vital organ processes.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Module 14 Key Takeaways</h4>
+            <ul>
+                <li><strong>Integration is King:</strong> Individual pillars of the PERFORM Method™ are useful, but their synergy (e.g., combining Hydration with Mental Edge) provides the 1% edge needed for elite performance.</li>
+                <li><strong>Data Over Dogma:</strong> Use Results Tracking (R) to pivot when an athlete isn't responding. Never assume the protocol is perfect; assume the athlete's physiology is communicating.</li>
+                <li><strong>Travel is a Stressor:</strong> Treat travel as a training session. It requires its own fueling, hydration, and recovery protocol to prevent performance decay.</li>
+                <li><strong>Ethics Protect the Brand:</strong> Knowing when to refer out is the hallmark of a true professional. Protect your athlete by staying within your scope of practice.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Mountjoy, M. et al. (2018). "IOC consensus statement on relative energy deficiency in sport (RED-S): 2018 update." <i>British Journal of Sports Medicine.</i></li>
+                <li>Janse van Rensburg, D.C. et al. (2020). "Managing Travel Fatigue and Jet Lag in Athletes: A Review." <i>Frontiers in Psychology.</i></li>
+                <li>Thomas, D.T. et al. (2016). "American College of Sports Medicine Joint Position Statement: Nutrition and Athletic Performance." <i>Medicine & Science in Sports & Exercise.</i></li>
+                <li>Burke, L.M. et al. (2019). "Contemporary Nutrition Strategies to Optimize Performance in Distance Runners and Walkers." <i>International Journal of Sport Nutrition and Exercise Metabolism.</i></li>
+                <li>Close, G.L. et al. (2022). "The Sports Nutritionist: A Review of the Scope of Practice and Professional Standards." <i>Journal of Sports Sciences.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The P.E.R.F.O.R.M. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

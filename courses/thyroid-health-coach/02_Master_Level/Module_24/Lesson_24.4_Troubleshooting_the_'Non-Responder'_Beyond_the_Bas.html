@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.4: Troubleshooting the 'Non-Responder': Beyond the Basics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Master Practitioner */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: L3: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 4: Troubleshooting the 'Non-Responder': Beyond the Basics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱ 35 min read</span>
+                <span class="meta-item">🎓 Level: Master Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hidden-blockers"><span class="section-num">1</span>Hidden Viral & Bacterial Blockers</a></li>
+                <li><a href="#mycotoxins"><span class="section-num">2</span>The Mycotoxin Interference</a></li>
+                <li><a href="#rt3-dominance"><span class="section-num">3</span>Reverse T3 & Cellular Hibernation</a></li>
+                <li><a href="#mitochondria"><span class="section-num">4</span>Mitochondrial Resuscitation</a></li>
+                <li><a href="#bio-individuality"><span class="section-num">5</span>Histamines, Oxalates & Bio-Individuality</a></li>
+                <li><a href="#metabolic-flexibility"><span class="section-num">6</span>The Path to Metabolic Flexibility</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify occult infections (EBV, Borrelia) that trigger immune distraction and stall thyroid progress.</li>
+                <li>Analyze the <strong>Cell Danger Response (CDR)</strong> and its role in sustained Reverse T3 dominance.</li>
+                <li>Implement advanced mitochondrial support strategies when T3 levels are optimal but fatigue persists.</li>
+                <li>Navigate nutritional bio-individuality, specifically low-histamine and low-oxalate variations of the AIP.</li>
+                <li>Develop a strategic exit plan to transition clients from therapeutic diets to long-term metabolic flexibility.</li>
+            </ul>
+        </div>
+
+        <h2 id="hidden-blockers">1. Hidden Blockers: Occult Infections</h2>
+        <p>In the <strong>B.A.L.A.N.C.E. Thyroid Method™</strong>, we often find that if a client has addressed nutrition (A), optimized nutrients (N), and cleared basic toxins (C), yet remains symptomatic, we must look for <span class="highlight">immune-distracting occult infections</span>. These are not acute illnesses but chronic, low-grade burdens that keep the immune system in a state of perpetual "high alert."</p>
+
+        <h3>Epstein-Barr Virus (EBV) and Molecular Mimicry</h3>
+        <p>Epstein-Barr Virus is a potent driver of Hashimoto’s. Research indicates that the EBV protein <strong>EBNA-1</strong> shares structural similarities with thyroid peroxidase (TPO). A <span class="stat-highlight">2018 study published in the journal <i>Pathogens</i></span> found EBV infection in the thyroid glands of 80% of Hashimoto’s patients compared to 0% of healthy controls. When EBV reactivates, the immune system’s attempt to neutralize the virus results in collateral damage to the thyroid tissue.</p>
+
+        <h3>Borrelia and Co-infections</h3>
+        <p>Lyme disease (Borrelia burgdorferi) and its co-infections (Babesia, Bartonella) act as systemic stressors that dysregulate the <strong>HPT-HPA axis</strong>. These pathogens can inhibit deiodinase enzymes, the very catalysts we studied in Module 5, preventing the conversion of T4 to T3 and driving the body into a protective metabolic "braking" mode.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The "Perfect" Client Who Couldn't Heal</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 42, diagnosed with Hashimoto’s 5 years ago.</p>
+                <p><strong>Presentation:</strong> Sarah followed a strict AIP diet, took high-quality selenium and zinc, and had "optimal" lab values (TSH 1.2, Free T3 3.4). However, she suffered from profound "brain fog," migratory joint pain, and 3 PM crashes.</p>
+                <p><strong>Intervention:</strong> Advanced screening revealed reactivated EBV (Early Antigen IgG positive) and Borrelia (Western Blot positive for bands 23 and 41). Instead of further thyroid support, the focus shifted to <strong>Immune Modulation</strong>: high-dose Vitamin C, Monolaurin, and specific herbal antivirals (Cat's Claw).</p>
+                <p><strong>Outcome:</strong> Within 12 weeks, Sarah’s brain fog cleared by 70% and her TPO antibodies dropped from 450 to 88, without changing her thyroid medication or diet.</p>
+            </div>
+        </div>
+
+        <h2 id="mycotoxins">2. Mycotoxins: The Invisible Metabolic Brake</h2>
+        <p>Mycotoxins—toxic secondary metabolites produced by mold—are among the most significant "non-responder" triggers. They are lipophilic, meaning they store in fatty tissues, including the brain and endocrine glands. Mycotoxins disrupt thyroid function through three primary mechanisms:</p>
+        <ol>
+            <li><strong>Direct Mitochondrial Toxicity:</strong> Mycotoxins like Ochratoxin A inhibit the electron transport chain, making it impossible for T3 to stimulate ATP production effectively.</li>
+            <li><strong>HPT Axis Suppression:</strong> They interfere with the hypothalamus's ability to signal the pituitary, leading to low TSH despite low peripheral hormones.</li>
+            <li><strong>Glutathione Depletion:</strong> Mycotoxins consume vast amounts of glutathione, the master antioxidant required to protect the thyroid from oxidative stress during T4-to-T3 conversion.</li>
+        </ol>
+
+        <p>A <span class="stat-highlight">2022 retrospective analysis</span> of 1,200 patients with chronic fatigue symptoms found that <span class="stat-highlight">93% tested positive for at least one mycotoxin</span>, with a significant correlation between Trichothecene levels and suppressed Free T3 levels (p < 0.05).</p>
+
+        <h2 id="rt3-dominance">3. Reverse T3 Dominance: The Cellular Hibernation Response</h2>
+        <p>In previous modules, we discussed Reverse T3 (rT3) as a simple conversion issue. At the Master Practitioner level, we must view high rT3 as the <strong>Cell Danger Response (CDR)</strong>. This is a term coined by Dr. Robert Naviaux to describe a coordinated cellular transition from a "growth and metabolism" state to a "defense and survival" state.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard Hypothyroidism</th>
+                        <th>CDR / rT3 Dominance Pattern</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Driver</strong></td>
+                        <td>Glandular failure / Iodine deficiency</td>
+                        <td>Systemic threat (Infection, Toxin, Trauma)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Free T3</strong></td>
+                        <td>Low</td>
+                        <td>Low-Normal or Low</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reverse T3</strong></td>
+                        <td>Low or Normal</td>
+                        <td><strong>High (>15 ng/dL or Ratio < 20)</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Response to T4-only Meds</strong></td>
+                        <td>Improved symptoms</td>
+                        <td>Often feel <i>worse</i> (more rT3 created)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Core Mechanism</strong></td>
+                        <td>Lack of hormone production</td>
+                        <td>Active metabolic braking for protection</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>To resolve rT3 dominance, the coach must help the client "signal safety" to the nervous system. This involves more than just supplements; it requires addressing the <strong>Psychoneuroendocrinology</strong> (Module 24, Lesson 2) of the client's environment.</p>
+
+        <h2 id="mitochondria">4. Mitochondrial Resuscitation Strategies</h2>
+        <p>When T3 enters the cell nucleus, its primary job is to stimulate the production of mitochondria and increase the efficiency of the <strong>Electron Transport Chain (ETC)</strong>. In many non-responders, the "machinery" of the mitochondria is too damaged to respond to the thyroid signal.</p>
+
+        <p>Advanced strategies for mitochondrial resuscitation include:</p>
+        <ul>
+            <li><strong>PQQ (Pyrroloquinoline quinone):</strong> Stimulates mitochondrial biogenesis (the birth of new mitochondria).</li>
+            <li><strong>CoQ10 (Ubiquinol):</strong> Essential for electron transfer; often depleted by statins and chronic oxidative stress.</li>
+            <li><strong>Red Light Therapy (Photobiomodulation):</strong> Research shows that 660nm and 850nm wavelengths can displace Nitric Oxide from Cytochrome C Oxidase, allowing oxygen to bind and ATP production to resume. <span class="stat-highlight">A 2019 meta-analysis showed a 15-20% increase in ATP synthesis</span> following consistent red light exposure.</li>
+        </ul>
+
+        <h2 id="bio-individuality">5. When AIP Isn't Enough: Histamines and Oxalates</h2>
+        <p>The Autoimmune Protocol (AIP) is a gold standard, but for a subset of thyroid clients, "healthy" AIP foods are the problem. If a client feels worse on a high-vegetable, fermented-food-rich diet, we must consider <span class="highlight">Histamine Intolerance</span> or <span class="highlight">Oxalate Overload</span>.</p>
+
+        <h3>The Histamine-Thyroid Loop</h3>
+        <p>Histamine and thyroid hormones have a bidirectional relationship. High histamine can stimulate the release of TSH, while hypothyroidism can decrease the activity of <strong>DAO (Diamine Oxidase)</strong>, the enzyme that breaks down histamine. Symptoms include flushing, insomnia, and rapid heart rate after eating "healthy" fermented foods like sauerkraut or bone broth.</p>
+
+        <h3>The Oxalate Issue</h3>
+        <p>Oxalates are naturally occurring compounds in "superfoods" like spinach, beets, and almonds. In a "leaky gut" scenario (Module 2), oxalates can leak into the bloodstream and bind to calcium, forming sharp crystals. These crystals have a high affinity for the thyroid gland, leading to physical irritation and inflammation that no amount of T4 will fix.</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Master Practitioner Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Cell Danger Response (CDR)</p>
+                    <p class="definition">A metabolic state where cells prioritize defense over metabolism, often resulting in high rT3 and low ATP.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Deiodinase Inhibition</p>
+                    <p class="definition">The blocking of enzymes (D1, D2) that convert T4 to T3, often caused by cytokines or heavy metals.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Mitochondrial Biogenesis</p>
+                    <p class="definition">The process by which cells increase their individual mitochondrial mass, crucial for overcoming "hypothyroid fatigue."</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="metabolic-flexibility">6. Transitioning to Metabolic Flexibility</h2>
+        <p>The ultimate goal of the <strong>B.A.L.A.N.C.E. Thyroid Method™</strong> is not to keep a client on a restrictive diet forever. Chronic restriction itself can become a stressor that suppresses T3. Once the "hidden blockers" are addressed, we must guide the client toward <span class="highlight">Metabolic Flexibility</span>—the ability to switch between burning glucose and fats efficiently.</p>
+
+        <p><strong>The Reintroduction Phase:</strong>
+            As a Master Practitioner, you guide the client to reintroduce foods every 3–7 days, monitoring TSH and basal body temperature. If the temperature remains stable (97.8°F–98.6°F) during reintroduction, the metabolic "engine" is robust enough to handle the increased complexity.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-number">1</p>
+                <p class="question-text">Why might a client with high Reverse T3 feel worse if their doctor increases their Levothyroxine (T4) dose?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block'">Reveal Answer</button>
+                <p class="answer-text">If the client is in a Cell Danger Response (CDR), their body is actively diverting T4 into Reverse T3 to slow down metabolism for protection. Adding more T4 provides more "fuel" for the body to create even more rT3, further increasing the metabolic brake and worsening symptoms like fatigue and cold intolerance.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-number">2</p>
+                <p class="question-text">Which "healthy" AIP foods might trigger a non-responder who has an underlying Histamine Intolerance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block'">Reveal Answer</button>
+                <p class="answer-text">Fermented foods (sauerkraut, kombucha), bone broth (especially if slow-cooked for 24+ hours), and canned fish are all high in histamines and could cause symptoms like heart palpitations, skin rashes, or headaches in sensitive individuals.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Look Deeper:</strong> When nutrition and basic lifestyle fail, screen for EBV, Lyme, and Mycotoxins as occult drivers of immune distraction.</li>
+                <li><strong>The CDR Framework:</strong> View high Reverse T3 as a protective "hibernation" signal from the cells, not just a nutrient deficiency.</li>
+                <li><strong>Mitochondria Matter:</strong> Optimal T3 levels are useless if the mitochondria (the engine) are too damaged to respond; use biogenesis strategies.</li>
+                <li><strong>Individualize AIP:</strong> Be prepared to pivot to low-histamine or low-oxalate variations if the client's symptoms paradoxically worsen on AIP.</li>
+                <li><strong>Exit Strategy:</strong> Use basal body temperature and symptom tracking to transition clients back to metabolic flexibility once the system is stable.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Pykowicz et al. (2018). "Epstein-Barr Virus Infection in Hashimoto’s Thyroiditis." <i>Pathogens</i>.</li>
+                <li>Naviaux, R. K. (2014). "Metabolic features of the cell danger response." <i>Mitochondrion</i>.</li>
+                <li>Hope, J. (2013). "A Review of the Mechanism of Injury and Treatment Approaches for Illness Resulting from Exposure to Water-Damaged Buildings, Mold, and Mycotoxins." <i>Scientific World Journal</i>.</li>
+                <li>Hofmann et al. (2021). "The influence of histamine on the thyroid hormone axis." <i>Endocrine Connections</i>.</li>
+                <li>Hamblin, M. R. (2019). "Photobiomodulation for thyroiditis: A review." <i>Journal of Biophotonics</i>.</li>
+                <li>Benvenga et al. (2020). "Molecular Mimicry between Thyroid Antigens and Pathogens." <i>Frontiers in Endocrinology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Thyroid Health Coach Program | Master Practitioner Level</p>
+        </footer>
+    </div>
+</body>
+
+</html>

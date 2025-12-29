@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.4: Inflammaging: Deep Dive into Systemic Inflammation Control</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Advanced Implementation */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #4c1d95;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #7c3aed;
+            font-size: 1.1em;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 14px;
+            border-left: 6px solid #7c3aed;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            color: #4c1d95;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+            font-size: 16px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Advanced Implementation & Client Success</p>
+            <h1 class="lesson-title">Lesson 12.4: Inflammaging: Deep Dive into Systemic Inflammation Control</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The "I" Pillar Integration</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Mechanism of Inflammaging</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Nutrigenomics: Modulating Gene Expression</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Gut-Brain-Skin Axis</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Advanced Elimination Protocols</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Biomarkers & Measuring Success</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Practitioner Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the physiological mechanisms of "inflammaging" and its link to estrogen withdrawal.</li>
+                <li>Analyze the role of nutrigenomics, specifically Curcumin and Sulforaphane, in Nrf2 pathway activation.</li>
+                <li>Identify the clinical manifestations of systemic inflammation across the Gut-Brain-Skin axis.</li>
+                <li>Master the advanced elimination and reintroduction protocol for menopausal inflammatory triggers.</li>
+                <li>Interpret inflammatory biomarkers (hs-CRP, IL-6) to quantify coaching success.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Mechanism of Inflammaging</h2>
+        <p>In our earlier exploration of the <span class="highlight">I-Pillar (Inflammation Control)</span>, we established that inflammation is the silent driver of menopausal symptoms. However, as we move into advanced implementation, we must understand the specific phenomenon known as <strong>"Inflammaging."</strong></p>
+
+        <p>Inflammaging refers to the chronic, low-grade, systemic inflammation that characterizes the aging process, which is significantly accelerated during the menopausal transition. A 2021 study published in <em>Frontiers in Endocrinology</em> noted that the menopausal transition is associated with a <span class="stat-highlight">28% to 44% increase</span> in circulating pro-inflammatory cytokines, including Interleukin-6 (IL-6) and Tumor Necrosis Factor-alpha (TNF-α).</p>
+
+        <p>The primary driver is the loss of the <span class="highlight">Estrogen Shield</span>. Estrogen is naturally suppressive to the <strong>NF-κB (Nuclear Factor kappa-light-chain-enhancer of activated B cells)</strong> pathway—the "master switch" for inflammation. When estrogen levels plummet, this switch is left in the "on" position, leading to the overactivation of the <strong>NLRP3 inflammasome</strong>, an intracellular protein complex that triggers the release of highly inflammatory molecules.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Acute Inflammation</th>
+                        <th>Inflammaging (Chronic)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Duration</strong></td>
+                        <td>Short-term (days/weeks)</td>
+                        <td>Persistent/Permanent</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trigger</strong></td>
+                        <td>Infection or Injury</td>
+                        <td>Hormone loss, oxidative stress, gut dysbiosis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Outcome</strong></td>
+                        <td>Healing and tissue repair</td>
+                        <td>Tissue damage, sarcopenia, cognitive decline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key Cytokines</strong></td>
+                        <td>IL-1, IL-8</td>
+                        <td>IL-6, TNF-α, hs-CRP</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Nutrigenomics: Modulating Gene Expression</h2>
+        <p>Advanced coaching transcends simple "healthy eating" by utilizing <span class="highlight">Nutrigenomics</span>—the study of how nutrients interact with our genes. In the T.H.R.I.V.E. Methodology™, we use specific phytonutrients to "talk" to the client’s DNA to downregulate inflammatory pathways.</p>
+
+        <h3>The Nrf2 Pathway & Sulforaphane</h3>
+        <p>Sulforaphane, found in cruciferous vegetables (and concentrated in broccoli sprouts), is the most potent natural activator of the <strong>Nrf2 pathway</strong>. Nrf2 is a transcription factor that regulates the expression of over 200 antioxidant and detoxifying genes. For the menopausal client, sulforaphane acts as a genetic "reset," clearing the oxidative stress that fuels hot flashes and joint pain.</p>
+
+        <h3>Curcumin and NF-κB Inhibition</h3>
+        <p>Curcumin (the active compound in turmeric) is not just an antioxidant; it is a potent nutrigenomic agent that directly inhibits the NF-κB pathway. Meta-analyses have shown that curcumin supplementation (with piperine for bioavailability) can reduce <span class="highlight">C-Reactive Protein (CRP)</span> levels by an average of <span class="stat-highlight">1.2 mg/L</span>, which is clinically significant for reducing cardiovascular risk in post-menopausal women.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Aching" Executive</p>
+                    <p class="subtitle">Inflammaging & Nutrigenomic Intervention</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Elena, 52</h4>
+                        <p>Symptoms: Severe joint stiffness (morning), persistent brain fog, and "creeping" weight gain despite exercise.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Elena’s hs-CRP was 4.2 mg/L (High Risk). She was consuming a "healthy" diet but high in nightshades and low in phase II detox-supporting phytonutrients.</p>
+                <p><strong>Intervention:</strong>
+                <ul>
+                    <li>Implemented 250mg of Sulforaphane (via sprout powder) daily.</li>
+                    <li>Introduced 1000mg Bioavailable Curcumin.</li>
+                    <li>Removed high-lectin triggers for 21 days.</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within 6 weeks, Elena reported a <span class="stat-highlight">70% reduction</span> in morning stiffness. Her follow-up hs-CRP dropped to 1.1 mg/L, and her cognitive clarity (measured by subjective tracking) improved significantly.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. The Gut-Brain-Skin Axis</h2>
+        <p>Inflammation is never isolated. In this advanced stage, we look at the <span class="highlight">Gut-Brain-Skin axis</span>. When the gut barrier is compromised (often due to low estrogen affecting mucosal integrity), lipopolysaccharides (LPS)—pro-inflammatory bacterial fragments—leak into the bloodstream.</p>
+
+        <ul>
+            <li><strong>Brain Manifestation:</strong> LPS crosses the blood-brain barrier, activating <em>microglia</em> (the brain's immune cells). This results in <strong>Neuroinflammation</strong>, clinically experienced as brain fog, anxiety, and depression.</li>
+            <li><strong>Skin Manifestation:</strong> Systemic inflammation degrades collagen and elastin. Menopausal "itchy skin" (formication) and sudden adult-onset acne or rosacea are often external mirrors of internal gut inflammation.</li>
+            <li><strong>Gut Manifestation:</strong> Reduced microbial diversity (the "Estrobolome" shift) leads to poor estrogen recycling, creating a vicious cycle of further hormone depletion and more inflammation.</li>
+        </ul>
+
+        <h2 id="section4">4. Advanced Elimination & Reintroduction</h2>
+        <p>While Module 4 covered the basics, advanced implementation requires a more surgical approach to identifying <span class="highlight">Hidden Inflammatory Triggers</span>. Not every client reacts to the same foods, but perimenopause makes the immune system "hyper-vigilant."</p>
+
+        <h3>The 4-Phase Advanced Protocol</h3>
+        <ol>
+            <li><strong>The "Deep Clean" (Days 1-21):</strong> Removal of the "Big 6" (Gluten, Dairy, Sugar, Soy, Corn, Alcohol) PLUS client-specific triggers like nightshades (peppers, tomatoes, eggplant) or high-histamine foods if symptoms persist.</li>
+            <li><strong>The Stabilization Phase (Days 22-28):</strong> Maintaining the clean baseline while focusing on gut mucosal repair (L-Glutamine, Bone Broth, Aloe Vera).</li>
+            <li><strong>Strategic Reintroduction (Days 29-50):</strong> Reintroducing one food group every 3 days. We track not just digestive symptoms, but <em>systemic</em> markers: joint pain, sleep quality, and mood.</li>
+            <li><strong>The "Maintenance Map":</strong> Creating a personalized "Safe List" and "Trigger List" for the client’s long-term THRIVE plan.</li>
+        </ol>
+
+        <h2 id="section5">5. Biomarkers & Measuring Success</h2>
+        <p>To provide a $997+ coaching experience, we must move beyond "How do you feel?" and look at objective data. As a coach, you do not diagnose, but you can educate clients on how to request and interpret these markers with their physicians.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Key Inflammatory Biomarkers</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>hs-CRP (High-Sensitivity C-Reactive Protein):</strong> The "gold standard." Ideal levels for longevity and hormone health are <span class="stat-highlight">&lt; 1.0 mg/L</span>. Levels above 3.0 indicate high systemic risk.</li>
+                    <li><strong>Fasting Insulin:</strong> High insulin is pro-inflammatory. We aim for <span class="stat-highlight">&lt; 6 μIU/mL</span>.</li>
+                    <li><strong>Homocysteine:</strong> A marker of methylation and cardiovascular inflammation. Target: <span class="stat-highlight">7–9 μmol/L</span>.</li>
+                    <li><strong>Neutrophil-to-Lymphocyte Ratio (NLR):</strong> A simple calculation from a standard CBC. An NLR > 2.5 is a strong predictor of systemic inflammaging.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Practitioner Implementation: The "I" Pillar Synthesis</h2>
+        <p>As you integrate this into your coaching, remember that inflammation control is the foundation upon which metabolism (Module 3) and vitality (Module 5) are built. You cannot "reset metabolism" in a highly inflamed body because inflammation induces <span class="highlight">Leptin Resistance</span> and <span class="highlight">Insulin Resistance</span>.</p>
+
+        <p>When working with advanced clients, always check the "Inflammatory Load" first. If a client is hitting a weight loss plateau or their sleep isn't improving despite good hygiene, the "Inflammaging" fire is likely still burning. Your role is to use the T.H.R.I.V.E. framework to douse the flames through nutrigenomics, gut repair, and stress modulation (HPA-axis support).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of advanced inflammaging concepts.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why does the loss of estrogen specifically lead to an increase in systemic inflammation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Estrogen acts as a "shield" by suppressing the NF-κB pathway. When estrogen declines, NF-κB is upregulated, leading to the activation of the NLRP3 inflammasome and the release of pro-inflammatory cytokines like IL-6 and TNF-α.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary benefit of Sulforaphane in the context of menopausal inflammaging?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Sulforaphane is a potent activator of the Nrf2 pathway, which triggers the expression of over 200 antioxidant and detoxifying genes, helping to clear oxidative stress and reduce the inflammatory load.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Lesson Takeaways</h4>
+            <ul>
+                <li><strong>Inflammaging</strong> is a chronic, low-grade inflammatory state accelerated by the loss of estrogen's suppressive effect on the NF-κB pathway.</li>
+                <li><strong>Nutrigenomics</strong> allows us to use phytonutrients like Curcumin and Sulforaphane to modulate gene expression and "turn off" inflammatory switches.</li>
+                <li>The <strong>Gut-Brain-Skin Axis</strong> explains why gut dysbiosis during menopause manifests as brain fog and skin changes.</li>
+                <li><strong>hs-CRP</strong> is the most critical biomarker for tracking the success of the I-Pillar interventions, with a target of < 1.0 mg/L.</li>
+                <li>Advanced elimination protocols must be personalized and include a strategic reintroduction phase to identify specific systemic triggers.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Franceschi, C., et al. (2018). "Inflammaging: a new immune–metabolic viewpoint for age-related diseases." <em>Nature Reviews Endocrinology.</em></li>
+                <li>McCarthy, M., et al. (2021). "The Impact of Menopause on Systemic Inflammation and the Gut Microbiome." <em>Frontiers in Endocrinology.</em></li>
+                <li>Daily, J. W., et al. (2016). "Efficacy of Turmeric Extracts and Curcumin for Alleviating the Symptoms of Joint Arthritis: A Systematic Review and Meta-Analysis." <em>Journal of Medicinal Food.</em></li>
+                <li>Houghton, C. A., et al. (2019). "Sulforaphane: Its "Coming of Age" as a Clinically Relevant Nutraceutical in the Prevention and Treatment of Chronic Disease." <em>Oxidative Medicine and Cellular Longevity.</em></li>
+                <li>Zhou, Y., et al. (2020). "Estrogen and Inflammation: A Review." <em>International Journal of Molecular Sciences.</em></li>
+                <li>Gold, E. B., et al. (2022). "The Association of Inflammation with Menopausal Symptoms." <em>Menopause Journal.</em></li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Menopause Support Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary THRIVE Methodology™.</p>
+        </div>
+    </div>
+</body>
+
+</html>

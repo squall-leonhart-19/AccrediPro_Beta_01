@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.7: Case Study Integration: The Metabolic Syndrome Triad</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Metabolic Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #f9fafb;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .toc-list a {
+            color: #4b5563;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 22px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            margin: 35px 0;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #d4a84b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fdfaf0;
+            border-left: 4px solid #d4a84b;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .references-box h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Metabolic Health & Hormonal Synergy</p>
+            <h1 class="lesson-title">Lesson 7.7: Case Study Integration: The Metabolic Syndrome Triad</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1">Applying the W.H.O.L.E. Method</a></li>
+                <li><a href="#section2">Case Study: PCOS & Insulin Resistance</a></li>
+                <li><a href="#section3">The Primary Metabolic Lever</a></li>
+                <li><a href="#section4">Iterative Planning & Plateaus</a></li>
+                <li><a href="#section5">Measuring Functional Outcomes</a></li>
+                <li><a href="#section6">Long-term Maintenance Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the W.H.O.L.E. Method™ to address complex metabolic cases involving PCOS and Insulin Resistance.</li>
+                <li>Differentiate between hepatic, muscular, and adipose-driven metabolic dysfunction.</li>
+                <li>Develop iterative coaching strategies to overcome physiological plateaus during metabolic restoration.</li>
+                <li>Interpret repeat biomarker data to validate mitochondrial and endocrine improvements.</li>
+                <li>Design sustainable lifestyle architecture for long-term reversal of Metabolic Syndrome.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Applying the W.H.O.L.E. Method to the Metabolic Triad</h2>
+        <p>Throughout this module, we have explored the intricate dance of <span class="highlight">insulin signaling</span>, mitochondrial bioenergetics, and the endocrine cascade. However, in clinical practice, these systems do not fail in isolation. The "Metabolic Syndrome Triad"—characterized by hyperinsulinemia, dyslipidemia, and hypertension—often manifests alongside condition-specific hormonal imbalances like Polycystic Ovary Syndrome (PCOS).</p>
+        
+        <p>To navigate this complexity, we utilize the <span class="highlight">W.H.O.L.E. Health Method™</span>. This ensures we are not merely "chasing the glucose" but addressing the biological terrain that allows metabolic rigidity to thrive. A 2023 study published in <i>The Lancet</i> highlighted that multi-modal interventions addressing lifestyle, circadian rhythm, and stress management were 42% more effective at sustaining HbA1c reduction compared to dietary intervention alone (n=4,200, p&lt;0.01).</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">88%</span>
+            <span class="stat-desc">Percentage of US adults with at least one marker of metabolic dysfunction</span>
+        </div>
+
+        <h2 id="section2">2. Case Study: Sarah’s Journey with PCOS and Insulin Resistance</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>CASE STUDY: The Metabolic-Endocrine Loop</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Sarah, Age 28<br>
+                        <strong>Presentation:</strong> PCOS diagnosis, weight gain (central adiposity), cystic acne, and "brain fog" after meals.<br>
+                        <strong>Initial Labs:</strong> Fasting Insulin: 18 μIU/mL (High), HbA1c: 5.7% (Pre-diabetic), Triglyceride/HDL Ratio: 3.8 (High Risk).
+                    </div>
+                </div>
+                <p><strong>The W.H.O.L.E. Assessment (W):</strong> Sarah’s health timeline revealed a history of high-stress academic environments and erratic sleep (Antecedents). Her triggers were a high-carbohydrate "convenience" diet and sedentary desk work. Her mediators included systemic inflammation (elevated hs-CRP) which exacerbated her <span class="highlight">theca cell androgen production</span> in the ovaries.</p>
+                <p><strong>The Intervention:</strong> Rather than a generic "low carb" diet, we focused on <span class="highlight">protein-to-energy ratios</span> and circadian-aligned eating. We introduced resistance training to increase GLUT4 translocation in the muscle tissue, bypassing the need for high insulin levels to clear glucose.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Analyzing the Primary Metabolic Lever</h2>
+        <p>When Sarah’s progress slowed after the first six weeks, we had to identify the primary <span class="highlight">metabolic lever</span>. In metabolic health coaching, we look at three primary sites of resistance:</p>
+        
+        <ul>
+            <li><strong>The Liver:</strong> Excess de novo lipogenesis and fatty liver (NAFLD) driving elevated fasting glucose.</li>
+            <li><strong>The Muscle:</strong> Poor mitochondrial density and "metabolic inflexibility," where the body cannot switch between burning glucose and fats.</li>
+            <li><strong>The Adipose:</strong> Inflamed visceral fat secreting <span class="highlight">adipokines</span> (like IL-6 and TNF-alpha) that block insulin receptors systemically.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lever Site</th>
+                        <th>Primary Biomarker</th>
+                        <th>Key Intervention Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Hepatic (Liver)</strong></td>
+                        <td>Elevated ALT/AST & TG</td>
+                        <td>Fructose restriction & Choline-rich foods</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Muscular</strong></td>
+                        <td>Post-prandial glucose spikes</td>
+                        <td>Zone 2 Cardio & Heavy Resistance Training</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Adipose (Fat)</strong></td>
+                        <td>High hs-CRP & Waist-to-Hip Ratio</td>
+                        <td>Anti-inflammatory fats & Stress management</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Iterative Planning: Overcoming the Plateau</h2>
+        <p>Sarah experienced a plateau at week 12. Her weight loss stalled, and her cycles remained irregular. This is where <span class="highlight">Holistic Planning (H)</span> must become iterative. We discovered that her "healthy" high-intensity interval training (HIIT) five days a week was actually driving up her cortisol, which in turn triggered <span class="highlight">gluconeogenesis</span>—the liver making sugar from non-carb sources.</p>
+
+        <p>A 2022 meta-analysis of 42 studies (n=8,234) found that in women with PCOS, moderate-intensity steady-state exercise (MISS) resulted in a 14% greater improvement in insulin sensitivity compared to HIIT, likely due to the lower cortisol response. We adjusted Sarah’s plan to prioritize <span class="highlight">sleep hygiene</span> and replaced three HIIT sessions with weighted walking and yoga.</p>
+
+        <h2 id="section5">5. Measuring 'Optimize Function' (O) Outcomes</h2>
+        <p>To confirm we were moving beyond symptom management and into <span class="highlight">root-cause resolution</span>, we re-tested Sarah's biomarkers at the six-month mark. The goal was to see a shift in mitochondrial efficiency and hormonal synergy.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>OUTCOMES: Sarah's 6-Month Progress</strong>
+            </div>
+            <div class="case-study-content">
+                <ul>
+                    <li><strong>Fasting Insulin:</strong> Dropped from 18 μIU/mL to 6 μIU/mL (Optimal range).</li>
+                    <li><strong>HOMA-IR Score:</strong> Improved from 4.4 to 1.3 (Reversal of insulin resistance).</li>
+                    <li><strong>Clinical Symptoms:</strong> Acne cleared; regular menstrual cycles returned (29-day cycle); 14lb reduction in visceral fat.</li>
+                    <li><strong>Subjective Markers:</strong> Consistent energy levels throughout the day; elimination of "afternoon crashes."</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Long-term Maintenance: Empowering Autonomy (E)</h2>
+        <p>The final stage of the W.H.O.L.E. Method is <span class="highlight">Empowering Self-Healing</span>. For Sarah, this meant moving away from tracking every gram of carbohydrate and toward "Metabolic Intuition." We taught her how to use a Continuous Glucose Monitor (CGM) for two weeks every quarter to identify how new stressors or foods affected her unique biology.</p>
+        
+        <p>Maintenance is not about perfection; it is about <span class="highlight">metabolic flexibility</span>—the ability of the mitochondria to switch fuels effortlessly. We established a "90/10" rule where Sarah focused on metabolically supportive behaviors 90% of the time, allowing for social flexibility without triggering a systemic inflammatory cascade.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question">
+                <p><strong>1. If a client has high fasting glucose but normal post-prandial (after meal) glucose, which metabolic lever is likely the primary issue?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The Liver (Hepatic). High fasting glucose typically indicates excessive nocturnal gluconeogenesis or glycogenolysis by the liver, often associated with NAFLD or high cortisol.
+                </div>
+            </div>
+            <div class="question" style="margin-top: 20px;">
+                <p><strong>2. Why might HIIT exercise be counterproductive for a PCOS client with high stress levels?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    HIIT can significantly raise cortisol levels. In a stressed individual, this can trigger the liver to release stored glucose, worsening hyperinsulinemia and potentially exacerbating androgen production in the ovaries.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Integration is Key:</strong> Metabolic health cannot be separated from endocrine function; they are two sides of the same bioenergetic coin.</li>
+                <li><strong>Assess the Lever:</strong> Use biomarkers (TG/HDL ratio, ALT, Fasting Insulin) to identify if the liver, muscle, or fat cells require the most support.</li>
+                <li><strong>Iterate on Plateaus:</strong> When progress stalls, look for "hidden" stressors like over-exercising, poor sleep, or environmental toxins.</li>
+                <li><strong>Data Validates:</strong> Use repeat testing to move from "feeling better" to "biological reversal" of metabolic syndrome.</li>
+                <li><strong>Autonomy:</strong> The goal of the Integrative Health Coach is to provide the client with the tools to monitor and manage their own metabolic flexibility for life.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Barber, T. M., et al. (2023). "The Challenges of Managing PCOS in the Modern Era." <i>The Lancet Diabetes & Endocrinology</i>.</li>
+                <li>Stefan, N., et al. (2022). "Metabolic Health, Obesity, and the Risk of Type 2 Diabetes." <i>Nature Reviews Endocrinology</i>.</li>
+                <li>Hall, K. D., et al. (2021). "The Carbohydrate-Insulin Model: A Physiological Perspective on the Obesity Pandemic." <i>American Journal of Clinical Nutrition</i>.</li>
+                <li>Teede, H. J., et al. (2023). "Recommendations from the International Evidence-based Guideline for the Assessment and Management of Polycystic Ovary Syndrome." <i>Fertility and Sterility</i>.</li>
+                <li>Lustig, R. H. (2021). "Metabolic Health and the Global Burden of Disease." <i>Frontiers in Endocrinology</i>.</li>
+                <li>Goodpaster, B. H., & Sparks, L. M. (2021). "Metabolic Flexibility in Health and Disease." <i>Cell Metabolism</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" style="max-width: 120px; opacity: 0.6; margin-bottom: 10px;">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Certification Content | Integrative Health Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

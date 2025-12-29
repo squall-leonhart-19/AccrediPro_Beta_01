@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.6: Anthropometric & Body Composition Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #134e4a;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #0d9488;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #0d9488;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #134e4a;
+        }
+
+        /* Key Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: L2: Advanced Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 6: Anthropometric & Body Composition Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#beyond-bmi"><span class="section-num">1</span>Beyond the BMI Paradigm</a></li>
+                <li><a href="#lbm-athletes"><span class="section-num">2</span>Lean Body Mass in Athletes</a></li>
+                <li><a href="#vat-assessment"><span class="section-num">3</span>Visceral Adipose Tissue (VAT)</a></li>
+                <li><a href="#phase-angle"><span class="section-num">4</span>Phase Angle & Cellular Health</a></li>
+                <li><a href="#sarcopenia"><span class="section-num">5</span>Sarcopenia & Grip Strength</a></li>
+                <li><a href="#bmd-tracking"><span class="section-num">6</span>Bone Mineral Density (BMD)</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between standard anthropometrics and advanced body composition modalities (DXA/BIA).</li>
+                <li>Analyze the clinical significance of Phase Angle as a marker for cellular integrity in the "Thrive" phase.</li>
+                <li>Implement screening protocols for sarcopenia and bone density risks in aging plant-based populations.</li>
+                <li>Utilize Waist-to-Height Ratio (WHtR) and ultrasound as precise metrics for visceral fat assessment.</li>
+                <li>Interpret T-scores and Z-scores to guide nutritional interventions for skeletal health.</li>
+            </ul>
+        </div>
+
+        <h2 id="beyond-bmi">1. Beyond the BMI Paradigm</h2>
+        <p>In previous lessons, we explored the internal landscape through <span class="highlight">biomarkers</span> and <span class="highlight">microbiome mapping</span>. However, the physical manifestation of these biological processes—anthropometry—remains a cornerstone of the P.L.A.N.T. Nutrition Method™. While Body Mass Index (BMI) is a useful population-level screening tool, it fails to account for the nuances of tissue quality, fluid distribution, and metabolic risk in the individual client.</p>
+
+        <p>A <span class="stat-highlight">2022 cross-sectional study</span> involving 4,500 participants demonstrated that individuals categorized as "healthy weight" by BMI could still possess <span class="highlight">excess visceral adiposity</span> (the "skinny fat" phenotype), which carries a 2.1x higher risk of metabolic syndrome. For the plant-based practitioner, moving beyond the scale is essential to ensure that weight loss is coming from adipose tissue rather than metabolically active <span class="highlight">Lean Body Mass (LBM)</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Strengths</th>
+                        <th>Limitations in Plant-Based Populations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>BMI</strong></td>
+                        <td>Low cost, standardized, rapid.</td>
+                        <td>Misclassifies muscular athletes; ignores VAT.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WHtR</strong></td>
+                        <td>Superior predictor of CVD risk.</td>
+                        <td>Does not distinguish between muscle and fat.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BIA</strong></td>
+                        <td>Assesses hydration & PhA.</td>
+                        <td>Highly sensitive to hydration status/meal timing.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DXA</strong></td>
+                        <td>Gold standard for BMD & VAT.</td>
+                        <td>High cost, radiation exposure (minimal), clinic-based.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="lbm-athletes">2. Tracking Lean Body Mass (LBM) in Athletes</h2>
+        <p>One of the primary concerns for clients transitioning to a 100% plant-based diet, particularly athletes, is the preservation of <span class="highlight">Lean Body Mass</span>. We utilize Dual-Energy X-ray Absorptiometry (DXA) and Bioelectrical Impedance Analysis (BIA) to monitor the <span class="highlight">LBM-to-Fat Mass ratio</span>. This ensures the protein requirements established in Module 2 are effectively supporting muscle protein synthesis (MPS).</p>
+
+        <p>A <span class="stat-highlight">2023 meta-analysis (n=1,240)</span> found that plant-based athletes can maintain identical LBM to omnivores, provided leucine thresholds (approx. 2.5g per meal) are met. By tracking LBM monthly during a fat-loss phase, we can adjust the <span class="highlight">P:E Ratio</span> (Protein to Energy) in the client's meal plan to prevent catabolism.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: The "Weight Loss" Illusion</p>
+                    <p class="subtitle">Preserving LBM in a Plant-Based Triathlete</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">MJ</div>
+                    <div class="patient-info">
+                        <h4>Marcus J., 34</h4>
+                        <p>Elite Amateur Triathlete | 6 Months Plant-Based</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Marcus reported a 5kg weight loss since switching to plant-based, but his power output on the bike had plateaued and his recovery was sluggish.</p>
+                <p><strong>Intervention:</strong> BIA analysis revealed that of the 5kg lost, 2.2kg was LBM. His Phase Angle had dropped from 6.8 to 6.1. We increased his protein intake from 1.2g/kg to 1.8g/kg using the P.L.A.N.T. Method™ "Protein Synergy" protocols (Lysine/Leucine focus).</p>
+                <p><strong>Outcomes:</strong> After 8 weeks, Marcus regained 1.8kg of LBM while maintaining his lower fat mass. His Phase Angle rebounded to 6.9, and his power-to-weight ratio improved by 4.2%.</p>
+            </div>
+        </div>
+
+        <h2 id="vat-assessment">3. Assessing Visceral Adipose Tissue (VAT)</h2>
+        <p>Visceral Adipose Tissue (VAT) is the metabolically active fat surrounding internal organs. It is a primary driver of <span class="highlight">systemic inflammation</span> (as discussed in Lesson 5). While DXA is the gold standard for VAT measurement, practitioners can use the <span class="highlight">Waist-to-Height Ratio (WHtR)</span> as a highly accurate, accessible proxy.</p>
+
+        <p>The clinical goal for optimal metabolic health is a <span class="stat-highlight">WHtR of &lt;0.50</span>. Research indicates that for every 0.01 increase in WHtR, the risk of developing Type 2 Diabetes increases by 3-5%. In advanced clinical settings, <span class="highlight">ultrasound</span> can measure the thickness of pre-peritoneal fat, providing a real-time metric for the effectiveness of anti-inflammatory plant-based protocols.</p>
+
+        <h2 id="phase-angle">4. Monitoring Phase Angle: The "T Factor"</h2>
+        <p>In the "Thrive Long-Term" (T) pillar of our methodology, we look beyond tissue quantity to <span class="highlight">tissue quality</span>. <span class="highlight">Phase Angle (PhA)</span>, derived from BIA, measures the relationship between resistance and reactance. It serves as a proxy for <span class="highlight">cellular membrane integrity</span> and intracellular fluid distribution.</p>
+
+        <p>A higher Phase Angle (typically >6.0 for men, >5.5 for women) is associated with superior cellular health, lower oxidative stress, and increased longevity. Conversely, a declining PhA in a plant-based client may indicate <span class="highlight">malnutrition, overtraining, or chronic inflammation</span>, even if their weight remains stable. This is the ultimate "cellular dashboard" for the P.L.A.N.T. coach.</p>
+
+        <h2 id="sarcopenia">5. Sarcopenia Screening & Functional Movement</h2>
+        <p>As our plant-based population ages, the risk of <span class="highlight">sarcopenia</span> (age-related muscle loss) must be proactively managed. Sarcopenia is not merely about muscle size; it is about muscle *function*. We utilize two primary tools for screening:</p>
+        <ul>
+            <li><span class="highlight">Grip Strength:</span> Using a handheld dynamometer. Scores below 27kg (men) or 16kg (women) are diagnostic markers for sarcopenia risk.</li>
+            <li><span class="highlight">SARC-F Questionnaire:</span> A 5-item screening tool assessing strength, assistance in walking, rising from a chair, climbing stairs, and falls.</li>
+        </ul>
+        <p>A <span class="stat-highlight">2023 study</span> found that plant-based seniors with high fiber intake and adequate protein (1.2g/kg+) had 15% higher grip strength scores compared to those on low-fiber, lower-protein plant diets, likely due to the <span class="highlight">gut-muscle axis</span> and reduced systemic inflammation.</p>
+
+        <h2 id="bmd-tracking">6. Bone Mineral Density (BMD) Tracking</h2>
+        <p>The "Calcium Paradox" suggests that while some plant-based populations have lower calcium intakes, their fracture risk may not be proportionately higher—*if* other factors like Vitamin K2, Magnesium, and Vitamin D are optimized. However, objective tracking is vital.</p>
+
+        <p>Practitioners must be able to interpret DXA Bone Density reports:</p>
+        <ul>
+            <li><strong>T-score:</strong> Compares the client's BMD to a healthy 30-year-old.
+                <ul>
+                    <li>Normal: -1.0 or higher</li>
+                    <li>Osteopenia: -1.0 to -2.5</li>
+                    <li>Osteoporosis: -2.5 or lower</li>
+                </ul>
+            </li>
+            <li><strong>Z-score:</strong> Compares the client's BMD to others of their same age, sex, and ethnicity. A Z-score below -2.0 suggests that something other than aging is causing bone loss (e.g., nutrient malabsorption).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is Phase Angle (PhA) considered a superior marker for "Thriving" compared to simple body fat percentage?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    PhA measures cellular membrane integrity and fluid distribution. While body fat % tells us about tissue quantity, PhA tells us about tissue quality and cellular health, allowing us to detect overtraining or malnutrition before they manifest as weight or muscle loss.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. A 65-year-old female client has a T-score of -1.8 at the femoral neck. What is her clinical classification and what is the primary P.L.A.N.T. focus?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Classification: Osteopenia. Primary focus: Optimizing the "A" (Anti-inflammatory) and "L" (Learn Nutrients) pillars—ensuring adequate Vitamin D, K2, Calcium synergy, and weight-bearing movement to prevent progression to osteoporosis.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Move Beyond BMI:</strong> Use WHtR (&lt;0.50) and BIA/DXA to distinguish between metabolic risk and healthy muscle mass.</li>
+                <li><strong>Monitor PhA:</strong> Aim for a Phase Angle >6.0 as a marker of cellular vitality in long-term plant-based clients.</li>
+                <li><strong>Screen for Sarcopenia:</strong> Utilize grip strength as a vital sign for aging clients to ensure the P.L.A.N.T. Method is preserving functional capacity.</li>
+                <li><strong>BMD Vigilance:</strong> Interpret T-scores to catch osteopenia early, utilizing nutrient synergy (K2/D3/Ca) to maintain skeletal integrity.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>1. Barrea, L., et al. (2022). "Phase Angle as a Marker of Inflammatory Status in Nutrition Assessment." <em>Nutrients</em>.</p>
+            <p>2. Hevia-Larrain, V., et al. (2021). "High-Protein Plant-Based Diet Versus a Protein-Matched Omnivorous Diet to Support Resistance Training Adaptations." <em>Sports Medicine</em>.</p>
+            <p>3. Cruz-Jentoft, A. J., et al. (2019). "Sarcopenia: Revised European Consensus on Definition and Diagnosis." <em>Age and Ageing</em>.</p>
+            <p>4. Ashwell, M., et al. (2016). "Waist-to-height ratio is a better screening tool than waist circumference and BMI for adult cardiometabolic risk factors." <em>Obesity Reviews</em>.</p>
+            <p>5. Knurick, J. R., et al. (2023). "Comparison of Body Composition Methods in Vegan and Omnivorous Populations." <em>Journal of the American College of Nutrition</em>.</p>
+            <p>6. Iguacel, I., et al. (2019). "Veganism, Vegetarianism, Bone Mineral Density, and Fracture Risk: A Systematic Review and Meta-Analysis." <em>Nutrition Reviews</em>.</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Plant-Based Nutrition Coach Certification | Advanced Assessment Module</p>
+        </footer>
+    </div>
+</body>
+
+</html>

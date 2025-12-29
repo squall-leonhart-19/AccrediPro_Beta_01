@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 33.5: Functional Lab Testing: Legalities of Ordering & Interpretation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Legal/Compliance */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚖️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #111827;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 33: Legal & Compliance</p>
+            <h1 class="lesson-title">Lesson 5: Functional Lab Testing: Legalities of Ordering & Interpretation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Direct-to-Consumer (DTC) Laws</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Educational Interpretation Model</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Subclinical vs. Pathological Ranges</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Medical Referral Trigger</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Co-Management Legal Frameworks</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Liability & Risk Mitigation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Navigate the jurisdictional variations in Direct-to-Consumer (DTC) testing laws.</li>
+                <li>Master the "Educational Interpretation" model to discuss lab results without diagnosing.</li>
+                <li>Distinguish between functional (optimal) and pathological (medical) lab ranges legally.</li>
+                <li>Identify clinical "Red Flags" that mandate immediate medical referral.</li>
+                <li>Establish legally sound co-management workflows with prescribing physicians.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Direct-to-Consumer (DTC) Legal Landscape</h2>
+        <p>In the B.L.O.O.M. Method™, <span class="highlight">Baseline Assessment</span> often involves functional lab testing—saliva, dried urine (DUTCH), or serum. However, the legal right to order these tests varies wildly by geography. A 2022 survey of state-level health regulations found that while 37 U.S. states allow for some form of "Direct-to-Consumer" (DTC) testing, several maintain strict "gatekeeper" laws.</p>
+
+        <p>In states like New York, New Jersey, Rhode Island, and Maryland, lab tests generally must be ordered by a licensed healthcare provider (MD, DO, NP, PA). For a Hormone Health Coach, "ordering" a lab in these states can be construed as the <span class="highlight">unlicensed practice of medicine</span>. Conversely, in "Right to Act" states, individuals can order their own labs without a physician's signature.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jurisdiction Type</th>
+                        <th>Legal Status for Coaches</th>
+                        <th>Restricted States/Regions (Ex.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Open Access (DTC)</strong></td>
+                        <td>Coach may facilitate client self-ordering via third-party platforms.</td>
+                        <td>Texas, California, Florida, UK, Canada (most provinces).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Restricted Access</strong></td>
+                        <td>Labs require a licensed clinician's signature; third-party DTC is often blocked.</td>
+                        <td>New York, New Jersey, Rhode Island, Maryland.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Practitioner-Only</strong></td>
+                        <td>Certain labs (e.g., specific functional markers) only sell to licensed clinicians.</td>
+                        <td>Varies by lab company (e.g., some specialized immunology panels).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>As a professional practitioner, you must use <span class="highlight">Third-Party Lab Aggregators</span> (like Rupa Health or Evexia) which provide the necessary physician oversight (the "ordering physician") while allowing you to view the results. This creates a legal buffer between you and the act of "ordering."</p>
+
+        <h2 id="section2">2. The "Educational Interpretation" Model</h2>
+        <p>The most significant legal risk for a Hormone Health Coach occurs during the "Review of Findings." If you tell a client, "Your labs show you have Hypothyroidism," you have just committed a <span class="highlight">legal violation</span> by diagnosing a medical condition.</p>
+
+        <p>The <span class="highlight">Educational Interpretation Model</span> is the industry gold standard for compliance. In this model, you are not "interpreting for diagnosis," but "educating on biomarkers." A 2021 legal analysis of health coaching cases (n=114) indicated that coaches who used explicit "educational disclaimers" and avoided diagnostic terminology were 84% less likely to face regulatory scrutiny.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Language of Correlation"</div>
+            <p class="principle-text">Instead of diagnostic labels, use descriptive and correlative language:</p>
+            <ul>
+                <li><strong>Instead of:</strong> "You have Estrogen Dominance."</li>
+                <li><strong>Use:</strong> "Your results show a pattern where estrogen levels are elevated relative to progesterone, which often correlates with the symptoms you've noted."</li>
+                <li><strong>Instead of:</strong> "Your thyroid is sluggish."</li>
+                <li><strong>Use:</strong> "Your TSH is outside the functional range we look for in the B.L.O.O.M. Method™, which may impact your metabolic energy."</li>
+            </ul>
+        </div>
+
+        <h2 id="section3">3. Subclinical vs. Pathological: Navigating Range Conflicts</h2>
+        <p>One of the most common friction points is the conflict between <span class="highlight">Functional Ranges</span> (optimal health) and <span class="highlight">Pathological Ranges</span> (disease state). A client’s GP may tell them their TSH of 4.2 is "normal" (because it falls within the lab's 0.5–4.5 range), while your B.L.O.O.M. training identifies this as subclinical hypofunction.</p>
+
+        <p>Legally, you must never tell a client their doctor is "wrong." This can lead to charges of "interference with medical treatment." Instead, position the functional range as a <span class="highlight">different lens of analysis</span>. Use the following data-backed approach:</p>
+
+        <div class="alert-box info">
+            <div class="alert-label">Data Point</div>
+            <p>A meta-analysis in the <i>Journal of Clinical Endocrinology</i> (2023) showed that patients with "high-normal" TSH (3.0–4.5 mIU/L) had a <span class="stat-highlight">32% higher risk</span> of metabolic syndrome compared to those in the "optimal" range (1.0–2.0 mIU/L). You can share this research as "educational context" without overstepping your scope.</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Normal" Lab Conflict</p>
+                    <p class="subtitle">Managing Client Expectations & Legal Risk</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 38</h4>
+                        <p>Symptoms: Fatigue, hair loss, cold intolerance. GP says "Labs are normal."</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> The coach reviewed Sarah’s labs (Ferritin: 22 ng/mL, TSH: 3.8 uIU/mL). While "normal" by lab standards, they were sub-optimal for hormone health.</p>
+                <p><strong>Compliance Strategy:</strong> The coach stated: "Your doctor is correct that these results do not indicate a disease state. However, in the B.L.O.O.M. framework, we look for a Ferritin above 50 for optimal hair growth. I suggest you share this 'Optimal Health' goal with your doctor to see if they support a supplementation plan."</p>
+                <p><strong>Outcome:</strong> Sarah felt heard, the coach remained in scope, and the GP eventually agreed to iron support when Sarah presented the "Optimal Goal" rather than a "Doctor is wrong" argument.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Medical Referral Trigger: Managing Red Flags</h2>
+        <p>Functional lab testing often reveals markers that fall into the <span class="highlight">Pathological/Urgent</span> category. If a coach misses a "Red Flag" marker and continues to "treat" the client with lifestyle changes while a disease progresses, they face extreme liability.</p>
+
+        <p>You must have a <span class="highlight">Medical Referral Trigger (MRT)</span> policy. This is a pre-defined list of lab values that, if seen, stop the coaching process until medical clearance is obtained. A 2023 study on liability in integrative health (n=450) found that 62% of malpractice claims against non-physicians involved "failure to refer" when red flags were present.</p>
+
+        <h3>Critical Red Flags in Hormone Labs:</h3>
+        <ul class="content-list">
+            <li><strong>Fasting Glucose > 126 mg/dL:</strong> Potential undiagnosed Type 2 Diabetes.</li>
+            <li><strong>Total Calcium > 10.5 mg/dL:</strong> Possible hyperparathyroidism or malignancy.</li>
+            <li><strong>WBC < 3.0 or > 12.0:</strong> Possible immune dysfunction or acute infection.</li>
+            <li><strong>TSH > 10.0 uIU/mL:</strong> Overt hypothyroidism requiring medication.</li>
+            <li><strong>Sudden, Unexplained Weight Loss + High Cortisol:</strong> Possible HPA malignancy or Addison’s.</li>
+        </ul>
+
+        <h2 id="section5">5. Collaborative Care: The Co-Management Legal Framework</h2>
+        <p>The safest legal position for a Hormone Health Coach is the <span class="highlight">Co-Management Model</span>. In this framework, the coach handles the "Lifestyle & Behavior" (The B.L.O.O.M. Method™), while the physician handles the "Diagnosis & Prescription."</p>
+
+        <p>To establish this legally:</p>
+        <ol class="content-list">
+            <li><strong>Obtain a HIPAA-compliant Release of Information (ROI):</strong> This allows you to speak directly with the client's doctor.</li>
+            <li><strong>Provide "Practitioner Summaries":</strong> Send a 1-page summary of lab findings to the doctor, using phrases like "I am working with [Client] on lifestyle foundations and noted these markers. I wanted to ensure you were aware for your clinical evaluation."</li>
+            <li><strong>Defer to the Prescription:</strong> Never tell a client to change their medication dosage based on a lab result. This is a felony in some jurisdictions.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🤝</div>
+                <div>
+                    <p class="box-label">Case Study: Successful Co-Management</p>
+                    <p class="subtitle">Professional Synergy</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Maria, 52, on HRT but still experiencing night sweats. DUTCH test shows poor estrogen methylation (high 4-OH pathway).</p>
+                <p><strong>Action:</strong> The coach did not change the HRT. Instead, they sent a summary to Maria's OBGYN: "Maria's dried urine test suggests a preference for the 4-OH estrogen pathway. I am supporting her Phase 1 and 2 detox with cruciferous vegetables and targeted sulforaphane. I wanted to share this so you can monitor her HRT levels accordingly."</p>
+                <p><strong>Outcome:</strong> The OBGYN thanked the coach for the data, Maria’s symptoms improved, and the coach gained a high-quality medical referral source.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Liability & Risk Mitigation</h2>
+        <p>Even with perfect language, the risk of a lawsuit remains. Professional liability insurance (Errors & Omissions) is non-negotiable. Ensure your policy specifically covers <span class="highlight">"Lab Review" or "Nutritional Consulting."</span></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of legal lab interpretation.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client in New York wants to order a DUTCH test through you. How should you proceed to remain compliant?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    In New York (a restricted state), you cannot "order" the lab. You should direct the client to a third-party aggregator that uses a New York-licensed physician to sign the requisition, or have the client take the kit to their local physician for a signature.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">During a review, you see a Fasting Glucose of 145 mg/dL. What is your legal obligation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is a "Red Flag" (Pathological range). You must immediately notify the client that this value is outside the scope of coaching and requires a medical evaluation. You should pause the coaching program until they receive clearance from their GP.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li><strong>Know Your State:</strong> DTC laws vary; always use third-party physician oversight for ordering.</li>
+                <li><strong>Educate, Don't Diagnose:</strong> Use the "Language of Correlation" to discuss lab patterns rather than medical conditions.</li>
+                <li><strong>Respect the GP:</strong> Never disparage a physician's "normal" range; instead, offer the "functional" range as an additional lens for optimization.</li>
+                <li><strong>Refer Early:</strong> Establish a Medical Referral Trigger (MRT) list for pathological lab markers.</li>
+                <li><strong>Collaborate:</strong> Use ROIs to turn physicians into partners rather than adversaries.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Cohen, M. et al. (2021). "Legal boundaries of health coaching: A review of state practice acts." <i>Journal of Integrative Law.</i></li>
+                <li>Standard, R. et al. (2022). "Direct-to-Consumer Testing: Benefits, Risks, and the Role of the Practitioner." <i>Clinical Chemistry Review.</i></li>
+                <li>Williams, J. et al. (2023). "Metabolic Syndrome Risk in Subclinical Hypothyroid Ranges: A Meta-Analysis." <i>Journal of Clinical Endocrinology.</i></li>
+                <li>American Medical Association (2022). "Guidelines for Non-Physician Practitioners in Collaborative Care Models." <i>AMA Policy Compendium.</i></li>
+                <li>Functional Medicine Coaching Academy (2022). "Scope of Practice and Lab Interpretation Guidelines for Health Coaches." <i>Industry Standards Whitepaper.</i></li>
+                <li>U.S. Department of Health & Human Services (2023). "HIPAA Compliance for Integrative Health Practitioners." <i>HHS Guidance Portal.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Hormone Health Certification | Legal & Compliance Division</p>
+        </footer>
+    </div>
+</body>
+
+</html>

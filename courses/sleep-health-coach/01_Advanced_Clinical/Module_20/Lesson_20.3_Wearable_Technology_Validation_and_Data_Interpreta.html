@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.3: Wearable Technology: Validation and Data Interpretation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - NAVY theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #edf2f7;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning { background: #fffbeb; border-left-color: #f59e0b; }
+        .alert-box.info { background: #eff6ff; border-left-color: #3b82f6; }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #1e40af;
+        }
+
+        .answer-text.show { display: block; }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: L2: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 3: Wearable Technology: Validation and Data Interpretation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#validation"><span class="section-num">1</span>Consumer Wearables vs. Actigraphy</a></li>
+                <li><a href="#ppg"><span class="section-num">2</span>PPG-Based Sleep Staging</a></li>
+                <li><a href="#hrv"><span class="section-num">3</span>HRV and ANS Recovery</a></li>
+                <li><a href="#orthosomnia"><span class="section-num">4</span>Managing Orthosomnia</a></li>
+                <li><a href="#synthesis"><span class="section-num">5</span>Synthesizing Data with Diaries</a></li>
+                <li><a href="#guidelines"><span class="section-num">6</span>Practitioner Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Critically evaluate the accuracy of top-tier consumer wearables against medical-grade actigraphy and polysomnography (PSG).</li>
+                <li>Interpret Heart Rate Variability (HRV) metrics to assess client recovery and autonomic balance.</li>
+                <li>Identify the physiological limitations of Photoplethysmography (PPG) in detecting sleep architecture.</li>
+                <li>Implement coaching strategies to prevent "Orthosomnia" and reduce data-driven sleep anxiety.</li>
+                <li>Triangulate objective wearable data with subjective sleep diaries for a holistic assessment within the D.R.E.A.M. Sleep Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="validation">1. Consumer Wearables vs. Medical-Grade Actigraphy</h2>
+        <p>As a Sleep Health Coach, you will inevitably encounter clients who rely heavily on devices like the <span class="highlight">Oura Ring, WHOOP, or Apple Watch</span>. While these tools have revolutionized personal health tracking, their utility in a professional setting depends on your ability to distinguish between "marketing claims" and "clinical validation."</p>
+        
+        <p>In the hierarchy of sleep measurement, Polysomnography (PSG) remains the gold standard. Medical-grade actigraphy (e.g., ActiGraph) has been the secondary standard for decades, primarily using accelerometry to estimate sleep based on movement. Modern consumer wearables, however, use a multi-sensor approach, combining accelerometry with <span class="highlight">Photoplethysmography (PPG)</span> and skin temperature sensors.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">88%</div>
+                    <div class="stat-label">TST Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">~60%</div>
+                    <div class="stat-label">Staging Precision</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">WASO Overestimate</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2021 study by <i>Chinoy et al.</i> compared seven consumer devices against PSG and found that while most were excellent at detecting <span class="highlight">Total Sleep Time (TST)</span>, they consistently struggled with <span class="highlight">Wake After Sleep Onset (WASO)</span> and specific sleep stages. For the practitioner, this means wearable data is highly reliable for tracking consistency and duration, but should be viewed with skepticism when analyzing "Deep" vs. "REM" percentages.</p>
+
+        <h2 id="ppg">2. The Limitations of PPG-Based Sleep Staging</h2>
+        <p>Consumer devices primarily use PPG—a technology that shines light (usually green or infrared) into the skin to measure blood volume changes. By analyzing the pulse wave, devices estimate heart rate (HR) and heart rate variability (HRV), which are then used as proxies for sleep stages.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Wearable Accuracy</th>
+                        <th>Clinical Significance</th>
+                        <th>Coach's Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Sleep Time (TST)</td>
+                        <td>High (± 15-20 min)</td>
+                        <td>Foundational for sleep need</td>
+                        <td>Reliable for trend tracking</td>
+                    </tr>
+                    <tr>
+                        <td>Sleep Latency (SOL)</td>
+                        <td>Low (Often misses wake)</td>
+                        <td>Marker of sleep pressure</td>
+                        <td>Cross-reference with Diary</td>
+                    </tr>
+                    <tr>
+                        <td>REM Sleep</td>
+                        <td>Moderate</td>
+                        <td>Cognitive/Emotional health</td>
+                        <td>Look for trends, not nightly totals</td>
+                    </tr>
+                    <tr>
+                        <td>Deep (SWS) Sleep</td>
+                        <td>Moderate-Low</td>
+                        <td>Physical recovery/HGH</td>
+                        <td>Often underestimated by PPG</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The biological challenge is that heart rate patterns can overlap between stages. For example, the sympathetic nervous system surges during REM sleep can mimic the "arousal" patterns of light sleep or wakefulness. Consequently, if a client expresses concern that their "Deep Sleep" is only 45 minutes, the coach must explain that the device may be misclassifying SWS as Light sleep due to subtle heart rate fluctuations.</p>
+
+        <h2 id="hrv">3. Interpreting HRV as a Marker of ANS Recovery</h2>
+        <p>Within the <b>D.R.E.A.M. Sleep Method™</b>, specifically the 'A' (Address Root Causes) and 'R' (Reset Circadian Rhythm) pillars, Heart Rate Variability (HRV) is our most potent objective marker. HRV measures the variation in time between consecutive heartbeats (R-R intervals).</p>
+
+        <p>A high HRV typically indicates a dominant <span class="highlight">Parasympathetic Nervous System (PSNS)</span>, suggesting the body is recovered and resilient. A suppressed HRV suggests Sympathetic dominance (fight-or-flight), often caused by overtraining, chronic stress, or poor sleep hygiene. As a practitioner, you should focus on the <span class="highlight">RMSSD (Root Mean Square of Successive Differences)</span>, as this is the standard metric most wearables use for nocturnal HRV.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip: The HRV Baseline</p>
+            <p>Never compare one client's HRV to another's. HRV is highly individual and genetically influenced. Always establish a 14-day "rolling baseline" for the specific client. A 20% drop from <i>their</i> baseline is more significant than a low absolute number.</p>
+        </div>
+
+        <h2 id="orthosomnia">4. The 'Orthosomnia' Risk: Managing Data Anxiety</h2>
+        <p>As technology becomes more pervasive, we are seeing a rise in <span class="highlight">Orthosomnia</span>—a term coined by researchers at Rush University and Northwestern University. It refers to a perfectionistic quest for "perfect" sleep data that actually leads to sleep-onset insomnia due to increased anxiety.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Data-Obsessed Executive</p>
+                    <p class="subtitle">Managing Orthosomnia in a High-Performance Context</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Client: Mark, 44</h4>
+                        <p><strong>Presenting Symptoms:</strong> High anxiety, difficulty falling asleep, obsession with his "Sleep Score" (averaging 65/100).</p>
+                    </div>
+                </div>
+                <p>Mark reported that if his wearable showed less than 1.5 hours of Deep Sleep, he would feel "exhausted" the next day, regardless of his actual energy levels. This is a classic example of <b>nocebo sleep perception</b>.</p>
+                <p><strong>Intervention:</strong>
+                <ul>
+                    <li>Educated Mark on the 40% margin of error in wearable staging.</li>
+                    <li>Instructed him to "hide" his sleep score for 7 days, focusing only on his subjective <i>Vigor Score</i> in his diary.</li>
+                    <li>Shifted focus to HRV trends rather than "Deep Sleep" minutes.</li>
+                </ul>
+                <strong>Outcome:</strong> Mark’s Sleep Latency decreased from 45 minutes to 15 minutes within two weeks as the pressure to "perform" for the device was removed.</p>
+            </div>
+        </div>
+
+        <h2 id="synthesis">5. Synthesizing Tech Data with Subjective Diaries</h2>
+        <p>The most effective Sleep Health Coaches use a process of <span class="highlight">Triangulation</span>. You should never rely on wearable data in isolation. Instead, look for the intersection of three data points:</p>
+        <ol class="content-list">
+            <li><b>The Wearable:</b> Objective trends (HRV, TST, Respiratory Rate).</li>
+            <li><b>The Sleep Diary:</b> Subjective experience (Sleep quality, perceived arousals).</li>
+            <li><b>The Environment (E in DREAM):</b> Contextual factors (Room temperature, light exposure, caffeine timing).</li>
+        </ol>
+
+        <p>If the wearable shows high fragmentation (many wake events) but the client's diary says they "slept like a log," the coach should investigate if the device is overly sensitive to movement or if the client has high "sleep state misperception" (which is common in paradoxical insomnia). Conversely, if the client feels exhausted but the data looks "perfect," look toward the 'A' (Address Root Causes) pillar—perhaps metabolic issues or nutrient deficiencies are affecting sleep <i>quality</i> in ways PPG cannot detect.</p>
+
+        <h2 id="guidelines">6. Practitioner Protocols for Data Interpretation</h2>
+        <p>When reviewing client data, follow this hierarchy of importance:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">1. Consistency Over Quantity</div>
+            <p class="principle-text">Prioritize the <span class="highlight">Standard Deviation of Sleep Midpoint</span>. A wearable that shows a shifting sleep window is a red flag for Circadian Dysregulation (the 'R' in DREAM), even if TST is 8 hours.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">2. Resting Heart Rate (RHR) Recovery Curve</div>
+            <p class="principle-text">Look for a "Hammock" shape in the heart rate throughout the night. If the RHR only reaches its lowest point right before waking, it suggests late-night eating, alcohol, or high stress (affecting the 'M' and 'A' pillars).</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">3. Respiratory Rate Stability</div>
+            <p class="principle-text">A sudden increase in nocturnal respiratory rate (e.g., from 14 to 18 breaths/min) is often a precursor to illness or significant overtraining, providing an early warning system for the coach.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of wearable data interpretation.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client is worried because their Apple Watch shows 25% REM but only 8% Deep Sleep. Based on validation studies, what should your response be?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Explain that PPG-based devices often underestimate Deep Sleep (SWS) because they rely on heart rate proxies that may misclassify quiet wakefulness or light sleep. Encourage the client to focus on their daytime energy (Vigor) and long-term HRV trends rather than nightly staging percentages.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which metric is the most reliable "recovery" marker provided by modern wearables for assessing the Autonomic Nervous System?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">HRV (specifically RMSSD). It provides a direct window into the balance between the Sympathetic and Parasympathetic branches of the ANS, helping the coach identify if the 'A' (Address Root Causes) pillar needs more attention.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><b>Duration is Reliable:</b> Most top-tier wearables are within 10-15% accuracy for Total Sleep Time.</li>
+                <li><b>Staging is a Proxy:</b> REM/Deep sleep data should be used to identify <i>trends</i> over weeks, not as a diagnostic tool for a single night.</li>
+                <li><b>HRV is King:</b> Nocturnal HRV (RMSSD) is the most valuable metric for assessing physiological stress and recovery.</li>
+                <li><b>Watch for Orthosomnia:</b> If a client becomes anxious about their data, the device is hindering, not helping, their sleep health.</li>
+                <li><b>Triangulate:</b> Always validate objective data against the subjective sleep diary and the D.R.E.A.M. framework.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Chinoy et al. (2021). "Performance of seven consumer sleep-tracking devices compared with polysomnography." <i>Sleep</i>.</li>
+                <li>de Zambotti et al. (2019). "The sleep-technology revolution: from the laboratory to the real world." <i>Sleep Medicine Reviews</i>.</li>
+                <li>Baron et al. (2017). "Orthosomnia: Are Some Patients Taking the Quantified Self Too Far?" <i>Journal of Clinical Sleep Medicine</i>.</li>
+                <li>Stone et al. (2020). "Multi-device assessment of wearable sleep trackers against polysomnography." <i>Journal of Sports Sciences</i>.</li>
+                <li>Miller et al. (2022). "Validation of the WHOOP strap against polysomnography for assessing sleep and heart rate variability." <i>Journal of Health Technology</i>.</li>
+                <li>Roberts et al. (2023). "Accuracy of the Oura Ring Generation 3 for sleep and physiological monitoring." <i>Sensors</i>.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Professional Certification</p>
+        </footer>
+    </div>
+</body>
+
+</html>

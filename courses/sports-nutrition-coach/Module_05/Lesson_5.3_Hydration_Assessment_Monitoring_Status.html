@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.3: Hydration Assessment: Monitoring Status</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Hydration */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0c4a6e;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        /* Statistics/Data Highlight */
+        .stat-highlight {
+            background: #f0f9ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        /* Comparison Table */
+        .data-table-wrapper {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #0369a1;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #e0f2fe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .formula-box {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 25px 0;
+            border-left: 5px solid #0ea5e9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: O: Optimize Hydration</p>
+            <h1 class="lesson-title">Lesson 5.3: Hydration Assessment: Monitoring Status</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Triad of Assessment</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The 'WUT' Screening Tool</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Urine Specific Gravity (USG)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Calculating Sweat Rates</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Identifying Salty Sweaters</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Chronic Hypohydration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the 'WUT' method for daily hydration screening.</li>
+                <li>Perform clinical-grade hydration assessment using Urine Specific Gravity (USG) refractometry.</li>
+                <li>Calculate precise hourly sweat rates to individualize rehydration protocols.</li>
+                <li>Identify "salty sweaters" using practical field observation and salt residue tests.</li>
+                <li>Recognize the physiological markers of chronic hypohydration in high-volume athletes.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Triad of Assessment: Why One Metric Fails</h2>
+        <p>In the previous lessons, we explored the <span class="highlight">Physiology of Fluid Balance</span> and the electrical necessity of electrolytes. However, for a Sports Nutrition Coach using the <span class="highlight">P.E.R.F.O.R.M. Athletic Method™</span>, understanding the theory is insufficient without the ability to measure status accurately. Hydration is dynamic; it is not a static "tank" that stays full.</p>
+        
+        <p>The primary challenge in hydration assessment is that no single "gold standard" exists for the field. While plasma osmolality is the laboratory gold standard, it is impractical for daily athletic use. Therefore, we utilize a <span class="highlight">triangulated approach</span>. Relying solely on thirst is dangerous, as thirst lag (the delay between fluid loss and the thirst signal) can result in a <span class="stat-highlight">2% body mass deficit</span> before the athlete even feels the urge to drink.</p>
+
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Sensitivity</th>
+                        <th>Ease of Use</th>
+                        <th>Best For...</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Body Mass Changes</td>
+                        <td>High</td>
+                        <td>Excellent</td>
+                        <td>Acute exercise fluid loss</td>
+                    </tr>
+                    <tr>
+                        <td>Urine Color (Ucol)</td>
+                        <td>Moderate</td>
+                        <td>Excellent</td>
+                        <td>Daily screening/Self-monitoring</td>
+                    </tr>
+                    <tr>
+                        <td>USG (Refractometry)</td>
+                        <td>High</td>
+                        <td>Moderate</td>
+                        <td>Clinical baseline/Pre-comp checks</td>
+                    </tr>
+                    <tr>
+                        <td>Thirst Perception</td>
+                        <td>Low</td>
+                        <td>Excellent</td>
+                        <td>General wellness (unreliable for performance)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. The 'WUT' Method: Integrated Daily Screening</h2>
+        <p>Developed by researchers like Dr. Samuel Cheuvront, the <span class="highlight">WUT Method</span> (Weight, Urine, Thirst) is the most robust field-validated tool for identifying dehydration. When two or more of these markers are "positive," the likelihood of hypohydration exceeds <span class="stat-highlight">90%</span>.</p>
+
+        <h3>The Three Pillars of WUT:</h3>
+        <ul class="content-list">
+            <li><strong>Weight (W):</strong> Is the morning body mass >1% lower than the athlete's 7-day rolling average? A sudden drop usually indicates fluid loss, not tissue loss.</li>
+            <li><strong>Urine (U):</strong> Is the first morning void dark (resembling apple juice or tea)? Using the 8-point Armstrong scale, a score of <span class="stat-highlight">4 or higher</span> indicates dehydration.</li>
+            <li><strong>Thirst (T):</strong> Is the athlete experiencing a dry mouth or a persistent desire for fluids upon waking?</li>
+        </ul>
+
+        <p>As a coach, you should instruct your athletes to perform this "WUT check" every morning. If they hit 1/3, they should be cautious; 2/3 indicates a need for immediate aggressive rehydration; 3/3 indicates significant hypohydration that may require training modification.</p>
+
+        <h2 id="section3">3. Urine Specific Gravity (USG): The Clinical Edge</h2>
+        <p>While urine color is helpful, it can be skewed by riboflavin (Vitamin B2) supplementation, certain foods (beets), or large bolus water intake that produces "clear" urine even when the cells are dehydrated. This is where <span class="highlight">Urine Specific Gravity (USG)</span> becomes essential.</p>
+
+        <p>USG measures the density of urine compared to distilled water. It quantifies the concentration of solutes (electrolytes, metabolites, urea) in the sample. In the <span class="highlight">PERFORM™ Method</span>, we recommend the use of a <span class="highlight">digital or optical refractometer</span> rather than chemical dipsticks, as dipsticks have a high margin of error in athletic populations.</p>
+
+        <div class="formula-box">
+            USG Thresholds for Athletes:<br>
+            - &lt; 1.010: Well Hydrated (Euhydrated)<br>
+            - 1.010 - 1.020: Minimal Dehydration<br>
+            - 1.021 - 1.030: Significant Dehydration<br>
+            - &gt; 1.030: Serious Hypohydration
+        </div>
+
+        <p>A 2021 study of elite soccer players found that <span class="stat-highlight">47%</span> of athletes arrived at morning practice with a USG > 1.020, significantly increasing their risk for heat illness and reduced "time to exhaustion" during high-intensity intervals.</p>
+
+        <h2 id="section4">4. Step-by-Step: Calculating Individual Sweat Rates</h2>
+        <p>General hydration guidelines (e.g., "drink 8 glasses a day") are useless for high-performance athletes. Sweat rates vary wildly based on genetics, acclimatization, and metabolic efficiency, ranging from <span class="stat-highlight">0.5L to 3.0L per hour</span>. To calculate a sweat rate, use the following protocol:</p>
+
+        <ol class="content-list">
+            <li><strong>Pre-Exercise Weight:</strong> Weigh the athlete in minimal clothing after voiding.</li>
+            <li><strong>The Session:</strong> Record the exact duration of the workout and the volume of fluid consumed (in mL or oz).</li>
+            <li><strong>Post-Exercise Weight:</strong> Towel off sweat completely and weigh again in the same minimal clothing.</li>
+            <li><strong>The Calculation:</strong> Use the formula below to find the hourly rate.</li>
+        </ol>
+
+        <div class="formula-box">
+            Sweat Rate (L/hr) = [Pre-Weight (kg) - Post-Weight (kg) + Fluid Intake (L) - Urine Output (L)] / Duration (hrs)
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: Precision Rehydration</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Endurance Athlete: Marcus (Age 34)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus - Triathlete</h4>
+                        <p>Presenting: Frequent cramping and "brain fog" in the final 10km of long runs.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Marcus performed a 90-minute run in 75°F (24°C) weather.</p>
+                <ul>
+                    <li>Pre-run Weight: 80.0 kg</li>
+                    <li>Post-run Weight: 78.2 kg (Loss of 1.8 kg)</li>
+                    <li>Fluid Consumed: 500 mL (0.5 L)</li>
+                    <li>Urine Output: 0 mL</li>
+                </ul>
+                <p><strong>Calculation:</strong> (1.8kg + 0.5L) / 1.5 hours = <span class="stat-highlight">1.53 L/hr</span>.</p>
+                <p><strong>Outcome:</strong> Marcus was only replacing ~22% of his losses. By increasing intake to 800mL/hr with 600mg sodium, his "brain fog" vanished and his 10km split time improved by <span class="stat-highlight">4.2%</span>.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Identifying "Salty Sweaters": The Salt Residue Test</h2>
+        <p>It isn't just about how much water is lost, but how much <span class="highlight">Sodium Chloride</span> is lost with it. Some athletes are "efficient" (losing ~200mg Na/L), while others are "salty" (losing >1,500mg Na/L). Losing 2 liters of sweat as a salty sweater means losing over 3 grams of sodium—a massive blow to the electrochemical gradient required for muscle contraction.</p>
+
+        <h3>Practical Field Tests for Sodium Concentration:</h3>
+        <ul class="content-list">
+            <li><strong>Visual Inspection:</strong> Look for white, gritty streaks on dark clothing or the skin (specifically the forehead or forearms) after the sweat dries.</li>
+            <li><strong>The Sting Test:</strong> Does the athlete report that their sweat stings their eyes excessively? This often indicates a higher solute concentration.</li>
+            <li><strong>Tactile Test:</strong> After a session, does the skin feel "gritty" or like fine sandpaper?</li>
+            <li><strong>The Taste Test (Self-Report):</strong> Salty sweaters often report their sweat tastes very "sharp" or salty compared to peers.</li>
+        </ul>
+        <p>For these athletes, standard sports drinks are often insufficient. They require <span class="highlight">High-Sodium Protocols</span> (1,000mg+ Na/L) as part of their recovery (The 3 Rs: Rehydrate, Refuel, Repair) covered in Module 3.</p>
+
+        <h2 id="section6">6. Chronic Hypohydration in High-Volume Training</h2>
+        <p>While acute dehydration happens during a race, <span class="highlight">chronic hypohydration</span> is a state where an athlete never fully recovers their fluid status between sessions. This is common in "two-a-day" training camps or heavy mesocycles (refer back to Module 1: Periodize Nutrition).</p>
+
+        <p><strong>Signs of Chronic Hypohydration:</strong></p>
+        <ul class="content-list">
+            <li><strong>Elevated Resting Heart Rate:</strong> Due to lower stroke volume, the heart must beat faster to maintain cardiac output.</li>
+            <li><strong>Reduced HRV (Heart Rate Variability):</strong> A sign of sympathetic nervous system dominance and poor recovery.</li>
+            <li><strong>Consistently High USG:</strong> Morning USG remains >1.025 for three consecutive days despite "feeling" like they are drinking enough.</li>
+            <li><strong>Loss of Appetite:</strong> Dehydration can suppress the hunger hormones, leading to a secondary issue of under-fueling (RED-S risk).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of hydration assessment.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. An athlete wakes up with a body mass 1.5% lower than their average, their urine is dark (Ucol 5), but they do not feel thirsty. According to the WUT method, are they dehydrated?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Yes. The WUT method requires 2 out of 3 markers to be positive for a 90% confidence in a hypohydration diagnosis. This athlete is 2/3 (Weight and Urine) and should begin rehydration immediately, despite the lack of thirst.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is a refractometer preferred over urine dipsticks for measuring USG in athletes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Dipsticks are influenced by the pH of the urine and the presence of proteins or ketones, which can be elevated after intense exercise. Refractometry measures the physical bending of light through the liquid, which is a more direct and accurate measure of solute density (Specific Gravity).
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Triangulate:</strong> Use the WUT method (Weight, Urine, Thirst) for daily screening to overcome the limitations of individual markers.</li>
+                <li><strong>USG Threshold:</strong> Target a pre-exercise USG of &lt; 1.020 to ensure the athlete is starting from a state of euhydration.</li>
+                <li><strong>Individualize:</strong> Calculate sweat rates at least once per season and in different environmental conditions (Heat vs. Cold).</li>
+                <li><strong>Salt Matters:</strong> Identify salty sweaters via visual salt residue; these athletes require targeted electrolyte replacement beyond standard water.</li>
+                <li><strong>Monitor Trends:</strong> Watch for chronic hypohydration markers like elevated resting HR and consistent 1.025+ USG readings.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight:600; color:#333; margin-bottom:15px;">References & Further Reading</p>
+            <ol>
+                <li>Cheuvront, S. N., & Kenefick, R. W. (2014). "Am I Hydrated? Determining Hydration Status in Post-Exercise." European Journal of Clinical Nutrition.</li>
+                <li>Armstrong, L. E., et al. (1994). "Urine Color as an Indicator of Urine Concentration and Body Hydration Status." International Journal of Sport Nutrition.</li>
+                <li>Belval, L. N., et al. (2019). "Practical Hydration Solutions for Sports." Nutrients.</li>
+                <li>Maughan, R. J., & Shirreffs, S. M. (2010). "Development of Individual Hydration Strategies for Athletes." International Journal of Sport Nutrition and Exercise Metabolism.</li>
+                <li>Sawka, M. N., et al. (2007). "American College of Sports Medicine position stand. Exercise and Fluid Replacement." Medicine & Science in Sports & Exercise.</li>
+                <li>Baker, L. B. (2017). "Sweating Rate and Sweat Sodium Concentration in Athletes: A Review of Methodology and Intra/Inter-individual Variability." Sports Medicine.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The P.E.R.F.O.R.M. Athletic Method™ is a trademark of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

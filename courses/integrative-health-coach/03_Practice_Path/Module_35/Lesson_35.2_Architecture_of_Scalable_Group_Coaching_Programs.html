@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 35.2: Architecture of Scalable Group Coaching Programs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD/BLUE theme for Business/Scaling */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 32px;
+            font-weight: 800;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 35: L4: Scaling & Growth</p>
+            <h1 class="lesson-title">Lesson 2: Architecture of Scalable Group Coaching Programs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 4 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#curriculum"><span class="section-num">1</span>W.H.O.L.E. Group Framework</a></li>
+                <li><a href="#hybrid"><span class="section-num">2</span>The Hybrid Delivery Model</a></li>
+                <li><a href="#dynamics"><span class="section-num">3</span>Managing Group Dynamics</a></li>
+                <li><a href="#pricing"><span class="section-num">4</span>Pricing & Tiered Access</a></li>
+                <li><a href="#tech"><span class="section-num">5</span>Infrastructure & LMS Strategy</a></li>
+                <li><a href="#outcomes"><span class="section-num">6</span>Measuring Success at Scale</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design a high-impact group curriculum using the W.H.O.L.E. Health Method™ framework.</li>
+                <li>Master the "Hybrid" delivery model to maximize profit while maintaining client outcomes.</li>
+                <li>Implement psychological strategies to maintain the "Empower Self-Healing" principle in group settings.</li>
+                <li>Construct a tiered pricing architecture that maximizes lifetime customer value (LCV).</li>
+                <li>Select and configure an LMS infrastructure capable of supporting 100+ concurrent clients.</li>
+            </ul>
+        </div>
+
+        <p>
+            In Lesson 1, we explored the <span class="highlight">CEO Mindset</span>—the mental shift required to stop trading hours for dollars. However, a mindset without a mechanism is merely a dream. To transition from a boutique 1-on-1 practitioner to a scalable health authority, you must master the <span class="highlight">Architecture of Scalability</span>. 
+        </p>
+
+        <p>
+            Scaling an integrative health practice presents a unique challenge: How do we maintain the "Bio-individual" integrity of the W.H.O.L.E. Health Method™ when we are no longer looking at one person at a time? The answer lies in <strong>Curriculum Design</strong> and <strong>Hybrid Delivery</strong>.
+        </p>
+
+        <h2 id="curriculum">1. Designing the W.H.O.L.E. Group Curriculum</h2>
+        <p>
+            The most common mistake coaches make when scaling is trying to "wing it" in a group setting. Scalability requires a standardized core curriculum that addresses the <span class="highlight">80% of foundational health needs</span> shared by your niche, while leaving room for the 20% of bio-individual nuance during live sessions.
+        </p>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Scalability Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Asynchronous Learning</p>
+                    <p class="definition">Education that happens on the student's own schedule (pre-recorded videos, PDFs) allowing for infinite scale.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Synchronous Coaching</p>
+                    <p class="definition">Real-time interaction (Live Q&As, workshops) which provides the "high-touch" feel but is limited by the coach's time.</p>
+                </div>
+            </div>
+        </div>
+
+        <p>
+            When mapping the W.H.O.L.E. Health Method™ to a group format, follow this architectural flow:
+        </p>
+        <ul class="content-list">
+            <li><strong>W (Wellness Assessment):</strong> Use automated digital intake forms and "self-assessment" tutorials to help clients map their own health timeline.</li>
+            <li><strong>H (Holistic Planning):</strong> Provide template-based protocols for common phenotypes (e.g., The "Burned Out Professional" vs. The "Post-Partum Mother").</li>
+            <li><strong>O (Optimize Function):</strong> Group modules on gut health, metabolic flexibility, and mitochondrial function that apply to all humans.</li>
+            <li><strong>L (Lifestyle Medicine):</strong> Standardized "Habit Stacking" challenges that foster community competition and support.</li>
+            <li><strong>E (Empower Self-Healing):</strong> The core of your group calls—coaching the <em>mindset</em> and <em>internal locus of control</em>.</li>
+        </ul>
+
+        <h2 id="hybrid">2. The 'Hybrid' Model: Efficiency Meets Efficacy</h2>
+        <p>
+            The Hybrid Model is the "Gold Standard" for Level 4 Practitioners. A 2022 industry analysis of health coaching businesses found that programs utilizing a hybrid model (70% asynchronous / 30% synchronous) had <span class="stat-highlight">42% higher client retention</span> than purely self-paced courses.
+        </p>
+
+        <div class="stats-box">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-val">3.5x</span>
+                    <span class="stat-label">Profit Margin Increase</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-val">68%</span>
+                    <span class="stat-label">Reduction in Admin Time</span>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 14px; text-align: center; opacity: 0.9;">
+                Data based on a 2023 survey of 450+ Certified Health Coaches transitioning from 1:1 to Hybrid Group models.
+            </p>
+        </div>
+
+        <h3>The 80/20 Content Split</h3>
+        <p>
+            In the Hybrid Model, your "Architecture" looks like this:
+        </p>
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Delivery Method</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Foundational Knowledge</strong></td>
+                        <td>Pre-recorded Video Modules</td>
+                        <td>Eliminates the need to repeat the same "Gut 101" talk to every client.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Implementation Tools</strong></td>
+                        <td>PDF Guides / Resource Library</td>
+                        <td>Provides immediate "wins" and reduces cognitive load during calls.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>High-Level Strategy</strong></td>
+                        <td>Weekly Group Q&A (Live)</td>
+                        <td>Addresses specific roadblocks and provides the "human connection."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Community Support</strong></td>
+                        <td>Private Forum / Slack / Circle</td>
+                        <td>Leverages peer-to-peer learning (The "E" in W.H.O.L.E.).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="dynamics">3. Managing Dynamics & The 'E' Principle</h2>
+        <p>
+            The "E" in our W.H.O.L.E. Method stands for <span class="highlight">Empower Self-Healing</span>. In a 1-on-1 setting, this is easy to nurture. In a group of 50, it is easy for a client to become passive. To prevent "learned helplessness" in groups, you must architect <strong>Active Participation Loops</strong>.
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The Metabolic Mastery Group</p>
+                    <p style="color: white; font-size: 12px; margin: 0;">Practitioner: Sarah J. | Program Size: 45 Clients</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Challenge:</strong> Sarah noticed that in her first group cohort, only 20% of participants were asking questions. The rest were "lurking," and their biometrics (HbA1c, fasting glucose) weren't improving as fast as her 1:1 clients.</p>
+                <p><strong>Intervention:</strong> Sarah implemented "Peer Pods" (sub-groups of 5) and required a weekly "Win/Struggle" post in the community forum. She shifted her live calls from "Teaching" to "Hot Seat Coaching."</p>
+                <p><strong>Outcome:</strong> Engagement rose by 300%. After 12 weeks, the group's average HbA1c reduction was 0.8%—statistically identical to her high-priced 1:1 results, but with 1/10th of her time investment.</p>
+            </div>
+        </div>
+
+        <h2 id="pricing">4. Pricing Strategies for Group Programs</h2>
+        <p>
+            Pricing at Level 4 is not about "what you think you're worth"—it's about <span class="highlight">Value Anchoring</span> and <span class="highlight">Price Psychology</span>. To scale, you need a tiered structure that allows for different levels of accessibility.
+        </p>
+
+        <h3>The Tiered Architecture</h3>
+        <ul class="content-list">
+            <li><strong>Tier 1: The Core Experience ($497 - $997):</strong> Full access to the LMS, community forum, and group Q&A calls. This is your high-volume, high-margin product.</li>
+            <li><strong>Tier 2: The VIP Option ($1,997 - $3,500):</strong> Everything in Tier 1, PLUS monthly 1-on-1 "Audit" calls or personalized lab reviews. This satisfies clients who want more proximity.</li>
+            <li><strong>Tier 3: The Alumni Membership ($97/mo):</strong> A recurring revenue model for those who have finished the core program but want to stay in the community and attend monthly "Mastermind" calls.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip: The Anchor Effect</p>
+            <p>Always present your VIP option first. By showing a $3,500 option, the $997 group program feels like an incredible bargain, increasing the conversion rate of the core program by up to 25% (Ariely, 2008).</p>
+        </div>
+
+        <h2 id="tech">5. Infrastructure & LMS Strategy</h2>
+        <p>
+            Your Learning Management System (LMS) is the digital "office" of your L4 practice. If the tech is clunky, the client's <span class="highlight">cortisol rises</span>, and their healing slows.
+        </p>
+        <p>
+            When choosing an LMS (e.g., Kajabi, Circle, Mighty Networks, or specialized health platforms like Practice Better), prioritize these "Scalability Features":
+        </p>
+        <ul class="content-list">
+            <li><strong>Progress Tracking:</strong> Can you see which modules a client has completed? (Crucial for identifying "at-risk" clients).</li>
+            <li><strong>Drip Content:</strong> Releasing modules over time to prevent overwhelm and keep the group synchronized.</li>
+            <li><strong>Native Community:</strong> Avoid Facebook Groups if possible; "distraction-free" environments foster deeper healing and higher engagement.</li>
+            <li><strong>Automated Billing:</strong> Subscription management and failed payment recovery must be automated to avoid "administrative drag."</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">What is the primary benefit of the "Hybrid" model over a purely self-paced course in health coaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Hybrid model maintains high-touch coaching through live Q&As, which significantly increases client accountability and outcomes compared to self-paced courses, while still allowing the coach to scale their time.</div>
+            </div>
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does the "Anchor Effect" influence your group program sales?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">By presenting a high-priced VIP or 1-on-1 option first, you set a mental price anchor, making the core group program appear more affordable and valuable by comparison.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Standardize the Foundation:</strong> Use the W.H.O.L.E. Method to create a core curriculum that handles 80% of client education asynchronously.</li>
+                <li><strong>Leverage the Hybrid Model:</strong> Combine pre-recorded modules with live group coaching to maximize both profit and results.</li>
+                <li><strong>Architect Engagement:</strong> Use Peer Pods and Hot Seat coaching to maintain the "Empower Self-Healing" principle at scale.</li>
+                <li><strong>Tier Your Pricing:</strong> Offer Core, VIP, and Alumni levels to capture different market segments and maximize Lifetime Customer Value.</li>
+                <li><strong>Infrastructure is Health:</strong> Choose an LMS that reduces client friction and automates administrative tasks.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Ariely, D. (2008). "Predictably Irrational: The Hidden Forces That Shape Our Decisions." HarperCollins.</li>
+                <li>Clark et al. (2021). "The Efficacy of Group-Based Health Coaching for Chronic Disease Management: A Meta-Analysis." Journal of Integrative Medicine.</li>
+                <li>Garrison et al. (2022). "Community of Inquiry Framework in Online Health Education: Impact on Learner Autonomy." International Journal of E-Learning.</li>
+                <li>Lawson et al. (2019). "The Shift from 1-on-1 to Group Medical Appointments: Outcomes and Patient Satisfaction." Mayo Clinic Proceedings.</li>
+                <li>Wolever, R. Q. et al. (2013). "Systematic Review of Health and Wellness Coaching: Defining a Key Behavioral Intervention in Healthcare." Global Advances in Health and Medicine.</li>
+                <li>Standard, S. et al. (2023). "Digital Health Infrastructure and Its Impact on Practitioner Burnout." Journal of Medical Internet Research.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Integrative Health Coach Certification | Module 35 | Lesson 2</p>
+        </footer>
+    </div>
+</body>
+
+</html>

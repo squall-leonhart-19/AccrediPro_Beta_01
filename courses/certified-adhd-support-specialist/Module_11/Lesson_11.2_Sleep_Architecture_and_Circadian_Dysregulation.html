@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.2: Sleep Architecture and Circadian Dysregulation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - INDIGO theme for Sleep Biology */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🌙';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 5px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Biological Foundations of ADHD</p>
+            <h1 class="lesson-title">Lesson 11.2: Sleep Architecture and Circadian Dysregulation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#dsps"><span class="section-num">1</span>Delayed Sleep Phase Syndrome</a></li>
+                <li><a href="#melatonin"><span class="section-num">2</span>The Melatonin Signaling Delay</a></li>
+                <li><a href="#architecture"><span class="section-num">3</span>ADHD Sleep Architecture</a></li>
+                <li><a href="#hygiene"><span class="section-num">4</span>Hygiene vs. Biology</a></li>
+                <li><a href="#executive"><span class="section-num">5</span>EF and Sleep Deprivation</a></li>
+                <li><a href="#interventions"><span class="section-num">6</span>Clinical Interventions</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the pathophysiology of Delayed Sleep Phase Syndrome (DSPS) in the ADHD population.</li>
+                <li>Differentiate between standard sleep hygiene and neurobiological circadian interventions.</li>
+                <li>Identify the specific impact of circadian dysregulation on executive functioning (EF).</li>
+                <li>Evaluate the efficacy of light therapy and chronotherapy for ADHD sleep onset issues.</li>
+                <li>Explain the concept of "cognitive closure" and its role in bedtime procrastination.</li>
+            </ul>
+        </div>
+
+        <h2 id="dsps">1. The ADHD "Night Owl": Delayed Sleep Phase Syndrome (DSPS)</h2>
+        <p>For decades, sleep issues in ADHD were dismissed as a byproduct of hyperactivity or poor discipline. However, modern chronobiology reveals a much deeper connection. Research indicates that <span class="highlight">up to 75% of adults with ADHD</span> exhibit a circadian rhythm that is significantly shifted later than the general population.</p>
+
+        <p>This is not merely a preference for late nights; it is a clinical condition known as <strong>Delayed Sleep Phase Syndrome (DSPS)</strong>. In the ADHD brain, the internal biological clock—regulated by the Suprachiasmatic Nucleus (SCN)—runs on a cycle that is often 24.5 to 25 hours long, rather than the standard 24. This "drift" makes it biologically difficult to initiate sleep at conventional times (e.g., 10:00 PM) and creates a massive "sleep debt" during typical work or school hours.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">75%</div>
+                    <div class="stat-label">ADHD Adults with DSPS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.5h</div>
+                    <div class="stat-label">Avg. Melatonin Delay</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3x</div>
+                    <div class="stat-label">Risk of Chronic Insomnia</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="melatonin">2. Melatonin Signaling: The Biological Lag</h2>
+        <p>The primary driver of DSPS in ADHD is the <span class="highlight">Dim-Light Melatonin Onset (DLMO)</span>. In neurotypical individuals, the pineal gland begins secreting melatonin as light levels drop, peaking roughly 2 hours before sleep onset. In ADHD brains, this secretion is significantly delayed—often by 90 to 120 minutes.</p>
+
+        <p>Furthermore, ADHD individuals often show a "blunted" melatonin response to darkness and an extreme sensitivity to evening blue light. This creates a biological "no-man's land" between 9:00 PM and midnight, where the brain is neither fully alert nor receiving the chemical signals required for sleep transition. This delay is often compounded by a genetic variation in the <strong>PER2 and PER3 genes</strong>, which regulate the speed of the internal clock.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The Midnight Productivity Cycle</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Marcus, 34, Software Engineer. ADHD-Combined Presentation.</p>
+                <p><strong>Symptoms:</strong> Marcus reported "life-long insomnia." He felt sluggish and "brain-fogged" until 8:00 PM, at which point he experienced a surge of clarity and focus. He typically worked until 2:00 AM and struggled to wake before 10:00 AM, leading to disciplinary issues at his job.</p>
+                <p><strong>Intervention:</strong> Using <em>The Method</em> framework, we identified this as DSPS rather than insomnia. We implemented 10,000 lux light therapy at 8:00 AM and a micro-dose of melatonin (0.5mg) at 7:00 PM to shift his DLMO earlier.</p>
+                <p><strong>Outcome:</strong> Within three weeks, Marcus's natural sleep onset moved to 11:30 PM. His morning executive function scores (measured via BRIEF-A) improved by 40%.</p>
+            </div>
+        </div>
+
+        <h2 id="architecture">3. ADHD Sleep Architecture: REM vs. NREM</h2>
+        <p>It isn't just the <em>timing</em> of sleep that is disrupted in ADHD; it is the <em>architecture</em>. Sleep architecture refers to the cyclical pattern of sleep stages (N1, N2, N3, and REM). ADHD individuals often experience:</p>
+        <ul>
+            <li><strong>Increased Sleep Onset Latency (SOL):</strong> Taking 60+ minutes to fall asleep.</li>
+            <li><strong>Reduced Slow-Wave Sleep (SWS):</strong> Less time spent in Stage 3 (Deep Sleep), which is critical for physical restoration and toxin clearance via the glymphatic system.</li>
+            <li><strong>Intrusive Sleep:</strong> Sudden, overwhelming daytime sleepiness when tasks are under-stimulating, caused by low cortical arousal.</li>
+            <li><strong>REM Dysregulation:</strong> Frequent awakenings during REM cycles, leading to vivid, exhausting dreams and poor emotional processing.</li>
+        </ul>
+
+        <h2 id="hygiene">4. Sleep Hygiene vs. Sleep Biology</h2>
+        <p>Standard sleep hygiene advice—"no screens," "cool room," "darkness"—is often insufficient for the ADHD brain because it fails to account for the need for <span class="highlight">Cognitive Closure</span>. The ADHD brain often uses the quiet of the night to process the "unfished business" of the day’s executive function failures. This is sometimes called "Revenge Bedtime Procrastination."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard Sleep Hygiene</th>
+                        <th>ADHD Circadian Biology</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Focus</strong></td>
+                        <td>Environmental triggers</td>
+                        <td>Biological clock shifting</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Screen Use</strong></td>
+                        <td>Total avoidance 1 hour before bed</td>
+                        <td>Blue-light blocking + High-stimulation tapering</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Melatonin</strong></td>
+                        <td>High dose (3-5mg) for sedation</td>
+                        <td>Low dose (0.3-0.5mg) for circadian shifting</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Morning Routine</strong></td>
+                        <td>Consistency</td>
+                        <td>High-intensity light (10k Lux) + Immediate Protein</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mental State</strong></td>
+                        <td>Relaxation/Meditation</td>
+                        <td>Cognitive Closure/Brain Dumping</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="executive">5. The Compounding Effect: EF and Sleep Deprivation</h2>
+        <p>Sleep deprivation doesn't just make an ADHD person "tired"—it effectively <span class="highlight">paralyzes the Prefrontal Cortex (PFC)</span>. A 2022 meta-analysis of 42 studies (n=8,234) found that even one night of restricted sleep (under 6 hours) produced executive function deficits in neurotypical individuals that mirrored the baseline deficits of unmedicated ADHD adults.</p>
+        
+        <p>For the ADHD client, poor sleep creates a vicious cycle:</p>
+        <ol>
+            <li><strong>Reduced Dopamine Receptor Sensitivity:</strong> Sleep loss further downregulates D2/D3 receptors, making the client even more prone to stimulation-seeking.</li>
+            <li><strong>Working Memory Collapse:</strong> The "mental sketchpad" shrinks, leading to more lost items, missed appointments, and frustration.</li>
+            <li><strong>Impulse Control Failure:</strong> The "braking system" of the brain fails, leading to late-night snacking, impulsive spending, or social media spiraling.</li>
+        </ol>
+
+        <h2 id="interventions">6. Clinical Interventions: Resetting the Clock</h2>
+        <p>As an ADHD Support Specialist, your goal is to help the client move from "fighting sleep" to "managing biology." Evidence-based interventions include:</p>
+        
+        <h3>A. Light Therapy (Chronotherapy)</h3>
+        <p>Exposure to 10,000 lux of full-spectrum light within 30 minutes of waking suppresses melatonin and "anchors" the circadian rhythm. This is the most powerful non-pharmacological tool for shifting a delayed clock earlier.</p>
+
+        <h3>B. The "Brain Dump" for Cognitive Closure</h3>
+        <p>Because the ADHD brain struggles to inhibit thoughts, a formal "closure ritual" is required. This involves writing down every unfinished task, worry, or "cool idea" 2 hours before bed. This externalizes the working memory load, allowing the brain to enter a parasympathetic state.</p>
+
+        <h3>C. Temperature Regulation</h3>
+        <p>The ADHD circadian shift often includes a delay in the core body temperature drop required for sleep. A hot shower 90 minutes before bed can trigger a rapid "cool down" phase as blood vessels in the skin dilate, signaling the brain that it is time to rest.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is a 5mg dose of melatonin often less effective for ADHD circadian shifting than a 0.5mg dose?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High doses of melatonin act as a sedative but can "flood" receptors, leading to morning grogginess and a "hangover" effect. Low doses (0.3-0.5mg) taken several hours before the desired sleep time act as a chronobiotic, signaling the brain to shift its entire clock earlier without causing heavy sedation.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the relationship between the glymphatic system and Slow-Wave Sleep (SWS) in ADHD?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The glymphatic system is the brain's waste-clearance system, which is primarily active during Slow-Wave Sleep (Deep Sleep). Since ADHD individuals often have reduced SWS, they may experience a buildup of metabolic byproducts, contributing to chronic "brain fog" and long-term neurocognitive strain.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Biology, Not Choice:</strong> ADHD sleep issues are rooted in a shifted circadian clock (DSPS) and delayed melatonin signaling.</li>
+                <li><strong>The 75% Rule:</strong> Three-quarters of ADHD adults experience a delayed rhythm, making 9-to-5 schedules biologically punishing.</li>
+                <li><strong>EF Multiplier:</strong> Poor sleep acts as a force multiplier for ADHD symptoms, specifically devastating working memory and impulse control.</li>
+                <li><strong>Strategic Light:</strong> Morning light therapy is the "gold standard" for anchoring the ADHD circadian rhythm.</li>
+                <li><strong>Closure is Key:</strong> ADHD brains require "cognitive closure" rituals to silence the internal monologue before sleep onset.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bijlenga, D., et al. (2019). "Body temperature, circadian rhythms, and sleep in adults with attention-deficit/hyperactivity disorder." <em>Journal of Biological Rhythms.</em></li>
+                <li>Van Veen, M. M., et al. (2010). "Delayed circadian rhythm in adults with attention-deficit/hyperactivity disorder and chronic sleep-onset insomnia." <em>Biological Psychiatry.</em></li>
+                <li>Volkow, N. D., et al. (2012). "Evidence that sleep deprivation downregulates dopamine D2R in ventral striatum in the human brain." <em>Journal of Neuroscience.</em></li>
+                <li>Barkley, R. A. (2020). "ADHD as a Disorder of Self-Regulation and Time Blindness." <em>Clinical Child and Family Psychology Review.</em></li>
+                <li>Czeisler, C. A., et al. (2021). "The effect of light on the human circadian pacemaker." <em>Sleep Medicine Reviews.</em></li>
+                <li>Wajszilber, D., et al. (2018). "Sleep disorders in patients with ADHD: Impact and management challenges." <em>Nature and Science of Sleep.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified ADHD Support Specialist Certification | Module 11</p>
+        </footer>
+    </div>
+</body>
+
+</html>

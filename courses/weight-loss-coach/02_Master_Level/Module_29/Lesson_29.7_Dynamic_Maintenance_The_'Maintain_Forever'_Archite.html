@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.7: Dynamic Maintenance: The 'Maintain Forever' Architecture (M)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Mastery/Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #B8860B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #B8860B;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #1e293b;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e293b;
+            color: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #334155;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stat-highlight { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: L3 Master Integration</p>
+            <h1 class="lesson-title">Lesson 7: Dynamic Maintenance: The 'Maintain Forever' Architecture (M)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Pillar: Maintain Forever (M)</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Transitioning to Legacy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Maintenance Architecture</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Advanced Monitoring Tools</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Preventing Relapse Drift</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Metabolic Buffer</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Adaptive Eating Flexibility</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the psychological shift from "weight loss" to "health legacy."</li>
+                <li>Implement the "Maintenance Architecture" using flexible constraints rather than rigid rules.</li>
+                <li>Utilize objective bio-feedback tools (CGM, RMR, DEXA) for long-term health surveillance.</li>
+                <li>Design a "Relapse Drift" prevention protocol using periodic T and R pillar check-ins.</li>
+                <li>Develop a "Metabolic Buffer" to increase physiological resilience against lifestyle stressors.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Transitioning from 'Loss' to 'Legacy'</h2>
+        <p>The greatest failure in the weight management industry is the conceptualization of the "finish line." For most clients, reaching their goal weight triggers a psychological "release" that paradoxically increases the risk of regain. Within the <span class="highlight">T.R.A.N.S.F.O.R.M. Methodology™</span>, we view the end of the loss phase not as a conclusion, but as the transition to <strong>Legacy</strong>.</p>
+
+        <p>This shift requires moving from an <span class="highlight">achievement-oriented mindset</span> (hitting a number) to an <span class="highlight">identity-oriented mindset</span> (living as a healthy person). Research indicates that individuals who maintain weight loss for more than 2-5 years undergo a neurological shift where "healthy" behaviors require less executive function and become part of their "default mode network."</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">80%</div>
+            <p class="stat-desc">A meta-analysis of 29 long-term weight loss studies found that more than 80% of individuals regain a significant portion of their lost weight within 5 years. The "Maintain Forever" architecture is designed to reverse this statistic.</p>
+        </div>
+
+        <h2 id="section2">2. Building the 'Maintenance Architecture'</h2>
+        <p>Maintenance is not "dieting on fewer calories." It is a distinct physiological and behavioral state. The <strong>Maintenance Architecture</strong> replaces the rigid restrictions of a deficit phase with <span class="highlight">Flexible Constraints</span>. This means establishing "guardrails" that allow for life's fluctuations while preventing a total systemic collapse.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Weight Loss Phase</th>
+                        <th>Legacy Maintenance Phase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Adipose Tissue Reduction</td>
+                        <td>Metabolic Homeostasis & Vitality</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Caloric Target</strong></td>
+                        <td>Planned Deficit (20-30%)</td>
+                        <td>Dynamic Equilibrium (Ad Libitum)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monitoring</strong></td>
+                        <td>High Frequency (Daily/Weekly)</td>
+                        <td>Strategic Surveillance (Monthly/Quarterly)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dietary Style</strong></td>
+                        <td>Structured & Targeted</td>
+                        <td>Flexible Constraints & Intuitive Alignment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Habit Focus</strong></td>
+                        <td>Establishing New Patterns</td>
+                        <td>Defending Established Patterns</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Monitoring Tools for Long-Term Metabolic Health</h2>
+        <p>In the maintenance phase, we transition from tracking "inputs" (calories) to tracking "outcomes" (metabolic health). As a Master Coach, you will guide clients to use high-level clinical tools to ensure their internal "engine" is still running optimally.</p>
+
+        <h3>The Surveillance Toolkit:</h3>
+        <ul>
+            <li><strong>Continuous Glucose Monitors (CGM):</strong> Used quarterly to ensure <span class="highlight">glycemic variability</span> remains low, even as dietary flexibility increases.</li>
+            <li><strong>Resting Metabolic Rate (RMR) Re-testing:</strong> Performed every 6 months to detect <span class="highlight">adaptive thermogenesis</span> early. If RMR drops significantly, we immediately re-engage the "S" (Strengthen) pillar.</li>
+            <li><strong>DEXA Scans:</strong> The ultimate tool for monitoring body composition. We look for "Sarcopenic Regain"—where a client maintains weight but loses muscle and gains fat.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The 'Metabolic Drift' Detection</p>
+                    <p class="subtitle">Client: Elena, 48 | Goal: Maintain 45lb loss</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena R.</h4>
+                        <p>Maintained weight for 14 months, but reported feeling "softer" and more fatigued.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Elena’s weight was stable, but her quarterly DEXA showed a 3lb loss in Lean Body Mass (LBM) and a 3.5lb gain in fat mass. Her RMR re-test showed a 180-calorie decline from her post-loss baseline.</p>
+                <p><strong>Outcome:</strong> Instead of cutting calories, we re-integrated <strong>Module 5 (Strengthen)</strong> and <strong>Module 4 (Nourish: Protein Leverage)</strong>. Within 12 weeks, her LBM returned to baseline, her RMR increased by 210 kcal, and her "fatigue" vanished without adjusting her total caloric intake.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Preventing 'Relapse Drift' through Pillar Check-ins</h2>
+        <p>Relapse rarely happens overnight; it occurs via <span class="highlight">Relapse Drift</span>—the slow erosion of habits. To combat this, the Master Integration approach uses the <strong>T</strong> and <strong>R</strong> pillars as periodic "anchors."</p>
+
+        <h3>The 'T' (Test) Anchor: Quarterly Metabolic Audit</h3>
+        <p>Every 90 days, the client performs a "Test" week. They track everything for 7 days—not to restrict, but to gather data. This prevents "portion creep" and ensures they are still hitting their protein and fiber targets established in Module 4.</p>
+
+        <h3>The 'R' (Reset) Anchor: The Dopamine Cleanse</h3>
+        <p>If a client notices increased cravings or emotional eating (Module 2), they perform a 3-day "Habit Reset." This involves removing ultra-processed "trigger foods" to recalibrate the brain's reward centers before a full relapse occurs.</p>
+
+        <h2 id="section5">5. Establishing the 'Metabolic Buffer'</h2>
+        <p>A "Metabolic Buffer" is the physiological capacity to handle dietary or lifestyle stressors without weight gain. This is the difference between a "fragile" metabolism (where one "cheat meal" causes a 3lb gain) and a "resilient" metabolism.</p>
+
+        <p>Building the buffer involves:
+            <ul>
+                <li><strong>Mitochondrial Density:</strong> Achieved through consistent Zone 2 and HIIT training (Module 5 & 7).</li>
+                <li><strong>Muscle Mass:</strong> Muscle acts as a "glucose sink," soaking up excess carbohydrates before they can be converted to fat.</li>
+                <li><strong>Metabolic Flexibility:</strong> The ability to switch efficiently between burning glucose and burning fat (Module 1).</li>
+            </ul>
+        </p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 5-Pound Guardrail Strategy</div>
+            <p class="principle-text">We establish a "Red Zone" weight—typically 5 lbs above the maintenance goal. If the client hits this number, they don't "panic-diet"; they revert to the <strong>T.R.A.N.S.F.O.R.M. Protocol</strong> for 14 days to reset their biology.</p>
+        </div>
+
+        <h2 id="section6">6. Adaptive Eating: Flexibility in Real-World Scenarios</h2>
+        <p>True maintenance requires the ability to navigate social events, travel, and holidays without guilt or physiological disaster. This is where <span class="highlight">Adaptive Eating</span> comes in. It is the integration of Module 4 (Nourish) and Module 8 (Rewire Mindset).</p>
+
+        <p>Mastering adaptive eating means moving from "All or Nothing" to "Always Something." Even in a suboptimal environment (e.g., an airport or a wedding), the "Maintain Forever" architect looks for the <span class="highlight">Minimum Effective Dose</span> of health:
+            <ul>
+                <li><strong>The Protein-First Rule:</strong> Always consume 30g of protein before indulging in treats.</li>
+                <li><strong>The Fiber Buffer:</strong> Using a fiber supplement or large salad before a large meal to slow gastric emptying.</li>
+                <li><strong>The 10-Minute Walk:</strong> Utilizing NEAT (Module 1) post-meal to blunt the glucose spike.</li>
+            </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of the 'Maintain Forever' Architecture.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. What is "Sarcopenic Regain" and why is it dangerous during the maintenance phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Sarcopenic Regain occurs when a client maintains their scale weight but loses lean muscle mass while gaining fat mass. It is dangerous because it lowers the Resting Metabolic Rate (RMR), making future weight maintenance significantly more difficult and increasing metabolic risk.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does a "Metabolic Buffer" protect a client from weight regain during a vacation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A metabolic buffer (built through muscle mass and mitochondrial health) increases the body's capacity to oxidize excess fuel (glucose/fats) and improves insulin sensitivity, allowing for temporary caloric surpluses without immediate storage as adipose tissue.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li>Maintenance is a separate physiological state requiring identity-level shifts from "Loss" to "Legacy."</li>
+                <li>Flexible Constraints are more effective for long-term adherence than rigid dietary rules.</li>
+                <li>Objective data (RMR, DEXA, CGM) is the "early warning system" for metabolic drift.</li>
+                <li>Periodic "Pillar Anchors" (T and R check-ins) prevent the slow erosion of lifestyle habits.</li>
+                <li>The "5-Pound Guardrail" provides a clear, non-emotional action plan for weight fluctuations.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hall, K. D., & Kahan, S. (2018). "Maintenance of Lost Weight and Long-Term Management of Obesity." <em>Medical Clinics of North America.</em></li>
+                <li>Wing, R. R., & Phelan, S. (2005). "Long-term weight loss maintenance." <em>The American Journal of Clinical Nutrition.</em></li>
+                <li>Greaves, C., et al. (2011). "Systematic review of reviews of intervention components associated with increased effectiveness in dietary and physical activity interventions." <em>BMC Public Health.</em></li>
+                <li>Anastasiou, C. A., et al. (2015). "Weight loss maintenance: A review of evidence-based strategies." <em>Current Obesity Reports.</em></li>
+                <li>Ostendorf, D. M., et al. (2019). "Physical Activity Throughout the Day and Body Weight Management: A Systematic Review." <em>Obesity.</em></li>
+                <li>Lean, M. E., et al. (2018). "Durability of a primary care-led weight-management intervention for remission of type 2 diabetes: 2-year results of the DiRECT open-label, cluster-randomised trial." <em>The Lancet Diabetes & Endocrinology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. | T.R.A.N.S.F.O.R.M. Methodology™</p>
+        </footer>
+    </div>
+</body>
+
+</html>

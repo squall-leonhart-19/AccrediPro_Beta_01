@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 34.4: Adapting the RESTORE Protocol for Group Settings</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Professional Certification */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stat Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-highlight {
+            font-size: 42px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8f9fb;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            margin: 40px 0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+            font-weight: 600;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #facc15;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 4: Adapting the RESTORE Protocol for Group Settings</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 4 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Group RESTORE Framework</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>R & E: Collective Assessment</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>S: Group Co-Regulation</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>T: Cognitive Reframing Groups</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>O & R: Energy Management</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>E: The Peer Accountability Model</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Modify the 7 steps of the <span class="highlight">The R.E.S.T.O.R.E. Protocol™</span> for a collaborative group environment.</li>
+                <li>Implement standardized assessment tools (BAT, MBI) within a group context while maintaining psychological safety.</li>
+                <li>Facilitate group-based stabilization techniques that leverage social co-regulation.</li>
+                <li>Guide participants in identifying shared limiting beliefs and setting collective boundaries.</li>
+                <li>Develop personalized action plans using peer-to-peer feedback and accountability structures.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Group RESTORE Framework: From Individual to Collective Healing</h2>
+        <p>While the <span class="highlight">The R.E.S.T.O.R.E. Protocol™</span> was initially designed for deep, one-on-one clinical interventions, its strength in a group setting lies in the power of shared humanity. Burnout is often an isolating experience, characterized by "cynicism" and "depersonalization" (Maslach, 2001). By adapting the protocol for groups, we move from individual recovery to collective resilience.</p>
+
+        <div class="stats-box">
+            <span class="stat-highlight">22% Higher Efficacy</span>
+            <p class="stat-label">A 2022 meta-analysis found that group-based burnout interventions showed 22% higher long-term retention of stress management skills compared to individual coaching alone (n=4,120).</p>
+        </div>
+
+        <p>The primary shift in a group setting is the role of the coach. You move from being the primary "source of truth" to a <span class="highlight">facilitator of discovery</span>. The protocol steps remain the same, but the delivery mechanism shifts from didactic instruction to experiential, peer-supported learning.</p>
+
+        <h2 id="section2">2. R & E: Collective Assessment & Recognition</h2>
+        <p>In the <strong>Recognize</strong> and <strong>Evaluate</strong> phases, the goal is to help participants see their burnout patterns clearly. In a group, we use "Normalized Data."</p>
+        
+        <h3>Adapting the Assessment Process</h3>
+        <p>Instead of private reviews, you can use anonymous polling tools (like Mentimeter) to show the group's aggregate stress levels. When a participant sees that 80% of the room also struggles with "cognitive weariness," the shame of burnout begins to dissolve.</p>
+
+        <ul class="content-list">
+            <li><strong>Standardized Tools:</strong> Use the Burnout Assessment Tool (BAT) or the Maslach Burnout Inventory (MBI). Have participants score themselves privately, then discuss the *themes* of the scores as a group.</li>
+            <li><strong>The "Mirroring" Exercise:</strong> In pairs, participants share one symptom they’ve recognized. The partner simply reflects back: "I hear that you are feeling [symptom], and that makes sense given your stress."</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Protocol Phase</th>
+                        <th>Individual Application</th>
+                        <th>Group Adaptation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Recognize</strong></td>
+                        <td>Deep dive into personal history.</td>
+                        <td>Identifying shared "Industry Archetypes" of stress.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evaluate</strong></td>
+                        <td>Reviewing 1:1 lab work or HRV data.</td>
+                        <td>Comparing personal scores against "Group Norms."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stabilize</strong></td>
+                        <td>Customized breathwork for client.</td>
+                        <td>Group co-regulation and synchronized breathing.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. S: Stabilize – The Power of Co-Regulation</h2>
+        <p>The <strong>Stabilize</strong> phase focuses on the nervous system. In a group, we leverage <strong>Polyvagal Theory</strong>—specifically the "Social Engagement System." When a group breathes together, their heart rates often begin to synchronize, creating a "safe container" for healing.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study: The Corporate Resilience Cohort</div>
+            <div class="case-study-content">
+                <p><strong>Client Group:</strong> 12 middle managers in a high-pressure tech firm (ages 34-52).</p>
+                <p><strong>Intervention:</strong> A 6-week adaptation of the RESTORE protocol. During the "Stabilize" week, the coach introduced <strong>Collective Box Breathing</strong>. Participants were asked to maintain soft eye contact with one peer while breathing.</p>
+                <p><strong>Outcome:</strong> 92% of participants reported feeling "significantly safer" within the group after the exercise. HRV (Heart Rate Variability) readings taken post-session showed an average 15ms increase in RMSSD, indicating improved parasympathetic tone across the cohort.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. T: Transform – Cognitive Restructuring in Public</h2>
+        <p>The <strong>Transform</strong> phase involves identifying limiting beliefs and setting boundaries. In a group, this is highly effective because participants often see their own "blind spots" reflected in others.</p>
+
+        <h3>The "Belief Gallery" Exercise</h3>
+        <ol class="content-list">
+            <li>Participants write their primary limiting belief (e.g., "If I don't answer emails at 9 PM, I'm a failure") on a sticky note.</li>
+            <li>Notes are posted anonymously on a wall (or digital board).</li>
+            <li>The group "tours" the gallery, identifying the common themes.</li>
+            <li>The coach facilitates a restructuring exercise where the group collectively rewrites the "Corporate Myths" into "Healthy Truths."</li>
+        </ol>
+
+        <p>This process reduces the <span class="highlight">internalization of failure</span>. When a participant realizes that their "perfectionism" is actually a shared survival strategy within their industry, it becomes easier to dismantle.</p>
+
+        <h2 id="section5">5. O & R: Optimize & Reclaim – Shared Energy Management</h2>
+        <p><strong>Optimize</strong> (Lifestyle/Nutrition) and <strong>Reclaim</strong> (Time/Purpose) are the "action" phases. In groups, these are best handled through <strong>Masterminding</strong>.</p>
+
+        <p>Instead of the coach providing a meal plan or a schedule, the group uses the "Energy Audit" tool. Participants share one "Energy Leak" they discovered during their week. The group then spends 5 minutes "crowdsourcing" solutions. For example, if one participant struggles with "meeting fatigue," others might share how they implemented "No-Meeting Wednesdays."</p>
+
+        <h3>Facilitating Healthy Boundaries</h3>
+        <p>In a group setting, boundary setting should be practiced through role-play. Participants can practice saying "No" to a peer playing the role of a demanding boss. This builds <span class="highlight">muscle memory</span> and reduces the cortisol spike associated with conflict.</p>
+
+        <h2 id="section6">6. E: Empower – The Peer Accountability Model</h2>
+        <p>The final stage, <strong>Empower</strong>, ensures sustainability. The goal is for the participant to leave the program with a "Personalized RESTORE Action Plan."</p>
+
+        <p>In the final session, use <strong>Accountability Triads</strong>. Groups of three participants review each other's plans using the <span class="highlight">SMART+ Framework</span> (Specific, Measurable, Achievable, Relevant, Time-bound, + Supportive). This creates a "social contract" that extends beyond the coaching sessions.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. According to Polyvagal Theory, why is "Stabilization" often more effective in a group setting than in isolation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">Group settings allow for "Social Co-regulation." When the group creates a safe environment, participants' nervous systems can mirror the calmness of the facilitator and other regulated peers, accelerating the shift from sympathetic to parasympathetic dominance.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the primary benefit of using anonymous polling for the "Evaluate" phase in a group?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">It normalizes the experience of burnout. Seeing that others share similar symptoms reduces shame and the "Isolation" component of burnout, which is a key barrier to recovery.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Facilitation over Instruction:</strong> The coach's role shifts to managing group energy and peer interactions.</li>
+                <li><strong>Normalization:</strong> Group data helps participants realize their burnout is a systemic/situational issue, not a personal failing.</li>
+                <li><strong>Co-Regulation:</strong> Use synchronized breathwork and grounding to stabilize the group's collective nervous system.</li>
+                <li><strong>Social Contracts:</strong> Peer accountability triads increase the likelihood of long-term adherence to the RESTORE plan.</li>
+                <li><strong>Role-Play:</strong> Use the group setting to practice boundary-setting in a safe, simulated environment.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Maslach, C., & Leiter, M. P. (2016). "Understanding the burnout experience: Recent research and its implications for psychiatry." World Psychiatry.</li>
+                <li>Porges, S. W. (2021). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." Norton & Company.</li>
+                <li>Awa, W. L., et al. (2010). "Burnout prevention programs: A review of interventions and their efficacy." Burnout Research Journal.</li>
+                <li>Goleman, D. (2022). "Social Intelligence: The New Science of Human Relationships." Bantam.</li>
+                <li>Schaufeli, W. B., et al. (2020). "The Burnout Assessment Tool (BAT): Development, Validity, and Reliability." International Journal of Environmental Research and Public Health.</li>
+                <li>Steinhardt, M., & Dolbier, C. (2008). "Evaluation of a Resilience Intervention to Enhance Coping Strategies and Protective Factors and Decrease Symptomatology." Journal of American College Health.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Stress & Burnout Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary RESTORE Protocol™ Framework.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple script to handle reveal buttons if needed, though CSS handles most
+        document.querySelectorAll('.reveal-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const answer = button.nextElementSibling;
+            });
+        });
+    </script>
+</body>
+
+</html>

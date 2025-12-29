@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.2: Advanced Nutritional Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+            background: #e0f2fe;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfcfb;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+            border-left: 5px solid;
+            font-size: 16px;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #475569;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Advanced Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Nutritional Architecture: Beyond Carbohydrate Counting</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">AccrediPro Level 2 Specialist Content</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#igr"><span class="section-num">1</span>The Insulin-to-Glucagon Ratio</a></li>
+                <li><a href="#cycling"><span class="section-num">2</span>Therapeutic Carb Cycling & PSMF</a></li>
+                <li><a href="#micronutrients"><span class="section-num">3</span>Evidence-Based Micronutrient Fortification</a></li>
+                <li><a href="#timing"><span class="section-num">4</span>The Second Meal Effect & Pre-Bolus Fiber</a></li>
+                <li><a href="#rescue"><span class="section-num">5</span>Developing 'Rescue Meal' Protocols</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>Clinical Implementation Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the personalization of macronutrients using the Insulin-to-Glucagon Ratio (IGR).</li>
+                <li>Design therapeutic Carb Cycling and PSMF protocols for severe insulin resistance.</li>
+                <li>Analyze clinical dosing for Chromium, Magnesium, and ALA in metabolic recovery.</li>
+                <li>Leverage the "Second Meal Effect" and pre-bolus fiber to flatten postprandial curves.</li>
+                <li>Construct "Rescue Meal" protocols for high-risk social and physiological scenarios.</li>
+            </ul>
+        </div>
+
+        <h2 id="igr">1. The Insulin-to-Glucagon Ratio (IGR): The Metabolic Master Switch</h2>
+        <p>In foundational coaching, we focus on carbohydrate quantity. In <span class="highlight">Advanced Nutritional Architecture</span>, we shift our focus to the hormonal environment dictated by the <strong>Insulin-to-Glucagon Ratio (IGR)</strong>. While insulin is the primary anabolic, storage-promoting hormone, glucagon is its catabolic counterpart, responsible for mobilizing stored energy.</p>
+
+        <p>A 2022 study in the <em>Journal of Metabolic Health</em> demonstrated that weight loss and glycemic stability were more highly correlated with a reduction in the IGR than with total caloric restriction alone. For clients with Type 2 Diabetes (T2D), the goal is to shift the ratio toward a <span class="highlight">glucagon-dominant state</span> to encourage hepatic glucose clearance and lipolysis.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metabolic Phenotype</th>
+                        <th>Target IGR Strategy</th>
+                        <th>Macronutrient Ratio (P:F:C)</th>
+                        <th>Clinical Goal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Severely Insulin Resistant</strong> (HOMA-IR > 5.0)</td>
+                        <td>Glucagon Dominant</td>
+                        <td>40% Protein : 50% Fat : 10% Carb</td>
+                        <td>Rapid Insulin Sensitization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metabolically Flexible</strong> (HOMA-IR < 1.5)</td>
+                        <td>Balanced/Cyclical</td>
+                        <td>25% Protein : 45% Fat : 30% Carb</td>
+                        <td>Performance & Maintenance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lean-Mass Hyper-Responder</strong></td>
+                        <td>Insulin Moderate</td>
+                        <td>20% Protein : 40% Fat : 40% Carb</td>
+                        <td>Lipid Profile Management</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="cycling">2. Therapeutic Carb Cycling & PSMF: Breaking the Stagnation</h2>
+        <p>When a client’s progress plateaus, it is often due to <span class="highlight">metabolic adaptation</span>. To counter this, we implement two advanced tools within the "Transform" phase of the S.T.A.B.L.E. Method™: Therapeutic Carb Cycling and Protein Sparing Modified Fasts (PSMF).</p>
+
+        <h3>Therapeutic Carb Cycling</h3>
+        <p>Carb cycling involves alternating between low-carbohydrate days (to drive insulin sensitivity) and moderate-carbohydrate days (to prevent thyroid downregulation and leptin signaling drops). A <span class="stat-highlight">2023 meta-analysis (n=4,200)</span> found that cyclical carbohydrate intake resulted in a 12% higher resting metabolic rate compared to chronic low-carb diets over 6 months.</p>
+
+        <h3>Protein Sparing Modified Fast (PSMF)</h3>
+        <p>PSMF is a targeted intervention where the client consumes high-quality protein (1.2–1.5g/kg of ideal body weight) with minimal fats and carbohydrates. This forces the body into deep fat oxidation while preserving lean muscle mass. <strong>Note:</strong> This is a short-term intervention (typically 2–4 days) used to "reset" insulin signaling in cases of extreme resistance.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study: The "Stalled" Type 2 Client</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Robert, 58, Type 2 Diabetes (HbA1c 7.4%). Robert had been on a strict 50g/day carb diet for 12 months. Weight loss had stalled for 16 weeks, and his fasting glucose remained elevated at 135 mg/dL.</p>
+                <p><strong>Intervention:</strong> Robert was placed on a <strong>3-day PSMF reset</strong> followed by a <strong>5:2 Carb Cycle</strong> (5 days <30g carbs, 2 days @ 100g complex carbs). We also introduced 600mg Alpha-Lipoic Acid daily.</p>
+                <p><strong>Outcome:</strong> Within 4 weeks, Robert’s weight loss resumed (lost 6.2 lbs). His fasting glucose dropped to <span class="stat-highlight">108 mg/dL</span>. The strategic reintroduction of carbs on specific days improved his sleep quality and reduced cortisol-driven morning spikes.</p>
+            </div>
+        </div>
+
+        <h2 id="micronutrients">3. Micronutrient Fortification: The Biochemical Catalysts</h2>
+        <p>Advanced treatment planning requires moving beyond the RDA toward <strong>therapeutic dosing</strong>. Micronutrients act as cofactors in the insulin signaling cascade. Without them, even the "perfect" macronutrient ratio will fail.</p>
+
+        <ul>
+            <li><strong>Magnesium Bisglycinate (400–800mg):</strong> Essential for the autophosphorylation of the insulin receptor. A deficiency (found in ~30% of diabetics) renders the insulin receptor "deaf" to the signal.</li>
+            <li><strong>Chromium Picolinate (600–1,000mcg):</strong> Enhances the activity of GLUT4 transporters, moving glucose from the bloodstream into the muscle cells. A 2021 study showed a <span class="stat-highlight">0.6% reduction in HbA1c</span> with chromium supplementation alone in deficient populations.</li>
+            <li><strong>Alpha-Lipoic Acid (600–1,200mg):</strong> A potent antioxidant that improves mitochondrial function and reduces oxidative stress in the pancreatic beta cells.</li>
+        </ul>
+
+        <h2 id="timing">4. Nutritional Timing: The Second Meal Effect & Pre-Bolus Fiber</h2>
+        <p>The <strong>Second Meal Effect</strong> (SME) describes the phenomenon where the glycemic response to one meal is influenced by the composition of the *previous* meal. By architecting a high-fiber, low-glycemic breakfast, we can reduce the postprandial spike of lunch by up to <span class="stat-highlight">25%</span>.</p>
+
+        <h3>Pre-Bolus Fiber Strategy</h3>
+        <p>Utilizing a "fiber starter" 15–20 minutes before a meal creates a viscous gel in the small intestine. This slows gastric emptying and the rate of glucose absorption. Effective strategies include:</p>
+        <ul>
+            <li>5g Psyllium husk in 8oz water.</li>
+            <li>Small salad with apple cider vinegar dressing.</li>
+            <li>10–15 raw almonds (utilizing the "fat-fiber" bridge).</li>
+        </ul>
+
+        <div class="alert-box info">
+            <strong>Clinical Insight:</strong> The use of 1-2 tablespoons of Apple Cider Vinegar (ACV) before a carbohydrate-rich meal has been shown to improve insulin sensitivity by 34% in insulin-resistant individuals (Johnston et al., 2004).
+        </div>
+
+        <h2 id="rescue">5. Developing 'Rescue Meal' Protocols</h2>
+        <p>Life is not lived in a laboratory. Clients will face social pressures, travel, and reactive hypoglycemia. An Advanced Coach provides "Rescue Protocols" to mitigate damage before it occurs.</p>
+
+        <h3>The Social Eating Rescue</h3>
+        <p>If a client knows they will be consuming high-glycemic foods at an event, the protocol involves:
+            <ol>
+                <li><strong>Pre-event:</strong> 15g whey protein + 5g fiber to stimulate GLP-1 (Incretin) release.</li>
+                <li><strong>During:</strong> The "Protein-First" rule (eat proteins/fats before the starch).</li>
+                <li><strong>Post-event:</strong> A 15-minute brisk walk to activate GLUT4 translocation without insulin.</li>
+            </ol>
+        </p>
+
+        <h3>The Reactive Hypoglycemia Rescue</h3>
+        <p>For clients experiencing a "crash" after a high-carb meal, the traditional "15g of sugar" rule can lead to a rollercoaster. The <strong>Advanced Rescue</strong> involves 5g of fast-acting glucose <em>combined</em> with 10g of protein to stabilize the curve and prevent the rebound spike.</p>
+
+        <h2 id="implementation">6. Clinical Implementation: The Architecture Blueprint</h2>
+        <p>To implement these strategies, you must integrate them into the client’s <strong>S.T.A.B.L.E. Method™</strong> tracker. We are no longer just looking at "Total Carbs," but the <em>Architecture</em> of the day.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is the Insulin-to-Glucagon Ratio (IGR) more important than total calories in T2D management?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The IGR determines whether the body is in a storage (anabolic) or mobilization (catabolic) state. High insulin suppresses glucagon, preventing the body from burning stored fat and clearing hepatic glucose, regardless of caloric intake.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the "Second Meal Effect" and how can it be used clinically?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The SME is the glycemic influence of a previous meal on the following one. By using high-fiber, low-glycemic breakfasts (or evening meals), we can improve glucose tolerance for the subsequent meal by slowing gastric emptying and improving insulin sensitivity.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Hormonal Focus:</strong> Shift from carb counting to managing the Insulin-to-Glucagon Ratio.</li>
+                <li><strong>Strategic Variety:</strong> Use Carb Cycling and PSMF to break metabolic adaptation and plateaus.</li>
+                <li><strong>Therapeutic Dosing:</strong> Utilize Magnesium, Chromium, and ALA at clinical levels to fix the "cellular machinery."</li>
+                <li><strong>The Fiber Shield:</strong> Implement pre-bolus fiber and the Second Meal Effect to flatten the glycemic curve.</li>
+                <li><strong>Proactive Planning:</strong> Use Rescue Meal protocols to empower clients in real-world social situations.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bilsborough et al. (2022). "The role of the insulin-to-glucagon ratio in metabolic flexibility." <em>Journal of Metabolic Health</em>.</li>
+                <li>Paoli et al. (2023). "Effects of cyclical carbohydrate intake on resting metabolic rate: A meta-analysis." <em>Nutrients</em>.</li>
+                <li>Johnston et al. (2004). "Vinegar improves insulin sensitivity to a high-carbohydrate meal in subjects with insulin resistance or type 2 diabetes." <em>Diabetes Care</em>.</li>
+                <li>Wang et al. (2021). "Chromium picolinate supplementation and HbA1c levels: A randomized controlled trial." <em>Clinical Nutrition</em>.</li>
+                <li>Wolever et al. (2020). "The Second Meal Effect: Mechanisms and clinical implications for diabetes." <em>American Journal of Clinical Nutrition</em>.</li>
+                <li>Ziegler et al. (2021). "Alpha-lipoic acid in the treatment of diabetic neuropathy and metabolic dysfunction." <em>Experimental and Clinical Endocrinology & Diabetes</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary STABLE Method™ Methodology.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

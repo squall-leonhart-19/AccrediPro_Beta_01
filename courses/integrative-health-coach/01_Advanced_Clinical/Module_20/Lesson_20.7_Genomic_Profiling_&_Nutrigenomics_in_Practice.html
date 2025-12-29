@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.7: Genomic Profiling & Nutrigenomics in Practice</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Genomics */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🧬';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 25px 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Advanced Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 7: Genomic Profiling & Nutrigenomics in Practice</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#intro"><span class="section-num">1</span>The Genomic Revolution</a></li>
+                <li><a href="#snps"><span class="section-num">2</span>Strategic SNP Analysis</a></li>
+                <li><a href="#methylation"><span class="section-num">3</span>The Methylation Interface</a></li>
+                <li><a href="#detox"><span class="section-num">4</span>Detoxification Genomics</a></li>
+                <li><a href="#epigenetics"><span class="section-num">5</span>Lifestyle vs. Predisposition</a></li>
+                <li><a href="#ethics"><span class="section-num">6</span>Ethical Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between <span class="highlight">Nutrigenetics</span> and <span class="highlight">Nutrigenomics</span> within the W.H.O.L.E. Method.</li>
+                <li>Analyze the clinical significance of key SNPs: MTHFR, COMT, APOE, and VDR.</li>
+                <li>Develop personalized nutritional strategies based on methylation and detoxification variants.</li>
+                <li>Communicate genetic findings to clients without inducing "genetic fatalism."</li>
+                <li>Integrate genomic data with functional labs (OAT, Blood Chemistry) for a unified health strategy.</li>
+            </ul>
+        </div>
+
+        <h2 id="intro">1. The Genomic Revolution: From Blueprint to Expression</h2>
+        <p>In the previous lessons of this module, we explored functional markers of current health—hormones, gut microbiome, and organic acids. These provide a "snapshot" of the client's present physiological state. <span class="highlight">Genomic profiling</span>, however, provides the "architectural blueprint." It tells us not what is happening, but what is <em>likely</em> to happen under certain environmental pressures.</p>
+        
+        <p>As an Integrative Health Coach, your role is to bridge the gap between <span class="highlight">Genotype</span> (the genetic code) and <span class="highlight">Phenotype</span> (the expressed health state). A 2022 systematic review published in <em>Nutrients</em> highlighted that personalized nutrition based on genetic variants resulted in significantly greater long-term dietary adherence (p < 0.05) compared to general healthy eating advice. This is the power of "Biological Buy-in."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Definition</th>
+                        <th>Coaching Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nutrigenetics</strong></td>
+                        <td>How your genes affect your response to nutrients.</td>
+                        <td>"Because of your VDR variant, you likely need higher Vitamin D doses to reach optimal blood levels."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nutrigenomics</strong></td>
+                        <td>How nutrients affect the expression of your genes.</td>
+                        <td>"Sulforaphane from broccoli sprouts can help 'turn on' your Nrf2 pathway to compensate for GSTM1 deletions."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Epigenetics</strong></td>
+                        <td>Changes in organisms caused by modification of gene expression rather than alteration of the genetic code itself.</td>
+                        <td>"Your lifestyle (The 'L' in W.H.O.L.E.) is the primary driver of whether these genetic potentials manifest."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="snps">2. Strategic SNP Analysis: The Big Four</h2>
+        <p>While there are millions of Single Nucleotide Polymorphisms (SNPs), the W.H.O.L.E. Health Method™ focuses on those with the highest clinical utility and actionable evidence. We prioritize variants that influence <span class="highlight">metabolic efficiency</span>, <span class="highlight">neurotransmitter balance</span>, and <span class="highlight">systemic resilience</span>.</p>
+
+        <h3>MTHFR (Methylenetetrahydrofolate Reductase)</h3>
+        <p>The MTHFR gene provides instructions for making an enzyme that plays a critical role in processing amino acids and the folate cycle. The two most studied variants are <strong>C677T</strong> and <strong>A1298C</strong>. A <span class="stat-highlight">2021 meta-analysis</span> confirmed that individuals with the homozygous 677TT genotype may have a <span class="stat-highlight">60-70% reduction</span> in enzyme efficiency, leading to elevated homocysteine—a major risk factor for cardiovascular and neurodegenerative decline.</p>
+
+        <h3>COMT (Catechol-O-Methyltransferase)</h3>
+        <p>COMT is responsible for breaking down catecholamines (dopamine, epinephrine, norepinephrine) and estrogens. 
+            <ul>
+                <li><strong>"Fast" COMT (Val/Val):</strong> Quickly clears dopamine. These clients may struggle with focus but handle high stress well.</li>
+                <li><strong>"Slow" COMT (Met/Met):</strong> Slowly clears dopamine. These clients are often highly creative and focused but prone to anxiety, OCD tendencies, and estrogen dominance.</li>
+            </ul>
+        </p>
+
+        <h3>APOE (Apolipoprotein E)</h3>
+        <p>APOE is the primary cholesterol carrier in the brain. The <strong>ε4 allele</strong> is associated with increased pro-inflammatory responses and higher Alzheimer's risk. <span class="stat-highlight">Approximately 25%</span> of the population carries at least one ε4 allele. For these clients, the "L" (Lifestyle) focus must be on aggressive blood sugar management and anti-inflammatory fats.</p>
+
+        <h3>VDR (Vitamin D Receptor)</h3>
+        <p>Variants in the VDR gene (like TaqI or BsmI) affect how well a client's cells "hear" the signal from Vitamin D. A client may have "normal" blood levels of Vitamin D but still exhibit symptoms of deficiency because their receptors are less efficient. This requires <span class="highlight">personalized titration</span> rather than standard RDAs.</p>
+
+        <h2 id="methylation">3. The Methylation Interface: Refining the B-Vitamin Strategy</h2>
+        <p>Methylation is a fundamental biochemical process occurring billions of times per second, affecting DNA repair, detoxification, and neurotransmitter synthesis. Using genomic data, we can move beyond "standard" B-complex supplementation to precision support.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Anxious High-Achiever"</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: Sarah, 34 | Symptoms: Treatment-resistant anxiety, PMS, Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Assessment:</strong> Sarah's genomic profile revealed a <strong>COMT Met/Met (Slow)</strong> variant and a <strong>homozygous MTHFR C677T</strong> variant. Her blood work showed homocysteine at 13.5 µmol/L (optimal is <7).</p>
+                <p><strong>Mechanism:</strong> Her slow COMT meant dopamine and estrogen were lingering too long, fueling anxiety. Her MTHFR variant meant she lacked the methyl groups needed to assist COMT in clearing those compounds.</p>
+                <p><strong>Intervention:</strong> 
+                    <ul>
+                        <li>Replaced synthetic folic acid with 800mcg of 5-MTHF (Methylfolate).</li>
+                        <li>Added 500mg of Magnesium Glycinate (a COMT cofactor).</li>
+                        <li>Increased cruciferous vegetable intake to support estrogen metabolism.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> After 8 weeks, Sarah reported a 60% reduction in anxiety scores and her homocysteine dropped to 8.2 µmol/L.</p>
+            </div>
+        </div>
+
+        <h2 id="detox">4. Detoxification Genomics: Phase I and Phase II</h2>
+        <p>In Lesson 5, we discussed toxic burden. Genomic profiling explains <em>why</em> two people exposed to the same environment have different toxic loads. We look at the balance between <span class="highlight">Phase I (Activation)</span> and <span class="highlight">Phase II (Conjugation)</span> enzymes.</p>
+
+        <p><strong>The "Pathological Detoxifier":</strong> This occurs when Phase I (CYP450 enzymes) is hyper-active, but Phase II (GST, GPX, SULT) is sluggish. Phase I often turns toxins into <em>more</em> reactive intermediate metabolites. If Phase II cannot clear them quickly, significant cellular and DNA damage occurs.</p>
+
+        <ul>
+            <li><strong>CYP1A2:</strong> Influences caffeine metabolism. "Slow" metabolizers have an increased risk of hypertension and myocardial infarction with high coffee intake, whereas "fast" metabolizers may see a protective effect.</li>
+            <li><strong>GSTM1 & GSTP1:</strong> Glutathione S-transferases. Deletions (GSTM1 "null") are common and significantly reduce the ability to detoxify environmental pollutants and heavy metals.</li>
+        </ul>
+
+        <h2 id="epigenetics">5. The Epigenetic Interface: Lifestyle Overrides Predisposition</h2>
+        <p>It is crucial to remind clients: <span class="highlight">"Genetics loads the gun, but lifestyle pulls the trigger."</span> Genomic data is not a diagnosis; it is a map of susceptibilities. The W.H.O.L.E. Health Method™ utilizes this map to prioritize which lifestyle interventions will yield the highest "Return on Investment" (ROI) for the client.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Genetic Influence</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Epigenetic Influence</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.4x</div>
+                    <div class="stat-label">Adherence Boost</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Actionable SNPs</div>
+                </div>
+            </div>
+        </div>
+
+        <p>For example, a client with an <strong>FTO variant</strong> (associated with obesity risk) is not "destined" to be overweight. Research shows that regular physical activity attenuates the effect of the FTO gene by approximately <span class="stat-highlight">30%</span>. By showing the client this data, you shift them from a "victim" mindset to an "empowered" mindset.</p>
+
+        <h2 id="ethics">6. Ethical Clinical Application & Scope of Practice</h2>
+        <p>Handling genetic data requires a high level of professional integrity. As a Health Coach, you must navigate the fine line between <span class="highlight">informed guidance</span> and <span class="highlight">medical diagnosis</span>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Guideline 1: Avoid Genetic Fatalism</div>
+            <p class="principle-text">Never present a SNP as a "disease gene." Use language like "tendency," "potential," or "requirement for support." Instead of saying "You have the Alzheimer's gene," say "You have a variant that makes your brain more sensitive to inflammation, so our focus on blood sugar is your primary protection."</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Guideline 2: Context is King</div>
+            <p class="principle-text">Never interpret a genomic report in isolation. Always correlate with functional labs. If a client has an MTHFR variant but their homocysteine and folate levels are perfect, <em>do not</em> push high-dose supplementation. The epigenetics are already working.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of genomic profiling concepts.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client presents with high anxiety and a "Slow" COMT (Met/Met) genotype. Which of the following would be the most appropriate "Lifestyle" (L) recommendation to discuss with their clinical team?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Reducing caffeine and stress, as "Slow" COMT individuals already have higher baseline levels of catecholamines (dopamine/epinephrine) and clear them slowly. Supporting magnesium and B-vitamin status is also key.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">True or False: A "GSTM1 Null" result means a client cannot detoxify and will inevitably develop a chronic illness.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">False. It means they have a reduced capacity for Phase II glutathione conjugation. This makes "The 'L'—Lifestyle" focus on avoiding environmental toxins (clean water, air filters) and eating sulforaphane-rich foods much more critical for them than for the general population.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Genomics provides the <strong>potential</strong>; epigenetics (lifestyle) provides the <strong>outcome</strong>.</li>
+                <li><strong>MTHFR</strong> status dictates the form and dose of folate required, crucial for cardiovascular and mental health.</li>
+                <li><strong>COMT</strong> variants provide deep insight into a client's stress tolerance and neurotransmitter balance.</li>
+                <li><strong>Detoxification SNPs</strong> (Phase I/II) allow for precision environmental health strategies, especially in "Pathological Detoxifiers."</li>
+                <li>Always correlate genomic findings with <strong>functional biomarkers</strong> (like Homocysteine, OAT, or Blood Chemistry) before making supplement recommendations.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Nielsen, D. E., et al. (2022). "Personalized Nutrition Based on Genetic Associations with Diet: A Systematic Review." <em>Nutrients</em>.</li>
+                <li>Liew, S. C., & Gupta, E. D. (2021). "Methylenetetrahydrofolate reductase (MTHFR) C677T polymorphism: Epidemiology, metabolism and the associated diseases." <em>European Journal of Medical Genetics</em>.</li>
+                <li>Hall, A. S., et al. (2023). "COMT genetic variation and the response to stress: A meta-analysis of human studies." <em>Neuroscience & Biobehavioral Reviews</em>.</li>
+                <li>Rai, V. (2020). "Association of methylenetetrahydrofolate reductase (MTHFR) gene C677T polymorphism with Alzheimer’s disease risk." <em>Journal of Neurology and Neurobiology</em>.</li>
+                <li>Minich, D. M., & Brown, B. I. (2019). "A Review of Dietary (Phyto)Nutrients for Glutathione Support." <em>Nutrients</em>.</li>
+                <li>Livingstone, K. M., et al. (2021). "Effect of providing genetic-based personalized nutrition advice on dietary intake and health outcomes." <em>Nutrition Reviews</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Integrative Health Coach Program | Advanced Genomic Module</p>
+        </footer>
+    </div>
+</body>
+
+</html>

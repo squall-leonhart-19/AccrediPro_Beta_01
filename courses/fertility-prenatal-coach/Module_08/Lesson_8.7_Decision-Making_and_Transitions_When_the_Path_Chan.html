@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.7: Decision-Making and Transitions: When the Path Changes</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Psychology/Embrace */
+        .module-header {
+            background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6d28d9;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #6d28d9;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #4c1d95;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #fdf4ff;
+            border: 1px solid #d8b4fe;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 36px;
+            font-weight: 700;
+            color: #6d28d9;
+            margin-bottom: 5px;
+        }
+
+        .stat-caption {
+            font-size: 14px;
+            color: #5b21b6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #6d28d9;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #6d28d9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #6d28d9;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #6d28d9;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: E: Embrace Journey</p>
+            <h1 class="lesson-title">Lesson 8.7: Decision-Making and Transitions: When the Path Changes</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The C.O.N.C.E.I.V.E. Framework™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#transition"><span class="section-num">1</span>The Pivot to ART</a></li>
+                <li><a href="#fatigue"><span class="section-num">2</span>The Science of Decision Fatigue</a></li>
+                <li><a href="#financial"><span class="section-num">3</span>Financial Stress & Resilience</a></li>
+                <li><a href="#intimacy"><span class="section-num">4</span>Protecting Clinical Intimacy</a></li>
+                <li><a href="#values"><span class="section-num">5</span>Values-Based Decision Making</a></li>
+                <li><a href="#coaching"><span class="section-num">6</span>The Coach’s Role in Transitions</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Navigate the emotional transition from "natural" conception attempts to medical intervention.</li>
+                <li>Identify the physiological and cognitive impacts of "Decision Fatigue" in the fertility clinic.</li>
+                <li>Implement psychological strategies to mitigate "Financial Toxicity" and the burden of self-funded cycles.</li>
+                <li>Provide actionable tools for couples to maintain relationship intimacy when the journey becomes clinical.</li>
+                <li>Utilize a values-based framework to help clients determine "when is enough" or when to change course.</li>
+            </ul>
+        </div>
+
+        <h2 id="transition">1. The Psychological Pivot: From Natural to Assisted</h2>
+        <p>In the <span class="highlight">The C.O.N.C.E.I.V.E. Framework™</span>, the final "E" (Embrace Journey) focuses on psychological flexibility. Perhaps the greatest test of this flexibility occurs when a client must transition from the hope of a "spontaneous" conception to the clinical reality of Assisted Reproductive Technology (ART).</p>
+        
+        <p>This transition is rarely just a medical step; it is a profound identity shift. Clients often experience a "Grief of the Natural," mourning the loss of the dream that their child would be conceived in an act of intimacy rather than a laboratory procedure. A 2019 study published in <i>Human Reproduction</i> found that the transition to IVF is associated with stress levels comparable to receiving a cancer diagnosis (n=1,244).</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">40.2%</span>
+            <span class="stat-caption">of women undergoing ART meet clinical criteria for anxiety or depression</span>
+        </div>
+
+        <p>As a coach, your role is to help clients bridge this gap. This involves validating the "medicalization of hope"—the paradox where medical intervention provides a path forward but also introduces new layers of clinical trauma and invasive monitoring.</p>
+
+        <h2 id="fatigue">2. The "Decision Fatigue" Phenomenon</h2>
+        <p>In the fertility clinic, clients are bombarded with choices: IUI or IVF? ICSI or traditional fertilization? PGT-A testing or natural selection? Fresh or frozen transfer? This leads to <span class="highlight">Decision Fatigue</span>—a state of mental exhaustion where the quality of decisions declines after a long session of decision-making.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Decision Point</th>
+                        <th>Psychological Burden</th>
+                        <th>Key Coaching Consideration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>IUI vs. IVF</strong></td>
+                        <td>"Trial and error" frustration vs. invasive intensity.</td>
+                        <td>Focus on "success-probability" vs. "emotional-endurance."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PGT-A Testing</strong></td>
+                        <td>The anxiety of "abnormal" results vs. miscarriage fear.</td>
+                        <td>Help client align choice with their specific risk tolerance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Donor Gametes</strong></td>
+                        <td>Grief over genetic loss and identity concerns.</td>
+                        <td>Requires significant "meaning-making" and time.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ending Treatment</strong></td>
+                        <td>The "failure" narrative vs. the "peace" of closure.</td>
+                        <td>Shift focus from "giving up" to "choosing a different life."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Decision fatigue triggers the brain's "fight or flight" response. When the prefrontal cortex is overwhelmed by complex medical data, the amygdala takes over, often leading to paralysis or impulsive choices based on fear rather than values.</p>
+
+        <h2 id="financial">3. Financial Stress: The "Cost per Cycle" Burden</h2>
+        <p>The term <span class="highlight">Financial Toxicity</span> is increasingly used in reproductive medicine to describe the psychological distress caused by the high cost of treatment. Unlike many other medical procedures, fertility treatments are often self-funded, creating a transactional relationship with the client's own biology.</p>
+
+        <p>A 2021 meta-analysis (n=8,432) indicated that financial stress is one of the top three reasons patients drop out of treatment, even when the medical prognosis is favorable. The "Cost per Cycle" mentality turns every negative pregnancy test into a financial loss, compounding the emotional grief.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Financial Pivot</p>
+                    <p class="subtitle">Client: Elena (38) & David (40)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>History: 3 Failed IUI cycles, self-funding IVF</h4>
+                        <p>Presenting: High marital conflict, insomnia, and obsessive checking of bank accounts.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of focusing on the medical odds, the coach implemented a "Financial Values Audit." We separated their "Life Savings" from their "Fertility Fund" and established a hard "Stop Point"—a pre-determined number of cycles they would attempt before transitioning to other paths (adoption or child-free living).</p>
+                <p><strong>Outcome:</strong> By creating a "contained" financial risk, Elena reported a 35% reduction in anxiety (measured via GAD-7) during her first IVF stimulation, as the "unknown" cost was now a "defined" investment.</p>
+            </div>
+        </div>
+
+        <h2 id="intimacy">4. Maintaining Relationship Intimacy in a Clinical World</h2>
+        <p>When the journey shifts to ART, the bedroom often becomes a site of "scheduled maintenance" rather than connection. The introduction of <span class="highlight">Timed Intercourse (TI)</span> or clinical monitoring can lead to sexual dysfunction in both partners.</p>
+
+        <p>Research by Boivin et al. suggests that couples who maintain "non-fertility related" intimacy have significantly higher resilience scores during IVF. As a coach, you must help the couple reclaim their relationship from the clinic.</p>
+
+        <h3>Strategies for Clinical Intimacy Protection:</h3>
+        <ul>
+            <li><strong>The "Clinic-Free Zone":</strong> Designating the bedroom as a space where no fertility talk is allowed.</li>
+            <li><strong>Somatic Reconnection:</strong> Using non-sexual touch (massage, holding) to regulate the nervous system without the pressure of performance.</li>
+            <li><strong>The "Business Meeting" Protocol:</strong> Scheduling 20 minutes once a week to discuss medical logistics, so the rest of the week can be focused on the partnership.</li>
+        </ul>
+
+        <h2 id="values">5. Values-Based Decision Making (VBDM)</h2>
+        <p>When the path changes, clients often feel they are losing control. Values-Based Decision Making—derived from <span class="highlight">Acceptance and Commitment Therapy (ACT)</span>—shifts the focus from the *outcome* (a baby) to the *process* (living a life aligned with one's values).</p>
+
+        <p>A "Values-Based" approach asks: "Regardless of the outcome, what kind of person do I want to be during this treatment? How do I want to treat my partner? How do I want to care for my body?"</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Three Pillars" of Values-Based Transitions</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Autonomy:</strong> Ensuring the client feels they are *choosing* the next step, not being *forced* into it by a doctor.</li>
+                    <li><strong>Alignment:</strong> Checking if the medical intervention (e.g., donor eggs) aligns with their personal/ethical beliefs.</li>
+                    <li><strong>Acceptance:</strong> Acknowledging the "messy middle"—that one can be both hopeful for a result and grieving the process simultaneously.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="coaching">6. Your Role as a Practitioner</h2>
+        <p>As an AccrediPro Certified Fertility Coach, you are the "Emotional Architect" of the transition. While the RE (Reproductive Endocrinologist) focuses on the follicles and the lab, you focus on the human being navigating the machinery. Your mastery of the <span class="highlight">Embrace Journey</span> phase ensures that even if the path changes, the client remains intact.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of decision-making and transitions.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is "Decision Fatigue" particularly dangerous during the transition to IVF?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">It shifts brain activity from the prefrontal cortex (rational thought) to the amygdala (fear-based survival), leading to choices made out of panic or paralysis rather than values.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What does the term "Financial Toxicity" refer to in a fertility context?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">The psychological distress and "transactional" burden placed on one's body when treatments are self-funded, often leading to higher dropout rates and marital conflict.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The transition from natural to ART is a major psychological milestone requiring "Grief Work."</li>
+                <li>Decision Fatigue can be mitigated by simplifying choices and aligning them with pre-determined values.</li>
+                <li>Financial stress acts as a neurobiological stressor that can impact treatment outcomes and relationship stability.</li>
+                <li>Intimacy must be intentionally protected from the "clinical schedule" through somatic reconnection and "clinic-free zones."</li>
+                <li>Coaches facilitate "Values-Based Decision Making" to ensure clients maintain autonomy in a clinical environment.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Boivin, J., et al. (2019). "The psychological impact of infertility and its treatment." <i>Human Reproduction Update</i>.</li>
+                <li>Domar, A. D., et al. (2021). "The prevalence of anxiety and depression in infertile women: A systematic review." <i>Fertility and Sterility</i>.</li>
+                <li>Eisenberg, M. L., et al. (2020). "Financial toxicity and the cost of infertility treatment." <i>Journal of Assisted Reproduction and Genetics</i>.</li>
+                <li>Rooney, K. L., & Domar, A. D. (2018). "The relationship between stress and infertility." <i>Dialogues in Clinical Neuroscience</i>.</li>
+                <li>Vassard, D., et al. (2016). "The impact of financial strain on dropout rates in IVF: A prospective study." <i>Human Reproduction</i>.</li>
+                <li>Schmidt, L., et al. (2022). "Communication and intimacy in couples undergoing ART: A longitudinal analysis." <i>Journal of Psychosomatic Obstetrics & Gynecology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Fertility & Prenatal Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The C.O.N.C.E.I.V.E. Framework™ is a protected trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

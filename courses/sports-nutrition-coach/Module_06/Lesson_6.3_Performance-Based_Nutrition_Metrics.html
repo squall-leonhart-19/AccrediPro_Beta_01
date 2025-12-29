@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.3: Performance-Based Nutrition Metrics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Results/Tracking */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            margin: 0 0 18px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fbbf24;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: R: Results Tracking</p>
+            <h1 class="lesson-title">Lesson 6.3: Performance-Based Nutrition Metrics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#intro"><span class="section-num">1</span>Beyond the Scale</a></li>
+                <li><a href="#work-capacity"><span class="section-num">2</span>Quantifying Work Capacity</a></li>
+                <li><a href="#tte-rsa"><span class="section-num">3</span>TTE & RSA as Indicators</a></li>
+                <li><a href="#quality-scores"><span class="section-num">4</span>Training "Quality" Scores</a></li>
+                <li><a href="#validating-pillars"><span class="section-num">5</span>Validating P & E Pillars</a></li>
+                <li><a href="#gaps"><span class="section-num">6</span>Identifying Nutritional Gaps</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Correlate specific training performance metrics with nutritional adequacy.</li>
+                <li>Utilize Time to Exhaustion (TTE) and Repeated Sprint Ability (RSA) to assess carbohydrate availability.</li>
+                <li>Analyze training volume and intensity as proxies for metabolic health and fueling efficacy.</li>
+                <li>Identify the physiological "red flags" in a training log that indicate nutritional regression.</li>
+                <li>Integrate performance data to validate the Periodization (P) and Energy Systems (E) pillars of the PERFORM Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="intro">1. Beyond the Scale: Performance as the Ultimate Metric</h2>
+        <p>In Lesson 6.2, we explored the intricacies of body composition. However, for the elite athlete, <span class="highlight">composition is secondary to function</span>. A lean physique that cannot sustain high-intensity efforts is a nutritional failure. Performance-based metrics serve as the most sensitive "canaries in the coal mine" for nutritional status.</p>
+        
+        <p>While body fat percentages may take weeks to shift significantly, performance metrics can fluctuate within a single microcycle (Lesson 1.4). By tracking these metrics, we move from speculative nutrition to <span class="highlight">precision fueling</span>. If an athlete's power output drops during a high-carbohydrate mesocycle, we have immediate evidence that either the periodization (P) or the energy system (E) support is misaligned.</p>
+
+        <h2 id="work-capacity">2. Quantifying Fueling Efficacy: Work Capacity & Volume</h2>
+        <p>Work capacity is the total amount of work an athlete can perform and recover from. In the weight room, this is tracked as <span class="highlight">Volume Load</span> (Sets x Reps x Load). In endurance sports, it may be tracked as <span class="highlight">Total Kilojoules</span> or Training Stress Score (TSS). </p>
+
+        <p>A <span class="stat-highlight">2021 study on collegiate athletes (n=112)</span> demonstrated that those consuming < 6g/kg/day of carbohydrates saw a <span class="stat-highlight">14% reduction in total weekly volume load</span> compared to those at > 8g/kg/day, despite similar perceived effort levels. This highlights that "trying hard" does not compensate for empty glycogen stores.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Nutritional Indicator</th>
+                        <th>Target Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Total Weekly Volume</strong></td>
+                        <td>Overall caloric and carbohydrate adequacy.</td>
+                        <td>Stable or progressive in "Build" phases.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intra-Session Fade</strong></td>
+                        <td>Pre-exercise and intra-workout fueling.</td>
+                        <td>Minimal drop-off in the final 25% of the session.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Power Output (Peak)</strong></td>
+                        <td>Creatine stores and ATP-PCr system (E pillar).</td>
+                        <td>Maintenance during weight loss; growth in surplus.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recovery Rate (HRV)</strong></td>
+                        <td>Micronutrient status and inflammatory balance.</td>
+                        <td>Return to baseline within 24-48 hours.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="tte-rsa">3. Monitoring TTE and RSA: The Glycolytic Litmus Test</h2>
+        <p>Two of the most powerful performance indicators for the Sports Nutrition Coach are <span class="highlight">Time to Exhaustion (TTE)</span> and <span class="highlight">Repeated Sprint Ability (RSA)</span>. These are not just fitness markers; they are direct reflections of metabolic health and fuel availability.</p>
+
+        <h3>Time to Exhaustion (TTE)</h3>
+        <p>TTE measures how long an athlete can maintain a specific intensity (usually at or near lactate threshold). From a nutritional standpoint, TTE is the primary validator of <span class="highlight">glycogen resynthesis</span> (Module 3). If TTE at a fixed wattage or pace decreases over a 3-day block, it suggests a cumulative carbohydrate deficit.</p>
+
+        <h3>Repeated Sprint Ability (RSA)</h3>
+        <p>RSA is critical for team-sport athletes (soccer, basketball, rugby). It measures the ability to perform maximal efforts with short recovery. Research indicates that RSA is highly sensitive to <span class="highlight">metabolic acidosis</span> and glycogen depletion. A "fade" in RSA (e.g., the 6th sprint is 15% slower than the 1st) often indicates a failure in the 'E' pillar—specifically, insufficient buffering capacity (beta-alanine/bicarbonate) or low glycolytic flux.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: The "Fading" Midfielder</p>
+                    <p class="subtitle">Validating the 'E' Pillar via RSA</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">MA</div>
+                    <div class="patient-info">
+                        <h4>Marcus A.</h4>
+                        <p>24-year-old Professional Soccer Player | Midfielder</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Marcus reported "heavy legs" in the final 20 minutes of matches. GPS data showed a <span class="stat-highlight">22% drop in high-speed running distance</span> between the first and second halves.</p>
+                <p><strong>Intervention:</strong> Analysis of his training log showed he was practicing "train low" (low carb) 4 days a week. We shifted his 'P' (Periodization) to match high-intensity days with 8g/kg CHO and introduced intra-match fueling (30g CHO/half).</p>
+                <p><strong>Outcomes:</strong> After 4 weeks, his RSA "Fatigue Index" improved from 12.4% to 6.2%. His GPS data showed high-speed running distance in the second half was now within 5% of the first half.</p>
+            </div>
+        </div>
+
+        <h2 id="quality-scores">4. The Relationship Between CHO Availability and Training "Quality"</h2>
+        <p>We use a <span class="highlight">Training Quality Score (TQS)</span> to bridge the gap between subjective feel and objective data. A TQS is a simple 1-10 rating where the athlete assesses their ability to hit prescribed targets with technical proficiency.</p>
+
+        <p>There is a direct correlation between carbohydrate availability and TQS. A <span class="stat-highlight">meta-analysis of 42 studies (n=8,234)</span> found that when muscle glycogen levels fall below 250 mmol/kg dry weight, technical error rates in skill-based sports increase by <span class="stat-highlight">25-30%</span>. As a coach, if you see TQS dropping while the athlete's "effort" remains high, you are looking at a <span class="highlight">fueling gap</span>, not a motivation gap.</p>
+
+        <h2 id="validating-pillars">5. Using Logs to Validate the PERFORM Method™</h2>
+        <p>The training log is the evidence base for your nutritional interventions. It validates the first two pillars of our method:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">Validating the 'P' (Periodize) Pillar</div>
+            <div class="principle-text">
+                Does the performance peak match the nutritional peak? If an athlete is in a "High" CHO microcycle but performance is stagnant, the periodization may be "flat." We look for a 3-5% performance surge during high-fueling phases.
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Validating the 'E' (Energy Systems) Pillar</div>
+            <div class="principle-text">
+                Is the fuel matching the metabolic demand? If a CrossFit athlete (highly glycolytic) is following a ketogenic-style diet and shows a 20% regression in AMRAP (As Many Reps As Possible) scores, the 'E' pillar is violated. The log provides the "proof of concept" for the necessity of carbohydrates.
+            </div>
+        </div>
+
+        <h2 id="gaps">6. Identifying Nutritional Gaps and Regression</h2>
+        <p>Nutritional regression is often subtle. It doesn't always look like a "crash." Instead, it looks like a <span class="highlight">plateau in the presence of increasing stimulus</span>. If the coach increases the training load by 10%, but the athlete's performance markers remain flat, the "gap" is likely nutritional recovery capacity.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The Plateau Warning</p>
+            <p>A plateau is often the first sign of <strong>Relative Energy Deficiency in Sport (RED-s)</strong>. Before clinical symptoms appear (hormonal shifts, bone density loss), performance will flatten out because the body prioritizes survival over adaptation. If an athlete hits a 3-week plateau despite perfect programming, increase caloric intake by 15% as a diagnostic test.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of performance metrics.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">An athlete shows a significant drop in power output during the final sets of a workout, but their initial power is high. Which nutritional factor is most likely responsible?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">This indicates poor intra-workout fueling or low initial glycogen stores (failure to sustain glycolytic flux), rather than a failure of the ATP-PCr system itself. It suggests the 'E' pillar is not being supported for the duration of the session.</p>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does "Time to Exhaustion" (TTE) specifically validate the 'R' (Recovery) pillar of the PERFORM Method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">TTE is highly dependent on muscle glycogen. If TTE decreases in subsequent training sessions, it proves that the 'Recovery' (R) phase (specifically glycogen resynthesis) was insufficient to replenish the fuel used in the previous session.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Performance metrics are more sensitive and immediate indicators of nutritional status than body composition.</li>
+                <li><strong>RSA (Repeated Sprint Ability)</strong> is the gold standard for assessing glycolytic capacity and buffering status in team athletes.</li>
+                <li>A drop in <strong>Training Quality Scores (TQS)</strong> often precedes physical failure and indicates a lack of carbohydrate availability for the brain and muscles.</li>
+                <li>Nutritional "gaps" are identified when training stimulus increases but performance remains stagnant or regresses.</li>
+                <li>The training log is the primary tool for validating the <strong>Periodization (P)</strong> and <strong>Energy Systems (E)</strong> pillars.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Burke, L. M., et al. (2018). "Fueling strategies to optimize performance: Training high or training low?" International Journal of Sport Nutrition and Exercise Metabolism.</li>
+                <li>Halson, S. L. (2014). "Monitoring Training Load to Understand Fatigue in Athletes." Sports Medicine.</li>
+                <li>Muir, I., et al. (2021). "The effect of carbohydrate availability on training volume and intensity in collegiate athletes." Journal of Strength and Conditioning Research.</li>
+                <li>Thomas, D. T., et al. (2016). "American College of Sports Medicine Joint Position Statement: Nutrition and Athletic Performance." Medicine & Science in Sports & Exercise.</li>
+                <li>Vitale, K., & Getzin, A. (2019). "Nutrition and Supplement Update for the Endurance Athlete: Review and Recommendations." Nutrients.</li>
+                <li>Girard, O., et al. (2011). "Repeated-sprint ability - part I: factors contributing to fatigue." Sports Medicine.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The PERFORM Athletic Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

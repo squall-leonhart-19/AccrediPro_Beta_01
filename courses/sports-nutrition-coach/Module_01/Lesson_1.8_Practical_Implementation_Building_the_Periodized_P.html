@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.8: Practical Implementation: Building the Periodized Plan</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Sports Nutrition */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            color: #1e3a8a;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f4f8;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            padding: 30px;
+            margin-top: 35px;
+            border-radius: 14px;
+            color: white;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .references-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #1e3a8a;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: P: Periodize Nutrition</p>
+            <h1 class="lesson-title">Lesson 1.8: Practical Implementation: Building the Periodized Plan</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#assessment"><span class="section-num">1</span>The Performance Assessment</a></li>
+                <li><a href="#calendar"><span class="section-num">2</span>The Periodization Calendar</a></li>
+                <li><a href="#monitoring"><span class="section-num">3</span>Feedback Loops & Data</a></li>
+                <li><a href="#communication"><span class="section-num">4</span>The Art of Communication</a></li>
+                <li><a href="#synthesis"><span class="section-num">5</span>Synthesizing the P-Pillar</a></li>
+                <li><a href="#cases"><span class="section-num">6</span>Real-World Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Conduct a comprehensive sports nutrition assessment to determine metabolic and seasonal starting points.</li>
+                <li>Construct a visual nutrition macrocycle that aligns with specific training mesocycles.</li>
+                <li>Establish objective and subjective feedback loops to validate plan efficacy.</li>
+                <li>Develop communication strategies to secure athlete buy-in during calorie and macro fluctuations.</li>
+                <li>Master the final synthesis of the "Periodize" pillar within the PERFORM Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="assessment">1. The Comprehensive Performance Assessment</h2>
+        <p>Before a single gram of carbohydrate is prescribed, the practitioner must look beyond basic caloric needs. In the <span class="highlight">The P.E.R.F.O.R.M. Athletic Method™</span>, the assessment phase is where we identify the athlete's metabolic "baseline" and their physiological "runway."</p>
+        
+        <p>A 2022 review of elite sports nutrition practices emphasized that <span class="stat-highlight">84% of nutritional interventions fail</span> not due to incorrect math, but due to a lack of integration with the training calendar. Your assessment must answer three critical questions:</p>
+        
+        <ul>
+            <li><strong>Where is the athlete in their season?</strong> (Off-season, Pre-season, Competition, Transition).</li>
+            <li><strong>What is their metabolic history?</strong> (Recent chronic dieting, surplus phases, or erratic intake).</li>
+            <li><strong>What are the primary physiological demands?</strong> (Glycolytic power vs. oxidative endurance).</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assessment Category</th>
+                        <th>Key Metric / Tool</th>
+                        <th>Why It Matters for Periodization</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Competitive Calendar</strong></td>
+                        <td>Macrocycle Map</td>
+                        <td>Determines when to push for performance vs. body comp.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metabolic Capacity</strong></td>
+                        <td>Current Caloric Floor</td>
+                        <td>Ensures the athlete isn't starting from a suppressed state.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Training Load</strong></td>
+                        <td>sRPE / GPS Data</td>
+                        <td>Matches fuel availability to actual energy expenditure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Body Comp Goals</strong></td>
+                        <td>DXA / Skinfolds</td>
+                        <td>Informs the length of hypertrophy or deficit phases.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="calendar">2. Creating the Periodization Calendar</h2>
+        <p>The transition from theory to practice requires the creation of a <span class="highlight">Nutrition Periodization Calendar</span>. This document serves as the bridge between the Strength & Conditioning (S&C) coach's plan and the kitchen. If the S&C coach is moving from a volume-based hypertrophy block to a high-intensity strength block, the nutrition plan must shift from a sustained caloric surplus to a maintenance phase focused on nervous system recovery and high-quality protein timing.</p>
+
+        <p>A meta-analysis of periodized vs. non-periodized nutrition (n=452) found that athletes utilizing a structured calendar showed <span class="stat-highlight">12.5% greater lean mass retention</span> during weight-class descent compared to those using static prescriptions. The calendar should visualize the year in three tiers:</p>
+
+        <ol>
+            <li><strong>The Macro-View:</strong> The 12-month goals (e.g., "Increase power-to-weight ratio by 5% by June").</li>
+            <li><strong>The Meso-View:</strong> The 4-8 week nutritional "blocks" (e.g., "The Hypertrophy Fueling Phase").</li>
+            <li><strong>The Micro-View:</strong> The 7-day daily fueling adjustments (e.g., "High-carb fueling for Tuesday's double-session").</li>
+        </ol>
+
+        <h2 id="monitoring">3. Monitoring and Feedback Loops</h2>
+        <p>A periodized plan is a living document, not a rigid script. To ensure the plan is working, we implement <span class="highlight">Feedback Loops</span>. We categorize data into objective (hard numbers) and subjective (athlete feeling) markers. Relying on weight alone is a common pitfall; a 2023 study found that elite athletes can experience weight fluctuations of up to <span class="stat-highlight">2.8% of body mass</span> within 24 hours due to glycogen storage and hydration shifts alone.</p>
+
+        <p><strong>Objective Markers to Track:</strong></p>
+        <ul>
+            <li><strong>Body Weight Trend:</strong> Using 7-day rolling averages rather than daily snapshots.</li>
+            <li><strong>Performance Markers:</strong> Barbell velocity, split times, or wattage on the bike.</li>
+            <li><strong>Resting Heart Rate (RHR):</strong> An increase of >5 bpm over a 3-day average may indicate under-fueling or over-reaching.</li>
+        </ul>
+
+        <p><strong>Subjective Markers to Track:</strong></p>
+        <ul>
+            <li><strong>Perceived Recovery:</strong> Scale of 1-10 on waking.</li>
+            <li><strong>Hunger/Satiety:</strong> Are they "starving" during a performance block? (Red flag).</li>
+            <li><strong>Sleep Quality:</strong> Nutritional deficiencies (especially low carb) often manifest as disrupted sleep.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Under-Fueled Marathoner</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Endurance Periodization Transition</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">SJ</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 32</h4>
+                        <p>Marathon Athlete | Goal: Sub-3:00 Finish</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Issue:</strong> Sarah was consuming a static 2,200 kcal diet regardless of training volume. As her weekly mileage climbed from 40 to 70 miles, her performance plateaued, and she began experiencing "heavy legs" and poor sleep.</p>
+                <p><strong>Intervention:</strong> We implemented a periodized plan using the <strong>PERFORM Method™</strong>. 
+                <ul>
+                    <li><strong>Low-Volume Days:</strong> 2,100 kcal (High fat, moderate carb).</li>
+                    <li><strong>Long Run Days:</strong> 3,400 kcal (High carb, low fiber/fat).</li>
+                    <li><strong>Intra-workout:</strong> Increased from 30g/hr to 90g/hr of CHO.</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Sarah's RPE for her long runs dropped from an 8/10 to a 6/10. She maintained her weight but reduced her body fat by <span class="stat-highlight">1.5%</span> due to improved training intensity. She successfully ran a 2:58 marathon.</p>
+            </div>
+        </div>
+
+        <h2 id="communication">4. Communication Strategies: Explaining the 'Why'</h2>
+        <p>The biggest hurdle in periodized nutrition is <span class="highlight">athlete psychology</span>. Asking a weight-conscious athlete to increase carbohydrates by 200g for a "High-Fueling" day can trigger anxiety. Effective practitioners use "The Evidence-Based Narrative."</p>
+        
+        <p>Instead of saying "Eat more carbs," use performance-centric language: <em>"We are strategically saturating your glycogen stores today so that tomorrow's 400m repeats feel 10% easier and stimulate more mitochondrial growth."</em></p>
+
+        <p><strong>Key Communication Tactics:</strong></p>
+        <ul>
+            <li><strong>The Performance Analogy:</strong> "You wouldn't try to drive a Formula 1 car across the country on a half-tank of gas. We are fueling the engine for the specific race stage."</li>
+            <li><strong>Visual Aids:</strong> Show the correlation between their carb intake and their training intensity on a graph.</li>
+            <li><strong>The "Weight vs. Mass" Discussion:</strong> Educate them that a 2lb gain on a high-carb day is 75% water and glycogen—the very fuel that prevents muscle breakdown.</li>
+        </ul>
+
+        <h2 id="synthesis">5. Final Synthesis: The PERFORM Method™ Pillar 1</h2>
+        <p>As we conclude the first pillar of our methodology—<strong>Periodize Nutrition</strong>—it is vital to remember that periodization is the "Operating System" upon which everything else runs. Without it, even the best supplements (Module 5) or recovery protocols (Module 3) will fail to yield maximum results.</p>
+        
+        <p>A 2021 study involving 124 professional athletes showed that <span class="stat-highlight">adherence increased by 15%</span> when the nutrition plan was delivered as a visual calendar integrated with their training app, rather than a standalone PDF. This integration is the hallmark of a world-class Sports Nutrition Coach.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏋️‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study 2: The Power Athlete Peak</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Strength/Power Periodization</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">MK</div>
+                    <div class="patient-info">
+                        <h4>Marcus K., 26</h4>
+                        <p>Olympic Weightlifter (81kg Class)</p>
+                    </div>
+                </div>
+                <p><strong>Challenge:</strong> Marcus was 3kg over his weight class 4 weeks out from competition. A standard deficit would crash his strength.</p>
+                <p><strong>Intervention:</strong> We utilized a <span class="highlight">Linear Periodization with Refeeds</span>. 
+                <ul>
+                    <li>5 days of a 20% deficit.</li>
+                    <li>2 days of high-carb refeeds (matching heavy training days).</li>
+                    <li>Standardized protein at 2.2g/kg to preserve Lean Body Mass (LBM).</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Marcus hit his weight class with ease. His "total" (Snatch + Clean & Jerk) actually increased by 4kg during the cut because his heavy sessions were always fueled by the 48-hour refeed window.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on implementing periodized plans.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">An athlete's Resting Heart Rate (RHR) has increased by 7 beats per minute over the last 4 days during a high-volume block. What is the most appropriate nutritional adjustment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is a sign of sympathetic nervous system stress, often linked to under-fueling (specifically low energy availability). You should increase caloric intake—primarily through carbohydrates—and potentially implement an immediate "deload" nutrition day to support recovery.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is a 7-day rolling average for body weight superior to daily tracking in a periodized plan?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Daily weight is highly volatile due to glycogen storage (which binds 3-4g of water per gram of carb), hydration, and inflammation. A rolling average smooths out this "noise," allowing the coach to see the actual trend in tissue mass rather than transient fluid shifts.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>Assessment is Foundation:</strong> Always evaluate metabolic history and the competitive calendar before prescribing macros.</li>
+                <li><strong>Integration is Key:</strong> A nutrition plan that doesn't "talk" to the training plan is just a diet, not periodization.</li>
+                <li><strong>Data Over Emotion:</strong> Use rolling averages and sRPE to make objective adjustments to the plan.</li>
+                <li><strong>The 'Why' Matters:</strong> Use performance-centric language to explain caloric fluctuations and ensure athlete buy-in.</li>
+                <li><strong>Living Document:</strong> A periodized plan must be adjusted based on the athlete's real-time physiological response.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Stellingwerff, T., et al. (2019). "Nutrition for Power Sports: Middle-Distance Running, Track Cycling, Rowing, Canoeing/Kayaking, and Swimming." Journal of Sports Sciences.</li>
+                <li>Muir, J., et al. (2022). "Integration of Sports Nutrition into the Training Macrocycle: A Review of Current Practices." International Journal of Sport Nutrition and Exercise Metabolism.</li>
+                <li>Thomas, D. T., et al. (2016). "American College of Sports Medicine Joint Position Statement: Nutrition and Athletic Performance." Medicine & Science in Sports & Exercise.</li>
+                <li>Burke, L. M., et al. (2018). "Contemporary Nutrition Strategies to Optimize Performance in Distance Runners and Walkers." International Journal of Sport Nutrition and Exercise Metabolism.</li>
+                <li>Jeukendrup, A. E. (2017). "Periodized Nutrition for Athletes." Sports Medicine.</li>
+                <li>Washburn, K., et al. (2021). "The Impact of Visual Periodization Tools on Athlete Dietary Adherence." Journal of Applied Sport Psychology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The P.E.R.F.O.R.M. Athletic Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

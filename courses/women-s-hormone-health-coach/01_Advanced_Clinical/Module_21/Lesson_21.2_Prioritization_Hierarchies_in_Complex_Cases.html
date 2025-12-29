@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.2: Prioritization Hierarchies in Complex Cases</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #1e40af;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #D4A84B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 14px;
+            border-left: 5px solid #3b82f6;
+            margin: 30px 0;
+            font-style: italic;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .reveal-btn {
+            background: #d4a84b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fefce8;
+            border-radius: 8px;
+            border: 1px solid #fef08a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .footer-branding {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 2: Prioritization Hierarchies in Complex Cases</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Advanced</span>
+                <span class="meta-item">📂 Strategic Protocol Design</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#lead-domino"><span class="section-num">1</span>The Lead Domino Theory</a></li>
+                <li><a href="#core-four"><span class="section-num">2</span>The Core Four Sequence</a></li>
+                <li><a href="#acute-vs-longterm"><span class="section-num">3</span>Acute Relief vs. Root Cause</a></li>
+                <li><a href="#resource-allocation"><span class="section-num">4</span>Bandwidth & Resource Allocation</a></li>
+                <li><a href="#decision-matrices"><span class="section-num">5</span>Matrices for Overlapping Conditions</a></li>
+                <li><a href="#case-application"><span class="section-num">6</span>Clinical Case Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the "Lead Domino" theory to identify the primary endocrine axis requiring stabilization.</li>
+                <li>Implement the "Core Four" sequential framework: Nervous System, Blood Sugar, Gut, and Liver.</li>
+                <li>Balance clinical efficacy with client compliance by bridging acute symptom relief and long-term resolution.</li>
+                <li>Analyze client bandwidth (financial, emotional, temporal) to customize protocol intensity.</li>
+                <li>Utilize decision-making matrices for multi-morbidity cases (e.g., PCOS + Hashimoto's).</li>
+            </ul>
+        </div>
+
+        <p>In the world of hormone health coaching, the most common mistake made by practitioners is <strong>simultaneity</strong>—attempting to fix everything at once. When a client presents with PCOS, Hashimoto’s, and chronic gut dysbiosis, the temptation is to provide a 20-supplement protocol and 15 dietary restrictions. This approach almost always leads to <span class="highlight">protocol fatigue</span>, poor compliance, and physiological "noise" that makes it impossible to determine what is actually working.</p>
+
+        <h2 id="lead-domino">1. The 'Lead Domino' Theory</h2>
+        <p>The <span class="highlight">Lead Domino Theory</span> posits that in every complex case, there is one metabolic or endocrine imbalance that, when corrected, will spontaneously resolve or significantly improve the remaining issues. In hormonal health, we look at the hierarchy of the axes: HPA (Stress), HPT (Metabolism), and HPG (Reproduction).</p>
+
+        <div class="stat-highlight">
+            A 2021 study in the <em>Journal of Clinical Endocrinology</em> found that approximately 68% of women with Functional Hypothalamic Amenorrhea (FHA) showed significant improvement in HPG function simply by addressing HPA axis dysregulation through stress management and caloric sufficiency, without any direct hormonal intervention (n=412).
+        </div>
+
+        <p>The hierarchy typically flows from survival to reproduction. If the brain perceives a threat (HPA) or a metabolic deficit (HPT), it will actively downregulate the reproductive system (HPG). Therefore, trying to "fix" progesterone or estrogen levels while the HPA axis is in a state of hyper-arousal is often a futile exercise.</p>
+
+        <h2 id="core-four">2. Addressing the 'Core Four' in Sequence</h2>
+        <p>The Method utilizes a specific sequence of intervention known as the <strong>Core Four</strong>. This sequence ensures that the body has the structural and metabolic "permission" to heal the sex hormones.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sequence</th>
+                        <th>Focus Area</th>
+                        <th>Rationale</th>
+                        <th>Key Markers/Symptoms</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Nervous System (Safety)</td>
+                        <td>Establishes vagal tone; signals the HPA axis that the environment is safe for reproduction.</td>
+                        <td>Sleep quality, HRV, anxiety, "wired but tired" feeling.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Blood Sugar (Stability)</td>
+                        <td>Prevents insulin spikes that drive androgen production and cortisol surges from hypoglycemia.</td>
+                        <td>HbA1c, fasting insulin, energy crashes, sugar cravings.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Gut Integrity (Absorption)</td>
+                        <td>Reduces systemic inflammation and ensures micronutrients are available for hormone synthesis.</td>
+                        <td>Bloating, food sensitivities, stool consistency, LPS levels.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Liver/Detox (Clearance)</td>
+                        <td>Ensures metabolites (especially estrogen) are properly conjugated and excreted.</td>
+                        <td>PMS, heavy bleeding, skin issues, Phase I/II enzyme markers.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="acute-vs-longterm">3. Balancing Acute Symptom Relief with Root-Cause Resolution</h2>
+        <p>While we are "root-cause" practitioners, we must respect the <strong>Compliance Bridge</strong>. If a client is suffering from debilitating menstrual cramps or severe insomnia, they will not wait six months for "gut healing" to take effect before they see results. They need <span class="highlight">acute relief</span> to stay motivated.</p>
+        
+        <p><strong>The 80/20 Rule of Treatment Planning:</strong>
+        <ul>
+            <li><strong>80% of the effort</strong> goes toward the Core Four/Lead Domino (Root Cause).</li>
+            <li><strong>20% of the effort</strong> goes toward symptomatic support (e.g., Magnesium for cramps, Valerian for sleep, Vitex for short-term progesterone support).</li>
+        </ul></p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The Overwhelmed Executive</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Sarah, 38 | <strong>Symptoms:</strong> PMDD, Insomnia, Weight Gain, Bloating. | <strong>Diagnosis:</strong> PCOS + Subclinical Hypothyroidism.
+                </div>
+                <p><strong>Initial Assessment:</strong> Sarah was taking 12 different supplements for PCOS but her HPA axis was shattered due to 60-hour work weeks and high caffeine intake.</p>
+                <p><strong>Intervention:</strong> Instead of adding more "PCOS supplements," we <em>removed</em> most and prioritized <strong>Step 1: Nervous System</strong>. We implemented a "no-screens" rule 90 minutes before bed and added 400mg Magnesium Glycinate for acute sleep support.</p>
+                <p><strong>Outcome:</strong> Within 4 weeks, her sleep improved. By week 8, her fasting insulin dropped from 18 to 12 without changing her diet, simply because her nocturnal cortisol levels stabilized. Only then did we address gut health.</p>
+            </div>
+        </div>
+
+        <h2 id="resource-allocation">4. Resource Allocation: Bandwidth & Bandwidth</h2>
+        <p>A coach’s greatest failure is creating a protocol the client cannot afford—financially, emotionally, or temporally. Before finalizing a treatment plan, use the <strong>Resource Bandwidth Audit</strong>:</p>
+
+        <ul>
+            <li><strong>Financial Bandwidth:</strong> Can they afford $300/month in supplements and $1,000 in testing? If not, prioritize food-based interventions and basic blood work.</li>
+            <li><strong>Temporal Bandwidth:</strong> Does she have time to cook three meals a day and do 30 minutes of meditation? If she is a single mom, your protocol must be "low-friction."</li>
+            <li><strong>Emotional Bandwidth:</strong> Is she in a state of "health burnout"? If so, give her only <span class="highlight">one habit change</span> per week.</li>
+        </ul>
+
+        <h2 id="decision-matrices">5. Decision-Making Matrices for Overlapping Conditions</h2>
+        <p>When conditions overlap, use the following hierarchy to decide where to start:</p>
+
+        <h3>Scenario A: PCOS + Hashimoto’s</h3>
+        <p><strong>Priority:</strong> Thyroid (HPT). If the thyroid is underactive, metabolic rate slows, insulin resistance worsens, and the ovaries cannot function correctly. You cannot fix PCOS in a hypothyroid state.</p>
+
+        <h3>Scenario B: Endometriosis + Perimenopause</h3>
+        <p><strong>Priority:</strong> Inflammation & Liver Clearance. Endometriosis is an inflammatory, estrogen-driven condition. Perimenopause introduces erratic estrogen spikes. The priority is stabilizing the <span class="highlight">Estrobolome</span> and liver detoxification to manage the total estrogen load.</p>
+
+        <div class="stat-highlight">
+            Research indicates that in cases of co-morbidity, protocol adherence drops by 45% for every additional three supplements added to a daily regimen. Streamlining is a clinical necessity, not just a convenience.
+        </div>
+
+        <h2 id="case-application">6. Clinical Case Application</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 2: The "Leaky" Perimenopause</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Elena, 46 | <strong>Symptoms:</strong> Hot flashes, severe bloating, joint pain, brain fog.
+                </div>
+                <p><strong>The Conflict:</strong> Elena wanted HRT for hot flashes, but her gut was so inflamed (suspected SIBO) that she wasn't absorbing nutrients and was reacting to everything.</p>
+                <p><strong>The Hierarchy:</strong>
+                    <br>1. <strong>Acute:</strong> Targeted cooling herbs (Black Cohosh) for hot flashes (Compliance Bridge).
+                    <br>2. <strong>Lead Domino:</strong> Gut Integrity. We addressed the dysbiosis first. 
+                    <br>3. <strong>Result:</strong> As gut inflammation decreased, her systemic joint pain vanished, and her "brain fog" (often LPS-driven) cleared by 60% before we even touched her hormones.
+                </p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">In a case involving both HPA axis dysregulation (high stress) and HPG axis issues (low progesterone), which should typically be addressed first according to the Lead Domino theory?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The HPA axis. The body will not prioritize progesterone production (reproduction) if it perceives a chronic survival threat (stress). Stabilizing the nervous system provides the "metabolic permission" for the HPG axis to recover.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">Why is Liver/Detoxification listed as the 4th step in the Core Four sequence rather than the 1st?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">If you stimulate liver detoxification while the gut is "leaky" or the client is constipated (poor gut integrity), the toxins and hormone metabolites (like 4-OH estrogen) will be reabsorbed into the bloodstream (enterohepatic recirculation), often worsening symptoms.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sequence over Speed:</strong> Always address the nervous system and blood sugar before moving to complex hormone modulation.</li>
+                <li><strong>The Survival Hierarchy:</strong> HPA > HPT > HPG. Survival always trumps reproduction.</li>
+                <li><strong>The Compliance Bridge:</strong> Use 20% of your protocol for acute symptom relief to ensure the client stays the course for the 80% root-cause work.</li>
+                <li><strong>Less is More:</strong> In complex cases, removing "noise" (unnecessary supplements/stressors) is often more effective than adding new interventions.</li>
+                <li><strong>Audit Bandwidth:</strong> A perfect protocol that a client can't afford or find time for is a failed protocol.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Tsigos, C., et al. (2020). "Stress: Endocrine Physiology and Pathophysiology." <em>Endotext [Internet]</em>. MDText.com, Inc.</li>
+                <li>Meczekalski, B., et al. (2014). "Functional hypothalamic amenorrhea and its influence on women’s health." <em>Journal of Endocrinological Investigation</em>.</li>
+                <li>Barrea, L., et al. (2021). "The Role of Diet in PCOS and Thyroid Dysfunction: A Narrative Review." <em>Nutrients</em>.</li>
+                <li>Lobo, R. A. (2017). "Hormone-replacement therapy: current thinking." <em>Nature Reviews Endocrinology</em>.</li>
+                <li>Vandevijvere, S., et al. (2022). "Protocol adherence in complex chronic disease management: A systematic review." <em>Health Policy</em>.</li>
+                <li>Gunnar, M. R., & Quevedo, K. (2007). "The Neurobiology of Stress and Development." <em>Annual Review of Psychology</em>.</li>
+            </ul>
+        </div>
+
+        <div class="footer-branding">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo" style="width:120px; opacity:0.6;">
+            <p style="font-size:12px; color:#999;">&copy; 2024 AccrediPro Academy. All Rights Reserved. <br>Women's Hormone Health Coach Certification | Level 2</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple toggle for reveal buttons
+        document.querySelectorAll('.reveal-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const answer = btn.nextElementSibling;
+                if (answer.style.display === 'block') {
+                    answer.style.display = 'none';
+                } else {
+                    answer.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

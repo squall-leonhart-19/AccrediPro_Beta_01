@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 32.8: Risk Management & Continuity Planning</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Business/Ops */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🛡️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 32: Business Operations</p>
+            <h1 class="lesson-title">Lesson 8: Risk Management & Continuity Planning</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#continuity"><span class="section-num">1</span>Business Continuity Planning</a></li>
+                <li><a href="#datasecurity"><span class="section-num">2</span>Data Security & Breach Response</a></li>
+                <li><a href="#intellectual"><span class="section-num">3</span>Protecting Your Intellectual Property</a></li>
+                <li><a href="#compliance"><span class="section-num">4</span>Annual Compliance Audits</a></li>
+                <li><a href="#exit"><span class="section-num">5</span>Exit Strategies & Legacy</a></li>
+                <li><a href="#insurance"><span class="section-num">6</span>Insurance & Risk Transfer</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Develop a robust Business Continuity Plan (BCP) to ensure practice resilience during personal or technical crises.</li>
+                <li>Implement high-level data security protocols to protect sensitive thyroid health records and PII.</li>
+                <li>Establish a framework for protecting the unique IP associated with your B.A.L.A.N.C.E. Thyroid Method™ implementation.</li>
+                <li>Execute annual compliance audits to navigate the evolving legal landscape of health coaching.</li>
+                <li>Evaluate practice valuation and exit strategies for eventual sale or legacy transition.</li>
+            </ul>
+        </div>
+
+        <h2 id="continuity">The Resilience of the Thyroid Practice</h2>
+        <p>As a specialized Thyroid Health Coach, your practice holds more than just "appointments"—it holds the biological data, emotional journeys, and metabolic progress of individuals with complex autoimmune and endocrine needs. While previous lessons focused on <span class="highlight">scaling and KPIs</span>, Lesson 8 addresses the "defensive" side of your business: protecting the asset you have built.</p>
+        
+        <p>Risk management is often misunderstood as merely "having insurance." In a premium coaching environment, it is the strategic process of identifying, assessing, and mitigating threats to your practice’s ability to serve clients. Whether the threat is a global pandemic, a localized data breach, or a personal health crisis, <span class="highlight">continuity planning</span> ensures your clients are not abandoned and your revenue does not evaporate.</p>
+
+        <div class="stats-box">
+            <p><strong>The Data on Business Resilience:</strong></p>
+            <ul>
+                <li>According to a 2023 industry report, <span class="stat-highlight">43%</span> of small businesses do not have a formal business continuity plan in place.</li>
+                <li>FEMA statistics indicate that <span class="stat-highlight">40% to 60%</span> of small businesses never reopen following a major disaster or prolonged disruption.</li>
+                <li>In the health sector, data breaches cost an average of <span class="stat-highlight">$10.1 million</span> per incident—a 42% increase since 2020.</li>
+            </ul>
+        </div>
+
+        <h2 id="continuity-plan">1. Developing a Business Continuity Plan (BCP)</h2>
+        <p>A BCP is a roadmap for how your practice will continue to operate during an unplanned disruption in service. For a thyroid coach, disruptions typically fall into three categories: <span class="highlight">Technical</span> (software failure), <span class="highlight">Physical</span> (office damage or illness), and <span class="highlight">Environmental</span> (natural disasters).</p>
+        
+        <p>Your BCP must define two critical metrics:
+        <ul>
+            <li><strong>Recovery Time Objective (RTO):</strong> The maximum tolerable length of time that your practice can be down (e.g., "We must be back online within 48 hours").</li>
+            <li><strong>Recovery Point Objective (RPO):</strong> The maximum amount of data loss you can tolerate (e.g., "We must not lose more than 24 hours of client session notes").</li>
+        </ul>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The "Solo-Sickness" Crisis</p>
+                    <p style="color:white; font-size:12px; margin:0;">Coach Sarah M., B.A.L.A.N.C.E. Certified</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> Sarah, a solo practitioner, contracted a severe viral infection that left her unable to coach for three weeks. She had 42 active clients in her 12-week Hashimoto's program.</p>
+                <p><strong>Intervention:</strong> Because Sarah had a BCP, she activated her "Emergency Communication Protocol." Her Virtual Assistant (VA) immediately sent a pre-written email to all clients, rescheduling calls and providing access to a bonus "Self-Guided Module" library. Sarah’s Associate Coach (hired as per Lesson 6) stepped in to moderate the community group.</p>
+                <p><strong>Outcome:</strong> Sarah retained <span class="stat-highlight">100%</span> of her clients. Her revenue remained stable because her continuity plan shifted the practice from "active coaching" to "supported maintenance" during her recovery.</p>
+            </div>
+        </div>
+
+        <h2 id="datasecurity">2. Data Security & Breach Response Protocols</h2>
+        <p>Thyroid health coaching involves sensitive data: lab results (TSH, fT3, fT4, Antibodies), medication history, and intimate lifestyle journals. Under frameworks like <span class="highlight">HIPAA (US), GDPR (EU), or PIPEDA (Canada)</span>, you have a legal and ethical obligation to protect this information.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk Level</th>
+                        <th>Data Type</th>
+                        <th>Security Requirement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>High</strong></td>
+                        <td>Lab Reports & Medical History</td>
+                        <td>AES-256 Encryption, 2FA, No Emailing Labs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Medium</strong></td>
+                        <td>Client Contact Info (PII)</td>
+                        <td>Encrypted CRM, Secure WiFi (VPN)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Low</strong></td>
+                        <td>Generic Marketing Leads</td>
+                        <td>Standard SSL, Password Protection</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A <strong>Breach Response Protocol</strong> must be documented. If you suspect data has been compromised (e.g., a laptop is stolen or your CRM is hacked), your steps should be:
+        <ol>
+            <li><strong>Containment:</strong> Change all passwords and disconnect affected systems.</li>
+            <li><strong>Assessment:</strong> Determine what data was accessed.</li>
+            <li><strong>Notification:</strong> Inform affected clients and relevant legal authorities within the required timeframe (usually 72 hours under GDPR).</li>
+            <li><strong>Remediation:</strong> Update security patches and conduct a post-mortem audit.</li>
+        </ol>
+        </p>
+
+        <h2 id="intellectual">3. Intellectual Property (IP) Protection</h2>
+        <p>The "Secret Sauce" of your practice is how you implement the <span class="highlight">B.A.L.A.N.C.E. Thyroid Method™</span>. While the core methodology is licensed to you, your specific worksheets, video scripts, and proprietary "Thyroid Energy Scorecard" are your IP. Protecting these assets is vital for long-term practice valuation.</p>
+
+        <p>Key IP Protections include:
+        <ul>
+            <li><strong>Trademarks:</strong> Protecting your brand name, logo, and unique program titles (e.g., "The Thyroid Reset Blueprint").</li>
+            <li><strong>Copyrights:</strong> Protecting your written materials, course content, and website copy.</li>
+            <li><strong>Non-Disclosure Agreements (NDAs):</strong> Ensuring that any contractors or associate coaches you hire cannot take your proprietary systems to start a competing practice.</li>
+        </ul>
+        </p>
+
+        <h2 id="compliance">4. Annual Compliance Audits</h2>
+        <p>Health coaching is a "grey area" in many jurisdictions. To remain a <span class="highlight">Premium Practitioner</span>, you must conduct an annual audit to ensure you are not crossing the line into the "unlicensed practice of medicine."</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Compliance Checklist</div>
+            <ul class="principle-text">
+                <li><strong>Scope Review:</strong> Are your session notes using coaching language (e.g., "suggested," "educated") rather than medical language (e.g., "prescribed," "diagnosed")?</li>
+                <li><strong>Disclaimer Updates:</strong> Is your medical disclaimer visible on every website page and every intake form?</li>
+                <li><strong>License Verification:</strong> If you employ associate coaches, have you verified their current certifications and insurance?</li>
+                <li><strong>Tech Compliance:</strong> Are your software providers still maintaining their security certificates?</li>
+            </ul>
+        </div>
+
+        <h2 id="exit">5. Exit Strategies: Building a Sellable Asset</h2>
+        <p>Many coaches view their practice as a job. However, a premium practice managed with the systems taught in this module is a <span class="highlight">transferable asset</span>. Even if you don't plan to retire for 20 years, building with an "exit in mind" forces a higher level of operational excellence.</p>
+
+        <p>Common exit strategies include:
+        <ul>
+            <li><strong>Sale to an Associate:</strong> Transitioning ownership to a lead coach you have trained.</li>
+            <li><strong>Merger:</strong> Joining forces with a functional medicine clinic or larger wellness brand.</li>
+            <li><strong>Passive Legacy:</strong> Transitioning to a fully automated membership model where your presence is no longer required for daily operations.</li>
+        </ul>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📈</div>
+                <div>
+                    <p class="box-label">Case Study: The $250k Practice Sale</p>
+                    <p style="color:white; font-size:12px; margin:0;">Coach Elena R., Legacy Planning</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> Elena wanted to transition into research after 10 years of thyroid coaching. Because she had standardized her implementation of the B.A.L.A.N.C.E. Method and kept meticulous KPIs (Lesson 7), her practice was not dependent solely on her personality.</p>
+                <p><strong>Outcome:</strong> A functional medicine group purchased her practice for 2.5x her annual profit. The value was not in Elena herself, but in her <span class="highlight">Standard Operating Procedures (SOPs)</span>, her client database, and her automated lead generation systems.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of risk and continuity.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What is the primary difference between RTO and RPO in business continuity planning?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">RTO (Recovery Time Objective) measures the time it takes to get back online, while RPO (Recovery Point Objective) measures the amount of data/progress loss that is tolerable. For example, an RTO of 4 hours means you must be working again within 4 hours; an RPO of 24 hours means you can afford to lose the last 24 hours of data entry.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is an NDA (Non-Disclosure Agreement) critical when hiring an Associate Coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">An NDA protects your Intellectual Property (IP). It prevents the Associate Coach from taking your proprietary implementation of the B.A.L.A.N.C.E. Method, your client lists, or your unique coaching materials to start a competing business.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>Resilience is Mandatory:</strong> A premium practice must have a written Business Continuity Plan to survive unexpected disruptions.</li>
+                <li><strong>Data is a Liability:</strong> Treat client health data with the highest level of encryption and protocol; a breach is a reputation-killer.</li>
+                <li><strong>IP adds Value:</strong> Protecting your unique program titles and materials through trademarks and copyrights increases the eventual sale price of your practice.</li>
+                <li><strong>Audit Annually:</strong> Regulatory environments change; an annual compliance audit ensures you stay within your coaching scope of practice.</li>
+                <li><strong>Build to Sell:</strong> Even if you never sell, organizing your practice as a transferable asset ensures it is efficient and professional.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Gartner, Inc. (2022). "Business Continuity Management Program Standard." Gartner Research.</li>
+                <li>Health IT Security. (2023). "The Rising Cost of Healthcare Data Breaches: A 2023 Analysis." Journal of Cybersecurity in Healthcare.</li>
+                <li>Small Business Administration (SBA). (2023). "Emergency Preparedness and Disaster Recovery Guide for Small Businesses."</li>
+                <li>Legal Wellness Institute. (2021). "The Health Coach’s Legal Guide: Scope of Practice and Liability Risk."</li>
+                <li>World Intellectual Property Organization (WIPO). (2022). "Protecting Your IP in the Digital Wellness Space."</li>
+                <li>IBM Security. (2023). "Cost of a Data Breach Report 2023." IBM Institute for Business Value.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Thyroid Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

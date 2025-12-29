@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Food Reactivity Testing: IgG, IgA, and Mediator Release</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #10B981;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-Gold-Black.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: L2: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 6: Food Reactivity Testing: IgG, IgA, and Mediator Release</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#immunology"><span class="section-num">1</span>The Immunology of Reactivity</a></li>
+                <li><a href="#igg-controversy"><span class="section-num">2</span>The IgG Controversy & IgG4</a></li>
+                <li><a href="#mrt-leap"><span class="section-num">3</span>Mediator Release Testing (MRT)</a></li>
+                <li><a href="#enzymatic"><span class="section-num">4</span>Enzymatic vs. Immune Reactions</a></li>
+                <li><a href="#cross-reactivity"><span class="section-num">5</span>Molecular Mimicry Patterns</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Application Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between Type I, III, and IV hypersensitivities in clinical presentation.</li>
+                <li>Evaluate the clinical utility of IgG vs. IgG4 testing in the context of oral tolerance.</li>
+                <li>Explain the mechanism of Mediator Release Testing (MRT) and its role in the LEAP protocol.</li>
+                <li>Identify cross-reactivity patterns between food proteins and human tissues (Molecular Mimicry).</li>
+                <li>Integrate enzymatic assessments (DAO, Lactase) with immune-mediated testing.</li>
+            </ul>
+        </div>
+
+        <h2 id="immunology">1. The Immunology of Food Reactivity</h2>
+        <p>In previous lessons, we explored <span class="highlight">intestinal permeability</span> (leaky gut) as a precursor to systemic inflammation. When the tight junctions of the intestinal barrier are compromised, undigested food proteins (macromolecules) bypass the paracellular route and enter the bloodstream, where they encounter the <span class="highlight">Gut-Associated Lymphoid Tissue (GALT)</span>.</p>
+        
+        <p>It is essential to distinguish between the various pathways the immune system uses to respond to these "invaders." Food reactivity is not a monolithic condition; it is a spectrum of immunological hypersensitivities:</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Mechanism</th>
+                        <th>Antibody/Cell</th>
+                        <th>Reaction Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Type I (Allergy)</strong></td>
+                        <td>Immediate hypersensitivity; Histamine release from mast cells.</td>
+                        <td>IgE</td>
+                        <td>Seconds to 2 hours</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type III (Sensitivity)</strong></td>
+                        <td>Immune complex formation; Tissue deposition.</td>
+                        <td>IgG / IgM</td>
+                        <td>4 to 72 hours</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type IV (Sensitivity)</strong></td>
+                        <td>Delayed-type hypersensitivity; T-cell mediated.</td>
+                        <td>T-Lymphocytes</td>
+                        <td>24 to 72+ hours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A <span class="stat-highlight">2021 study</span> noted that while IgE-mediated allergies affect approximately 2-5% of adults, non-IgE mediated sensitivities are estimated to impact up to <span class="stat-highlight">20% of the global population</span>, often going undiagnosed due to the delayed nature of the symptoms.</p>
+
+        <h2 id="igg-controversy">2. The IgG Controversy: Marker of Inflammation or Tolerance?</h2>
+        <p>IgG testing is perhaps the most debated tool in the functional gut health space. Conventional allergists often dismiss IgG testing, claiming it merely indicates "exposure" to a food. However, the nuance lies in the <span class="highlight">subclasses of IgG</span>.</p>
+
+        <h3>IgG1, IgG2, and IgG3 vs. IgG4</h3>
+        <p>IgG1-3 are generally considered pro-inflammatory. They have the capacity to fix complement, a biochemical cascade that leads to localized tissue damage and inflammation. Conversely, <span class="highlight">IgG4</span> is often a marker of <span class="highlight">immunological tolerance</span>. In clinical trials for allergy desensitization, an increase in IgG4 is viewed as a successful outcome, showing the body is no longer mounting an aggressive IgE response.</p>
+
+        <p>When reviewing a client's "Food Sensitivity" panel, a practitioner must ask: Is the lab measuring total IgG, or specifically pro-inflammatory subclasses? Total IgG results that include IgG4 can lead to "false positives" where a client is told to avoid a food they are actually perfectly tolerant of simply because they eat it frequently.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The "Healthy" Diet Paradox</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 34. Presenting with chronic fatigue, cystic acne, and "brain fog."</p>
+                <p><strong>Intervention:</strong> Sarah presented a total IgG panel from a direct-to-consumer lab showing high reactivity to almonds, spinach, and salmon—the staples of her daily diet. She had removed them for 3 months with no improvement in symptoms.</p>
+                <p><strong>Outcome:</strong> Upon further testing for <span class="highlight">Secretory IgA (sIgA)</span> and a more nuanced Mediator Release Test, it was discovered that Sarah’s IgG results were likely markers of tolerance (IgG4) to her frequent foods. Her actual triggers were low-level sensitivities to yellow food dyes and solanine (nightshades), which were "hidden" in her "clean" diet. After removing the actual mediators, her acne cleared within 21 days.</p>
+            </div>
+        </div>
+
+        <h2 id="mrt-leap">3. Mediator Release Testing (MRT) & The LEAP Protocol</h2>
+        <p>While IgG testing measures the *presence* of an antibody, <span class="highlight">Mediator Release Testing (MRT)</span> measures the *outcome* of the immune reaction. MRT is a functional live-cell analysis that quantifies the volumetric change in white blood cells (neutrophils, monocytes, eosinophils, and lymphocytes) after exposure to specific food antigens.</p>
+
+        <p>When a white blood cell reacts to a food, it releases "mediators"—histamine, prostaglandins, leukotrienes, and cytokines. This release causes the cell to shrink. MRT measures this shrinkage with high precision. The advantage of MRT is that it captures both <span class="highlight">Type III (IgG-mediated)</span> and <span class="highlight">Type IV (cell-mediated)</span> reactions.</p>
+
+        <p>The <strong>LEAP (Lifestyle Eating and Performance)</strong> protocol is the clinical application of MRT. It utilizes an "Immuno-Calm" approach, starting the client on their lowest-reactive foods to down-regulate systemic inflammation before gradually reintroducing moderate-reactive foods.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Statistics of Efficacy: MRT/LEAP</div>
+            <p class="principle-text">In a clinical survey of 1,200 patients following the LEAP protocol for Irritable Bowel Syndrome (IBS), participants reported a <span class="stat-highlight">75% reduction in symptom severity</span> within the first 14 days. This suggests that for many "unexplained" IBS cases, non-IgE food reactivity is the primary driver of enteric nervous system irritation.</p>
+        </div>
+
+        <h2 id="enzymatic">4. Enzymatic vs. Immune Reactions</h2>
+        <p>It is a common clinical error to mistake an enzymatic deficiency for an immune-mediated sensitivity. As a Gut Health Coach, you must distinguish between the two, as the intervention strategies differ significantly.</p>
+
+        <h3>Histamine Intolerance & DAO</h3>
+        <p>If a client reacts to fermented foods, aged cheeses, and red wine, the issue may not be an IgG sensitivity but a deficiency in <span class="highlight">Diamine Oxidase (DAO)</span>, the enzyme responsible for breaking down extracellular histamine in the gut. A 2020 study found that <span class="stat-highlight">1% of the population</span> has a genetic or acquired DAO deficiency, leading to symptoms that mimic allergies (hives, flushing, migraines).</p>
+
+        <h3>Lactose & Fructose Malabsorption</h3>
+        <p>Reactions to dairy or high-fruit loads are often due to the absence of brush-border enzymes (Lactase) or GLUT-5 transporter saturation. These are <span class="highlight">metabolic/enzymatic</span> issues, not immune issues. Testing for these involves breath tests (as discussed in Lesson 4) rather than blood-based antibody panels.</p>
+
+        <h2 id="cross-reactivity">5. Molecular Mimicry & Cross-Reactivity Patterns</h2>
+        <p>One of the most advanced concepts in food reactivity is <span class="highlight">Molecular Mimicry</span>. This occurs when the amino acid sequence of a food protein resembles the amino acid sequence of a human tissue. The immune system, in its attempt to attack the food protein, accidentally attacks the body’s own tissue.</p>
+
+        <p>The most well-documented example is the relationship between <span class="highlight">Gluten (alpha-gliadin)</span> and the <span class="highlight">Cerebellum</span>. Research by Vojdani et al. has shown that antibodies to gliadin can cross-react with cerebellar Purkinje cells, potentially contributing to "gluten ataxia" and neurological symptoms.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Food Antigen</th>
+                        <th>Cross-Reactive Human Tissue / Food</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Gluten / Gliadin</strong></td>
+                        <td>Cerebellum, Thyroid (TPO), Myelin Basic Protein</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Casein (Dairy)</strong></td>
+                        <td>Gluten (The "Gluten-Dairy" cross-reactivity)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Latex</strong></td>
+                        <td>Avocado, Banana, Kiwi ("Latex-Fruit Syndrome")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ragweed Pollen</strong></td>
+                        <td>Melon, Cucumber, Chamomile</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="clinical">6. Clinical Application: The Method Framework</h2>
+        <p>In the <strong>AccrediPro Method</strong>, we never use food reactivity testing in isolation. Testing is the "Map," but the client's physiology is the "Terrain." Use these steps for assessment:</p>
+
+        <ol class="content-list">
+            <li><strong>Step 1: Stabilize the Barrier.</strong> Before testing, ensure the client isn't in a state of hyper-permeability. A "leaky gut" will produce a "shotgun" IgG result where the client appears reactive to everything.</li>
+            <li><strong>Step 2: Choose the Right Tool.</strong> Use MRT for complex inflammatory conditions (migraines, fibromyalgia, IBS). Use IgG/IgA for suspected autoimmune triggers.</li>
+            <li><strong>Step 3: Correlate with Intake.</strong> If a test says "High Reactivity to Garlic" but the client eats garlic daily with zero symptoms, prioritize the clinical presentation over the lab value (likely IgG4 tolerance).</li>
+            <li><strong>Step 4: The Rotation Diet.</strong> Instead of permanent elimination, use the test results to build a 4-day rotation diet to prevent the development of new sensitivities.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why might a "Total IgG" test produce a false positive for a food a client tolerates well?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Total IgG includes the IgG4 subclass. IgG4 is often a marker of immunological tolerance and frequent exposure, rather than a marker of pro-inflammatory reactivity.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary difference between how IgG testing and MRT measure food reactivity?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">IgG testing measures the quantity of a specific antibody (the potential for a reaction), whereas MRT measures the actual release of inflammatory mediators (the outcome of the reaction) from white blood cells.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Food sensitivities (Type III and IV) are delayed reactions, making them nearly impossible to identify without testing or strict elimination diets.</li>
+                <li>IgG4 is generally protective; IgG1-3 are generally pro-inflammatory. Clinical interpretation must distinguish between them.</li>
+                <li>MRT/LEAP is the gold standard for identifying non-antibody mediated triggers in chronic inflammatory conditions.</li>
+                <li>Enzymatic deficiencies (like DAO for histamine) can perfectly mimic immune-mediated food sensitivities.</li>
+                <li>Molecular mimicry explains why certain foods (like gluten) can trigger autoimmune-like attacks on tissues like the thyroid or brain.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Vojdani, A., et al. (2014). "The Immunology of Food Sensitivities: The Role of IgG and Immune Complexes." <i>Journal of Immunological Methods</i>.</li>
+                <li>Gocki, J., et al. (2021). "IgG4 in Food Allergy: Is It a Marker of Fear or a Marker of Hope?" <i>Nutrients</i>.</li>
+                <li>Pasula, M. (2018). "Mediator Release Testing (MRT) in the Management of Fibromyalgia and IBS." <i>Alternative Therapies in Health and Medicine</i>.</li>
+                <li>Maintz, L., & Novak, N. (2007). "Histamine and Histamine Intolerance." <i>American Journal of Clinical Nutrition</i>.</li>
+                <li>Vojdani, A. (2013). "Molecular Mimicry as a Mechanism for Food Immune Reactivity and Autoimmunity." <i>Alternative Therapies</i>.</li>
+                <li>Zuo, X. L., et al. (2012). "Alterations of food antigen-specific serum IgG antibodies in patients with irritable bowel syndrome." <i>Journal of Gastroenterology and Hepatology</i>.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-Gold-Black.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Gut Health & Microbiome Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

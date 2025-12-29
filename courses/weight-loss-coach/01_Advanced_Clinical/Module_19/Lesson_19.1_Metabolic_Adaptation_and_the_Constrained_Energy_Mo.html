@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 19.1: Metabolic Adaptation and the Constrained Energy Model</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Gold/Deep Green theme for Advanced Research */
+        .module-header {
+            background: linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1a3a3a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1a3a3a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1a3a3a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f4f4;
+            border: 2px solid #1a3a3a;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1a3a3a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🔬';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1a3a3a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7e7 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1a3a3a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #B8860B;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e0e0e0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f4f7f7;
+            color: #1a3a3a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1a3a3a 0%, #2d5a5a 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #D4A84B;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1a3a3a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f4f4;
+            border-radius: 8px;
+            color: #1a3a3a;
+            font-style: italic;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f4f7f7;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border-left: 5px solid #1a3a3a;
+        }
+
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1a3a3a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 19: L2: Research & Evidence</p>
+            <h1 class="lesson-title">Metabolic Adaptation and the Constrained Energy Model</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#constrained-model"><span class="section-num">1</span>The Constrained Energy Model</a></li>
+                <li><a href="#adaptive-thermogenesis"><span class="section-num">2</span>Adaptive Thermogenesis</a></li>
+                <li><a href="#biggest-loser"><span class="section-num">3</span>The Biggest Loser Longitudinal Study</a></li>
+                <li><a href="#metabolic-testing"><span class="section-num">4</span>Testing: Calorimetry vs. Equations</a></li>
+                <li><a href="#neat-mitigation"><span class="section-num">5</span>NEAT: The Metabolic Safety Valve</a></li>
+                <li><a href="#clinical-application"><span class="section-num">6</span>Clinical Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the <span class="highlight">Additive Model</span> and the <span class="highlight">Constrained Total Energy Expenditure Model</span>.</li>
+                <li>Analyze the clinical mechanisms of <span class="highlight">Adaptive Thermogenesis</span> and its role in weight regain.</li>
+                <li>Evaluate the metabolic suppression data from the 6-year longitudinal study of "The Biggest Loser" contestants.</li>
+                <li>Assess the margin of error in predictive RMR equations compared to gold-standard <span class="highlight">Indirect Calorimetry</span>.</li>
+                <li>Develop strategies to mitigate metabolic slowdown using Non-Exercise Activity Thermogenesis (NEAT).</li>
+            </ul>
+        </div>
+
+        <h2 id="constrained-model">1. The Constrained Total Energy Expenditure Model</h2>
+        <p>For decades, the fitness industry operated under the <span class="highlight">Additive Model</span> of energy expenditure. This model suggests that Total Daily Energy Expenditure (TDEE) is a simple sum: Basal Metabolic Rate (BMR) + Thermic Effect of Food (TEF) + Activity. According to this logic, if you add 500 calories of exercise, your TDEE increases by exactly 500 calories.</p>
+
+        <p>However, groundbreaking research by <span class="highlight">Dr. Herman Pontzer</span> has fundamentally challenged this. By studying the Hadza hunter-gatherers—who are significantly more active than Westerners—Pontzer discovered that their TDEE was nearly identical to sedentary Western populations when adjusted for body size. This led to the <span class="highlight">Constrained Energy Model</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Additive Model (Traditional)</th>
+                        <th>Constrained Model (Pontzer)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Core Logic</strong></td>
+                        <td>TDEE increases linearly with physical activity.</td>
+                        <td>The body maintains TDEE within a narrow range.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metabolic Compensation</strong></td>
+                        <td>Assumed to be minimal or non-existent.</td>
+                        <td>Increases in activity lead to decreases in other metabolic processes.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Long-term Exercise</strong></td>
+                        <td>The more you move, the more you burn, indefinitely.</td>
+                        <td>Burn rates plateau as the body reallocates energy.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Implication</strong></td>
+                        <td>Exercise is the primary driver of weight loss.</td>
+                        <td>Exercise is for health; diet is for weight management.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2016 study published in <i>Current Biology</i> involving 332 adults across five countries confirmed this: at low levels of activity, energy expenditure correlates with activity. However, at moderate to high levels, the curve plateaus. The body <span class="highlight">compensates</span> by reducing energy spent on "background" tasks like immune function, tissue repair, and reproductive signaling to keep total expenditure within a metabolic "budget."</p>
+
+        <h2 id="adaptive-thermogenesis">2. Adaptive Thermogenesis: The Biological Drive</h2>
+        <p>When a client loses weight, their metabolic rate drops. Part of this is expected: a smaller body requires less energy. However, <span class="highlight">Adaptive Thermogenesis (AT)</span> refers to the drop in metabolic rate that exceeds what can be explained by the loss of body mass (fat and muscle).</p>
+
+        <p>In clinical settings, AT is often measured as the difference between <i>Measured RMR</i> and <i>Predicted RMR</i>. Research indicates that during significant weight loss, the body enters a "starvation defense" mode. This involves:</p>
+        <ul>
+            <li><strong>Mitochondrial Efficiency:</strong> Muscles become more efficient, burning fewer calories for the same movement.</li>
+            <li><strong>Hormonal Shifts:</strong> A massive drop in <span class="highlight">Leptin</span> (the satiety hormone) and an increase in <span class="highlight">Ghrelin</span> (the hunger hormone).</li>
+            <li><strong>Thyroid Suppression:</strong> Reductions in T3 levels to slow down cellular metabolism.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">15-25%</div>
+                    <div class="stat-label">Metabolic Suppression</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">~500 kcal</div>
+                    <div class="stat-label">Avg. Daily Gap</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">80%</div>
+                    <div class="stat-label">Regain Rate (5yr)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="biggest-loser">3. The Biggest Loser Longitudinal Study</h2>
+        <p>Perhaps the most famous evidence for metabolic adaptation comes from the 2016 study by <span class="highlight">Fothergill et al.</span>, which followed 14 contestants from "The Biggest Loser" for six years after their dramatic weight loss. This study provided a sobering look at the persistence of metabolic adaptation.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Clinical Data Analysis: The Fothergill Study</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>The Findings:</strong> At the end of the 30-week competition, contestants' RMR had dropped by an average of <span class="stat-highlight">610 kcal/day</span>. Six years later, despite regaining an average of 41kg (90 lbs) of the lost weight, their RMR did not recover. It remained <span class="stat-highlight">499 kcal/day</span> below what would be predicted for their body size.</p>
+                <p><strong>The Outcome:</strong> This "metabolic damage" meant that to maintain their weight, these individuals had to eat roughly 500 calories less than a peer of the same weight who had never dieted. This highlights why the <strong>T: Test Metabolism</strong> phase of the T.R.A.N.S.F.O.R.M. Methodology™ is non-negotiable for clients with a history of chronic dieting.</p>
+            </div>
+        </div>
+
+        <h2 id="metabolic-testing">4. Metabolic Testing: Calorimetry vs. Equations</h2>
+        <p>In the <strong>T: Test Metabolism</strong> phase, coaches often rely on predictive equations like <span class="highlight">Mifflin-St Jeor</span> or <span class="highlight">Harris-Benedict</span>. While useful for the general population, these equations fail significantly when metabolic adaptation is present.</p>
+
+        <p>A 2023 meta-analysis found that predictive equations can have an error margin of up to <span class="stat-highlight">20-30%</span> in individuals who have undergone significant weight loss. For a client whose RMR is predicted at 1,800 kcal, a 25% error is 450 calories—the difference between a deficit and a surplus.</p>
+
+        <p><strong>Indirect Calorimetry:</strong> This is the "Gold Standard." By measuring the consumption of oxygen (O2) and the production of carbon dioxide (CO2), we can calculate the <span class="highlight">Respiratory Exchange Ratio (RER)</span>. This tells us exactly how many calories the body is burning at rest and whether it is primarily burning fats or carbohydrates. For high-level coaching, using a device like a <i>Lumen</i> or professional metabolic cart is essential for accuracy.</p>
+
+        <h2 id="neat-mitigation">5. NEAT: The Metabolic Safety Valve</h2>
+        <p>While we cannot easily control BMR, we can control <span class="highlight">Non-Exercise Activity Thermogenesis (NEAT)</span>. NEAT includes all energy expended for everything that is not sleeping, eating, or sports-like exercise. It ranges from walking to the mailbox to fidgeting at a desk.</p>
+
+        <p>Research by <span class="highlight">Levitsky et al.</span> demonstrated that when individuals are in a caloric deficit, the body subconsciously reduces NEAT to preserve energy. This is often the "hidden" reason for weight loss plateaus. The client believes they are still in a deficit because their "gym time" is consistent, but their daily step count and subconscious movement have plummeted by <span class="stat-highlight">200-400 kcal/day</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Client Case: Sarah (Age 42)</p>
+                    <p style="color:white; font-size: 12px; margin:0;">Chronic Dieter | Plateau Management</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Symptoms:</strong> Sarah was eating 1,400 kcal and exercising 5 days/week but had not lost weight in 3 months. Her predicted RMR was 1,550 kcal.</p>
+                <p><strong>Intervention:</strong> Indirect calorimetry revealed her actual RMR was only <span class="stat-highlight">1,180 kcal</span> (a 24% suppression). We implemented a <span class="highlight">Reverse Diet</span>, increasing calories by 100 per week while mandating a NEAT floor of 10,000 steps.</p>
+                <p><strong>Outcome:</strong> After 8 weeks, her RMR recovered to 1,420 kcal. She began losing weight again while eating 1,900 kcal, proving that "eating less" is often the cause of the plateau, not the solution.</p>
+            </div>
+        </div>
+
+        <h2 id="clinical-application">6. Clinical Implementation: The Research-Back Path</h2>
+        <p>As an elite Weight Loss Coach, your strategy must move beyond "eat less, move more." Based on the Constrained Energy Model and Adaptive Thermogenesis research, your protocols should include:</p>
+        
+        <ol class="content-list">
+            <li><strong>Metabolic Periodization:</strong> Implementing "Diet Breaks" (1-2 weeks at maintenance) every 8-12 weeks to attenuate the drop in Leptin and T3.</li>
+            <li><strong>Protein Leverage:</strong> Maintaining a high protein intake (<span class="stat-highlight">1.6g - 2.2g per kg</span> of body weight) to preserve Lean Body Mass (LBM), which is the primary driver of RMR.</li>
+            <li><strong>NEAT Monitoring:</strong> Using wearable technology to ensure non-exercise activity does not drop during the "Nourish" and "Strengthen" phases of the TRANSFORM framework.</li>
+            <li><strong>Resistance Training:</strong> Prioritizing hypertrophy (Module 5) to offset the mitochondrial efficiency that occurs during weight loss.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of metabolic adaptation research.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. According to the Constrained Energy Model, why does increasing exercise not always lead to linear weight loss?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The body compensates for high activity levels by reducing energy spent on other physiological processes (immune function, repair, etc.) to keep total daily energy expenditure within a set budget.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What was the most significant finding regarding RMR in the 6-year follow-up of "The Biggest Loser" contestants?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Contestants experienced persistent metabolic adaptation, with their RMR remaining approximately 500 kcal/day below predicted levels, even after regaining much of the weight.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <span class="highlight">Constrained Energy Model</span> suggests that TDEE is not purely additive and that the body compensates for high activity.</li>
+                <li><span class="highlight">Adaptive Thermogenesis</span> is a survival mechanism that lowers RMR beyond what is expected from tissue loss.</li>
+                <li>Predictive equations (Mifflin-St Jeor) are often inaccurate by <span class="stat-highlight">20% or more</span> for clients with extensive dieting histories.</li>
+                <li><span class="highlight">NEAT</span> is the most volatile component of TDEE and usually the first to decline during a caloric deficit.</li>
+                <li>Successful long-term maintenance requires addressing metabolic "suppression" through periodization and metabolic testing.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Pontzer, H., et al. (2016). "Constrained Total Energy Expenditure and Metabolic Adaptation to Physical Activity in Adult Humans." <i>Current Biology</i>.</li>
+                <li>Fothergill, E., et al. (2016). "Persistent metabolic adaptation 6 years after 'The Biggest Loser' competition." <i>Obesity</i>.</li>
+                <li>Rosenbaum, M., & Leibel, R. L. (2010). "Adaptive thermogenesis in humans." <i>International Journal of Obesity</i>.</li>
+                <li>Levitsky, D. A., et al. (2005). "The effect of exercise on non-exercise physical activity and energy expenditure." <i>Physiology & Behavior</i>.</li>
+                <li>Hall, K. D., & Guo, J. (2017). "Obesity Energetics: Body Weight Regulation and the Effects of Diet Composition." <i>Gastroenterology</i>.</li>
+                <li>Müller, M. J., et al. (2015). "Metabolic adaptation to caloric restriction and subsequent weight regain." <i>American Journal of Clinical Nutrition</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Professional Certification Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

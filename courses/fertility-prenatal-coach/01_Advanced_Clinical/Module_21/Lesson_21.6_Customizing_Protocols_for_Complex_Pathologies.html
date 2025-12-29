@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.6: Customizing Protocols for Complex Pathologies</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Advanced Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: #ffffff;
+            border-left: 5px solid #3b82f6;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2 Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 6: Customizing Protocols for Complex Pathologies</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#pcos"><span class="section-num">1</span>PCOS Phenotype Customization</a></li>
+                <li><a href="#endo"><span class="section-num">2</span>Endometriosis & Systemic Inflammation</a></li>
+                <li><a href="#male"><span class="section-num">3</span>The Parallel Track: Male Factor</a></li>
+                <li><a href="#ama"><span class="section-num">4</span>AMA & Diminished Ovarian Reserve</a></li>
+                <li><a href="#rpl"><span class="section-num">5</span>Recurrent Pregnancy Loss Strategies</a></li>
+                <li><a href="#framework"><span class="section-num">6</span>Framework Prioritization Logic</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between insulin-resistant and adrenal PCOS phenotypes to apply targeted nutritional interventions.</li>
+                <li>Prioritize the 'Environment' (E) and 'Nourish' (N) pillars for clients with Stage III/IV Endometriosis.</li>
+                <li>Design a 90-day parallel track for male partners focusing on DNA fragmentation and morphology.</li>
+                <li>Develop "Mitochondrial Rescue" protocols for Advanced Maternal Age (AMA) using the 'Optimize' (O) pillar.</li>
+                <li>Identify the key immune and clotting biomarkers necessitating plan adjustments for RPL clients.</li>
+            </ul>
+        </div>
+
+        <h2 id="pcos">1. PCOS Phenotype Customization</h2>
+        <p>Polycystic Ovary Syndrome (PCOS) is not a monolith. While the <span class="highlight">The C.O.N.C.E.I.V.E. Framework™</span> provides a universal foundation, the application of the 'Nourish' (N) and 'Optimize' (O) pillars must shift based on the client's underlying driver. A 2022 study published in <i>The Lancet</i> highlighted that while 70% of PCOS cases involve insulin resistance, the remaining 30% are driven by adrenal androgens or post-pill inflammation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phenotype</th>
+                        <th>Primary Driver</th>
+                        <th>CONCEIVE Priority</th>
+                        <th>Key Intervention Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Insulin-Resistant</strong></td>
+                        <td>Hyperinsulinemia</td>
+                        <td>Nourish (N) & Optimize (O)</td>
+                        <td>Glucose blunting, Myo-inositol (4g/day), strength training.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Adrenal-Driven</strong></td>
+                        <td>DHEA-S / HPA Axis</td>
+                        <td>Visualize (V) & Embrace (E)</td>
+                        <td>Cortisol modulation, Ashwagandha, nervous system regulation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inflammatory</strong></td>
+                        <td>Systemic Cytokines</td>
+                        <td>Cleanse (C) & Nourish (N)</td>
+                        <td>Gut barrier repair, Omega-3 (high dose), EDC removal.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>For the <span class="highlight">Insulin-Resistant</span> phenotype, the focus is on insulin sensitivity to restore the HPO axis. Conversely, the <span class="highlight">Adrenal</span> phenotype (often characterized by normal BMI and elevated DHEA-S) requires a heavy emphasis on the 'Visualize' and 'Embrace' pillars to lower the sympathetic drive that triggers androgen production from the adrenal glands.</p>
+
+        <h2 id="endo">2. Endometriosis: Prioritizing Environment & Nourish</h2>
+        <p>Endometriosis is an estrogen-dependent, inflammatory condition. In these cases, the 'Environment' (E) pillar becomes the non-negotiable first step. Research indicates that women with endometriosis have higher concentrations of <span class="highlight">polychlorinated biphenyls (PCBs)</span> and dioxins in their follicular fluid, which can impair oocyte maturation.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">The "Endo-Environmental" Protocol</span>
+            <p class="principle-text">When customizing for Endometriosis, the 'Cleanse' (C) pillar focuses specifically on the <strong>Estrobolome</strong>—the subset of gut bacteria responsible for metabolizing estrogen. If the β-glucuronidase enzyme is high, estrogen is recirculated, fueling lesion growth.</p>
+            <ul>
+                <li><strong>Environment:</strong> Total elimination of phthalates and BPA (xenoestrogens).</li>
+                <li><strong>Nourish:</strong> High-fiber intake (35g+) to bind conjugated estrogens.</li>
+                <li><strong>Optimize:</strong> Anti-inflammatory support via N-Acetyl Cysteine (NAC), which has been shown to reduce endometrioma size in clinical trials (600mg 3x/day).</li>
+            </ul>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Reduction in lesion size with NAC</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Higher EDC levels in Endo patients</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Improvement in dysmenorrhea via N pillar</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="male">3. Male Factor: The Parallel Track</h2>
+        <p>Often, treatment planning is 100% focused on the female partner. However, male factor contributes to nearly <span class="highlight">50% of infertility cases</span>. A customized protocol for complex male pathologies (Oligozoospermia, Asthenozoospermia, or high DNA fragmentation) must run parallel to the female's 90-day window.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👨🏻‍💼</div>
+                <div>
+                    <p class="box-label">Case Study: Male Factor Optimization</p>
+                    <p class="subtitle">Client: Marcus (38) & Elena (34)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Marcus showed 18% DNA fragmentation and 2% morphology. Elena was healthy. They had failed two IUI cycles.</p>
+                <p><strong>Intervention:</strong> We implemented a "Spermatogenesis Rescue" plan focusing on the 'Nourish' and 'Environment' pillars:</p>
+                <ul>
+                    <li><strong>Nourish:</strong> High-dose Lycopene (20mg), L-Carnitine (2g), and Zinc (30mg).</li>
+                    <li><strong>Environment:</strong> Removal of laptop use on lap, switching to loose boxers, and eliminating plastic water bottles.</li>
+                    <li><strong>Cleanse:</strong> 30-day alcohol and tobacco cessation.</li>
+                </ul>
+                <p><strong>Outcomes:</strong> After 95 days (one full sperm cycle), DNA fragmentation dropped to 9% and morphology improved to 5%. Elena conceived naturally the following month.</p>
+            </div>
+        </div>
+
+        <h2 id="ama">4. AMA & Diminished Ovarian Reserve (DOR)</h2>
+        <p>For Advanced Maternal Age (typically 35+), the primary challenge is mitochondrial decay and aneuploidy (chromosomal abnormalities). The 'Optimize' (O) pillar is customized to focus on <span class="highlight">Mitochondrial Bioenergetics</span>.</p>
+        <p>A 2023 meta-analysis of 42 studies confirmed that Coenzyme Q10 (CoQ10) supplementation significantly improves clinical pregnancy rates in women with DOR undergoing ART. In the CONCEIVE Framework™, we utilize the "90-Day Oocyte Window" to saturate the follicular environment with antioxidants.</p>
+
+        <h3>The "Mito-Protocol" for AMA:</h3>
+        <ul>
+            <li><strong>Ubiquinol:</strong> 600mg daily (split doses) for 3 months prior to conception.</li>
+            <li><strong>PQQ:</strong> 10-20mg daily to stimulate mitochondrial biogenesis.</li>
+            <li><strong>Melatonin:</strong> 1-3mg at night (only in the follicular phase) to protect the oocyte from oxidative stress during maturation.</li>
+        </ul>
+
+        <h2 id="rpl">5. Recurrent Pregnancy Loss (RPL) Strategies</h2>
+        <p>Customizing for RPL requires a shift from "Conception" to "Maintenance." If a client can conceive but cannot sustain the pregnancy, the 'Optimize' pillar must address <span class="highlight">Immunological Receptivity</span> and <span class="highlight">Coagulation</span>.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">RPL Customization Markers</span>
+            <p class="principle-text">When planning for RPL, the coach works with the client to ensure their medical team has screened for:</p>
+            <ul>
+                <li><strong>Antiphospholipid Syndrome (APS):</strong> Requires collaboration on 'Nourish' strategies that support blood thinning (e.g., high-dose EPA).</li>
+                <li><strong>MTHFR Polymorphisms:</strong> Customizing the 'Nourish' pillar to ensure 5-MTHF (Methylfolate) is used instead of synthetic Folic Acid.</li>
+                <li><strong>Uterine Natural Killer (uNK) Cells:</strong> Using the 'Visualize' and 'Embrace' pillars to manage the high cortisol levels that can exacerbate immune overactivity.</li>
+            </ul>
+        </div>
+
+        <h2 id="framework">6. Framework Prioritization Logic</h2>
+        <p>How do you decide which pillar to lead with? Use the <span class="highlight">CONCEIVE Hierarchy of Needs</span> for complex cases:</p>
+        <ol class="content-list">
+            <li><strong>Safety First (Cleanse & Environment):</strong> If the environment is toxic (EDCs) or the gut is leaking (LPS), no amount of "Nourish" will fix the cellular environment.</li>
+            <li><strong>Metabolic Foundation (Nourish):</strong> Blood sugar must be stable for the HPO axis to fire correctly.</li>
+            <li><strong>Cellular Energy (Optimize):</strong> Once the foundation is set, add mitochondrial and antioxidant support.</li>
+            <li><strong>The "Glue" (Visualize & Embrace):</strong> These pillars ensure the client stays in the parasympathetic state necessary for implantation and gestation.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on complex pathology customization.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. For a client with "Adrenal PCOS" (elevated DHEA-S, low BMI), which CONCEIVE pillar should be the primary focus?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The 'Visualize' (V) and 'Embrace' (E) pillars. Since the driver is the HPA axis and stress-induced androgens, nervous system regulation is more critical than the aggressive glucose management used in insulin-resistant PCOS.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is the 'Environment' (E) pillar considered the "non-negotiable" first step for Endometriosis?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because Endometriosis is highly sensitive to xenoestrogens (EDCs like BPA and Phthalates) and dioxins, which are found in higher concentrations in the follicular fluid of Endo patients. These toxins fuel lesion growth and impair oocyte quality.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Phenotyping is key:</strong> Treat the driver (Insulin vs. Adrenals), not just the diagnosis of PCOS.</li>
+                <li><strong>Endo equals Inflammation:</strong> Prioritize EDC removal and gut-driven estrogen clearance (the Estrobolome).</li>
+                <li><strong>Male Factor is 50%:</strong> Never design a complex female protocol without a parallel 90-day track for the partner.</li>
+                <li><strong>AMA requires Energy:</strong> Focus the 'Optimize' pillar on mitochondrial bioenergetics (CoQ10, PQQ).</li>
+                <li><strong>RPL is about Maintenance:</strong> Shift focus toward immune modulation and methylation support.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Teede, H. J., et al. (2022). "Recommendations from the international evidence-based guideline for the assessment and management of polycystic ovary syndrome." <i>The Lancet Diabetes & Endocrinology</i>.</li>
+                <li>Bulletti, C., et al. (2021). "Endometriosis and Infertility: The Role of Environmental Toxins." <i>Journal of Assisted Reproduction and Genetics</i>.</li>
+                <li>Agarwal, A., et al. (2023). "Male Infertility and DNA Fragmentation: A Meta-Analysis of Nutritional Interventions." <i>Fertility and Sterility</i>.</li>
+                <li>Giannubilo, S. R., et al. (2023). "Coenzyme Q10 Supplementation in Women with Diminished Ovarian Reserve: A Systematic Review." <i>Nutrients</i>.</li>
+                <li>Branch, D. W., et al. (2021). "Clinical Practice Guideline: Recurrent Pregnancy Loss." <i>American Society for Reproductive Medicine (ASRM)</i>.</li>
+                <li>Smith, A. D., et al. (2020). "The Estrobolome: How the Gut Microbiome Regulates Estrogen Levels and Endometriosis Risk." <i>Maturitas</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Fertility & Prenatal Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary CONCEIVE Framework™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

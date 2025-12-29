@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.6: Advanced Autonomic Regulation & Somatic Synthesis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Integration */
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4f46e5;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #3730a3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #eef2ff;
+            padding: 25px;
+            border-radius: 14px;
+            margin: 30px 0;
+            border-left: 5px solid #4f46e5;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #4f46e5;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #4b5563;
+            margin: 0;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #3730a3;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ref-list li {
+            margin-bottom: 8px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 6: Advanced Autonomic Regulation & Somatic Synthesis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#tracking"><span class="section-num">1</span>Advanced Somatic Tracking</a></li>
+                <li><a href="#realtime"><span class="section-num">2</span>Real-Time Synthesis: Map to U</a></li>
+                <li><a href="#gut-ans"><span class="section-num">3</span>The N-U Axis: Gut & ANS</a></li>
+                <li><a href="#protocols"><span class="section-num">4</span>Advanced Breath & Movement</a></li>
+                <li><a href="#memory"><span class="section-num">5</span>Managing Somatic Memory</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Synthesis Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the integration of biofeedback data with subjective somatic tracking to enhance client interoceptive accuracy.</li>
+                <li>Synthesize cognitive 'Mapping' (M) with autonomic 'Understanding' (U) for real-time regulation during high-stakes triggers.</li>
+                <li>Analyze the bi-directional signaling between gut microbiota (N) and vagal tone to stabilize the nervous system.</li>
+                <li>Implement advanced breathwork and fascial movement protocols to bridge 'Integration' (I) and 'Resilience' (D).</li>
+                <li>Navigate the release of 'Somatic Memory' within the coaching scope to ensure psychological safety.</li>
+            </ul>
+        </div>
+
+        <h2 id="tracking">1. Advanced Somatic Tracking & Biofeedback Integration</h2>
+        <p>In the earlier stages of the <span class="highlight">M.I.N.D.F.U.L. Wellness Method™</span>, we introduced interoception as the ability to sense internal bodily states. At this advanced synthesis level, we move beyond simple awareness toward <span class="highlight">Interoceptive Accuracy</span>—the objective precision with which a client can detect physiological shifts before they manifest as full-blown emotional crises.</p>
+        
+        <p>Expert practitioners now integrate biofeedback, specifically <strong>Heart Rate Variability (HRV)</strong>, as a "physiological mirror." Research by Mather & Thayer (2018) indicates that higher HRV is not just a marker of cardiac health, but a proxy for <span class="highlight">Prefrontal-Subcortical Inhibitory Control</span>. When we synthesize somatic tracking with HRV data, we allow the client to "see" their nervous system in real-time.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">80%</span>
+            <p class="stat-desc">A 2021 meta-analysis confirmed that approximately 80% of vagus nerve fibers are <strong>afferent</strong> (sensory), meaning the body sends 4x more information to the brain than the brain sends to the body. Somatic synthesis prioritizes this bottom-up signaling.</p>
+        </div>
+
+        <h2 id="realtime">2. Real-Time Synthesis: Moving from 'Map' to 'U'</h2>
+        <p>The hallmark of an expert Mental Wellness Coach is the ability to help a client bridge the gap between <strong>Module 1 (Map Mental Patterns)</strong> and <strong>Module 6 (Understand Stress)</strong> in the heat of a moment. This is what we call "Real-Time Autonomic Pivoting."</p>
+        
+        <p>When a client identifies a cognitive trigger (e.g., a critical email from a boss), the "Map" phase identifies the thought pattern ("I'm going to get fired"). However, without synthesis, the client remains stuck in a cognitive loop while their body enters <strong>Sympathetic Overdrive</strong>. Synthesis requires the immediate application of "U" (Understanding Stress) through <span class="highlight">Ventral Vagal Anchoring</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The High-Stakes Pivot</p>
+                    <p class="subtitle">Applying M-to-U Synthesis</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>Julian, 44</h4>
+                        <p>Executive Director with chronic "Physiological Hyperarousal"</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Julian experienced "blanking out" during board meetings. He could map the trigger (being questioned) but couldn't stop the physiological collapse.</p>
+                <p><strong>Intervention:</strong> We synthesized <em>Trigger Mapping</em> with <em>Exhalatory Dominant Breathing</em>. Julian was trained to track the "tightening in the solar plexus" (Somatic Awareness) and immediately initiate a 4-8 breathing pattern (ANS Regulation) before speaking.</p>
+                <p><strong>Outcome:</strong> Julian reported a 65% reduction in "blanking" episodes and a measurable increase in his SDNN (HRV metric) from 32ms to 58ms over 12 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="gut-ans">3. The N-U Axis: Gut-Brain Health & ANS Stability</h2>
+        <p>One of the most profound syntheses in the M.I.N.D.F.U.L. framework is the link between <strong>Nourish the Brain (N)</strong> and <strong>Understand Stress (U)</strong>. We cannot achieve autonomic regulation in a state of systemic inflammation. The gut-brain axis serves as the biological substrate for the nervous system's "baseline."</p>
+
+        <p>Chronic sympathetic activation (stress) diverts blood flow away from the digestive tract, leading to <span class="highlight">Intestinal Permeability</span> (Leaky Gut). Conversely, dysbiosis in the gut microbiome produces lipopolysaccharides (LPS) that can cross the blood-brain barrier, triggering the amygdala and keeping the client in a state of "perpetual threat."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>System State</th>
+                        <th>Gut Health Impact (N)</th>
+                        <th>ANS Presentation (U)</th>
+                        <th>Synthesis Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sympathetic Dominance</strong></td>
+                        <td>Reduced enzyme production; decreased motility.</td>
+                        <td>High HR; Shallow breath; Hyper-vigilance.</td>
+                        <td>Vagal toning + Probiotic-rich foods.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dorsal Vagal Shutdown</strong></td>
+                        <td>"Lazy bowel"; poor nutrient absorption.</td>
+                        <td>Low energy; Dissociation; Numbness.</td>
+                        <td>Somatic shaking + Amino acid support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ventral Vagal Safety</strong></td>
+                        <td>Optimal pH; diverse microbiome; high SCFAs.</td>
+                        <td>Social engagement; Rest & Digest.</td>
+                        <td>Maintenance of M.I.N.D.F.U.L. habits.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="protocols">4. Advanced Breathwork & Movement Protocols</h2>
+        <p>To synthesize <strong>Integrate Mind-Body (I)</strong> with emotional regulation, we utilize protocols that manipulate the <strong>Hering-Breuer Reflex</strong> and <strong>Fascial Tension</strong>. These are not merely "relaxation exercises"; they are neurological overrides.</p>
+
+        <h3>The Coherent Synthesis Protocol</h3>
+        <p>This protocol combines <strong>Coherent Breathing</strong> (5.5 breaths per minute) with <strong>Isometric Muscle Contraction</strong>. By creating a brief, controlled sympathetic spike (contraction) followed by a deep parasympathetic release (exhalation), we retrain the <span class="highlight">Baroreceptor Reflex</span>. This increases the client's "Resilience Reserve" (Module 4).</p>
+
+        <h3>Fascial Unwinding & Somatic Synthesis</h3>
+        <p>Fascia is our largest sensory organ, containing 6x more sensory nerves than muscle. Chronic stress "locks" the fascia. Advanced synthesis involves "micro-movements"—small, non-linear shifts in the neck and pelvis—to signal safety to the brainstem. This bypasses the cognitive mind entirely, providing a "bottom-up" sense of security.</p>
+
+        <h2 id="memory">5. Managing Somatic Memory during Synthesis</h2>
+        <p>As clients deepen their somatic awareness, they may encounter <span class="highlight">Somatic Memories</span>—physical sensations tied to past traumatic events that have no "narrative" or words attached. This is where the synthesis of <strong>Map (M)</strong> and <strong>Integrate (I)</strong> becomes critical.</p>
+
+        <p>The coach's role is not to "process trauma" (which is the domain of therapy) but to provide <span class="highlight">Titration</span>. Titration is the process of experiencing small "drops" of the somatic memory while staying anchored in the present moment. If a client feels a sudden chest tightness during a breathing exercise, the synthesis approach is:
+        <ol>
+            <li><strong>Acknowledge:</strong> "I notice my chest is tight." (M)</li>
+            <li><strong>Anchor:</strong> "I feel my feet on the floor." (I)</li>
+            <li><strong>Regulate:</strong> "I will lengthen my exhale." (U)</li>
+        </ol>
+        </p>
+
+        <h2 id="application">6. Clinical Synthesis: The Integrated Wellness Plan</h2>
+        <p>An integrated wellness plan at this level looks different from a standard coaching plan. It doesn't treat symptoms in isolation; it addresses the <span class="highlight">Biopsychosocial Feedback Loop</span>. A client with anxiety isn't just given "breathing exercises"; they are given a protocol that addresses their Magnesium levels (N), their cognitive distortions (M), and their vagal tone (U) simultaneously.</p>
+
+        <div class="stat-highlight">
+            <p class="stat-desc">A 2023 study (n=450) showed that multi-modal interventions—combining nutrition, somatic tracking, and cognitive reappraisal—resulted in a <strong>42% higher retention</strong> of behavioral changes compared to cognitive-only coaching.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is HRV considered a "physiological mirror" in somatic synthesis?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">HRV reflects the balance between the sympathetic and parasympathetic branches of the ANS. High HRV indicates a flexible nervous system capable of inhibitory control, allowing coaches to objectively measure a client's "Resilience Reserve" and interoceptive accuracy.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does the "N-U Axis" explain why a client might struggle with stress regulation despite doing breathwork?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">If the "N" (Nourish) component is compromised (e.g., gut dysbiosis or systemic inflammation), the body remains in a "biological threat state." This constant bottom-up signaling of danger can override top-down "U" (Understanding/Regulation) efforts like breathwork, making the nervous system inherently unstable.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Interoceptive Accuracy:</strong> The goal of advanced tracking is to detect physiological shifts before they become emotional floods.</li>
+                <li><strong>The 80% Rule:</strong> Most communication in the vagus nerve is bottom-up; somatic synthesis prioritizes body-based safety.</li>
+                <li><strong>Real-Time Pivoting:</strong> Synthesis is the bridge that allows a client to move from "Mapping" a trigger to "Regulating" the response in seconds.</li>
+                <li><strong>Fascial Safety:</strong> Movement and fascial release are neurological overrides that signal safety to the brainstem.</li>
+                <li><strong>Integrated Baseline:</strong> True resilience requires the synthesis of gut health, cognitive patterns, and autonomic flexibility.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul class="ref-list">
+                <li>Mather, M., & Thayer, J. F. (2018). "How heart rate variability affects emotion regulation brain networks." <i>Current Opinion in Behavioral Sciences.</i></li>
+                <li>Porges, S. W. (2021). "Polyvagal Theory: A Biobehavioral Journey to Sociality." <i>Frontiers in Integrative Neuroscience.</i></li>
+                <li>Critchley, H. D., & Garfinkel, S. N. (2017). "Interoception and emotion." <i>Current Opinion in Psychology.</i></li>
+                <li>Cryan, J. F., et al. (2019). "The Microbiota-Gut-Brain Axis." <i>Physiological Reviews.</i></li>
+                <li>Schleip, R., & Jäger, H. (2022). "Fascia as a sensory organ: A review of its role in neuromuscular dysfunction." <i>Journal of Bodywork and Movement Therapies.</i></li>
+                <li>Van der Kolk, B. (2014). "The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma." <i>Viking Press.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Mental Wellness Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

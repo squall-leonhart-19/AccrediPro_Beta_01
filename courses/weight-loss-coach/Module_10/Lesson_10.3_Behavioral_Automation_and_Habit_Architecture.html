@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10.3: Behavioral Automation and Habit Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/MAINTENANCE theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 50px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-highlight {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 10: Maintain Forever</p>
+            <h1 class="lesson-title">Lesson 10.3: Behavioral Automation and Habit Architecture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Path to Unconscious Competence</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Environmental Design: The Nudge Strategy</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Identity-Based Habit Formation</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>NEAT: The Ultimate Automated Thermostat</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Habit Stacking & Implementation Intentions</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The T.R.A.N.S.F.O.R.M. Maintenance Loop</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the psychological transition from "effortful dieting" to "effortless living."</li>
+                <li>Implement choice architecture to make healthy behaviors the default path.</li>
+                <li>Guide clients through identity shifts using the Identity-Action-Feedback loop.</li>
+                <li>Design "Habit Stacks" that integrate T.R.A.N.S.F.O.R.M. principles into daily life.</li>
+                <li>Quantify and automate NEAT to prevent metabolic adaptation.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Path to Unconscious Competence</h2>
+        <p>In the early phases of the <span class="highlight">T.R.A.N.S.F.O.R.M. Weight Method™</span>, clients operate primarily in the realm of <strong>Conscious Competence</strong>. They are testing their metabolism, measuring protein, and intentionally choosing anti-inflammatory foods. While effective for weight loss, this stage is metabolically and cognitively expensive. Permanent maintenance requires a transition to <strong>Unconscious Competence</strong>—where healthy choices occur without active deliberation.</p>
+
+        <p>Research indicates that approximately <span class="stat-highlight">40% to 45% of daily activities</span> are driven by habits rather than conscious decisions. In maintenance, our goal is to move the core pillars of the TRANSFORM method—specifically Nourishment (Module 4) and Strengthening (Module 5)—into this automated 45%. This is achieved by offloading decision-making from the prefrontal cortex to the <span class="highlight">basal ganglia</span>, the brain's "auto-pilot" center.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">66 Days</span>
+                    <span class="stat-label">Avg. time to automate a health habit</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">221</span>
+                    <span class="stat-label">Daily food-related decisions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">90%</span>
+                    <span class="stat-label">Habitual nature of physical activity</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Environmental Design: The Nudge Strategy</h2>
+        <p>Willpower is a finite resource, often depleted by the end of a stressful workday. <span class="highlight">Choice Architecture</span>—the practice of influencing choice by changing the context in which a decision is made—is the antidote to willpower fatigue. As a coach, you must help clients design an environment where the "default choice" is the healthy choice.</p>
+        
+        <p>The <strong>Default Choice Strategy</strong> involves "friction management." To automate a desired behavior, we decrease the friction. To eliminate an undesired behavior, we increase the friction. A 2019 study found that simply placing fruit at eye level and moving unhealthy snacks to an opaque, high-shelf container reduced caloric intake by an average of <span class="stat-highlight">12% without any conscious restriction</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏠</div>
+                <div>
+                    <p class="box-label">Case Study: Environmental Friction</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Reducing Maintenance Stress through Architecture</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 52</h4>
+                        <p>Maintenance Phase (Month 4) | High-Stress Executive</p>
+                    </div>
+                </div>
+                <p><strong>Challenge:</strong> David found that while he could maintain his weight during the week, "mindless grazing" on Friday nights after work was causing a slow weight creep.</p>
+                <p><strong>Intervention:</strong> Instead of "trying harder," David implemented Choice Architecture:</p>
+                <ul>
+                    <li><strong>Increase Friction:</strong> Moved the "treat drawer" to the garage, requiring a walk outside to access.</li>
+                    <li><strong>Decrease Friction:</strong> Pre-washed and sliced "Anti-Inflammatory Plate" veggies were placed in clear glass containers at the front of the fridge.</li>
+                    <li><strong>Visual Nudge:</strong> Placed his 32oz water bottle on his nightstand the evening before.</li>
+                </ul>
+                <p><strong>Outcome:</strong> David reported a 70% reduction in Friday night grazing. His weight stabilized within <span class="stat-highlight">+/- 1.5 lbs</span> of his goal for 6 consecutive months.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Identity-Based Habit Formation</h2>
+        <p>Most weight loss failures stem from "Outcome-Based Habits" (e.g., "I want to lose 20 lbs"). Maintenance success relies on <strong>Identity-Based Habits</strong> (e.g., "I am the type of person who never misses a workout"). When a behavior is tied to a client’s identity, they are no longer "dieting"—they are simply being themselves.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>The "Dieter" Mindset</th>
+                        <th>The "Maintenance" Identity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Driver</strong></td>
+                        <td>Extrinsic (Scale weight, clothing size)</td>
+                        <td>Intrinsic (Vitality, self-integrity)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>View of Failure</strong></td>
+                        <td>"I blew it, might as well quit."</td>
+                        <td>"Data point. How do I pivot?"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Food Relationship</strong></td>
+                        <td>Restriction and Reward</td>
+                        <td>Nourishment and Fuel</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Social Context</strong></td>
+                        <td>"I can't eat that because I'm on a diet."</td>
+                        <td>"I don't eat that because it makes me feel sluggish."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. NEAT: The Ultimate Automated Thermostat</h2>
+        <p>As discussed in Module 1, <span class="highlight">Non-Exercise Activity Thermogenesis (NEAT)</span> is the most variable component of TDEE. During maintenance, the body often attempts to conserve energy by subtly reducing NEAT (fidgeting less, sitting more). This "Adaptive Thermogenesis" can account for a drop of <span class="stat-highlight">200-500 calories per day</span>.</p>
+        
+        <p>To automate maintenance, NEAT must be engineered into the client's lifestyle architecture. A 2021 meta-analysis showed that individuals who successfully maintained a 10% weight loss for over a year had NEAT levels significantly higher than those who regained, even when formal exercise was identical. Practical automation includes:</p>
+        <ul class="content-list">
+            <li><strong>The "Phone Walk" Rule:</strong> All non-video calls must be taken while pacing.</li>
+            <li><strong>The "Commercial Break" Protocol:</strong> 2 minutes of movement for every 20 minutes of sedentary time.</li>
+            <li><strong>Commuter Engineering:</strong> Parking at the furthest spot or getting off one transit stop early.</li>
+        </ul>
+
+        <h2 id="section5">5. Habit Stacking & Implementation Intentions</h2>
+        <p>The most effective way to install a new maintenance habit is to "stack" it onto an existing, automated behavior. The formula is: <strong>After [Current Habit], I will [New Maintenance Habit].</strong> This utilizes the existing neural pathways of the established habit to "pull" the new habit into automation.</p>
+
+        <p>Furthermore, <strong>Implementation Intentions</strong> (If-Then planning) prepare the brain for real-world obstacles. A study on 248 participants found that those who used implementation intentions were <span class="stat-highlight">2x more likely</span> to stick to their exercise goals compared to the control group.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧠</div>
+                <div>
+                    <p class="box-label">Case Study: The Stack & The Pivot</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Integrating TRANSFORM into a Busy Schedule</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34</h4>
+                        <p>Maintenance Phase (Month 2) | Mother of Two</p>
+                    </div>
+                </div>
+                <p>Sarah struggled with consistency in her "Strengthen" (Module 5) and "Nourish" (Module 4) habits due to morning chaos.</p>
+                <p><strong>The Stack:</strong> "After I drop the kids at school (Current Habit), I will drive straight to the gym for 20 minutes (New Habit)."</p>
+                <p><strong>The Implementation Intention:</strong> "If the kids are home sick, then I will do 15 minutes of bodyweight resistance training in the living room during their nap."</p>
+                <p><strong>Result:</strong> Sarah achieved 95% adherence over 90 days because she removed the "decision" of when to work out.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The T.R.A.N.S.F.O.R.M. Maintenance Loop</h2>
+        <p>Maintenance is not a static state; it is a dynamic feedback loop. In the <span class="highlight">T.R.A.N.S.F.O.R.M. Weight Method™</span>, we utilize a simplified version of the initial testing phase to ensure the architecture is holding up. This is the <strong>Check-Adjust-Automate</strong> cycle.</p>
+        
+        <p>If a client notices a <span class="stat-highlight">3% increase</span> in body weight (the "Red Zone"), the architecture has a leak. We don't go back to a restrictive diet; we look at the <strong>Behavioral Automation</strong>. Usually, a "keystone habit"—like protein intake or NEAT—has de-automated. By focusing on the architecture rather than the calories, we avoid the psychological trauma of "starting over."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of behavioral automation concepts.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is "Unconscious Competence" the goal for permanent weight maintenance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Because willpower is a finite resource. By moving behaviors to the basal ganglia (automation), we reduce the cognitive load of making healthy choices, making them sustainable even during periods of high stress.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">A client wants to start a daily 10-minute walk. Using Habit Stacking, how would you coach them?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Identify an existing automated habit (e.g., finishing lunch) and anchor the new habit to it: "After I put my lunch plate in the dishwasher, I will put on my shoes and walk for 10 minutes."
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Architecture over Willpower:</strong> Design environments that make the healthy choice the easiest (and default) choice.</li>
+                <li><strong>Identity Shift:</strong> Move clients from "doing a diet" to "being a healthy person" to ensure long-term behavioral adherence.</li>
+                <li><strong>NEAT Automation:</strong> Engineer movement into the daily routine to counteract biological metabolic adaptation.</li>
+                <li><strong>Friction Management:</strong> Increase friction for unwanted habits and decrease friction for keystone TRANSFORM habits.</li>
+                <li><strong>Habit Stacking:</strong> Use existing neural pathways to install new maintenance behaviors efficiently.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #374151; margin-bottom: 15px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." European Journal of Social Psychology.</li>
+                <li>Gardner, B., et al. (2012). "Making health habitual: the psychology of ‘habit-formation’ and general practice." British Journal of General Practice.</li>
+                <li>Levine, J.A. (2004). "Non-exercise activity thermogenesis (NEAT)." Best Practice & Research Clinical Endocrinology & Metabolism.</li>
+                <li>Clear, J. (2018). "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones." Penguin Random House.</li>
+                <li>Gollwitzer, P. M., & Sheeran, P. (2006). "Implementation intentions and goal achievement: A meta‐analysis of effects and processes." Advances in Experimental Social Psychology.</li>
+                <li>Duhigg, C. (2012). "The Power of Habit: Why We Do What We Do in Life and Business." Random House.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Weight Loss Coach Program | Module 10 | Lesson 3</p>
+        </footer>
+    </div>
+</body>
+
+</html>

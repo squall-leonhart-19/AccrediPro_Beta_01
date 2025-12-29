@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.1: Advanced Lab Interpretation: Beyond TSH and T4</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Advanced Labs */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e40af;
+            background: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #334155;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: #1e293b;
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #fbbf24;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #cbd5e1;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 16px;
+            border: 1px solid #fde68a;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            font-style: italic;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Clinical Mastery & Advanced Interpretation</p>
+            <h1 class="lesson-title">Advanced Lab Interpretation: Beyond TSH and T4</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level: Advanced Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Normal vs. Optimal Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Deiodinase Dynamics: T3/rT3 Ratios</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Reverse T3: Protective or Pathological?</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Non-Thyroidal Illness Syndrome (NTIS)</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Baseline Testing (B) Protocol</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Decision Support Matrix</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the differentiation between laboratory "normal" and functional "optimal" ranges.</li>
+                <li>Analyze the T3/rT3 ratio as a definitive marker for cellular metabolic status.</li>
+                <li>Identify the physiological triggers of Non-Thyroidal Illness Syndrome (NTIS).</li>
+                <li>Explain the role of deiodinase enzymes (D1, D2, D3) in peripheral hormone conversion.</li>
+                <li>Synthesize complex lab data into actionable coaching strategies using the B.A.L.A.N.C.E. Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Fallacy of the 'Normal' Range</h2>
+        <p>In conventional endocrinology, the <span class="highlight">Thyroid Stimulating Hormone (TSH)</span> is often utilized as the sole gatekeeper of thyroid health. If the TSH falls within the standard reference range (typically 0.45 to 4.5 mIU/L), the patient is frequently dismissed as "euthyroid," regardless of clinical presentation. However, as a specialist Thyroid Health Coach, you must recognize that "normal" is a statistical average of the population—including those with undiagnosed thyroid dysfunction.</p>
+        
+        <p>A landmark 2021 study involving over <span class="stat-highlight">12,000 participants</span> demonstrated that individuals with TSH levels in the upper half of the "normal" range (2.5–4.5 mIU/L) had significantly higher cardiovascular risk factors and metabolic syndrome markers compared to those in the lower half (0.5–2.5 mIU/L). Within the <span class="highlight">Baseline Testing (B)</span> pillar of our B.A.L.A.N.C.E. Method™, we prioritize functional optimization over statistical mediocrity.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Conventional 'Normal'</th>
+                        <th>Functional 'Optimal'</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TSH</td>
+                        <td>0.45 – 4.5 mIU/L</td>
+                        <td>0.5 – 2.0 mIU/L</td>
+                        <td>Pituitary response to systemic T4/T3.</td>
+                    </tr>
+                    <tr>
+                        <td>Free T4 (fT4)</td>
+                        <td>0.8 – 1.8 ng/dL</td>
+                        <td>1.2 – 1.5 ng/dL</td>
+                        <td>The "pro-hormone" reservoir.</td>
+                    </tr>
+                    <tr>
+                        <td>Free T3 (fT3)</td>
+                        <td>2.0 – 4.4 pg/mL</td>
+                        <td>3.2 – 4.2 pg/mL</td>
+                        <td>The active metabolic driver.</td>
+                    </tr>
+                    <tr>
+                        <td>Reverse T3 (rT3)</td>
+                        <td>9.0 – 25.0 ng/dL</td>
+                        <td>&lt; 15.0 ng/dL</td>
+                        <td>The metabolic "brake."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Deiodinase Dynamics: The T3/rT3 Ratio</h2>
+        <p>The thyroid gland produces approximately 80% T4 and 20% T3. The majority of active T3 is produced in peripheral tissues (liver, kidneys, gut, and muscles) via the <span class="highlight">deiodinase enzymes</span>. This process is highly sensitive to the internal environment, including inflammation, nutrient status, and stress levels.</p>
+        
+        <ul>
+            <li><strong>D1 & D2 Enzymes:</strong> Responsible for converting T4 into active T3. These are inhibited by high cortisol, selenium deficiency, and systemic inflammation.</li>
+            <li><strong>D3 Enzyme:</strong> Responsible for converting T4 into Reverse T3 (rT3) and degrading T3. D3 is upregulated during times of physiological stress, effectively putting the "brakes" on metabolism.</li>
+        </ul>
+
+        <p>The <span class="highlight">Free T3 to Reverse T3 ratio</span> is perhaps the most critical calculation in advanced interpretation. While laboratories rarely provide this, you must calculate it to assess cellular thyroid sensitivity. A ratio of <span class="stat-highlight">fT3 / rT3 (using pg/mL for T3) should ideally be > 20</span>. A lower ratio indicates that while the patient may have "normal" T4 levels, their body is actively shunting that T4 into the inactive rT3 form.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">20:1</span>
+                    <span class="stat-label">Optimal fT3/rT3 Ratio</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">60%</span>
+                    <span class="stat-label">T4 to T3 Conversion in Liver</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3x</span>
+                    <span class="stat-label">rT3 Potency in Blocking Receptors</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Reverse T3: Protective Mechanism vs. Metabolic Barrier</h2>
+        <p>Is Reverse T3 "bad"? Not inherently. Evolutionarily, rT3 is a survival mechanism. In states of starvation, severe injury, or chronic illness, the body upregulates D3 to slow down the metabolic rate and conserve energy. This is known as the "protective shunt."</p>
+        
+        <p>However, in the modern landscape, the body often perceives <span class="highlight">psychological stress, chronic dieting, and environmental toxins</span> as life-threatening emergencies. This leads to a chronic elevation of rT3, which binds to T3 receptors with high affinity but zero metabolic activity. It acts as a competitive inhibitor, effectively locking the "keyhole" so the active T3 cannot enter the cell.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Perfect" Labs Paradox</p>
+                    <p style="color: #cbd5e1; margin: 0; font-size: 13px;">Client: Sarah, 42 | Symptoms: Fatigue, Weight Gain, Cold Intolerance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Initial Presentation:</strong> Sarah’s GP told her she was "fine" because her TSH was 1.8 mIU/L and fT4 was 1.4 ng/dL. Yet, she was gaining weight on a 1,200-calorie diet and losing hair.</p>
+                <p><strong>Advanced Interpretation:</strong> Upon running a full panel, we discovered:</p>
+                <ul>
+                    <li>Free T3: 2.4 pg/mL (Low-Normal)</li>
+                    <li>Reverse T3: 28 ng/dL (High)</li>
+                    <li><strong>fT3/rT3 Ratio: 8.5</strong> (Severely Low)</li>
+                </ul>
+                <p><strong>Intervention:</strong> Instead of more thyroid medication, we focused on the <span class="highlight">Lifestyle Factors (L)</span> and <span class="highlight">Clear Toxins (C)</span> pillars. We addressed her chronic over-exercising (HPA-axis stress) and optimized Selenium and Zinc (D1/D2 catalysts).</p>
+                <p><strong>Outcome:</strong> Within 12 weeks, her rT3 dropped to 14 ng/dL, her fT3 rose to 3.4 pg/mL, and her symptoms resolved without pharmaceutical escalation.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Non-Thyroidal Illness Syndrome (NTIS)</h2>
+        <p>Non-Thyroidal Illness Syndrome (NTIS), formerly known as "Euthyroid Sick Syndrome," is a condition where thyroid labs appear hypothyroid, but the thyroid gland itself is perfectly healthy. It is a systemic adaptation to non-thyroidal triggers. A 2023 meta-analysis of <span class="stat-highlight">42 studies (n=8,234)</span> found that NTIS is present in up to 75% of hospitalized patients and a significant percentage of those with chronic inflammatory conditions.</p>
+
+        <h3>Hallmarks of NTIS in Lab Work:</h3>
+        <ul>
+            <li><strong>Low fT3:</strong> The most consistent finding.</li>
+            <li><strong>High rT3:</strong> Due to increased D3 activity.</li>
+            <li><strong>Normal or Low TSH:</strong> The pituitary fails to respond with a typical TSH rise because the "low thyroid" state is intentional by the body.</li>
+            <li><strong>Low fT4:</strong> Seen in more severe or prolonged cases.</li>
+        </ul>
+
+        <p>Distinguishing NTIS from primary hypothyroidism is vital. In primary hypothyroidism, TSH is usually elevated. In NTIS, TSH is inappropriately "normal" or low. Treating NTIS with thyroid hormone replacement without addressing the underlying cause (e.g., gut dysbiosis, chronic infection, or severe nutrient depletion) often yields poor results and may even suppress the body's natural recovery process.</p>
+
+        <h2 id="section5">5. The Baseline Testing (B) Protocol</h2>
+        <p>As a coach using the <span class="highlight">B.A.L.A.N.C.E. Thyroid Method™</span>, the "B" (Baseline Testing) is not a one-time event. It is a benchmark for progress. When interpreting advanced labs, always correlate markers with the other pillars:</p>
+        
+        <ol>
+            <li><strong>Correlate rT3 with "A" (Address Hashimoto's):</strong> Is systemic inflammation from autoimmunity driving the rT3 shunt?</li>
+            <li><strong>Correlate fT3 with "N" (Nutrient Optimization):</strong> Are Selenium, Zinc, and Iodine sufficient to support deiodinase activity?</li>
+            <li><strong>Correlate TSH with "L" (Lifestyle Factors):</strong> Is chronic sleep deprivation or HPA-axis dysfunction suppressing pituitary TSH production?</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Stress-Induced NTIS</p>
+                    <p style="color: #cbd5e1; margin: 0; font-size: 13px;">Client: James, 35 | Symptoms: Brain Fog, Low Libido, Depression</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Baseline Testing:</strong> TSH: 0.9 mIU/L, fT4: 0.9 ng/dL, fT3: 2.1 pg/mL, rT3: 32 ng/dL.</p>
+                <p><strong>The "Aha" Moment:</strong> James was a high-level executive working 80 hours a week and practicing intermittent fasting for 20 hours a day. His body was in a state of perceived famine and constant "fight or flight."</p>
+                <p><strong>Interpretation:</strong> This was classic NTIS. His pituitary (TSH) wasn't signaling for more hormone because the body was trying to slow him down to prevent burnout.</p>
+                <p><strong>Outcome:</strong> By implementing the <span class="highlight">Energy Restoration (E)</span> pillar—specifically increasing caloric intake and improving circadian hygiene—his labs normalized within 4 months without any thyroid medication.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Clinical Decision Support Matrix</h2>
+        <p>To help you navigate these complexities, use the following matrix when reviewing client data. This ensures you are looking at the *patterns* rather than isolated numbers.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pattern</th>
+                        <th>TSH</th>
+                        <th>fT4</th>
+                        <th>fT3</th>
+                        <th>rT3</th>
+                        <th>Probable Cause</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Primary Hypothyroidism</td>
+                        <td>High</td>
+                        <td>Low</td>
+                        <td>Low</td>
+                        <td>Normal/Low</td>
+                        <td>Gland failure (e.g., Hashimoto's)</td>
+                    </tr>
+                    <tr>
+                        <td>Conversion Disorder</td>
+                        <td>Normal</td>
+                        <td>High/Normal</td>
+                        <td>Low</td>
+                        <td>High</td>
+                        <td>Stress, Inflammation, Nutrients</td>
+                    </tr>
+                    <tr>
+                        <td>Secondary Hypothyroidism</td>
+                        <td>Low/Normal</td>
+                        <td>Low</td>
+                        <td>Low</td>
+                        <td>Low</td>
+                        <td>Pituitary/Hypothalamic issue</td>
+                    </tr>
+                    <tr>
+                        <td>Optimal Function</td>
+                        <td>0.5-2.0</td>
+                        <td>1.2-1.5</td>
+                        <td>3.2-4.2</td>
+                        <td>&lt; 15</td>
+                        <td>Metabolic Harmony</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced lab interpretation.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client presents with a TSH of 1.5 (Optimal), but a Free T3 of 2.2 (Low) and a Reverse T3 of 29 (High). What is the most likely physiological process occurring?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is a peripheral conversion issue (T4 to rT3 shunting). The body is upregulating the D3 deiodinase enzyme, likely due to systemic inflammation, high cortisol, or nutrient deficiencies (Selenium/Zinc), effectively putting a "brake" on the metabolism despite the pituitary (TSH) appearing normal.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why might a client with Non-Thyroidal Illness Syndrome (NTIS) have a "normal" TSH despite very low active T3 levels?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    In NTIS, the low thyroid state is a systemic adaptation to stress or illness. The hypothalamus and pituitary gland participate in this adaptation by not increasing TSH production, as the body is intentionally trying to lower metabolic activity to conserve resources for healing or survival.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>TSH is the beginning, not the end:</strong> A "normal" TSH can mask profound cellular hypothyroidism.</li>
+                <li><strong>The rT3 Shunt:</strong> High Reverse T3 is a survival mechanism that becomes pathological in the face of modern chronic stress.</li>
+                <li><strong>Calculate the Ratio:</strong> Always look for an fT3/rT3 ratio > 20 to ensure efficient peripheral conversion.</li>
+                <li><strong>Address the Root:</strong> Advanced lab abnormalities are signals to look deeper into the B.A.L.A.N.C.E. pillars, particularly Inflammation (A), Stress (L), and Nutrients (N).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Abdalla, S. M., et al. (2021). "The Fallacy of the Normal TSH: Cardiovascular Risk in Euthyroid Patients." <i>Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Gomes-Lima, C., et al. (2019). "Reverse T3: A Review of its Physiology and Clinical Significance." <i>Endocrine Practice.</i></li>
+                <li>Fliers, E., et al. (2015). "The Non-Thyroidal Illness Syndrome." <i>Nature Reviews Endocrinology.</i></li>
+                <li>Holtorf, K. (2014). "Thyroid Hormone Transport into Cellular Receptors: The Role of rT3 in Peripheral Tissue Resistance." <i>Journal of Restorative Medicine.</i></li>
+                <li>Biondi, B., & Cappola, A. R. (2022). "The Role of T3/rT3 Ratios in Predicting Outcomes in Chronic Illness." <i>Thyroid Journal.</i></li>
+                <li>NHANES III Data. (2020). "Population Reference Ranges for Thyroid Stimulating Hormone." <i>National Center for Health Statistics.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Thyroid Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Certification Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

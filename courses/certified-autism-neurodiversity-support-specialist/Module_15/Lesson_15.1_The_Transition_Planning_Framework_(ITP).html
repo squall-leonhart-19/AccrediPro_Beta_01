@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 15.1: The Transition Planning Framework (ITP)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GREEN theme for Neurodiversity */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f0f4f8;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #d1d5db;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 15: Transition to Adulthood and Vocational Success</p>
+            <h1 class="lesson-title">Lesson 15.1: The Transition Planning Framework (ITP)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#legal"><span class="section-num">1</span>Legal Mandates (IDEA)</a></li>
+                <li><a href="#cliff"><span class="section-num">2</span>Navigating the Services Cliff</a></li>
+                <li><a href="#agency"><span class="section-num">3</span>Inter-agency Collaboration</a></li>
+                <li><a href="#predictors"><span class="section-num">4</span>Predictors of Success</a></li>
+                <li><a href="#smart"><span class="section-num">5</span>SMART Transition Goals</a></li>
+                <li><a href="#method"><span class="section-num">6</span>The Practitioner's Role</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze IDEA legal requirements for Individualized Transition Plans (ITP) from ages 14-16.</li>
+                <li>Differentiate between entitlement-based (IDEA) and eligibility-based (ADA) support systems.</li>
+                <li>Evaluate the role of Vocational Rehabilitation (VR) and inter-agency collaboration in long-term success.</li>
+                <li>Identify high-impact evidence-based predictors for post-secondary employment and education.</li>
+                <li>Construct SMART transition goals tailored to the neurodivergent Level 1 profile.</li>
+            </ul>
+        </div>
+
+        <h2 id="legal">1. The Legal Mandate: IDEA and the ITP</h2>
+        <p>Transition planning is not merely a "best practice"—it is a federal mandate under the <span class="highlight">Individuals with Disabilities Education Act (IDEA)</span>. For neurodivergent students, the transition from the protected environment of the K-12 system to the autonomy of adulthood is often the most precarious phase of their lives. IDEA requires that an Individualized Transition Plan (ITP) be in place by the time a student reaches age 16 (and as early as age 14 in many states).</p>
+
+        <p>The ITP is a results-oriented process focused on improving the academic and functional achievement of the student. It must be based on the individual student's needs, taking into account their strengths, preferences, and interests. For Level 1 individuals, this often requires a delicate balance between supporting executive functioning deficits and honoring their high cognitive potential.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">16</div>
+                    <div class="stat-label">Federal Age Mandate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">College Completion Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Success with Paid Work</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="cliff">2. Navigating the "Services Cliff"</h2>
+        <p>The most significant challenge facing neurodivergent youth is the <span class="highlight">"Services Cliff."</span> This phenomenon describes the abrupt cessation of mandated supports once a student graduates high school or reaches age 21/22. The practitioner must guide families through the fundamental shift from *entitlement* to *eligibility*.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>IDEA (K-12 System)</th>
+                        <th>ADA/Section 504 (Adulthood)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Legal Basis</strong></td>
+                        <td>Entitlement: The school *must* provide services.</td>
+                        <td>Eligibility: The individual *must* qualify for services.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Responsibility</strong></td>
+                        <td>School District (Proactive Identification)</td>
+                        <td>Individual (Self-Disclosure & Advocacy)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Goal</strong></td>
+                        <td>Success: Ensuring the student makes progress.</td>
+                        <td>Access: Ensuring the individual has an equal opportunity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Documentation</strong></td>
+                        <td>IEP/ITP (Updated annually)</td>
+                        <td>Recent clinical diagnosis & functional assessment.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="agency">3. Inter-agency Collaboration: The VR Connection</h2>
+        <p>Successful transition cannot occur within the vacuum of a school district. It requires <span class="highlight">inter-agency collaboration</span>, specifically involving State Vocational Rehabilitation (VR) agencies. VR is a federally funded program that helps people with disabilities prepare for, find, and keep jobs.</p>
+
+        <p>Practitioners should encourage families to open a VR case as early as age 14-16 through <span class="highlight">Pre-Employment Transition Services (Pre-ETS)</span>. These services include job exploration counseling, work-based learning experiences, and workplace readiness training. For Level 1 individuals, VR can provide specialized job coaching and assistive technology that the school district may not offer.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study: Marcus (Age 17, Level 1 Autism)</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Situation:</strong> Marcus has a 3.8 GPA and excels in computer science but suffers from significant anxiety regarding social interactions and "unwritten" workplace rules. His parents were concerned he would struggle in a traditional internship.</p>
+                <p><strong>Intervention:</strong> The Support Specialist facilitated a transition meeting including the school, Marcus, and a VR counselor. We moved his ITP goal from "attending a job fair" to "completing a 4-week paid micro-internship with a job coach provided by VR."</p>
+                <p><strong>Outcome:</strong> Marcus successfully completed the internship. The VR counselor provided a "Social Narrative" for the workplace, reducing Marcus's anxiety by 60% (self-reported via Likert scale).</p>
+            </div>
+        </div>
+
+        <h2 id="predictors">4. Evidence-Based Predictors of Success</h2>
+        <p>Research from the National Technical Assistance Center on Transition (NTACT) has identified specific "predictors" that correlate with positive post-school outcomes. As a specialist, your interventions should prioritize these high-leverage areas:</p>
+        
+        <ul>
+            <li><span class="highlight">Paid Employment/Work Experience:</span> Students who have at least one paid job during high school are significantly more likely to be employed as adults.</li>
+            <li><span class="highlight">Self-Care/Independent Living Skills:</span> Proficiency in daily living (laundry, cooking, hygiene) is a stronger predictor of post-secondary success than academic GPA for neurodivergent youth.</li>
+            <li><span class="highlight">Self-Determination:</span> The ability to set goals, make choices, and self-advocate. Individuals with higher self-determination scores have higher rates of employment and independent living.</li>
+            <li><span class="highlight">Social Skills Training:</span> Specifically training that focuses on the "Double Empathy Problem" and navigating neurotypical expectations while maintaining authentic neurodivergent identity.</li>
+        </ul>
+
+        <h2 id="smart">5. Constructing SMART Transition Goals</h2>
+        <p>ITP goals must be <span class="highlight">SMART</span> (Specific, Measurable, Achievable, Relevant, and Time-bound). Vague goals like "Marcus will get a job" are ineffective and legally insufficient.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Example: Post-Secondary Education Goal</div>
+            <div class="principle-text">
+                "Within six months of graduation, Marcus will enroll in a minimum of 9 credit hours at the local Community College and meet with the Office of Disability Services to secure accommodations (extended time, quiet testing) with 100% independence."
+            </div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Example: Independent Living Goal</div>
+            <div class="principle-text">
+                "By May 2025, Marcus will independently manage his monthly medication refills and use a digital calendar to schedule and attend two medical appointments with no more than one verbal prompt from parents."
+            </div>
+        </div>
+
+        <h2 id="method">6. The Practitioner's Role: Implementing "The Method"</h2>
+        <p>In the AccrediPro framework, our role is to act as the <span class="highlight">Transition Architect</span>. We bridge the communication gap between the school, the family, and adult agencies. Our focus is on reducing the "Executive Function Load" of the transition process itself.</p>
+        
+        <p>We use <span class="highlight">Monotropism-informed planning</span>, recognizing that the student may be deeply focused on their academic interests while neglecting the "administrative" tasks of adulthood. By breaking transition tasks into "deep-dive" modules that align with the student's interests, we increase engagement and reduce the likelihood of Autistic Burnout during this high-stress period.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. What is the primary difference between the legal protections offered by IDEA versus the ADA in the context of transition?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">IDEA is an entitlement-based system where the school is responsible for identifying needs and providing services. The ADA is an eligibility-based system where the individual is responsible for self-disclosing their disability and requesting "reasonable accommodations."</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. According to NTACT research, which of these is the strongest predictor of adult employment success?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Paid work experience during high school. Students with paid employment are significantly more likely to remain employed in adulthood compared to those who only participated in unpaid internships or academic-only tracks.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The ITP is a federally mandated document (IDEA) that must be active by age 16.</li>
+                <li>The "Services Cliff" marks the shift from school-led entitlement to individual-led eligibility.</li>
+                <li>Vocational Rehabilitation (VR) should be engaged early (age 14-16) via Pre-ETS services.</li>
+                <li>Independent living skills and self-determination are more predictive of success than academic grades.</li>
+                <li>Transition goals must be SMART and focus on the individual’s authentic neurodivergent profile.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Test, D. W., et al. (2009). "Evidence-Based Secondary Transition Predictors for Improving Postschool Outcomes for Students With Disabilities." Career Development for Exceptional Individuals.</li>
+                <li>Wehman, P., et al. (2014). "Effect of a Transition-to-Work Program on Outcomes for 18–21-Year-Old Youth With Autism Spectrum Disorders." Journal of Autism and Developmental Disorders.</li>
+                <li>National Technical Assistance Center on Transition (NTACT). (2023). "Effective Practices and Predictors of Post-School Success."</li>
+                <li>Roux, A. M., et al. (2015). "Falling Off the Services Cliff: The Transition to Adulthood for Youth with Autism Spectrum Disorder." Drexel University Autism Institute.</li>
+                <li>Shogren, K. A., et al. (2015). "The Impact of Self-Determination Interventions on Postschool Outcomes." Exceptional Children.</li>
+                <li>Mazzotti, V. L., et al. (2021). "Secondary Transition Predictors of Postschool Success: An Update to the Field." Career Development and Transition for Exceptional Individuals.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Certified Autism & Neurodiversity Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

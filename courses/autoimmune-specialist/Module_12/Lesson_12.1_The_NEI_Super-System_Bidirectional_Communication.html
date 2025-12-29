@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.1: The NEI Super-System: Bidirectional Communication</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/PURPLE theme for Neuro-Endocrine */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #fbbf24;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfaff;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9d5ff;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #6b21a8 0%, #8b5cf6 100%);
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #f3e8ff;
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #fef3c7;
+        }
+
+        .reveal-btn {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            margin-top: 45px;
+            border-radius: 14px;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .brand-text {
+            color: #1e3a8a;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: The Neuro-Endocrine-Immune (NEI) Axis</p>
+            <h1 class="lesson-title">Lesson 1: The NEI Super-System: Bidirectional Communication</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 1 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Paradigm Shift to NEI</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Common Vocabulary</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Bidirectional Superhighways</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Leaky Brain & BBB</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Immunostat Mechanism</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical CALM Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the NEI axis as a singular, integrated biological operating system.</li>
+                <li>Identify how cytokines, hormones, and neurotransmitters function as a shared molecular language.</li>
+                <li>Analyze the mechanisms by which systemic inflammation breaches the blood-brain barrier.</li>
+                <li>Explain the role of the hypothalamus as the body’s central "Immunostat."</li>
+                <li>Apply NEI principles to the "Address Root Causes" (A) phase of the CALM Protocol™.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Paradigm Shift: From Silos to Systems</h2>
+        <p>In conventional medical training, the nervous, endocrine, and immune systems are often taught as distinct entities, managed by different specialists—neurologists, endocrinologists, and immunologists. However, the <span class="highlight">Neuro-Endocrine-Immune (NEI) Axis</span> paradigm reveals that these systems are functionally inseparable. They do not merely "interact"; they operate as a single, bidirectional "Super-System."</p>
+
+        <p>This integration is critical for the Autoimmune Specialist. In the context of the <span class="highlight">C.A.L.M. Autoimmune Protocol™</span>, we recognize that a "gut issue" is never just a gut issue. It is a signal that will inevitably be translated into hormonal shifts and neurological alterations. When a client presents with Hashimoto's, they aren't just experiencing a thyroid-immune failure; they are experiencing an NEI axis dysregulation that likely involves HPA axis dysfunction and neuro-inflammation.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">80%</div>
+                    <div class="stat-label">Afferent Vagal Fibers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Depression Risk in AI</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Cortisol Resistance</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 14px; color: #e0e7ff; text-align: center;">
+                *Data derived from meta-analyses on Psychoneuroimmunology (PNI) and systemic autoimmune prevalence (2022-2023).
+            </p>
+        </div>
+
+        <h2 id="section2">2. The Common Vocabulary: Cytokines, Hormones, and Neurotransmitters</h2>
+        <p>The "glue" that holds the NEI axis together is a shared molecular vocabulary. For decades, it was believed that cytokines were the exclusive language of the immune system, neurotransmitters the language of the brain, and hormones the language of the glands. We now know that <span class="highlight">receptors for all three</span> exist on nearly every cell type in these systems.</p>
+
+        <ul class="content-list">
+            <li><strong>Cytokines as Neurotransmitters:</strong> Pro-inflammatory cytokines like IL-1β and TNF-alpha can act directly on brain tissue to induce "sickness behavior," characterized by lethargy, anhedonia, and cognitive fog.</li>
+            <li><strong>Hormones as Immune Modulators:</strong> Cortisol (the primary stress hormone) is the body’s most potent endogenous immunosuppressant. Conversely, prolactin and estrogen can stimulate immune activity, explaining why many autoimmune conditions are female-dominant.</li>
+            <li><strong>Neurotransmitters as Immune Signals:</strong> Lymphocytes (T and B cells) possess receptors for dopamine, serotonin, and acetylcholine, allowing the nervous system to "tune" the immune response in real-time.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Messenger Type</th>
+                        <th>Traditional Source</th>
+                        <th>NEI "Cross-Talk" Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>IL-6 (Cytokine)</strong></td>
+                        <td>Macrophages / T-cells</td>
+                        <td>Activates the HPA axis to release Cortisol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cortisol (Hormone)</strong></td>
+                        <td>Adrenal Cortex</td>
+                        <td>Suppresses Th1 cytokine production; shifts to Th2.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acetylcholine (NT)</strong></td>
+                        <td>Vagus Nerve</td>
+                        <td>The "Off Switch" for splenic cytokine release.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CRH (Hormone)</strong></td>
+                        <td>Hypothalamus</td>
+                        <td>Directly degranulates mast cells in the gut and skin.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. The Bidirectional Superhighway: Vagus and Vascular</h2>
+        <p>Communication within the NEI axis occurs via two primary pathways: the <span class="highlight">Hard-Wired Neural Pathway</span> (fast) and the <span class="highlight">Humoral/Vascular Pathway</span> (slow but pervasive).</p>
+
+        <h3>The Neural Pathway (The Vagus Nerve)</h3>
+        <p>The Vagus nerve is the primary conduit of the "Cholinergic Anti-Inflammatory Pathway." Afferent (upward) fibers detect peripheral inflammation in the gut or lungs and notify the brain. The brain then sends efferent (downward) signals to the spleen and other lymphoid organs to dampen cytokine production. In autoimmune clients, this "vagal tone" is often significantly compromised.</p>
+
+        <h3>The Humoral Pathway (The Bloodstream)</h3>
+        <p>This pathway involves the circulation of cytokines and hormones. Systemic inflammation, often originating from intestinal permeability (Lesson 2.2), travels through the blood. While the brain was once thought to be "immune privileged," we now understand that the brain "senses" these blood-borne signals through circumventricular organs—areas where the Blood-Brain Barrier (BBB) is naturally thinner.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">CASE STUDY: The "Leaky Brain" Connection</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah G. | Age: 38</h4>
+                        <p>Diagnosis: Hashimoto’s Thyroiditis & Generalized Anxiety</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Sarah complained of severe "brain fog," inability to handle minor stressors, and a "vibrating" sensation in her limbs despite her TSH being "within range" (3.2 mIU/L).</p>
+                <p><strong>Intervention:</strong> Using the CALM Protocol, we identified high levels of <span class="highlight">Zonulin</span> (indicating intestinal permeability) and elevated <span class="highlight">MMP-9</span> (a marker for BBB permeability). We shifted focus from thyroid hormones to vagal nerve stimulation and gut barrier repair.</p>
+                <p><strong>Outcome:</strong> Within 12 weeks, Sarah's anxiety scores (GAD-7) dropped from 16 to 4. Her cognitive clarity returned before her thyroid antibodies showed significant decline, proving the neurological symptoms were driven by NEI cross-talk rather than just thyroid levels.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Molecular Mimicry in the Brain: When the BBB Breaches</h2>
+        <p>The Blood-Brain Barrier (BBB) is the brain's "tight junction" system, analogous to the gut barrier. Chronic systemic inflammation—specifically the presence of <span class="highlight">Lipopolysaccharides (LPS)</span> from gram-negative gut bacteria—triggers the activation of matrix metalloproteinases (MMPs), which degrade the tight junction proteins of the BBB.</p>
+
+        <p>Once the BBB is breached, systemic immune cells and antibodies can enter the Central Nervous System (CNS). This leads to <span class="highlight">Microglial Activation</span>. Microglia are the brain's resident immune cells. Unlike peripheral macrophages, once microglia are "primed" by inflammation, they can remain in a pro-inflammatory state for years, leading to the neuro-degeneration often seen in advanced autoimmune cases like Multiple Sclerosis or Lupus-related cerebritis.</p>
+
+        <h2 id="section5">5. The 'Immunostat': The Brain’s Thermostat for Inflammation</h2>
+        <p>Just as the hypothalamus maintains a set point for body temperature (the thermostat), it also maintains a set point for systemic inflammation—a concept known as the <span class="highlight">Immunostat</span>. The brain constantly monitors the "inflammatory load" via cytokine receptors in the hypothalamus.</p>
+
+        <p>When the Immunostat is functioning correctly, a spike in inflammation (e.g., an acute infection) triggers a compensatory rise in cortisol to bring the system back to baseline. However, in chronic autoimmunity, the Immunostat becomes "re-calibrated." The brain begins to perceive high levels of inflammation as the "new normal," leading to <span class="highlight">Glucocorticoid Resistance</span>—where the body’s cells stop responding to the anti-inflammatory signals of cortisol. This is why many clients feel "inflamed" even when taking prednisone or other steroids.</p>
+
+        <h2 id="section6">6. Clinical Relevance in the C.A.L.M. Protocol™</h2>
+        <p>In the "Address Root Causes" (A) phase of our protocol, we must look beyond the physical trigger (the toxin or the pathogen) and evaluate the state of the NEI axis. If the client's nervous system is stuck in a "sympathetic dominant" state, the immune system will remain "locked" in a pro-inflammatory posture, regardless of how "clean" their diet is.</p>
+
+        <p><strong>Practitioner Insight:</strong> When working with a client who is non-responsive to the AIP diet (Module 3), the bottleneck is rarely the food. It is almost always a "Neuro-Endocrine Blockade" where high stress or poor sleep (circadian disruption) is preventing the Immunostat from resetting.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the NEI Super-System</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Which nerve acts as the primary "hard-wired" pathway for the brain to shut down peripheral cytokine production?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Vagus Nerve (Cranial Nerve X). It utilizes the Cholinergic Anti-Inflammatory Pathway to signal the spleen and gut to reduce TNF-alpha and IL-1 production.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What happens to the "Immunostat" during chronic autoimmune flares?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Immunostat becomes recalibrated to a higher "set point" of inflammation, often leading to Glucocorticoid Resistance, where the body fails to respond to its own anti-inflammatory cortisol.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Lesson Takeaways</span>
+            <ul>
+                <li>The NEI axis is a <strong>bidirectional super-system</strong> where the brain, glands, and immune cells share a single molecular language.</li>
+                <li><strong>Cytokines are not just immune markers;</strong> they are potent neuro-modulators that cross the BBB and alter behavior and mood.</li>
+                <li><strong>Intestinal permeability (Leaky Gut)</strong> almost always precedes <strong>BBB permeability (Leaky Brain)</strong> due to systemic LPS circulation.</li>
+                <li>Successful autoimmune recovery requires <strong>Nervous System Regulation</strong> to unlock the immune system's ability to return to tolerance.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Besedovsky, H.O., & del Rey, A. (2011). "Central and peripheral cytokines as determinants of physiological functions and diseases." <em>Physiology.</em></li>
+                <li>Tracey, K.J. (2002). "The inflammatory reflex." <em>Nature.</em></li>
+                <li>Dantzer, R., et al. (2008). "From inflammation to sickness and depression: when the immune system subjugates the brain." <em>Nature Reviews Neuroscience.</em></li>
+                <li>Sternberg, E.M. (2006). "Neural regulation of innate immunity: a coordinated nonspecific host response to pathogens." <em>Nature Reviews Immunology.</em></li>
+                <li>Maes, M., et al. (2012). "The gut-brain barrier in major depression: Intestinal mucosal dysfunction with an increased translocation of LPS." <em>Neuroendocrinology Letters.</em></li>
+                <li>Pariante, C.M. (2017). "Why are depressed patients inflamed? A reflection on 20 years of research on cortisol, cytokines and depression." <em>European Neuropsychopharmacology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Logo" class="footer-logo">
+            <p class="brand-text">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

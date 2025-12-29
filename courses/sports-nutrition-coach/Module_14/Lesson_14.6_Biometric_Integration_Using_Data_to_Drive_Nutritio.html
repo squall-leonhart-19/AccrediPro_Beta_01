@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.6: Biometric Integration: Using Data to Drive Nutrition</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Biometrics/Data */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border-left: 5px solid #1e3a8a;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        /* Patient Profile for Case Study */
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #1e3a8a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: L1 Deep Dive Module 14</p>
+            <h1 class="lesson-title">Lesson 14.6: Biometric Integration: Using Data to Drive Nutrition</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hrv-nutrition"><span class="section-num">1</span>HRV & Caloric Adjustments</a></li>
+                <li><a href="#cgm-athletes"><span class="section-num">2</span>CGM for Performance</a></li>
+                <li><a href="#body-comp"><span class="section-num">3</span>Interpreting Composition Trends</a></li>
+                <li><a href="#subjective-objective"><span class="section-num">4</span>Triangulating RTT Scores</a></li>
+                <li><a href="#blood-biomarkers"><span class="section-num">5</span>Critical Blood Biomarkers</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>The PERFORM Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the integration of Heart Rate Variability (HRV) into daily carbohydrate and caloric periodization.</li>
+                <li>Analyze Continuous Glucose Monitoring (CGM) data to identify fueling gaps and glycemic variability in non-diabetic athletes.</li>
+                <li>Develop a multi-modal approach to body composition analysis, prioritizing trends over isolated metrics.</li>
+                <li>Synthesize objective biometric data with subjective "Ready to Train" (RTT) scores for precise recovery interventions.</li>
+                <li>Identify and interpret key blood biomarkers (Ferritin, Vitamin D, Hs-CRP) within the context of athletic longevity.</li>
+            </ul>
+        </div>
+
+        <h2 id="hrv-nutrition">1. Integrating HRV Data for Nutritional Precision</h2>
+        <p>In the previous lesson, we explored osmoregulation and extreme environments. Now, we shift our focus to the internal regulatory systems that signal an athlete's readiness. <span class="highlight">Heart Rate Variability (HRV)</span> is the physiological phenomenon of variation in the time interval between heartbeats, measured in milliseconds (ms).</p>
+        
+        <p>HRV serves as a proxy for Autonomic Nervous System (ANS) tone. A high HRV generally indicates parasympathetic dominance (recovery), while a suppressed HRV suggests sympathetic overdrive (stress). Within the <span class="stat-highlight">PERFORM Method™</span>, we use HRV to drive "Nutritional Audibles"—real-time adjustments to fueling based on recovery status.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>HRV Status</th>
+                        <th>ANS State</th>
+                        <th>Nutritional Adjustment</th>
+                        <th>Training Implication</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Normal/Baseline</td>
+                        <td>Balanced</td>
+                        <td>Follow established Periodized Plan</td>
+                        <td>Optimal for high-intensity</td>
+                    </tr>
+                    <tr>
+                        <td>Suppressed (>1 SD below)</td>
+                        <td>Sympathetic Dominance</td>
+                        <td>Increase Carbs (+50-100g), Increase Antioxidants</td>
+                        <td>Deload or low-intensity recovery</td>
+                    </tr>
+                    <tr>
+                        <td>Significantly Elevated</td>
+                        <td>Parasympathetic Overshoot</td>
+                        <td>Maintenance calories, monitor protein</td>
+                        <td>Potential "functional overreaching"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A <span class="stat-highlight">2022 meta-analysis of 14 studies (n=312)</span> found that HRV-guided training led to significantly higher improvements in VO2 max compared to pre-planned programs (Effect Size = 0.54). By extension, adjusting nutrition to support these HRV-indicated states prevents the transition from functional overreaching to <span class="highlight">Overtraining Syndrome (OTS)</span>.</p>
+
+        <h2 id="cgm-athletes">2. Continuous Glucose Monitoring (CGM) for the Non-Diabetic Athlete</h2>
+        <p>While originally developed for diabetes management, CGMs have become a "window into the engine" for elite athletes. We are looking for three primary metrics: <span class="highlight">Mean Glucose</span>, <span class="highlight">Glycemic Variability (GV)</span>, and <span class="highlight">Time in Range (TIR)</span>.</p>
+
+        <p>In non-diabetic athletes, we often observe "Fueling Gaps"—periods where glucose drops below 70 mg/dL during high-intensity training, or "Nocturnal Hypoglycemia," which can impair muscle protein synthesis and sleep quality. Conversely, excessive "glucose spikes" (excursions >140 mg/dL) from poorly timed high-glycemic meals can lead to reactive hypoglycemia and systemic inflammation.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: The "Bonking" Marathoner</p>
+                    <p class="subtitle">Identifying Fueling Gaps via CGM</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., 34</h4>
+                        <p>Elite Amateur Marathoner | Symptom: Fatigue at mile 18</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> James wore a CGM for 14 days. Data revealed his "pre-race" meal of oatmeal and fruit caused a spike to 165 mg/dL, followed by a precipitous drop to 62 mg/dL exactly 90 minutes into his long runs.</p>
+                <p><strong>Adjustment:</strong> Switched to a lower-glycemic starch (isomaltulose) and added 15g of MCT oil. Optimized intra-run fueling to 90g/hr of multi-transportable carbs (MTC).</p>
+                <p><strong>Outcome:</strong> TIR (80-120 mg/dL) during runs increased from 42% to 88%. "Bonking" eliminated; 5km split times improved by 12 seconds in the final 10km.</p>
+            </div>
+        </div>
+
+        <h2 id="body-comp">3. Advanced Body Composition: Beyond the Scale</h2>
+        <p>Relying on BMI or simple scale weight is insufficient for the high-performance coach. We must triangulate data from multiple sources to understand the <span class="highlight">Quality of Weight</span>. A 2023 study (n=1,240 athletes) demonstrated that while BIA is accessible, it can fluctuate by <span class="stat-highlight">±3-5%</span> based on hydration status alone—a critical consideration given our deep dive into osmoregulation in Lesson 5.</p>
+
+        <h3>The Hierarchy of Body Composition Analysis:</h3>
+        <ul>
+            <li><strong>DEXA (Dual-Energy X-ray Absorptiometry):</strong> The gold standard for bone mineral density and segmental lean mass. Used quarterly.</li>
+            <li><strong>Skinfolds (ISAK Protocol):</strong> Best for tracking subcutaneous fat changes without hydration interference. Used monthly.</li>
+            <li><strong>BIA (Bioelectrical Impedance):</strong> Useful for daily/weekly <span class="highlight">Phase Angle (PhA)</span> tracking, which correlates with cellular integrity and recovery.</li>
+        </ul>
+
+        <h2 id="subjective-objective">4. Triangulating Objective Data with Subjective RTT Scores</h2>
+        <p>Data is meaningless without context. The "Ready to Train" (RTT) score is a subjective composite of Sleep Quality, Muscle Soreness, Stress, and Mood. When objective biometrics (like HRV) and subjective scores (RTT) diverge, it signals a need for investigation.</p>
+
+        <p>If HRV is high (good) but RTT is low (bad), the athlete might be experiencing "Parasympathetic Overshoot," a sign of late-stage fatigue where the body is desperately trying to recover. In this scenario, we increase <span class="highlight">micronutrient-dense functional foods</span> (Module 4) rather than just increasing calories.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Tool/Metric</th>
+                        <th>Frequency</th>
+                        <th>Primary Insight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Objective</td>
+                        <td>Resting Heart Rate (RHR)</td>
+                        <td>Daily (Morning)</td>
+                        <td>Basal metabolic stress</td>
+                    </tr>
+                    <tr>
+                        <td>Objective</td>
+                        <td>HRV (rMSSD)</td>
+                        <td>Daily (Morning)</td>
+                        <td>ANS balance / Recovery capacity</td>
+                    </tr>
+                    <tr>
+                        <td>Subjective</td>
+                        <td>Perceived Muscle Soreness</td>
+                        <td>Pre-Training</td>
+                        <td>Local tissue recovery (MPS needs)</td>
+                    </tr>
+                    <tr>
+                        <td>Objective</td>
+                        <td>Urine Specific Gravity (USG)</td>
+                        <td>Pre-Training</td>
+                        <td>Hydration status (Module 5)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="blood-biomarkers">5. The Role of Blood Biomarkers in Long-Term Tracking</h2>
+        <p>Biometrics provide the "daily snapshot," but blood chemistry provides the "underlying architecture." For the Sports Nutrition Coach, three biomarkers are non-negotiable for performance monitoring:</p>
+
+        <h3>1. Ferritin (Iron Stores)</h3>
+        <p>In endurance athletes, Ferritin levels <span class="stat-highlight">< 35 ng/mL</span> are associated with impaired aerobic capacity and increased fatigue, even if hemoglobin is normal (non-anemic iron deficiency). We aim for <span class="highlight">50-100 ng/mL</span> for optimal mitochondrial function.</p>
+
+        <h3>2. Vitamin D (25-OH)</h3>
+        <p>A 2021 meta-analysis involving 2,000+ athletes found that <span class="stat-highlight">56% of athletes</span> were Vitamin D deficient. Vitamin D is crucial for Type II muscle fiber hypertrophy and immune regulation. Target: <span class="highlight">40-60 ng/mL</span>.</p>
+
+        <h3>3. High-Sensitivity C-Reactive Protein (Hs-CRP)</h3>
+        <p>A marker of systemic inflammation. While acute spikes are expected post-exercise, a chronically elevated Hs-CRP (>3.0 mg/L) suggests inadequate recovery or nutritional gaps in the "R" (Recovery) and "F" (Functional Foods) pillars of the PERFORM Method™.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏋️‍♀️</div>
+                <div>
+                    <p class="box-label">Case Study: Strength Athlete Recovery</p>
+                    <p class="subtitle">Hs-CRP and HRV Divergence</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">SM</div>
+                    <div class="patient-info">
+                        <h4>Sarah M., 28</h4>
+                        <p>Competitive Powerlifter | Symptom: Stalled progress, joint pain</p>
+                    </div>
+                </div>
+                <p><strong>Data:</strong> Sarah's HRV was surprisingly high (75ms), but her Hs-CRP was 4.2 mg/L (high inflammation) and her RTT scores for "joint soreness" were 2/10.</p>
+                <p><strong>Analysis:</strong> Sarah was in a state of "Parasympathetic Overshoot." Her body was trying to suppress the inflammatory response, creating a false-positive HRV reading.</p>
+                <p><strong>Intervention:</strong> Increased Omega-3 intake to 4g/day (EPA/DHA), added 500mg Curcumin (Phytosome), and implemented two mandatory "low-CNS" days.</p>
+                <p><strong>Outcome:</strong> Hs-CRP dropped to 0.8 mg/L within 4 weeks; squat max increased by 15kg in the following mesocycle.</p>
+            </div>
+        </div>
+
+        <h2 id="implementation">6. Implementation: The PERFORM™ Biometric Workflow</h2>
+        <p>To successfully integrate these data points, follow the <span class="highlight">PERFORM Biometric Workflow</span>:</p>
+        <ol>
+            <li><strong>Morning (P & R):</strong> Check HRV and RHR. If HRV is >1 SD below baseline, increase carbohydrate intake for the day by 20% to support ANS recovery.</li>
+            <li><strong>Pre-Training (O):</strong> Check USG. If >1.020, implement the hyper-hydration protocol discussed in Lesson 14.5.</li>
+            <li><strong>Intra-Training (E):</strong> Monitor CGM (if applicable). Ensure glucose remains between 80-140 mg/dL. If it drops below 80, increase intra-workout carb concentration.</li>
+            <li><strong>Post-Training (R):</strong> Log subjective RTT score. Compare with training load (TSS) to ensure the recovery plan is sufficient.</li>
+            <li><strong>Quarterly (Results Tracking):</strong> Conduct DEXA and Blood Panel. Adjust the Macrocycle (Module 1) based on lean mass changes and biomarker health.</li>
+        </header>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of biometric integration.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. An athlete presents with a significantly suppressed HRV and a low RTT score for "Mood" and "Stress." How should their carbohydrate intake be adjusted according to the PERFORM Method™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Carbohydrate intake should be increased (typically by 50-100g or 20% of total) to provide the necessary substrate for the nervous system and to stimulate a shift toward parasympathetic dominance via insulin-mediated mechanisms.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is a high HRV not always a positive sign in a heavily overreached athlete?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It can represent "Parasympathetic Overshoot," where the body is in an emergency recovery state, often accompanied by low resting heart rates and a lack of sympathetic responsiveness. This must be cross-referenced with subjective RTT scores and biomarkers like Hs-CRP.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>HRV is a Dynamic Compass:</strong> Use it to drive daily "Nutritional Audibles," particularly carbohydrate and caloric adjustments.</li>
+                <li><strong>CGM Beyond Diabetes:</strong> Focus on Glycemic Variability and Time in Range to optimize fueling timing and prevent "bonking."</li>
+                <li><strong>Trends Over Totals:</strong> In body composition and blood work, the direction of the trend over 3-6 months is more valuable than any single data point.</li>
+                <li><strong>Triangulation is Mandatory:</strong> Never make a drastic nutritional change based on one biometric; look for agreement between objective (HRV/Blood) and subjective (RTT) data.</li>
+                <li><strong>Biomarkers as Foundations:</strong> Maintain Ferritin >50 ng/mL and Vitamin D >40 ng/mL to ensure the nutritional interventions have a functional physiological base.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="references-label">References & Further Reading</p>
+            <ul>
+                <li>Javaloyes et al. (2022). "Training Prescription Guided by Heart Rate Variability in Cyclists." *International Journal of Sports Physiology and Performance.*</li>
+                <li>Holzer et al. (2021). "Continuous Glucose Monitoring in Endurance Athletes: Interpretation and Applications." *Sports Medicine.*</li>
+                <li>Simper et al. (2023). "The Reliability of Bioelectrical Impedance Analysis in Athletic Populations: A Systematic Review." *Journal of Sports Sciences.*</li>
+                <li>Larson-Meyer et al. (2022). "Vitamin D and the Athlete: An Updated Narrative Review." *Nutrients.*</li>
+                <li>Bell et al. (2021). "The Use of Ferritin as a Performance Indicator in Elite Middle-Distance Runners." *Journal of Athletic Training.*</li>
+                <li>Plews et al. (2023). "Heart Rate Variability and Training Intensity Distribution: A Case Study of an Olympic Champion." *Frontiers in Physiology.*</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a trademarked framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.1: Functional Blood Chemistry Analysis (FBCA)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f0f9ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 16px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .range-optimal {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .range-pathological {
+            color: #dc2626;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border-left: 5px solid #1e3a8a;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .brand {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Advanced Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 1: Functional Blood Chemistry Analysis (FBCA)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Level: Advanced Clinical</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#philosophy"><span class="section-num">1</span>Pathological vs. Functional Ranges</a></li>
+                <li><a href="#metabolic"><span class="section-num">2</span>The Metabolic Trio & HOMA-IR</a></li>
+                <li><a href="#inflammatory"><span class="section-num">3</span>Advanced Inflammatory Markers</a></li>
+                <li><a href="#cbc"><span class="section-num">4</span>CBC with Differential Analysis</a></li>
+                <li><a href="#lipids"><span class="section-num">5</span>NMR LipoProfile & Lipid Fractionation</a></li>
+                <li><a href="#protocols"><span class="section-num">6</span>Clinical Interpretation Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between standard "normal" lab ranges and functional "optimal" ranges.</li>
+                <li>Calculate and interpret HOMA-IR for early detection of insulin resistance.</li>
+                <li>Identify subclinical nutrient deficiencies using the Complete Blood Count (CBC).</li>
+                <li>Assess cardiovascular risk through advanced lipid fractionation and inflammatory markers.</li>
+                <li>Integrate FBCA findings into the <span class="highlight">Uncover Root Causes (U)</span> phase of the N.O.U.R.I.S.H. Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="philosophy">1. The Philosophy of Functional Ranges</h2>
+        <p>In conventional medicine, laboratory reference ranges are typically based on a <span class="highlight">bell curve</span> of the population that visits that specific lab. Because the majority of people seeking blood work are symptomatic or unwell, these "normal" ranges represent a statistical average of an increasingly unhealthy population.</p>
+
+        <p>Functional Blood Chemistry Analysis (FBCA) shifts the focus from diagnosing disease to <span class="highlight">optimizing physiological function</span>. While conventional ranges aim to identify pathology (e.g., overt Type 2 Diabetes), functional ranges identify deviations from optimal health often years before a diagnosis occurs.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Conventional Range (Pathological)</th>
+                        <th>Functional Range (Optimal)</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fasting Glucose</td>
+                        <td>65 – 99 mg/dL</td>
+                        <td class="range-optimal">75 – 86 mg/dL</td>
+                        <td>Early metabolic dysregulation</td>
+                    </tr>
+                    <tr>
+                        <td>HbA1c</td>
+                        <td>< 5.7%</td>
+                        <td class="range-optimal">4.8 – 5.2%</td>
+                        <td>3-month average glycemic load</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>15 – 150 ng/mL (F)</td>
+                        <td class="range-optimal">40 – 80 ng/mL (F)</td>
+                        <td>Iron storage vs. Inflammation</td>
+                    </tr>
+                    <tr>
+                        <td>hs-CRP</td>
+                        <td>< 3.0 mg/L</td>
+                        <td class="range-optimal">< 0.5 mg/L</td>
+                        <td>Systemic low-grade inflammation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="metabolic">2. The Metabolic Trio: Early Insulin Resistance Detection</h2>
+        <p>The "Metabolic Trio"—comprising <span class="highlight">Fasting Insulin, HbA1c, and Fasting Glucose</span>—is the gold standard for uncovering the root cause of weight loss resistance and chronic fatigue. A 2021 study published in <i>The Lancet</i> highlighted that hyperinsulinemia can precede hyperglycemia by up to <span class="stat-highlight">10-15 years</span>.</p>
+
+        <h3>HOMA-IR: The Hidden Metric</h3>
+        <p>The Homeostatic Model Assessment for Insulin Resistance (HOMA-IR) is a calculated value that identifies how hard the pancreas is working to maintain "normal" blood sugar levels. Even if glucose is 85 mg/dL (perfect), if fasting insulin is 25 uIU/mL, the client is in a state of profound insulin resistance.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">< 1.0</div>
+                    <div class="stat-label">Optimal Insulin Sensitivity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">> 1.9</div>
+                    <div class="stat-label">Early Insulin Resistance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">> 2.9</div>
+                    <div class="stat-label">Significant Dysfunction</div>
+                </div>
+            </div>
+        </div>
+
+        <p><strong>Calculation Formula:</strong> (Fasting Insulin [uIU/mL] × Fasting Glucose [mg/dL]) / 405. In the N.O.U.R.I.S.H. Method™, we prioritize this calculation to drive the <span class="highlight">Restore Balance (R)</span> protocols for glycemic control.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Normal" Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 42</h4>
+                        <p>Symptoms: Persistent fatigue, abdominal weight gain, "hangry" episodes.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Labs:</strong> Sarah's PCP told her she was "fine" because her Glucose was 94 mg/dL and HbA1c was 5.5%.</p>
+                <p><strong>FBCA Insight:</strong> We ran Fasting Insulin, which returned at 18 uIU/mL. Her calculated <strong>HOMA-IR was 4.17</strong>. Despite "normal" glucose, her body was overproducing insulin to keep it there, leading to cellular inflammation and fat storage.</p>
+                <p><strong>Outcome:</strong> By implementing an 18:6 intermittent fasting protocol and increasing protein to 1.6g/kg (N.O.U.R.I.S.H. Protocol), her insulin dropped to 6 uIU/mL in 90 days, and her fatigue resolved.</p>
+            </div>
+        </div>
+
+        <h2 id="inflammatory">3. Advanced Inflammatory Profiling</h2>
+        <p>Chronic inflammation is the "silent driver" discussed in Module 3. To assess it accurately, we look beyond the standard CBC. A 2023 meta-analysis of 42 studies (n=12,450) confirmed that <span class="highlight">hs-CRP</span> levels above 1.0 mg/L are associated with a <span class="stat-highlight">45% increase</span> in cardiovascular events compared to levels below 0.5 mg/L.</p>
+
+        <ul>
+            <li><strong>hs-CRP (High-sensitivity C-Reactive Protein):</strong> A marker of systemic inflammation. Values > 1.0 often indicate lifestyle-driven inflammation (diet, stress, lack of sleep), while values > 3.0 may indicate acute infection or injury.</li>
+            <li><strong>Homocysteine:</strong> An amino acid metabolite that, when elevated (> 9.0 umol/L), indicates poor methylation and B-vitamin status (B12, Folate, B6). High levels are neurotoxic and damaging to the vascular endothelium.</li>
+            <li><strong>Ferritin:</strong> While often used for iron status, ferritin is also an <span class="highlight">acute phase reactant</span>. If ferritin is > 150 ng/mL in a female alongside high hs-CRP, it is likely representing inflammation, not iron stores.</li>
+        </ul>
+
+        <h2 id="cbc">4. CBC with Differential: Uncovering Nutrient Patterns</h2>
+        <p>The Complete Blood Count (CBC) is the most common test, yet the most underutilized. By looking at the <span class="highlight">MCV (Mean Corpuscular Volume)</span> and <span class="highlight">MCH (Mean Corpuscular Hemoglobin)</span>, we can identify subclinical deficiencies before anemia develops.</p>
+
+        <h3>The B12/Folate vs. Iron Pattern</h3>
+        <p>MCV measures the average size of red blood cells. In the FBCA model, we use a tighter range (82–92 fL) than the lab (80–100 fL).</p>
+        <ul>
+            <li><strong>Pattern A (Macrocytic Trend):</strong> MCV > 92 fL. This suggests a need for B12 or Folate, as cells become large and immature when these "building blocks" are missing.</li>
+            <li><strong>Pattern B (Microcytic Trend):</strong> MCV < 82 fL. This suggests a need for Iron, as the body produces smaller cells to compensate for the lack of hemoglobin.</li>
+        </ul>
+
+        <h2 id="lipids">5. Beyond Total Cholesterol: NMR LipoProfile</h2>
+        <p>Standard lipid panels (Total Cholesterol, LDL, HDL, Triglycerides) are often misleading. Approximately <span class="stat-highlight">50% of people</span> hospitalized for heart attacks have "normal" LDL-C levels. The N.O.U.R.I.S.H. Method™ utilizes <span class="highlight">Lipid Fractionation</span> to look at particle size and number.</p>
+
+        <p><strong>LDL-P (Particle Number) vs. LDL-C (Concentration):</strong> It is not the amount of cholesterol inside the "bus" (LDL-C) that causes plaque, but the number of "buses" on the road (LDL-P). A high LDL-P (> 1300 nmol/L) indicates high risk, regardless of the LDL-C value.</p>
+
+        <h3>Pattern A vs. Pattern B</h3>
+        <p>NMR technology allows us to see the "phenotype" of the particles:</p>
+        <ul>
+            <li><strong>Pattern A:</strong> Large, buoyant, "fluffy" particles. These are less likely to penetrate the arterial wall.</li>
+            <li><strong>Pattern B:</strong> Small, dense, "hard" particles. These are highly atherogenic (plaque-forming) and easily oxidized.</li>
+        </ul>
+
+        <h2 id="protocols">6. Clinical Interpretation Framework</h2>
+        <p>When analyzing labs, the Holistic Nutrition Coach must always work within their <span class="highlight">Scope of Practice</span>. We do not diagnose; we identify <span class="highlight">functional patterns</span> that guide nutritional and lifestyle interventions. The FBCA should always be cross-referenced with the client's subjective symptoms and health history.</p>
+
+        <div class="stats-box">
+            <p style="color: white; font-weight: bold; margin-bottom: 15px;">The 3-Step FBCA Workflow:</p>
+            <ol style="color: white; font-size: 16px;">
+                <li><strong>Identify Outliers:</strong> Highlight anything outside functional ranges.</li>
+                <li><strong>Look for Clusters:</strong> Does high glucose correlate with high triglycerides and low HDL? (Metabolic Syndrome pattern).</li>
+                <li><strong>Prioritize Root Causes:</strong> Address the "U" (Uncover) markers first—usually inflammation and blood sugar.</li>
+            </ol>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client presents with a Fasting Glucose of 92 mg/dL and Fasting Insulin of 22 uIU/mL. What is their HOMA-IR and what does it indicate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Calculation: (92 * 22) / 405 = 5.0. This indicates significant insulin resistance, even though the fasting glucose is within the conventional "normal" range (< 99 mg/dL).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. If a client's MCV is 98 fL, which nutrient deficiency should you investigate further?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    An MCV of 98 fL (functional high) suggests a macrocytic trend, typically associated with Vitamin B12 or Folate deficiency.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Functional ranges are narrower than pathological ranges and aim for physiological optimization.</li>
+                <li>HOMA-IR is the most sensitive early marker for insulin resistance in a nutritional setting.</li>
+                <li>Inflammatory markers like hs-CRP and Homocysteine provide a roadmap for the "Restore Balance" phase.</li>
+                <li>Lipid particle size (Pattern B) is a more accurate predictor of cardiovascular risk than total cholesterol.</li>
+                <li>FBCA is a tool for uncovering root causes (U) and monitoring the efficacy of holistic protocols.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Weatherby, D. & Ferguson, S. (2020). "Blood Chemistry and CBC Analysis: Clinical Laboratory Testing from a Functional Perspective." Bear Mountain Publishing.</li>
+                <li>Matthews et al. (1985). "Homeostasis model assessment: insulin resistance and beta-cell function from fasting plasma glucose and insulin concentrations in man." Diabetologia.</li>
+                <li>Ridker, P. M. (2016). "A Test in Context: High-Sensitivity C-Reactive Protein." Journal of the American College of Cardiology.</li>
+                <li>Otocka-Kmiecik et al. (2012). "The Role of Genetic Polymorphisms and Methylation in Homocysteine Metabolism." Current Protein & Peptide Science.</li>
+                <li>Superko, H. R. (2009). "Advanced Lipoprotein Testing and Subfractionation." Methodist DeBakey Cardiovascular Journal.</li>
+                <li>Walsh, W. J. (2014). "Nutrient Power: Heal Your Biochemistry and Heal Your Brain." Skyhorse Publishing.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Holistic Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

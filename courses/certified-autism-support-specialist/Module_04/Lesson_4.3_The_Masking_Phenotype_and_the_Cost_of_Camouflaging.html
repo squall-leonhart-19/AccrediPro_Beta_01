@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.3: The Masking Phenotype and the Cost of Camouflaging</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Teal/Emerald theme for Autism Support */
+        .module-header {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f766e;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f766e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #134e4a;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f766e;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #0f766e;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #0d9488;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+            margin-top: 40px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .highlight-box {
+            border-left: 4px solid #14b8a6;
+            background: #f0fdfa;
+            padding: 20px;
+            margin: 25px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: Level 1 Clinical Depth</p>
+            <h1 class="lesson-title">Lesson 4.3: The Masking Phenotype and the Cost of Camouflaging</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#defining-camouflaging"><span class="section-num">1</span>Defining Social Camouflaging</a></li>
+                <li><a href="#gender-phenotype"><span class="section-num">2</span>The Gendered Presentation</a></li>
+                <li><a href="#psychological-cost"><span class="section-num">3</span>The Psychological Cost</a></li>
+                <li><a href="#catq-assessment"><span class="section-num">4</span>The CAT-Q in Clinical Practice</a></li>
+                <li><a href="#unmasking-protocols"><span class="section-num">5</span>Unmasking Protocols</a></li>
+                <li><a href="#practitioner-role"><span class="section-num">6</span>The Practitioner's Role</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the three pillars of camouflaging: Compensation, Masking, and Assimilation.</li>
+                <li>Analyze why female and non-binary individuals are disproportionately subject to late diagnosis due to masking phenotypes.</li>
+                <li>Evaluate the correlation between chronic camouflaging and severe psychological outcomes, including suicidal ideation and burnout.</li>
+                <li>Master the administration and interpretation of the CAT-Q (Camouflaging Autistic Traits Questionnaire).</li>
+                <li>Implement a clinical "Unmasking Protocol" to facilitate authentic self-expression in safe environments.</li>
+            </ul>
+        </div>
+
+        <h2 id="defining-camouflaging">1. Defining Social Camouflaging: The Triple Threat</h2>
+        <p>In the context of Level 1 Autism Spectrum Disorder (ASD), <span class="highlight">social camouflaging</span> refers to the conscious or subconscious use of strategies by autistic individuals to minimize the visibility of their autistic traits during social interactions. While it may appear as a "social skill" to the untrained eye, for the neurodivergent individual, it is often a cognitively taxing survival mechanism.</p>
+
+        <p>Research led by Dr. Laura Hull (2017) has categorized camouflaging into three distinct components. As a Specialist, you must be able to identify which of these your client is utilizing, as the intervention strategies differ for each:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Definition</th>
+                        <th>Clinical Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Compensation</strong></td>
+                        <td>Using cognitive strategies to overcome social communication difficulties.</td>
+                        <td>Memorizing scripts for small talk; practicing facial expressions in the mirror; consciously mimicking the body language of others.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Masking</strong></td>
+                        <td>Hiding autistic characteristics or performing a "non-autistic" persona.</td>
+                        <td>Suppressing stimming (hand flapping, rocking); forcing eye contact despite physical discomfort; monitoring vocal tone to avoid "monotone" speech.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assimilation</strong></td>
+                        <td>Strategies used to blend into social situations and avoid being singled out.</td>
+                        <td>Staying on the periphery of a group to observe before joining; pretending to understand a joke; nodding along when confused.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="highlight-box">
+            "Camouflaging is not a choice; it is a response to a world that has historically punished autistic authenticity. It is the bridge the autistic person builds to reach the neurotypical shore, often at the expense of their own mental structural integrity."
+        </div>
+
+        <h2 id="gender-phenotype">2. Gender-Based Presentation Differences</h2>
+        <p>One of the most significant challenges in modern diagnostics is the <span class="highlight">Female Autistic Phenotype</span>. Historically, autism was viewed through a male-centric lens, leading to the "lost generation" of autistic women and non-binary individuals who were either misdiagnosed with Borderline Personality Disorder (BPD), Anxiety, or Eating Disorders, or not diagnosed at all until mid-life.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">3:1</span>
+                    <span class="stat-label">Current Male to Female Diagnosis Ratio</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1.8x</span>
+                    <span class="stat-label">Higher CAT-Q scores in Females</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">42%</span>
+                    <span class="stat-label">Late Diagnosis (Post-Age 25) in L1 Females</span>
+                </div>
+            </div>
+        </div>
+
+        <p>Why is this the case? Societal expectations play a massive role. From a young age, girls are often socialized to be more "agreeable" and "socially attuned." Consequently, autistic girls tend to develop more sophisticated <span class="highlight">compensation strategies</span> than their male counterparts. They may have "socially acceptable" special interests (such as animals, celebrities, or psychology) which mask the intensity and depth of their focus.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Perfect" Professional</p>
+                    <p style="margin:0; font-size:12px; opacity:0.8;">Late-Diagnosis Masking</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 38</h4>
+                        <p>Senior Marketing Director | Diagnosed at 37</p>
+                    </div>
+                </div>
+                <p>Sarah presented with "chronic treatment-resistant depression." She was highly successful, described as "charismatic" and "the life of the party." However, she revealed that after every social event, she would spend 48 hours in a dark room, unable to speak (Autistic Burnout).</p>
+                <p><strong>Intervention:</strong> Utilizing the CAT-Q, Sarah scored in the 95th percentile for "Assimilation." We identified that her charisma was actually a series of highly rehearsed "performance modules."</p>
+                <p><strong>Outcome:</strong> By identifying her masking, Sarah was able to transition to a remote role and reduce her "performance" time, leading to a 70% reduction in depressive symptoms within 6 months.</p>
+            </div>
+        </div>
+
+        <h2 id="psychological-cost">3. The Psychological Cost: Autistic Burnout and Suicidality</h2>
+        <p>The energy required to maintain a mask is astronomical. In neurotypical individuals, social interaction is largely intuitive. For the camouflaging autistic individual, every social interaction requires <span class="highlight">simultaneous processing</span> of:
+        <ul class="content-list">
+            <li>Decoding non-verbal cues (which they may not intuitively grasp).</li>
+            <li>Inhibiting natural sensory-regulatory movements (stimming).</li>
+            <li>Monitoring their own facial expressions and tone.</li>
+            <li>Formulating responses that align with social "rules."</li>
+        </ul>
+        </p>
+
+        <p>This leads to <span class="highlight">Autistic Burnout</span>—a state of physical and mental exhaustion, loss of skills, and reduced tolerance to sensory stimuli. More alarmingly, research by Cassidy et al. (2018) highlighted a terrifying correlation: camouflaging is a significant independent predictor of <span class="highlight">suicidal ideation</span> in the autistic population.</p>
+
+        <div class="stats-box" style="background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);">
+            <p style="text-align:center; font-weight:bold; margin-bottom:20px;">CRITICAL RISK DATA (Cassidy et al., 2018)</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">72%</span>
+                    <span class="stat-label">Met criteria for Clinical Depression</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">66%</span>
+                    <span class="stat-label">Reported Suicidal Ideation</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">8x</span>
+                    <span class="stat-label">Higher risk than NT population</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="catq-assessment">4. Utilizing the CAT-Q in Clinical Assessment</h2>
+        <p>The <span class="highlight">Camouflaging Autistic Traits Questionnaire (CAT-Q)</span> is the gold-standard self-report measure for quantifying camouflaging behaviors. It consists of 25 items across three subscales. As a Specialist, you should administer this during the intake process for any client presenting with the "L1 Profile."</p>
+
+        <h3>Interpreting CAT-Q Scores</h3>
+        <p>A high total score (typically >100) indicates significant camouflaging. However, the subscale breakdown is more clinically useful for your intervention plan:</p>
+        
+        <ul class="content-list">
+            <li><strong>High Compensation Score:</strong> Suggests the client is relying heavily on cognitive "rules." Intervention: Focus on reducing the cognitive load of these rules.</li>
+            <li><strong>High Masking Score:</strong> Suggests the client is suppressing their identity. Intervention: Focus on sensory regulation and stim-acceptance.</li>
+            <li><strong>High Assimilation Score:</strong> Suggests a deep fear of social rejection. Intervention: Focus on "Double Empathy" education and finding neuro-affirming communities.</li>
+        </ul>
+
+        <h2 id="unmasking-protocols">5. Creating 'Unmasking' Protocols</h2>
+        <p>Unmasking is not about "stopping" camouflaging entirely—for many, camouflaging is a necessary tool for professional survival. Instead, "The Method" focuses on <span class="highlight">Strategic Authenticity</span>. We want to help clients move from "Compulsive Masking" to "Choice-Based Interaction."</p>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #b8860b 0%, #d4a84b 100%);">
+                <div class="case-study-icon">🛠️</div>
+                <div>
+                    <p class="box-label">The Unmasking Protocol</p>
+                    <p style="margin:0; font-size:12px; opacity:0.8;">Clinical Framework</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <ol class="content-list">
+                    <li><strong>The Safety Audit:</strong> Identify environments where the client feels 100% safe (usually home). What does "unmasked" look like there? (e.g., no eye contact, use of fidgets).</li>
+                    <li><strong>Sensory Integration:</strong> Introduce "micro-unmasking" in public. Can the client wear loop earplugs or use a subtle fidget toy in a meeting?</li>
+                    <li><strong>Scripted Disclosure:</strong> Develop 1-2 sentence disclosures for safe people. <em>"I focus better when I'm not making eye contact; please don't take it as a lack of interest."</em></li>
+                    <li><strong>Recovery Windows:</strong> For every hour of "High-Masking" (e.g., a job interview), the client must schedule 30 minutes of "Deep Sensory Regulation."</li>
+                </ol>
+            </div>
+        </div>
+
+        <h2 id="practitioner-role">6. Your Role as a Practitioner</h2>
+        <p>Your goal is to validate the client's experience. Many late-diagnosed individuals feel like "frauds" or "failures" because they struggle with things that seem easy for others. By framing their exhaustion as the <span class="highlight">physiological cost of a performance</span>, you shift the narrative from "deficit" to "effort."</p>
+
+        <p>In the upcoming Lesson 4.4, we will look at how this chronic stress contributes to Alexithymia—the inability to identify one's own emotions—which is often the final stage of long-term identity loss through masking.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical knowledge on the masking phenotype.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client mentions they spend hours before a party "rehearsing" conversations and memorizing the host's interests. Which CAT-Q subscale is this primarily addressing?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is <strong>Compensation</strong>. The client is using conscious cognitive strategies (rehearsing/memorizing) to bridge the gap in social communication.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is the risk of suicidal ideation higher in individuals who camouflage compared to those who do not?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Chronic camouflaging leads to identity fragmentation, severe exhaustion (burnout), and the feeling of being a "burden" or a "fraud," all of which are primary drivers of suicidal ideation in the autistic population.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Camouflaging is a Survival Mechanism:</strong> It is a response to social trauma and the need for safety, not a preference.</li>
+                <li><strong>The Female Phenotype:</strong> L1 females often present with high compensation, leading to late diagnosis and misdiagnosis.</li>
+                <li><strong>The CAT-Q is Essential:</strong> Use it to differentiate between compensation, masking, and assimilation.</li>
+                <li><strong>Burnout is Physiological:</strong> Autistic burnout is a direct consequence of the cognitive load required to mask.</li>
+                <li><strong>Strategic Authenticity:</strong> The goal of support is not to "fix" the person but to create environments where the mask can safely be removed.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Hull, L., et al. (2017). "Putting on my best normal: Social camouflaging in adults with autism spectrum conditions." <em>Journal of Autism and Developmental Disorders.</em></li>
+                <li>Cassidy, S., et al. (2018). "Risk markers for suicidality in autistic adults." <em>Molecular Autism.</em></li>
+                <li>Bargiela, S., et al. (2016). "The Experiences of Late-diagnosed Women with Autism Spectrum Conditions." <em>Journal of Autism and Developmental Disorders.</em></li>
+                <li>Attwood, T. (2007). "The Complete Guide to Asperger's Syndrome." <em>Jessica Kingsley Publishers.</em></li>
+                <li>Cage, E., & Troxell-Whitman, Z. (2019). "Understanding the reasons, contexts and outcomes of camouflaging for autistic adults." <em>Autism.</em></li>
+                <li>Hull, L., et al. (2019). "Development and Validation of the Camouflaging Autistic Traits Questionnaire (CAT-Q)." <em>Journal of Autism and Developmental Disorders.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo" style="width:100px; opacity:0.6;">
+            <p class="brand">AccrediPro Academy | Certified Autism Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Course.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

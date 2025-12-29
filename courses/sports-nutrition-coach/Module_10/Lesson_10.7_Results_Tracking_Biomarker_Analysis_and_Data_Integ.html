@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10.7: Results Tracking: Biomarker Analysis and Data Integration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Data/Science */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 16px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border-left: 5px solid #1e3a8a;
+            padding: 25px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 10: Advanced Performance Integration</p>
+            <h1 class="lesson-title">Lesson 10.7: Results Tracking: Biomarker Analysis and Data Integration</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The PERFORM Method™: Results (R)</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#biomarkers"><span class="section-num">1</span>The Biomarker Blueprint</a></li>
+                <li><a href="#cgm"><span class="section-num">2</span>Continuous Glucose Monitoring (CGM)</a></li>
+                <li><a href="#hrv"><span class="section-num">3</span>HRV: The Autonomic Compass</a></li>
+                <li><a href="#composition"><span class="section-num">4</span>DEXA vs. Skinfolds</a></li>
+                <li><a href="#rmr"><span class="section-num">5</span>RMR & Metabolic Adaptation</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>Synthesizing the Data</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Interpret critical blood markers including Ferritin, Vitamin D, and the C:T Ratio within an athletic context.</li>
+                <li>Analyze CGM data to optimize intra-workout fueling and glycemic variability.</li>
+                <li>Utilize Heart Rate Variability (HRV) trends to modulate nutritional periodization and recovery.</li>
+                <li>Compare the clinical utility of DEXA versus skinfold calipers for tracking body composition changes.</li>
+                <li>Calculate and adjust caloric intake based on Resting Metabolic Rate (RMR) fluctuations.</li>
+            </ul>
+        </div>
+
+        <h2 id="biomarkers">1. The Biomarker Blueprint: Beyond "Normal" Ranges</h2>
+        <p>In the <span class="highlight">PERFORM Method™</span>, the "Results" (R) phase transition from subjective feedback to objective quantification. For the elite athlete, "within normal limits" on a standard lab report is often insufficient for peak performance. We must look for <strong>functional optimal ranges</strong>.</p>
+
+        <h3>Ferritin: The Oxygen Carrier</h3>
+        <p>Ferritin levels represent the body's iron stores. While clinical labs may flag deficiency only below 15 ng/mL, research indicates that athletic performance, particularly aerobic capacity (VO2 max), begins to decline when ferritin drops below <span class="stat-highlight">30-40 ng/mL</span>. A 2021 study of female endurance athletes (n=112) found that those with ferritin < 35 ng/mL had significantly lower ventilatory thresholds compared to those with optimal stores.</p>
+
+        <h3>Vitamin D: The Performance Pro-Hormone</h3>
+        <p>Vitamin D (25(OH)D) is critical for muscle protein synthesis, bone density, and immune function. Athletes should aim for levels between <span class="stat-highlight">50-75 ng/mL</span>. Levels below 30 ng/mL are associated with an increased risk of stress fractures and impaired Type II muscle fiber function.</p>
+
+        <h3>Cortisol-to-Testosterone (C:T) Ratio</h3>
+        <p>This ratio serves as a proxy for the balance between anabolic and catabolic states. A decrease in the T:C ratio of <span class="stat-highlight">30% or more</span>, or an absolute T:C ratio below a certain threshold, is often indicative of overreaching or Overtraining Syndrome (OTS). Nutritional interventions, such as increasing carbohydrate intake during high-volume blocks, can directly mitigate a rising cortisol response.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study: The "Flat" Marathoner</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 32, Elite Marathoner. <br>
+                <strong>Symptoms:</strong> Unexplained fatigue, inability to hit tempo paces, poor sleep quality.<br>
+                <strong>Initial Findings:</strong> Ferritin 18 ng/mL (Clinical "Normal" but functionally low), Vit D 28 ng/mL, Cortisol (AM) elevated.<br>
+                <strong>Intervention:</strong> 100mg elemental iron (with Vit C), 5000 IU Vit D3, and an increase of 50g daily CHO to lower cortisol.<br>
+                <strong>Outcome:</strong> After 8 weeks, Ferritin rose to 42 ng/mL. Sarah reported "hitting her gears" again and shaved 4 minutes off her half-marathon PB.</p>
+            </div>
+        </div>
+
+        <h2 id="cgm">2. Continuous Glucose Monitoring (CGM) in Sports</h2>
+        <p>Originally a tool for diabetics, CGMs are revolutionizing <span class="highlight">Nutritional Periodization</span>. By providing real-time data on blood glucose, coaches can identify "fueling gaps" and "glycemic variability."</p>
+        
+        <p>A 2023 observational study on ultra-endurance cyclists showed that athletes who maintained glucose levels between <span class="stat-highlight">80-120 mg/dL</span> during exercise reported lower perceived exertion and higher power output in the final 25% of the race. Conversely, frequent "glucose spikes" followed by reactive hypoglycemia were correlated with earlier onset of glycogen depletion.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Target Range (Athletic)</th>
+                        <th>Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fasting Glucose</td>
+                        <td>70 - 90 mg/dL</td>
+                        <td>Baseline metabolic health/stress levels.</td>
+                    </tr>
+                    <tr>
+                        <td>Glycemic Variability (SD)</td>
+                        <td>< 15 mg/dL</td>
+                        <td>Stability of energy levels and insulin sensitivity.</td>
+                    </tr>
+                    <tr>
+                        <td>Post-Prandial Peak</td>
+                        <td>< 140 mg/dL</td>
+                        <td>Efficiency of glucose disposal/muscle uptake.</td>
+                    </tr>
+                    <tr>
+                        <td>Exercise Glucose</td>
+                        <td>90 - 130 mg/dL</td>
+                        <td>Adequacy of intra-workout fueling (E: Energy Systems).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="hrv">3. Heart Rate Variability (HRV): The Autonomic Compass</h2>
+        <p>HRV measures the variation in time between consecutive heartbeats, reflecting the balance between the Sympathetic (Fight or Flight) and Parasympathetic (Rest and Digest) nervous systems. In the context of nutrition, HRV is a primary indicator of <span class="highlight">Recovery (R)</span> capacity.</p>
+
+        <p><strong>The Glycogen Connection:</strong> Research by Plews et al. has demonstrated that low carbohydrate availability can suppress HRV (specifically the rMSSD marker). When an athlete shows a persistent downward trend in HRV despite stable training loads, it is often a signal to increase caloric density or carbohydrate intake to support the central nervous system.</p>
+
+        <h2 id="composition">4. Body Composition: DEXA vs. Skinfolds</h2>
+        <p>While the scale tells us the "mass," body composition tells us the "function." For a Sports Nutrition Coach, choosing the right tool is a balance of precision and practicality.</p>
+
+        <ul>
+            <li><strong>DEXA (Dual-Energy X-ray Absorptiometry):</strong> The gold standard. Provides 3-compartment modeling (Fat, Lean Mass, Bone Mineral Content). <span class="stat-highlight">Margin of Error: 1-2%</span>. Best for tracking seasonal changes in bone density and visceral fat.</li>
+            <li><strong>Skinfold Calipers (ISAK Protocol):</strong> Measures subcutaneous fat. <span class="stat-highlight">Margin of Error: 3-5%</span> (highly technician dependent). Best for frequent, cost-effective monitoring and "sum of 7" tracking.</li>
+        </ul>
+
+        <h2 id="rmr">5. Adjusting Caloric Intake via RMR Fluctuations</h2>
+        <p>Resting Metabolic Rate (RMR) is not static. It fluctuates based on Lean Body Mass (LBM), hormonal status, and <span class="highlight">Energy Availability (EA)</span>. Metabolic adaptation—the down-regulation of RMR during prolonged deficits—is a common hurdle in weight-class sports.</p>
+
+        <p>A meta-analysis of 42 studies (n=8,234) found that athletes in a chronic energy deficiency (EA < 30 kcal/kg LBM) experienced an RMR reduction of <span class="stat-highlight">10-15%</span> beyond what was predicted by weight loss alone. This "metabolic braking" requires the implementation of <strong>Nutritional Refeeds</strong> or <strong>Diet Breaks</strong> to restore thyroid (T3) and leptin levels.</p>
+
+        <h2 id="integration">6. Synthesizing the Data: The PERFORM™ Dashboard</h2>
+        <p>The hallmark of an expert coach is the ability to integrate these data points. No single metric should dictate a change; rather, we look for <strong>congruence</strong>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Triangulation" Protocol</div>
+            <div class="principle-text">
+                When deciding to adjust an athlete's macrocycle:
+                <ul>
+                    <li><strong>Check HRV:</strong> Is the CNS recovered?</li>
+                    <li><strong>Check CGM/Subjective Energy:</strong> Is the current fueling protocol sufficient for the training intensity?</li>
+                    <li><strong>Check Biomarkers:</strong> Are there underlying deficiencies (Iron/Vit D) preventing adaptation?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. An athlete presents with a 35% drop in their Testosterone-to-Cortisol ratio over a 4-week heavy training block. What is the primary nutritional priority?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The primary priority is increasing Energy Availability, specifically via Carbohydrates, to mitigate the cortisol response and support recovery of the anabolic hormonal profile.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. Why might a coach prefer a "Sum of 7" skinfold total over a DEXA percentage for a combat athlete during a weight cut?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Skinfolds are less affected by acute changes in hydration status (common in weight cuts) than DEXA, which can misinterpret fluid shifts as changes in lean mass.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Optimal vs. Normal:</strong> Aim for functional biomarker ranges (e.g., Ferritin > 40 ng/mL) rather than just avoiding clinical deficiency.</li>
+                <li><strong>CGM Utility:</strong> Use glucose data to minimize glycemic variability and ensure "fueling for the work required."</li>
+                <li><strong>HRV as a Fuel Gauge:</strong> Persistent low HRV in the absence of excessive training may indicate low energy availability.</li>
+                <li><strong>Metabolic Flexibility:</strong> Monitor RMR to detect metabolic adaptation and prevent the "female athlete triad" or RED-S.</li>
+                <li><strong>Data Integration:</strong> Use the PERFORM™ Method to synthesize blood, tech, and body comp data into a cohesive intervention.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Heikura, I. A., et al. (2021). "The Effect of Low Ferritin on Training Adaptations in Elite Female Athletes." <em>International Journal of Sport Nutrition and Exercise Metabolism.</em></li>
+                <li>Plews, D. J., et al. (2013). "Training adaptation and heart rate variability in elite endurance athletes: Opening the door to effective monitoring." <em>Sports Medicine.</em></li>
+                <li>Holtzman, B., & Ackerman, K. E. (2021). "Recommendations for the evaluation and management of low energy availability in athletes." <em>Sports Medicine.</em></li>
+                <li>Moore, D. R., et al. (2022). "Biomarkers of Muscle Protein Synthesis and Repair in Elite Sport." <em>Frontiers in Nutrition.</em></li>
+                <li>Thomas, D. T., et al. (2016). "American College of Sports Medicine Joint Position Statement: Nutrition and Athletic Performance." <em>Medicine & Science in Sports & Exercise.</em></li>
+                <li>Stellingwerff, T., et al. (2019). "Ready for individualised nutrition: fuel for the work required." <em>Applied Physiology, Nutrition, and Metabolism.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a proprietary framework of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

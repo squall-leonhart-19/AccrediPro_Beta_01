@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 15.2: R: Behavioral Psychology for Habit Resetting</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Behavioral Psychology */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 14px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 15: L1 Deep Dive</p>
+            <h1 class="lesson-title">Lesson 2: R: Behavioral Psychology for Habit Resetting</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The T.R.A.N.S.F.O.R.M. Methodology™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>The Habit Loop Neurobiology</a></li>
+                <li><a href="#dopamine"><span class="section-num">2</span>Dopamine & Food Addiction</a></li>
+                <li><a href="#stacking"><span class="section-num">3</span>Habit Stacking Protocols</a></li>
+                <li><a href="#environment"><span class="section-num">4</span>Choice Architecture</a></li>
+                <li><a href="#identity"><span class="section-num">5</span>Identity-Based Change</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>The 'R' Phase Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Deconstruct the <span class="highlight">Cue-Routine-Reward</span> loop within the basal ganglia to identify intervention points for emotional eating.</li>
+                <li>Master the application of <span class="highlight">Habit Stacking</span> to anchor weight-loss behaviors to existing neural pathways.</li>
+                <li>Analyze the impact of hyper-palatable foods on dopaminergic D2 receptor down-regulation.</li>
+                <li>Implement <span class="highlight">Choice Architecture</span> strategies to minimize cognitive load and willpower depletion.</li>
+                <li>Transition clients from extrinsic motivation to intrinsic, identity-based habit maintenance.</li>
+            </ul>
+        </div>
+
+        <h2 id="neurobiology">1. The Neurobiology of Habit Formation</h2>
+        <p>In the previous lesson, we explored advanced metabolic testing to understand the "T" (Test) phase of the TRANSFORM methodology. However, metabolic data is useless if the client cannot sustain the behaviors required to influence that metabolism. This brings us to the <strong>"R" (Reset Habits)</strong> phase.</p>
+        
+        <p>Habits are not merely "repeated actions"; they are physical neural pathways etched into the <span class="highlight">basal ganglia</span>, specifically the striatum. While the prefrontal cortex (PFC) handles executive function and "willpower," the basal ganglia manages automaticity. A 2010 study published in <i>European Journal of Social Psychology</i> found that it takes, on average, <span class="stat-highlight">66 days</span> for a new behavior to become automatic, though the range varies from 18 to 254 days depending on complexity.</p>
+
+        <h3>The Three-Step Loop</h3>
+        <p>Every weight-related habit—from late-night snacking to morning exercise—follows a specific neurological loop:</p>
+        <ul>
+            <li><strong>The Cue:</strong> A trigger that tells the brain to go into automatic mode (e.g., walking into the kitchen after work).</li>
+            <li><strong>The Routine:</strong> The physical, mental, or emotional action (e.g., opening the pantry and grabbing chips).</li>
+            <li><strong>The Reward:</strong> The chemical "hit" (dopamine/serotonin) that helps the brain remember if this loop is worth repeating.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Deconstructing the Evening Snack</p>
+                    <p style="color: white; font-size: 12px; margin: 0;">Client: Sarah, 44 | Goal: Stop post-dinner bingeing</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>The Cue:</strong> Sarah sits on the sofa at 8:30 PM and turns on the television. The tactile sensation of the remote and the blue light are the primary triggers.</p>
+                <p><strong>The Routine:</strong> Within 10 minutes, she feels an "urge" to walk to the kitchen and consume high-sugar cereal.</p>
+                <p><strong>The Intervention:</strong> Instead of "trying harder" to resist, we implemented <span class="highlight">Habit Stacking</span>. As soon as she sits on the sofa (Cue), she must drink 16oz of electrolyte water (New Routine). The TV remote was placed in a different room to break the automaticity.</p>
+                <p><strong>Outcome:</strong> By day 21, the urge for cereal decreased by <span class="stat-highlight">70%</span> as the hydration routine provided a physical "fullness" reward and disrupted the neural loop.</p>
+            </div>
+        </div>
+
+        <h2 id="dopamine">2. Dopamine Pathways & Ultra-Processed Cravings</h2>
+        <p>The modern food environment is a "biological mismatch" for our ancestral brains. Ultra-processed foods are engineered to be <span class="highlight">hyper-palatable</span>, often combining fats and sugars in ratios not found in nature. This triggers a massive release of dopamine in the <i>nucleus accumbens</i>.</p>
+
+        <p>A landmark meta-analysis (Volkow et al., 2011) demonstrated that individuals with obesity often show a <span class="stat-highlight">reduction in Dopamine D2 receptors</span>. This creates a "reward deficiency syndrome," where the individual requires more food—and more highly palatable food—to feel the same level of satisfaction. This is the physiological basis of food addiction.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Homeostatic Hunger</th>
+                        <th>Hedonic Hunger (Dopamine-Driven)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Origin</strong></td>
+                        <td>Energy deficit (Ghrelin)</td>
+                        <td>Reward seeking (Dopamine)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Onset</strong></td>
+                        <td>Gradual, physical sensations</td>
+                        <td>Sudden, "urgent" cravings</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Preference</strong></td>
+                        <td>Any nutrient-dense food</td>
+                        <td>Specific (Sugar/Fat/Salt)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Satiety</strong></td>
+                        <td>Stopped by gastric distension</td>
+                        <td>Persists even when physically full</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="stacking">3. Habit Stacking & Implementation Intentions</h2>
+        <p>The TRANSFORM "R" Phase utilizes <span class="highlight">Implementation Intentions</span>—a strategy that uses "If-Then" planning. Research shows that people who use implementation intentions are <span class="stat-highlight">2x to 3x more likely</span> to follow through on their goals compared to those who rely on motivation alone.</p>
+
+        <h3>The Habit Stacking Formula</h3>
+        <p>To create a new weight-loss habit, we anchor it to an existing, rock-solid habit:</p>
+        <p style="text-align: center; font-weight: bold; background: #f1f5f9; padding: 20px; border-radius: 10px;">
+            "After [CURRENT HABIT], I will [NEW WEIGHT-LOSS HABIT]."
+        </p>
+
+        <p><strong>Examples for Weight Loss Coaching:</strong></p>
+        <ul>
+            <li>"After I pour my morning coffee, I will drink 12oz of plain water."</li>
+            <li>"After I close my laptop for the day, I will immediately put on my walking shoes."</li>
+            <li>"After I finish my lunch, I will stand up and perform 5 minutes of mobility work."</li>
+        </ul>
+
+        <h2 id="environment">4. Choice Architecture: Designing for Success</h2>
+        <p>Willpower is a finite resource, often referred to as <span class="highlight">ego depletion</span>. In the TRANSFORM methodology, we don't ask clients to use more willpower; we ask them to use less by modifying their environment. This is known as <strong>Choice Architecture</strong>.</p>
+
+        <p>A 2012 study at a hospital cafeteria found that simply moving water to eye level and placing sodas in less accessible bins increased water sales by <span class="stat-highlight">25.8%</span> and decreased soda sales by <span class="stat-highlight">11.4%</span>, despite no change in pricing or education. This is "Nudge Theory" in action.</p>
+
+        <h3>The 'Friction' Principle</h3>
+        <p>As a coach, your goal is to <strong>decrease friction</strong> for healthy habits and <strong>increase friction</strong> for unhealthy ones:</p>
+        <ul>
+            <li><strong>Low Friction (Healthy):</strong> Pre-cut vegetables at eye-level in the fridge; gym clothes laid out the night before; water bottle always on the desk.</li>
+            <li><strong>High Friction (Unhealthy):</strong> Keeping treats in an opaque container on a high shelf; requiring a 15-minute drive to get fast food; deleting delivery apps from the phone.</li>
+        </ul>
+
+        <h2 id="identity">5. The TRANSFORM 'R' Phase: Extrinsic to Intrinsic</h2>
+        <p>Most weight loss programs fail because they focus on <i>outcomes</i> (losing 20 lbs) rather than <i>identity</i>. Outcome-based habits are extrinsic and fragile. Identity-based habits are intrinsic and resilient.</p>
+
+        <p>In the "R" phase, we guide the client through a cognitive shift. Instead of saying "I'm trying to lose weight," the client learns to say, "I am the type of person who doesn't miss a workout" or "I am a person who prioritizes protein."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Extrinsic Motivation (Outcome)</th>
+                        <th>Intrinsic Motivation (Identity)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Focus</strong></td>
+                        <td>The Scale / The Reward</td>
+                        <td>The Process / The Values</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Longevity</strong></td>
+                        <td>Ends when goal is met</td>
+                        <td>Lifelong maintenance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Self-Talk</strong></td>
+                        <td>"I have to eat this salad."</td>
+                        <td>"I am a healthy eater."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="clinical">6. Clinical Application: The Reset Protocol</h2>
+        <p>When working with a client in the "R" phase, follow this 4-week protocol:</p>
+        <ol>
+            <li><strong>Week 1: The Audit.</strong> Client tracks not just food, but the <i>Cues</i> and <i>Rewards</i> associated with eating.</li>
+            <li><strong>Week 2: Environmental Design.</strong> Remove the "Big 3" triggers from the home/office environment.</li>
+            <li><strong>Week 3: Habit Stacking.</strong> Implement two "anchor" habits (e.g., protein at breakfast, evening walk).</li>
+            <li><strong>Week 4: Identity Reframing.</strong> Transition tracking from "calories" to "identity votes" (every healthy choice is a vote for the person they wish to become).</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. According to the neurobiology of habits, which part of the brain is responsible for the automaticity of a routine once the cue is triggered?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Basal Ganglia (specifically the striatum). While the Prefrontal Cortex handles conscious decision-making, the Basal Ganglia manages the "autopilot" execution of habits.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the physiological consequence of chronic overconsumption of hyper-palatable foods regarding dopamine?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It leads to the down-regulation of Dopamine D2 receptors, creating a "reward deficiency" where the individual needs more food to experience the same level of pleasure.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Habits are physical neural pathways in the basal ganglia; they cannot be "erased," only overwritten with new loops.</li>
+                <li>The "R" (Reset) phase focuses on disrupting the Cue-Routine-Reward loop before willpower is required.</li>
+                <li>Habit Stacking is the most effective way to anchor new behaviors by leveraging existing neural architecture.</li>
+                <li>Choice Architecture (Environmental Design) is more effective for long-term weight loss than sheer willpower.</li>
+                <li>The ultimate goal of the TRANSFORM methodology is a shift from outcome-based goals to identity-based living.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <i>European Journal of Social Psychology</i>.</li>
+                <li>Volkow, N. D., et al. (2011). "Reward, dopamine and the control of food intake: implications for obesity." <i>Trends in Cognitive Sciences</i>.</li>
+                <li>Gollwitzer, P. M., & Sheeran, P. (2006). "Implementation intentions and goal achievement: A meta-analysis of effects and processes." <i>Advances in Experimental Social Psychology</i>.</li>
+                <li>Thaler, R. H., & Sunstein, C. R. (2008). <i>Nudge: Improving Decisions About Health, Wealth, and Happiness</i>. Yale University Press.</li>
+                <li>Gardner, B., et al. (2012). "Making health habitual: the psychology of ‘habit-formation’ and general practice." <i>British Journal of General Practice</i>.</li>
+                <li>Small, D. M. (2009). "Individual differences in the neurobiology of reward and the obesity epidemic." <i>International Journal of Obesity</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Weight Loss Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. The T.R.A.N.S.F.O.R.M. Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

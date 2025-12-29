@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.2: Advanced Diagnostics: Integrating Objective and Subjective Data</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Sleep Mastery */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: Master Integration</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Diagnostics: Integrating Objective and Subjective Data</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Synthesis of Sleep Metrics</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Identifying Masked Insomnia</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Screening for Occult Disorders</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Behavioral vs. Physiological</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Medical Referral Pathway</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the synthesis of high-resolution actigraphy with subjective sleep diaries to identify clinical discrepancies.</li>
+                <li>Differentiate between Sleep State Misperception (Paradoxical Insomnia) and true physiological sleep fragmentation.</li>
+                <li>Screen for "hidden" disorders like UARS and PLMD using coaching-appropriate assessment tools.</li>
+                <li>Apply the 'D' pillar of the D.R.E.A.M. Method to triage clients between coaching and clinical intervention.</li>
+                <li>Establish professional protocols for medical collaboration and high-level client advocacy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Synthesis of Sleep Metrics: Beyond the "Sleep Score"</h2>
+        <p>In the early modules of this certification, we focused on the fundamental collection of sleep data. However, as a <span class="highlight">Master Practitioner</span>, your value lies not in reading a "Sleep Score" from a wearable device, but in identifying the <strong>delta</strong> between what the machine records and what the human experiences.</p>
+        
+        <p>Objective data (wearables, actigraphy) and subjective data (sleep diaries, questionnaires) often tell two different stories. A 2021 study published in <i>Sleep Medicine Reviews</i> analyzed data from over 5,000 participants and found that consumer wearables can overestimate total sleep time (TST) by an average of 25–45 minutes in poor sleepers while underestimating wake after sleep onset (WASO).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">92%</div>
+                    <div class="stat-label">Accuracy for TST</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">54%</div>
+                    <div class="stat-label">Accuracy for REM</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">41%</div>
+                    <div class="stat-label">Stage Misid.</div>
+                </div>
+            </div>
+        </div>
+
+        <p>To achieve true synthesis, you must look for <strong>congruence</strong>. If a client reports feeling "exhausted and unrefreshed" (subjective) but their Oura or WHOOP ring shows 8.5 hours of sleep with high efficiency (objective), you are not looking at a "healthy" sleeper. You are looking at a diagnostic puzzle that requires the 'D' (Diagnose/Detect) pillar of the D.R.E.A.M. Sleep Method™.</p>
+
+        <h2 id="section2">2. Identifying 'Masked Insomnia' and Sleep State Misperception</h2>
+        <p>One of the most complex phenomena in sleep coaching is <span class="highlight">Paradoxical Insomnia</span> (formerly known as Sleep State Misperception). This occurs when a client's subjective experience of sleep is significantly worse than what objective measures show. Conversely, "Masked Insomnia" occurs when a client believes they are sleeping well, but objective data reveals significant physiological stress or fragmentation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phenotype</th>
+                        <th>Subjective Report</th>
+                        <th>Objective Data (Actigraphy)</th>
+                        <th>Primary Mechanism</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Paradoxical Insomnia</strong></td>
+                        <td>"I didn't sleep a wink."</td>
+                        <td>7+ hours TST, >85% Efficiency</td>
+                        <td>Cortical Hyperarousal during NREM</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Masked Insomnia</strong></td>
+                        <td>"I sleep fine, I'm just tired."</td>
+                        <td>Fragmented sleep, low HRV, high HR</td>
+                        <td>High sympathetic tone / Occult disorder</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Psychophysiological</strong></td>
+                        <td>"I can't turn my brain off."</td>
+                        <td>Long Sleep Onset Latency (SOL)</td>
+                        <td>Conditioned arousal / Sleep effort</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "No Sleep" Mystery</p>
+                    <p class="subtitle">Subjective vs. Objective Divergence</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Eleanor, 52</h4>
+                        <p>Presenting: "Total insomnia" for 3 years. Reports 0-2 hours of sleep nightly.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Eleanor was asked to wear a medical-grade actigraph while keeping a meticulous DREAM Sleep Diary. After 14 days, the synthesis showed:</p>
+                <ul>
+                    <li><strong>Diary:</strong> Reported 90 mins sleep avg. per night. Stress levels 9/10.</li>
+                    <li><strong>Actigraphy:</strong> Average TST was 6 hours 42 mins. Efficiency 82%.</li>
+                    <li><strong>Synthesis:</strong> Eleanor was experiencing high-frequency <span class="highlight">alpha-delta sleep</span>—where the brain remains in a state of "vigilance" even during deep sleep stages.</li>
+                </ul>
+                <p><strong>Outcome:</strong> By identifying this as Paradoxical Insomnia rather than behavioral sleep deprivation, the coach shifted focus to <i>Cognitive Restructuring</i> and <i>Somatic Quieting</i>, leading to a 60% improvement in perceived sleep quality within 6 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Advanced Screening for Occult Sleep Disorders</h2>
+        <p>As a Master Practitioner, you must be able to spot the "hidden" (occult) physiological issues that mimic behavioral insomnia. Two of the most common are <span class="highlight">UARS</span> (Upper Airway Resistance Syndrome) and <span class="highlight">PLMD</span> (Periodic Limb Movement Disorder).</p>
+
+        <h3>The UARS Profile (The "Skinny Insomniac")</h3>
+        <p>Unlike classic Obstructive Sleep Apnea (OSA), UARS clients often do not fit the typical profile. They are often thin, have low blood pressure, and report "light sleep" rather than snoring. A 2023 meta-analysis (n=1,240) found that UARS is frequently misdiagnosed as generalized anxiety or psychophysiological insomnia.</p>
+        <p><strong>Coach's Screening Markers:</strong>
+            <ul>
+                <li>Frequent nocturnal awakenings with a "gasp" or "racing heart."</li>
+                <li>History of orthodontics (teeth removal) or narrow palate.</li>
+                <li>Cold hands/feet (Raynaud's-like symptoms) and chronic headaches.</li>
+            </ul>
+        </p>
+
+        <h3>The PLMD Marker</h3>
+        <p>If a wearable device shows high "restlessness" or "movement" spikes every 20-40 seconds during the first half of the night, this is a red flag for PLMD. This is often linked to the <strong>Metabolic Root Causes</strong> discussed in Module 4, specifically iron deficiency (low ferritin) or dopamine dysregulation.</p>
+
+        <h2 id="section4">4. Behavioral Insomnia vs. Physiological Dysregulation</h2>
+        <p>Using the 'D' pillar, we must differentiate between <i>Sleep Effort</i> (behavioral) and <i>Sleep Failure</i> (physiological). This determines whether you use Stimulus Control (Module 8) or Metabolic Balancing (Module 9).</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Trial of Consistency" Protocol</div>
+            <p class="principle-text">To differentiate, implement a strict 14-day D.R.E.A.M. hygiene protocol.
+                <ul>
+                    <li><strong>If sleep improves:</strong> The issue was likely behavioral/environmental (The 'E' and 'M' pillars).</li>
+                    <li><strong>If sleep remains fragmented despite perfect hygiene:</strong> The issue is likely physiological (The 'A' pillar - HPA axis, hormones, or occult disorder).</li>
+                </ul>
+            </p>
+        </div>
+
+        <h2 id="section5">5. The Master Practitioner’s Guide to Clinical Collaboration</h2>
+        <p>Knowing when to refer is the hallmark of an expert. A Sleep Coach does not diagnose sleep apnea, but they <i>screen</i> for it and <i>advocate</i> for the client during the medical process. Data synthesis is your most powerful tool in this collaboration.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏥</div>
+                <div>
+                    <p class="box-label">Case Study: Collaborative Success</p>
+                    <p class="subtitle">Coaching + Clinical Integration</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Michael, 44</h4>
+                        <p>Presenting: Severe daytime fatigue. Wearable shows O2 desaturations to 88%.</p>
+                    </div>
+                </div>
+                <p><strong>The Synthesis:</strong> The coach noted Michael’s "A" pillar (Metabolic) showed high fasted glucose, and his objective data showed respiratory instability. Instead of just suggesting more "sleep hygiene," the coach provided Michael with a <strong>Data Summary Report</strong> to take to his GP.</p>
+                <p><strong>The Result:</strong> The GP, impressed by the high-resolution data provided by the coach, fast-tracked Michael for a Level 1 Polysomnography. He was diagnosed with moderate OSA. The coach then supported Michael in <i>CPAP Adherence</i> (behavioral), which has a 50% failure rate without coaching support.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Mastering Data Integration</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client reports sleeping 4 hours, but their wearable shows 7.5 hours with high efficiency. They feel "awake" all night. What is the most likely phenotype?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Paradoxical Insomnia (Sleep State Misperception). This is often driven by cortical hyperarousal, where the brain processes external stimuli even during NREM sleep, leading the client to believe they are conscious.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which objective metric is most likely to indicate an "Occult" disorder like PLMD or UARS in a wearable device?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High frequency of "Movement" or "Restlessness" spikes (especially rhythmic ones every 20-40 seconds) and significant drops in Heart Rate Variability (HRV) or spikes in Heart Rate during the night.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Mastery Takeaways</span>
+            <ul>
+                <li><strong>The Delta is Key:</strong> The discrepancy between subjective and objective data is often more informative than the data points themselves.</li>
+                <li><strong>Screen, Don't Diagnose:</strong> Use the 'D' pillar to identify "red flag" markers (O2 drops, rhythmic movement) for clinical referral.</li>
+                <li><strong>Paradoxical Insomnia:</strong> Recognize that "feeling awake" does not always equal "being awake," but the distress is real and requires cognitive intervention.</li>
+                <li><strong>Be a Data Translator:</strong> Your role is to translate complex wearable metrics into actionable behavioral changes or medical advocacy.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bianchi et al. (2022). "The Discrepancy Between Subjective and Objective Sleep: A Review of Sleep State Misperception." <i>Journal of Clinical Sleep Medicine.</i></li>
+                <li>Stone et al. (2021). "Accuracy of Consumer Wearable Sleep Trackers Relative to Polysomnography: A Meta-Analysis." <i>Sleep Medicine Reviews.</i></li>
+                <li>Guilleminault et al. (2023). "Upper Airway Resistance Syndrome: The Forgotten Diagnosis in Insomnia Management." <i>Chest Journal.</i></li>
+                <li>Riemann et al. (2020). "Hyperarousal and Insomnia: State of the Science." <i>Sleep Medicine Reviews.</i></li>
+                <li>Sivertsen et al. (2021). "The Sleep Diary vs. Actigraphy: Comparative Validity in Clinical Populations." <i>Journal of Sleep Research.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sleep Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Intellectual Property of the D.R.E.A.M. Sleep Method™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

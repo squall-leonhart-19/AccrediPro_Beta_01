@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.1: Advanced Biomarker Analysis: Beyond HbA1c</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Advanced Analytics */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #fdfbf7;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e5e5e5;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Understanding Box */
+        .check-understanding {
+            background: #f9fafb;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #ecfdf5;
+            border-radius: 8px;
+            color: #065f46;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Advanced Metabolic Deep Dives</p>
+            <h1 class="lesson-title">Lesson 7.1: Advanced Biomarker Analysis: Beyond HbA1c</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Level: Advanced Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hba1c-limits"><span class="section-num">1</span>The HbA1c Mirage</a></li>
+                <li><a href="#insulin-dynamics"><span class="section-num">2</span>HOMA-IR & C-Peptide</a></li>
+                <li><a href="#short-term-markers"><span class="section-num">3</span>Glycated Albumin & Fructosamine</a></li>
+                <li><a href="#lipid-surrogates"><span class="section-num">4</span>The TG/HDL Ratio</a></li>
+                <li><a href="#tofi-phenotype"><span class="section-num">5</span>TOFI & Lipid Fractionation</a></li>
+                <li><a href="#clinical-integration"><span class="section-num">6</span>The S.T.A.B.L.E. Assessment</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Critically evaluate the physiological limitations of HbA1c in diverse clinical populations.</li>
+                <li>Calculate and interpret HOMA-IR to identify "silent" insulin resistance years before glucose elevation.</li>
+                <li>Utilize short-term markers like Glycated Albumin for rapid feedback on nutritional interventions.</li>
+                <li>Identify the "Skinny Fat" (TOFI) phenotype through advanced lipid metrics.</li>
+                <li>Integrate multi-marker data into the "S" (Screen & Assess) phase of the S.T.A.B.L.E. Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="hba1c-limits">1. The HbA1c Mirage: When the "Gold Standard" Fails</h2>
+        <p>For decades, Hemoglobin A1c (HbA1c) has been the undisputed monarch of glycemic monitoring. By measuring the percentage of glycated hemoglobin, it provides a 3-month weighted average of blood glucose. However, as an advanced <span class="highlight">Diabetes & Blood Sugar Coach</span>, you must understand that HbA1c is a proxy measurement, not a direct one.</p>
+
+        <p>The accuracy of HbA1c relies entirely on a standard Red Blood Cell (RBC) lifespan of 120 days. If RBC turnover is altered, the "window" of the test shifts, leading to potentially dangerous clinical misinterpretations. For example, a 2021 study involving over 12,000 participants found that <span class="highlight">iron deficiency anemia</span> can falsely elevate HbA1c by 0.2% to 0.5% without any change in actual average glucose.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">120 Days</span>
+                    <span class="stat-label">Assumed RBC Life</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0.4%</span>
+                    <span class="stat-label">Genetic Variance</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">25%</span>
+                    <span class="stat-label">HbA1c Error Rate in Anemia</span>
+                </div>
+            </div>
+        </div>
+
+        <p>Conditions that shorten RBC lifespan (like hemolytic anemia or blood loss) will result in a <span class="highlight">falsely low HbA1c</span>, while conditions that lengthen it (like iron or B12 deficiency) result in a <span class="highlight">falsely high HbA1c</span>. In the context of the S.T.A.B.L.E. Method™, relying solely on HbA1c during the "Screen" phase can lead to missed diagnoses of early-stage insulin resistance.</p>
+
+        <h2 id="insulin-dynamics">2. HOMA-IR & C-Peptide: Measuring the Engine, Not Just the Exhaust</h2>
+        <p>If blood glucose is the "exhaust" of the metabolic engine, insulin is the "RPM." You can have a car moving at a steady speed (normal glucose) while the engine is redlining (hyperinsulinemia). This is why <span class="highlight">HOMA-IR (Homeostatic Model Assessment for Insulin Resistance)</span> is a critical upgrade for your coaching practice.</p>
+
+        <p>HOMA-IR is calculated using the formula: <code>(Fasting Insulin [µU/mL] × Fasting Glucose [mg/dL]) / 405</code>. While a standard lab might say a fasting insulin of 15 µU/mL is "normal," in the S.T.A.B.L.E. framework, we look for <span class="highlight">optimal values below 5-7 µU/mL</span>. A HOMA-IR score > 1.9 indicates early insulin resistance, and > 2.9 indicates significant metabolic dysfunction.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study 1: The "Normal" Pre-Diabetic</p>
+                <p class="subtitle">Identifying Hyperinsulinemia in a High-Performer</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Sarah, 42 | <strong>BMI:</strong> 23.5 | <strong>Symptoms:</strong> Afternoon energy crashes, stubborn midsection fat.
+                    </div>
+                </div>
+                <p>Sarah’s doctor told her she was "fine" because her HbA1c was 5.4%. However, her fasting insulin was 18 µU/mL and fasting glucose was 98 mg/dL.</p>
+                <ul>
+                    <li><strong>HOMA-IR Calculation:</strong> (18 × 98) / 405 = <strong>4.35</strong></li>
+                    <li><strong>Interpretation:</strong> Sarah has severe insulin resistance despite a "perfect" HbA1c. Her pancreas is overworking to keep her glucose in range.</li>
+                    <li><strong>Intervention:</strong> Implemented the "T" (Transform Nutrition) phase of S.T.A.B.L.E., focusing on protein leverage and reducing acellular carbohydrates.</li>
+                    <li><strong>Outcome:</strong> 12 weeks later, fasting insulin dropped to 6 µU/mL, HOMA-IR improved to 1.4, and energy crashes vanished.</li>
+                </ul>
+            </div>
+        </div>
+
+        <p>Complementing HOMA-IR is <span class="highlight">C-Peptide</span>. Since C-peptide is secreted in a 1:1 ratio with insulin but is not cleared by the liver, it provides a more stable reflection of endogenous insulin production. It is particularly useful for distinguishing between Type 1, Type 2, and LADA (Latent Autoimmune Diabetes in Adults).</p>
+
+        <h2 id="short-term-markers">3. Glycated Albumin & Fructosamine: The 2-Week Feedback Loop</h2>
+        <p>One of the frustrations in blood sugar coaching is the 3-month wait for an HbA1c update. For clients highly motivated by data, we utilize <span class="highlight">Glycated Albumin (GA)</span> and <span class="highlight">Fructosamine</span>. These markers reflect glycemic control over the previous 2–3 weeks.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Reflects Period</th>
+                        <th>Primary Utility</th>
+                        <th>Optimal Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HbA1c</strong></td>
+                        <td>90–120 Days</td>
+                        <td>Long-term average glucose</td>
+                        <td>4.8% – 5.4%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Glycated Albumin</strong></td>
+                        <td>14–21 Days</td>
+                        <td>Rapid changes in nutrition/meds</td>
+                        <td>11.0% – 14.5%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fructosamine</strong></td>
+                        <td>14–21 Days</td>
+                        <td>Pregnancy or RBC disorders</td>
+                        <td>200 – 285 µmol/L</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Glycated Albumin is particularly sensitive to <span class="highlight">post-prandial glucose spikes</span>, which HbA1c often smooths over. If a client starts the S.T.A.B.L.E. "A" (Activate Movement) phase, GA can show the metabolic impact of their new resistance training routine in less than a month, providing powerful psychological reinforcement.</p>
+
+        <h2 id="lipid-surrogates">4. The Triglyceride-to-HDL Ratio: The Poor Man's Insulin Test</h2>
+        <p>In many regions, fasting insulin is not part of a standard panel. In these cases, the <span class="highlight">Triglyceride (TG) to HDL-C ratio</span> serves as a validated surrogate for insulin resistance. High insulin levels drive the liver to produce more VLDL (leading to high TGs) and accelerate the clearance of HDL.</p>
+
+        <p>A meta-analysis of over 20,000 individuals published in 2022 confirmed that a TG/HDL ratio > 3.0 (in mg/dL) is highly predictive of metabolic syndrome and insulin resistance. For optimal metabolic health, we aim for a ratio <span class="highlight">below 1.5</span>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Clinical Pearl: The Ratio Math</div>
+            <div class="principle-text">
+                To calculate the ratio, simply divide the Triglycerides by the HDL. 
+                <ul>
+                    <li><strong>Example:</strong> TG = 150, HDL = 30. Ratio = 5.0 (High Risk).</li>
+                    <li><strong>Example:</strong> TG = 70, HDL = 70. Ratio = 1.0 (Optimal).</li>
+                </ul>
+                This marker often flags metabolic dysfunction even when LDL-C appears "normal."
+            </div>
+        </div>
+
+        <h2 id="tofi-phenotype">5. Identifying the TOFI (Thin Outside, Fat Inside) Phenotype</h2>
+        <p>The "Skinny Fat" or <span class="highlight">TOFI phenotype</span> describes individuals with a normal BMI but high levels of visceral adipose tissue (VAT). These clients are often the most difficult to screen because they do not "look" like the typical diabetic profile. Advanced lipid fractionation is the key to identifying them.</p>
+
+        <p>Standard lipid panels measure the <em>weight</em> of cholesterol (LDL-C), but not the <em>number</em> of particles (LDL-P) or the particle size. TOFI individuals typically present with:</p>
+        <ul>
+            <li><strong>Low LDL Particle Size:</strong> Small, dense LDL (Pattern B) which is highly atherogenic.</li>
+            <li><strong>High ApoB:</strong> Apolipoprotein B is the primary structural protein for all potentially atherogenic particles. It is a superior marker for cardiovascular risk in the insulin-resistant client.</li>
+            <li><strong>Low Adiponectin:</strong> An insulin-sensitizing hormone secreted by healthy fat cells. In TOFI individuals, visceral fat produces inflammatory cytokines instead of adiponectin.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study 2: The TOFI Executive</p>
+                <p class="subtitle">Normal BMI, High Metabolic Risk</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Mark, 51 | <strong>BMI:</strong> 22.8 | <strong>Activity:</strong> Sedentary Office Worker.
+                    </div>
+                </div>
+                <p>Mark had a normal HbA1c (5.2%) and normal LDL (110 mg/dL). However, his advanced panel showed:</p>
+                <ul>
+                    <li><strong>TG/HDL Ratio:</strong> 4.2 (TG 210, HDL 50)</li>
+                    <li><strong>ApoB:</strong> 125 mg/dL (High Risk)</li>
+                    <li><strong>LDL-P:</strong> 1800 nmol/L (Very High Particle Count)</li>
+                </ul>
+                <p><strong>The Insight:</strong> Mark was metabolically obese despite his lean frame. We focused on the "L" (Lifestyle Reset) and "A" (Activate Movement) phases to build "The Glucose Sink" (skeletal muscle) and reduce visceral fat.</p>
+            </div>
+        </div>
+
+        <h2 id="clinical-integration">6. Integrating Advanced Markers into the S.T.A.B.L.E. Method™</h2>
+        <p>Your role as a coach is to synthesize this data into an actionable plan. The "S" (Screen & Assess) phase is not a one-time event; it is a recurring process that validates the effectiveness of the other five pillars.</p>
+
+        <p>When you see a high HOMA-IR or a poor TG/HDL ratio, your intervention priority shifts:</p>
+        <ol>
+            <li><strong>If HOMA-IR is high:</strong> Prioritize <strong>"T" (Transform Nutrition)</strong> to lower the insulin burden.</li>
+            <li><strong>If TG/HDL is high:</strong> Prioritize <strong>"A" (Activate Movement)</strong> and <strong>"L" (Lifestyle/Sleep)</strong> to improve fatty acid oxidation.</li>
+            <li><strong>If GA is high but HbA1c is normal:</strong> Look for <strong>"B" (Balance Hormones)</strong>, specifically cortisol-driven post-prandial spikes.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why might a client with iron deficiency anemia have an HbA1c of 5.9% despite having an average blood glucose of 105 mg/dL (which usually corresponds to 5.3%)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Iron deficiency anemia can lengthen the lifespan of red blood cells. Since the hemoglobin is exposed to glucose for a longer period than the standard 120 days, it accumulates more glycation, leading to a falsely elevated HbA1c reading.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">A client presents with a Fasting Glucose of 95 mg/dL and Fasting Insulin of 22 µU/mL. What is their HOMA-IR, and what does it suggest?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    HOMA-IR = (95 × 22) / 405 = 5.16. This suggests significant insulin resistance. Despite the glucose being in the "normal" range (< 100), the high insulin levels indicate the body is struggling to maintain that range, placing the client at high risk for metabolic exhaustion.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>HbA1c is a proxy:</strong> Always screen for anemia or RBC turnover issues if the HbA1c doesn't match the client's symptoms or finger-prick data.</li>
+                <li><strong>HOMA-IR is essential:</strong> It identifies metabolic dysfunction up to 10 years before fasting glucose begins to rise.</li>
+                <li><strong>Use short-term markers:</strong> Glycated Albumin and Fructosamine provide a 2-3 week feedback loop for lifestyle changes.</li>
+                <li><strong>The TG/HDL Ratio:</strong> Aim for < 1.5 as a simple, cost-effective surrogate for insulin sensitivity.</li>
+                <li><strong>Screen for TOFI:</strong> Use ApoB and LDL-P to identify cardiovascular and metabolic risk in lean clients.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Matthews DR, et al. (1985). "Homeostasis model assessment: insulin resistance and beta-cell function from fasting plasma glucose and insulin concentrations in man." <em>Diabetologia</em>.</li>
+                <li>English E, et al. (2021). "The effect of iron deficiency and anaemia on HbA1c levels: a systematic review and meta-analysis." <em>Diabetologia</em>.</li>
+                <li>Koga M, et al. (2014). "Glycated albumin and fructosamine as markers for glycemic control." <em>Journal of Diabetes and its Complications</em>.</li>
+                <li>Behiry EG, et al. (2019). "Triglyceride/HDL-C ratio as a predictor of insulin resistance in obese children and adolescents." <em>Diabetes, Metabolic Syndrome and Obesity</em>.</li>
+                <li>Sniderman AD, et al. (2021). "Apolipoprotein B Particles and Cardiovascular Disease: A Narrative Review of Recent Evidence." <em>JAMA Cardiology</em>.</li>
+                <li>Thomas EL, et al. (2012). "The TOFI phenotype: incidence and molecular pathways." <em>Current Opinion in Clinical Nutrition & Metabolic Care</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The S.T.A.B.L.E. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

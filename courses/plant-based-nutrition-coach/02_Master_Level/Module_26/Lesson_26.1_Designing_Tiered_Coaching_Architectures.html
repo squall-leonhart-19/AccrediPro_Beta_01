@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.1: Designing Tiered Coaching Architectures</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PREMIUM GOLD/GREEN theme for L3 Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #fdf6e3;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Advanced Practice Mastery (L3)</p>
+            <h1 class="lesson-title">Lesson 1: Designing Tiered Coaching Architectures</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#duration"><span class="section-num">1</span>Program Duration Dynamics</a></li>
+                <li><a href="#tiered"><span class="section-num">2</span>Tiered Architecture Models</a></li>
+                <li><a href="#accountability"><span class="section-num">3</span>Accountability Frameworks</a></li>
+                <li><a href="#pricing"><span class="section-num">4</span>Pricing & Value Mapping</a></li>
+                <li><a href="#boundaries"><span class="section-num">5</span>Scope & Medical Referrals</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>The P.L.A.N.T. Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between short-term transition programs and long-term chronic disease management architectures.</li>
+                <li>Design a multi-tiered service suite that balances high-ticket 1-on-1 coaching with scalable group models.</li>
+                <li>Develop robust accountability systems using the P.L.A.N.T. Nutrition Method™ touchpoints.</li>
+                <li>Calculate value-based pricing that reflects the clinical and lifestyle ROI of plant-based interventions.</li>
+                <li>Establish clear medical referral triggers to maintain professional scope of practice boundaries.</li>
+            </ul>
+        </div>
+
+        <section id="intro">
+            <h2>The Shift from Coach to Architect</h2>
+            <p>At the Level 3 (L3) practitioner stage, your role evolves from merely providing nutritional advice to <span class="highlight">designing transformative experiences</span>. A common pitfall for emerging coaches is "feature-based" selling—offering sessions, PDFs, and recipes. However, premium clients invest in <strong>outcomes</strong> and the <strong>architecture</strong> that ensures those outcomes are achieved.</p>
+            <p>By applying the <strong>P.L.A.N.T. Nutrition Method™</strong> at a programmatic level, you create a system that addresses the biological, psychological, and social barriers to plant-based success. This lesson provides the blueprint for building that architecture.</p>
+        </section>
+
+        <section id="duration">
+            <h2 id="duration">1. Program Duration: Transition vs. Management</h2>
+            <p>Program length is not arbitrary; it must align with the physiological and behavioral timelines of the client's goal. A 2021 study on habit formation suggests that while the "21-day myth" persists, complex lifestyle changes like adopting a whole-food plant-based (WFPB) diet often require <span class="highlight">66 to 254 days</span> to become automatic.</p>
+
+            <div class="data-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Program Type</th>
+                            <th>Duration</th>
+                            <th>Primary Objective</th>
+                            <th>Key Focus Areas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Transition-Focused</strong></td>
+                            <td>4–8 Weeks</td>
+                            <td>Eliminating barriers to entry; taste bud neuroplasticity.</td>
+                            <td>Pantry prep, basic nutrient density, social navigation.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Metabolic Reset</strong></td>
+                            <td>12–16 Weeks</td>
+                            <td>Improving biomarkers (A1c, LDL, Blood Pressure).</td>
+                            <td>Anti-inflammatory protocols, fiber mechanics, lipid optimization.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chronic Disease Management</strong></td>
+                            <td>6–12 Months</td>
+                            <td>Disease reversal support and long-term maintenance.</td>
+                            <td>Advanced nutrient synergy, gut-immune axis, sustainable lifestyle integration.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>For L3 practitioners, the <strong>6-month architecture</strong> is often the "Gold Standard." This duration allows for the initial 4-week "Prepare & Plan" phase, a 12-week "Intensive Learning & Nourishment" phase, and an 8-week "Autonomy & Thrive" phase.</p>
+        </section>
+
+        <section id="tiered">
+            <h2 id="tiered">2. High-Ticket vs. Scalable Models</h2>
+            <p>A sustainable coaching business requires a mix of "High-Touch" (High-Ticket) and "Low-Touch" (Scalable) offerings. This prevents practitioner burnout while maximizing impact.</p>
+            
+            <h3>The Signature 1-on-1 Program (High-Ticket)</h3>
+            <p>This is your premium offering. It involves deep personalization, frequent access, and bespoke strategy. In the context of the P.L.A.N.T. Method™, this includes bio-individualized nutrient mapping and direct support for complex health challenges.</p>
+
+            <h3>The Scalable Group Architecture</h3>
+            <p>Group programs leverage the <span class="highlight">social facilitation effect</span>. Research indicates that participants in group-based lifestyle interventions often show higher adherence rates (up to 20% higher) than those in solo interventions due to peer accountability and shared experience.</p>
+
+            <div class="stats-box">
+                <span class="stat-number">82%</span>
+                <span class="stat-label">Adherence rate in group-based WFPB programs vs. 64% in individual self-study</span>
+            </div>
+        </section>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Metabolic Mastery Program</p>
+                    <p class="subtitle">Individualized High-Ticket Intervention</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., 58</h4>
+                        <p>Type 2 Diabetes, Hypertension, BMI 34</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> A 6-month tiered architecture. Phase 1 (Weeks 1-4) focused on <em>P: Prepare</em> (Kitchen detox and CGM monitoring). Phase 2 (Weeks 5-16) focused on <em>L, A, and N</em> (Fiber-loading and inflammatory marker reduction).</p>
+                <p><strong>Outcomes:</strong> James achieved a 1.4% reduction in HbA1c and a 22lb weight loss. Because the program was 6 months long, he successfully navigated three business trips and the holiday season without relapse.</p>
+            </div>
+        </div>
+
+        <section id="accountability">
+            <h2 id="accountability">3. Weekly Touchpoints & Accountability</h2>
+            <p>Accountability is the "glue" of program development. For L3 practitioners, touchpoints should be structured to move the client through the <span class="highlight">Stages of Change</span> (Transtheoretical Model).</p>
+            
+            <h3>The P.L.A.N.T. Check-in Framework:</h3>
+            <ul>
+                <li><strong>P (Progress):</strong> What biomarkers or bio-feedback (energy, sleep) have improved?</li>
+                <li><strong>L (Learning):</strong> What new nutrient synergy or cooking skill was mastered this week?</li>
+                <li><strong>A (Adherence):</strong> On a scale of 1-10, how closely did the plate match the WFPB guidelines?</li>
+                <li><strong>N (Next Steps):</strong> What is the primary focus for the upcoming 7 days?</li>
+                <li><strong>T (Troubleshooting):</strong> What social or environmental obstacles arose?</li>
+            </ul>
+        </section>
+
+        <section id="pricing">
+            <h2 id="pricing">4. Pricing Strategies & Value Mapping</h2>
+            <p>L3 pricing should be <span class="highlight">value-based</span>, not hourly. When a client transitions to a plant-based diet, they often save significantly on medication, healthcare co-pays, and processed food costs. A 2023 analysis showed that a WFPB diet can reduce individual food costs by approximately $750/year while significantly reducing long-term medical expenditures.</p>
+
+            <h3>Mapping the Value Proposition:</h3>
+            <ol>
+                <li><strong>Clinical ROI:</strong> Reduction in medication dependency (under medical supervision).</li>
+                <li><strong>Lifestyle ROI:</strong> Increased productivity, better sleep, and enhanced vitality.</li>
+                <li><strong>Convenience ROI:</strong> Done-for-you meal plans, shopping lists, and decision-fatigue elimination.</li>
+            </ol>
+            <p><strong>Premium Pricing Benchmark:</strong> High-ticket 6-month programs typically range from $3,000 to $7,500, depending on the level of access and laboratory integration (e.g., microbiome testing or blood panels).</p>
+        </section>
+
+        <section id="boundaries">
+            <h2 id="boundaries">5. Scope of Practice & Medical Referral Triggers</h2>
+            <p>As a Plant-Based Nutrition Coach, you are a vital part of the healthcare continuum, but you are not a replacement for a physician. Your program architecture must include clear <span class="highlight">safety gates</span>.</p>
+
+            <div class="alert-box warning">
+                <p class="alert-label">Critical: Medical Referral Triggers</p>
+                <p>If a client experiences any of the following, your program architecture must mandate a medical referral:</p>
+                <ul>
+                    <li>Unexplained rapid weight loss (>3lbs/week without intent).</li>
+                    <li>Chronic, severe gastrointestinal pain or blood in stool.</li>
+                    <li>Symptoms of hypoglycemia in medicated diabetics.</li>
+                    <li>Signs of disordered eating or orthorexia.</li>
+                    <li>Severe electrolyte imbalances or dehydration symptoms.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is a 6-month duration often preferred over an 8-week duration for chronic disease management clients?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">Habit formation for complex lifestyle changes typically takes 66 to 254 days. A 6-month program covers this window, allowing for the navigation of real-world obstacles (holidays, travel) and ensuring the new behaviors become automatic.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">In the P.L.A.N.T. Check-in framework, what does the "A" stand for and why is it measured?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">"A" stands for Adherence. It is measured on a scale of 1-10 to provide a subjective but quantifiable metric of how closely the client is following the protocol, allowing the coach to identify patterns of success or struggle.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li>Program architecture should be based on biological and psychological timelines (4-8 weeks for transition, 6-12 months for management).</li>
+                <li>Tiered models (Signature 1-on-1 vs. Scalable Group) ensure business sustainability and wider impact.</li>
+                <li>Accountability must be structured and consistent, using frameworks like the P.L.A.N.T. Check-in.</li>
+                <li>Value-based pricing reflects the total ROI (clinical, lifestyle, and financial) for the client.</li>
+                <li>Clear medical referral triggers are essential for maintaining professional scope of practice.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <em>European Journal of Social Psychology</em>.</li>
+                <li>Ornish, D., et al. (2013). "Effect of comprehensive lifestyle changes on telomerase activity and telomere length." <em>The Lancet Oncology</em>.</li>
+                <li>Lorig, K. R., et al. (2001). "Chronic Disease Self-Management Program: 2-year health status and health care utilization outcomes." <em>Medical Care</em>.</li>
+                <li>Springmann, M., et al. (2021). "The global and regional costs of healthy and sustainable dietary patterns: a modelling study." <em>The Lancet Planetary Health</em>.</li>
+                <li>Gardner, C. D., et al. (2018). "Effect of Low-Fat vs Low-Carbohydrate Diet on 12-Month Weight Loss." <em>JAMA</em>.</li>
+                <li>Greger, M. (2020). "How Not to Diet: The Groundbreaking Science of Healthy, Permanent Weight Loss." <em>Flatiron Books</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Plant-Based Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

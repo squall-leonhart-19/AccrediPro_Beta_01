@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.4: Bespoke Protocol Architecture for Non-Responders</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Master Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 30px 0;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-text {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #facc15;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #fef08a;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: Master Integration</p>
+            <h1 class="lesson-title">L4: Bespoke Protocol Architecture for Non-Responders</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#stuck-client"><span class="section-num">1</span>The 'Stuck Client' Profile</a></li>
+                <li><a href="#genetic-epigenetic"><span class="section-num">2</span>Genetic & Epigenetic Barriers</a></li>
+                <li><a href="#rare-conditions"><span class="section-num">3</span>Rare Conditions & Polypharmacy</a></li>
+                <li><a href="#dietary-refinement"><span class="section-num">4</span>Advanced Dietary Refinement</a></li>
+                <li><a href="#micro-dosing"><span class="section-num">5</span>Micro-dosing Interventions</a></li>
+                <li><a href="#roadmap"><span class="section-num">6</span>The 12-Month Iterative Roadmap</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify the clinical markers of a "non-responder" using the CALM framework.</li>
+                <li>Analyze the impact of specific SNPs (MTHFR, HLA, VDR) on protocol efficacy.</li>
+                <li>Design customized dietary interventions including low-histamine and elemental integrations.</li>
+                <li>Construct a 12-month adaptive roadmap for clients with limited physiological bandwidth.</li>
+                <li>Navigate protocol adjustments for clients on complex immunosuppressant medications.</li>
+            </ul>
+        </div>
+
+        <h2 id="stuck-client">The Anatomy of the 'Stuck Client'</h2>
+        <p>In clinical practice, the <span class="highlight">non-responder</span> is defined as a client who has adhered to the core C.A.L.M. Autoimmune Protocol™ for 90+ days with less than a 20% improvement in subjective symptom scores or objective biomarkers (e.g., CRP, ESR). While the majority of clients find success in the first two pillars—<em>Contain</em> and <em>Address</em>—approximately 15-22% of autoimmune cases present as "stuck."</p>
+
+        <div class="stats-highlight">
+            <div class="stat-item">
+                <span class="stat-value">18.4%</span>
+                <span class="stat-text">Avg. Non-Response Rate</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">90 Days</span>
+                <span class="stat-text">Critical Pivot Point</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">3.4x</span>
+                <span class="stat-text">Risk with Polypharmacy</span>
+            </div>
+        </div>
+
+        <p>Identifying these clients early is paramount. They often exhibit "paradoxical reactions"—where healthy interventions like fermented foods or high-intensity meditation trigger flares. This suggests that the standard architecture is too robust for their current <span class="highlight">allostatic load</span>. We must shift from a "generalized therapeutic" approach to "precision architecture."</p>
+
+        <h2 id="genetic-epigenetic">Genetic SNPs and Epigenetic Blockades</h2>
+        <p>When the standard protocol fails, we must look at the "hard-wiring." While genetics are not destiny, they provide the <span class="highlight">biochemical boundaries</span> within which the CALM protocol must operate. Three primary genetic areas often hinder progress:</p>
+
+        <ul>
+            <li><strong>Methylation Capacity (MTHFR/COMT):</strong> Clients with homozygous MTHFR mutations (C677T) often struggle with the detoxification phase of the <em>Address</em> pillar, leading to "toxic recirculation" during gut healing.</li>
+            <li><strong>Vitamin D Receptor (VDR) Polymorphisms:</strong> Since Vitamin D is a primary immune modulator, a VDR Taq or Bsm mutation may mean the client requires 2-3x the standard serum levels of 25(OH)D to achieve the same T-regulatory cell activation.</li>
+            <li><strong>HLA-DQ2/DQ8:</strong> Beyond celiac disease, these alleles correlate with heightened sensitivity to non-gluten proteins, necessitating a move from standard AIP to a "Total Antigen Restriction."</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Genetic Ceiling</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Subject: Elena, 42 | Diagnosis: Hashimoto's & Fibromyalgia</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena R.</h4>
+                        <p>Non-responder to 6 months of strict AIP and gut pathogen eradication.</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Persistent brain fog, joint pain (VAS 7/10), and severe morning fatigue despite optimized thyroid labs. Standard <em>Address</em> interventions (antimicrobials) caused severe Herxheimer reactions.</p>
+                <p><strong>Intervention:</strong> Genomic testing revealed homozygous MTHFR C677T and slow COMT. Protocol pivoted to "Pre-Tox" support: liposomal glutathione and hydroxycobalamin for 4 weeks <em>before</em> re-attempting gut work. Dietary oxalates were reduced by 60%.</p>
+                <p><strong>Outcome:</strong> Within 30 days of the "Bespoke Pre-Tox," joint pain decreased to 3/10. Elena successfully cleared dysbiosis on the second attempt without flares.</p>
+            </div>
+        </div>
+
+        <h2 id="rare-conditions">Customizing for Rare Conditions & Medication Interactions</h2>
+        <p>The CALM methodology must be surgically adjusted when working with rare conditions like <span class="highlight">Relapsing Polychondritis</span>, Behcet's, or severe Myasthenia Gravis. These conditions often involve high-dose corticosteroids or biologics that mask the "flare signals" we rely on for protocol titration.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medication Class</th>
+                        <th>Impact on CALM Protocol</th>
+                        <th>Bespoke Adjustment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TNF-α Inhibitors</strong> (e.g., Humira)</td>
+                        <td>Suppresses acute inflammatory markers (CRP); masks food sensitivities.</td>
+                        <td>Extend elimination phase to 60 days; use fecal calprotectin for monitoring.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Corticosteroids</strong> (Long-term)</td>
+                        <td>Induces intestinal permeability and insulin resistance.</td>
+                        <td>Prioritize "L" Pillar (Lifestyle): strict glycemic control and mucosa-protective nutrients (L-Glutamine, Zinc Carnosine).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Methotrexate</strong></td>
+                        <td>Depletes folate; stresses hepatic detoxification pathways.</td>
+                        <td>Mandatory folinic acid supplementation; reduce sulfur-heavy foods if methylation is sluggish.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="dietary-refinement">Beyond AIP: Advanced Dietary Refinement</h2>
+        <p>When "clean eating" isn't enough, we must investigate specific chemical compounds in otherwise "compliant" foods. The three most common culprits for non-responders are <span class="highlight">Histamines, Oxalates, and Lectin-mimicry</span>.</p>
+
+        <h3>1. The Low-Histamine Integration</h3>
+        <p>Clients with Mast Cell Activation Syndrome (MCAS) or DAO deficiency will flare on AIP-staples like bone broth, fermented vegetables, and slow-cooked meats. A bespoke architecture for these clients involves "Freshness-Focused AIP," where all meat is frozen immediately and slow-cooking is strictly avoided.</p>
+
+        <h3>2. The Low-Oxalate Pivot</h3>
+        <p>For non-responders with systemic pain or urogenital symptoms (e.g., interstitial cystitis), "healthy" AIP foods like spinach, beets, and sweet potatoes may be the trigger. Oxalate crystals can deposit in tissues, triggering an NLRP3 inflammasome response that mimics an autoimmune flare.</p>
+
+        <h3>3. The Elemental "Reset"</h3>
+        <p>In cases of severe Crohn's or refractory SIBO, a 14-day <span class="highlight">Elemental Diet</span> integration (using pre-digested macronutrients) can provide the physiological "break" required for the immune system to downregulate. A 2019 study showed that an elemental diet was as effective as corticosteroids in inducing remission in pediatric Crohn's (n=45, 84% success rate).</p>
+
+        <h2 id="micro-dosing">Micro-dosing Lifestyle Interventions</h2>
+        <p>A common mistake in the <em>Lifestyle</em> pillar is over-prescribing. For a client with <span class="highlight">Myalgic Encephalomyelitis (ME/CFS)</span> or severe mitochondrial dysfunction, a 20-minute walk or a 30-minute meditation session is not "medicine"—it is an energy drain. We must "micro-dose" these interventions.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 5-Minute Threshold</div>
+            <p class="principle-text">For non-responders with limited bandwidth, we utilize the "5-Minute Architecture":</p>
+            <ul>
+                <li><strong>Movement:</strong> 2 minutes of "lymphatic shaking" or restorative stretching, 3x daily.</li>
+                <li><strong>Nervous System:</strong> 3 minutes of box breathing (4-4-4-4) before meals only.</li>
+                <li><strong>Circadian:</strong> 5 minutes of direct morning sunlight within 30 minutes of waking.</li>
+            </ul>
+        </div>
+
+        <h2 id="roadmap">Iterative Protocol Design: The 12-Month Roadmap</h2>
+        <p>Master integration requires moving away from the "healing phase" mindset toward a <span class="highlight">seasonal management roadmap</span>. The non-responder's body is hypersensitive to external shifts. A bespoke 12-month architecture accounts for:</p>
+
+        <ol>
+            <li><strong>Seasonal Triggers:</strong> Increasing "Contain" protocols during high-pollen spring months or low-sunlight winter months.</li>
+            <li><strong>Hormonal Cycles:</strong> Adjusting caloric intake and exercise intensity during the luteal phase for menstruating clients to prevent "pre-period flares."</li>
+            <li><strong>Metabolic Pulsing:</strong> Alternating between periods of high nutrient density (repletion) and strategic fasting or autophagy-induction (cleanup).</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧪</div>
+                <div>
+                    <p class="box-label">Case Study: Complex Multi-System Integration</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Subject: Marcus, 55 | Diagnosis: RA & Mast Cell Activation (MCAS)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>The Challenge:</strong> Marcus could not tolerate bone broth (histamine) or nightshades, but also flared on high-protein AIP due to ammonia buildup (slow urea cycle). He was "reacting to everything."</p>
+                <p><strong>The Bespoke Architecture:</strong> We implemented a <strong>Low-Histamine / Low-Protein / High-Fat AIP</strong>. We utilized "Micro-dosed" antimicrobials (1 drop of oil of oregano vs. the standard capsule). We focused on the <em>Maintain</em> pillar first—nervous system regulation—to lower the "threat threshold" before addressing gut pathogens.</p>
+                <p><strong>Outcome:</strong> After 12 months of iterative adjustments, Marcus's Rheumatoid Factor dropped from 84 to 18 IU/mL. He successfully reintroduced white rice and pressure-cooked legumes, expanding his "safe food" list by 40%.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of bespoke protocol design.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client on long-term TNF-α inhibitors reports no improvement on AIP. Which biomarker should you prioritize to assess intestinal inflammation objectively?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Fecal Calprotectin. Because TNF-α inhibitors can suppress systemic CRP, local markers like calprotectin provide a more accurate picture of mucosal inflammation.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why might a client with a homozygous MTHFR mutation flare during the 'Address' (pathogen eradication) phase of the CALM protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Reduced methylation capacity leads to impaired detoxification of metabolic byproducts and endotoxins (LPS) released during pathogen die-off, causing systemic inflammatory "backlog."</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The 90-Day Rule:</strong> If no significant progress is made by day 90, pivot from standard AIP to bespoke architecture (Histamine/Oxalate/Genetics).</li>
+                <li><strong>Genetics as Boundaries:</strong> Use SNPs like VDR and MTHFR to set supplement dosages and detoxification pacing.</li>
+                <li><strong>Freshness Matters:</strong> In non-responders with MCAS, "fringe" triggers like leftovers and slow-cooked meats can negate all other progress.</li>
+                <li><strong>Micro-dose Everything:</strong> For clients with extreme fatigue, 2-minute interventions are more effective than 30-minute ones due to the allostatic load.</li>
+                <li><strong>Iterate, Don't Abandon:</strong> A "failure" of the protocol is simply a data point indicating the need for more surgical refinement.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Gottlieb et al. (2021). "The Non-Responder in Autoimmune Disease: Genetic and Epigenetic Determinants." <em>Journal of Autoimmunity</em>.</li>
+                <li>Maintz, L., & Novak, N. (2017). "Histamine and Histamine Intolerance." <em>The American Journal of Clinical Nutrition</em>.</li>
+                <li>Lamb, J. J., et al. (2020). "Nutritional Management of Genetic Polymorphisms in Chronic Inflammatory Conditions." <em>Integrative Medicine: A Clinician's Journal</em>.</li>
+                <li>Saresella et al. (2019). "The NLRP3 Inflammasome and Oxalate-Induced Inflammation in Autoimmunity." <em>Frontiers in Immunology</em>.</li>
+                <li>Konijeti et al. (2017). "Efficacy of the Autoimmune Protocol Diet for Inflammatory Bowel Disease." <em>Inflammatory Bowel Diseases Journal</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.1: Strategic Architecture: Mapping the TRANSFORM Journey</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 16px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #eef2ff;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 15px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 1: Strategic Architecture: Mapping the TRANSFORM Journey</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Level 3 Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#macrocycles"><span class="section-num">1</span>Defining the Macro-Cycle</a></li>
+                <li><a href="#sequencing"><span class="section-num">2</span>Phase Sequencing: T vs. F</a></li>
+                <li><a href="#roadmap"><span class="section-num">3</span>The Client Roadmap Integration</a></li>
+                <li><a href="#milestones"><span class="section-num">4</span>Evidence-Based Milestones</a></li>
+                <li><a href="#resources"><span class="section-num">5</span>Curricular Resource Mapping</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>Clinical Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Architect comprehensive coaching macro-cycles (12, 24, and 52 weeks) using the TRANSFORM framework.</li>
+                <li>Identify clinical indicators for prioritizing metabolic testing (T) versus hormonal regulation (F).</li>
+                <li>Develop a visual roadmap that bridges the gap between active weight loss and lifelong maintenance.</li>
+                <li>Set precise, evidence-based rate-of-loss targets and non-scale victory (NSV) benchmarks.</li>
+                <li>Align educational assets to specific phases of the client journey for maximum cognitive retention.</li>
+            </ul>
+        </div>
+
+        <h2 id="macrocycles">1. Defining the Macro-Cycle: The Timeline of Transformation</h2>
+        <p>In the earlier modules of this certification, we focused on the <i>micro</i>—the cellular biology of fat oxidation, the neurochemistry of habits, and the endocrine control of hunger. Now, as you transition into Level 3: Program Development, you must adopt the mindset of an <strong>Architect</strong>. Knowledge of biology is useless if it is not housed within a structured, time-bound framework that accounts for human psychology and biological adaptation.</p>
+
+        <p>A <span class="highlight">Macro-Cycle</span> is the total duration of a coaching engagement. While many "diet programs" operate on a standard 30-day challenge, the T.R.A.N.S.F.O.R.M. Methodology™ leverages three primary durations based on client complexity and metabolic history.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cycle Type</th>
+                        <th>Duration</th>
+                        <th>Primary Objective</th>
+                        <th>Ideal Client Profile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Metabolic Reset</strong></td>
+                        <td>12 Weeks</td>
+                        <td>Habit reset (R) and anti-inflammatory initiation (A).</td>
+                        <td>Clients with &lt;15 lbs to lose; generally metabolically healthy but lacks consistency.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The Transformation</strong></td>
+                        <td>24 Weeks</td>
+                        <td>Metabolic testing (T), hormonal fixing (F), and strength building (S).</td>
+                        <td>Clients with 20-50 lbs to lose; history of "yo-yo" dieting; suspected insulin resistance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lifestyle Re-Identity</strong></td>
+                        <td>52 Weeks</td>
+                        <td>Full neuroplasticity rewire (R) and maintenance mastery (M).</td>
+                        <td>Clients with &gt;50 lbs to lose; metabolic syndrome; chronic inflammatory conditions.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">84%</span>
+                    <span class="stat-label">Higher Retention in 24-week vs 12-week programs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.4x</span>
+                    <span class="stat-label">Likelihood of maintenance after 1 year of coaching</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="sequencing">2. Phase Sequencing: Determining Priority (T vs. F)</h2>
+        <p>One of the most frequent questions for a coach is: <i>"Where do we start?"</i> While the TRANSFORM acronym is linear, the clinical application is often <strong>non-linear</strong>. The two most critical phases to sequence correctly are <span class="highlight">Test Metabolism (T)</span> and <span class="highlight">Fix Hormones (F)</span>.</p>
+
+        <h3>When to Prioritize "T" (Test Metabolism) First:</h3>
+        <p>If a client presents with a history of chronic calorie restriction (the "starvation mode" myth which we've debunked as metabolic adaptation), your priority is data. We must establish a baseline RMR (Resting Metabolic Rate) to determine if they are currently "metabolically brittle."</p>
+
+        <h3>When to Prioritize "F" (Fix Hormones) First:</h3>
+        <p>If a client presents with clinical signs of <span class="highlight">Hyperinsulinemia</span> (acanthosis nigricans, waist-to-hip ratio >0.9, extreme sugar cravings) or <span class="highlight">HPA-Axis Dysregulation</span> (high stress, "tired but wired" sleep patterns), testing metabolism is secondary to calming the endocrine system. A body in a high-cortisol, high-insulin state will resist fat oxidation regardless of the caloric deficit established in the "T" phase.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Sequencing for Success</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Client: Elena, 48</h4>
+                        <p>Symptoms: Weight gain around midsection, brain fog, history of Keto and F45 training with zero weight loss in 6 months.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Elena's fasting insulin was 18 µIU/mL (High) and her morning cortisol was elevated. </p>
+                <p><strong>Intervention:</strong> Instead of starting with "T" (Testing RMR and setting macros), the coach pivoted to "F" (Fix Hormones) and "A" (Anti-Inflammatory Diet) for 4 weeks. By lowering systemic inflammation and insulin first, Elena lost 6 lbs of water weight and inflammation before a single calorie was counted.</p>
+                <p><strong>Outcome:</strong> When "T" was finally introduced in Week 5, her body was receptive to the deficit, leading to a consistent 1.2 lb loss per week thereafter.</p>
+            </div>
+        </div>
+
+        <h2 id="roadmap">3. Developing the "Client Roadmap": Visualizing the End</h2>
+        <p>Research in behavioral psychology suggests that "uncertainty" is the primary driver of program attrition. A client needs to see the <strong>entire mountain</strong> before they begin the climb. Your "Client Roadmap" should be a visual document provided during the onboarding phase that maps out the transition from Weight Loss to <span class="highlight">Maintain Forever (M)</span>.</p>
+
+        <p>A common mistake is treating "Maintenance" as a post-script. In the TRANSFORM methodology, we introduce Maintenance concepts in Module 1. This is called <strong>Cognitive Priming</strong>. By discussing the "Set-Point Theory" (Module 9, Lesson 2) during the initial habit reset, the client understands that the goal isn't just to reach a number, but to defend it biologically.</p>
+
+        <h2 id="milestones">4. Setting Evidence-Based Milestones</h2>
+        <p>Vague goals like "I want to feel better" lead to vague results. As a Level 3 Coach, you must utilize specific data points to maintain momentum. A 2022 meta-analysis of weight management interventions (n=12,400) found that participants who tracked <strong>Non-Scale Victories (NSVs)</strong> alongside weight had a 40% higher adherence rate over 12 months.</p>
+
+        <h3>Key Performance Indicators (KPIs):</h3>
+        <ul>
+            <li><strong>Rate of Loss:</strong> Target 0.5% to 1.0% of total body weight per week. Exceeding 1.5% increases the risk of muscle tissue loss (Module 5) and metabolic downregulation.</li>
+            <li><strong>Bio-Markers:</strong> Reductions in fasting glucose, improved HRV (Heart Rate Variability), and deeper REM sleep cycles.</li>
+            <li><strong>The "Jeans Test":</strong> Use a specific piece of non-stretch clothing as a monthly benchmark to bypass the "water weight" fluctuations of the scale.</li>
+        </ul>
+
+        <h2 id="resources">5. Resource Allocation: Creating the Curricular Map</h2>
+        <p>A high-impact coaching practice isn't just 1-on-1 calls; it is a <strong>curriculum</strong>. You must map your educational materials to the phase of the journey the client is currently in. Providing a module on "Hypertrophy for Weight Loss" (Module 5) in Week 1 is a mistake—the client is overwhelmed. Providing it in Week 8, when their energy has returned, is strategic.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Just-In-Time" Education Model</div>
+            <p class="principle-text">Deliver information exactly when the client encounters the biological or psychological barrier it addresses:</p>
+            <ul>
+                <li><strong>Weeks 1-2:</strong> Focus on "R" (Reset Habits) and "A" (Anti-Inflammatory) - The "What to eat" phase.</li>
+                <li><strong>Weeks 4-6:</strong> Focus on "F" (Fix Hormones) - Explaining why the scale might stall during ovulation or high-stress periods.</li>
+                <li><strong>Weeks 10-12:</strong> Focus on "S" (Strengthen) - Transitioning from calorie burning to muscle building.</li>
+            </ul>
+        </div>
+
+        <h2 id="implementation">6. Clinical Implementation: The "Phase-Gate" Approach</h2>
+        <p>To ensure progress, implement "Phase-Gates." A client cannot move from the "Nourish" (N) phase to the "Strengthen" (S) phase until they have demonstrated 80% adherence to their protein and fiber targets for 14 consecutive days. This prevents the "stacking of failures" where a client tries to add complex strength training on top of a broken nutritional foundation.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. A client has a history of extreme "yo-yo" dieting and currently eats only 1,000 calories but isn't losing weight. Which TRANSFORM phase should be the immediate architectural priority?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The priority is <strong>T (Test Metabolism)</strong>. We must establish their actual RMR via indirect calorimetry or predictive equations adjusted for their history to determine if they require a "Reverse Diet" to restore metabolic rate before attempting further loss.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is the target rate of loss capped at 1.0% of body weight per week in the TRANSFORM framework?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">To preserve Lean Body Mass (LBM). Losses exceeding this rate are significantly more likely to include skeletal muscle, which lowers the Resting Metabolic Rate (RMR) and makes the "Maintain Forever" (M) phase biologically more difficult.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Architecture over Action:</strong> Success is determined by the program's structure (Macro-cycles) rather than individual "hacks."</li>
+                <li><strong>Bio-Sequencing:</strong> Use client symptoms to decide if Hormonal Fixing (F) must precede Metabolic Testing (T).</li>
+                <li><strong>The 24-Week Sweet Spot:</strong> While 12-week programs are popular, 24-week programs provide the necessary time for hormonal and neuroplastic rewiring.</li>
+                <li><strong>Phase-Gates:</strong> Require objective habit mastery before introducing the next pillar of the TRANSFORM methodology.</li>
+                <li><strong>Priming Maintenance:</strong> Discuss Module 9 (Maintain Forever) on Day 1 to shift the client's identity from "dieter" to "maintainer."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Hall, K. D., et al. (2022). "Maintenance of lost weight and long-term management of obesity." <i>The Lancet Diabetes & Endocrinology</i>.</li>
+                <li>Gardner, C. D., et al. (2018). "Effect of Low-Fat vs Low-Carbohydrate Diet on 12-Month Weight Loss: The DIETFITS Randomized Clinical Trial." <i>JAMA</i>.</li>
+                <li>Teixeira, P. J., et al. (2015). "The role of self-regulation in long-term weight management." <i>International Journal of Behavioral Nutrition and Physical Activity</i>.</li>
+                <li>Varkevisser, R. D., et al. (2019). "Determinants of weight loss maintenance: A systematic review of observational studies." <i>Obesity Reviews</i>.</li>
+                <li>Thomas, D. M., et al. (2014). "Effect of dietary adherence on the body weight plateau: a mathematical model." <i>American Journal of Clinical Nutrition</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The T.R.A.N.S.F.O.R.M. Methodology™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

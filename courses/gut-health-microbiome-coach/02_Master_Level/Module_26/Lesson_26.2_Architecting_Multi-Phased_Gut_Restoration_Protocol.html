@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.2: Architecting Multi-Phased Gut Restoration Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #059669;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f8f1;
+            color: #059669;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 2: Architecting Multi-Phased Gut Restoration Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The 5-R Framework Evolution</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The 'Priming Phase' Strategy</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Phase-Gate Methodology</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Managing the Healing Crisis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Titration Schedules</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Long-Term Maintenance</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the advanced sequencing of the 5-R framework for complex clinical presentations.</li>
+                <li>Design a comprehensive "Priming Phase" to optimize hepatic and lymphatic drainage pathways.</li>
+                <li>Implement a "Phase-Gate" methodology to ensure physiological readiness before microbial modulation.</li>
+                <li>Develop titration schedules and mitigation strategies for Herxheimer (die-off) reactions.</li>
+                <li>Construct a sustainable "Retain" architecture for long-term microbial stability and client autonomy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The 5-R Framework Evolution: Precision Sequencing</h2>
+        <p>In foundational gut health coaching, the 5-R framework (Remove, Replace, Reinnoculate, Repair, Retain) is often presented as a linear progression. However, for the <span class="highlight">Level 3 Practitioner</span>, this framework must evolve into a dynamic, non-linear architecture. Complex cases—such as those involving SIBO, Mast Cell Activation Syndrome (MCAS), or severe IBD—require a strategy where phases often overlap or are reordered based on the client's unique inflammatory profile.</p>
+        
+        <p>A 2021 clinical review noted that <span class="stat-highlight">64% of patients</span> with chronic dysbiosis experienced symptom relapse when "Removal" (antimicrobials) was initiated without sufficient "Repair" of the mucosal barrier. This suggests that in high-permeability cases, the <strong>Repair</strong> phase should often precede or run concurrently with <strong>Remove</strong> to prevent systemic endotoxemia (LPS leakage) during microbial die-off.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Conventional Approach</th>
+                        <th>Advanced L3 Methodology</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Remove</strong></td>
+                        <td>Immediate use of harsh antimicrobials.</td>
+                        <td>Priming drainage first; using "stealth" botanicals to avoid Herxheimer.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Replace</strong></td>
+                        <td>Standard digestive enzymes for all.</td>
+                        <td>Targeted support (e.g., Ox Bile for fat malabsorption, Betaine HCl for hypochlorhydria).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Repair</strong></td>
+                        <td>L-Glutamine at the end of the protocol.</td>
+                        <td>Early mucosal support to seal the barrier before microbial shifting.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reinnoculate</strong></td>
+                        <td>High-dose multi-strain probiotics.</td>
+                        <td>Strain-specific intervention based on GI-MAP/DayTwo data; using prebiotics as "fertilizer."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Designing the 'Priming Phase': Drainage and Detoxification</h2>
+        <p>The most common failure point in gut restoration is the omission of the <span class="highlight">Priming Phase</span>. When we initiate microbial "killing" (Remove phase), the body must process an influx of cellular debris, heavy metals released from biofilms, and lipopolysaccharides (LPS). If the liver, kidneys, and lymphatic system are congested, the client will experience a severe "healing crisis."</p>
+        
+        <p>The Priming Phase typically lasts 2–4 weeks and focuses on three pillars:</p>
+        <ul>
+            <li><strong>Biliary Flow:</strong> Ensuring bile is moving (using cholagogues like dandelion root or artichoke) to bind toxins in the small intestine.</li>
+            <li><strong>Hepatic Support:</strong> Boosting Phase II conjugation pathways (Glucuronidation and Sulfation) to neutralize lipid-soluble toxins.</li>
+            <li><strong>Lymphatic Drainage:</strong> Encouraging movement and hydration to prevent "sludge" in the extracellular matrix.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Sensitive Responder</p>
+                    <p class="subtitle">Client: Sarah, 42 | Symptoms: Chronic Bloating, Brain Fog, Multiple Chemical Sensitivities</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Initial Attempt:</strong> Sarah attempted a standard SIBO protocol (Berberine/Oregano) and was bedridden for 4 days with migraines and nausea (Herxheimer reaction).</p>
+                <p><strong>L3 Intervention:</strong> We paused the antimicrobials and implemented a 3-week <strong>Priming Phase</strong>:
+                    <ul>
+                        <li>TUDCA for bile flow support.</li>
+                        <li>Liposomal Glutathione to support hepatic Phase II.</li>
+                        <li>Daily dry brushing and increased filtered water intake.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Upon restarting the "Remove" phase at 25% dosage, Sarah reported zero systemic symptoms and a <span class="stat-highlight">40% reduction</span> in bloating within 10 days.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Phase-Gate Methodology: Clinical Markers for Advancement</h2>
+        <p>In project management, a "Phase-Gate" is a point where a project is evaluated before it can move forward. In gut coaching, this prevents "forcing" a protocol on a body that isn't ready. You must establish objective <span class="highlight">Success Markers</span> for each stage.</p>
+        
+        <p>A meta-analysis of 42 clinical trials (n=8,234) indicated that client compliance increases by <span class="stat-highlight">38%</span> when milestones are clearly defined and celebrated. For example, a client should not move from <em>Remove</em> to <em>Reinnoculate</em> if they are still experiencing Bristol Stool Scale Type 6 or 7 movements daily.</p>
+
+        <h3>Key Phase-Gate Markers:</h3>
+        <ul>
+            <li><strong>Gate 1 (Priming to Remove):</strong> Client reports regular daily bowel movements; skin breakouts have stabilized; no active "flares."</li>
+            <li><strong>Gate 2 (Remove to Repair):</strong> Significant reduction in bloating (measured via abdominal circumference or symptom tracking); negative breath test (if SIBO).</li>
+            <li><strong>Gate 3 (Repair to Retain):</strong> Tolerance of a wider variety of fermentable fibers (FODMAPs) without acute distress.</li>
+        </ul>
+
+        <h2 id="section4">4. Managing the 'Healing Crisis': The Science of Die-Off</h2>
+        <p>The <span class="highlight">Jarisch-Herxheimer Reaction</span> occurs when the endotoxins released by dying bacteria overwhelm the immune system’s ability to clear them. This triggers a cytokine storm—specifically an increase in Interleukin-6 (IL-6) and Tumor Necrosis Factor-alpha (TNF-α).</p>
+        
+        <p>As a coach, you must differentiate between a "Healing Crisis" (temporary) and a "Sensitivity Reaction" (intolerance to the supplement itself). A true Herxheimer reaction typically peaks within 48–72 hours of starting a new antimicrobial and subsides as the toxic load is cleared. If symptoms persist beyond 5 days, it is likely a sensitivity, and the protocol must be adjusted.</p>
+
+        <h2 id="section5">5. Titration Schedules: The "Low and Slow" Principle</h2>
+        <p>To architect a premium protocol, you must provide the client with a <span class="highlight">Titration Schedule</span>. This is the gradual increase of a dosage to find the "therapeutic window" without triggering adverse effects. For potent antimicrobials like Oil of Oregano or Allicin, a 4-step titration is recommended:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Days</th>
+                        <th>Dosage Level</th>
+                        <th>Objective</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1–3</td>
+                        <td>25% of Target Dose</td>
+                        <td>Assess for acute sensitivity or allergic reaction.</td>
+                    </tr>
+                    <tr>
+                        <td>4–7</td>
+                        <td>50% of Target Dose</td>
+                        <td>Begin gentle microbial shifting; monitor drainage.</td>
+                    </tr>
+                    <tr>
+                        <td>8–11</td>
+                        <td>75% of Target Dose</td>
+                        <td>Stabilize physiological response.</td>
+                    </tr>
+                    <tr>
+                        <td>12+</td>
+                        <td>100% (Full Therapeutic)</td>
+                        <td>Intensive microbial modulation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section6">6. Long-Term Maintenance Architecture (The 'Retain' Phase)</h2>
+        <p>The final stage of any protocol is transitioning the client from "Intervention" to "Integration." This is where many coaches fail, leading to the "revolving door" client who needs a gut cleanse every six months. A sustainable <strong>Retain</strong> phase focuses on <span class="highlight">Microbial Resilience</span> rather than sterility.</p>
+        
+        <p>Research published in <em>Nature</em> (2022) suggests that the primary predictor of long-term gut stability is <strong>Microbial Diversity</strong> (Alpha Diversity). Your maintenance architecture should include:
+            <ul>
+                <li><strong>The 30-Plant Rule:</strong> Aiming for 30 different plant species per week to provide diverse prebiotic substrates.</li>
+                <li><strong>Circadian Fasting:</strong> Utilizing a 12–14 hour overnight fast to trigger the Migrating Motor Complex (MMC) and prevent bacterial regrowth in the small intestine.</li>
+                <li><strong>Strategic Pulse-Dosing:</strong> Using specific probiotics or polyphenols only 2–3 times per week to maintain "immunological vigilance" without creating dependency.</li>
+            </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of advanced protocol architecture.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why might a practitioner choose to move the "Repair" phase before the "Remove" phase in a client with systemic inflammatory markers?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">To strengthen the intestinal barrier (tight junctions) and reduce the risk of metabolic endotoxemia (LPS leakage) during the microbial die-off process, thereby minimizing the severity of the healing crisis.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What are the three primary pillars of the "Priming Phase" that must be addressed before antimicrobial use?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Biliary Flow (bile movement), Hepatic Support (liver Phase II detoxification), and Lymphatic Drainage (fluid movement and toxin clearance).</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sequence Matters:</strong> The 5-R framework is a guide, not a law; adjust sequencing based on client sensitivity and barrier integrity.</li>
+                <li><strong>Prime Before You Kill:</strong> Always ensure drainage pathways are open to avoid severe Herxheimer reactions.</li>
+                <li><strong>Use Phase-Gates:</strong> Establish objective physiological markers that must be met before advancing to more intensive protocol stages.</li>
+                <li><strong>Titrate Everything:</strong> Use the "Low and Slow" approach for all potent supplements to improve compliance and safety.</li>
+                <li><strong>Build for Resilience:</strong> The goal of the "Retain" phase is microbial diversity and self-sufficiency, not lifelong supplement use.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Bischoff, S. C., et al. (2014). "Intestinal permeability – a new target for disease prevention and therapy." <em>BMC Gastroenterology.</em></li>
+                <li>Pimentel, M., et al. (2020). "ACG Clinical Guideline: Small Intestinal Bacterial Overgrowth." <em>American Journal of Gastroenterology.</em></li>
+                <li>Quigley, E. M. M. (2019). "Prebiotics and Probiotics in Digestive Health." <em>Clinical Gastroenterology and Hepatology.</em></li>
+                <li>Round, J. L., & Mazmanian, S. K. (2009). "The gut microbiota shapes intestinal immune responses during health and disease." <em>Nature Reviews Immunology.</em></li>
+                <li>Swanson, K. S., et al. (2020). "The International Scientific Association for Probiotics and Prebiotics (ISAPP) consensus statement on the definition and scope of postbiotics." <em>Nature Reviews Gastroenterology & Hepatology.</em></li>
+                <li>Aroniadis, O. C., & Brandt, L. J. (2013). "Fecal microbiota transplantation: past, present and future." <em>Current Opinion in Gastroenterology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Gut Health & Microbiome Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Certification Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.2: Advanced Wellness Assessment: Functional Lab Integration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL/GOLD theme for Master Practitioner */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #064e3b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #064e3b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #064e3b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #065f46;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🔬';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #064e3b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0d9488;
+            margin: 35px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #064e3b;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            border-left: 6px solid #0d9488;
+            padding: 30px;
+        }
+
+        .case-study-header {
+            font-weight: 700;
+            color: #064e3b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #bbf7d0;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #065f46;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #064e3b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: L3 Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Wellness Assessment: Functional Lab Integration</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#ranges"><span class="section-num">1</span>Pathological vs. Optimal Ranges</a></li>
+                <li><a href="#gut"><span class="section-num">2</span>Comprehensive Stool Analysis</a></li>
+                <li><a href="#hormones"><span class="section-num">3</span>The DUTCH Test Integration</a></li>
+                <li><a href="#metabolic"><span class="section-num">4</span>Organic Acids (OAT) Mastery</a></li>
+                <li><a href="#hierarchy"><span class="section-num">5</span>The Hierarchy of Assessment</a></li>
+                <li><a href="#correlation"><span class="section-num">6</span>The W.H.O.L.E. Correlation</a></li>
+                <li><a href="#communication"><span class="section-num">7</span>Communicating Findings</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between standard pathological lab ranges and functional optimal ranges to identify subclinical dysfunction.</li>
+                <li>Analyze markers in Comprehensive Stool Analysis, DUTCH testing, and OAT to pinpoint root-cause systemic imbalances.</li>
+                <li>Apply the 'Hierarchy of Assessment' to prioritize interventions in complex, multi-system cases.</li>
+                <li>Synthesize objective lab data with the subjective W.H.O.L.E. Health Method™ assessment for a unified clinical picture.</li>
+                <li>Develop advanced communication strategies to translate complex biomarkers into actionable health literacy for clients.</li>
+            </ul>
+        </div>
+
+        <h2 id="ranges">1. Beyond "Normal": Pathological vs. Optimal Reference Ranges</h2>
+        <p>In conventional medicine, laboratory reference ranges are typically derived from a <span class="highlight">statistical bell curve</span> of the population that visits that specific lab. Because the majority of people seeking blood work are symptomatic or managing chronic illness, these "normal" ranges often represent the average of a relatively unhealthy population.</p>
+        
+        <p>As a Master Practitioner, you must distinguish between the <strong>Pathological Range</strong> (used to diagnose disease) and the <strong>Optimal Functional Range</strong> (representing the physiological state where the body functions with peak efficiency). A 2021 study in the <em>Journal of Personalized Medicine</em> indicated that patients with biomarkers in the "high-normal" or "low-normal" quartiles were 4.2 times more likely to report persistent fatigue and mood disturbances than those in the optimal center.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Conventional (Pathological) Range</th>
+                        <th>Functional (Optimal) Range</th>
+                        <th>Clinical Significance of "Sub-Optimal"</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ferritin</strong></td>
+                        <td>15 – 150 ng/mL</td>
+                        <td>50 – 100 ng/mL</td>
+                        <td>Low-normal levels (<30) significantly impair mitochondrial ATP production and thyroid conversion.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HbA1c</strong></td>
+                        <td>4.0 – 5.6%</td>
+                        <td>4.8 – 5.2%</td>
+                        <td>Levels >5.4% indicate early glycation and oxidative stress before a pre-diabetes diagnosis.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TSH</strong></td>
+                        <td>0.45 – 4.5 mIU/L</td>
+                        <td>1.0 – 2.0 mIU/L</td>
+                        <td>Levels >2.5 often correlate with subclinical hypothyroid symptoms (brain fog, cold intolerance).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fast. Insulin</strong></td>
+                        <td>2.0 – 19.6 uIU/mL</td>
+                        <td>2.0 – 5.0 uIU/mL</td>
+                        <td>Levels >7.0 indicate early hyperinsulinemia and systemic inflammation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="gut">2. Comprehensive Stool Analysis: The Microbiome Blueprint</h2>
+        <p>While basic stool tests look for parasites or overt pathogens, a <span class="highlight">Comprehensive Stool Analysis (CSA)</span> using qPCR technology provides a quantitative look at the ecosystem. We aren't just looking for "bad" bugs; we are looking at the <strong>functional capacity</strong> of the gut.</p>
+        
+        <p>Key markers to integrate into the W.H.O.L.E. framework include:</p>
+        <ul>
+            <li><strong>Steatocrit:</strong> High levels indicate fat malabsorption, often pointing to biliary stasis or pancreatic insufficiency (The "O" in WHOLE: Optimize Function).</li>
+            <li><strong>β-Glucuronidase:</strong> An enzyme produced by certain bacteria that "un-couples" estrogen, allowing it to be reabsorbed into circulation. High levels correlate with estrogen dominance.</li>
+            <li><strong>Secretory IgA (sIgA):</strong> The first line of immune defense. Low levels suggest chronic stress or "immune exhaustion," while high levels suggest an active acute threat.</li>
+        </ul>
+
+        <div class="stat-highlight">
+            <div class="stat-value">62%</div>
+            <div>Of patients with chronic skin conditions (psoriasis/eczema) showed significantly lower microbial diversity in functional stool testing compared to healthy controls (n=450, 2022 Meta-analysis).</div>
+        </div>
+
+        <h2 id="hormones">3. The DUTCH Test: Hormonal Orchestration and Metabolites</h2>
+        <p>Standard serum (blood) hormone testing provides a "snapshot" of hormones in transit. The <span class="highlight">DUTCH (Dried Urine Test for Comprehensive Hormones)</span> provides a cinematic view, showing not just how much hormone is present, but how the body is <strong>metabolizing</strong> it.</p>
+        
+        <p>Master practitioners focus on the <strong>Estrogen Metabolism pathways</strong>:</p>
+        <ul>
+            <li><strong>2-OH Pathway:</strong> The "protective" pathway.</li>
+            <li><strong>4-OH Pathway:</strong> The "pro-carcinogenic" pathway that can damage DNA if methylation is insufficient.</li>
+            <li><strong>16-OH Pathway:</strong> Associated with higher estrogenic activity and proliferative tissue (fibroids, heavy periods).</li>
+        </ul>
+        
+        <p>By identifying a 4-OH preference, a practitioner can specifically recommend Sulforaphane or DIM to shift metabolism, moving from "guessing" to "precision lifestyle medicine."</p>
+
+        <h2 id="metabolic">4. Organic Acids Testing (OAT): Metabolic Fingerprints</h2>
+        <p>The OAT is essentially a "nutritional smog test." By measuring metabolic byproducts in urine, we can infer deficiencies in vitamins, neurotransmitter turnover, and mitochondrial efficiency. This is the ultimate tool for the "O" (Optimize Function) and "L" (Lifestyle Medicine) pillars of the WHOLE Method.</p>
+
+        <h3>Critical OAT Markers:</h3>
+        <p>1. <strong>Xanthurenate:</strong> High levels indicate a functional B6 deficiency, regardless of serum B6 levels. B6 is critical for over 100 enzymatic reactions, including GABA and Serotonin synthesis.</p>
+        <p>2. <strong>HPHPA (Clostridia marker):</strong> This byproduct can inhibit the enzyme that converts Dopamine to Norepinephrine, leading to dopamine "flooding" which manifests as anxiety, irritability, or OCD-like tendencies.</p>
+        <p>3. <strong>Succinate & Citrate:</strong> Elevations in these Krebs Cycle intermediates suggest "mitochondrial bottlenecks," explaining why a client may feel "wired but tired."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span>CASE STUDY 1: The "Burned Out" Executive</span>
+            </div>
+            <p><strong>Client:</strong> David, 48. Presents with "crashing" at 3 PM, insomnia, and unexplained weight gain around the midsection.</p>
+            <p><strong>W.H.O.L.E. Assessment Findings:</strong> High "T" (Triggers) in the health timeline—recent divorce and job promotion. Standard blood work showed "Normal" TSH (3.8) and Glucose (98).</p>
+            <p><strong>Functional Lab Integration:</strong>
+                <ul>
+                    <li><strong>DUTCH:</strong> Showed a "Flat" Cortisol Awakening Response (CAR) and low Total DHEA.</li>
+                    <li><strong>OAT:</strong> Elevated Pyroglutamate (Glutathione depletion) and high Suberate (poor fatty acid oxidation).</li>
+                </ul>
+            </p>
+            <p><strong>Intervention:</strong> Instead of "standard" stress management, David was put on targeted mitochondrial support (CoQ10, PQQ) and N-Acetyl Cysteine (NAC) to restore glutathione, alongside a circadian-aligned movement plan. <strong>Outcome:</strong> Energy levels stabilized within 21 days; weight loss of 8lbs in 6 weeks without calorie restriction.</p>
+        </div>
+
+        <h2 id="hierarchy">5. The Hierarchy of Assessment: What to Address First?</h2>
+        <p>When a client presents with a "messy" lab report—low hormones, gut dysbiosis, and high oxidative stress—the Master Practitioner must apply a <span class="highlight">Hierarchy of Intervention</span> to avoid overwhelming the system.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Level 1: The Biological Foundations (The "O")</div>
+            <div class="principle-text">Address blood sugar stability and hydration first. You cannot fix hormones in a hypoglycemic environment.</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">Level 2: The Gut-Immune Axis (The "W/O")</div>
+            <div class="principle-text">If the gut is inflamed (high Calprotectin), systemic inflammation will interfere with hormone receptor sensitivity. Heal the gut to lower the "noise."</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">Level 3: The HPA Axis & Adrenals (The "H/L")</div>
+            <div class="principle-text">Support the stress response. High cortisol "steals" pregnenolone from sex hormone production.</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">Level 4: Sex Hormones & Fine Tuning (The "E")</div>
+            <div class="principle-text">Only after levels 1-3 are stabilized do we use targeted support for Estrogen, Progesterone, or Testosterone.</div>
+        </div>
+
+        <h2 id="correlation">6. Correlating Labs with the W.H.O.L.E. Assessment</h2>
+        <p>Labs are not a replacement for the W.H.O.L.E. Assessment; they are a <strong>validation</strong> of it. If a client’s Health Timeline (Module 1.3) shows a history of antibiotic use and their Stool Analysis shows low <em>Akkermansia muciniphila</em>, the lab has provided the "evidence" for the "antecedent" you already identified.</p>
+        
+        <p>Correlation Strategy:</p>
+        <ul>
+            <li><strong>Subjective Symptom:</strong> "I feel anxious all the time."</li>
+            <li><strong>WHOLE Mapping:</strong> Mind-Body Connection (E) + Gut Health (O).</li>
+            <li><strong>Lab Correlation:</strong> OAT shows high HPHPA (Clostridia) or low Magnesium markers.</li>
+            <li><strong>Practitioner Insight:</strong> The anxiety isn't just "in their head"; it's a biochemical byproduct of gut dysbiosis inhibiting dopamine conversion.</li>
+        </ul>
+
+        <h2 id="communication">7. Communicating Findings: Building Health Literacy</h2>
+        <p>The goal is not to impress the client with your knowledge of "3-Hydroxyisovalerate," but to use that data to increase their <strong>Internal Locus of Control</strong> (Module 5.3). Use metaphors to translate data into action.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <div class="card-label">The "Technician" Approach</div>
+                <p class="card-text">"Your 8-OHdG is 15.2, which indicates high oxidative stress to your DNA. You need to take more antioxidants."</p>
+            </div>
+            <div class="comparison-card functional">
+                <div class="card-label">The "Master Coach" Approach</div>
+                <p class="card-text">"Your labs show a marker called 8-OHdG. Think of this like 'rust' on your cells. We want to see this under 5, and yours is at 15. This explains why your recovery is slow. We’re going to use specific foods and sleep habits to 'polish' that rust away."</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's lab shows a TSH of 3.2 mIU/L. Conventional labs mark this as "Normal." Why might a Master Practitioner still investigate thyroid function?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">In functional medicine, the optimal range for TSH is typically 1.0–2.0. A level of 3.2, while "normal" pathologically, often correlates with subclinical symptoms like fatigue and thinning hair, indicating the thyroid is struggling to keep up with metabolic demands.</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to the Hierarchy of Assessment, why should you address gut health before sex hormones?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Gut inflammation creates systemic cytokine signaling that desensitizes hormone receptors. Furthermore, markers like β-Glucuronidase in the gut can cause reabsorption of estrogen, meaning you cannot truly balance hormones while the "drain" (the gut) is backed up.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Optimal vs. Normal:</strong> "Normal" is a statistical average of a sick population; "Optimal" is the target for health coaching.</li>
+                <li><strong>Metabolic Logic:</strong> Use OAT and DUTCH to see how the body *processes* nutrients and hormones, not just how much is present.</li>
+                <li><strong>The Hierarchy:</strong> Always stabilize blood sugar and gut health before attempting to fine-tune sex hormones.</li>
+                <li><strong>The Metaphor:</strong> Translate complex markers into simple, action-oriented metaphors to increase client compliance and health literacy.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bland, J. et al. (2021). "The Evolution of Personalized Medicine and the Role of Functional Biomarkers." <em>Journal of Personalized Medicine</em>.</li>
+                <li>Guilliams, T. (2020). "The Role of the HPA Axis in Chronic Disease." <em>The Standard Roadmaps</em>.</li>
+                <li>Lord, R. & Bralley, J. (2022). "Laboratory Evaluations for Integrative and Functional Medicine." <em>Metametrix Institute</em>.</li>
+                <li>Pizzorno, J. (2023). "The Toxin Solution: Why Functional Labs are Necessary in a Toxic World." <em>Integrative Medicine: A Clinician's Journal</em>.</li>
+                <li>Sandhu, M. et al. (2022). "Microbiome Diversity and Metabolic Syndrome: A Meta-Analysis of Functional Stool Markers." <em>Nature Reviews Endocrinology</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Integrative Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The W.H.O.L.E. Health Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
