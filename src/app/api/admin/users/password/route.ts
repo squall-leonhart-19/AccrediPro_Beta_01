@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const passwordResetSchema = z.object({
     userId: z.string().min(1, "User ID is required"),
@@ -37,7 +37,7 @@ export async function PATCH(request: NextRequest) {
         const { userId, newPassword } = validationResult.data;
 
         // 3. Hash the new password
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
 
         // 4. Update the user
         await prisma.user.update({
