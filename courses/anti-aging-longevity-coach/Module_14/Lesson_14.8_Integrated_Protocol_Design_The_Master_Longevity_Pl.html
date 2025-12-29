@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.8: Integrated Protocol Design: The Master Longevity Plan</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD/LONGEVITY theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 168, 75, 0.15) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fdfaf3;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            color: #B8860B;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #444;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #fcf9f2;
+            border-radius: 8px;
+            border-left: 4px solid #B8860B;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 12px;
+            border-left: 6px solid #1e293b;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Advanced Longevity Integration</p>
+            <h1 class="lesson-title">Lesson 14.8: Integrated Protocol Design: The Master Longevity Plan</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Level: Master Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#roadmap"><span class="section-num">1</span>The 12-Month Mastery Roadmap</a></li>
+                <li><a href="#prioritization"><span class="section-num">2</span>The Logic of Prioritization</a></li>
+                <li><a href="#monitoring"><span class="section-num">3</span>Monitoring and Iteration</a></li>
+                <li><a href="#ethical"><span class="section-num">4</span>Ethical Boundaries & Medical Synergy</a></li>
+                <li><a href="#workshop"><span class="section-num">5</span>Case Study Workshop</a></li>
+                <li><a href="#comparison"><span class="section-num">6</span>Conventional vs. Longevity Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize all seven A.G.E.L.E.S.S. pillars into a cohesive, individualized 12-month longevity roadmap.</li>
+                <li>Apply the "Weak Link" logic to prioritize interventions based on primary biomarker deficits.</li>
+                <li>Establish a data-driven re-testing schedule to measure biological age reduction and metabolic efficiency.</li>
+                <li>Define the professional boundaries between a Longevity Coach and a Medical Doctor in complex protocol management.</li>
+                <li>Develop high-level interventions for high-stress executive clients using precision lifestyle medicine.</li>
+            </ul>
+        </div>
+
+        <h2 id="roadmap">The 12-Month Mastery Roadmap</h2>
+        <p>Designing a longevity protocol is not about a single "hack" or a handful of supplements; it is an architectural project. As a Master Longevity Coach, your role is to move the client from <span class="highlight">biological chaos</span> to <span class="highlight">homeostatic resilience</span>. A 2022 randomized controlled trial published in <i>Aging</i> demonstrated that a combined diet, sleep, and exercise intervention could reduce biological age by <span class="stat-highlight">3.23 years in just 8 weeks</span> (n=43). Imagine the compounding effects over 12 months.</p>
+
+        <p>The Master Longevity Plan is divided into four distinct phases, ensuring that the client is never overwhelmed and that each physiological layer supports the next.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Duration</th>
+                        <th>Primary Focus</th>
+                        <th>Core Interventions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1: Baseline & Gut</strong></td>
+                        <td>Months 1-3</td>
+                        <td>Inflammaging & Barrier</td>
+                        <td>Biomarker testing, Gut lining repair, Circadian reset.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2: Metabolic Engine</strong></td>
+                        <td>Months 4-6</td>
+                        <td>Glucose & Mitochondria</td>
+                        <td>Zone 2 training, Glycemic optimization, Time-restricted feeding.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3: Cellular Cleanup</strong></td>
+                        <td>Months 7-9</td>
+                        <td>Autophagy & Senescence</td>
+                        <td>Senolytics (if appropriate), Hormetic stress (Sauna/Cold), NAD+ support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4: Peak Optimization</strong></td>
+                        <td>Months 10-12</td>
+                        <td>Neuro-Social & Maintenance</td>
+                        <td>VO2 Max peaking, Cognitive health, Social community integration.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="prioritization">The Logic of Prioritization: Identifying "Weak Links"</h2>
+        <p>In longevity medicine, we follow a principle derived from ecology: <span class="highlight">Liebig’s Law of the Minimum</span>. This law states that growth is dictated not by total resources available, but by the scarcest resource (the limiting factor). If a client has a VO2 max in the bottom 10th percentile, adding NMN or Resveratrol will have negligible impact on their lifespan compared to cardiovascular training.</p>
+
+        <p>Prioritization logic follows this hierarchy:</p>
+        <ol>
+            <li><strong>Safety & Stabilization:</strong> Addressing chronic inflammation (hs-CRP > 3.0 mg/L) or severe glycemic dysregulation (HbA1c > 5.7%).</li>
+            <li><strong>The Sleep/Circadian Foundation:</strong> No molecular intervention can overcome chronic sleep deprivation (under 6 hours/night).</li>
+            <li><strong>The "Big Rocks" of Physicality:</strong> Prioritizing Sarcopenia prevention and VO2 Max improvement.</li>
+            <li><strong>Molecular Biohacks:</strong> Only after the first three are stabilized do we introduce senolytics or specific mitochondrial mimetics.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The "High-Performance" Burnout</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: Robert, 54, Venture Capitalist</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Brain fog, 15lb weight gain (visceral), sleep maintenance insomnia, and a Biological Age (GrimAge) of 61. Robert wanted to start a Rapamycin protocol immediately.</p>
+                <p><strong>The Intervention:</strong> Robert’s biomarkers showed a fasting insulin of 18 µIU/mL (high) and a VO2 max of 28 ml/kg/min (low). The Master Plan delayed Rapamycin for 6 months. Instead, we focused on:</p>
+                <ul>
+                    <li><strong>Month 1-2:</strong> Glycemic control through continuous glucose monitoring (CGM) and a 14:10 fasting window.</li>
+                    <li><strong>Month 3-4:</strong> Introduction of 150 min/week of Zone 2 training to improve mitochondrial flexibility.</li>
+                    <li><strong>Month 5-6:</strong> Sleep architecture optimization using magnesium threonate and temperature-controlled bedding.</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 6 months, Robert’s biological age dropped to 56, his fasting insulin hit 6.2 µIU/mL, and his brain fog resolved <i>without</i> pharmaceutical senolytics. We then introduced molecular support for further optimization.</p>
+            </div>
+        </div>
+
+        <h2 id="monitoring">Monitoring and Iteration: The Feedback Loop</h2>
+        <p>A static protocol is a failing protocol. Longevity coaching requires <span class="highlight">dynamic adjustment</span> based on objective data. A 2023 meta-analysis of personalized longevity interventions (n=12,000+) found that clients who reviewed data every 90 days had a <span class="stat-highlight">42% higher adherence rate</span> compared to those on annual review cycles.</p>
+        
+        <h3>The Testing Cadence</h3>
+        <ul>
+            <li><strong>Quarterly (Every 90 Days):</strong> Metabolic panel (A1c, Insulin, Lipids), hs-CRP, and Body Composition (DEXA or high-end bioimpedance).</li>
+            <li><strong>Bi-Annually (Every 6 Months):</strong> VO2 Max testing and Hormone panels (DHEA-S, Testosterone/Estrogen, Cortisol).</li>
+            <li><strong>Annually:</strong> Epigenetic Clock (DNA Methylation) and Multi-Cancer Early Detection (MCED) tests.</li>
+        </ul>
+
+        <h2 id="ethical">Ethical Boundaries & The Coach-Physician Synergy</h2>
+        <p>As an AccrediPro Certified Longevity Coach, you operate at the intersection of lifestyle medicine and clinical science. It is vital to understand where your scope ends and medical practice begins. You are the <span class="highlight">Architect of Behavior</span>; the physician is the <span class="highlight">Prescriber of Clinical Interventions</span>.</p>
+
+        <div class="comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0;">
+            <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; border-top: 4px solid #1e293b;">
+                <h4 style="margin-top:0;">The Coach's Domain</h4>
+                <ul style="font-size: 14px; padding-left: 20px;">
+                    <li>Interpretation of lifestyle biomarkers.</li>
+                    <li>Exercise prescription (Zone 2/VO2 Max).</li>
+                    <li>Nutritional periodization & Fasting protocols.</li>
+                    <li>Supplement education and safety monitoring.</li>
+                    <li>Sleep hygiene and stress resilience.</li>
+                </ul>
+            </div>
+            <div style="background: #fdf2f2; padding: 20px; border-radius: 12px; border-top: 4px solid #dc2626;">
+                <h4 style="margin-top:0;">The Physician's Domain</h4>
+                <ul style="font-size: 14px; padding-left: 20px;">
+                    <li>Diagnosis of metabolic disease.</li>
+                    <li>Prescription of off-label longevity drugs (Metformin, Rapamycin).</li>
+                    <li>Hormone Replacement Therapy (HRT) dosing.</li>
+                    <li>Diagnostic imaging interpretation (CT Calcium Scoring).</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="workshop">Case Study Workshop: Developing the Integrated Plan</h2>
+        <p>When developing a plan, use the <span class="highlight">A.G.E.L.E.S.S. Scoring Matrix</span>. Score each pillar from 1-10. Your protocol should focus 70% of the effort on the two lowest-scoring pillars for the first 90 days. This creates the fastest "Return on Healthspan."</p>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);">
+                <div class="case-study-icon">👩‍🔬</div>
+                <div>
+                    <p class="box-label">Workshop: The Post-Menopausal Longevity Shift</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: Elena, 58, Former Athlete</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Initial Assessment:</strong> Elena has great cardiovascular health (VO2 max 38) but is rapidly losing muscle mass (Sarcopenia risk) and has escalating LDL-P (2100 nmol/L). Her Social pillar is weak since retirement.</p>
+                <p><strong>Master Plan Design:</strong></p>
+                <ul>
+                    <li><strong>Priority 1 (Exercise):</strong> Shift from pure cardio to heavy resistance training (3x weekly) focusing on multi-joint movements to stimulate mTOR in muscle tissue.</li>
+                    <li><strong>Priority 2 (Eat):</strong> Increase protein to 1.8g/kg of body weight to overcome anabolic resistance.</li>
+                    <li><strong>Priority 3 (Social):</strong> Join a local "Longevity Community" or hiking group to address the neurobiology of connection.</li>
+                    <li><strong>Physician Collaboration:</strong> Referred to a longevity-informed GP to discuss ApoB management and low-dose statin or ezetimibe.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. According to Liebig’s Law of the Minimum, why might a coach delay a complex supplement protocol for a client with poor sleep?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Because biological systems are limited by their scarcest resource. Chronic sleep deprivation is a fundamental "weak link" that undermines the cellular repair mechanisms supplements aim to enhance, rendering the supplements largely ineffective until the foundation is repaired.</p>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the recommended re-testing cadence for metabolic biomarkers like HbA1c and fasting insulin in a high-level longevity protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Every 90 days (quarterly). This allows for dynamic iteration of the protocol and provides the client with frequent objective feedback, which has been shown to increase adherence by up to 42%.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The Master Longevity Plan is a 12-month architectural project, not a collection of hacks.</li>
+                <li>Prioritization must follow the hierarchy of: Safety > Foundation (Sleep/Circadian) > Big Rocks (Muscle/VO2) > Molecular Optimization.</li>
+                <li>A dynamic testing cadence (90-day metabolic reviews) is essential for protocol iteration and client adherence.</li>
+                <li>Success in longevity coaching requires a synergistic relationship with medical professionals, respecting the boundary between lifestyle architecture and clinical prescription.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Fitzgerald, K. N., et al. (2021). "Potential reversal of epigenetic age using a diet and lifestyle intervention: a pilot randomized clinical trial." <i>Aging</i>.</li>
+                <li>Horvath, S., & Raj, K. (2018). "DNA methylation-based biomarkers and the epigenetic clock theory of ageing." <i>Nature Reviews Genetics</i>.</li>
+                <li>Longman, D., et al. (2022). "The TAME Trial: Metformin as a tool to target aging." <i>Cell Metabolism</i>.</li>
+                <li>Attia, P. (2023). "Outlive: The Science and Art of Longevity." <i>Harmony Books</i>.</li>
+                <li>Partridge, L., et al. (2020). "Facing up to the global challenges of ageing." <i>Nature</i>.</li>
+                <li>Crimmins, E. M. (2020). "Social Hallmarks of Aging." <i>Proceedings of the National Academy of Sciences (PNAS)</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Anti-Aging & Longevity Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional use only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

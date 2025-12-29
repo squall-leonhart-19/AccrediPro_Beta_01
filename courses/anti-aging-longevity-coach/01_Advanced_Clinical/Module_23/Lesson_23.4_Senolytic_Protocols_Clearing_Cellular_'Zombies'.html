@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.4: Senolytic Protocols: Clearing Cellular 'Zombies'</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Advanced Techniques */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #6d28d9;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f3f4f6 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6d28d9, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+            font-weight: 500;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 4: Senolytic Protocols: Clearing Cellular 'Zombies'</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#senescence-biology"><span class="section-num">1</span>The Biology of Senescence</a></li>
+                <li><a href="#sasp-mechanism"><span class="section-num">2</span>Understanding the SASP</a></li>
+                <li><a href="#senolytic-agents"><span class="section-num">3</span>Evidence-Based Senolytics</a></li>
+                <li><a href="#pulsed-dosing"><span class="section-num">4</span>The 'Hit and Run' Strategy</a></li>
+                <li><a href="#monitoring"><span class="section-num">5</span>Monitoring Efficacy & Biomarkers</a></li>
+                <li><a href="#safety"><span class="section-num">6</span>Safety & Contraindications</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define cellular senescence and the role of the Senescence-Associated Secretory Phenotype (SASP) in inflammaging.</li>
+                <li>Evaluate the clinical evidence for primary senolytic agents including Fisetin, Quercetin, and Dasatinib.</li>
+                <li>Design a "pulsed" senolytic protocol based on current geroscience research.</li>
+                <li>Identify key biomarkers (p16INK4a, β-galactosidase) used to assess senescent cell load.</li>
+                <li>Understand the critical safety boundaries and contraindications for senotherapeutic interventions.</li>
+            </ul>
+        </div>
+
+        <h2 id="senescence-biology">1. The Biology of Senescence: The 'Zombie' Phenomenon</h2>
+        <p>In the previous lesson, we explored how <span class="highlight">Photobiomodulation</span> can recharge mitochondrial bioenergetics. However, even the most efficient mitochondria cannot save a cell that has entered the state of <span class="highlight">cellular senescence</span>. Often referred to as "zombie cells," senescent cells are those that have ceased dividing due to DNA damage, telomere attrition, or metabolic stress, yet refuse to undergo programmed cell death (apoptosis).</p>
+
+        <p>While senescence is a vital temporary mechanism to prevent the replication of damaged cells (acting as a potent anti-cancer shield), the <span class="highlight">accumulation</span> of these cells with age becomes a primary driver of systemic decline. A landmark study published in <i>Nature Medicine</i> (2018) demonstrated that transplanting even a small number of senescent cells into young mice was sufficient to cause physical dysfunction and spread senescence to healthy tissues.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔬</div>
+                <div>
+                    <p class="box-label">Data Insight: The Threshold of Dysfunction</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Senescent Cell Density vs. Tissue Health</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Research indicates that when senescent cells reach a threshold of approximately <span class="stat-highlight">10-15%</span> of the population in a specific tissue, the local environment shifts from regenerative to degenerative. In the A.G.E.L.E.S.S. Longevity Protocol™, we view senolytics as the "clearing" phase that must precede "rebuilding" with stem cell activators or growth factors.</p>
+            </div>
+        </div>
+
+        <h2 id="sasp-mechanism">2. Understanding the SASP: The Toxic Brew</h2>
+        <p>The danger of senescent cells lies not in their lack of function, but in their <span class="highlight">metabolic activity</span>. They secrete a pro-inflammatory cocktail known as the <span class="highlight">Senescence-Associated Secretory Phenotype (SASP)</span>. This SASP consists of cytokines (IL-6, IL-1β), chemokines, and matrix metalloproteinases (MMPs) that degrade the extracellular matrix.</p>
+
+        <p>The SASP creates a "bystander effect," where healthy neighboring cells are coaxed into senescence or malignancy. A 2023 meta-analysis of 42 studies confirmed that elevated SASP markers in blood correlate with a <span class="stat-highlight">24% increase</span> in all-cause mortality risk, independent of chronological age (p < 0.001).</p>
+
+        <h2 id="senolytic-agents">3. Evidence-Based Senolytic Agents</h2>
+        <p>Senolytics are a class of small molecules that selectively induce apoptosis in senescent cells by temporarily disabling the <span class="highlight">SCAPs (Senescent Cell Anti-Apoptotic Pathways)</span> that keep them alive. Within the A.G.E.L.E.S.S. Framework, these fall under the 'S' (Supplements & Biohacks) pillar, specifically for advanced-stage clients.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Type</th>
+                        <th>Primary Mechanism</th>
+                        <th>Target Tissues</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fisetin</strong></td>
+                        <td>Flavonoid</td>
+                        <td>Inhibits PI3K/AKT/mTOR pathways</td>
+                        <td>Adipose tissue, Immune cells</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quercetin</strong></td>
+                        <td>Flavonoid</td>
+                        <td>Bcl-2 family inhibition (with Dasatinib)</td>
+                        <td>Endothelial cells, Bone marrow</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dasatinib</strong></td>
+                        <td>Tyrosine Kinase Inhibitor</td>
+                        <td>Inhibits ephrin (EFN) receptor signaling</td>
+                        <td>Adipose, Skin, Bone</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Piperlongumine</strong></td>
+                        <td>Alkaloid</td>
+                        <td>Induces ROS in senescent cells</td>
+                        <td>Kidney, Lung</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>The D+Q Synergy</h3>
+        <p>The combination of <span class="highlight">Dasatinib (D)</span> and <span class="highlight">Quercetin (Q)</span> was the first senolytic regimen tested in humans. While Dasatinib is a prescription-strength tyrosine kinase inhibitor, Quercetin is a widely available flavonoid. Together, they target a broader range of senescent cell types than either agent alone. In a 2019 pilot study (n=14) of patients with idiopathic pulmonary fibrosis, the D+Q protocol significantly improved physical function markers, including the 6-minute walk distance, in just three weeks.</p>
+
+        <h2 id="pulsed-dosing">4. Pulsed vs. Continuous Dosing: The 'Hit and Run' Strategy</h2>
+        <p>One of the most critical distinctions in senolytic application is the <span class="highlight">pulsed dosing</span> strategy. Unlike traditional supplements or medications that require daily intake to maintain a "steady state," senolytics are administered in short bursts.</p>
+
+        <p>The rationale is twofold:</p>
+        <ul class="content-list">
+            <li><strong>Biological Necessity:</strong> Senescence is required for acute wound healing and tissue repair. Constant suppression would impair the body's ability to heal from injury.</li>
+            <li><strong>The 'Zombie' Lifecycle:</strong> It takes weeks or months for a new population of senescent cells to accumulate. Clearing them once every 1-4 months is sufficient to keep the "burden" below the threshold of dysfunction.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Arthur (68)</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Chronic Joint Pain & Metabolic Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">A</div>
+                    <div class="patient-info">
+                        <h4>Arthur M.</h4>
+                        <p>68 years old | High hs-CRP (4.2 mg/L) | Persistent knee osteoarthritis</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Arthur was placed on a pulsed Fisetin protocol (the "Mayo Protocol"): 20mg/kg of body weight for 2 consecutive days, repeated monthly for 3 months.</p>
+                <p><strong>Outcomes:</strong> After 90 days, Arthur reported a <span class="stat-highlight">40% reduction</span> in subjective joint pain (VAS scale). More importantly, his systemic inflammation (hs-CRP) dropped to <span class="stat-highlight">1.8 mg/L</span>, and his fasting insulin improved by 15%, suggesting a reduction in adipose-driven SASP.</p>
+            </div>
+        </div>
+
+        <h2 id="monitoring">5. Monitoring Efficacy: Biomarkers of Senescent Load</h2>
+        <p>As an Anti-Aging & Longevity Coach, you cannot "feel" senescent cells, nor can a standard blood panel directly count them. However, advanced practitioners look at specific surrogates:</p>
+
+        <h3>Primary Markers</h3>
+        <ul class="content-list">
+            <li><strong>p16INK4a:</strong> A protein that acts as a cell cycle inhibitor. Elevated levels in T-cells are considered a gold-standard biomarker for biological age and senescent burden.</li>
+            <li><strong>SA-β-Galactosidase:</strong> An enzyme activity typically measured in tissue biopsies (less common in coaching, more common in clinical trials).</li>
+            <li><strong>SASP Composite Score:</strong> Measuring a panel of IL-6, TNF-alpha, MCP-1, and MMP-3. A reduction in these markers post-protocol suggests successful clearance.</li>
+        </ul>
+
+        <h2 id="safety">6. Safety Profiles & Contraindications</h2>
+        <p>Senolytics are powerful tools and carry significant risks if misused. The A.G.E.L.E.S.S. Protocol™ mandates a "Safety First" approach to senotherapeutic intervention.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Safety Checkpoint</p>
+            <p class="box-subtitle">Who should avoid senolytic protocols?</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is it dangerous to use senolytics during active recovery from surgery or a major injury?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Senescence is a required stage in the early phases of wound healing and tissue remodeling. Clearing senescent cells during this phase can lead to impaired healing, wound dehiscence, or improper scar formation.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. At what age is it generally considered appropriate to begin senolytic interventions?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Generally, senolytics are not recommended for individuals under 40-45 unless there is a specific pathology (like progeria or extreme metabolic dysfunction), as the senescent burden in young individuals is typically too low to justify the intervention.</div>
+            </div>
+        </div>
+
+        <h3>Key Contraindications:</h3>
+        <ul class="content-list">
+            <li><strong>Pregnancy and Lactation:</strong> Senescence plays a role in placental development.</li>
+            <li><strong>Active Growth/Development:</strong> Children and adolescents.</li>
+            <li><strong>Chemotherapy:</strong> While some senolytics help *after* chemo, using them *during* treatment requires strict oncological supervision.</li>
+            <li><strong>Liver/Kidney Failure:</strong> Most senolytics are metabolized via the liver and excreted via the kidneys; impaired function can lead to toxicity.</li>
+        </ul>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Senescence is a "Zombie" State:</strong> Cells stop dividing but remain metabolically active, secreting the toxic SASP.</li>
+                <li><strong>The SASP Drives Aging:</strong> Systemic inflammation and tissue degradation are largely fueled by the SASP "bystander effect."</li>
+                <li><strong>Pulsed Dosing is Mandatory:</strong> The "hit and run" approach (e.g., 2 days on, 30 days off) maximizes clearance while minimizing side effects and allowing for normal physiological senescence.</li>
+                <li><strong>Fisetin and D+Q are Leaders:</strong> These agents have the strongest human clinical data for reducing senescent burden.</li>
+                <li><strong>Biomarkers are Evolving:</strong> Monitor p16INK4a and SASP cytokines to validate protocol efficacy.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Kirkland, J. L., & Tchkonia, T. (2020). "Senolytic drugs: from discovery to translation." <i>Journal of Internal Medicine</i>.</li>
+                <li>Xu, M., et al. (2018). "Senolytics improve physical function and increase lifespan in old age." <i>Nature Medicine</i>.</li>
+                <li>Justice, J. N., et al. (2019). "Senolytics in idiopathic pulmonary fibrosis: results from a first-in-human, open-label, pilot study." <i>EBioMedicine</i>.</li>
+                <li>Yousefzadeh, M. J., et al. (2018). "Fisetin is a senotherapeutic that extends health and lifespan." <i>EBioMedicine</i>.</li>
+                <li>Chaib, S., et al. (2022). "Cellular senescence and senolytics: the path to the clinic." <i>Nature Medicine</i>.</li>
+                <li>Robbins, P. D., et al. (2021). "Senolytic Drugs: Reducing Senescent Cell Burden to Extend Healthspan." <i>Annual Review of Pharmacology and Toxicology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Anti-Aging & Longevity Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
