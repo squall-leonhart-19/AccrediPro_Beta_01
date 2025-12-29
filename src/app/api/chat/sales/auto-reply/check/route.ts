@@ -7,7 +7,12 @@ import { COACH_PERSONAS, getPersonaByKey } from "@/config/coach-personas";
 function detectPersona(page: string | null): keyof typeof COACH_PERSONAS {
     if (!page) return "fm-health"; // Default to Sarah
 
-    const p = page.toLowerCase();
+    const p = page.toLowerCase().trim();
+
+    // 🏆 EXACT MATCHES (High Traffic Sales Pages)
+    // These must NEVER be mis-identified.
+    if (p === "fm-course-certification" || p === "fm-certification") return "fm-health";
+    if (p === "hn-course-certification") return "fm-health";
 
     // 🧠 MENTAL HEALTH (Olivia)
     if (p.includes("narcissistic") || p.includes("trauma") || p.includes("abuse") || p.includes("grief") || p.includes("addiction") || p.includes("neuro") || p.includes("adhd") || p.includes("autism") || p.includes("anxiety") || p.includes("depression")) return "mental-health";
@@ -25,7 +30,7 @@ function detectPersona(page: string | null): keyof typeof COACH_PERSONAS {
     if (p.includes("yoga") || p.includes("somatic") || p.includes("movement") || p.includes("breath") || p.includes("sound") || p.includes("music") || p.includes("meditation")) return "yoga-movement";
 
     // 🐾 PET (Bella)
-    if (p.includes("pet") || p.includes("animal") || p.includes("equine") || p.includes("canine") || p.includes("feline")) return "pet";
+    if (p.includes("pet-") || p.includes("animal") || p.includes("equine") || p.includes("canine") || p.includes("feline")) return "pet";
 
     // 👨‍👩‍👧 PARENTING (Emma)
     if (p.includes("parent") || p.includes("family") || p.includes("kid") || p.includes("teen") || p.includes("couple")) return "parenting";
@@ -159,6 +164,7 @@ INSTRUCTIONS:
 - ALWAYS pivot to the $97 offer if they ask about price or "how to join".
 - If they ask about a topic you cover, respond with expertise.
 - If they ask about something totally unrelated to your niche, gently pivot or mention we have 400+ courses.
+- STYLE RULE: DO NOT use markdown formatting. No bold (**text**), no italics (*text*), no bullet points. Use plain text only.
     `.trim();
 
     const response = await anthropic.messages.create({
