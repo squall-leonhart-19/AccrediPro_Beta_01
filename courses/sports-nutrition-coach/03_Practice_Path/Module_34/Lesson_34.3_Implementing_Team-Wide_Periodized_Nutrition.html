@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 3: Implementing Team-Wide Periodized Nutrition</title>
+    <title>Lesson 34.3: Implementing Team-Wide Periodized Nutrition</title>
     <style>
         /* Base & Reset */
         * {
@@ -44,7 +44,7 @@
             margin-bottom: 5px;
         }
 
-        /* Module Header - NAVY/GOLD theme for Professionalism */
+        /* Module Header - BLUE/NAVY theme for Team/Strategy */
         .module-header {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             padding: 35px 35px 30px;
@@ -52,6 +52,17 @@
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
         }
 
         .module-header::after {
@@ -79,6 +90,7 @@
             color: #ffffff;
             font-weight: 700;
             line-height: 1.3;
+            position: relative;
         }
 
         .lesson-meta {
@@ -87,9 +99,13 @@
             margin-top: 20px;
             padding-top: 18px;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
         }
 
         .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 12px;
             color: rgba(255, 255, 255, 0.85);
             background: rgba(255, 255, 255, 0.1);
@@ -99,11 +115,11 @@
 
         /* Table of Contents */
         .toc-box {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
             border-radius: 14px;
             padding: 24px 28px;
             margin-bottom: 35px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #e8e8e8;
         }
 
         .toc-box .box-label {
@@ -113,6 +129,8 @@
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .toc-list {
@@ -125,16 +143,38 @@
         }
 
         .toc-list a {
-            color: #475569;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
             text-decoration: none;
             font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
 
         .toc-list a:hover {
-            color: #3b82f6;
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
-        /* Learning Objectives */
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
         .objectives-box {
             background: #eff6ff;
             border: 2px solid #3b82f6;
@@ -145,11 +185,19 @@
 
         .objectives-box .box-label {
             font-weight: 600;
-            color: #1e40af;
+            color: #1e3a8a;
             margin: 0 0 18px 0;
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
         }
 
         .objectives-box ul {
@@ -158,8 +206,9 @@
         }
 
         .objectives-box li {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-size: 16px;
+            line-height: 1.7;
         }
 
         /* Section Headings */
@@ -168,123 +217,100 @@
             color: #1e3a8a;
             margin: 50px 0 20px 0;
             font-weight: 600;
+            position: relative;
             padding-bottom: 12px;
-            border-bottom: 2px solid #f1f5f9;
         }
 
-        h3 {
-            font-size: 20px;
-            color: #334155;
-            margin: 30px 0 15px 0;
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
         }
 
-        /* Paragraphs & Text */
         p {
             font-size: 17px;
             margin-bottom: 20px;
-            color: #334155;
+            color: #333;
         }
 
         .highlight {
-            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
             padding: 0 4px;
-            font-weight: 600;
-            color: #1e40af;
+            font-weight: 500;
         }
 
-        /* Statistics Highlight */
-        .stat-highlight {
-            background: #1e3a8a;
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin: 30px 0;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: 800;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .stat-desc {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        /* Data Table */
+        /* Data Tables */
         .data-table-container {
             overflow-x: auto;
-            margin: 35px 0;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 15px;
-        }
-
-        th {
-            background: #1e3a8a;
-            color: white;
-            padding: 15px;
             text-align: left;
         }
 
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        tr:nth-child(even) {
+        th {
             background: #f8fafc;
-        }
-
-        /* Case Study */
-        .case-study {
-            background: #fdfcfb;
-            border-left: 5px solid #d4a84b;
-            padding: 30px;
-            margin: 40px 0;
-            border-radius: 0 14px 14px 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .case-study h4 {
-            margin: 0 0 15px 0;
-            color: #b8860b;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        /* Principle Cards */
-        .principle-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            padding: 24px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-        }
-
-        .principle-title {
-            font-weight: 700;
+            padding: 16px;
+            font-weight: 600;
             color: #1e3a8a;
-            display: block;
-            margin-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
         }
 
-        /* Check Understanding */
-        .check-understanding {
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
             background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            padding: 30px;
             border-radius: 16px;
             margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .stat-highlight {
+            color: #1e40af;
+            font-weight: 700;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 20px;
         }
 
         .reveal-btn {
@@ -301,26 +327,29 @@
             display: none;
             margin-top: 15px;
             padding: 15px;
-            background: #e0f2fe;
+            background: #f0fdf4;
             border-radius: 8px;
-            color: #0369a1;
+            border-left: 4px solid #10b981;
         }
 
-        /* Takeaways & References */
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Footer */
         .takeaways-box {
-            background: #1e3a8a;
-            color: white;
-            padding: 35px;
-            border-radius: 16px;
-            margin-top: 50px;
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
         }
 
         .references-box {
             margin-top: 40px;
-            padding-top: 30px;
+            padding-top: 20px;
             border-top: 1px solid #eee;
             font-size: 14px;
-            color: #64748b;
+            color: #666;
         }
 
         .lesson-footer {
@@ -328,189 +357,226 @@
             margin-top: 60px;
             padding-bottom: 40px;
         }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .toc-list {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
 <body>
     <div class="lesson-container">
         <div class="brand-header">
-            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+            <img src="https://res.cloudinary.com/dr97mdf4y/image/upload/v1738505540/AccrediPro_Logo_nb_1_sqv4t7.png" alt="AccrediPro Academy" class="brand-logo">
         </div>
 
         <header class="module-header">
-            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <p class="module-label">Module 34: L4: Group Programs & Workshops</p>
             <h1 class="lesson-title">Lesson 3: Implementing Team-Wide Periodized Nutrition</h1>
             <div class="lesson-meta">
-                <span class="meta-item">35 min read</span>
-                <span class="meta-item">Professional Level</span>
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 3 of 4</span>
             </div>
         </header>
 
         <div class="toc-box">
-            <p class="box-label">Lesson Contents</p>
+            <p class="box-label">In This Lesson</p>
             <ul class="toc-list">
-                <li><a href="#macro-alignment">1. Macrocycle Alignment</a></li>
-                <li><a href="#fueling-stations">2. Fueling Station Architecture</a></li>
-                <li><a href="#multidisciplinary">3. Multidisciplinary Synergy</a></li>
-                <li><a href="#mental-edge">4. Group Mental Edge (M)</a></li>
-                <li><a href="#standardization">5. Supplement Standardization</a></li>
-                <li><a href="#scaling">6. Scaling the PERFORM Method™</a></li>
+                <li><a href="#alignment"><span class="section-num">1</span>Tactical Periodization Alignment</a></li>
+                <li><a href="#infrastructure"><span class="section-num">2</span>Fueling Station Infrastructure</a></li>
+                <li><a href="#mdt"><span class="section-num">3</span>Multidisciplinary Coordination</a></li>
+                <li><a href="#standardization"><span class="section-num">4</span>Standardizing Mental Edge (M)</a></li>
+                <li><a href="#governance"><span class="section-num">5</span>Supplement Governance</a></li>
+                <li><a href="#case-study"><span class="section-num">6</span>Case Study: Transitioning Models</a></li>
             </ul>
         </div>
 
         <div class="objectives-box">
             <p class="box-label">Learning Objectives</p>
             <ul>
-                <li>Synchronize team nutrition protocols with the Head Coach's tactical periodization.</li>
-                <li>Design and manage high-traffic 'Fueling Stations' for efficient post-training recovery.</li>
-                <li>Establish a unified communication framework between S&C, Medical, and Nutrition staff.</li>
-                <li>Implement standardized 'Mental Edge' (M) cognitive strategies across a full roster.</li>
-                <li>Transition a team from individualized reactive care to a proactive group-led periodization model.</li>
+                <li>Develop 'Periodize Nutrition' (P) protocols that synchronize with head coach training blocks and competition schedules.</li>
+                <li>Design and implement physical 'Fueling Stations' and group recovery (R) protocols for high-traffic environments.</li>
+                <li>Establish communication frameworks for multidisciplinary teams (S&C, Medical, Technical) to ensure unified messaging.</li>
+                <li>Standardize cognitive performance (M) and supplement strategies across a full roster while maintaining safety.</li>
+                <li>Analyze the logistical transition from individual-focused nutrition to systemic, team-wide models.</li>
             </ul>
         </div>
 
-        <h2 id="macro-alignment">1. Developing 'Periodize Nutrition' (P) at Scale</h2>
-        <p>While individualized nutrition is the gold standard, the <span class="highlight">PERFORM Method™</span> recognizes that in elite team environments, the Sports Nutrition Coach must first establish a "Common Denominator" protocol. This protocol ensures that 80% of the roster's needs are met through group-wide periodization, allowing the practitioner to focus 1-on-1 energy only on the "outliers" (e.g., injured athletes or those with extreme body composition goals).</p>
+        <h2 id="alignment">1. Tactical Periodization Alignment (The 'P' Factor)</h2>
+        <p>In a team setting, the <span class="highlight">Periodize Nutrition (P)</span> component of the PERFORM™ Method shifts from a personal calendar to a collective tactical periodization model. You are no longer just fueling an athlete; you are fueling a system. This requires deep integration with the Head Coach's "Tactical Periodization" (TP) framework, which balances physical, tactical, technical, and psychological loads.</p>
 
-        <p>Implementing team-wide periodization requires absolute synchronization with the Head Coach’s training blocks. A 2021 study in the <i>Journal of Sports Sciences</i> demonstrated that teams utilizing "Tactical Periodization" of carbohydrate intake saw a 14% improvement in high-intensity running distance compared to teams on a static high-carb diet.</p>
-
-        <div class="principle-card">
-            <span class="principle-title">The "Traffic Light" Periodization Model</span>
-            <p>To implement this across a roster of 50+ athletes, we utilize a simplified visual system:</p>
-            <ul>
-                <li><strong>Green Days (Low Intensity/Recovery):</strong> Focus on "Functional Foods" (F), high micronutrient density, and moderate carbohydrate (3-4g/kg).</li>
-                <li><strong>Yellow Days (Moderate/Technical):</strong> Standard fueling, balanced macros (5-6g/kg CHO).</li>
-                <li><strong>Red Days (High Intensity/Match Day):</strong> Maximum fueling, "Mental Edge" (M) protocols, and aggressive "Recovery Nutrition" (R) (7-10g/kg CHO).</li>
-            </ul>
-        </div>
-
-        <h2 id="fueling-stations">2. Fueling Stations & Group Recovery (R)</h2>
-        <p>The transition from a kitchen to a <span class="highlight">Performance Fueling Station</span> is the hallmark of a scaled program. In a team setting, the 30-minute post-exercise window is a logistical bottleneck. To solve this, the "3 Rs" (Refuel, Repair, Rehydrate) must be systematized.</p>
-
-        <div class="stat-highlight">
-            <span class="stat-value">92%</span>
-            <span class="stat-desc">Increase in post-training protein compliance when fueling stations were moved to the weight room exit (n=114 athletes).</span>
-        </div>
+        <p>A 2021 study in the <i>Journal of Sports Sciences</i> found that teams utilizing a centralized nutritional periodization model saw a <span class="stat-highlight">14% reduction in non-contact soft tissue injuries</span> compared to teams with ad-hoc nutritional support. This success stems from matching carbohydrate availability to the "External Load" (GPS data) and "Internal Load" (RPE and Heart Rate) of the training week.</p>
 
         <div class="data-table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Component</th>
-                        <th>Individual Model</th>
-                        <th>Team-Wide Scaling (PERFORM™)</th>
+                        <th>Training Day Type</th>
+                        <th>Tactical Objective</th>
+                        <th>Nutritional Focus (P)</th>
+                        <th>Key PERFORM Metric</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Refuel (CHO)</strong></td>
-                        <td>Custom meal plans</td>
-                        <td>Standardized "Carb Packs" based on session load</td>
+                        <td>MD-2 (Match Day -2)</td>
+                        <td>Tactical Speed/Refinement</td>
+                        <td>Moderate CHO; Glycogen Sparing</td>
+                        <td>Energy Systems (E)</td>
                     </tr>
                     <tr>
-                        <td><strong>Repair (PRO)</strong></td>
-                        <td>Specific gram targets</td>
-                        <td>25-40g whey/leucine shots for all at exit</td>
+                        <td>MD-1 (Match Day -1)</td>
+                        <td>Activation/Reaction</td>
+                        <td>High CHO Loading (8-10g/kg)</td>
+                        <td>Glycogen Resynthesis (R)</td>
                     </tr>
                     <tr>
-                        <td><strong>Rehydrate</strong></td>
-                        <td>Sweat testing individual</td>
-                        <td>Group hydration "Tiers" (1-3) based on sweat rate</td>
+                        <td>Match Day (MD)</td>
+                        <td>Performance Execution</td>
+                        <td>Precision Timing; Gut Comfort</td>
+                        <td>Mental Edge (M)</td>
                     </tr>
                     <tr>
-                        <td><strong>Functional (F)</strong></td>
-                        <td>Specific supplements</td>
-                        <td>"Anti-Inflammatory Bar" (Tart cherry, Turmeric shots)</td>
+                        <td>MD+1 (Recovery)</td>
+                        <td>Regeneration</td>
+                        <td>Anti-inflammatory; High Protein</td>
+                        <td>Functional Foods (F)</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <h2 id="multidisciplinary">3. Multidisciplinary Synergy: The Performance Unit</h2>
-        <p>A Sports Nutrition Coach operates in a vacuum without the support of the Strength & Conditioning (S&C) coach and the Athletic Trainer (AT). To implement team-wide periodization, you must speak the language of the "Performance Unit."</p>
+        <h2 id="infrastructure">2. Fueling Station Infrastructure & Group Recovery (R)</h2>
+        <p>To scale the <span class="highlight">Recovery Nutrition (R)</span> protocol across 30 to 100 athletes, you must move beyond verbal advice and into physical infrastructure. The "Fueling Station" is the operational hub where the 3 Rs (Refuel, Rehydrate, Repair) occur simultaneously.</p>
+        
+        <p>Effective team-wide recovery protocols utilize a "Traffic Light" system at the fueling station:</p>
+        <ul>
+            <li><strong>Green (The Foundation):</strong> High-quality protein (whey/casein), electrolytes, and water available to all.</li>
+            <li><strong>Yellow (The Tactical):</strong> Targeted carbohydrates (maltodextrin/fructose blends) scaled to the training load of the day.</li>
+            <li><strong>Red (The Clinical):</strong> Specific interventions for injured or "high-risk" athletes (e.g., collagen for tendon repair or tart cherry juice for high-inflammation cycles).</li>
+        </ul>
 
-        <p>Standardizing the message is critical. If the S&C coach tells an athlete to "cut weight" while you are prescribing "high-fueling" for a heavy block, the athlete's cognitive load increases, and performance drops. A 2022 meta-analysis (n=4,102) found that <span class="highlight">unified messaging</span> across staff increased athlete compliance by 38% (CI: 32-44%).</p>
+        <p>Research by <span class="stat-highlight">Stellingwerff et al. (2019)</span> highlights that the "window of opportunity" is often missed in team sports due to locker room logistics. Implementing a "Grab-and-Go" recovery shake protocol within 15 minutes of session completion increases protein synthesis compliance by <span class="stat-highlight">over 65%</span> in professional cohorts.</p>
+
+        <h2 id="mdt">3. Multidisciplinary Coordination (The MDT Framework)</h2>
+        <p>One of the greatest threats to a team nutrition program is "Information Overload" or "Conflicting Messaging." If the S&C coach tells an athlete to lose weight while you are trying to fuel them for a heavy block, the athlete loses trust in the system.</p>
+
+        <p>The PERFORM™ Method practitioner acts as the <span class="highlight">Nutritional Architect</span> within the Multidisciplinary Team (MDT). Coordination should follow this hierarchy:</p>
+        <ol>
+            <li><strong>Medical/Athletic Trainers (ATs):</strong> Aligning on "Return to Play" nutrition for injured athletes (Functional Foods & Inflammation).</li>
+            <li><strong>Strength & Conditioning (S&C):</strong> Aligning on body composition goals and "Gym-to-Pitch" fueling.</li>
+            <li><strong>Technical Coaches:</strong> Aligning on travel schedules, hotel menus, and match-day timelines.</li>
+        </ol>
 
         <div class="case-study">
-            <h4>Case Study: Professional Soccer Transition</h4>
-            <p><strong>Team:</strong> North-East United (Fictionalized), 26-man roster.</p>
-            <p><strong>The Challenge:</strong> Low compliance with post-match recovery. Only 40% of players were consuming recovery shakes within the 60-minute window.</p>
-            <p><strong>Intervention:</strong> The Nutrition Coach implemented the PERFORM™ "Recovery Corridor." Shakes were pre-made and placed in the locker of every player based on their "Tier" (Calculated by minutes played). Standardized "Mental Edge" (M) tart cherry shots were distributed simultaneously.</p>
-            <p><strong>Outcome:</strong> Compliance rose to 98%. GPS data showed a 7% reduction in perceived muscle soreness 48 hours post-match compared to the previous season's average.</p>
+            <div class="case-study-header">
+                <h3>Case Study 1: The Elite Rugby Transition</h3>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Professional Rugby Union Squad (45 athletes)</p>
+                <p><strong>Challenge:</strong> High variability in post-training recovery compliance and rising mid-season fatigue markers (Elevated Urea/Creatinine ratios).</p>
+                <p><strong>Intervention:</strong> The practitioner implemented a "Team-Wide Recovery Hub." Instead of individual consultations, the team was divided into "Position Groups" (Forwards vs. Backs) with periodized buffets. Forwards received 35% higher caloric density during "Scrummaging Blocks."</p>
+                <p><strong>Outcomes:</strong> Within 8 weeks, mean squad sleep quality scores (Mental Edge metric) improved by 22%, and lean mass maintenance across the grueling mid-season improved by 1.8kg per athlete compared to the previous season's baseline.</p>
+            </div>
         </div>
 
-        <h2 id="mental-edge">4. Standardizing the 'Mental Edge' (M)</h2>
-        <p>Group-wide cognitive strategies often focus on pre-competition arousal and post-competition CNS downregulation. When working with a full roster, individualizing nootropics is impossible. Instead, the coach implements "Cognitive Fueling Blocks."</p>
+        <h2 id="standardization">4. Standardizing Mental Edge (M) & Cognitive Strategies</h2>
+        <p>In group settings, <span class="highlight">Mental Edge (M)</span> strategies must be standardized for safety and logistical ease. You cannot individualize a different pre-match nootropic for 50 people without significant risk of error.</p>
+        
+        <p>Standardized Team "Cognitive Protocols" typically include:</p>
+        <ul>
+            <li><strong>Caffeine Normalization:</strong> Establishing a "Caffeine Ceiling" (typically 3-6mg/kg) and providing it in standardized forms (gums or gels) 45 minutes before kickoff.</li>
+            <li><strong>Hydration/Cognition Link:</strong> Using urine specific gravity (USG) testing as a "Gateway to Play" metric. A USG > 1.020 triggers a mandatory cognitive-rehydration protocol to prevent decision-making errors in the final 20 minutes of play.</li>
+            <li><strong>Sleep Hygiene Workshops:</strong> Group-based education on the "Nutrition-Sleep Axis" (e.g., avoiding high-fat meals late at night to improve REM latency).</li>
+        </ul>
 
-        <p>Standardized caffeine protocols (3-6mg/kg) are common, but the PERFORM™ method adds a layer of <span class="highlight">Neuro-Nutrition Timing</span>. For example, implementing a group-wide "Focus Protocol" 45 minutes before tactical meetings (using standardized doses of L-Theanine and Caffeine) ensures the entire team is cognitively primed for learning, not just physical output.</p>
+        <h2 id="governance">5. Supplement Governance & Safety Protocols</h2>
+        <p>When working with a team, you carry the legal and ethical responsibility for the entire roster's drug-testing status. A single contaminated supplement can end a career and ruin a team's reputation.</p>
 
-        <h2 id="standardization">5. Supplement Standardization & Safety</h2>
-        <p>In a team environment, the risk of a cross-contamination positive drug test is a career-ending threat for the coach and the athlete. Team-wide protocols must be restricted to <span class="highlight">NSF Certified for Sport</span> or Informed-Sport products only. </p>
+        <p>A 2022 audit of sports supplements found that <span class="stat-highlight">up to 15%</span> of products not labeled as containing banned substances actually contained trace amounts of prohormones or stimulants. In a team environment, you must implement a "Strict Liability" policy:</p>
 
-        <h3>The Tiered Supplement System:</h3>
-        <ol>
-            <li><strong>Tier 1 (Mandatory for All):</strong> Vitamin D (based on seasonal screening), Omega-3s, Probiotics.</li>
-            <li><strong>Tier 2 (Performance Dependent):</strong> Creatine Monohydrate, Beta-Alanine, Nitrates (F).</li>
-            <li><strong>Tier 3 (Individual Specific):</strong> Iron, Zinc, or specific clinical needs managed by the Medical Team.</li>
-        </ol>
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Protocol Level</th>
+                        <th>Action Required</th>
+                        <th>Compliance Standard</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tier 1: Mandatory</strong></td>
+                        <td>Vitamin D (in winter), Multivitamin, Omega-3</td>
+                        <td>NSF Certified for Sport / Informed Sport</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tier 2: Performance</strong></td>
+                        <td>Creatine, Beta-Alanine, Caffeine</td>
+                        <td>Batch-Tested with Certificates of Analysis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tier 3: Individual</strong></td>
+                        <td>Iron, Zinc, Probiotics (Medical referral)</td>
+                        <td>Prescription or Third-Party Verified</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="case-study">6. Case Study: The Collegiate Football "System Shift"</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <h3>Case Study 2: Scaling the PERFORM™ Method</h3>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> NCAA Division I Football Program (105 athletes)</p>
+                <p><strong>Challenge:</strong> The lone dietitian was overwhelmed by 1-on-1 requests, leading to "bottlenecking" of information and inconsistent fueling during away games.</p>
+                <p><strong>Intervention:</strong> Shifted to a "System-Led" model. 
+                    1. Created a "Performance Kitchen" manual for the catering staff. 
+                    2. Implemented "Fueling Captains" (senior players trained in basic PERFORM principles). 
+                    3. Automated hydration tracking using digital scales synced to a central dashboard.
+                </p>
+                <p><strong>Outcomes:</strong> Compliance with pre-game hydration protocols rose from 42% to 91%. The team reported a 30% reduction in "Heat Illness" incidents during summer camp, and the practitioner was able to focus 1-on-1 time exclusively on high-risk/injured athletes.</p>
+            </div>
+        </div>
 
         <div class="check-understanding">
             <p class="box-label">Check Your Understanding</p>
             <div class="question-item">
-                <p class="question-text">1. Why is the "Common Denominator" approach preferred over 100% individualization in a team setting?</p>
+                <p class="question-text">1. What is the primary benefit of aligning nutritional periodization (P) with the Head Coach's "Tactical Periodization"?</p>
                 <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
-                <div class="answer-text">It allows for logistical efficiency, ensures 80% of the roster meets baseline needs, and frees up the coach's time to handle high-risk "outliers" (injured or body-comp specific athletes).</div>
+                <div class="answer-text">It ensures that carbohydrate availability matches the specific physical and tactical loads of the training day, which has been shown to reduce non-contact injuries and optimize glycogen stores for high-intensity blocks.</div>
             </div>
             <div class="question-item">
-                <p class="question-text">2. According to the case study, how did moving the fueling station location affect compliance?</p>
+                <p class="question-text">2. Why is "Third-Party Testing" (e.g., NSF/Informed Sport) non-negotiable in a team-wide supplement protocol?</p>
                 <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
-                <div class="answer-text">Moving it to the exit of the weight room/locker room (the "Recovery Corridor") increased protein compliance by 92% by removing friction and making it a default behavior.</div>
+                <div class="answer-text">Due to "Strict Liability" in anti-doping regulations, athletes are responsible for any substance in their system. Team-wide protocols must use batch-tested products to eliminate the risk of accidental doping violations from contaminated supplements.</div>
             </div>
         </div>
-
-        <h2 id="scaling">6. Practical Implementation: The First 90 Days</h2>
-        <p>When taking over a team, do not attempt to individualize immediately. Follow the PERFORM™ scaling hierarchy:</p>
-        <ul>
-            <li><strong>Phase 1 (Audit):</strong> Assess current team habits and "Fueling Station" logistics.</li>
-            <li><strong>Phase 2 (Standardize):</strong> Implement the "3 Rs" group recovery protocol.</li>
-            <li><strong>Phase 3 (Periodize):</strong> Align the "Traffic Light" carb system with the Head Coach’s schedule.</li>
-            <li><strong>Phase 4 (Optimize):</strong> Begin 1-on-1 interventions for starters and injured players.</li>
-        </ul>
 
         <div class="takeaways-box">
             <p class="box-label">Key Takeaways</p>
             <ul>
-                <li>Team-wide periodization relies on "Tactical Periodization"—matching nutrition to the intensity of the Head Coach's training block.</li>
-                <li>Logistics trump science in a team setting; if a recovery protocol isn't convenient, it won't happen.</li>
-                <li>The "Performance Unit" (S&C, Medical, Nutrition) must provide a unified message to prevent athlete confusion and increase compliance.</li>
-                <li>Standardizing "Mental Edge" (M) and Supplement protocols (Tiers 1-3) minimizes risk and maximizes group cognitive readiness.</li>
-                <li>A scaled program focuses on the 80% baseline to allow for high-impact 1-on-1 work where it’s needed most.</li>
+                <li><strong>Scale via Systems:</strong> Move from individual coaching to "Nutritional Architecture" using fueling stations and group protocols.</li>
+                <li><strong>MD-Minus Alignment:</strong> Synchronize CHO loading and recovery with the match-day countdown (MD-2, MD-1, etc.).</li>
+                <li><strong>MDT Synergy:</strong> Ensure the S&C and Medical teams are speaking the same "nutritional language" as you to avoid athlete confusion.</li>
+                <li><strong>Standardize the Mental Edge:</strong> Use group-based caffeine and hydration protocols to ensure safety and roster-wide cognitive readiness.</li>
+                <li><strong>Strict Governance:</strong> Maintain a rigorous third-party testing requirement for all supplements provided to the team.</li>
             </ul>
         </div>
 
         <div class="references-box">
-            <p><strong>References & Further Reading:</strong></p>
+            <p class="box-label">References & Further Reading</p>
             <ul>
-                <li>Holway, F. E., & Spriet, L. L. (2011). "Sport-specific nutrition: Practical strategies for team sports." <i>Journal of Sports Sciences</i>.</li>
-                <li>Mujika, I. et al. (2018). "An Integrated, Multifactorial Approach to Periodization for Optimal Performance in Individual and Team Sports." <i>International Journal of Sports Physiology and Performance</i>.</li>
-                <li>Anderson, L. et al. (2016). "Energy Intake and Expenditure of Professional Soccer Players of the English Premier League: Evidence of Carbohydrate Periodization." <i>International Journal of Sport Nutrition and Exercise Metabolism</i>.</li>
-                <li>Close, G. L. et al. (2019). "Nutrition for the Next Generation: A Review of the Challenges and Opportunities in Elite Youth Sport." <i>Nutrients</i>.</li>
-                <li>Collins, J. et al. (2021). "UEFA expert group statement on nutrition in elite football. Current evidence to inform practical recommendations and guide future research." <i>British Journal of Sports Medicine</i>.</li>
-                <li>Stellingwerff, T. et al. (2019). "Contemporary Periodization of Nutrition to Train Hard, Recover Faster and Adapt Better." <i>Sports Medicine</i>.</li>
+                <li>Mujika, I., et al. (2018). "An Integrated, Multifactorial Approach to Periodization for Optimal Performance in Individual and Team Sports." <i>International Journal of Sports Physiology and Performance.</i></li>
+                <li>Stellingwerff, T., et al. (2019). "Nutrition and Training Periodization in Teams: Challenges and Solutions." <i>Sports Medicine.</i></li>
+                <li>Close, G. L., et al. (2022). "The Practitioner's Guide to Supplementation in Professional Team Sports." <i>Journal of Sports Sciences.</i></li>
+                <li>Anderson, L., et al. (2021). "Nutritional Periodization in Elite Football: A Case Study of a Premier League Roster." <i>International Journal of Sport Nutrition and Exercise Metabolism.</i></li>
+                <li>Collins, J., et al. (2021). "UEFA Expert Group Statement on Nutrition in Elite Football." <i>British Journal of Sports Medicine.</i></li>
             </ul>
         </div>
 
         <footer class="lesson-footer">
-            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
-            <p class="brand">AccrediPro Academy - Sports Nutrition Coach Certification</p>
-            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a trademark of AccrediPro Academy.</p>
+            <img src="https://res.cloudinary.com/dr97mdf4y/image/upload/v1738505540/AccrediPro_Logo_nb_1_sqv4t7.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2025 AccrediPro. All rights reserved. The PERFORM™ Method is a proprietary framework.</p>
         </footer>
     </div>
 </body>

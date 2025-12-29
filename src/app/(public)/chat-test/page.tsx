@@ -61,45 +61,68 @@ export default function ChatTestPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
   const handleStartChat = async () => {
-    if (!userName.trim()) return;
+    if (!userName.trim() || !userEmail.trim()) {
+      setEmailError("Please enter your name and email.");
+      return;
+    }
 
-    localStorage.setItem("chatUserName", userName);
-    if (userEmail) localStorage.setItem("chatUserEmail", userEmail);
-
-    debugLog("info", "Saving optin to database...");
+    setIsVerifying(true);
+    setEmailError("");
+    debugLog("info", "Verifying email: " + userEmail);
 
     try {
+      // 1. Verify Email
+      const verifyRes = await fetch("/api/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail }),
+      });
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.valid) {
+        setEmailError(verifyData.message || "Invalid email.");
+        debugLog("error", "Email validation failed: " + verifyData.message);
+        setIsVerifying(false);
+        return;
+      }
+
+      debugLog("success", "Email verified!");
+
+      // 2. Save Optin
+      localStorage.setItem("chatUserName", userName);
+      localStorage.setItem("chatUserEmail", userEmail);
+
       const response = await fetch("/api/chat/optin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           visitorId,
           name: userName,
-          email: userEmail || null,
+          email: userEmail,
           page: "chat-test",
         }),
       });
+
       const data = await response.json();
       if (data.success) {
-        debugLog("success", "Optin saved to DB! ID: " + (data.optinId || "skipped"));
-      } else {
-        debugLog("error", "Optin save failed: " + (data.error || "Unknown error") + (data.details ? " - " + data.details : ""));
+        debugLog("success", "Optin saved: " + (data.optinId || "ok"));
       }
+
+      setShowOptin(false);
+      setMessages([{ role: "bot", text: `Hey ${userName}! Nice to meet you! Ask me anything about the FM Certification!` }]);
+
     } catch (err) {
-      debugLog("error", "Optin API error: " + (err instanceof Error ? err.message : "Unknown"));
+      debugLog("error", "Error: " + (err instanceof Error ? err.message : "Unknown"));
+      setEmailError("Connection error. Please try again.");
+    } finally {
+      setIsVerifying(false);
     }
-
-    debugLog("success", "User opted in: " + userName + (userEmail ? " (" + userEmail + ")" : ""));
-    setShowOptin(false);
-    setMessages([{ role: "bot", text: `Hey ${userName}! Nice to meet you! Ask me anything about the FM Certification!` }]);
   };
 
-  const handleSkipOptin = () => {
-    setUserName("Friend");
-    debugLog("info", "User skipped optin");
-    setShowOptin(false);
-  };
 
   const sendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -211,16 +234,16 @@ export default function ChatTestPage() {
                   placeholder="Your email (in case I'm offline)"
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm mb-2 focus:outline-none focus:border-[#6B2C40]"
+                  className={`w-full border rounded-lg px-3 py-2 text-sm mb-2 focus:outline-none focus:border-[#6B2C40] ${emailError ? "border-red-500 bg-red-50" : ""}`}
                 />
+                {emailError && <p className="text-xs text-red-500 mb-2">{emailError}</p>}
+
                 <button
                   onClick={handleStartChat}
-                  className="w-full bg-[#6B2C40] text-white py-3 rounded-lg font-bold hover:bg-[#5A2435]"
+                  disabled={isVerifying}
+                  className="w-full bg-[#6B2C40] text-white py-3 rounded-lg font-bold hover:bg-[#5A2435] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Let&apos;s Chat!
-                </button>
-                <button onClick={handleSkipOptin} className="w-full text-xs text-gray-400 mt-2 hover:text-gray-600">
-                  Skip, just let me ask a question
+                  {isVerifying ? "Verifying..." : "Let's Chat!"}
                 </button>
               </div>
             ) : (
@@ -236,11 +259,10 @@ export default function ChatTestPage() {
                         />
                       )}
                       <div
-                        className={`px-3 py-2 max-w-[240px] text-sm rounded-2xl ${
-                          msg.role === "user"
-                            ? "bg-[#6B2C40] text-white rounded-br-sm"
-                            : "bg-white border rounded-bl-sm"
-                        }`}
+                        className={`px-3 py-2 max-w-[240px] text-sm rounded-2xl ${msg.role === "user"
+                          ? "bg-[#6B2C40] text-white rounded-br-sm"
+                          : "bg-white border rounded-bl-sm"
+                          }`}
                       >
                         {msg.text}
                       </div>

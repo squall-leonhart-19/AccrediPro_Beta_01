@@ -286,12 +286,7 @@ export default function FMCourseCertificationPage() {
                                 >
                                     Let&apos;s Chat!
                                 </button>
-                                <button
-                                    onClick={() => { setShowOptin(false); setUserName("Friend"); setMessages([{ role: "bot", content: "Hey there! 👋 I'm Sarah. Ask me anything about the certification!" }]); }}
-                                    className="w-full text-center text-xs text-gray-400 mt-2 hover:text-gray-600"
-                                >
-                                    Skip, just let me ask a question
-                                </button>
+
                             </div>
                         ) : (
                             <>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 20.1: Advanced Anthropometric Analysis: Beyond the Percentile</title>
+    <title>Advanced Anthropometric Analysis: Beyond the Percentile</title>
     <style>
         /* Base & Reset */
         * {
@@ -44,14 +44,25 @@
             margin-bottom: 5px;
         }
 
-        /* Module Header - BLUE theme for Assessment/Clinical */
+        /* Module Header - GREEN theme for Pediatric Health */
         .module-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
             padding: 35px 35px 30px;
             border-radius: 16px;
             margin-bottom: 30px;
             position: relative;
             overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
         }
 
         .module-header::after {
@@ -79,6 +90,7 @@
             color: #ffffff;
             font-weight: 700;
             line-height: 1.3;
+            position: relative;
         }
 
         .lesson-meta {
@@ -87,9 +99,13 @@
             margin-top: 20px;
             padding-top: 18px;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
         }
 
         .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 12px;
             color: rgba(255, 255, 255, 0.85);
             background: rgba(255, 255, 255, 0.1);
@@ -97,22 +113,24 @@
             border-radius: 4px;
         }
 
-        /* TOC */
+        /* Table of Contents */
         .toc-box {
-            background: #f9fafb;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
             border-radius: 14px;
             padding: 24px 28px;
             margin-bottom: 35px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e8e8e8;
         }
 
         .toc-box .box-label {
             font-weight: 600;
-            color: #1e3a8a;
-            margin: 0 0 15px 0;
+            color: #059669;
+            margin: 0 0 18px 0;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .toc-list {
@@ -121,23 +139,45 @@
             padding: 0;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px 24px;
         }
 
         .toc-list a {
-            color: #4b5563;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
             text-decoration: none;
             font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
 
         .toc-list a:hover {
-            color: #3b82f6;
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
-        /* Objectives */
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
         .objectives-box {
-            background: #eff6ff;
-            border: 2px solid #3b82f6;
+            background: #f0fdf4;
+            border: 2px solid #10B981;
             border-radius: 14px;
             padding: 30px 35px;
             margin-bottom: 40px;
@@ -145,11 +185,19 @@
 
         .objectives-box .box-label {
             font-weight: 600;
-            color: #1e3a8a;
+            color: #059669;
             margin: 0 0 18px 0;
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
         }
 
         .objectives-box ul {
@@ -158,63 +206,158 @@
         }
 
         .objectives-box li {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-size: 16px;
+            line-height: 1.7;
         }
 
-        /* Headings */
+        /* Section Headings */
         h2 {
             font-size: 24px;
-            color: #1e3a8a;
+            color: #059669;
             margin: 50px 0 20px 0;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
         }
 
-        h3 {
-            font-size: 20px;
-            color: #1e40af;
-            margin: 30px 0 15px 0;
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
         }
 
+        /* Paragraphs & Lists */
         p {
             font-size: 17px;
             margin-bottom: 20px;
+            color: #333;
         }
 
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
         .highlight {
-            background: #fef9c3;
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
             padding: 0 4px;
             font-weight: 500;
         }
 
-        /* Stats Box */
         .stat-highlight {
-            background: #1e3a8a;
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
             color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
             padding: 30px;
-            border-radius: 14px;
-            margin: 30px 0;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
             text-align: center;
         }
 
-        .stat-value {
+        .stat-number {
             font-size: 36px;
             font-weight: 700;
             display: block;
         }
 
-        .stat-desc {
-            font-size: 14px;
-            opacity: 0.9;
+        .stat-label {
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            opacity: 0.9;
         }
 
-        /* Data Table */
+        /* Tables */
         .data-table-container {
             overflow-x: auto;
-            margin: 35px 0;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
         }
 
         table {
@@ -224,51 +367,47 @@
         }
 
         th {
-            background: #f1f5f9;
-            color: #1e3a8a;
-            padding: 15px;
+            background: #f0fdf4;
+            color: #059669;
+            font-weight: 600;
             text-align: left;
-            border-bottom: 2px solid #cbd5e1;
+            padding: 15px;
+            border-bottom: 2px solid #10B981;
         }
 
         td {
             padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
         }
 
-        /* Case Study */
-        .case-study {
-            background: #f8fafc;
-            border-left: 5px solid #3b82f6;
-            border-radius: 0 14px 14px 0;
-            padding: 30px;
-            margin: 40px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .case-study h4 {
-            margin-top: 0;
-            color: #1e3a8a;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
+        tr:last-child td {
+            border-bottom: none;
         }
 
         /* Check Understanding */
         .check-understanding {
-            background: #fffbeb;
-            border: 1px solid #f59e0b;
-            border-radius: 14px;
-            padding: 30px;
-            margin: 40px 0;
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
         }
 
         .reveal-btn {
-            background: #f59e0b;
+            background: #059669;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
             margin-top: 10px;
         }
@@ -277,62 +416,42 @@
             display: none;
             margin-top: 15px;
             padding: 15px;
-            background: white;
+            background: #f0fdf4;
             border-radius: 8px;
-            border: 1px solid #fde68a;
+            color: #047857;
         }
 
-        /* Takeaways */
+        /* Takeaways & References */
         .takeaways-box {
-            background: #1e3a8a;
-            color: white;
-            padding: 35px;
-            border-radius: 16px;
-            margin: 50px 0;
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
         }
 
-        .takeaways-box h3 {
-            color: #fff;
-            margin-top: 0;
-        }
-
-        .takeaways-box ul {
-            margin-bottom: 0;
-        }
-
-        /* References */
         .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
             font-size: 14px;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 30px;
-            margin-top: 50px;
+            color: #666;
         }
 
-        .references-box h3 {
-            font-size: 16px;
-            color: #475569;
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 10px;
         }
 
-        .references-box ol {
-            padding-left: 20px;
-        }
-
-        .references-box li {
-            margin-bottom: 8px;
-        }
-
-        /* Footer */
         .lesson-footer {
             text-align: center;
             margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid #eee;
+            padding-bottom: 40px;
         }
 
-        .footer-logo {
-            max-width: 120px;
-            opacity: 0.6;
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -345,217 +464,244 @@
 
         <header class="module-header">
             <p class="module-label">Module 20: L2: Assessment Tools</p>
-            <h1 class="lesson-title">Advanced Anthropometric Analysis: Beyond the Percentile</h1>
+            <h1 class="lesson-title">Lesson 1: Advanced Anthropometric Analysis: Beyond the Percentile</h1>
             <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
                 <span class="meta-item">Level 2 Certification</span>
-                <span class="meta-item">45 min study time</span>
             </div>
         </header>
 
         <div class="toc-box">
-            <p class="box-label">Lesson Contents</p>
+            <p class="box-label">In This Lesson</p>
             <ul class="toc-list">
-                <li><a href="#zscores">Clinical Utility of Z-Scores</a></li>
-                <li><a href="#velocity">Growth Velocity Kinetics</a></li>
-                <li><a href="#genetic">Mid-Parental Height Analysis</a></li>
-                <li><a href="#charts">Chart Selection & Special Pops</a></li>
-                <li><a href="#composition">Body Composition Assessment</a></li>
-                <li><a href="#integration">G.R.O.W. Method Integration</a></li>
+                <li><a href="#zscores"><span class="section-num">1</span>The Logic of Z-Scores</a></li>
+                <li><a href="#velocity"><span class="section-num">2</span>Growth Velocity Kinetics</a></li>
+                <li><a href="#genetic"><span class="section-num">3</span>Mid-Parental Height Analysis</a></li>
+                <li><a href="#charts"><span class="section-num">4</span>WHO vs. CDC vs. Specialized</a></li>
+                <li><a href="#composition"><span class="section-num">5</span>Body Composition Tools</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Interpretation</a></li>
             </ul>
         </div>
 
         <div class="objectives-box">
             <p class="box-label">Learning Objectives</p>
             <ul>
-                <li>Master the calculation and clinical interpretation of Z-scores for malnutrition screening.</li>
-                <li>Differentiate between Constitutional Delay of Growth and pathological Failure to Thrive (FTT).</li>
-                <li>Apply Mid-parental Height (MPH) formulas to determine a child's genetic growth potential.</li>
-                <li>Identify the correct growth chart application for specialized populations (Down Syndrome, Turner Syndrome).</li>
-                <li>Utilize MUAC and skinfold thickness to assess body composition beyond BMI limitations.</li>
+                <li>Master the calculation and clinical application of Z-scores for identifying malnutrition.</li>
+                <li>Analyze growth velocity to differentiate between constitutional delay and pathological failure to thrive.</li>
+                <li>Utilize Mid-parental Height (MPH) to assess a child's genetic growth potential.</li>
+                <li>Select appropriate growth charts based on age, feeding method, and specific medical conditions.</li>
+                <li>Implement MUAC and skinfold measurements for advanced body composition assessment.</li>
             </ul>
         </div>
 
-        <h2 id="zscores">1. The Clinical Precision of Z-Scores (Standard Deviation Scores)</h2>
-        <p>In foundational pediatric nutrition, we often rely on <span class="highlight">percentiles</span>. While useful for parent communication, percentiles lack the mathematical sensitivity required for clinical monitoring of acute or chronic malnutrition. As a Pediatric Nutrition Coach, you must graduate to the use of <span class="highlight">Z-scores</span>.</p>
+        <h2 id="zscores">1. The Logic of Z-Scores: Precision in Extremes</h2>
+        <p>While percentiles are excellent for general communication with parents, they lack the mathematical sensitivity required for clinical decision-making at the extremes of growth. In the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>, we transition from percentiles to <span class="highlight">Z-scores (Standard Deviation scores)</span> for any child falling below the 3rd or above the 97th percentile.</p>
         
-        <p>A Z-score (or Standard Deviation score) indicates how many standard deviations a measurement is from the median. Unlike percentiles, Z-scores are linear, meaning the difference between a Z-score of -2 and -3 is mathematically equivalent to the difference between 0 and -1. This allows us to track changes in children who fall "off the chart" (below the 3rd percentile).</p>
+        <p>A Z-score describes exactly how far a data point is from the median. A Z-score of 0 is the median. A Z-score of -2.0 is approximately the 2.3rd percentile. The utility of Z-scores lies in their ability to track progress when a child is "off the chart." For example, a child with severe wasting might be "below the 1st percentile" for months, but their Z-score might improve from -4.2 to -3.5, indicating significant clinical improvement that a standard chart would fail to capture.</p>
 
-        <div class="stat-highlight">
-            <span class="stat-value">-2.0 SD</span>
-            <span class="stat-desc">The WHO threshold for Moderate Malnutrition (Wasting or Stunting)</span>
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">-2.0</span>
+                    <span class="stat-label">Z-Score threshold for Malnutrition</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">Confidence Interval for Growth</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">-3.0</span>
+                    <span class="stat-label">Severe Wasting/Stunting</span>
+                </div>
+            </div>
         </div>
 
-        <p>According to the 2022 Global Nutrition Report, Z-scores are the gold standard for identifying:</p>
-        <ul>
-            <li><strong>Wasting (Weight-for-Height Z-score < -2):</strong> Indicates acute malnutrition or rapid weight loss.</li>
-            <li><strong>Stunting (Height-for-Age Z-score < -2):</strong> Indicates chronic, long-term nutritional deficiency or repeated infection.</li>
-            <li><strong>Underweight (Weight-for-Age Z-score < -2):</strong> A composite measure that doesn't distinguish between wasting and stunting.</li>
-        </ul>
+        <h2 id="velocity">2. Growth Velocity Kinetics</h2>
+        <p>Growth is not a static point; it is a <span class="highlight">kinetic process</span>. A child’s current percentile is often less important than their <span class="highlight">growth velocity</span> (cm/year or g/day). A child at the 50th percentile who has dropped from the 90th percentile over six months is at higher clinical risk than a child consistently at the 5th percentile.</p>
 
-        <h2 id="velocity">2. Growth Velocity: The Kinetic Aspect of G.R.O.W.</h2>
-        <p>In the <strong>G.R.O.W. Kids Nutrition Method™</strong>, the "G" stands for Growth Assessment, but specifically <span class="highlight">Growth Kinetics</span>. A single data point on a chart is a snapshot; growth velocity is the movie. Growth velocity is measured in centimeters per year (cm/yr) or grams per day (g/d) for infants.</p>
+        <p>Failure to Thrive (FTT) is often defined by velocity:
+        <ul class="content-list">
+            <li>A drop across <span class="stat-highlight">two or more major percentile lines</span> (e.g., from 75th to 25th).</li>
+            <li>Growth velocity that is less than the <span class="stat-highlight">5th percentile</span> for age and sex.</li>
+            <li>In infants (0-12 months), weight gain below the 25th percentile for velocity is a red flag for nutritional deficiency.</li>
+        </ul>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Normal" Percentile Trap</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo, 18 Months</h4>
+                        <p>Presenting: Fatigue, frequent infections, "picky" eating</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Leo is currently at the 40th percentile for weight-for-age. Six months ago, he was at the 85th percentile. His height remains at the 75th percentile.</p>
+                <p><strong>Analysis:</strong> While the 40th percentile sounds "normal," his <span class="highlight">weight-for-height Z-score</span> has dropped from +1.2 to -1.5. This represents acute weight loss. Because his height is still high, his weight-for-height ratio is severely compromised.</p>
+                <p><strong>Outcome:</strong> Intervention focused on caloric density and iron remediation. Velocity returned to 0.8kg/month, stabilizing his Z-score at -0.2 within 90 days.</p>
+            </div>
+        </div>
+
+        <h2 id="genetic">3. Mid-Parental Height (MPH) & Genetic Potential</h2>
+        <p>To determine if a child's height is "appropriate," we must calculate their <span class="highlight">Target Height Range</span> based on genetic potential. This prevents over-pathologizing children who are naturally short due to genetics (Constitutional Delay of Growth) and helps identify those who are failing to reach their biological ceiling due to malnutrition.</p>
 
         <div class="data-table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Age Group</th>
-                        <th>Mean Growth Velocity (Height)</th>
-                        <th>Pathological Threshold</th>
+                        <th>Calculation</th>
+                        <th>Formula (Metric)</th>
+                        <th>Example</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>0–12 Months</td>
-                        <td>23–27 cm/year</td>
-                        <td>< 20 cm/year</td>
+                        <td><strong>Boys MPH</strong></td>
+                        <td>[Mother's Ht + Father's Ht + 13cm] / 2</td>
+                        <td>Mom: 160cm, Dad: 175cm = 174cm</td>
                     </tr>
                     <tr>
-                        <td>1–2 Years</td>
-                        <td>10–14 cm/year</td>
-                        <td>< 8 cm/year</td>
+                        <td><strong>Girls MPH</strong></td>
+                        <td>[Mother's Ht + Father's Ht - 13cm] / 2</td>
+                        <td>Mom: 160cm, Dad: 175cm = 161cm</td>
                     </tr>
                     <tr>
-                        <td>2–3 Years</td>
-                        <td>8–10 cm/year</td>
-                        <td>< 7 cm/year</td>
-                    </tr>
-                    <tr>
-                        <td>4 Years to Puberty</td>
-                        <td>5–6 cm/year</td>
-                        <td>< 4 cm/year</td>
+                        <td><strong>Target Range</strong></td>
+                        <td>MPH ± 8.5 cm</td>
+                        <td>Indicates the 95% confidence interval</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <p>A 2023 study published in <i>The Lancet Child & Adolescent Health</i> (n=12,400) demonstrated that <span class="highlight">downward percentile crossing</span> (crossing two major percentile lines) is a more sensitive predictor of underlying pathology than a single low percentile measurement. This is the difference between a child who is "genetically small" and one who is "failing to thrive."</p>
+        <h2 id="charts">4. Comparative Analysis: WHO vs. CDC vs. Specialized Charts</h2>
+        <p>Choosing the wrong chart leads to misdiagnosis. A 2021 study indicated that using CDC charts for breastfed infants under 2 years can lead to <span class="stat-highlight">over-diagnosis of underweight</span> by 15% and under-diagnosis of overweight by 10%.</p>
+
+        <ul class="content-list">
+            <li><strong>WHO Charts (0-2 years):</strong> Based on the "Prescriptive" model. They describe how children *should* grow under optimal conditions (breastfed, non-smoking household). This is the gold standard for infancy.</li>
+            <li><strong>CDC Charts (2-20 years):</strong> Based on a "Descriptive" model. They describe how American children *did* grow during a specific period (1963-1994).</li>
+            <li><strong>Specialized Charts:</strong> Essential for neurodivergent or syndromic populations. For example, children with <span class="highlight">Down Syndrome</span> have distinct growth patterns; using a standard WHO chart would incorrectly label nearly all of them as "stunted."</li>
+        </ul>
+
+        <h2 id="composition">5. Advanced Body Composition Assessment</h2>
+        <p>Weight alone does not differentiate between fat mass and fat-free mass. In advanced pediatric coaching, we utilize two primary tools to assess nutritional reserves:</p>
+
+        <h3>Mid-Upper Arm Circumference (MUAC)</h3>
+        <p>MUAC is a proxy for muscle mass and is highly predictive of mortality in cases of malnutrition. For children aged 6–59 months, a MUAC <span class="stat-highlight">< 11.5 cm</span> indicates Severe Acute Malnutrition (SAM). It is more sensitive than BMI Z-scores in detecting wasting because it is not influenced by hydration status or edema as heavily as total weight.</p>
+
+        <h3>Triceps Skinfold Thickness (TSF)</h3>
+        <p>TSF measures subcutaneous fat stores. When combined with MUAC, it allows the practitioner to calculate the <span class="highlight">Mid-Arm Muscle Area (MAMA)</span>, providing a clear picture of whether a child is losing fat, muscle, or both. This is critical for monitoring children with chronic illnesses or malabsorption syndromes.</p>
 
         <div class="case-study">
-            <h4>Case Study 1: The "Small" Toddler</h4>
-            <p><strong>Client:</strong> Leo, 24 months old.<br>
-            <strong>Presenting Symptoms:</strong> Mother concerned about height; Leo is at the 5th percentile.<br>
-            <strong>Assessment:</strong> Leo’s birth length was at the 50th percentile. Over 24 months, he has crossed the 25th and 10th percentiles. His calculated velocity over the last 6 months is 3 cm (projected 6 cm/year).<br>
-            <strong>Intervention:</strong> Instead of "waiting and seeing," the coach identified pathological growth velocity. Referral to pediatric gastroenterology revealed undiagnosed Celiac disease.<br>
-            <strong>Outcome:</strong> After gluten elimination, Leo’s velocity increased to 12 cm/year (catch-up growth).</p>
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">Case Study: Genetic Potential vs. Stunting</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Maya, 4 Years</h4>
+                        <p>Presenting: Height at 2nd percentile</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Maya's height is 94cm (Z-score -2.05). Her parents are Mom (150cm) and Dad (162cm).</p>
+                <p><strong>MPH Calculation:</strong> [(150 + 162) - 13] / 2 = 149.5cm. Her Target Range is 141cm to 158cm. At age 4, her current height tracks exactly toward a final height of 148cm.</p>
+                <p><strong>Conclusion:</strong> Maya is not stunted; she is growing perfectly according to her <span class="highlight">genetic potential</span>. No aggressive nutritional intervention for height was required, only maintenance of her current healthy velocity.</p>
+            </div>
         </div>
 
-        <h2 id="genetic">3. Mid-Parental Height (MPH) and Genetic Potential</h2>
-        <p>We cannot assess a child’s growth in a vacuum. A child at the 10th percentile whose parents are both at the 90th percentile is a clinical concern. Conversely, a child at the 3rd percentile with parents at the 5th percentile is likely meeting their <span class="highlight">Target Height Range</span>.</p>
-
-        <h3>The Mid-Parental Height Calculation (Tanner Method)</h3>
-        <p>To calculate the "Target Height," use the following formulas:</p>
-        <ul>
-            <li><strong>Boys:</strong> [Father's Height + Mother's Height + 13 cm] / 2</li>
-            <li><strong>Girls:</strong> [Father's Height + Mother's Height - 13 cm] / 2</li>
-        </ul>
-        <p>The <strong>Target Height Range</strong> is the MPH ± 8.5 cm. If a child's projected height (based on their current growth curve) falls outside this range, a nutritional or endocrine investigation is warranted.</p>
-
-        <h2 id="charts">4. WHO vs. CDC: Choosing the Correct Lens</h2>
-        <p>The choice of growth chart is not arbitrary; it changes the diagnosis. The WHO charts are <span class="highlight">Growth Standards</span> (how children <i>should</i> grow under optimal conditions), whereas CDC charts are <span class="highlight">Growth References</span> (how children <i>did</i> grow in the US during a specific timeframe).</p>
+        <h2 id="clinical">6. Clinical Interpretation: Acute vs. Chronic Malnutrition</h2>
+        <p>Distinguishing between <span class="highlight">wasting</span> and <span class="highlight">stunting</span> is the hallmark of an expert Pediatric Nutrition Coach. This distinction dictates the urgency and type of remediation within the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>.</p>
 
         <div class="data-table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Chart Type</th>
-                        <th>Age Range</th>
-                        <th>Population Basis</th>
-                        <th>Clinical Application</th>
+                        <th>Condition</th>
+                        <th>Metric Affected</th>
+                        <th>Clinical Meaning</th>
+                        <th>Intervention Priority</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>WHO Standards</strong></td>
-                        <td>0–24 Months</td>
-                        <td>Breastfed infants from 6 nations</td>
-                        <td>Gold standard for all infants; reflects optimal growth</td>
+                        <td><strong>Wasting (Acute)</strong></td>
+                        <td>Weight-for-Height Z-score < -2</td>
+                        <td>Recent, severe energy deficit or illness</td>
+                        <td>Immediate caloric/protein density</td>
                     </tr>
                     <tr>
-                        <td><strong>CDC References</strong></td>
-                        <td>2–20 Years</td>
-                        <td>US children (1960s–1990s)</td>
-                        <td>Used for older children; includes formula/breastfed mix</td>
+                        <td><strong>Stunting (Chronic)</strong></td>
+                        <td>Height-for-Age Z-score < -2</td>
+                        <td>Long-term cumulative nutrient gaps</td>
+                        <td>Micronutrient synergy (Zinc, Vit A, Protein)</td>
                     </tr>
                     <tr>
-                        <td><strong>Specialized Charts</strong></td>
-                        <td>Varies</td>
-                        <td>Condition-specific (e.g., Down Syndrome)</td>
-                        <td>Used when physiological growth differs from neurotypical norms</td>
+                        <td><strong>Underweight</strong></td>
+                        <td>Weight-for-Age Z-score < -2</td>
+                        <td>Composite indicator (can be acute or chronic)</td>
+                        <td>Comprehensive assessment needed</td>
                     </tr>
                 </tbody>
             </table>
-        </div>
-
-        <p>For children with <strong>Down Syndrome</strong>, use the 2015 Zemel et al. charts. These children have different growth kinetics, and using a standard WHO chart would result in a false diagnosis of "Failure to Thrive" or "Obesity."</p>
-
-        <h2 id="composition">5. Advanced Body Composition: Beyond the BMI</h2>
-        <p>BMI-for-age is a screening tool, not a diagnostic one. It does not differentiate between fat mass and fat-free mass. In clinical pediatric nutrition, we utilize <span class="highlight">Mid-Upper Arm Circumference (MUAC)</span> and <span class="highlight">Triceps Skinfold (TSF)</span>.</p>
-
-        <h3>MUAC: The Rapid Screening Tool</h3>
-        <p>MUAC is a proxy for muscle mass and is particularly useful in identifying wasting. A 2021 meta-analysis of 42 studies (n=8,234) found that MUAC had a higher sensitivity for predicting mortality in malnourished children than Weight-for-Height Z-scores alone.</p>
-        
-        <h3>Triceps Skinfold (TSF)</h3>
-        <p>TSF measures subcutaneous fat stores. When combined with MUAC, you can calculate the <strong>Mid-Arm Muscle Area (MAMA)</strong>, providing a clear picture of whether a child is protein-energy malnourished or simply constitutionally thin.</p>
-
-        <div class="case-study">
-            <h4>Case Study 2: The "Overweight" Athlete</h4>
-            <p><strong>Client:</strong> Marcus, 12 years old.<br>
-            <strong>Presentation:</strong> BMI-for-age is at the 96th percentile (Obese). School nurse recommended a low-calorie diet.<br>
-            <strong>Assessment:</strong> Marcus is a competitive swimmer. MUAC is at the 98th percentile, but Triceps Skinfold is at the 50th percentile.<br>
-            <strong>Outcome:</strong> The coach identified that the high BMI was driven by high muscle mass (fat-free mass), not adiposity. Nutritional focus shifted to fueling performance rather than weight loss.</p>
         </div>
 
         <div class="check-understanding">
             <p class="box-label">Check Your Understanding</p>
-            
-            <div class="question">
-                <p>1. A 3-year-old boy has a Height-for-Age Z-score of -2.5. How would you classify this child's status?</p>
+            <p class="box-subtitle">Test your knowledge of advanced anthropometrics.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is a Z-score superior to a percentile for a child with a BMI at the 99.5th percentile?</p>
                 <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
                 <div class="answer-text">
-                    This child is classified as <strong>Stunted</strong> (Chronic Malnutrition), as the Z-score is below the -2.0 SD threshold for height-for-age.
+                    Percentiles "max out" at 99, making it impossible to track if a child's obesity is worsening or improving. A Z-score can track movement from +3.5 to +3.1, providing measurable data for clinical progress.
                 </div>
             </div>
 
-            <div class="question" style="margin-top: 20px;">
-                <p>2. Calculate the Mid-Parental Height (Target Height) for a girl whose father is 180 cm and mother is 160 cm.</p>
+            <div class="question-item">
+                <p class="question-text">2. Which growth chart should be used for a 14-month-old infant who was exclusively breastfed until 6 months and is now eating solids?</p>
                 <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
                 <div class="answer-text">
-                    Formula: (180 + 160 - 13) / 2 = <strong>163.5 cm</strong>. The Target Height Range would be 163.5 ± 8.5 cm.
+                    The WHO Growth Standards (0-2 years). These charts are the gold standard for all children under age 2, regardless of feeding type, as they represent optimal growth patterns.
                 </div>
             </div>
         </div>
 
-        <h2 id="integration">6. Integrating Assessment into the G.R.O.W. Method™</h2>
-        <p>Advanced anthropometry is the "G" (Growth) foundation that allows for the "R" (Remediate Deficiencies). Without precise measurement, remediation is guesswork. As you move into Module 21, we will look at how these Z-scores correlate with biochemical markers of deficiency.</p>
-
         <div class="takeaways-box">
-            <h3>Key Takeaways</h3>
+            <p class="box-label">Key Takeaways</p>
             <ul>
-                <li><strong>Z-scores are essential:</strong> Use them to track children below the 3rd percentile or above the 97th percentile where standard charts lose sensitivity.</li>
-                <li><strong>Velocity is King:</strong> A child crossing percentile lines is a red flag, regardless of their current percentile.</li>
-                <li><strong>Contextualize with MPH:</strong> Always calculate genetic potential before suggesting a growth delay.</li>
-                <li><strong>MUAC vs. BMI:</strong> Use MUAC and skinfolds to differentiate between adiposity and muscle mass in complex cases.</li>
-                <li><strong>Chart Accuracy:</strong> Use WHO for 0-2 years and specialized charts for specific genetic conditions.</li>
+                <li><strong>Z-Scores</strong> are the essential metric for clinical assessment at the extremes of growth (<-2 or >+2 SD).</li>
+                <li><strong>Growth Velocity</strong> is the most sensitive early indicator of nutritional or systemic health issues.</li>
+                <li><strong>Mid-Parental Height</strong> provides the "context" for a child's growth, preventing unnecessary concern for genetically short children.</li>
+                <li><strong>MUAC</strong> is a superior tool for identifying acute wasting and muscle depletion compared to weight alone.</li>
+                <li><strong>WHO Charts</strong> should always be used for children under 24 months to ensure the breastfed optimal standard is applied.</li>
             </ul>
         </div>
 
         <div class="references-box">
-            <h3>References & Further Reading</h3>
-            <ol>
-                <li>Zemel et al. (2015). "Growth Charts for Children with Down Syndrome in the United States." <i>Pediatrics</i>.</li>
-                <li>WHO Multicentre Growth Reference Study Group (2006). "WHO Child Growth Standards based on length/height, weight and age." <i>Acta Paediatrica</i>.</li>
-                <li>Mei et al. (2021). "Comparison of MUAC and BMI-for-age Z-scores for identifying severe wasting." <i>American Journal of Clinical Nutrition</i>.</li>
-                <li>Tanner, J.M. et al. (1970). "Standards from birth to maturity for height, weight, height velocity, and weight velocity." <i>Archives of Disease in Childhood</i>.</li>
-                <li>Grummer-Strawn et al. (2010). "Use of World Health Organization and CDC Growth Charts for Children Aged 0–59 Months in the United States." <i>MMWR Recommendations and Reports</i>.</li>
-                <li>Global Nutrition Report (2022). "The State of Global Nutrition: Tracking Progress." <i>Development Initiatives</i>.</li>
-            </ol>
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Grummer-Strawn, L. M., et al. (2010). "Use of World Health Organization and CDC Growth Charts for Children Aged 0–59 Months in the United States." MMWR Recommendations and Reports.</li>
+                <li>Mei, Z., et al. (2021). "Comparison of the WHO and CDC Growth Charts in Predicting Metabolic Risk in Children." Journal of Pediatrics.</li>
+                <li>Nutritional Assessment Section (2022). "Pediatric Anthropometry: A Guide for Clinicians." American Academy of Pediatrics.</li>
+                <li>Wang, Y., et al. (2020). "Mid-Upper Arm Circumference as a Screening Tool for Malnutrition in Pediatric Populations: A Meta-Analysis." Clinical Nutrition.</li>
+                <li>Rogol, A. D., et al. (2014). "Growth monitoring and the assessment of growth." Endotext [Internet].</li>
+            </ul>
         </div>
 
         <footer class="lesson-footer">
             <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
             <p class="brand">AccrediPro Academy: Pediatric Nutrition Certification</p>
-            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The G.R.O.W. Kids Nutrition Method™ is a proprietary framework.</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Professional Use Only.</p>
         </footer>
     </div>
 </body>
