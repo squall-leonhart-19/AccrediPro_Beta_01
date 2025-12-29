@@ -47,7 +47,8 @@ export async function GET(request: Request) {
     const optins = await prisma.chatOptin.findMany();
     const optinMap = new Map(optins.map((o) => [o.visitorId, o]));
 
-    // Group messages by visitorId
+    // Group messages by email (preferred) or visitorId (fallback)
+    // This merges conversations from the same email even if they have different visitorIds
     const conversationsMap = new Map<string, {
       visitorId: string;
       visitorName: string | null;
@@ -62,12 +63,17 @@ export async function GET(request: Request) {
     messages.forEach((msg) => {
       // Try to get optin data for this visitor
       const optin = optinMap.get(msg.visitorId);
+      const email = optin?.email || msg.visitorEmail;
 
-      if (!conversationsMap.has(msg.visitorId)) {
-        conversationsMap.set(msg.visitorId, {
+      // Use email as key if available, otherwise use visitorId
+      // This ensures same email from different sessions is grouped together
+      const groupKey = email ? `email:${email.toLowerCase()}` : `visitor:${msg.visitorId}`;
+
+      if (!conversationsMap.has(groupKey)) {
+        conversationsMap.set(groupKey, {
           visitorId: msg.visitorId,
           visitorName: optin?.name || msg.visitorName,
-          visitorEmail: optin?.email || msg.visitorEmail,
+          visitorEmail: email,
           page: msg.page,
           messages: [],
           lastMessage: msg.message,
@@ -76,15 +82,15 @@ export async function GET(request: Request) {
         });
       }
 
-      const conv = conversationsMap.get(msg.visitorId)!;
+      const conv = conversationsMap.get(groupKey)!;
       conv.messages.push(msg);
 
       // Update visitor info if we have it (from optin or message)
       if (!conv.visitorName) {
         conv.visitorName = optin?.name || msg.visitorName || null;
       }
-      if (!conv.visitorEmail) {
-        conv.visitorEmail = optin?.email || msg.visitorEmail || null;
+      if (!conv.visitorEmail && email) {
+        conv.visitorEmail = email;
       }
 
       if (msg.isFromVisitor && !msg.isRead) {
