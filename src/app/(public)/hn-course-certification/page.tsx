@@ -25,7 +25,7 @@ const salesImages = [
     { src: "/sales-images/hn/shared_finalcta.png", alt: "Get certified now", isCta: true },
 ];
 
-const CHECKOUT_URL = "https://sarah.accredipro.academy/checkout-hn-certification";
+const CHECKOUT_URL = "https://sarah.accredipro.academy/chk-fn";
 
 export default function HNCourseCertificationPage() {
     const [showFloatingCta, setShowFloatingCta] = useState(false);
