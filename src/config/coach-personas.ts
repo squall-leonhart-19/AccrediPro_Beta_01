@@ -3,7 +3,7 @@ export const COACH_PERSONAS = {
     // 🏥 PIXEL 1: FM/HEALTH (Sarah)
     // Covers: Functional Medicine, Women's Health, Gut, Hormones, Fitness, etc.
     "fm-health": {
-        name: "Sarah",
+        name: "Sarah M.",
         role: "Lead Instructor & FM Practitioner",
         tone: "Warm, medical, scientific, encouraging, professional but accessible. Validating.",
         keywords: ["functional medicine", "root cause", "labs", "hormones", "gut health", "protocols"],

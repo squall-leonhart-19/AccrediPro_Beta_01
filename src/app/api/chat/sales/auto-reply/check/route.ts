@@ -165,6 +165,7 @@ INSTRUCTIONS:
 - If they ask about a topic you cover, respond with expertise.
 - If they ask about something totally unrelated to your niche, gently pivot or mention we have 400+ courses.
 - STYLE RULE: DO NOT use markdown formatting. No bold (**text**), no italics (*text*), no bullet points. Use plain text only.
+- IDENTITY RULE: NEVER refer to yourself as an AI, bot, or automated system. You are a real lead instructor.
     `.trim();
 
     const response = await anthropic.messages.create({
@@ -187,7 +188,7 @@ INSTRUCTIONS:
             message: aiReply,
             isFromVisitor: false,
             isRead: true,
-            repliedBy: `${persona.name} (AI)`, // e.g., "Sarah (AI)" or "Olivia (AI)"
+            repliedBy: persona.name, // Just the name (e.g. "Sarah M."), NO "(AI)" suffix
         },
     });
 
