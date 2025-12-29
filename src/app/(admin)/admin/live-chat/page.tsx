@@ -82,6 +82,7 @@ export default function LiveChatAdminPage() {
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [triggeringAutoReply, setTriggeringAutoReply] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchConversations = async () => {
@@ -198,6 +199,27 @@ export default function LiveChatAdminPage() {
     }
   };
 
+  const triggerAutoReply = async () => {
+    setTriggeringAutoReply(true);
+    try {
+      const res = await fetch("/api/chat/sales/auto-reply/trigger", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`Auto-reply triggered! Sent ${data.repliesSent || 0} replies.`);
+        await fetchConversations();
+      } else {
+        alert("Failed to trigger auto-reply: " + (data.error || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Failed to trigger auto-reply:", error);
+      alert("Failed to trigger auto-reply");
+    } finally {
+      setTriggeringAutoReply(false);
+    }
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -235,10 +257,21 @@ export default function LiveChatAdminPage() {
           <h1 className="text-2xl font-bold text-gray-900">Live Chat</h1>
           <p className="text-gray-500">Manage sales page conversations</p>
         </div>
-        <Button variant="outline" onClick={fetchConversations}>
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={triggerAutoReply}
+            disabled={triggeringAutoReply}
+            className="bg-purple-50 text-purple-700 hover:bg-purple-100"
+          >
+            <Bot className="w-4 h-4 mr-2" />
+            {triggeringAutoReply ? "Checking..." : "Auto-Reply Now"}
+          </Button>
+          <Button variant="outline" onClick={fetchConversations}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Analytics Dashboard */}
