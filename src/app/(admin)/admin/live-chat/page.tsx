@@ -460,7 +460,7 @@ export default function LiveChatAdminPage() {
                               <Bot className="w-3 h-3" />
                             )}
                             <span className="text-xs opacity-70">
-                              {msg.isFromVisitor ? "Visitor" : (msg.repliedBy || "Sarah (AI)")}
+                              {msg.isFromVisitor ? "Visitor" : (msg.repliedBy || "Sarah M.")}
                             </span>
                           </div>
                           <p className="text-sm whitespace-pre-wrap">{msg.message}</p>

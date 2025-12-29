@@ -111,7 +111,7 @@ export async function GET(request: Request) {
           .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
           .map((msg) => ({
             ...msg,
-            repliedBy: msg.isFromVisitor ? null : (msg.repliedBy || "Sarah"),
+            repliedBy: msg.isFromVisitor ? null : (msg.repliedBy || "Sarah M."),
           })),
       }))
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
