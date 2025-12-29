@@ -33,16 +33,8 @@ import {
 } from "lucide-react";
 import { FM_SPECIALIZATIONS } from "@/lib/specializations-data";
 
-// The 5-Step Career Ladder (Step 0 = Free Mini Diploma Entry)
+// The 4-Step Career Ladder (removed Step 0 - Free Mini Diploma)
 const careerSteps = [
-    {
-        step: 0,
-        title: "Free Mini Diploma",
-        subtitle: "Explore & Discover",
-        description: "Start your journey with a free mini diploma. Discover your specialization and see if this career is for you.",
-        color: "gold",
-        isFree: true,
-    },
     {
         step: 1,
         title: "Certified Practitioner",
@@ -428,7 +420,7 @@ export default async function CareerCenterPage() {
                     {/* Improved Step Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                         {careerSteps.map((step, index) => {
-                            const incomeLabels = ["Free", "$3K-5K/mo", "$5K-10K/mo", "$10K-30K/mo", "$30K-50K+/mo"];
+                            const incomeLabels = ["$3K-5K/mo", "$5K-10K/mo", "$10K-30K/mo", "$30K-50K+/mo"];
                             return (
                                 <div key={step.step} className="relative">
                                     {/* Connector Arrow */}
@@ -439,33 +431,30 @@ export default async function CareerCenterPage() {
                                     )}
 
                                     <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md ${step.color === "gold" ? "border-gold-300 bg-gradient-to-br from-gold-50 to-amber-50 ring-2 ring-gold-200 shadow-md" :
-                                            step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50" :
-                                                step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" :
-                                                    step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50" :
-                                                        "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50"
+                                        step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50" :
+                                            step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" :
+                                                step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50" :
+                                                    "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50"
                                         }`}>
                                         {/* Step Badge */}
                                         <div className="flex items-center justify-between mb-3">
                                             <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${step.color === "gold" ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
-                                                    step.color === "emerald" ? "bg-emerald-500 text-white" :
-                                                        step.color === "amber" ? "bg-amber-500 text-white" :
-                                                            step.color === "blue" ? "bg-blue-500 text-white" :
-                                                                "bg-burgundy-600 text-white"
+                                                step.color === "emerald" ? "bg-emerald-500 text-white" :
+                                                    step.color === "amber" ? "bg-amber-500 text-white" :
+                                                        step.color === "blue" ? "bg-blue-500 text-white" :
+                                                            "bg-burgundy-600 text-white"
                                                 }`}>
-                                                {step.step === 0 ? "START" : `STEP ${step.step}`}
+                                                STEP {step.step}
                                             </div>
-                                            {step.color === "gold" && (
-                                                <Badge className="bg-green-500 text-white text-[10px] px-2 py-0.5 font-bold">FREE</Badge>
-                                            )}
                                         </div>
 
                                         {/* Title & Subtitle */}
                                         <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
                                         <p className={`text-xs font-semibold mb-2 ${step.color === "gold" ? "text-gold-700" :
-                                                step.color === "emerald" ? "text-emerald-700" :
-                                                    step.color === "amber" ? "text-amber-700" :
-                                                        step.color === "blue" ? "text-blue-700" :
-                                                            "text-burgundy-700"
+                                            step.color === "emerald" ? "text-emerald-700" :
+                                                step.color === "amber" ? "text-amber-700" :
+                                                    step.color === "blue" ? "text-blue-700" :
+                                                        "text-burgundy-700"
                                             }`}>{step.subtitle}</p>
 
                                         {/* Description */}
@@ -473,14 +462,14 @@ export default async function CareerCenterPage() {
 
                                         {/* Income Potential */}
                                         <div className={`mt-auto pt-2 border-t ${step.color === "gold" ? "border-gold-200" :
-                                                step.color === "emerald" ? "border-emerald-200" :
-                                                    step.color === "amber" ? "border-amber-200" :
-                                                        step.color === "blue" ? "border-blue-200" :
-                                                            "border-burgundy-200"
+                                            step.color === "emerald" ? "border-emerald-200" :
+                                                step.color === "amber" ? "border-amber-200" :
+                                                    step.color === "blue" ? "border-blue-200" :
+                                                        "border-burgundy-200"
                                             }`}>
                                             <p className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">Earning Potential</p>
                                             <p className={`text-sm font-bold ${step.color === "gold" ? "text-green-600" : "text-green-600"}`}>
-                                                {incomeLabels[step.step]}
+                                                {incomeLabels[index]}
                                             </p>
                                         </div>
                                     </div>
@@ -678,9 +667,9 @@ export default async function CareerCenterPage() {
                                 )}
                                 <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 h-full flex flex-col">
                                     <Badge className={`mb-2 w-fit ${path.stepColor === "emerald" ? "bg-emerald-100 text-emerald-700" :
-                                            path.stepColor === "amber" ? "bg-amber-100 text-amber-700" :
-                                                path.stepColor === "blue" ? "bg-blue-100 text-blue-700" :
-                                                    "bg-burgundy-100 text-burgundy-700"
+                                        path.stepColor === "amber" ? "bg-amber-100 text-amber-700" :
+                                            path.stepColor === "blue" ? "bg-blue-100 text-blue-700" :
+                                                "bg-burgundy-100 text-burgundy-700"
                                         }`}>
                                         {path.step}
                                     </Badge>
