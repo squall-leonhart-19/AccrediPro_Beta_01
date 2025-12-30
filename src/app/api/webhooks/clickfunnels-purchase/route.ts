@@ -3,6 +3,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { sendWelcomeEmail } from "@/lib/email";
+import { verifyEmail } from "@/lib/neverbounce";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 
 /**
@@ -481,12 +482,20 @@ export async function POST(request: NextRequest) {
             console.log(`[CF Purchase] ⏭️ Skipping duplicate email for ${normalizedEmail} (recent webhook found)`);
         } else {
             try {
-                console.log(`[CF Purchase] Sending welcome email to ${normalizedEmail}...`);
-                const emailResult = await sendWelcomeEmail(normalizedEmail, firstName || "Student");
-                if (emailResult.success) {
-                    console.log(`[CF Purchase] ✅ Welcome email sent successfully`);
+                // Verify email with NeverBounce before sending
+                console.log(`[CF Purchase] 🔍 Verifying email with NeverBounce: ${normalizedEmail}`);
+                const emailVerification = await verifyEmail(normalizedEmail);
+
+                if (!emailVerification.isValid) {
+                    console.log(`[CF Purchase] ⏭️ Skipping email to ${normalizedEmail} - NeverBounce result: ${emailVerification.result} (${emailVerification.reason || 'invalid'})`);
                 } else {
-                    console.error(`[CF Purchase] ❌ Welcome email failed:`, emailResult.error);
+                    console.log(`[CF Purchase] ✅ Email verified (${emailVerification.result}), sending welcome email to ${normalizedEmail}...`);
+                    const emailResult = await sendWelcomeEmail(normalizedEmail, firstName || "Student");
+                    if (emailResult.success) {
+                        console.log(`[CF Purchase] ✅ Welcome email sent successfully`);
+                    } else {
+                        console.error(`[CF Purchase] ❌ Welcome email failed:`, emailResult.error);
+                    }
                 }
             } catch (emailError) {
                 console.error("[CF Purchase] ❌ Exception sending welcome email:", emailError);
