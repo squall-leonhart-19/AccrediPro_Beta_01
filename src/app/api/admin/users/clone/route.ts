@@ -36,11 +36,12 @@ export async function POST(request: NextRequest) {
         const newEmailLower = finalNewEmail.toLowerCase();
 
         // Find source user with ALL related data
+        // Note: Using correct relation names from Prisma schema
         const sourceUser = await prisma.user.findUnique({
             where: { email: sourceEmailLower },
             include: {
                 enrollments: true,
-                lessonProgress: true,
+                progress: true,           // LessonProgress - relation name is 'progress'
                 certificates: true,
                 lessonNotes: true,
                 quizAttempts: true,
@@ -116,8 +117,8 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Clone lesson progress
-        for (const prog of sourceUser.lessonProgress) {
+        // Clone lesson progress (relation name is 'progress')
+        for (const prog of sourceUser.progress) {
             try {
                 await prisma.lessonProgress.create({
                     data: {
