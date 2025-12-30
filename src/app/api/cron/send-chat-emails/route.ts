@@ -57,20 +57,16 @@ export async function GET(request: NextRequest) {
             results.processed++;
 
             try {
-                // Check if already a customer (has User with paid enrollment)
+                // Check if already a customer (has User account = purchased)
                 const existingUser = await prisma.user.findUnique({
                     where: { email: optin.email.toLowerCase() },
                 });
 
                 if (existingUser) {
-                    const hasCompletedEnrollment = await prisma.enrollment.findFirst({
-                        where: { userId: existingUser.id, status: "COMPLETED" }
-                    });
-                    if (hasCompletedEnrollment) {
-                        results.alreadyCustomer++;
-                        results.details.push(`${optin.email}: Already customer, skipped`);
-                        continue;
-                    }
+                    // User account = they purchased, skip
+                    results.alreadyCustomer++;
+                    results.details.push(`${optin.email}: Has account (purchased), skipped`);
+                    continue;
                 }
 
                 // Determine which email to send (0-indexed)
