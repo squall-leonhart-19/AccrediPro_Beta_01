@@ -188,7 +188,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
   // Add tag state
   const [addTagDialogOpen, setAddTagDialogOpen] = useState(false);
-  const [newTag, setNewTag] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [addingTag, setAddingTag] = useState(false);
   const [existingTags, setExistingTags] = useState<string[]>([]);
   const [loadingTags, setLoadingTags] = useState(false);
@@ -654,38 +654,54 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
   const openAddTagDialog = (user: User) => {
     setSelectedUser(user);
-    setNewTag("");
+    setSelectedTags([]);
     setTagSearch("");
     setAddTagDialogOpen(true);
     fetchExistingTags();
   };
 
   const handleAddTag = async () => {
-    if (!selectedUser || !newTag.trim()) return;
+    if (!selectedUser || selectedTags.length === 0) return;
     setAddingTag(true);
     try {
-      const response = await fetch("/api/admin/users/tags", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: selectedUser.id,
-          tag: newTag.trim(),
-        }),
-      });
-      if (response.ok) {
+      let successCount = 0;
+      for (const tag of selectedTags) {
+        const response = await fetch("/api/admin/users/tags", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: selectedUser.id,
+            tag: tag.trim(),
+          }),
+        });
+        if (response.ok) {
+          successCount++;
+        }
+      }
+      if (successCount > 0) {
         setAddTagDialogOpen(false);
-        setNewTag("");
+        setSelectedTags([]);
         router.refresh();
+        if (successCount < selectedTags.length) {
+          alert(`Added ${successCount} of ${selectedTags.length} tags. Some may have already existed.`);
+        }
       } else {
-        const data = await response.json();
-        alert(data.error || "Failed to add tag");
+        alert("Failed to add tags");
       }
     } catch (error) {
-      console.error("Failed to add tag:", error);
-      alert("Failed to add tag");
+      console.error("Failed to add tags:", error);
+      alert("Failed to add tags");
     } finally {
       setAddingTag(false);
     }
+  };
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
   };
 
   const handleResetMiniDiploma = async (user: User) => {
@@ -2435,15 +2451,16 @@ export function UsersClient({ users, courses }: UsersClientProps) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Tag className="w-5 h-5 text-green-600" />
-              Add Tag
+              Add Tags
             </DialogTitle>
             <DialogDescription>
               {selectedUser && (
                 <span>
-                  Add a tag to{" "}
+                  Add tags to{" "}
                   <strong>
                     {selectedUser.firstName} {selectedUser.lastName}
                   </strong>
+                  {" "}(click multiple to select)
                 </span>
               )}
             </DialogDescription>
@@ -2453,7 +2470,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Search className="w-4 h-4" />
-                Search Existing Tags
+                Search & Select Tags
               </Label>
               <Input
                 value={tagSearch}
@@ -2464,7 +2481,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
               {loadingTags ? (
                 <div className="text-center py-4 text-gray-500 text-sm">Loading tags...</div>
               ) : (
-                <div className="max-h-40 overflow-y-auto border rounded-lg p-2 bg-gray-50">
+                <div className="max-h-48 overflow-y-auto border rounded-lg p-2 bg-gray-50">
                   {existingTags.length === 0 ? (
                     <p className="text-center text-gray-400 text-sm py-2">No existing tags found</p>
                   ) : (
@@ -2475,13 +2492,13 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                           <button
                             key={tag}
                             type="button"
-                            onClick={() => setNewTag(tag)}
-                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${newTag === tag
+                            onClick={() => toggleTag(tag)}
+                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${selectedTags.includes(tag)
                               ? "bg-green-100 border-green-300 text-green-700"
                               : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
                               }`}
                           >
-                            {tag}
+                            {selectedTags.includes(tag) && "✓ "}{tag}
                           </button>
                         ))}
                       {existingTags.filter((tag) => tag.toLowerCase().includes(tagSearch.toLowerCase())).length === 0 && (
@@ -2493,43 +2510,62 @@ export function UsersClient({ users, courses }: UsersClientProps) {
               )}
             </div>
 
-            {/* Common quick tags */}
+            {/* Custom tag input */}
             <div className="space-y-2">
-              <Label>Quick Select (Common Tags)</Label>
-              <div className="flex flex-wrap gap-2">
-                {COMMON_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => setNewTag(tag)}
-                    className={`px-2 py-1 text-xs rounded-full border transition-colors ${newTag === tag
-                      ? "bg-green-100 border-green-300 text-green-700"
-                      : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
-                      }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
+              <Label htmlFor="tagInput">Add custom tag</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="tagInput"
+                  value={tagSearch}
+                  onChange={(e) => setTagSearch(e.target.value)}
+                  placeholder="Type custom tag and press Add"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && tagSearch.trim() && !selectedTags.includes(tagSearch.trim())) {
+                      e.preventDefault();
+                      setSelectedTags(prev => [...prev, tagSearch.trim()]);
+                      setTagSearch('');
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    if (tagSearch.trim() && !selectedTags.includes(tagSearch.trim())) {
+                      setSelectedTags(prev => [...prev, tagSearch.trim()]);
+                      setTagSearch('');
+                    }
+                  }}
+                  disabled={!tagSearch.trim() || selectedTags.includes(tagSearch.trim())}
+                >
+                  Add
+                </Button>
               </div>
             </div>
 
-            {/* Custom tag input */}
-            <div className="space-y-2">
-              <Label htmlFor="tagInput">Or enter custom tag</Label>
-              <Input
-                id="tagInput"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                placeholder="e.g., vip_customer, referral:john"
-              />
-            </div>
-
-            {/* Selected tag display */}
-            {newTag && (
+            {/* Selected tags display */}
+            {selectedTags.length > 0 && (
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-700">
-                  <strong>Selected tag:</strong> {newTag}
+                <p className="text-sm text-green-700 mb-2">
+                  <strong>Selected ({selectedTags.length}):</strong>
                 </p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedTags.map(tag => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 text-xs rounded-full bg-green-100 border border-green-300 text-green-700 flex items-center gap-1"
+                    >
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTags(prev => prev.filter(t => t !== tag))}
+                        className="ml-1 hover:bg-green-200 rounded-full p-0.5"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -2544,9 +2580,9 @@ export function UsersClient({ users, courses }: UsersClientProps) {
             <Button
               onClick={handleAddTag}
               className="bg-green-600 hover:bg-green-700"
-              disabled={addingTag || !newTag.trim()}
+              disabled={addingTag || selectedTags.length === 0}
             >
-              {addingTag ? "Adding..." : "Add Tag"}
+              {addingTag ? "Adding..." : `Add ${selectedTags.length} Tag${selectedTags.length !== 1 ? 's' : ''}`}
             </Button>
           </DialogFooter>
         </DialogContent>
