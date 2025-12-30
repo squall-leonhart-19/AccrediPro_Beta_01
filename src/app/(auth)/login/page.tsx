@@ -48,6 +48,16 @@ function LoginForm() {
         console.error("[LOGIN ERROR]", result.error);
         if (result.error === "CredentialsSignin") {
           setError("Invalid email or password. Please try again.");
+        } else if (result.error === "Configuration") {
+          // Clear stale session cookies and retry
+          console.log("[LOGIN] Clearing stale session cookies...");
+          document.cookie.split(";").forEach(c => {
+            const name = c.trim().split("=")[0];
+            if (name.startsWith("next-auth") || name.startsWith("__Secure-next-auth")) {
+              document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+            }
+          });
+          setError("Session expired. Please try logging in again.");
         } else {
           setError(result.error);
         }
