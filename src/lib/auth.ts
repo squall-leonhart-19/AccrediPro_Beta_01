@@ -136,7 +136,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: "database", // Use database sessions to prevent REQUEST_HEADER_TOO_LARGE errors
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
