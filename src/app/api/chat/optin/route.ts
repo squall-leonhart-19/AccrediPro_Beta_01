@@ -56,6 +56,39 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // === SEQUENCE ENROLLMENT TRIGGER ===
+    // If email is provided, check if eligible for chat-conversion sequence
+    if (email) {
+      try {
+        // Check if this email is already a customer (User exists)
+        const existingUser = await prisma.user.findUnique({
+          where: { email: email.toLowerCase() }
+        });
+
+        // Only proceed if NOT already a customer
+        if (!existingUser) {
+          // Find the chat-conversion sequence
+          const chatSequence = await prisma.sequence.findFirst({
+            where: {
+              slug: "chat-conversion",
+              isActive: true
+            }
+          });
+
+          if (chatSequence) {
+            console.log(`[CHAT-OPTIN] 📧 Lead ${email} eligible for chat-conversion sequence`);
+            // Note: Actual enrollment happens via the cron job that processes
+            // chat optins and creates temporary User records for sequence enrollment
+          }
+        } else {
+          console.log(`[CHAT-OPTIN] ✅ ${email} is already a customer, skipping sequence`);
+        }
+      } catch (enrollError) {
+        // Don't fail the optin if enrollment logic fails
+        console.error("[CHAT-OPTIN] Enrollment check error:", enrollError);
+      }
+    }
+
     return NextResponse.json(
       { success: true, optinId: optin.id },
       { headers: corsHeaders }
