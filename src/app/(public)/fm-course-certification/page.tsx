@@ -171,8 +171,8 @@ export default function FMCourseCertificationPage() {
             <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#722F37] to-[#8B3A42] shadow-lg">
                 <div className="max-w-[1080px] mx-auto px-4 py-2.5 flex items-center justify-between text-white">
                     <div className="flex items-center gap-2 text-sm">
-                        <span>🎄</span>
-                        <span className="font-bold">CHRISTMAS SALE: 80% OFF</span>
+                        <span>🎉</span>
+                        <span className="font-bold">NEW YEAR SALE: 80% OFF</span>
                         <span className="hidden sm:inline">— Ends Soon!</span>
                         <span className="mx-2 opacity-50">|</span>
                         <span className="hidden sm:flex items-center gap-1">
