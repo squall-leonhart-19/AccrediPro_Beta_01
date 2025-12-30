@@ -2900,6 +2900,509 @@ Sarah
 
 P.S. 96% of people who reach this point pass on their first try. You've got this.`,
   },
+
+  // ============================================
+  // CHAT-TO-CONVERSION SEQUENCE
+  // For people who engaged in live chat but haven't purchased
+  // Branded HTML with Re: subject strategy
+  // 5 emails (immediate, day 1, day 2, day 3, final) x 3 versions each
+  // ============================================
+
+  // ===== CHAT CONVERSION EMAIL 1: IMMEDIATE FOLLOW-UP (Same Day) =====
+
+  // Version A - Warm & Personal
+  {
+    id: 48,
+    name: "Chat Conversion 1A: Same Day - Warm Personal",
+    day: 0,
+    originalSubject: "following up on our chat...",
+    subject: "Re: following up on our conversation",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+It was great chatting with you earlier today.
+
+I could tell from our conversation that you're serious about making a change - not just "thinking about it" like most people, but actually ready to do something about it.
+
+<strong>That's rare. And it matters.</strong>
+
+If there's anything I didn't answer clearly, or if you've thought of more questions since we talked, just reply to this email. I'm here.
+
+I also want you to know: there's no pressure from me. This path isn't for everyone. But for the right person - someone like you, who's tired of the conventional approach and ready for something different - it can be genuinely transformational.
+
+Whatever you decide, I'm glad we connected.
+
+Sarah
+
+P.S. If you're ready to take the next step, here's the link: https://sarah.accredipro.academy/checkout-fm-certification`,
+  },
+
+  // Version B - Curiosity-Driven
+  {
+    id: 49,
+    name: "Chat Conversion 1B: Same Day - Curiosity",
+    day: 0,
+    originalSubject: "one thing I forgot to mention...",
+    subject: "Re: one thing I forgot to mention",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+After we chatted, I realized there's something I forgot to tell you.
+
+<strong>Most people who are where you are right now have the same worry:</strong>
+
+"Can I actually do this? Is this really going to work for ME?"
+
+I had that same fear when I started. Every single one of our successful graduates had it too.
+
+Here's what I've learned: The fear doesn't go away until you start. Then it turns into something else - confidence.
+
+Maria was terrified when she enrolled. Now she earns $12,000/month.
+Diane thought she was "too old" at 62. Now she has her own practice.
+Kelly had zero business experience. Now she has a waitlist.
+
+<strong>Fear is normal. It's not a reason to stop - it's a sign you're at the edge of something big.</strong>
+
+If you want to talk more about this, just reply. I'm here.
+
+Sarah`,
+  },
+
+  // Version C - Direct & Value-Focused
+  {
+    id: 50,
+    name: "Chat Conversion 1C: Same Day - Direct Value",
+    day: 0,
+    originalSubject: "quick summary from our chat",
+    subject: "Re: quick summary",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+Thanks for taking the time to chat with me today.
+
+<strong>Here's what I heard from you:</strong>
+
+You're tired of the conventional approach. You know there's something more. And you're ready to do the work - you just want to make sure this is the right path.
+
+<strong>Here's what I want you to know:</strong>
+
+The certification isn't magic. It's work. Real training that takes 8-12 weeks to complete properly.
+
+But it works. Our graduates consistently earn $3,000-$12,000/month helping people who've been failed by the conventional system.
+
+The question isn't whether it works. The question is whether you're ready to do the work.
+
+Based on our chat - I think you are.
+
+If you have more questions, hit reply. Otherwise, here's where to start:
+
+https://sarah.accredipro.academy/checkout-fm-certification
+
+Sarah`,
+  },
+
+  // ===== CHAT CONVERSION EMAIL 2: DAY 1 FOLLOW-UP =====
+
+  // Version A - Story-Based
+  {
+    id: 51,
+    name: "Chat Conversion 2A: Day 1 - Story",
+    day: 1,
+    originalSubject: "thinking about you...",
+    subject: "Re: been thinking about our conversation",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+I woke up this morning thinking about our chat yesterday.
+
+Not because I'm trying to sell you something. But because something you said stuck with me.
+
+<strong>You reminded me of myself, three years ago.</strong>
+
+I was in the same place - curious about functional medicine, unsure if it was right for me, wondering if I could actually make it work.
+
+What I didn't know then, that I know now:
+
+The hesitation I felt wasn't wisdom. It was fear dressed up as caution.
+
+The "right time" I was waiting for? It never came. I just eventually decided to stop waiting.
+
+<strong>{{firstName}}, I'm not going to tell you what to do.</strong> But I will say this: the women who succeed in this work aren't special. They're just the ones who decided to try.
+
+If you want to talk more, I'm here.
+
+Sarah`,
+  },
+
+  // Version B - Social Proof
+  {
+    id: 52,
+    name: "Chat Conversion 2B: Day 1 - Social Proof",
+    day: 1,
+    originalSubject: "what other students say...",
+    subject: "Re: thought you'd want to see this",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+I wanted to share something with you.
+
+After our chat yesterday, I thought about what might help you decide. So I went back through recent student messages.
+
+<strong>Here's what Jennifer from Ohio wrote last week:</strong>
+
+"I was SO skeptical. I'd tried other programs before. But this was different - real clinical training, not just fluffy wellness content. I got my first paying client in month 2. Now I earn more from my practice than my corporate job paid. I wish I'd started sooner."
+
+<strong>And this from Rosa in Texas:</strong>
+
+"I was scared I was too old to learn something new. I'm 58. Turns out, my life experience was an advantage. Clients trust me BECAUSE of my age. I'm fully booked."
+
+{{firstName}}, I'm sharing these because I want you to see yourself in them.
+
+These aren't unicorns. They're regular women who decided to try.
+
+Your choice, always.
+
+Sarah`,
+  },
+
+  // Version C - Objection Crusher
+  {
+    id: 53,
+    name: "Chat Conversion 2C: Day 1 - Objection Crusher",
+    day: 1,
+    originalSubject: "the fear you didn't mention...",
+    subject: "Re: the thing you didn't say",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+Can I be honest with you about something?
+
+When we chatted yesterday, I sensed there was something you weren't quite saying.
+
+I could be wrong. But usually when someone is clearly interested but hasn't enrolled, there's a fear underneath.
+
+<strong>Let me take a guess at what it might be:</strong>
+
+- "What if I invest time and money and it doesn't work?"
+- "What if I can't actually get clients?"
+- "What if I'm not smart enough to learn this?"
+- "What if my family thinks I'm crazy?"
+
+{{firstName}}, every single one of our successful graduates had at least one of those fears.
+
+<strong>Here's what I know:</strong>
+
+The fear is real. But it's not predictive. The women who succeed aren't fearless - they're the ones who feel the fear and do it anyway.
+
+If any of this resonates, just reply and tell me what's holding you back. I might be able to help.
+
+Sarah`,
+  },
+
+  // ===== CHAT CONVERSION EMAIL 3: DAY 2 FOLLOW-UP =====
+
+  // Version A - FAQ-Based
+  {
+    id: 54,
+    name: "Chat Conversion 3A: Day 2 - FAQ",
+    day: 2,
+    originalSubject: "questions I usually get...",
+    subject: "Re: questions you might have",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+I wanted to answer some questions you might be thinking about (even if you haven't asked them yet).
+
+<strong>"How long does it take?"</strong>
+8-12 weeks if you study 5-7 hours/week. It's self-paced, so you can go faster or slower.
+
+<strong>"What if I'm not from a medical background?"</strong>
+About 60% of our students aren't. We teach everything from the ground up.
+
+<strong>"Can I really get clients?"</strong>
+Yes. We include client acquisition training. Most students get their first paying client within 90 days of finishing.
+
+<strong>"Is $997 a lot?"</strong>
+For a certification that pays for itself with your first 2-3 clients? No. For something that changes your career trajectory? It's actually quite reasonable.
+
+<strong>"What if it's not for me?"</strong>
+30-day money-back guarantee. No risk.
+
+Any other questions? Just hit reply.
+
+Sarah
+
+P.S. Enrollment link when you're ready: https://sarah.accredipro.academy/checkout-fm-certification`,
+  },
+
+  // Version B - Challenge-Based
+  {
+    id: 55,
+    name: "Chat Conversion 3B: Day 2 - Challenge",
+    day: 2,
+    originalSubject: "can I ask you something real?",
+    subject: "Re: honest question for you",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+I have a real question for you. Not a sales question - a life question.
+
+<strong>A year from now, where do you want to be?</strong>
+
+Be honest with yourself.
+
+Same job? Same routine? Same frustrations about wanting more but not knowing how to get there?
+
+Or somewhere different?
+
+I ask because I see this all the time: people who are curious, interested, even excited - but they never pull the trigger. A year passes. Nothing changes. They're still "thinking about it."
+
+<strong>{{firstName}}, thinking doesn't change anything. Doing does.</strong>
+
+I'm not saying the certification is definitely right for you. Maybe it's not.
+
+But if some part of you knows you need a change - and you felt something click during our chat - then maybe the "thinking" phase is over.
+
+Maybe it's time to decide.
+
+Just my two cents. No pressure either way.
+
+Sarah`,
+  },
+
+  // Version C - Future Vision
+  {
+    id: 56,
+    name: "Chat Conversion 3C: Day 2 - Future Vision",
+    day: 2,
+    originalSubject: "imagining your future...",
+    subject: "Re: picture this",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+Close your eyes for a second. (Well, after you read this.)
+
+<strong>Picture yourself one year from now:</strong>
+
+You wake up without an alarm. No commute. You check your schedule - three client calls today, each paying $200-$400.
+
+You're helping people who've been dismissed by every doctor they've seen. You're the one who finally listened. Who actually helped.
+
+Your bank account looks different. So does your stress level. So does the way your family talks about "Mom's work."
+
+<strong>This isn't fantasy. This is what our graduates actually describe.</strong>
+
+The path from where you are now to that picture? It starts with a decision.
+
+The certification takes 8-12 weeks. First clients usually come within 90 days of finishing. Full practice? 6-12 months.
+
+One year. That's all it takes to be living a completely different life.
+
+The question is: will you start?
+
+Sarah`,
+  },
+
+  // ===== CHAT CONVERSION EMAIL 4: DAY 3 FOLLOW-UP =====
+
+  // Version A - Urgency + Scarcity
+  {
+    id: 57,
+    name: "Chat Conversion 4A: Day 3 - Urgency",
+    day: 3,
+    originalSubject: "the sale ends soon...",
+    subject: "Re: wanted to let you know",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+Quick heads up.
+
+The New Year Sale (80% OFF the certification) ends in 48 hours.
+
+After that, the price goes back to $497.
+
+I'm not big on pressure tactics. If you're not ready, you're not ready. But if you ARE ready, and you're just procrastinating...
+
+<strong>This is your sign to stop.</strong>
+
+$97 vs $497 is a significant difference. That's the cost of a nice dinner vs. the cost of a plane ticket.
+
+The training is the same either way. The only difference is when you decide.
+
+https://sarah.accredipro.academy/checkout-fm-certification
+
+If you have questions before deciding, hit reply. I'll answer today.
+
+Sarah`,
+  },
+
+  // Version B - Risk Reversal
+  {
+    id: 58,
+    name: "Chat Conversion 4B: Day 3 - Risk Reversal",
+    day: 3,
+    originalSubject: "about your risk...",
+    subject: "Re: about the risk",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+Let me remove the risk for you.
+
+<strong>Here's our guarantee:</strong>
+
+Start the certification. If within 30 days you decide it's not for you - for any reason - email us and get a full refund. No questions. No hassle. No guilt trip.
+
+<strong>So what's the actual risk?</strong>
+
+If it works: New career. New income. New life trajectory.
+If it doesn't: You get your money back. No harm done.
+
+The only real risk is NOT trying - and spending another year wondering "what if."
+
+{{firstName}}, I've been where you are. Scared to invest. Scared to fail. Scared to try.
+
+The fear doesn't go away. You just learn that it's not a reason to stop.
+
+https://sarah.accredipro.academy/checkout-fm-certification
+
+Here when you're ready.
+
+Sarah`,
+  },
+
+  // Version C - Last Chance Personal
+  {
+    id: 59,
+    name: "Chat Conversion 4C: Day 3 - Last Chance",
+    day: 3,
+    originalSubject: "my final thoughts...",
+    subject: "Re: final thoughts from me",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+This will probably be my last email about this.
+
+I don't like being pushy, and you've heard what I have to say.
+
+<strong>But before I go quiet, I want you to know something:</strong>
+
+I believe in you.
+
+Not in a cheesy motivational-poster way. But in a "I've talked to hundreds of women like you and I know what you're capable of" way.
+
+The women who succeed in this work aren't more talented than you. They're not smarter. They just decided to try.
+
+<strong>{{firstName}}, you could be one of them.</strong>
+
+Or you could close this email, go back to your day, and keep wondering.
+
+Both are valid choices. But only one of them leads somewhere new.
+
+If you want in: https://sarah.accredipro.academy/checkout-fm-certification
+
+If not, I understand. And I hope our paths cross again.
+
+With genuine respect,
+Sarah`,
+  },
+
+  // ===== CHAT CONVERSION EMAIL 5: FINAL (Day 5) =====
+
+  // Version A - Last Call Urgent
+  {
+    id: 60,
+    name: "Chat Conversion 5A: Final - Last Call",
+    day: 5,
+    originalSubject: "last call...",
+    subject: "Re: final notice",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+The New Year Sale ends tonight at midnight.
+
+After that, the price goes from $97 to $497.
+
+<strong>I'm not going to recap everything. You know what this is. You know what it offers.</strong>
+
+The only question is: are you going to do something about it, or are you going to let another opportunity pass?
+
+No judgment either way. Only you know what's right for you.
+
+If you're in: https://sarah.accredipro.academy/checkout-fm-certification
+
+If not: I'll stop emailing. No hard feelings.
+
+Whatever you decide, I hope 2025 is your year.
+
+Sarah`,
+  },
+
+  // Version B - Supportive Close
+  {
+    id: 61,
+    name: "Chat Conversion 5B: Final - Supportive Close",
+    day: 5,
+    originalSubject: "one last thing...",
+    subject: "Re: before I go",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+This is my last email about the certification. I promise.
+
+<strong>I wanted to leave you with this:</strong>
+
+Whatever you decide - enroll, don't enroll, do something else entirely - you have my respect.
+
+Making changes is hard. Considering changes is hard. Even reading these emails takes time and energy you could spend elsewhere.
+
+The fact that you're still here, still reading, still thinking about it... that says something good about you.
+
+<strong>If you're ready to start:</strong> https://sarah.accredipro.academy/checkout-fm-certification
+
+<strong>If you're not ready yet:</strong> Your curiosity won't disappear. When the time is right, you'll know.
+
+Either way, I'm rooting for you.
+
+Sarah
+
+P.S. The sale ends tonight. Just so you know.`,
+  },
+
+  // Version C - Clean Goodbye
+  {
+    id: 62,
+    name: "Chat Conversion 5C: Final - Clean Goodbye",
+    day: 5,
+    originalSubject: "goodbye (for now)",
+    subject: "Re: goodbye for now",
+    useHtmlBranding: true,
+    content: `{{firstName}},
+
+Sale ends tonight. This is my last email.
+
+<strong>Quick summary of what's on the table:</strong>
+
+- Certified Functional Medicine Practitioner training
+- 21 comprehensive modules
+- Client acquisition system included
+- $97 today, $497 after midnight
+- 30-day money-back guarantee
+
+<strong>What students typically achieve:</strong>
+
+- First paying clients within 90 days
+- $3,000-$12,000/month income potential
+- Career you actually control
+
+The decision is yours.
+
+If it's a yes: https://sarah.accredipro.academy/checkout-fm-certification
+
+If it's a no: Thank you for your time. I mean that sincerely.
+
+All the best,
+Sarah`,
+  },
 ];
 
 // GET - Return all variants info
