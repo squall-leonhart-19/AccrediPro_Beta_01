@@ -36,12 +36,11 @@ export async function POST(request: NextRequest) {
         const newEmailLower = finalNewEmail.toLowerCase();
 
         // Find source user with ALL related data
-        // Note: Using correct relation names from Prisma schema
         const sourceUser = await prisma.user.findUnique({
             where: { email: sourceEmailLower },
             include: {
                 enrollments: true,
-                progress: true,           // LessonProgress - relation name is 'progress'
+                progress: true,
                 certificates: true,
                 lessonNotes: true,
                 quizAttempts: true,
@@ -54,6 +53,16 @@ export async function POST(request: NextRequest) {
         if (!sourceUser) {
             return NextResponse.json({ error: "Source user not found" }, { status: 404 });
         }
+
+        // Log what we found
+        console.log(`[CLONE] Source user ${sourceEmailLower} has:`, {
+            enrollments: sourceUser.enrollments.length,
+            progress: sourceUser.progress.length,
+            certificates: sourceUser.certificates.length,
+            quizAttempts: sourceUser.quizAttempts.length,
+            marketingTags: sourceUser.marketingTags.length,
+            lessonNotes: sourceUser.lessonNotes.length,
+        });
 
         // If same email, rename the old account first
         if (sourceEmailLower === newEmailLower) {
@@ -98,6 +107,8 @@ export async function POST(request: NextRequest) {
             lessonNotes: 0,
         };
 
+        const errors: string[] = [];
+
         // Clone enrollments
         for (const enrollment of sourceUser.enrollments) {
             try {
@@ -112,12 +123,12 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 cloneStats.enrollments++;
-            } catch (e) {
-                console.error("Clone enrollment error:", e);
+            } catch (e: any) {
+                errors.push(`Enrollment: ${e.message}`);
             }
         }
 
-        // Clone lesson progress (relation name is 'progress')
+        // Clone lesson progress
         for (const prog of sourceUser.progress) {
             try {
                 await prisma.lessonProgress.create({
@@ -133,8 +144,8 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 cloneStats.lessonProgress++;
-            } catch (e) {
-                console.error("Clone progress error:", e);
+            } catch (e: any) {
+                errors.push(`Progress: ${e.message}`);
             }
         }
 
@@ -153,8 +164,8 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 cloneStats.certificates++;
-            } catch (e) {
-                console.error("Clone certificate error:", e);
+            } catch (e: any) {
+                errors.push(`Certificate: ${e.message}`);
             }
         }
 
@@ -172,8 +183,8 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 cloneStats.quizAttempts++;
-            } catch (e) {
-                console.error("Clone quiz error:", e);
+            } catch (e: any) {
+                errors.push(`Quiz: ${e.message}`);
             }
         }
 
@@ -189,8 +200,8 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 cloneStats.marketingTags++;
-            } catch (e) {
-                console.error("Clone tag error:", e);
+            } catch (e: any) {
+                errors.push(`Tag ${userTag.tag.slug}: ${e.message}`);
             }
         }
 
@@ -205,19 +216,31 @@ export async function POST(request: NextRequest) {
                     }
                 });
                 cloneStats.lessonNotes++;
-            } catch (e) {
-                console.error("Clone note error:", e);
+            } catch (e: any) {
+                errors.push(`Note: ${e.message}`);
             }
         }
 
         console.log(`[CLONE] Cloned user ${sourceEmail} to ${newEmailLower} by admin ${session.user.email}`, cloneStats);
+        if (errors.length > 0) {
+            console.error(`[CLONE] Errors:`, errors);
+        }
 
         return NextResponse.json({
             success: true,
             message: `Cloned ${sourceEmail} to ${newEmailLower}`,
             newUserId: newUser.id,
             newPassword: finalPassword,
-            cloned: cloneStats
+            sourceData: {
+                enrollments: sourceUser.enrollments.length,
+                progress: sourceUser.progress.length,
+                certificates: sourceUser.certificates.length,
+                quizAttempts: sourceUser.quizAttempts.length,
+                marketingTags: sourceUser.marketingTags.length,
+                lessonNotes: sourceUser.lessonNotes.length,
+            },
+            cloned: cloneStats,
+            errors: errors.length > 0 ? errors : undefined,
         });
 
     } catch (error) {
