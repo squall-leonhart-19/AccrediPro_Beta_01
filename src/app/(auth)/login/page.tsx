@@ -23,6 +23,7 @@ function LoginForm() {
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const registered = searchParams.get("registered");
   const reset = searchParams.get("reset");
+  const expired = searchParams.get("expired");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -148,6 +149,16 @@ function LoginForm() {
             <div>
               <p className="font-medium">Password reset successful!</p>
               <p className="text-green-600">You can now sign in with your new password.</p>
+            </div>
+          </div>
+        )}
+
+        {expired && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium">Session refreshed</p>
+              <p className="text-amber-600">Please sign in again to continue.</p>
             </div>
           </div>
         )}

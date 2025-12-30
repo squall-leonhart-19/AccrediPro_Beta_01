@@ -41,12 +41,20 @@ export async function GET(request: NextRequest) {
       details: [] as string[],
     };
 
-    // Find all enrollments ready to send
+    // Find all enrollments ready to send (exclude users with bounced/suppressed tags)
     const enrollments = await prisma.sequenceEnrollment.findMany({
       where: {
         status: "ACTIVE",
-        nextSendAt: {
-          lte: now,
+        nextSendAt: { lte: now },
+        // Exclude users with bounced/suppressed marketing tags
+        user: {
+          marketingTags: {
+            none: {
+              tag: {
+                slug: { in: ["bounced", "suppressed"] },
+              },
+            },
+          },
         },
       },
       include: {
@@ -69,7 +77,6 @@ export async function GET(request: NextRequest) {
       },
       take: 50, // Process max 50 per run to avoid timeouts
     });
-
     console.log(`[CRON-EMAIL] Found ${enrollments.length} enrollments ready to send`);
 
     for (const enrollment of enrollments) {

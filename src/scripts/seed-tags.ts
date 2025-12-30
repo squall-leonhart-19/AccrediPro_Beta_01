@@ -16,7 +16,9 @@ const TAGS_TO_CREATE = [
     'fm_pro_master_depth_purchased',
     'fm_pro_advanced_clinical_purchased',
     'clickfunnels_purchase', // Exists but good to ensure
-    'functional_medicine_complete_certification_purchased'
+    'functional_medicine_complete_certification_purchased',
+    'bounced',
+    'suppressed'
 ];
 
 async function main() {
@@ -28,6 +30,8 @@ async function main() {
         // Check if exists
         const existing = await prisma.marketingTag.findUnique({ where: { slug } });
 
+        const isSuppression = slug === 'bounced' || slug === 'suppressed';
+
         if (existing) {
             console.log(`- ${slug}: ✅ Already exists`);
         } else {
@@ -35,9 +39,9 @@ async function main() {
                 data: {
                     slug,
                     name: name,
-                    category: 'CUSTOM', // Use valid category
-                    color: '#3b82f6', // Blue
-                    description: 'Imported from ClickFunnels/Previous System'
+                    category: isSuppression ? 'SUPPRESS' : 'CUSTOM',
+                    color: isSuppression ? '#ef4444' : '#3b82f6', // Red for suppress, Blue for others
+                    description: isSuppression ? 'Email suppression tag' : 'Imported from ClickFunnels/Previous System'
                 }
             });
             console.log(`- ${slug}: ✨ Created`);
