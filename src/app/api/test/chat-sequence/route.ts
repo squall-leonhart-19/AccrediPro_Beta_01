@@ -1,23 +1,47 @@
 import { NextResponse } from "next/server";
 import { sendMarketingEmail, personalEmailWrapper, brandedEmailWrapper } from "@/lib/email";
+import { NURTURE_EMAILS } from "@/lib/nurture-emails";
 
 /**
- * Test endpoint for chat follow-up email sequence
+ * Test endpoint for email sequence testing
  * GET: Send test email to verify inbox placement
  * ?style=branded or ?style=personal (default: branded)
+ * ?nurture=1-17 to send nurture sequence emails
+ * ?num=1-3 to send chat follow-up emails
  */
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get("email") || "at.seed019@gmail.com";
     const emailNum = parseInt(searchParams.get("num") || "1");
+    const nurtureNum = searchParams.get("nurture"); // 1-17
     const style = searchParams.get("style") || "branded"; // branded or personal
 
-    // Chat follow-up sequence emails
-    const emails = [
-        {
-            subject: "Hey, following up on our chat...",
-            content: `Hi there!
+    let subject: string;
+    let content: string;
+
+    if (nurtureNum) {
+        // Use nurture sequence email
+        const idx = parseInt(nurtureNum) - 1;
+        const nurtureEmail = NURTURE_EMAILS[idx];
+        if (!nurtureEmail) {
+            return NextResponse.json({
+                success: false,
+                error: `Nurture email ${nurtureNum} not found (valid: 1-${NURTURE_EMAILS.length})`
+            }, { status: 400 });
+        }
+        subject = nurtureEmail.subject;
+        content = nurtureEmail.content
+            .replace(/\{\{firstName\}\}/g, "Test")
+            .replace(/\{\{lastName\}\}/g, "User")
+            .replace(/\{\{email\}\}/g, email)
+            .replace(/\{\{fullName\}\}/g, "Test User");
+    } else {
+        // Use chat follow-up emails
+        const emails = [
+            {
+                subject: "Hey, following up on our chat...",
+                content: `Hi there!
 
 It's Sarah from AccrediPro Academy.
 
@@ -32,10 +56,10 @@ Sarah M.
 Lead Instructor, AccrediPro Academy
 
 P.S. If you're ready to enroll, here's the link: https://sarah.accredipro.academy/checkout-fm-certification`
-        },
-        {
-            subject: "Quick question for you...",
-            content: `Hey!
+            },
+            {
+                subject: "Quick question for you...",
+                content: `Hey!
 
 Just a quick follow-up - did you see my last email?
 
@@ -50,10 +74,10 @@ I'd love to help you achieve similar results.
 Any questions? Just hit reply.
 
 Sarah`
-        },
-        {
-            subject: "Last chance (ends tonight)",
-            content: `Hi,
+            },
+            {
+                subject: "Last chance (ends tonight)",
+                content: `Hi,
 
 This is my last email about this.
 
@@ -69,24 +93,28 @@ Whatever you decide, I wish you the best on your health journey.
 
 Sarah M.
 AccrediPro Academy`
-        }
-    ];
-
-    const selectedEmail = emails[emailNum - 1] || emails[0];
+            }
+        ];
+        const selectedEmail = emails[emailNum - 1] || emails[0];
+        subject = selectedEmail.subject;
+        content = selectedEmail.content;
+    }
 
     try {
         const wrapper = style === "personal" ? personalEmailWrapper : brandedEmailWrapper;
         const result = await sendMarketingEmail({
             to: email,
-            subject: selectedEmail.subject,
-            html: wrapper(selectedEmail.content),
+            subject,
+            html: wrapper(content),
             replyTo: "sarah@accredipro.academy"
         });
 
         return NextResponse.json({
             success: result.success,
-            message: `Test email ${emailNum} sent to ${email}`,
-            subject: selectedEmail.subject,
+            message: `Email sent to ${email}`,
+            subject,
+            style,
+            type: nurtureNum ? `nurture-${nurtureNum}` : `chat-${emailNum}`,
             error: result.error
         });
     } catch (error) {
