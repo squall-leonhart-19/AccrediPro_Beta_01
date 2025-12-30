@@ -56,36 +56,61 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // === SEQUENCE ENROLLMENT TRIGGER ===
-    // If email is provided, check if eligible for chat-conversion sequence
+    // === TAG APPLICATION & SEQUENCE ENROLLMENT ===
+    // If email is provided, check for User record and apply appropriate tag
     if (email) {
       try {
-        // Check if this email is already a customer (User exists)
+        // Check if this email has a User record
         const existingUser = await prisma.user.findUnique({
-          where: { email: email.toLowerCase() }
+          where: { email: email.toLowerCase() },
+          include: { marketingTags: { select: { tagId: true } } }
         });
 
-        // Only proceed if NOT already a customer
-        if (!existingUser) {
-          // Find the chat-conversion sequence
-          const chatSequence = await prisma.sequence.findFirst({
+        if (existingUser) {
+          // Check if they've completed a course (already customer)
+          const hasCompletedEnrollment = await prisma.enrollment.findFirst({
             where: {
-              slug: "chat-conversion",
-              isActive: true
+              userId: existingUser.id,
+              status: "COMPLETED"
             }
           });
 
-          if (chatSequence) {
-            console.log(`[CHAT-OPTIN] 📧 Lead ${email} eligible for chat-conversion sequence`);
-            // Note: Actual enrollment happens via the cron job that processes
-            // chat optins and creates temporary User records for sequence enrollment
+          if (!hasCompletedEnrollment) {
+            // Find the chat_lead tag
+            const chatLeadTag = await prisma.marketingTag.findFirst({
+              where: { name: "chat_lead" }
+            });
+
+            if (chatLeadTag) {
+              // Check if already has this tag
+              const hasTag = existingUser.marketingTags.some(t => t.tagId === chatLeadTag.id);
+
+              if (!hasTag) {
+                await prisma.userMarketingTag.create({
+                  data: {
+                    userId: existingUser.id,
+                    tagId: chatLeadTag.id,
+                    source: "chat_optin",
+                  }
+                });
+                console.log(`[CHAT-OPTIN] 🏷️ Applied chat_lead tag to ${email}`);
+              }
+            }
+
+            // Check if chat-conversion sequence is active
+            const chatSequence = await prisma.sequence.findFirst({
+              where: { slug: "chat-conversion", isActive: true }
+            });
+            if (chatSequence) {
+              console.log(`[CHAT-OPTIN] 📧 Lead ${email} eligible for chat-conversion sequence`);
+            }
+          } else {
+            console.log(`[CHAT-OPTIN] ✅ ${email} is already a customer, skipping tag/sequence`);
           }
-        } else {
-          console.log(`[CHAT-OPTIN] ✅ ${email} is already a customer, skipping sequence`);
         }
       } catch (enrollError) {
-        // Don't fail the optin if enrollment logic fails
-        console.error("[CHAT-OPTIN] Enrollment check error:", enrollError);
+        // Don't fail the optin if tag/enrollment logic fails
+        console.error("[CHAT-OPTIN] Tag/enrollment error:", enrollError);
       }
     }
 
