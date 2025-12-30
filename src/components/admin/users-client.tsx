@@ -223,6 +223,17 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     "mini_diploma_completed",
   ];
 
+  // Tag packs for one-click application
+  const TAG_PACKS = {
+    "FM Pro Pack": [
+      "fm_pro_practice_path_purchased",
+      "fm_pro_master_depth_purchased",
+      "fm_pro_advanced_clinical_purchased",
+      "clickfunnels_purchase",
+      "functional_medicine_complete_certification_purchased",
+    ],
+  };
+
   // Fetch existing tags when dialog opens
   const fetchExistingTags = async () => {
     setLoadingTags(true);
@@ -2372,6 +2383,46 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                       </div>
                     </div>
                   )}
+
+                  {/* Tag Packs - One-click bundles */}
+                  <p className="text-xs text-gray-500 mt-2 font-semibold">📦 Tag Packs (one-click):</p>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {Object.entries(TAG_PACKS).map(([packName, packTags]) => {
+                      const allSelected = packTags.every(tag => newUserData.tags.includes(tag));
+                      return (
+                        <button
+                          key={packName}
+                          type="button"
+                          onClick={() => {
+                            setNewUserData(prev => {
+                              if (allSelected) {
+                                // Remove all pack tags
+                                return {
+                                  ...prev,
+                                  tags: prev.tags.filter(t => !packTags.includes(t))
+                                };
+                              } else {
+                                // Add all pack tags (avoiding duplicates)
+                                const newTags = [...prev.tags];
+                                packTags.forEach(tag => {
+                                  if (!newTags.includes(tag)) {
+                                    newTags.push(tag);
+                                  }
+                                });
+                                return { ...prev, tags: newTags };
+                              }
+                            });
+                          }}
+                          className={`px-3 py-1.5 text-xs rounded-lg border-2 transition-all font-medium ${allSelected
+                            ? "bg-green-100 border-green-500 text-green-700"
+                            : "bg-gradient-to-r from-burgundy-50 to-burgundy-100 border-burgundy-300 text-burgundy-700 hover:border-burgundy-500"
+                            }`}
+                        >
+                          {allSelected ? "✓ " : "🏷️ "}{packName} ({packTags.length} tags)
+                        </button>
+                      );
+                    })}
+                  </div>
 
                   {/* Quick select common tags */}
                   <p className="text-xs text-gray-500 mt-2">Quick select:</p>
