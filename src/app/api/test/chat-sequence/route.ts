@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
-import { sendMarketingEmail, personalEmailWrapper } from "@/lib/email";
+import { sendMarketingEmail, personalEmailWrapper, brandedEmailWrapper } from "@/lib/email";
 
 /**
  * Test endpoint for chat follow-up email sequence
  * GET: Send test email to verify inbox placement
+ * ?style=branded or ?style=personal (default: branded)
  */
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get("email") || "at.seed019@gmail.com";
     const emailNum = parseInt(searchParams.get("num") || "1");
+    const style = searchParams.get("style") || "branded"; // branded or personal
 
     // Chat follow-up sequence emails
     const emails = [
@@ -73,10 +75,11 @@ AccrediPro Academy`
     const selectedEmail = emails[emailNum - 1] || emails[0];
 
     try {
+        const wrapper = style === "personal" ? personalEmailWrapper : brandedEmailWrapper;
         const result = await sendMarketingEmail({
             to: email,
             subject: selectedEmail.subject,
-            html: personalEmailWrapper(selectedEmail.content),
+            html: wrapper(selectedEmail.content),
             replyTo: "sarah@accredipro.academy"
         });
 
