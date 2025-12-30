@@ -53,10 +53,17 @@ export async function GET() {
       }
     }
 
+    // Get MarketingTags
+    const marketingTags = await prisma.marketingTag.findMany({
+      select: { slug: true },
+      distinct: ["slug"],
+    });
+
     // Combine all tags and remove duplicates
     const allTags = [
       ...new Set([
         ...tags.map((t) => t.tag),
+        ...marketingTags.map((mt) => mt.slug),
         ...suggestedFromLeadSource,
       ]),
     ].sort();

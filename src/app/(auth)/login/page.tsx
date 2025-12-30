@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -31,6 +31,47 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Nuclear Cookie Cleaner: Run immediately to fix 494 errors
+  useEffect(() => {
+    // Only run if there are cookies
+    if (document.cookie) {
+      const cookies = document.cookie.split(';');
+      let cleared = false;
+
+      // Strategies to clear: standard, secure, and chunked suffixes
+      const prefixes = [
+        'next-auth.session-token',
+        '__Secure-next-auth.session-token',
+        'next-auth.csrf-token',
+        '__Host-next-auth.csrf-token',
+      ];
+
+      cookies.forEach(cookie => {
+        const name = cookie.trim().split('=')[0];
+
+        // Check if this cookie matches any of our target prefixes
+        if (prefixes.some(prefix => name.startsWith(prefix))) {
+          // Delete it for root path
+          document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+          // Also try deleting for current path just in case
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+
+          // If it looks like a chunk (ends in .number), note it
+          if (/\.\d+$/.test(name)) {
+            console.log(`[LOGIN] Cleared chunked cookie: ${name}`);
+            cleared = true;
+          }
+        }
+      });
+
+      if (cleared) {
+        console.log("[LOGIN] Nuclear cleanup executed. Stale chunks removed.");
+        // Optional: Force reload if we found chunks to ensure clean state? 
+        // Better to let the user try logging in.
+      }
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -49,15 +90,15 @@ function LoginForm() {
         if (result.error === "CredentialsSignin") {
           setError("Invalid email or password. Please try again.");
         } else if (result.error === "Configuration") {
-          // Clear stale session cookies and retry
-          console.log("[LOGIN] Clearing stale session cookies...");
+          // Additional cleanup on error
+          console.log("[LOGIN] Configuration error - forcing cookie reset...");
           document.cookie.split(";").forEach(c => {
             const name = c.trim().split("=")[0];
-            if (name.startsWith("next-auth") || name.startsWith("__Secure-next-auth")) {
+            if (name.includes("next-auth")) {
               document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
             }
           });
-          setError("Session expired. Please try logging in again.");
+          setError("Session reset. Please try again.");
         } else {
           setError(result.error);
         }

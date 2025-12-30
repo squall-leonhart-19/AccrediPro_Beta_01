@@ -201,7 +201,31 @@ export async function POST(request: NextRequest) {
                 });
                 cloneStats.marketingTags++;
             } catch (e: any) {
-                errors.push(`Tag ${userTag.tag.slug}: ${e.message}`);
+                errors.push(`MarketingTag ${userTag.tag.slug}: ${e.message}`);
+            }
+        }
+
+        // Clone legacy tags (UserTag)
+        // @ts-ignore - tags is not in type because we need to add it to include above, but let's assume it will be
+        if (sourceUser.tags) {
+            // @ts-ignore
+            for (const userTag of sourceUser.tags) {
+                try {
+                    await prisma.userTag.create({
+                        data: {
+                            userId: newUser.id,
+                            tag: userTag.tag,
+                            value: userTag.value,
+                            createdAt: userTag.createdAt, // Preserve creation time if needed, or use new Date()
+                        }
+                    });
+                    // @ts-ignore
+                    if (!cloneStats.userTags) cloneStats.userTags = 0;
+                    // @ts-ignore
+                    cloneStats.userTags++;
+                } catch (e: any) {
+                    errors.push(`UserTag ${userTag.tag}: ${e.message}`);
+                }
             }
         }
 

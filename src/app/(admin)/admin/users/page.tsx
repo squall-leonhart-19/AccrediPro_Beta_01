@@ -58,8 +58,31 @@ async function getUsers() {
           sentMessages: true,
         },
       },
+      marketingTags: {
+        select: {
+          id: true,
+          tag: {
+            select: {
+              slug: true,
+              name: true,
+            }
+          }
+        }
+      }
     },
-  });
+  }).then(users => users.map(user => ({
+    ...user,
+    // Merge legacy tags with marketing tags for UI display
+    tags: [
+      ...user.tags,
+      ...user.marketingTags.map(mt => ({
+        id: mt.id,
+        tag: mt.tag.slug, // Use slug as the tag string
+        value: null,
+        createdAt: new Date() // Placeholder
+      }))
+    ]
+  })));
 }
 
 async function getCourses() {
