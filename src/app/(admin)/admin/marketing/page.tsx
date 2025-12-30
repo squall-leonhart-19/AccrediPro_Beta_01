@@ -790,6 +790,32 @@ export default function MarketingPage() {
     }
   }
 
+  // Backfill Chat Tags (temporary utility)
+  const [backfillingChatTags, setBackfillingChatTags] = useState(false);
+
+  async function backfillChatTags() {
+    if (!confirm("This will apply chat_lead and optin_only tags to historical chat optins. Continue?")) return;
+    setBackfillingChatTags(true);
+    try {
+      const res = await fetch(`/api/admin/marketing/backfill-chat-tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`Backfill complete: ${data.chatLeadTagged} chat_lead + ${data.optinOnlyTagged} optin_only tagged`);
+        fetchTags();
+      } else {
+        toast.error(data.error || "Failed to backfill tags");
+      }
+    } catch (error) {
+      console.error("Error backfilling chat tags:", error);
+      toast.error("Failed to backfill tags");
+    } finally {
+      setBackfillingChatTags(false);
+    }
+  }
+
   async function removeNurtureEnrollee(userId: string) {
     if (!confirm("Remove this user from the nurture sequence?")) return;
     try {
@@ -991,6 +1017,18 @@ export default function MarketingPage() {
             <Zap className="h-4 w-4 mr-2" />
           )}
           Setup Chat Sequences
+        </Button>
+        <Button
+          variant="outline"
+          onClick={backfillChatTags}
+          disabled={backfillingChatTags}
+        >
+          {backfillingChatTags ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <RefreshCw className="h-4 w-4 mr-2" />
+          )}
+          Backfill Chat Tags
         </Button>
       </div>
 
