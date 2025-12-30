@@ -8,11 +8,8 @@ import bcrypt from "bcryptjs";
  * POST /api/admin/users/clone
  * Clone a user account (create new account with same progress, tags, enrollments, etc.)
  * 
- * Body: { 
- *   sourceEmail: "old@email.com",
- *   newEmail: "new@email.com", 
- *   newPassword: "password" 
- * }
+ * If newEmail === sourceEmail, automatically renames old account first
+ * Default password: Futurecoach2025
  */
 
 export async function POST(request: NextRequest) {
@@ -25,22 +22,29 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { sourceEmail, newEmail, newPassword } = body;
 
-        if (!sourceEmail || !newEmail || !newPassword) {
+        // Default password if not provided
+        const finalPassword = newPassword || "Futurecoach2025";
+        const finalNewEmail = newEmail || sourceEmail; // Same email if not provided
+
+        if (!sourceEmail) {
             return NextResponse.json({
-                error: "sourceEmail, newEmail, and newPassword are required"
+                error: "sourceEmail is required"
             }, { status: 400 });
         }
 
+        const sourceEmailLower = sourceEmail.toLowerCase();
+        const newEmailLower = finalNewEmail.toLowerCase();
+
         // Find source user with ALL related data
         const sourceUser = await prisma.user.findUnique({
-            where: { email: sourceEmail.toLowerCase() },
+            where: { email: sourceEmailLower },
             include: {
                 enrollments: true,
-                lessonProgress: true,  // Fixed: use correct relation name
+                lessonProgress: true,
                 certificates: true,
                 lessonNotes: true,
                 quizAttempts: true,
-                marketingTags: {       // Include marketing tags
+                marketingTags: {
                     include: { tag: true }
                 },
             }
@@ -50,21 +54,31 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Source user not found" }, { status: 404 });
         }
 
-        // Check if new email already exists
-        const existingUser = await prisma.user.findUnique({
-            where: { email: newEmail.toLowerCase() }
-        });
-        if (existingUser) {
-            return NextResponse.json({ error: "New email already exists" }, { status: 400 });
+        // If same email, rename the old account first
+        if (sourceEmailLower === newEmailLower) {
+            const brokenEmail = sourceEmailLower.replace("@", "_BROKEN_" + Date.now() + "@");
+            await prisma.user.update({
+                where: { id: sourceUser.id },
+                data: { email: brokenEmail }
+            });
+            console.log(`[CLONE] Renamed old account ${sourceEmailLower} to ${brokenEmail}`);
+        } else {
+            // Check if new email already exists
+            const existingUser = await prisma.user.findUnique({
+                where: { email: newEmailLower }
+            });
+            if (existingUser) {
+                return NextResponse.json({ error: "New email already exists" }, { status: 400 });
+            }
         }
 
         // Hash new password
-        const passwordHash = await bcrypt.hash(newPassword, 12);
+        const passwordHash = await bcrypt.hash(finalPassword, 12);
 
         // Create new user
         const newUser = await prisma.user.create({
             data: {
-                email: newEmail.toLowerCase(),
+                email: newEmailLower,
                 passwordHash,
                 firstName: sourceUser.firstName,
                 lastName: sourceUser.lastName,
@@ -195,12 +209,13 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        console.log(`[CLONE] Cloned user ${sourceEmail} to ${newEmail} by admin ${session.user.email}`, cloneStats);
+        console.log(`[CLONE] Cloned user ${sourceEmail} to ${newEmailLower} by admin ${session.user.email}`, cloneStats);
 
         return NextResponse.json({
             success: true,
-            message: `Cloned ${sourceEmail} to ${newEmail}`,
+            message: `Cloned ${sourceEmail} to ${newEmailLower}`,
             newUserId: newUser.id,
+            newPassword: finalPassword,
             cloned: cloneStats
         });
 

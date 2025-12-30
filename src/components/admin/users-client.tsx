@@ -35,6 +35,7 @@ import {
   Phone,
   UserCog,
   RotateCcw,
+  Copy,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -195,6 +196,9 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
   // Reset Mini Diploma state
   const [resettingMiniDiploma, setResettingMiniDiploma] = useState(false);
+
+  // Clone user state
+  const [cloningUser, setCloningUser] = useState(false);
 
   // Send Login Email Dialog state
   const [loginEmailDialogOpen, setLoginEmailDialogOpen] = useState(false);
@@ -1234,6 +1238,35 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               >
                                 <RotateCcw className="w-4 h-4 mr-2" />
                                 Reset Mini Diploma
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={async () => {
+                                  if (!confirm(`Clone ${user.firstName} ${user.lastName}'s account? This will:\n\n1. Rename old account to _BROKEN\n2. Create fresh account with same email\n3. Copy all enrollments, tags, progress\n\nNew password: Futurecoach2025`)) return;
+                                  setCloningUser(true);
+                                  try {
+                                    const res = await fetch('/api/admin/users/clone', {
+                                      method: 'POST',
+                                      headers: { 'Content-Type': 'application/json' },
+                                      body: JSON.stringify({ sourceEmail: user.email })
+                                    });
+                                    const data = await res.json();
+                                    if (data.success) {
+                                      alert(`✅ Cloned successfully!\n\nNew password: ${data.newPassword}\nCloned: ${data.cloned.enrollments} enrollments, ${data.cloned.marketingTags} tags\n\nRefresh page to see new user.`);
+                                      router.refresh();
+                                    } else {
+                                      alert(`❌ Clone failed: ${data.error}`);
+                                    }
+                                  } catch (e) {
+                                    alert(`❌ Clone error: ${e}`);
+                                  } finally {
+                                    setCloningUser(false);
+                                  }
+                                }}
+                                disabled={cloningUser}
+                                className="cursor-pointer text-purple-600 focus:text-purple-600 focus:bg-purple-50"
+                              >
+                                <Copy className="w-4 h-4 mr-2" />
+                                Clone Account (Fix Login Issues)
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
