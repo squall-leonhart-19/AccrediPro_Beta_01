@@ -105,9 +105,62 @@ export async function GET() {
             }
         }
 
+        // ===== 24-HOUR RE-ENGAGEMENT =====
+        // Check for conversations that went silent 24+ hours ago
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const twentyFiveHoursAgo = new Date(Date.now() - 25 * 60 * 60 * 1000);
+        const reengagementsSent: string[] = [];
+
+        for (const [key, msgs] of conversationsMap.entries()) {
+            const sortedMsgs = msgs.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+            const lastMsg = sortedMsgs[sortedMsgs.length - 1];
+
+            // Check if:
+            // 1. Last message was from coach (not visitor)
+            // 2. Last message was 24-25 hours ago (only send once)
+            // 3. No response from visitor since
+            if (
+                !lastMsg.isFromVisitor &&
+                lastMsg.createdAt < twentyFourHoursAgo &&
+                lastMsg.createdAt > twentyFiveHoursAgo
+            ) {
+                // Check if we have visitor name/email for personalization
+                const optin = optinMap.get(lastMsg.visitorId);
+                const firstName = optin?.name || lastMsg.visitorName || "there";
+
+                // Send re-engagement message
+                const reengagementMessage = `Hey ${firstName}! Just checking in - I noticed we were chatting yesterday but didn't finish our conversation.
+
+Did you have any other questions I can help with? I'm here if you need me!
+
+No pressure - just wanted to make sure you didn't miss anything. 😊`;
+
+                try {
+                    const persona = getPersonaByKey(detectPersona(lastMsg.page));
+                    await prisma.salesChat.create({
+                        data: {
+                            visitorId: lastMsg.visitorId,
+                            visitorName: lastMsg.visitorName,
+                            visitorEmail: lastMsg.visitorEmail,
+                            page: lastMsg.page,
+                            message: reengagementMessage,
+                            isFromVisitor: false,
+                            isRead: true,
+                            repliedBy: persona.name,
+                        },
+                    });
+                    reengagementsSent.push(lastMsg.visitorId);
+                    console.log(`[AUTO-REPLY] 🔔 Sent 24h re-engagement to ${lastMsg.visitorId}`);
+                } catch (error) {
+                    console.error(`Failed to send re-engagement for ${lastMsg.visitorId}:`, error);
+                }
+            }
+        }
+
         return NextResponse.json({
             success: true,
             repliesSent: repliesSent.length,
+            reengagementsSent: reengagementsSent.length,
             details: repliesSent,
         });
     } catch (error) {

@@ -44,6 +44,8 @@ export async function POST(request: NextRequest) {
                 await prisma.marketingTag.create({
                     data: {
                         name: tagDef.name,
+                        slug: tagDef.name.toLowerCase().replace(/_/g, "-"),
+                        category: "BEHAVIOR",
                         description: tagDef.description,
                         color: tagDef.name === "chat_purchased" ? "#10B981" : "#3B82F6",
                     }
@@ -108,11 +110,7 @@ export async function POST(request: NextRequest) {
             results.emailsImported++;
         }
 
-        // Update email count
-        await prisma.sequence.update({
-            where: { id: chatSequence.id },
-            data: { totalEmails: CHAT_CONVERSION_EMAILS.length }
-        });
+        // Note: email count is calculated from emails relation, no manual update needed
 
         // Step 3: Create Optin Only Sequence (empty scaffold)
         let optinSequence = await prisma.sequence.findFirst({
@@ -157,10 +155,7 @@ export async function POST(request: NextRequest) {
                 });
             }
 
-            await prisma.sequence.update({
-                where: { id: optinSequence.id },
-                data: { totalEmails: OPTIN_ONLY_EMAILS.length }
-            });
+            results.emailsImported += OPTIN_ONLY_EMAILS.length;
         }
 
         console.log("[SETUP-CHAT-SEQUENCES] Complete:", results);

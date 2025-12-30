@@ -167,19 +167,225 @@ Sarah`,
 ];
 
 /**
- * Optin-Only Sequence (Scaffold)
+ * Optin-Only Sequence
  * 
- * For leads who submitted the optin form but never actually chatted.
+ * For leads who submitted optin form but never actually chatted.
  * These are "colder" leads who need more warming up.
- * 
- * TODO: Add email content later
+ * Shorter sequence, lighter touch than chat leads.
  */
-export const OPTIN_ONLY_EMAILS: Array<{
-    order: number;
-    subject: string;
-    delayDays: number;
-    delayHours: number;
-    content: string;
-}> = [
-        // Placeholder - emails to be written later
-    ];
+export const OPTIN_ONLY_EMAILS = [
+    // Email 1 - Day 1: Gentle Welcome
+    {
+        order: 0,
+        subject: "Re: welcome (did you see this?)",
+        delayDays: 1,
+        delayHours: 0,
+        content: `{{firstName}},
+
+I noticed you signed up on our site yesterday. Welcome!
+
+I wanted to reach out personally because I have a question for you:
+
+<strong>What brought you here?</strong>
+
+Most people who find us are feeling one of these things:
+- Burned out from their current career
+- Curious about health coaching but unsure where to start
+- Looking for more flexibility and control over their income
+- Passionate about helping people heal naturally
+
+Does any of that resonate?
+
+I'd love to know more about what you're looking for. Just hit reply and tell me - I read every email personally.
+
+Sarah
+
+P.S. In the meantime, you might want to check out our free Mini Diploma. It's a great way to see if functional medicine is right for you: https://learn.accredipro.academy/fm-mini-diploma`,
+    },
+
+    // Email 2 - Day 3: Value-First
+    {
+        order: 1,
+        subject: "Re: quick tip for you",
+        delayDays: 3,
+        delayHours: 0,
+        content: `{{firstName}},
+
+Here's something I wish someone had told me years ago:
+
+<strong>You don't need a medical degree to help people get healthy.</strong>
+
+I spent years thinking I wasn't "qualified" enough. That I needed more credentials, more education, more experience.
+
+What I've learned is this: people don't need another doctor. They need someone who actually listens. Someone who looks at the whole picture. Someone who cares.
+
+That's what functional medicine practitioners do. And that's exactly what our certification teaches.
+
+If you're curious but not sure if it's for you, start with the free Mini Diploma. It's 3 lessons, takes about 2 hours total, and gives you a real taste of what this work looks like.
+
+https://learn.accredipro.academy/fm-mini-diploma
+
+No commitment. Just curiosity.
+
+Sarah`,
+    },
+
+    // Email 3 - Day 7: Story + Soft CTA
+    {
+        order: 2,
+        subject: "Re: Maria's story (worth reading)",
+        delayDays: 7,
+        delayHours: 0,
+        content: `{{firstName}},
+
+Quick story I think you'll appreciate:
+
+Maria signed up just like you did. Curious but skeptical. She'd tried "online courses" before and they were always disappointing.
+
+She almost didn't enroll. But something kept nagging at her.
+
+<strong>Fast forward 8 months:</strong>
+
+Maria now runs a thriving virtual practice. She sees clients from her dining room table. She makes more than she did at her corporate job - but works half the hours.
+
+Last week she messaged me: "I can't believe I almost didn't do this."
+
+Maria's not special (sorry, Maria). She's just someone who finally decided to try.
+
+If you're still curious, the door is open:
+
+https://sarah.accredipro.academy/checkout-fm-certification
+
+No pressure. Just possibilities.
+
+Sarah`,
+    },
+
+    // Email 4 - Day 14: Final touch
+    {
+        order: 3,
+        subject: "Re: last email (honest)",
+        delayDays: 14,
+        delayHours: 0,
+        content: `{{firstName}},
+
+This is my last scheduled email.
+
+I don't like being one of those people who fills up your inbox with daily "reminders" and "last chance" urgency.
+
+<strong>Here's what I know:</strong>
+
+You signed up because something about functional medicine interested you. That interest doesn't disappear - it just gets buried under everything else in life.
+
+If you ever decide you want to explore this path, I'm here. The links work. The training is ready. The community is waiting.
+
+<strong>If you never do</strong> - that's okay too. I hope you find what you're looking for, whatever that looks like.
+
+Either way, thanks for letting me into your inbox for a while.
+
+Sarah
+
+P.S. If you ever want to chat, I'm at sarah@accredipro.academy. Real person. Real replies.`,
+    },
+];
+
+/**
+ * Lead scoring keywords for chat analysis
+ * Used to prioritize hot leads
+ */
+export const LEAD_SCORING_KEYWORDS = {
+    // 🔥 HOT (10 points each) - High purchase intent
+    hot: [
+        "price", "cost", "pricing", "how much",
+        "enroll", "sign up", "signup", "register",
+        "discount", "coupon", "deal", "offer", "sale",
+        "payment plan", "installment", "pay",
+        "start", "begin", "ready", "today",
+        "buy", "purchase", "invest",
+    ],
+
+    // 🌡️ WARM (5 points each) - Considering
+    warm: [
+        "certificate", "certification", "accredited",
+        "time", "how long", "duration", "schedule",
+        "job", "career", "income", "earn", "money",
+        "work from home", "remote", "flexible",
+        "clients", "patients", "practice",
+        "guarantee", "refund", "risk",
+    ],
+
+    // 🌱 COOL (2 points each) - Just curious  
+    cool: [
+        "what is", "tell me about", "information",
+        "learn", "course", "training", "program",
+        "health", "nutrition", "wellness",
+        "functional medicine",
+    ],
+
+    // ❄️ COLD (0 points) - May not convert soon
+    cold: [
+        "unsubscribe", "stop", "not interested",
+        "already have", "already enrolled",
+        "just looking", "maybe later",
+    ],
+};
+
+/**
+ * Calculate lead score from chat messages
+ */
+export function calculateLeadScore(messages: string[]): {
+    score: number;
+    level: "HOT" | "WARM" | "COOL" | "COLD";
+    matchedKeywords: string[];
+} {
+    const allText = messages.join(" ").toLowerCase();
+    let score = 0;
+    const matchedKeywords: string[] = [];
+
+    // Check each category
+    for (const keyword of LEAD_SCORING_KEYWORDS.hot) {
+        if (allText.includes(keyword.toLowerCase())) {
+            score += 10;
+            matchedKeywords.push(`🔥 ${keyword}`);
+        }
+    }
+
+    for (const keyword of LEAD_SCORING_KEYWORDS.warm) {
+        if (allText.includes(keyword.toLowerCase())) {
+            score += 5;
+            matchedKeywords.push(`🌡️ ${keyword}`);
+        }
+    }
+
+    for (const keyword of LEAD_SCORING_KEYWORDS.cool) {
+        if (allText.includes(keyword.toLowerCase())) {
+            score += 2;
+            matchedKeywords.push(`🌱 ${keyword}`);
+        }
+    }
+
+    for (const keyword of LEAD_SCORING_KEYWORDS.cold) {
+        if (allText.includes(keyword.toLowerCase())) {
+            score -= 5;
+            matchedKeywords.push(`❄️ ${keyword}`);
+        }
+    }
+
+    // Determine level
+    let level: "HOT" | "WARM" | "COOL" | "COLD";
+    if (score >= 20) level = "HOT";
+    else if (score >= 10) level = "WARM";
+    else if (score >= 0) level = "COOL";
+    else level = "COLD";
+
+    return { score, level, matchedKeywords };
+}
+
+/**
+ * Re-engagement message template for 24-hour silence
+ */
+export const REENGAGEMENT_MESSAGE = `Hey {{firstName}}! Just checking in - I noticed we were chatting yesterday but didn't finish our conversation.
+
+Did you have any other questions I can help with? I'm here if you need me!
+
+No pressure - just wanted to make sure you didn't miss anything. 😊`;

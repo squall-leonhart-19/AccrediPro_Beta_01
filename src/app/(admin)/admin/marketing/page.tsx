@@ -763,6 +763,33 @@ export default function MarketingPage() {
     }
   }
 
+  // Setup Chat Conversion Sequences
+  const [settingUpChatSequences, setSettingUpChatSequences] = useState(false);
+
+  async function setupChatSequences() {
+    if (!confirm("This will create the Chat Conversion and Optin-Only sequences with all emails. Continue?")) return;
+    setSettingUpChatSequences(true);
+    try {
+      const res = await fetch(`/api/admin/marketing/setup-chat-sequences`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`Created: ${data.sequencesCreated?.join(", ") || "sequences"} with ${data.emailsImported || 0} emails`);
+        fetchSequences();
+        fetchTags();
+      } else {
+        toast.error(data.error || "Failed to setup chat sequences");
+      }
+    } catch (error) {
+      console.error("Error setting up chat sequences:", error);
+      toast.error("Failed to setup chat sequences");
+    } finally {
+      setSettingUpChatSequences(false);
+    }
+  }
+
   async function removeNurtureEnrollee(userId: string) {
     if (!confirm("Remove this user from the nurture sequence?")) return;
     try {
@@ -952,6 +979,18 @@ export default function MarketingPage() {
         <Button onClick={() => setShowCreateTag(true)}>
           <Plus className="h-4 w-4 mr-2" />
           New Tag
+        </Button>
+        <Button
+          variant="outline"
+          onClick={setupChatSequences}
+          disabled={settingUpChatSequences}
+        >
+          {settingUpChatSequences ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Zap className="h-4 w-4 mr-2" />
+          )}
+          Setup Chat Sequences
         </Button>
       </div>
 
