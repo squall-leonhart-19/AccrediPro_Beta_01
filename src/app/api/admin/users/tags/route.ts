@@ -10,6 +10,62 @@ const addTagSchema = z.object({
   value: z.string().optional(),
 });
 
+// Tag to Course mapping for automatic enrollment
+const TAG_TO_COURSE_SLUG: Record<string, string> = {
+  functional_medicine_complete_certification_purchased: "functional-medicine-complete-certification",
+  fm_pro_advanced_clinical_purchased: "fm-pro-advanced-clinical",
+  fm_pro_master_depth_purchased: "fm-pro-master-depth",
+  fm_pro_practice_path_purchased: "fm-pro-practice-path",
+};
+
+// Helper function to enroll user in a course
+async function enrollUserInCourse(userId: string, courseSlug: string): Promise<{ success: boolean; courseName?: string; alreadyEnrolled?: boolean }> {
+  const course = await prisma.course.findUnique({
+    where: { slug: courseSlug },
+  });
+
+  if (!course) {
+    console.error(`Course not found: ${courseSlug}`);
+    return { success: false };
+  }
+
+  // Check if already enrolled
+  const existingEnrollment = await prisma.enrollment.findUnique({
+    where: { userId_courseId: { userId, courseId: course.id } },
+  });
+
+  if (existingEnrollment) {
+    return { success: true, courseName: course.title, alreadyEnrolled: true };
+  }
+
+  // Create enrollment
+  await prisma.enrollment.create({
+    data: {
+      userId,
+      courseId: course.id,
+      status: "ACTIVE",
+      progress: 0,
+    },
+  });
+
+  // Update course analytics
+  await prisma.courseAnalytics.upsert({
+    where: { courseId: course.id },
+    update: { totalEnrolled: { increment: 1 } },
+    create: { courseId: course.id, totalEnrolled: 1 },
+  });
+
+  // Add enrollment tracking tag
+  const enrollmentTag = `enrolled_${courseSlug}`;
+  await prisma.userTag.upsert({
+    where: { userId_tag: { userId, tag: enrollmentTag } },
+    update: {},
+    create: { userId, tag: enrollmentTag },
+  });
+
+  return { success: true, courseName: course.title, alreadyEnrolled: false };
+}
+
 // GET - Fetch all unique tags for dropdown (includes UserTags + suggested from leadSource)
 export async function GET() {
   try {
@@ -202,6 +258,26 @@ export async function POST(request: NextRequest) {
         miniDiplomaGranted: true,
         nurtureEnrolled,
       });
+    }
+
+    // Auto-enrollment for FM Pro Pack purchased tags
+    const courseSlug = TAG_TO_COURSE_SLUG[data.tag];
+    if (courseSlug) {
+      const enrollResult = await enrollUserInCourse(data.userId, courseSlug);
+
+      if (enrollResult.success) {
+        const enrollmentMessage = enrollResult.alreadyEnrolled
+          ? `Tag added. User was already enrolled in ${enrollResult.courseName}.`
+          : `Tag added + User enrolled in ${enrollResult.courseName}!`;
+
+        return NextResponse.json({
+          success: true,
+          message: enrollmentMessage,
+          tag,
+          courseEnrolled: !enrollResult.alreadyEnrolled,
+          courseName: enrollResult.courseName,
+        });
+      }
     }
 
     return NextResponse.json({
