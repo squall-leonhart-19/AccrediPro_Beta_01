@@ -16,7 +16,7 @@ import {
     ArrowLeft, Save, Loader2, Plus, Trash2, Video, FileText, ChevronDown, ChevronUp,
     Eye, Settings, Layers, Zap, Tag, Upload, ImageIcon, Users, Star, Award,
     Clock, BookOpen, GraduationCap, TrendingUp, BarChart3, CheckCircle, AlertCircle,
-    DollarSign, Calendar, Globe, X, Grip
+    DollarSign, Calendar, Globe, X, Grip, Search, Target, ListChecks, UserCheck
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -77,6 +77,7 @@ interface Course {
     shortDescription?: string;
     thumbnail?: string;
     price?: number;
+    regularPrice?: number;
     isFree: boolean;
     isPublished: boolean;
     isFeatured: boolean;
@@ -85,6 +86,14 @@ interface Course {
     duration?: number;
     categoryId?: string;
     coachId?: string;
+    // SEO fields
+    metaTitle?: string;
+    metaDescription?: string;
+    // Course content
+    learningOutcomes?: string[];
+    targetAudience?: string;
+    estimatedWeeks?: number;
+    enrollmentLimit?: number;
     modules: Module[];
     tags: { tag: { id: string; name: string } }[];
     offers: { offer: SpecialOffer }[];
@@ -136,6 +145,9 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
     const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
     const [lessonForm, setLessonForm] = useState({ title: "", lessonType: "VIDEO", duration: 0 });
 
+    // Learning Outcomes State
+    const [newOutcome, setNewOutcome] = useState("");
+
     // Computed stats
     const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
     const totalDuration = course.modules.reduce((acc, m) =>
@@ -159,6 +171,7 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                     shortDescription: course.shortDescription,
                     thumbnail: course.thumbnail,
                     price: course.isFree ? null : course.price,
+                    regularPrice: course.isFree ? null : course.regularPrice,
                     isFree: course.isFree,
                     categoryId: course.categoryId || null,
                     coachId: course.coachId || null,
@@ -167,6 +180,14 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                     duration: course.duration,
                     isPublished: course.isPublished,
                     isFeatured: course.isFeatured,
+                    // SEO
+                    metaTitle: course.metaTitle || null,
+                    metaDescription: course.metaDescription || null,
+                    // Course content
+                    learningOutcomes: course.learningOutcomes || [],
+                    targetAudience: course.targetAudience || null,
+                    estimatedWeeks: course.estimatedWeeks || null,
+                    enrollmentLimit: course.enrollmentLimit || null,
                 }),
             });
 
@@ -432,13 +453,17 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                             <Settings className="w-4 h-4 mr-2" />
                             Settings & Pricing
                         </TabsTrigger>
+                        <TabsTrigger value="content" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
+                            <ListChecks className="w-4 h-4 mr-2" />
+                            Content & Audience
+                        </TabsTrigger>
+                        <TabsTrigger value="seo" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
+                            <Search className="w-4 h-4 mr-2" />
+                            SEO
+                        </TabsTrigger>
                         <TabsTrigger value="curriculum" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
                             <Layers className="w-4 h-4 mr-2" />
                             Curriculum
-                        </TabsTrigger>
-                        <TabsTrigger value="offers" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
-                            <Zap className="w-4 h-4 mr-2" />
-                            Offers & Discounts
                         </TabsTrigger>
                         <TabsTrigger value="analytics" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
                             <BarChart3 className="w-4 h-4 mr-2" />
@@ -701,19 +726,53 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                                         </div>
 
                                         {!course.isFree && (
-                                            <div>
-                                                <Label className="text-sm font-medium mb-2 block">Price (USD)</Label>
-                                                <div className="relative">
-                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
-                                                    <Input
-                                                        type="number"
-                                                        className="pl-8 text-lg font-semibold"
-                                                        value={course.price || ""}
-                                                        onChange={e => setCourse({ ...course, price: parseFloat(e.target.value) || 0 })}
-                                                        placeholder="97"
-                                                    />
+                                            <>
+                                                <div>
+                                                    <Label className="text-sm font-medium mb-2 block">Regular Price (USD)</Label>
+                                                    <div className="relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                                                        <Input
+                                                            type="number"
+                                                            className="pl-8"
+                                                            value={course.regularPrice || ""}
+                                                            onChange={e => setCourse({ ...course, regularPrice: parseFloat(e.target.value) || 0 })}
+                                                            placeholder="997"
+                                                        />
+                                                    </div>
+                                                    <p className="text-xs text-gray-500 mt-1">Shown as strikethrough price</p>
                                                 </div>
-                                            </div>
+
+                                                <div>
+                                                    <Label className="text-sm font-medium mb-2 block">Sale Price (USD)</Label>
+                                                    <div className="relative">
+                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+                                                        <Input
+                                                            type="number"
+                                                            className="pl-8 text-lg font-semibold"
+                                                            value={course.price || ""}
+                                                            onChange={e => setCourse({ ...course, price: parseFloat(e.target.value) || 0 })}
+                                                            placeholder="397"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Discount Preview */}
+                                                {course.regularPrice && course.price && course.regularPrice > course.price && (
+                                                    <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                                                        <p className="text-sm font-medium text-green-800">Discount Preview</p>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            <span className="text-gray-500 line-through">${course.regularPrice}</span>
+                                                            <span className="text-xl font-bold text-green-700">${course.price}</span>
+                                                            <Badge className="bg-green-600 text-white">
+                                                                {Math.round(((course.regularPrice - course.price) / course.regularPrice) * 100)}% OFF
+                                                            </Badge>
+                                                        </div>
+                                                        <p className="text-xs text-green-600 mt-1">
+                                                            You save ${(course.regularPrice - course.price).toFixed(0)}
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -763,6 +822,235 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                                 </Card>
                             </div>
                         </div>
+                    </TabsContent>
+
+                    {/* CONTENT & AUDIENCE TAB */}
+                    <TabsContent value="content" className="space-y-6">
+                        <div className="grid grid-cols-2 gap-6">
+                            {/* Learning Outcomes */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <ListChecks className="w-5 h-5" />
+                                        Learning Outcomes
+                                    </CardTitle>
+                                    <CardDescription>
+                                        What students will learn from this course (bullet points shown on course page)
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    {/* Add new outcome */}
+                                    <div className="flex gap-2">
+                                        <Input
+                                            placeholder="e.g., Master the fundamentals of functional medicine"
+                                            value={newOutcome}
+                                            onChange={e => setNewOutcome(e.target.value)}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter' && newOutcome.trim()) {
+                                                    setCourse({
+                                                        ...course,
+                                                        learningOutcomes: [...(course.learningOutcomes || []), newOutcome.trim()]
+                                                    });
+                                                    setNewOutcome("");
+                                                }
+                                            }}
+                                        />
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => {
+                                                if (newOutcome.trim()) {
+                                                    setCourse({
+                                                        ...course,
+                                                        learningOutcomes: [...(course.learningOutcomes || []), newOutcome.trim()]
+                                                    });
+                                                    setNewOutcome("");
+                                                }
+                                            }}
+                                            disabled={!newOutcome.trim()}
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+
+                                    {/* Outcomes list */}
+                                    <div className="space-y-2">
+                                        {(course.learningOutcomes || []).length === 0 ? (
+                                            <div className="text-center py-8 text-gray-500">
+                                                <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                                                <p className="text-sm">No learning outcomes added yet</p>
+                                                <p className="text-xs mt-1">Add what students will learn from this course</p>
+                                            </div>
+                                        ) : (
+                                            (course.learningOutcomes || []).map((outcome, idx) => (
+                                                <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg group">
+                                                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                                    <span className="flex-1 text-sm">{outcome}</span>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        className="opacity-0 group-hover:opacity-100 h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                                        onClick={() => {
+                                                            setCourse({
+                                                                ...course,
+                                                                learningOutcomes: (course.learningOutcomes || []).filter((_, i) => i !== idx)
+                                                            });
+                                                        }}
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </Button>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Target Audience & Settings */}
+                            <div className="space-y-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Target className="w-5 h-5" />
+                                            Target Audience
+                                        </CardTitle>
+                                        <CardDescription>
+                                            Describe who this course is designed for
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <Textarea
+                                            rows={5}
+                                            placeholder="This course is perfect for health and wellness practitioners who want to expand their skills into functional medicine. Ideal for coaches, nurses, nutritionists, and anyone passionate about holistic health..."
+                                            value={course.targetAudience || ""}
+                                            onChange={e => setCourse({ ...course, targetAudience: e.target.value })}
+                                        />
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Clock className="w-5 h-5" />
+                                            Course Settings
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div>
+                                            <Label className="text-sm font-medium mb-2 block">Estimated Completion Time</Label>
+                                            <div className="flex items-center gap-2">
+                                                <Input
+                                                    type="number"
+                                                    min="1"
+                                                    max="52"
+                                                    className="w-24"
+                                                    value={course.estimatedWeeks || ""}
+                                                    onChange={e => setCourse({ ...course, estimatedWeeks: parseInt(e.target.value) || undefined })}
+                                                    placeholder="4"
+                                                />
+                                                <span className="text-sm text-gray-500">weeks</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">How long should students expect to complete this course?</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium mb-2 block">Enrollment Limit</Label>
+                                            <div className="flex items-center gap-2">
+                                                <Input
+                                                    type="number"
+                                                    min="1"
+                                                    className="w-24"
+                                                    value={course.enrollmentLimit || ""}
+                                                    onChange={e => setCourse({ ...course, enrollmentLimit: parseInt(e.target.value) || undefined })}
+                                                    placeholder="∞"
+                                                />
+                                                <span className="text-sm text-gray-500">students max</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">Leave empty for unlimited enrollments</p>
+                                        </div>
+
+                                        {course.enrollmentLimit && (
+                                            <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                                                <div className="flex items-center gap-2">
+                                                    <UserCheck className="w-4 h-4 text-amber-600" />
+                                                    <span className="text-sm font-medium text-amber-800">
+                                                        {course._count?.enrollments || 0} / {course.enrollmentLimit} spots filled
+                                                    </span>
+                                                </div>
+                                                <Progress
+                                                    value={((course._count?.enrollments || 0) / course.enrollmentLimit) * 100}
+                                                    className="h-2 mt-2"
+                                                />
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
+                    </TabsContent>
+
+                    {/* SEO TAB */}
+                    <TabsContent value="seo" className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Search className="w-5 h-5" />
+                                    Search Engine Optimization
+                                </CardTitle>
+                                <CardDescription>
+                                    Optimize how this course appears in search results
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div>
+                                    <Label className="text-sm font-medium mb-2 block">Meta Title</Label>
+                                    <Input
+                                        placeholder={course.title || "Enter a custom page title..."}
+                                        value={course.metaTitle || ""}
+                                        onChange={e => setCourse({ ...course, metaTitle: e.target.value })}
+                                        maxLength={60}
+                                    />
+                                    <div className="flex justify-between mt-1">
+                                        <p className="text-xs text-gray-500">Recommended: 50-60 characters</p>
+                                        <p className={`text-xs ${(course.metaTitle?.length || 0) > 60 ? 'text-red-500' : 'text-gray-500'}`}>
+                                            {course.metaTitle?.length || 0}/60
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <Label className="text-sm font-medium mb-2 block">Meta Description</Label>
+                                    <Textarea
+                                        rows={3}
+                                        placeholder={course.shortDescription || "Enter a custom description for search results..."}
+                                        value={course.metaDescription || ""}
+                                        onChange={e => setCourse({ ...course, metaDescription: e.target.value })}
+                                        maxLength={160}
+                                    />
+                                    <div className="flex justify-between mt-1">
+                                        <p className="text-xs text-gray-500">Recommended: 150-160 characters</p>
+                                        <p className={`text-xs ${(course.metaDescription?.length || 0) > 160 ? 'text-red-500' : 'text-gray-500'}`}>
+                                            {course.metaDescription?.length || 0}/160
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* SEO Preview */}
+                                <div className="border rounded-lg p-4 bg-gray-50">
+                                    <p className="text-xs text-gray-500 mb-3 font-medium">Search Result Preview</p>
+                                    <div className="space-y-1">
+                                        <p className="text-blue-600 text-lg hover:underline cursor-pointer">
+                                            {course.metaTitle || course.title || "Course Title"}
+                                        </p>
+                                        <p className="text-green-700 text-sm">
+                                            learn.accredipro.academy/courses/{course.slug}
+                                        </p>
+                                        <p className="text-gray-600 text-sm line-clamp-2">
+                                            {course.metaDescription || course.shortDescription || course.description.slice(0, 160) + "..."}
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </TabsContent>
 
                     {/* CURRICULUM TAB */}
@@ -930,44 +1218,6 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                                 ))
                             )}
                         </div>
-                    </TabsContent>
-
-                    {/* OFFERS TAB */}
-                    <TabsContent value="offers">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Special Offers</CardTitle>
-                                <CardDescription>Manage discounts and special offers linked to this course.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                {course.offers.length === 0 ? (
-                                    <div className="text-center py-12 text-gray-500">
-                                        <Tag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                                        <p className="font-medium">No active offers for this course</p>
-                                        <p className="text-sm mt-1">Create offers in the Marketing section</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-3">
-                                        {course.offers.map(({ offer }) => (
-                                            <div key={offer.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="p-2 bg-green-100 rounded-lg">
-                                                        <Tag className="w-5 h-5 text-green-600" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-semibold">{offer.title}</p>
-                                                        <p className="text-sm text-gray-500">{offer.code ? `Code: ${offer.code}` : "Auto-applied"}</p>
-                                                    </div>
-                                                </div>
-                                                <Badge className="bg-green-100 text-green-700 text-lg px-3 py-1">
-                                                    {offer.discountType === "percentage" ? `${offer.discountValue}% OFF` : `-$${offer.discountValue}`}
-                                                </Badge>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
                     </TabsContent>
 
                     {/* ANALYTICS TAB */}

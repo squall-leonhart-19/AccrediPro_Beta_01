@@ -94,7 +94,15 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
     const serializedCourse = {
         ...course,
         price: course.price ? Number(course.price) : undefined,
+        regularPrice: course.regularPrice ? Number(course.regularPrice) : undefined,
         duration: course.duration || null,
+        // New fields
+        metaTitle: course.metaTitle || null,
+        metaDescription: course.metaDescription || null,
+        learningOutcomes: course.learningOutcomes || [],
+        targetAudience: course.targetAudience || null,
+        estimatedWeeks: course.estimatedWeeks || null,
+        enrollmentLimit: course.enrollmentLimit || null,
         createdAt: course.createdAt.toISOString(),
         updatedAt: course.updatedAt.toISOString(),
         publishedAt: course.publishedAt?.toISOString() || null,
