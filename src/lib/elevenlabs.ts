@@ -58,7 +58,7 @@ export async function generateVoice(
 
         const audioStream = await client.textToSpeech.convert(finalVoiceId, {
             text,
-            modelId: "eleven_multilingual_v2", // Best quality model
+            modelId: "eleven_turbo_v2_5", // English-focused, fast, high quality
             outputFormat: "mp3_44100_128",
             voiceSettings: {
                 stability: finalSettings.stability!,
