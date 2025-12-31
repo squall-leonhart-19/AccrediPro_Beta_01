@@ -3,12 +3,67 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { CourseCatalogFilters } from "@/components/courses/course-catalog-filters";
 
+// Fallback Unsplash images for courses without thumbnails
+const FALLBACK_THUMBNAILS: Record<string, string> = {
+  // Health & Wellness
+  "functional-medicine": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop",
+  "health": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop",
+  "wellness": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=400&fit=crop",
+  "nutrition": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=400&fit=crop",
+  "gut": "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&h=400&fit=crop",
+  "hormone": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop",
+  "thyroid": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=400&fit=crop",
+  "stress": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=400&fit=crop",
+  "sleep": "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&h=400&fit=crop",
+  "weight": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&h=400&fit=crop",
+  "metabolic": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&h=400&fit=crop",
+  "autoimmune": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop",
+  "mental": "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&h=400&fit=crop",
+  "brain": "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&h=400&fit=crop",
+  "detox": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=400&fit=crop",
+  "energy": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=400&fit=crop",
+  "menopause": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop",
+  "perimenopause": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop",
+  "women": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop",
+  "integrative": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop",
+  "holistic": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=400&fit=crop",
+  "plant": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=400&fit=crop",
+  "vegan": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=400&fit=crop",
+  "pediatric": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=400&fit=crop",
+  "child": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=400&fit=crop",
+  "parenting": "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=400&fit=crop",
+  "grief": "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&h=400&fit=crop",
+  "trauma": "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800&h=400&fit=crop",
+  "anxiety": "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&h=400&fit=crop",
+  "coach": "https://images.unsplash.com/photo-1552581234-26160f608093?w=800&h=400&fit=crop",
+  "default": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=400&fit=crop",
+};
+
+// Get fallback thumbnail based on course title/slug
+function getFallbackThumbnail(title: string, slug: string): string {
+  const searchText = `${title} ${slug}`.toLowerCase();
+  for (const [keyword, url] of Object.entries(FALLBACK_THUMBNAILS)) {
+    if (keyword !== "default" && searchText.includes(keyword)) {
+      return url;
+    }
+  }
+  return FALLBACK_THUMBNAILS.default;
+}
+
+// Courses to hide from catalog (not ready for public)
+const HIDDEN_COURSE_SLUGS = [
+  "narc-recovery-coach-certification",
+  "narcissistic-abuse-recovery-coach",
+  "anrc-certification",
+];
+
 async function getCourses() {
   return prisma.course.findMany({
     where: {
       isPublished: true,
       certificateType: { not: 'MINI_DIPLOMA' },
-      // Show ALL published certifications
+      // Hide specific courses that are not ready
+      slug: { notIn: HIDDEN_COURSE_SLUGS },
     },
     include: {
       category: true,
@@ -104,7 +159,7 @@ export default async function CoursesPage() {
     title: course.title,
     description: course.description,
     shortDescription: course.shortDescription,
-    thumbnail: course.thumbnail,
+    thumbnail: course.thumbnail || getFallbackThumbnail(course.title, course.slug),
     difficulty: course.difficulty,
     duration: course.duration,
     isFeatured: course.isFeatured,
