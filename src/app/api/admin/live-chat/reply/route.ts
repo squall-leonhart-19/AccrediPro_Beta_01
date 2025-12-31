@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { sendEmail, emailWrapper } from "@/lib/email";
+import { COACH_PERSONAS, getPersonaByKey } from "@/config/coach-personas";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -21,26 +22,75 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-const SALES_SYSTEM_PROMPT = `You are Sarah, the lead instructor and mentor at AccrediPro Academy. You're having a live chat with a potential student on the FM Certification sales page.
+// Map page slugs to persona keys and coach emails
+function detectPersonaAndCoach(page: string | null): { personaKey: keyof typeof COACH_PERSONAS; coachEmail: string } {
+  if (!page) return { personaKey: "fm-health", coachEmail: "sarah@accredipro-certificate.com" };
 
-Your personality:
-- Warm, friendly, and genuinely helpful
-- Passionate about functional medicine and helping women build coaching careers
-- Confident but not pushy
-- Conversational and personable
+  const p = page.toLowerCase().trim();
 
-Key information about the FM Certification:
-- Price: $97 (80% off, normally $497) - Christmas special
-- 9 International Certifications
-- 30-Day DEPTH Method™ Training
-- FREE 30-Day Personal Mentorship with you (Sarah)
-- Private Community of 1,247+ coaches
-- Coach Workspace Portal
-- 14 Bonuses worth $4,959
-- Lifetime access & future updates
-- 30-Day Certification Guarantee
+  // FM/Health (Sarah)
+  if (p === "fm-course-certification" || p === "fm-certification" || p === "hn-course-certification") {
+    return { personaKey: "fm-health", coachEmail: "sarah@accredipro-certificate.com" };
+  }
 
-Keep responses conversational, 2-4 sentences max. Sound like a real person texting.`;
+  // Mental Health (Olivia)
+  if (p.includes("narcissistic") || p.includes("trauma") || p.includes("abuse") || p.includes("grief") ||
+      p.includes("addiction") || p.includes("neuro") || p.includes("adhd") || p.includes("autism") ||
+      p.includes("anxiety") || p.includes("depression")) {
+    return { personaKey: "mental-health", coachEmail: "olivia@accredipro-certificate.com" };
+  }
+
+  // Life Coaching (Marcus)
+  if (p.includes("life-coach") || p.includes("career") || p.includes("finance") || p.includes("money") ||
+      p.includes("habit") || p.includes("success") || p.includes("confidence")) {
+    return { personaKey: "life-coaching", coachEmail: "marcus@accredipro-certificate.com" };
+  }
+
+  // Spiritual (Luna)
+  if (p.includes("spiritual") || p.includes("energy") || p.includes("reiki") || p.includes("chakra") ||
+      p.includes("crystal") || p.includes("tarot") || p.includes("astrology") || p.includes("sacred") ||
+      p.includes("manifest")) {
+    return { personaKey: "spiritual", coachEmail: "luna@accredipro-certificate.com" };
+  }
+
+  // Herbalism (Sage)
+  if (p.includes("herbal") || p.includes("plant") || p.includes("ayurveda") || p.includes("tcm") ||
+      p.includes("chinese") || p.includes("naturopath")) {
+    return { personaKey: "herbalism", coachEmail: "sage@accredipro-certificate.com" };
+  }
+
+  // Yoga/Movement (Maya)
+  if (p.includes("yoga") || p.includes("somatic") || p.includes("movement") || p.includes("breath") ||
+      p.includes("sound") || p.includes("music") || p.includes("meditation")) {
+    return { personaKey: "yoga-movement", coachEmail: "maya@accredipro-certificate.com" };
+  }
+
+  // Pet (Bella)
+  if (p.includes("pet-") || p.includes("animal") || p.includes("equine") || p.includes("canine") ||
+      p.includes("feline")) {
+    return { personaKey: "pet", coachEmail: "bella@accredipro-certificate.com" };
+  }
+
+  // Parenting (Emma)
+  if (p.includes("parent") || p.includes("family") || p.includes("kid") || p.includes("teen") ||
+      p.includes("couple")) {
+    return { personaKey: "parenting", coachEmail: "emma@accredipro-certificate.com" };
+  }
+
+  // Faith (Grace)
+  if (p.includes("christian") || p.includes("faith") || p.includes("biblical") || p.includes("ministry") ||
+      p.includes("jesus")) {
+    return { personaKey: "faith", coachEmail: "grace@accredipro-certificate.com" };
+  }
+
+  // Business (David)
+  if (p.includes("business") || p.includes("marketing") || p.includes("practice-building")) {
+    return { personaKey: "business", coachEmail: "david@accredipro-certificate.com" };
+  }
+
+  // Default: FM/Health (Sarah)
+  return { personaKey: "fm-health", coachEmail: "sarah@accredipro-certificate.com" };
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,7 +100,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
     }
 
-    const { visitorId, message, useAI } = await request.json();
+    const { visitorId, message, useAI, page } = await request.json();
 
     if (!visitorId) {
       return NextResponse.json({ error: "Visitor ID is required" }, { status: 400, headers: corsHeaders });
@@ -66,6 +116,17 @@ export async function POST(request: NextRequest) {
         take: 10,
       });
 
+      // Detect which page/persona this is for
+      const chatPage = page || history[0]?.page || "fm-certification";
+      const { personaKey, coachEmail } = detectPersonaAndCoach(chatPage);
+      const persona = getPersonaByKey(personaKey);
+
+      // Get coach's knowledge base from database
+      const coach = await prisma.user.findFirst({
+        where: { email: coachEmail },
+        select: { knowledgeBase: true, firstName: true }
+      });
+
       const messages = history.map((msg) => ({
         role: msg.isFromVisitor ? "user" as const : "assistant" as const,
         content: msg.message,
@@ -75,10 +136,33 @@ export async function POST(request: NextRequest) {
       const lastVisitorMessage = history.filter(m => m.isFromVisitor).pop();
 
       if (lastVisitorMessage) {
+        // Build system prompt from persona + knowledge base
+        const systemPrompt = `You are ${persona.name}, ${persona.role} at AccrediPro Academy.
+
+PERSONALITY & TONE:
+${persona.tone}
+
+YOUR EXPERTISE:
+${persona.knowledgeBase}
+
+${coach?.knowledgeBase ? `
+SPECIFIC KNOWLEDGE BASE (Use this for current offers, pricing, FAQs):
+${coach.knowledgeBase}
+` : ''}
+
+INSTRUCTIONS:
+- Keep responses conversational, warm, and helpful
+- 2-4 sentences max - sound like a real person texting
+- Use the knowledge base to answer specific questions about pricing, curriculum, etc.
+- NEVER use markdown formatting (no bold, italics, bullets). Plain text only.
+- NEVER refer to yourself as AI, bot, or automated. You are a real instructor.
+- If they seem ready to buy, share the checkout link from your knowledge base
+- Be encouraging but not pushy`;
+
         const response = await anthropic.messages.create({
           model: "claude-sonnet-4-20250514",
           max_tokens: 300,
-          system: SALES_SYSTEM_PROMPT,
+          system: systemPrompt,
           messages: messages.length > 0 ? messages : [{ role: "user", content: lastVisitorMessage.message }],
         });
 
@@ -97,7 +181,7 @@ export async function POST(request: NextRequest) {
     await prisma.salesChat.create({
       data: {
         visitorId,
-        page: "fm-certification",
+        page: page || "fm-certification",
         message: replyMessage,
         isFromVisitor: false,
         repliedBy: session.user.id,
@@ -187,4 +271,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to send reply" }, { status: 500, headers: corsHeaders });
   }
 }
-
