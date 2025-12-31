@@ -47,8 +47,9 @@ const VOICE_VARIATIONS: VoiceVariation[] = [
   },
 ];
 
-// Short personalized welcome (~10-12 seconds, ~280 chars)
-const SHORT_WELCOME = `Hey Jennifer! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions. Talk soon!`;
+// Short personalized welcome (~17 seconds, ~230 chars)
+// Double dash and period at end helps prevent the "sigh" sound
+const SHORT_WELCOME = `Hey Jennifer! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions - - Talk soon Jennifer!.`;
 
 // Medium welcome (~25-30 seconds, ~450 chars)
 const MEDIUM_WELCOME = `Hey Jennifer! It's Sarah here. I just saw your name come through and I'm so excited you're taking this step. Inside your dashboard, you'll find your Mini Diploma ready to start. I know you might have questions - maybe wondering if this is really for you. I get it. But here's what I know: you signed up for a reason. Message me anytime - I'm here for you every step of the way. Talk soon!`;

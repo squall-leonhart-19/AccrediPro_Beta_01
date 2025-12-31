@@ -26,12 +26,12 @@ export interface VoiceSettings {
 }
 
 // Default voice settings - tested and approved parameters
-// Warm, expressive, sounds like the real Sarah
+// Warm Medium: friendly, natural pace, minimal sigh at end
 const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
-    stability: 0.50,       // Balanced stability/expressiveness
-    similarityBoost: 1.0,  // Maximum similarity to original voice
-    style: 0.50,           // Good expressiveness for warmth
-    speed: 0.85,           // Slightly slower for warmth
+    stability: 0.60,       // Balanced - reduces random breaths
+    similarityBoost: 0.80, // Good similarity to original voice
+    style: 0.25,           // Lower style = less breathy/sighing
+    speed: 0.90,           // Medium pace, natural
 };
 
 /**
