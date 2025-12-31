@@ -8,15 +8,17 @@ const courseSchema = z.object({
     title: z.string().min(1).max(200),
     slug: z.string().min(1).max(200),
     description: z.string().min(1),
-    shortDescription: z.string().optional(),
-    thumbnail: z.string().optional(),
-    price: z.number().optional(),
+    shortDescription: z.string().optional().nullable(),
+    thumbnail: z.string().optional().nullable(),
+    price: z.number().optional().nullable(),
     isFree: z.boolean().optional(),
     isPublished: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
     difficulty: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"]).optional(),
     certificateType: z.enum(["COMPLETION", "CERTIFICATION", "MINI_DIPLOMA"]).optional(),
-    categoryId: z.string().optional(),
+    categoryId: z.string().optional().nullable(),
+    coachId: z.string().optional().nullable(),
+    duration: z.number().optional().nullable(),
 });
 
 // GET - List all courses

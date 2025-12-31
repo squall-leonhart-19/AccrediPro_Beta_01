@@ -18,24 +18,39 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
 
     const { courseId } = await params;
 
-    const [course, categories, offers] = await Promise.all([
+    const [course, categories, offers, coaches] = await Promise.all([
         prisma.course.findUnique({
             where: { id: courseId },
             include: {
                 category: true,
                 tags: { include: { tag: true } },
                 offers: { include: { offer: true } },
+                analytics: true,
+                reviews: {
+                    select: { rating: true },
+                },
                 _count: {
                     select: {
                         enrollments: true,
                         modules: true,
                         certificates: true,
+                        reviews: true,
                     },
                 },
                 modules: {
                     include: {
                         lessons: {
                             orderBy: { order: "asc" },
+                            select: {
+                                id: true,
+                                title: true,
+                                order: true,
+                                isPublished: true,
+                                lessonType: true,
+                                duration: true,
+                                createdAt: true,
+                                updatedAt: true,
+                            },
                         },
                         _count: { select: { lessons: true } },
                     },
@@ -51,19 +66,48 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
             where: { isActive: true },
             orderBy: { usedCount: "desc" }
         }),
+        // Fetch coaches (instructors and mentors)
+        prisma.user.findMany({
+            where: {
+                role: { in: ["INSTRUCTOR", "MENTOR", "ADMIN"] },
+            },
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                avatar: true,
+            },
+            orderBy: { firstName: "asc" },
+        }),
     ]);
 
     if (!course) {
         redirect("/admin/courses");
     }
 
+    // Calculate analytics if not available
+    const avgRating = course.reviews.length > 0
+        ? course.reviews.reduce((sum, r) => sum + r.rating, 0) / course.reviews.length
+        : 0;
+
     // Serialize dates for client component
     const serializedCourse = {
         ...course,
         price: course.price ? Number(course.price) : undefined,
+        duration: course.duration || null,
         createdAt: course.createdAt.toISOString(),
         updatedAt: course.updatedAt.toISOString(),
         publishedAt: course.publishedAt?.toISOString() || null,
+        analytics: course.analytics ? {
+            totalEnrolled: course.analytics.totalEnrolled,
+            avgRating: Number(course.analytics.avgRating) || avgRating,
+            completionRate: Number(course.analytics.completionRate) || 0,
+        } : {
+            totalEnrolled: course._count.enrollments,
+            avgRating: avgRating,
+            completionRate: 0,
+        },
         modules: course.modules.map(m => ({
             ...m,
             createdAt: m.createdAt.toISOString(),
@@ -102,6 +146,7 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
         <CourseEditor
             course={serializedCourse as any}
             categories={categories}
+            coaches={coaches}
             availableOffers={serializedOffers}
         />
     );
