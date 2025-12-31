@@ -46,7 +46,7 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
                                 order: true,
                                 isPublished: true,
                                 lessonType: true,
-                                duration: true,
+                                videoDuration: true,
                                 createdAt: true,
                                 updatedAt: true,
                             },
@@ -113,6 +113,7 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
             updatedAt: m.updatedAt.toISOString(),
             lessons: m.lessons.map(l => ({
                 ...l,
+                duration: l.videoDuration,
                 createdAt: l.createdAt.toISOString(),
                 updatedAt: l.updatedAt.toISOString(),
             })),
