@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Pencil, Loader2, Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -11,19 +12,27 @@ interface ProfileEditorProps {
     userId: string;
     avatar: string | null;
     bio: string | null;
+    firstName: string | null;
+    lastName: string | null;
     initials: string;
 }
 
-export function ProfileEditor({ userId, avatar, bio, initials }: ProfileEditorProps) {
+export function ProfileEditor({ userId, avatar, bio, firstName, lastName, initials }: ProfileEditorProps) {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [currentAvatar, setCurrentAvatar] = useState(avatar);
     const [currentBio, setCurrentBio] = useState(bio || "");
+    const [currentFirstName, setCurrentFirstName] = useState(firstName || "");
+    const [currentLastName, setCurrentLastName] = useState(lastName || "");
     const [isEditingBio, setIsEditingBio] = useState(false);
+    const [isEditingName, setIsEditingName] = useState(false);
     const [bioInput, setBioInput] = useState(bio || "");
+    const [firstNameInput, setFirstNameInput] = useState(firstName || "");
+    const [lastNameInput, setLastNameInput] = useState(lastName || "");
     const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
     const [isSavingBio, setIsSavingBio] = useState(false);
+    const [isSavingName, setIsSavingName] = useState(false);
 
     const handlePhotoClick = () => {
         fileInputRef.current?.click();
@@ -106,6 +115,48 @@ export function ProfileEditor({ userId, avatar, bio, initials }: ProfileEditorPr
         setIsEditingBio(false);
     };
 
+    const handleNameSave = async () => {
+        if (!firstNameInput.trim() || !lastNameInput.trim()) {
+            alert("First name and last name are required");
+            return;
+        }
+
+        setIsSavingName(true);
+
+        try {
+            const response = await fetch("/api/user/profile", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    firstName: firstNameInput.trim(),
+                    lastName: lastNameInput.trim(),
+                }),
+            });
+
+            if (response.ok) {
+                setCurrentFirstName(firstNameInput.trim());
+                setCurrentLastName(lastNameInput.trim());
+                setIsEditingName(false);
+                router.refresh();
+            } else {
+                alert("Failed to save name. Please try again.");
+            }
+        } catch (error) {
+            console.error("Name save error:", error);
+            alert("Failed to save name. Please try again.");
+        } finally {
+            setIsSavingName(false);
+        }
+    };
+
+    const handleNameCancel = () => {
+        setFirstNameInput(currentFirstName);
+        setLastNameInput(currentLastName);
+        setIsEditingName(false);
+    };
+
+    const displayName = `${currentFirstName} ${currentLastName}`.trim() || "Your Name";
+
     return (
         <>
             {/* Hidden file input */}
@@ -140,6 +191,71 @@ export function ProfileEditor({ userId, avatar, bio, initials }: ProfileEditorPr
                     )}
                 </button>
             </div>
+
+            {/* Name section - editable */}
+            {isEditingName ? (
+                <div className="w-full max-w-md mb-2">
+                    <div className="flex gap-2 mb-2">
+                        <div className="flex-1">
+                            <label className="text-xs text-white/60 mb-1 block">First Name</label>
+                            <Input
+                                value={firstNameInput}
+                                onChange={(e) => setFirstNameInput(e.target.value)}
+                                placeholder="First name"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                                maxLength={50}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <label className="text-xs text-white/60 mb-1 block">Last Name</label>
+                            <Input
+                                value={lastNameInput}
+                                onChange={(e) => setLastNameInput(e.target.value)}
+                                placeholder="Last name"
+                                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                                maxLength={50}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleNameCancel}
+                            className="text-white/70 hover:text-white hover:bg-white/10"
+                        >
+                            <X className="w-4 h-4 mr-1" />
+                            Cancel
+                        </Button>
+                        <Button
+                            size="sm"
+                            onClick={handleNameSave}
+                            disabled={isSavingName}
+                            className="bg-gold-400/20 text-gold-200 hover:bg-gold-400/30"
+                        >
+                            {isSavingName ? (
+                                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                            ) : (
+                                <Check className="w-4 h-4 mr-1" />
+                            )}
+                            Save
+                        </Button>
+                    </div>
+                </div>
+            ) : (
+                <div className="group relative mb-2">
+                    <h1 className="text-2xl font-bold text-white inline-flex items-center gap-2">
+                        {displayName}
+                        <button
+                            onClick={() => setIsEditingName(true)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity text-gold-300 hover:text-gold-200"
+                            title="Edit name"
+                        >
+                            <Pencil className="w-4 h-4" />
+                        </button>
+                    </h1>
+                </div>
+            )}
 
             {/* Bio section */}
             {isEditingBio ? (

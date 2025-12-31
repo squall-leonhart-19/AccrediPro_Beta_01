@@ -275,12 +275,16 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                         {/* Left: Avatar + Name + Level */}
                         <div className="flex items-center gap-4">
-                            <ProfileEditor
-                                userId={user.id}
-                                avatar={user.avatar}
-                                bio={user.bio}
-                                initials={initials}
-                            />
+                            <div className="flex flex-col items-center">
+                                <ProfileEditor
+                                    userId={user.id}
+                                    avatar={user.avatar}
+                                    bio={user.bio}
+                                    firstName={user.firstName}
+                                    lastName={user.lastName}
+                                    initials={initials}
+                                />
+                            </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
@@ -290,9 +294,6 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                                         {currentLevel.icon} Level {currentLevel.level}
                                     </Badge>
                                 </div>
-                                <h1 className="text-xl font-bold text-white">
-                                    {user.firstName} <span className="text-gold-400">{user.lastName}</span>
-                                </h1>
                                 <p className="text-xs text-burgundy-200 mt-0.5 hidden sm:block">
                                     {user.email}
                                 </p>
