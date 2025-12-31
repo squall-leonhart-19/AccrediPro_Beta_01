@@ -51,6 +51,7 @@ import {
   Sparkles,
   Pin,
   Shield,
+  PlayCircle,
 } from "lucide-react";
 
 interface Enrollment {
@@ -62,6 +63,15 @@ interface Enrollment {
     title: string;
     slug: string;
   };
+  totalLessons?: number;
+  completedLessons?: number;
+}
+
+interface CurrentLesson {
+  lessonTitle: string;
+  moduleTitle: string;
+  courseTitle: string;
+  courseId: string;
 }
 
 interface UserBadge {
@@ -90,6 +100,7 @@ interface User {
   enrollments?: Enrollment[];
   badges?: UserBadge[];
   streak?: UserStreak | null;
+  currentLesson?: CurrentLesson | null;
 }
 
 interface MessageReaction {
@@ -1875,6 +1886,24 @@ export function MessagesClient({
                       </div>
                     </div>
 
+                    {/* Currently Working On */}
+                    {selectedUser.currentLesson && (
+                      <div className="mb-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                            <PlayCircle className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-[10px] font-semibold text-blue-700 uppercase tracking-wide">Currently Learning</span>
+                        </div>
+                        <p className="text-xs font-semibold text-gray-900 leading-tight">
+                          {selectedUser.currentLesson.lessonTitle}
+                        </p>
+                        <p className="text-[10px] text-gray-500 mt-0.5">
+                          {selectedUser.currentLesson.moduleTitle} • {selectedUser.currentLesson.courseTitle}
+                        </p>
+                      </div>
+                    )}
+
                     {/* Enrolled Courses */}
                     {selectedUser.enrollments && selectedUser.enrollments.length > 0 && (
                       <div className="mb-4">
@@ -1883,20 +1912,31 @@ export function MessagesClient({
                           Courses ({selectedUser.enrollments.length})
                         </h4>
                         <div className="space-y-2">
-                          {selectedUser.enrollments.slice(0, 3).map((enrollment) => (
-                            <div key={enrollment.id} className="bg-gray-50 rounded-lg p-2">
+                          {selectedUser.enrollments.slice(0, 4).map((enrollment) => (
+                            <div key={enrollment.id} className="bg-gray-50 rounded-lg p-2.5">
                               <div className="flex items-center justify-between mb-1">
                                 <p className="text-xs font-medium text-gray-900 truncate pr-2">
                                   {enrollment.course.title}
                                 </p>
-                                {enrollment.status === "COMPLETED" && (
-                                  <Award className="w-3 h-3 text-gold-500 flex-shrink-0" />
+                                {enrollment.status === "COMPLETED" ? (
+                                  <Badge className="bg-green-100 text-green-700 border-0 text-[9px] px-1.5 py-0">
+                                    Complete
+                                  </Badge>
+                                ) : (
+                                  <Badge className="bg-blue-100 text-blue-700 border-0 text-[9px] px-1.5 py-0">
+                                    In Progress
+                                  </Badge>
                                 )}
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Progress value={enrollment.progress} className="flex-1 h-1" />
-                                <span className="text-[10px] font-semibold text-gray-600">{Math.round(enrollment.progress)}%</span>
+                              <div className="flex items-center gap-2 mb-1">
+                                <Progress value={enrollment.progress} className="flex-1 h-1.5" />
+                                <span className="text-[10px] font-bold text-gray-700">{Math.round(enrollment.progress)}%</span>
                               </div>
+                              {enrollment.totalLessons !== undefined && enrollment.totalLessons > 0 && (
+                                <p className="text-[10px] text-gray-500">
+                                  {enrollment.completedLessons || 0} of {enrollment.totalLessons} lessons completed
+                                </p>
+                              )}
                             </div>
                           ))}
                         </div>

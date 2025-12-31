@@ -91,11 +91,20 @@ async function getConversations(userId: string, isAdmin: boolean) {
   if (isAdmin && conversationData.length > 0) {
     const partnerIds = conversationData.map(c => c.odpartnerId);
 
-    // Fetch enrollments, badges, streak in parallel
-    const [enrollments, badges, streaks] = await Promise.all([
+    // Fetch enrollments, badges, streak, and current lesson progress in parallel
+    const [enrollments, badges, streaks, lessonProgress] = await Promise.all([
       prisma.enrollment.findMany({
         where: { userId: { in: partnerIds } },
-        include: { course: { select: { id: true, title: true, slug: true } } },
+        include: {
+          course: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              _count: { select: { lessons: true } },
+            },
+          },
+        },
       }),
       prisma.userBadge.findMany({
         where: { userId: { in: partnerIds } },
@@ -105,27 +114,104 @@ async function getConversations(userId: string, isAdmin: boolean) {
       prisma.streak.findMany({
         where: { userId: { in: partnerIds } },
       }),
+      // Get last active lesson for each user (most recently visited)
+      prisma.lessonProgress.findMany({
+        where: {
+          userId: { in: partnerIds },
+          lastVisitedAt: { not: null },
+        },
+        orderBy: { lastVisitedAt: "desc" },
+        include: {
+          lesson: {
+            select: {
+              id: true,
+              title: true,
+              orderIndex: true,
+              module: {
+                select: {
+                  title: true,
+                  course: { select: { id: true, title: true } },
+                },
+              },
+            },
+          },
+        },
+      }),
     ]);
+
+    // Get completed lessons count per user per course
+    const completedLessons = await prisma.lessonProgress.groupBy({
+      by: ["userId", "lessonId"],
+      where: {
+        userId: { in: partnerIds },
+        isCompleted: true,
+      },
+    });
+
+    // Create a map of userId -> courseId -> completedCount
+    const completedByUserCourse = new Map<string, Map<string, number>>();
+    for (const lp of completedLessons) {
+      if (!completedByUserCourse.has(lp.userId)) {
+        completedByUserCourse.set(lp.userId, new Map());
+      }
+    }
+
+    // Group lesson progress by user and find their current lesson per course
+    const currentLessonByUser = new Map<string, { lessonTitle: string; moduleTitle: string; courseTitle: string; courseId: string }>();
+    for (const lp of lessonProgress) {
+      // Only keep the first (most recent) for each user
+      if (!currentLessonByUser.has(lp.userId) && lp.lesson) {
+        currentLessonByUser.set(lp.userId, {
+          lessonTitle: lp.lesson.title,
+          moduleTitle: lp.lesson.module?.title || "",
+          courseTitle: lp.lesson.module?.course?.title || "",
+          courseId: lp.lesson.module?.course?.id || "",
+        });
+      }
+    }
 
     // Group by user
     for (const partnerId of partnerIds) {
+      const userEnrollments = enrollments.filter(e => e.userId === partnerId);
+      const currentLesson = currentLessonByUser.get(partnerId);
+      const userStreak = streaks.find(s => s.userId === partnerId);
+
+      // Count completed lessons per course for this user
+      const userCompletedLessons = lessonProgress.filter(
+        lp => lp.userId === partnerId && lp.isCompleted
+      );
+
       userExtras.set(partnerId, {
-        enrollments: enrollments.filter(e => e.userId === partnerId).map(e => ({
-          id: e.id,
-          progress: Number(e.progress),
-          status: e.status,
-          course: e.course,
-        })),
+        enrollments: userEnrollments.map(e => {
+          const totalLessons = (e.course as any)._count?.lessons || 0;
+          const completedInCourse = userCompletedLessons.filter(
+            lp => lp.lesson?.module?.course?.id === e.course.id
+          ).length;
+
+          return {
+            id: e.id,
+            progress: Number(e.progress),
+            status: e.status,
+            course: {
+              id: e.course.id,
+              title: e.course.title,
+              slug: e.course.slug,
+            },
+            totalLessons,
+            completedLessons: completedInCourse,
+          };
+        }),
         badges: badges.filter(b => b.userId === partnerId).slice(0, 6).map(b => ({
           id: b.id,
           earnedAt: b.earnedAt,
           badge: { name: b.badge.name, icon: b.badge.icon },
         })),
-        streak: streaks.find(s => s.userId === partnerId) ? {
-          currentStreak: streaks.find(s => s.userId === partnerId)!.currentStreak,
-          longestStreak: streaks.find(s => s.userId === partnerId)!.longestStreak,
-          totalPoints: streaks.find(s => s.userId === partnerId)!.totalPoints,
+        streak: userStreak ? {
+          currentStreak: userStreak.currentStreak,
+          longestStreak: userStreak.longestStreak,
+          totalPoints: userStreak.totalPoints,
         } : undefined,
+        currentLesson: currentLesson || null,
       });
     }
   }
@@ -145,6 +231,7 @@ async function getConversations(userId: string, isAdmin: boolean) {
         enrollments: extras?.enrollments,
         badges: extras?.badges,
         streak: extras?.streak,
+        currentLesson: extras?.currentLesson,
       },
       lastMessage: {
         id: conv.lastMessageId,
