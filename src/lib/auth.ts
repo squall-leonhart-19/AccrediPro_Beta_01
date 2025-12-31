@@ -97,22 +97,19 @@ export const authOptions: NextAuthOptions = {
         const isFirstLogin = !user.firstLoginAt;
         const now = new Date();
 
-        // Update user login stats - wrap in try/catch to not block login
-        try {
-          console.log("[AUTH] Updating login stats for user:", user.id);
-          await prisma.user.update({
-            where: { id: user.id },
-            data: {
-              lastLoginAt: now,
-              firstLoginAt: isFirstLogin ? now : undefined,
-              loginCount: { increment: 1 },
-            },
-          });
-          console.log("[AUTH] Login stats updated successfully");
-        } catch (updateError) {
-          console.error("[AUTH] Failed to update login stats (non-blocking):", updateError);
-          // Don't throw - let login continue
-        }
+        // Update user login stats - fire and forget (don't await to prevent timeout)
+        prisma.user.update({
+          where: { id: user.id },
+          data: {
+            lastLoginAt: now,
+            firstLoginAt: isFirstLogin ? now : undefined,
+            loginCount: { increment: 1 },
+          },
+        }).then(() => {
+          console.log("[AUTH] Login stats updated for:", user.id);
+        }).catch((err) => {
+          console.error("[AUTH] Failed to update login stats:", err);
+        });
 
         // Get request headers for login tracking
         let ipAddress: string | null = null;
@@ -129,25 +126,22 @@ export const authOptions: NextAuthOptions = {
 
         const { device, browser } = parseUserAgent(userAgent);
 
-        // Create login history record - wrap in try/catch to not block login
-        try {
-          console.log("[AUTH] Creating login history for user:", user.id);
-          await prisma.loginHistory.create({
-            data: {
-              userId: user.id,
-              ipAddress,
-              userAgent,
-              device,
-              browser,
-              isFirstLogin,
-              loginMethod: "credentials",
-            },
-          });
-          console.log("[AUTH] Login history created successfully");
-        } catch (historyError) {
-          console.error("[AUTH] Failed to create login history (non-blocking):", historyError);
-          // Don't throw - let login continue
-        }
+        // Create login history record - fire and forget (don't await to prevent timeout)
+        prisma.loginHistory.create({
+          data: {
+            userId: user.id,
+            ipAddress,
+            userAgent,
+            device,
+            browser,
+            isFirstLogin,
+            loginMethod: "credentials",
+          },
+        }).then(() => {
+          console.log("[AUTH] Login history created for:", user.id);
+        }).catch((err) => {
+          console.error("[AUTH] Failed to create login history:", err);
+        });
 
         // Send welcome message on first login
         if (isFirstLogin) {
