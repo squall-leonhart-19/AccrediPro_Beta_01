@@ -154,11 +154,13 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
+        // Note: Don't include image/avatar in JWT - it can cause token size issues
+        // Avatar is fetched separately when needed
         return {
           id: user.id,
           email: user.email,
           name: `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email,
-          image: user.avatar,
+          image: null, // Removed to prevent JWT bloat
           role: user.role,
           firstName: user.firstName,
           lastName: user.lastName,
