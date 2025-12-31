@@ -667,16 +667,28 @@ The AccrediPro Team`;
 
 /**
  * Creates the personalized welcome message content from Sarah (sent 2-3 min after signup)
- * Matches the short voice script style for consistency
+ * Engaging welcome that encourages reply and builds connection
  */
 function getWelcomeMessage(firstName: string): string {
   return `Hey ${firstName}! 💕
 
-I just saw you signed up and wanted to personally welcome you!
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
 
-I'm Sarah - I'll be your coach throughout this journey, and I'm SO excited you're here!
+Welcome! This is the start of something special, and I'm SO excited you're here!
 
-Check your dashboard to get started with your Mini Diploma. I'm here for you every step of the way, so message me anytime if you have questions!
+Inside your dashboard you'll find:
+
+✨ Your certification ready to start
+✨ Your Roadmap showing where you're headed
+✨ Direct access to message me anytime
+
+I know you might be wondering if this is really for you... maybe feeling a mix of excited and nervous? I felt the exact same way when I started!
+
+But here's what I know: you signed up for a reason. Something inside you said YES to this. Let's find out what that is together.
+
+Hit reply anytime - tell me a little about yourself! What brought you here? What's your "why"?
+
+I'm here for you every step of the way!
 
 Talk soon,
 Sarah ✨`;
