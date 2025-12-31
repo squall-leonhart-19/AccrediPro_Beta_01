@@ -91,18 +91,19 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
         : 0;
 
     // Serialize dates for client component
+    // Use optional chaining for new fields that may not exist in DB yet
     const serializedCourse = {
         ...course,
         price: course.price ? Number(course.price) : undefined,
-        regularPrice: course.regularPrice ? Number(course.regularPrice) : undefined,
+        regularPrice: (course as any).regularPrice ? Number((course as any).regularPrice) : undefined,
         duration: course.duration || null,
-        // New fields
-        metaTitle: course.metaTitle || null,
-        metaDescription: course.metaDescription || null,
-        learningOutcomes: course.learningOutcomes || [],
-        targetAudience: course.targetAudience || null,
-        estimatedWeeks: course.estimatedWeeks || null,
-        enrollmentLimit: course.enrollmentLimit || null,
+        // New fields - use optional access for backwards compatibility
+        metaTitle: (course as any).metaTitle || null,
+        metaDescription: (course as any).metaDescription || null,
+        learningOutcomes: (course as any).learningOutcomes || [],
+        targetAudience: (course as any).targetAudience || null,
+        estimatedWeeks: (course as any).estimatedWeeks || null,
+        enrollmentLimit: (course as any).enrollmentLimit || null,
         createdAt: course.createdAt.toISOString(),
         updatedAt: course.updatedAt.toISOString(),
         publishedAt: course.publishedAt?.toISOString() || null,
