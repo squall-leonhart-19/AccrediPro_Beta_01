@@ -79,11 +79,14 @@ function LoginForm() {
     setLoading(true);
 
     try {
+      console.log("[LOGIN] Calling signIn...");
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
+
+      console.log("[LOGIN] signIn result:", JSON.stringify(result, null, 2));
 
       if (result?.error) {
         // Show the actual error message from NextAuth
@@ -103,13 +106,17 @@ function LoginForm() {
         } else {
           setError(result.error);
         }
-      } else {
+      } else if (result?.ok) {
+        console.log("[LOGIN] Success! Redirecting to:", callbackUrl);
         router.push(callbackUrl);
         router.refresh();
+      } else {
+        console.error("[LOGIN] Unexpected result - no error but not ok:", result);
+        setError("Login failed. Please try again.");
       }
-    } catch (err) {
-      console.error("[LOGIN EXCEPTION]", err);
-      setError("An error occurred. Please try again.");
+    } catch (err: any) {
+      console.error("[LOGIN EXCEPTION]", err?.message || err, err);
+      setError(`An error occurred: ${err?.message || "Please try again."}`);
     } finally {
       setLoading(false);
     }
