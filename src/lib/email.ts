@@ -1,6 +1,15 @@
 import { Resend } from "resend";
+import prisma from "./prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Suppression tag slugs - emails with these tags will be skipped
+const SUPPRESSION_TAGS = [
+  "suppress_bounced",
+  "suppress_complained",
+  "suppress_unsubscribed",
+  "suppress_do_not_contact",
+];
 
 // Transactional emails (password reset, course enrollment, etc.)
 const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <info@accredipro-certificate.com>";
@@ -259,6 +268,46 @@ function htmlToPlainText(html: string): string {
     .trim();
 }
 
+/**
+ * Check if an email should be suppressed (bounced, complained, unsubscribed)
+ * Returns true if email should NOT be sent
+ */
+async function isEmailSuppressed(email: string): Promise<{ suppressed: boolean; reason?: string }> {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email.toLowerCase(),
+        marketingTags: {
+          some: {
+            tag: {
+              slug: { in: SUPPRESSION_TAGS }
+            }
+          }
+        }
+      },
+      include: {
+        marketingTags: {
+          where: {
+            tag: { slug: { in: SUPPRESSION_TAGS } }
+          },
+          include: { tag: true }
+        }
+      }
+    });
+
+    if (user && user.marketingTags.length > 0) {
+      const reasons = user.marketingTags.map(t => t.tag.slug).join(', ');
+      return { suppressed: true, reason: reasons };
+    }
+
+    return { suppressed: false };
+  } catch (error) {
+    // On error, allow the email (don't block due to DB issues)
+    console.error("[EMAIL] Suppression check failed:", error);
+    return { suppressed: false };
+  }
+}
+
 // Main send function for transactional emails (default)
 export async function sendEmail({ to, subject, html, text, replyTo, type = 'transactional' }: SendEmailOptions) {
   try {
@@ -266,6 +315,16 @@ export async function sendEmail({ to, subject, html, text, replyTo, type = 'tran
     if (!to || (Array.isArray(to) && to.length === 0)) {
       console.log(`📧 SKIPPING EMAIL - No recipient address provided`);
       return { success: false, error: 'No recipient email' };
+    }
+
+    // Get the primary email address for suppression check
+    const primaryEmail = Array.isArray(to) ? to[0] : to;
+
+    // Check if email is suppressed (bounced, complained, unsubscribed)
+    const suppression = await isEmailSuppressed(primaryEmail);
+    if (suppression.suppressed) {
+      console.log(`📧 SUPPRESSED - Not sending to ${primaryEmail} (${suppression.reason})`);
+      return { success: false, error: `Email suppressed: ${suppression.reason}` };
     }
 
     const fromEmail = type === 'marketing' ? FROM_EMAIL_MARKETING : FROM_EMAIL_TRANSACTIONAL;

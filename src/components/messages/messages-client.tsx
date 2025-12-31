@@ -272,6 +272,10 @@ export function MessagesClient({
   const [scheduleTime, setScheduleTime] = useState("");
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Reply All Waiting state (for coaches)
+  const [replyingAllWaiting, setReplyingAllWaiting] = useState(false);
+  const [waitingCount, setWaitingCount] = useState(0);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -290,6 +294,52 @@ export function MessagesClient({
   }, []);
 
   const isCoach = currentUserRole === "ADMIN" || currentUserRole === "INSTRUCTOR" || currentUserRole === "MENTOR";
+
+  // Fetch waiting count for coaches
+  useEffect(() => {
+    if (isCoach) {
+      const fetchWaitingCount = async () => {
+        try {
+          const res = await fetch("/api/admin/messages/reply-all-waiting");
+          const data = await res.json();
+          if (data.count !== undefined) {
+            setWaitingCount(data.count);
+          }
+        } catch (err) {
+          console.error("Failed to fetch waiting count:", err);
+        }
+      };
+      fetchWaitingCount();
+    }
+  }, [isCoach, conversations]);
+
+  // Handle Reply All Waiting
+  const handleReplyAllWaiting = async () => {
+    if (!confirm(`Send AI-generated replies to ${waitingCount} waiting conversations?`)) return;
+
+    setReplyingAllWaiting(true);
+    try {
+      const res = await fetch("/api/admin/messages/reply-all-waiting", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ useAI: true }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        alert(`Successfully replied to ${data.replied}/${data.total} conversations!`);
+        // Refresh conversations
+        window.location.reload();
+      } else {
+        alert(`Error: ${data.error || "Failed to send replies"}`);
+      }
+    } catch (err) {
+      console.error("Reply all waiting error:", err);
+      alert("Failed to send replies. Please try again.");
+    } finally {
+      setReplyingAllWaiting(false);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -1205,15 +1255,37 @@ export function MessagesClient({
             </div>
             {/* Only show toggle button for coaches - students don't need to browse coaches */}
             {isCoach && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowMentors(!showMentors)}
-                className={cn("text-white hover:bg-white/20 gap-1.5", showMentors && "bg-white/20")}
-              >
-                <Users className="w-4 h-4" />
-                {showMentors ? "Chats" : "Students"}
-              </Button>
+              <div className="flex items-center gap-2">
+                {waitingCount > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleReplyAllWaiting}
+                    disabled={replyingAllWaiting}
+                    className="text-white hover:bg-white/20 gap-1.5 bg-amber-500/30"
+                    title={`Reply to ${waitingCount} waiting conversations with AI`}
+                  >
+                    {replyingAllWaiting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Zap className="w-4 h-4" />
+                    )}
+                    <span className="hidden sm:inline">Reply All</span>
+                    <span className="px-1.5 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded-full">
+                      {waitingCount}
+                    </span>
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowMentors(!showMentors)}
+                  className={cn("text-white hover:bg-white/20 gap-1.5", showMentors && "bg-white/20")}
+                >
+                  <Users className="w-4 h-4" />
+                  {showMentors ? "Chats" : "Students"}
+                </Button>
+              </div>
             )}
           </div>
 
@@ -1280,6 +1352,8 @@ export function MessagesClient({
               {filteredConversations.map((conv) => {
                 if (!conv.user) return null;
                 const isSelected = selectedUser?.id === conv.user.id;
+                // Check if waiting for coach's reply (last message was from the other user)
+                const isWaitingForReply = isCoach && conv.lastMessage && conv.lastMessage.senderId !== currentUserId;
 
                 return (
                   <button
@@ -1289,7 +1363,9 @@ export function MessagesClient({
                       "w-full flex items-center gap-3 p-3 rounded-xl transition-all text-left",
                       isSelected
                         ? "bg-burgundy-50 border border-burgundy-200"
-                        : "hover:bg-gray-50"
+                        : isWaitingForReply
+                          ? "bg-amber-50 border border-amber-200 hover:bg-amber-100"
+                          : "hover:bg-gray-50"
                     )}
                   >
                     <div className="relative">
@@ -1307,9 +1383,16 @@ export function MessagesClient({
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-0.5">
-                        <p className={cn("font-semibold truncate text-sm", conv.unreadCount > 0 ? "text-gray-900" : "text-gray-700")}>
-                          {conv.user.firstName} {conv.user.lastName}
-                        </p>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <p className={cn("font-semibold truncate text-sm", conv.unreadCount > 0 ? "text-gray-900" : "text-gray-700")}>
+                            {conv.user.firstName} {conv.user.lastName}
+                          </p>
+                          {isWaitingForReply && (
+                            <span className="flex-shrink-0 px-1.5 py-0.5 bg-amber-500 text-white text-[9px] font-bold rounded-full">
+                              REPLY
+                            </span>
+                          )}
+                        </div>
                         {conv.lastMessage && (
                           <span className="text-[10px] text-gray-400 flex-shrink-0 ml-2">
                             {formatDate(conv.lastMessage.createdAt)}

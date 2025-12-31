@@ -122,37 +122,63 @@ export async function POST(request: NextRequest) {
       where: { visitorId },
     });
 
-    if (optin?.email) {
-      // Send email notification with reply-to for threading
-      const emailContent = `
-        <h2 style="color: #722F37; margin-bottom: 20px;">You have a new message from Sarah!</h2>
-        <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
-          <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
-            "${replyMessage}"
-          </p>
-        </div>
-        <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
-          <p style="margin: 0; font-size: 15px; color: #333;">
-            <strong>💬 To reply:</strong> Just reply to this email! Your message will be sent directly to Sarah.
-          </p>
-        </div>
-        <p style="color: #999; font-size: 13px; margin-top: 30px;">
-          Or <a href="https://sarah.accredipro.academy/checkout-fm-certification" style="color: #722F37;">visit our sales page</a> to continue the conversation.
-        </p>
-      `;
+    console.log(`[CHAT] Looking up optin for visitor ${visitorId}:`, optin ? { email: optin.email, name: optin.name } : "NOT FOUND");
 
-      try {
-        await sendEmail({
-          to: optin.email,
-          subject: `Sarah replied to your message`,
-          html: emailWrapper(emailContent, "Sarah from AccrediPro has replied to your message"),
-          replyTo: "chat@accredipro-certificate.com", // Inbound email address for replies
-        });
-        console.log(`[CHAT] Email notification sent to ${optin.email} for visitor ${visitorId}`);
-      } catch (emailError) {
-        console.error(`[CHAT] Failed to send email notification:`, emailError);
-        // Don't fail the whole request if email fails
+    if (optin?.email) {
+      // Check if email should be suppressed (bounced, complained, or unsubscribed)
+      const suppressedUser = await prisma.user.findFirst({
+        where: {
+          email: optin.email.toLowerCase(),
+          marketingTags: {
+            some: {
+              tag: {
+                slug: {
+                  in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed", "suppress_do_not_contact"]
+                }
+              }
+            }
+          }
+        },
+        select: { id: true, email: true }
+      });
+
+      if (suppressedUser) {
+        console.log(`[CHAT] ⚠️ Email suppressed for ${optin.email} - user has suppression tag`);
+      } else {
+        // Send email notification with reply-to for threading
+        const emailContent = `
+          <h2 style="color: #722F37; margin-bottom: 20px;">You have a new message from Sarah!</h2>
+          <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
+            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
+              "${replyMessage}"
+            </p>
+          </div>
+          <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
+            <p style="margin: 0; font-size: 15px; color: #333;">
+              <strong>💬 To reply:</strong> Just reply to this email! Your message will be sent directly to Sarah.
+            </p>
+          </div>
+          <p style="color: #999; font-size: 13px; margin-top: 30px;">
+            Or <a href="https://sarah.accredipro.academy/checkout-fm-certification" style="color: #722F37;">visit our sales page</a> to continue the conversation.
+          </p>
+        `;
+
+        try {
+          console.log(`[CHAT] Attempting to send email to ${optin.email}...`);
+          await sendEmail({
+            to: optin.email,
+            subject: `Sarah replied to your message`,
+            html: emailWrapper(emailContent, "Sarah from AccrediPro has replied to your message"),
+            replyTo: "chat@accredipro-certificate.com", // Inbound email address for replies
+          });
+          console.log(`[CHAT] ✅ Email notification sent to ${optin.email} for visitor ${visitorId}`);
+        } catch (emailError) {
+          console.error(`[CHAT] ❌ Failed to send email notification to ${optin.email}:`, emailError);
+          // Don't fail the whole request if email fails
+        }
       }
+    } else {
+      console.log(`[CHAT] ⚠️ No email found for visitor ${visitorId} - cannot send notification`);
     }
 
     return NextResponse.json({ success: true, message: replyMessage }, { headers: corsHeaders });

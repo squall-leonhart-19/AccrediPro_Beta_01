@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Walkthrough } from "@/components/onboarding/walkthrough";
-
 interface DashboardWrapperProps {
     children: React.ReactNode;
     userName?: string;
@@ -10,48 +7,17 @@ interface DashboardWrapperProps {
     hasCompletedOnboarding?: boolean;
 }
 
-export function DashboardWrapper({ children, userName, userId, hasCompletedOnboarding }: DashboardWrapperProps) {
-    const [showTour, setShowTour] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        if (!userId) {
-            setIsLoading(false);
-            return;
-        }
-
-        // Use user-specific localStorage keys, with general fallback
-        const tourComplete = localStorage.getItem(`tour-complete-${userId}`) === "true"
-            || localStorage.getItem("tour-complete-general") === "true";
-
-        // Show tour if not completed
-        if (!tourComplete) {
-            setShowTour(true);
-        }
-
-        setIsLoading(false);
-    }, [userId]);
-
-    const handleTourComplete = () => {
-        if (userId) {
-            localStorage.setItem(`tour-complete-${userId}`, "true");
-        }
-        localStorage.setItem("tour-complete-general", "true");
-        setShowTour(false);
-    };
-
-    return (
-        <>
-            {showTour && !isLoading && (
-                <Walkthrough
-                    userName={userName || "Friend"}
-                    userId={userId}
-                    onComplete={handleTourComplete}
-                />
-            )}
-            {children}
-        </>
-    );
+/**
+ * DashboardWrapper - Simplified wrapper for dashboard pages
+ *
+ * Note: The interactive tour is now handled by:
+ * - InteractiveTour component on /start-here page
+ * - Triggered via the "Take the Platform Tour" checklist item
+ *
+ * This keeps the onboarding flow cleaner with a single tour entry point.
+ */
+export function DashboardWrapper({ children }: DashboardWrapperProps) {
+    return <>{children}</>;
 }
 
 export default DashboardWrapper;

@@ -137,8 +137,22 @@ async function getConversations(userId: string, isAdmin: boolean) {
     };
   }).filter((c): c is NonNullable<typeof c> => c !== null);
 
-  // Sort by last message time
+  // Sort conversations:
+  // For admins/coaches: Prioritize "waiting for answer" (last message from other user)
+  // Then by last message time
   return conversations.sort((a, b) => {
+    // Check if conversation is waiting for admin's reply
+    // (last message was sent BY the other user, not by admin)
+    const aWaiting = a.lastMessage && a.lastMessage.senderId !== userId;
+    const bWaiting = b.lastMessage && b.lastMessage.senderId !== userId;
+
+    // If admin view: prioritize conversations waiting for reply
+    if (isAdmin) {
+      if (aWaiting && !bWaiting) return -1; // a waiting, b not -> a first
+      if (!aWaiting && bWaiting) return 1;  // b waiting, a not -> b first
+    }
+
+    // Then sort by last message time (newest first)
     const aTime = a.lastMessage?.createdAt.getTime() || 0;
     const bTime = b.lastMessage?.createdAt.getTime() || 0;
     return bTime - aTime;

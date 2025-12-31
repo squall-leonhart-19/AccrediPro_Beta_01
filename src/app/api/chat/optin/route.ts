@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { verifyEmail } from "@/lib/neverbounce";
 
 // CORS headers for cross-origin requests from sales pages
 const corsHeaders = {
@@ -38,18 +39,41 @@ export async function POST(request: NextRequest) {
       || null;
     const userAgent = request.headers.get("user-agent") || null;
 
-    // Upsert the chat optin
+    // Verify email with NeverBounce before storing (prevents bounces later)
+    let verifiedEmail: string | null = null;
+    if (email) {
+      console.log(`[CHAT-OPTIN] 🔍 Verifying email with NeverBounce: ${email}`);
+      const emailVerification = await verifyEmail(email);
+
+      if (emailVerification.isValid) {
+        verifiedEmail = email.toLowerCase();
+        console.log(`[CHAT-OPTIN] ✅ Email verified (${emailVerification.result}): ${email}`);
+      } else {
+        console.log(`[CHAT-OPTIN] ⚠️ Invalid email rejected (${emailVerification.result}): ${email} - ${emailVerification.reason}`);
+        // Return error so user knows to fix their email
+        return NextResponse.json(
+          {
+            error: "Invalid email address",
+            reason: emailVerification.reason || "Please enter a valid email address",
+            suggestedEmail: emailVerification.suggestedEmail,
+          },
+          { status: 400, headers: corsHeaders }
+        );
+      }
+    }
+
+    // Upsert the chat optin (only store verified emails)
     const optin = await prisma.chatOptin.upsert({
       where: { visitorId },
       update: {
         name,
-        ...(email ? { email } : {}),
+        ...(verifiedEmail ? { email: verifiedEmail } : {}),
         updatedAt: new Date(),
       },
       create: {
         visitorId,
         name,
-        email: email || null,
+        email: verifiedEmail,
         page: page || "unknown",
         ipAddress,
         userAgent,
@@ -57,12 +81,12 @@ export async function POST(request: NextRequest) {
     });
 
     // === TAG APPLICATION & SEQUENCE ENROLLMENT ===
-    // If email is provided, check for User record and apply appropriate tag
-    if (email) {
+    // If verified email is provided, check for User record and apply appropriate tag
+    if (verifiedEmail) {
       try {
         // Check if this email has a User record
         const existingUser = await prisma.user.findUnique({
-          where: { email: email.toLowerCase() },
+          where: { email: verifiedEmail },
           include: { marketingTags: { select: { tagId: true } } }
         });
 
@@ -93,7 +117,7 @@ export async function POST(request: NextRequest) {
                     source: "chat_optin",
                   }
                 });
-                console.log(`[CHAT-OPTIN] 🏷️ Applied chat_lead tag to ${email}`);
+                console.log(`[CHAT-OPTIN] 🏷️ Applied chat_lead tag to ${verifiedEmail}`);
               }
             }
 
@@ -102,10 +126,10 @@ export async function POST(request: NextRequest) {
               where: { slug: "chat-conversion", isActive: true }
             });
             if (chatSequence) {
-              console.log(`[CHAT-OPTIN] 📧 Lead ${email} eligible for chat-conversion sequence`);
+              console.log(`[CHAT-OPTIN] 📧 Lead ${verifiedEmail} eligible for chat-conversion sequence`);
             }
           } else {
-            console.log(`[CHAT-OPTIN] ✅ ${email} is already a customer, skipping tag/sequence`);
+            console.log(`[CHAT-OPTIN] ✅ ${verifiedEmail} is already a customer, skipping tag/sequence`);
           }
         }
       } catch (enrollError) {
