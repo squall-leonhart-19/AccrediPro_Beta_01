@@ -200,6 +200,11 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   // Clone user state
   const [cloningUser, setCloningUser] = useState(false);
 
+  // Enrollment dialog state
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [courseSearch, setCourseSearch] = useState("");
+  const [enrollingCourses, setEnrollingCourses] = useState(false);
+
   // Send Login Email Dialog state
   const [loginEmailDialogOpen, setLoginEmailDialogOpen] = useState(false);
   const [targetLoginEmail, setTargetLoginEmail] = useState("");
@@ -393,20 +398,40 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     setDeleteDialogOpen(true);
   };
 
-  const handleEnrollUser = async (userId: string, courseId: string) => {
+  const handleEnrollUser = async (userId: string, courseIds: string[]) => {
+    if (courseIds.length === 0) return;
+
+    setEnrollingCourses(true);
+    let successCount = 0;
+    let errorCount = 0;
+
     try {
-      const response = await fetch("/api/admin/enroll", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, courseId }),
-      });
-      if (response.ok) {
-        setEnrollDialogOpen(false);
-        setSelectedUser(null);
-        router.refresh();
+      for (const courseId of courseIds) {
+        const response = await fetch("/api/admin/enroll", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, courseId }),
+        });
+        if (response.ok) {
+          successCount++;
+        } else {
+          errorCount++;
+        }
+      }
+
+      setEnrollDialogOpen(false);
+      setSelectedUser(null);
+      setSelectedCourses([]);
+      setCourseSearch("");
+      router.refresh();
+
+      if (errorCount > 0) {
+        alert(`Enrolled in ${successCount} courses. ${errorCount} failed (may already be enrolled).`);
       }
     } catch (error) {
       console.error("Failed to enroll user:", error);
+    } finally {
+      setEnrollingCourses(false);
     }
   };
 
@@ -510,6 +535,8 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
   const openEnrollDialog = (user: User) => {
     setSelectedUser(user);
+    setSelectedCourses([]);
+    setCourseSearch("");
     setEnrollDialogOpen(true);
   };
 
@@ -2064,48 +2091,153 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
       {/* Enroll in Course Dialog */}
       <Dialog open={enrollDialogOpen} onOpenChange={setEnrollDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-burgundy-600" />
-              Enroll in Course
+              Enroll in Courses
             </DialogTitle>
             <DialogDescription>
               {selectedUser && (
                 <span>
-                  Select a course to enroll{" "}
+                  Select courses for{" "}
                   <strong>
                     {selectedUser.firstName} {selectedUser.lastName}
                   </strong>
+                  {" "}({selectedUser.email})
                 </span>
               )}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {courses.map((course) => (
-              <button
-                key={course.id}
-                onClick={() => selectedUser && handleEnrollUser(selectedUser.id, course.id)}
-                className="w-full flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-burgundy-300 hover:bg-burgundy-50 transition-all text-left group"
-              >
-                <div className="w-10 h-10 rounded-lg bg-burgundy-100 flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="w-5 h-5 text-burgundy-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 truncate group-hover:text-burgundy-700">
-                    {course.title}
-                  </p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600" />
-              </button>
-            ))}
+
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              placeholder="Search courses..."
+              value={courseSearch}
+              onChange={(e) => setCourseSearch(e.target.value)}
+              className="pl-10"
+            />
           </div>
-          <DialogFooter>
+
+          {/* Quick Actions */}
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant="outline"
-              onClick={() => setEnrollDialogOpen(false)}
+              size="sm"
+              onClick={() => {
+                const notEnrolledCourses = courses
+                  .filter(c => !selectedUser?.enrollments?.some(e => e.course.id === c.id))
+                  .map(c => c.id);
+                setSelectedCourses(notEnrolledCourses);
+              }}
+              className="text-xs"
+            >
+              Select All Available
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // Select FM Pro Pack courses
+                const fmProSlugs = ['functional-medicine-complete-certification', 'fm-pro-advanced-clinical', 'fm-pro-master-depth', 'fm-pro-practice-path'];
+                const fmProIds = courses.filter(c => fmProSlugs.includes(c.slug)).map(c => c.id);
+                setSelectedCourses(prev => [...new Set([...prev, ...fmProIds])]);
+              }}
+              className="text-xs"
+            >
+              + FM Pro Pack (4)
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedCourses([])}
+              className="text-xs"
+            >
+              Clear Selection
+            </Button>
+          </div>
+
+          {/* Selected Count */}
+          {selectedCourses.length > 0 && (
+            <div className="text-sm text-burgundy-600 font-medium">
+              {selectedCourses.length} course{selectedCourses.length > 1 ? 's' : ''} selected
+            </div>
+          )}
+
+          {/* Course List */}
+          <div className="space-y-1 max-h-64 overflow-y-auto border rounded-lg p-2">
+            {courses
+              .filter(course =>
+                course.title.toLowerCase().includes(courseSearch.toLowerCase()) ||
+                course.slug.toLowerCase().includes(courseSearch.toLowerCase())
+              )
+              .map((course) => {
+                const isEnrolled = selectedUser?.enrollments?.some(e => e.course.id === course.id);
+                const isSelected = selectedCourses.includes(course.id);
+
+                return (
+                  <label
+                    key={course.id}
+                    className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${
+                      isEnrolled
+                        ? 'bg-green-50 border border-green-200 opacity-60'
+                        : isSelected
+                          ? 'bg-burgundy-50 border border-burgundy-300'
+                          : 'hover:bg-gray-50 border border-transparent'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected || isEnrolled}
+                      disabled={isEnrolled}
+                      onChange={(e) => {
+                        if (isEnrolled) return;
+                        if (e.target.checked) {
+                          setSelectedCourses(prev => [...prev, course.id]);
+                        } else {
+                          setSelectedCourses(prev => prev.filter(id => id !== course.id));
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-gray-300 text-burgundy-600 focus:ring-burgundy-500"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-medium text-sm truncate ${isEnrolled ? 'text-green-700' : 'text-gray-900'}`}>
+                        {course.title}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">{course.slug}</p>
+                    </div>
+                    {isEnrolled && (
+                      <Badge variant="outline" className="text-xs bg-green-100 text-green-700 border-green-300">
+                        Enrolled
+                      </Badge>
+                    )}
+                  </label>
+                );
+              })}
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setEnrollDialogOpen(false);
+                setSelectedCourses([]);
+                setCourseSearch("");
+              }}
             >
               Cancel
+            </Button>
+            <Button
+              onClick={() => selectedUser && handleEnrollUser(selectedUser.id, selectedCourses)}
+              disabled={selectedCourses.length === 0 || enrollingCourses}
+              className="bg-burgundy-600 hover:bg-burgundy-700"
+            >
+              {enrollingCourses
+                ? "Enrolling..."
+                : `Enroll in ${selectedCourses.length} Course${selectedCourses.length !== 1 ? 's' : ''}`
+              }
             </Button>
           </DialogFooter>
         </DialogContent>
