@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -120,18 +121,34 @@ interface Course {
   slug: string;
 }
 
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  totalCount: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
 interface UsersClientProps {
-  users: User[];
   courses: Course[];
 }
 
-export function UsersClient({ users, courses }: UsersClientProps) {
+export function UsersClient({ courses }: UsersClientProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
+
+  // Pagination state
+  const [users, setUsers] = useState<User[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   // Dialog states
   const [dmDialogOpen, setDmDialogOpen] = useState(false);
@@ -239,6 +256,82 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     ],
   };
 
+  // Fetch users from API
+  const fetchUsers = useCallback(async (page: number, resetList = false) => {
+    if (page === 1) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: "50",
+      });
+
+      if (debouncedSearch) params.set("search", debouncedSearch);
+      if (roleFilter !== "ALL") params.set("role", roleFilter);
+      if (statusFilter === "ACTIVE") params.set("status", "active");
+      if (statusFilter === "INACTIVE") params.set("status", "inactive");
+
+      const res = await fetch(`/api/admin/users/list?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (resetList || page === 1) {
+          setUsers(data.users);
+        } else {
+          setUsers((prev) => [...prev, ...data.users]);
+        }
+        setPagination(data.pagination);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  }, [debouncedSearch, roleFilter, statusFilter]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Fetch users when filters change
+  useEffect(() => {
+    fetchUsers(1, true);
+  }, [debouncedSearch, roleFilter, statusFilter, fetchUsers]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && pagination?.hasMore && !loadingMore && !loading) {
+          fetchUsers(pagination.page + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [pagination, loadingMore, loading, fetchUsers]);
+
   // Fetch existing tags when dialog opens
   const fetchExistingTags = async () => {
     setLoadingTags(true);
@@ -316,18 +409,11 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     }
   }, [detailTab, selectedUser, activityData, loadingActivity]);
 
+  // Only apply ENROLLED/NOT_ENROLLED filters locally (others are server-side)
   const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.email.toLowerCase().includes(search.toLowerCase()) ||
-      `${user.firstName} ${user.lastName}`.toLowerCase().includes(search.toLowerCase());
-    const matchesRole = roleFilter === "ALL" || user.role === roleFilter;
-    const matchesStatus =
-      statusFilter === "ALL" ||
-      (statusFilter === "ACTIVE" && user.isActive) ||
-      (statusFilter === "INACTIVE" && !user.isActive) ||
-      (statusFilter === "ENROLLED" && user.enrollments.length > 0) ||
-      (statusFilter === "NOT_ENROLLED" && user.enrollments.length === 0);
-    return matchesSearch && matchesRole && matchesStatus;
+    if (statusFilter === "ENROLLED") return user.enrollments.length > 0;
+    if (statusFilter === "NOT_ENROLLED") return user.enrollments.length === 0;
+    return true;
   });
 
   const toggleUserSelection = (userId: string) => {
@@ -380,7 +466,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
         setUsersToDelete([]);
         setSelectedUsers([]);
         setSelectedUser(null);
-        router.refresh();
+        fetchUsers(1, true); // Refresh user list
       } else {
         const data = await response.json();
         alert(data.error || "Failed to delete users");
@@ -423,7 +509,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       setSelectedUser(null);
       setSelectedCourses([]);
       setCourseSearch("");
-      router.refresh();
+      fetchUsers(1, true); // Refresh user list
 
       if (errorCount > 0) {
         alert(`Enrolled in ${successCount} courses. ${errorCount} failed (may already be enrolled).`);
@@ -584,7 +670,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
         alert("Email updated successfully");
         setEmailChangeDialogOpen(false);
         setSelectedUser(null);
-        router.refresh();
+        fetchUsers(1, true); // Refresh user list
       } else {
         alert(data.error || "Failed to update email");
       }
@@ -635,7 +721,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       });
       if (response.ok) {
         setRoleDialogOpen(false);
-        router.refresh();
+        fetchUsers(1, true); // Refresh user list
       }
     } catch (error) {
       console.error("Failed to change role:", error);
@@ -677,7 +763,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
             role: "STUDENT",
             tags: [],
           });
-          router.refresh();
+          fetchUsers(1, true); // Refresh user list
         }, 1500);
       } else {
         setCreateUserError(data.error || "Failed to create user");
@@ -719,7 +805,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       if (successCount > 0) {
         setAddTagDialogOpen(false);
         setSelectedTags([]);
-        router.refresh();
+        fetchUsers(1, true); // Refresh user list
         if (successCount < selectedTags.length) {
           alert(`Added ${successCount} of ${selectedTags.length} tags. Some may have already existed.`);
         }
@@ -756,7 +842,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       const data = await response.json();
       if (response.ok) {
         alert(`Mini Diploma progress reset! Cleared ${data.deleted.lessons} lessons.`);
-        router.refresh();
+        fetchUsers(1, true); // Refresh user list
       } else {
         alert(data.error || "Failed to reset progress");
       }
@@ -789,7 +875,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       if (response.ok) {
         alert("Knowledge base updated successfully");
         setKnowledgeDialogOpen(false);
-        router.refresh(); // Refresh to update the user list data
+        fetchUsers(1, true); // Refresh user list
       } else {
         alert("Failed to update knowledge base");
       }
@@ -905,7 +991,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{pagination?.totalCount ?? users.length}</p>
               </div>
               <div className="w-10 h-10 bg-burgundy-100 rounded-lg flex items-center justify-center">
                 <Users className="w-5 h-5 text-burgundy-600" />
@@ -1042,13 +1128,19 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       {/* Results count */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-500">
-          Showing {filteredUsers.length} of {users.length} users
+          {loading ? "Loading users..." : `Showing ${filteredUsers.length} of ${pagination?.totalCount ?? users.length} users`}
         </p>
       </div>
 
       {/* Users Table */}
       <Card className="">
         <CardContent className="p-0">
+          {loading ? (
+            <div className="flex items-center justify-center py-12 gap-2 text-gray-500">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>Loading users...</span>
+            </div>
+          ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-100">
@@ -1305,8 +1397,8 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                                     });
                                     const data = await res.json();
                                     if (data.success) {
-                                      alert(`✅ Cloned successfully!\n\nNew password: ${data.newPassword}\nCloned: ${data.cloned.enrollments} enrollments, ${data.cloned.marketingTags} tags\n\nRefresh page to see new user.`);
-                                      router.refresh();
+                                      alert(`✅ Cloned successfully!\n\nNew password: ${data.newPassword}\nCloned: ${data.cloned.enrollments} enrollments, ${data.cloned.marketingTags} tags`);
+                                      fetchUsers(1, true); // Refresh user list
                                     } else {
                                       alert(`❌ Clone failed: ${data.error}`);
                                     }
@@ -1339,6 +1431,22 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                 })}
               </tbody>
             </table>
+          </div>
+          )}
+
+          {/* Infinite scroll trigger */}
+          <div ref={loadMoreRef} className="py-4">
+            {loadingMore && (
+              <div className="flex items-center justify-center gap-2 text-gray-500">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Loading more users...</span>
+              </div>
+            )}
+            {pagination && !pagination.hasMore && filteredUsers.length > 0 && (
+              <p className="text-center text-sm text-gray-500">
+                Showing all {pagination.totalCount} users
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

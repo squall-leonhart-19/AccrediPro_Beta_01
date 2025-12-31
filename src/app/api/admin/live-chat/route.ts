@@ -43,8 +43,15 @@ export async function GET(request: Request) {
       take: 500,
     });
 
-    // Get all optins for visitor names/emails
-    const optins = await prisma.chatOptin.findMany();
+    // Extract unique visitor IDs from messages
+    const visitorIds = [...new Set(messages.map((m) => m.visitorId))];
+
+    // Only fetch optins for visitors we have messages from (instead of ALL optins)
+    const optins = visitorIds.length > 0
+      ? await prisma.chatOptin.findMany({
+          where: { visitorId: { in: visitorIds } },
+        })
+      : [];
     const optinMap = new Map(optins.map((o) => [o.visitorId, o]));
 
     // Group messages by email (preferred) or visitorId (fallback)
