@@ -316,8 +316,8 @@ export default async function CareerCenterPage() {
         switch (userProgress.nextAction) {
             case "start":
                 return {
-                    text: "Get Your Free Mini Diploma",
-                    link: "/courses",
+                    text: "Start Your Certification",
+                    link: "/tracks/functional-medicine",
                     variant: "primary",
                 };
             case "continue":
@@ -334,8 +334,8 @@ export default async function CareerCenterPage() {
                 };
             default:
                 return {
-                    text: "Get Your Free Mini Diploma",
-                    link: "/courses",
+                    text: "Start Your Certification",
+                    link: "/tracks/functional-medicine",
                     variant: "primary",
                 };
         }
@@ -405,7 +405,7 @@ export default async function CareerCenterPage() {
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white">How AccrediPro Works</h2>
-                            <p className="text-burgundy-100 text-sm">The proven 5-step career ladder to wellness success</p>
+                            <p className="text-burgundy-100 text-sm">The proven 4-step career ladder to wellness success</p>
                         </div>
                     </div>
                 </div>
@@ -413,12 +413,12 @@ export default async function CareerCenterPage() {
                     <div className="bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl p-4 mb-6 border border-gold-200">
                         <p className="text-gray-700 text-center">
                             <span className="font-bold text-burgundy-700">Every successful AccrediPro practitioner</span> follows the same professional ladder.
-                            Start with a <span className="font-bold text-green-600">free mini diploma</span> to explore, then progress from certification to scalable income.
+                            Progress from <span className="font-bold text-green-600">certification to scalable income</span> with our proven 4-step career pathway.
                         </p>
                     </div>
 
                     {/* Improved Step Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {careerSteps.map((step, index) => {
                             const incomeLabels = ["$3K-5K/mo", "$5K-10K/mo", "$10K-30K/mo", "$30K-50K+/mo"];
                             return (
@@ -487,10 +487,10 @@ export default async function CareerCenterPage() {
                                 <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                         </Link>
-                        <Link href="/courses/functional-medicine-mini-diploma">
+                        <Link href="/tracks/functional-medicine">
                             <Button variant="outline" className="border-gold-300 text-gold-700 hover:bg-gold-50">
                                 <Play className="w-4 h-4 mr-2" />
-                                Start Free Mini Diploma
+                                Start Your Certification
                             </Button>
                         </Link>
                     </div>
@@ -750,7 +750,7 @@ export default async function CareerCenterPage() {
                             </Badge>
                             <h3 className="text-2xl md:text-3xl font-bold mb-2">Ready to Begin?</h3>
                             <p className="text-burgundy-100 max-w-lg">
-                                Start with a <strong className="text-gold-300">free mini diploma</strong> to explore your specialization. No risk, no commitment.
+                                Start your <strong className="text-gold-300">certification journey</strong> and transform your career in wellness.
                                 {userProgress.currentStep === 0 && " Choose your specialization and get started today!"}
                                 {userProgress.currentStep === 1 && " You're already on your way. Keep going!"}
                                 {userProgress.currentStep >= 2 && " Great progress! Consider advancing to the next level."}

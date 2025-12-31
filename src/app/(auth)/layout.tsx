@@ -125,11 +125,11 @@ export default function AuthLayout({
         <div className="p-6 text-center text-sm text-gray-500">
           <p>
             By continuing, you agree to our{" "}
-            <Link href="/terms" className="text-burgundy-600 hover:underline font-medium">
+            <Link href="/terms-of-service" className="text-burgundy-600 hover:underline font-medium">
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link href="/privacy" className="text-burgundy-600 hover:underline font-medium">
+            <Link href="/privacy-policy" className="text-burgundy-600 hover:underline font-medium">
               Privacy Policy
             </Link>
           </p>
