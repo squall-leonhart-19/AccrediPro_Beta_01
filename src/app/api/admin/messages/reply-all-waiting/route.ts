@@ -94,7 +94,10 @@ export async function GET(request: NextRequest) {
           lastMessageAt: lastMessage.createdAt,
           recentMessages: recentMessages.reverse().map(m => ({
             role: m.senderId === coachId ? "coach" : "student",
-            content: m.content,
+            // For voice messages, include transcription if available
+            content: m.attachmentType === "voice"
+              ? (m.transcription ? `[Voice message: "${m.transcription}"]` : "[Voice message]")
+              : m.content,
           })),
         });
       }
@@ -186,6 +189,16 @@ Reply naturally and warmly. Be helpful but concise. Don't use emojis excessively
           // Default message
           replyMessage = `Hi ${conv.user.firstName || "there"}! Thanks for your message. I'll get back to you with a detailed response soon. In the meantime, feel free to continue with your coursework!`;
         }
+
+        // Mark all unread messages from this student as read (coach processed them via AI)
+        await prisma.message.updateMany({
+          where: {
+            senderId: conv.userId,
+            receiverId: coachId,
+            isRead: false,
+          },
+          data: { isRead: true },
+        });
 
         // Create the message
         const message = await prisma.message.create({

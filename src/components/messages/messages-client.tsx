@@ -477,7 +477,7 @@ export function MessagesClient({
   };
 
   // Send message
-  const sendMessage = async (content: string, attachment?: { url: string; type: string; name: string; duration?: number }) => {
+  const sendMessage = async (content: string, attachment?: { url: string; type: string; name: string; duration?: number; transcription?: string }) => {
     if (!selectedUser || (!content.trim() && !attachment)) return;
 
     setLoading(true);
@@ -493,6 +493,7 @@ export function MessagesClient({
           attachmentType: attachment?.type,
           attachmentName: attachment?.name,
           voiceDuration: attachment?.duration,
+          transcription: attachment?.transcription,
           replyToId: replyingTo?.id,
         }),
       });
@@ -668,7 +669,31 @@ export function MessagesClient({
       const data = await response.json();
 
       if (data.success) {
-        await sendMessage("", { url: data.data.url, type: "voice", name: data.data.name, duration: recordingTime });
+        // Transcribe the voice message in the background
+        let transcription: string | undefined;
+        try {
+          const transcribeForm = new FormData();
+          transcribeForm.append("audio", file);
+          const transcribeRes = await fetch("/api/ai/transcribe", {
+            method: "POST",
+            body: transcribeForm,
+          });
+          const transcribeData = await transcribeRes.json();
+          if (transcribeData.success && transcribeData.text) {
+            transcription = transcribeData.text;
+            console.log("🎤 Voice transcribed:", transcription);
+          }
+        } catch (transcribeError) {
+          console.warn("Voice transcription failed (non-blocking):", transcribeError);
+        }
+
+        await sendMessage("", {
+          url: data.data.url,
+          type: "voice",
+          name: data.data.name,
+          duration: recordingTime,
+          transcription,
+        });
       } else {
         setUploadError(data.error || "Voice upload failed.");
         setTimeout(() => setUploadError(null), 5000);
