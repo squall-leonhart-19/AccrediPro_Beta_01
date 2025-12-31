@@ -34,7 +34,6 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
                         enrollments: true,
                         modules: true,
                         certificates: true,
-                        reviews: true,
                     },
                 },
                 modules: {
@@ -102,7 +101,7 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
         analytics: course.analytics ? {
             totalEnrolled: course.analytics.totalEnrolled,
             avgRating: Number(course.analytics.avgRating) || avgRating,
-            completionRate: Number(course.analytics.completionRate) || 0,
+            completionRate: Number(course.analytics.avgProgress) || 0,
         } : {
             totalEnrolled: course._count.enrollments,
             avgRating: avgRating,

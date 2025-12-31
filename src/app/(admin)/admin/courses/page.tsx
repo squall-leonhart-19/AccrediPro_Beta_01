@@ -8,7 +8,7 @@ async function getCoursesData() {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    const [courses, totalEnrollments, totalCertificates, activeStudents, completedEnrollments] = await Promise.all([
+    const [courses, categories, totalEnrollments, totalCertificates, activeStudents, completedEnrollments] = await Promise.all([
         prisma.course.findMany({
             include: {
                 category: true,
@@ -39,6 +39,10 @@ async function getCoursesData() {
             },
             orderBy: { createdAt: "desc" },
         }),
+        prisma.category.findMany({
+            where: { isActive: true },
+            orderBy: { order: "asc" },
+        }),
         prisma.enrollment.count(),
         prisma.certificate.count(),
         prisma.enrollment.count({
@@ -57,6 +61,7 @@ async function getCoursesData() {
 
     return {
         courses,
+        categories,
         totalEnrollments,
         totalCertificates,
         activeStudentsThisWeek: activeStudents,
@@ -72,6 +77,7 @@ export default async function AdminCoursesPage() {
 
     const {
         courses,
+        categories,
         totalEnrollments,
         totalCertificates,
         activeStudentsThisWeek,
@@ -90,6 +96,7 @@ export default async function AdminCoursesPage() {
     return (
         <CoursesClient
             initialCourses={serializedCourses as any}
+            categories={categories}
             totalEnrollments={totalEnrollments}
             totalCertificates={totalCertificates}
             activeStudentsThisWeek={activeStudentsThisWeek}
