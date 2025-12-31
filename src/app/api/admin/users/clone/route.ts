@@ -41,9 +41,12 @@ export async function POST(request: NextRequest) {
             include: {
                 enrollments: true,
                 progress: true,
+                moduleProgress: true,
                 certificates: true,
                 lessonNotes: true,
                 quizAttempts: true,
+                quizProgress: true,
+                tags: true,
                 marketingTags: {
                     include: { tag: true }
                 },
@@ -58,8 +61,11 @@ export async function POST(request: NextRequest) {
         console.log(`[CLONE] Source user ${sourceEmailLower} has:`, {
             enrollments: sourceUser.enrollments.length,
             progress: sourceUser.progress.length,
+            moduleProgress: sourceUser.moduleProgress.length,
             certificates: sourceUser.certificates.length,
             quizAttempts: sourceUser.quizAttempts.length,
+            quizProgress: sourceUser.quizProgress.length,
+            tags: sourceUser.tags.length,
             marketingTags: sourceUser.marketingTags.length,
             lessonNotes: sourceUser.lessonNotes.length,
         });
@@ -101,15 +107,18 @@ export async function POST(request: NextRequest) {
         const cloneStats = {
             enrollments: 0,
             lessonProgress: 0,
+            moduleProgress: 0,
             certificates: 0,
             quizAttempts: 0,
+            quizProgress: 0,
+            tags: 0,
             marketingTags: 0,
             lessonNotes: 0,
         };
 
         const errors: string[] = [];
 
-        // Clone enrollments
+        // Clone enrollments (including progress percentage)
         for (const enrollment of sourceUser.enrollments) {
             try {
                 await prisma.enrollment.create({
@@ -117,6 +126,7 @@ export async function POST(request: NextRequest) {
                         userId: newUser.id,
                         courseId: enrollment.courseId,
                         status: enrollment.status,
+                        progress: enrollment.progress,
                         enrolledAt: enrollment.enrolledAt,
                         completedAt: enrollment.completedAt,
                         earnedCertificate: enrollment.earnedCertificate,
@@ -146,6 +156,25 @@ export async function POST(request: NextRequest) {
                 cloneStats.lessonProgress++;
             } catch (e: any) {
                 errors.push(`Progress: ${e.message}`);
+            }
+        }
+
+        // Clone module progress
+        for (const modProg of sourceUser.moduleProgress) {
+            try {
+                await prisma.moduleProgress.create({
+                    data: {
+                        userId: newUser.id,
+                        moduleId: modProg.moduleId,
+                        courseId: modProg.courseId,
+                        completed: modProg.completed,
+                        completedAt: modProg.completedAt,
+                        progress: modProg.progress,
+                    }
+                });
+                cloneStats.moduleProgress++;
+            } catch (e: any) {
+                errors.push(`ModuleProgress: ${e.message}`);
             }
         }
 
@@ -188,6 +217,26 @@ export async function POST(request: NextRequest) {
             }
         }
 
+        // Clone quiz progress
+        for (const qp of sourceUser.quizProgress) {
+            try {
+                await prisma.quizProgress.create({
+                    data: {
+                        userId: newUser.id,
+                        quizId: qp.quizId,
+                        status: qp.status,
+                        score: qp.score,
+                        attempts: qp.attempts,
+                        lastAttemptAt: qp.lastAttemptAt,
+                        completedAt: qp.completedAt,
+                    }
+                });
+                cloneStats.quizProgress++;
+            } catch (e: any) {
+                errors.push(`QuizProgress: ${e.message}`);
+            }
+        }
+
         // Clone marketing tags
         for (const userTag of sourceUser.marketingTags) {
             try {
@@ -205,27 +254,19 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Clone legacy tags (UserTag)
-        // @ts-ignore - tags is not in type because we need to add it to include above, but let's assume it will be
-        if (sourceUser.tags) {
-            // @ts-ignore
-            for (const userTag of sourceUser.tags) {
-                try {
-                    await prisma.userTag.create({
-                        data: {
-                            userId: newUser.id,
-                            tag: userTag.tag,
-                            value: userTag.value,
-                            createdAt: userTag.createdAt, // Preserve creation time if needed, or use new Date()
-                        }
-                    });
-                    // @ts-ignore
-                    if (!cloneStats.userTags) cloneStats.userTags = 0;
-                    // @ts-ignore
-                    cloneStats.userTags++;
-                } catch (e: any) {
-                    errors.push(`UserTag ${userTag.tag}: ${e.message}`);
-                }
+        // Clone UserTags (the main tags like fm_pro_xxx_purchased)
+        for (const userTag of sourceUser.tags) {
+            try {
+                await prisma.userTag.create({
+                    data: {
+                        userId: newUser.id,
+                        tag: userTag.tag,
+                        value: userTag.value,
+                    }
+                });
+                cloneStats.tags++;
+            } catch (e: any) {
+                errors.push(`UserTag ${userTag.tag}: ${e.message}`);
             }
         }
 
@@ -258,8 +299,11 @@ export async function POST(request: NextRequest) {
             sourceData: {
                 enrollments: sourceUser.enrollments.length,
                 progress: sourceUser.progress.length,
+                moduleProgress: sourceUser.moduleProgress.length,
                 certificates: sourceUser.certificates.length,
                 quizAttempts: sourceUser.quizAttempts.length,
+                quizProgress: sourceUser.quizProgress.length,
+                tags: sourceUser.tags.length,
                 marketingTags: sourceUser.marketingTags.length,
                 lessonNotes: sourceUser.lessonNotes.length,
             },
