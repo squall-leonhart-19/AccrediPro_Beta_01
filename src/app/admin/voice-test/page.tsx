@@ -47,18 +47,40 @@ const VOICE_VARIATIONS: VoiceVariation[] = [
   },
 ];
 
-const DEFAULT_TEXT = `Hey there! I'm Sarah, and I'll be your coach throughout this journey.
+// Short personalized welcome (~10-12 seconds, ~280 chars)
+const SHORT_WELCOME = `Hey Jennifer! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions. Talk soon!`;
+
+// Medium welcome (~25-30 seconds, ~450 chars)
+const MEDIUM_WELCOME = `Hey Jennifer! It's Sarah here. I just saw your name come through and I'm so excited you're taking this step. Inside your dashboard, you'll find your Mini Diploma ready to start. I know you might have questions - maybe wondering if this is really for you. I get it. But here's what I know: you signed up for a reason. Message me anytime - I'm here for you every step of the way. Talk soon!`;
+
+// Original long welcome
+const LONG_WELCOME = `Hey there! I'm Sarah, and I'll be your coach throughout this journey.
 I just saw your name come through and wanted to personally say welcome. This is the start of something special.
 Inside your dashboard, you'll find your Mini Diploma ready to start, your Roadmap showing where you're headed, and you can message me anytime.
 I know you might have questions. Maybe you're wondering if this is really for you. I get it, I felt the same way when I started.
 But here's what I know: you signed up for a reason. Let's find out what that is together.
 Hit reply anytime. I'm here for you, every step of the way. Talk soon!`;
 
+const SCRIPT_OPTIONS = [
+  { id: "short", name: "Short Welcome (~10s)", text: SHORT_WELCOME },
+  { id: "medium", name: "Medium Welcome (~25s)", text: MEDIUM_WELCOME },
+  { id: "long", name: "Long Welcome (~45s)", text: LONG_WELCOME },
+];
+
+const DEFAULT_TEXT = SHORT_WELCOME;
+
 export default function VoiceTestPage() {
   const [text, setText] = useState(DEFAULT_TEXT);
+  const [selectedScript, setSelectedScript] = useState("short");
   const [generating, setGenerating] = useState<string | null>(null);
   const [results, setResults] = useState<Record<string, { url: string; duration: number } | null>>({});
   const [error, setError] = useState("");
+
+  const handleScriptChange = (scriptId: string) => {
+    setSelectedScript(scriptId);
+    const script = SCRIPT_OPTIONS.find(s => s.id === scriptId);
+    if (script) setText(script.text);
+  };
 
   const generateVoice = async (variation: VoiceVariation) => {
     setGenerating(variation.id);
@@ -105,17 +127,40 @@ export default function VoiceTestPage() {
           Generate and compare different voice settings to find the best one for Sarah
         </p>
 
-        {/* Text Input */}
+        {/* Script Selector */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Test Script
+            Select Script Template
+          </label>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            {SCRIPT_OPTIONS.map((script) => (
+              <button
+                key={script.id}
+                onClick={() => handleScriptChange(script.id)}
+                className={`p-4 rounded-lg border-2 text-left transition-all ${
+                  selectedScript === script.id
+                    ? "border-burgundy-600 bg-burgundy-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className="font-semibold text-gray-900">{script.name}</div>
+                <div className="text-sm text-gray-500 mt-1">{script.text.length} chars</div>
+              </button>
+            ))}
+          </div>
+
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Test Script (edit to customize)
           </label>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            rows={6}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-500"
+            rows={4}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-500 font-mono text-sm"
           />
+          <div className="mt-2 text-sm text-gray-500">
+            {text.length} characters • Tip: Replace "Jennifer" with any name to test personalization
+          </div>
           <div className="mt-4 flex gap-4">
             <button
               onClick={generateAll}
@@ -125,7 +170,7 @@ export default function VoiceTestPage() {
               Generate All Variations
             </button>
             <button
-              onClick={() => setText(DEFAULT_TEXT)}
+              onClick={() => handleScriptChange(selectedScript)}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               Reset Text
