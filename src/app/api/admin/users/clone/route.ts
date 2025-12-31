@@ -88,10 +88,12 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Hash new password
+        // Hash new password - FRESH hash, no relation to old account
         const passwordHash = await bcrypt.hash(finalPassword, 12);
 
-        // Create new user
+        console.log(`[CLONE] Generated fresh passwordHash for ${newEmailLower}, length: ${passwordHash.length}`);
+
+        // Create COMPLETELY fresh user - no copied fields that could cause auth issues
         const newUser = await prisma.user.create({
             data: {
                 email: newEmailLower,
@@ -101,8 +103,21 @@ export async function POST(request: NextRequest) {
                 avatar: sourceUser.avatar,
                 role: sourceUser.role,
                 isActive: true,
+                // Explicitly reset auth-related fields
+                emailVerified: null,
+                loginCount: 0,
+                lastLoginAt: null,
+                firstLoginAt: null,
             }
         });
+
+        // Delete any stale sessions/accounts for this email (shouldn't exist but just in case)
+        try {
+            await prisma.session.deleteMany({ where: { userId: newUser.id } });
+            await prisma.account.deleteMany({ where: { userId: newUser.id } });
+        } catch (e) {
+            // Ignore - tables might not exist or be empty
+        }
 
         const cloneStats = {
             enrollments: 0,
