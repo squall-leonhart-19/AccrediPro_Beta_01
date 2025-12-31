@@ -86,39 +86,47 @@ async function getConversations(userId: string, isAdmin: boolean) {
 
   // For admins, fetch additional user data (enrollments, badges, streak) in batch
   // Only fetch if needed and do it efficiently
-  let userExtras: Map<string, { enrollments?: any[]; badges?: any[]; streak?: any }> = new Map();
+  let userExtras: Map<string, { enrollments?: any[]; badges?: any[]; streak?: any; currentLesson?: any }> = new Map();
 
   if (isAdmin && conversationData.length > 0) {
     const partnerIds = conversationData.map(c => c.odpartnerId);
 
-    // Fetch enrollments, badges, streak in parallel (simplified - removed complex lesson progress)
-    const [enrollments, badges, streaks] = await Promise.all([
-      prisma.enrollment.findMany({
-        where: { userId: { in: partnerIds } },
-        include: {
-          course: {
-            select: {
-              id: true,
-              title: true,
-              slug: true,
+    // Fetch enrollments, badges, streak in parallel (with defensive null checks)
+    let enrollments: any[] = [];
+    let badges: any[] = [];
+    let streaks: any[] = [];
+
+    try {
+      [enrollments, badges, streaks] = await Promise.all([
+        prisma.enrollment?.findMany({
+          where: { userId: { in: partnerIds } },
+          include: {
+            course: {
+              select: {
+                id: true,
+                title: true,
+                slug: true,
+              },
             },
           },
-        },
-      }),
-      prisma.userBadge.findMany({
-        where: { userId: { in: partnerIds } },
-        include: { badge: { select: { name: true, icon: true } } },
-        orderBy: { earnedAt: "desc" },
-      }),
-      prisma.streak.findMany({
-        where: { userId: { in: partnerIds } },
-      }),
-    ]);
+        }) ?? [],
+        prisma.userBadge?.findMany({
+          where: { userId: { in: partnerIds } },
+          include: { badge: { select: { name: true, icon: true } } },
+          orderBy: { earnedAt: "desc" },
+        }) ?? [],
+        prisma.streak?.findMany({
+          where: { userId: { in: partnerIds } },
+        }) ?? [],
+      ]);
+    } catch (e) {
+      console.error("Error fetching user extras:", e);
+    }
 
     // Get current lesson for each user (most recently visited) - separate query for safety
     let currentLessonByUser = new Map<string, { lessonTitle: string; moduleTitle: string; courseTitle: string; courseId: string }>();
     try {
-      const lessonProgress = await prisma.lessonProgress.findMany({
+      const lessonProgress = await prisma.lessonProgress?.findMany({
         where: {
           userId: { in: partnerIds },
           lastVisitedAt: { not: null },
@@ -138,7 +146,7 @@ async function getConversations(userId: string, isAdmin: boolean) {
             },
           },
         },
-      });
+      }) ?? [];
 
       for (const lp of lessonProgress) {
         if (!currentLessonByUser.has(lp.userId) && lp.lesson) {
