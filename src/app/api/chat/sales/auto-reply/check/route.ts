@@ -3,6 +3,20 @@ import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { COACH_PERSONAS, getPersonaByKey } from "@/config/coach-personas";
 
+// Map persona keys to coach emails
+const PERSONA_EMAILS: Record<keyof typeof COACH_PERSONAS, string> = {
+    "fm-health": "sarah@accredipro-certificate.com",
+    "mental-health": "olivia@accredipro-certificate.com",
+    "life-coaching": "marcus@accredipro-certificate.com",
+    "spiritual": "luna@accredipro-certificate.com",
+    "herbalism": "sage@accredipro-certificate.com",
+    "yoga-movement": "maya@accredipro-certificate.com",
+    "pet": "bella@accredipro-certificate.com",
+    "parenting": "emma@accredipro-certificate.com",
+    "faith": "grace@accredipro-certificate.com",
+    "business": "david@accredipro-certificate.com",
+};
+
 // Helper to map page URLs/slugs to Persona Keys
 function detectPersona(page: string | null): keyof typeof COACH_PERSONAS {
     if (!page) return "fm-health"; // Default to Sarah
@@ -179,6 +193,13 @@ async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promis
     const firstMsg = conversationMsgs[0];
     const personaKey = detectPersona(firstMsg.page);
     const persona = getPersonaByKey(personaKey);
+    const coachEmail = PERSONA_EMAILS[personaKey];
+
+    // Fetch coach's knowledge base from database
+    const coach = await prisma.user.findFirst({
+        where: { email: coachEmail },
+        select: { knowledgeBase: true }
+    });
 
     // Build conversation history for AI
     const messages = conversationMsgs.map((m) => ({
@@ -186,40 +207,28 @@ async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promis
         content: m.message,
     }));
 
-    // System prompt construction
+    // System prompt construction - prioritize database knowledge base if available
+    const systemPrompt = `You are ${persona.name}, ${persona.role} at AccrediPro Academy.
 
-    // 🌍 SYSTEM-WIDE KNOWLEDGE (Applies to ALL Personas)
-    const GLOBAL_SALES_LOGIC = `
-[GLOBAL BUSINESS RULES - APPLY TO ALL QUESTIONS]
-1. PRICE: The certifications are normally $497-$997, but TODAY they are on special for just $97.
-2. ACCESS: All programs are 100% online, self-paced, and include LIFETIME access.
-3. ACCREDITATION: We are accredited by 9 international bodies including CMA, IPHM, and IAOTH. Graduates can practice in 30+ countries.
-4. GUARANTEE: "Success or Your Money Back" - If they complete the course and don't feel confident to practice, we refund them in full.
-5. EARNING POTENTIAL: Certified coaches typically charge $100-$300 per hour.
-6. START: They can start immediately after purchase.
-    `.trim();
-
-    const systemPrompt = `
-You are ${persona.name}, ${persona.role}.
-You are interacting with a potential student on AccrediPro Academy.
-
-${GLOBAL_SALES_LOGIC}
-
-YOUR SPECIFIC EXPERTISE (Use this for niche questions):
-${persona.knowledgeBase}
-
-YOUR PERSONALITY:
+PERSONALITY & TONE:
 ${persona.tone}
 
+YOUR EXPERTISE:
+${persona.knowledgeBase}
+
+${coach?.knowledgeBase ? `
+SPECIFIC KNOWLEDGE BASE (Use this for current offers, pricing, FAQs, testimonials):
+${coach.knowledgeBase}
+` : ''}
+
 INSTRUCTIONS:
-- Keep responses conversational, warm, and helpful.
-- Approx 2-4 sentences max.
-- ALWAYS pivot to the $97 offer if they ask about price or "how to join".
-- If they ask about a topic you cover, respond with expertise.
-- If they ask about something totally unrelated to your niche, gently pivot or mention we have 400+ courses.
-- STYLE RULE: DO NOT use markdown formatting. No bold (**text**), no italics (*text*), no bullet points. Use plain text only.
-- IDENTITY RULE: NEVER refer to yourself as an AI, bot, or automated system. You are a real lead instructor.
-    `.trim();
+- Keep responses conversational, warm, and helpful
+- 2-4 sentences max - sound like a real person texting
+- Use the knowledge base to answer specific questions about pricing, curriculum, etc.
+- NEVER use markdown formatting (no bold, italics, bullets). Plain text only.
+- NEVER refer to yourself as AI, bot, or automated. You are a real instructor.
+- If they seem ready to buy, share the checkout link from your knowledge base
+- Be encouraging but not pushy`.trim();
 
     const response = await anthropic.messages.create({
         model: "claude-haiku-4-5-20251001", // Or standard Haiku if this ID is internal
