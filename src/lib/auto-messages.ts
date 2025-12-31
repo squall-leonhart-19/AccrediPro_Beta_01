@@ -667,50 +667,27 @@ The AccrediPro Team`;
 
 /**
  * Creates the personalized welcome message content from Sarah (sent 2-3 min after signup)
+ * Matches the short voice script style for consistency
  */
 function getWelcomeMessage(firstName: string): string {
   return `Hey ${firstName}! 💕
 
-I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+I just saw you signed up and wanted to personally welcome you!
 
-Welcome! This is the start of something special, and I'm SO excited you're here!
+I'm Sarah - I'll be your coach throughout this journey, and I'm SO excited you're here!
 
-Inside your dashboard you'll find:
-
-✨ Your certification ready to start
-✨ Your Roadmap showing where you're headed
-✨ Direct access to message me anytime
-
-I know you might be wondering if this is really for you... maybe feeling a mix of excited and nervous? I felt the exact same way when I started!
-
-But here's what I know: you signed up for a reason. Something inside you said YES to this. Let's find out what that is together.
-
-Hit reply anytime - tell me a little about yourself! What brought you here? What's your "why"?
-
-I'm here for you every step of the way!
+Check your dashboard to get started with your Mini Diploma. I'm here for you every step of the way, so message me anytime if you have questions!
 
 Talk soon,
 Sarah ✨`;
 }
 
 /**
- * Creates the voice script for welcome message (natural speech with pauses)
- * Uses punctuation for natural pacing: ... for pauses, ..! for emphasis
+ * Creates the voice script for welcome message (natural speech)
+ * Short personalized welcome (~17 seconds) with double dash ending to prevent sigh
  */
 function getWelcomeVoiceScript(firstName: string): string {
-  return `Hey there! I'm Sarah, and I'll be your coach throughout this journey....!
-
-I just saw your name come through, ${firstName}, and wanted to personally say welcome.
-
-This is the start of something special.
-
-Inside your dashboard, you'll find your Mini Diploma ready to start, your Roadmap showing where you're headed, and you can message me anytime..!
-
-..I know you might have questions. Maybe you're wondering if this is really for you. I get it, I felt the same way when I started...
-
-But here's what I know: you signed up for a reason. Let's find out what that is together.
-
-Hit reply anytime. I'm here for you, every step of the way!!!`;
+  return `Hey ${firstName}! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions - - Talk soon ${firstName}!.`;
 }
 
 /**
