@@ -1256,26 +1256,30 @@ export function MessagesClient({
             {/* Only show toggle button for coaches - students don't need to browse coaches */}
             {isCoach && (
               <div className="flex items-center gap-2">
-                {waitingCount > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleReplyAllWaiting}
-                    disabled={replyingAllWaiting}
-                    className="text-white hover:bg-white/20 gap-1.5 bg-amber-500/30"
-                    title={`Reply to ${waitingCount} waiting conversations with AI`}
-                  >
-                    {replyingAllWaiting ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Zap className="w-4 h-4" />
-                    )}
-                    <span className="hidden sm:inline">Reply All</span>
-                    <span className="px-1.5 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded-full">
-                      {waitingCount}
-                    </span>
-                  </Button>
-                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleReplyAllWaiting}
+                  disabled={replyingAllWaiting || waitingCount === 0}
+                  className={cn(
+                    "text-white hover:bg-white/20 gap-1.5",
+                    waitingCount > 0 ? "bg-amber-500/40" : "opacity-50"
+                  )}
+                  title={waitingCount > 0 ? `Reply to ${waitingCount} waiting conversations with AI` : "No conversations waiting for reply"}
+                >
+                  {replyingAllWaiting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Zap className="w-4 h-4" />
+                  )}
+                  <span className="hidden sm:inline">Reply All</span>
+                  <span className={cn(
+                    "px-1.5 py-0.5 text-white text-[10px] font-bold rounded-full",
+                    waitingCount > 0 ? "bg-amber-500" : "bg-white/30"
+                  )}>
+                    {waitingCount}
+                  </span>
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
