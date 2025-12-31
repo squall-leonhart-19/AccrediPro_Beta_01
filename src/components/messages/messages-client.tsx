@@ -295,23 +295,15 @@ export function MessagesClient({
 
   const isCoach = currentUserRole === "ADMIN" || currentUserRole === "INSTRUCTOR" || currentUserRole === "MENTOR";
 
-  // Fetch waiting count for coaches
+  // Calculate waiting count from conversations (matches REPLY badge logic exactly)
   useEffect(() => {
     if (isCoach) {
-      const fetchWaitingCount = async () => {
-        try {
-          const res = await fetch("/api/admin/messages/reply-all-waiting");
-          const data = await res.json();
-          if (data.count !== undefined) {
-            setWaitingCount(data.count);
-          }
-        } catch (err) {
-          console.error("Failed to fetch waiting count:", err);
-        }
-      };
-      fetchWaitingCount();
+      const count = conversations.filter(
+        (conv) => conv.lastMessage && conv.lastMessage.senderId !== currentUserId
+      ).length;
+      setWaitingCount(count);
     }
-  }, [isCoach, conversations]);
+  }, [isCoach, conversations, currentUserId]);
 
   // Handle Reply All Waiting
   const handleReplyAllWaiting = async () => {
@@ -1242,37 +1234,35 @@ export function MessagesClient({
         selectedUser ? "hidden lg:flex" : "flex"
       )}>
         {/* Sidebar Header */}
-        <div className="p-4 bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-white" />
+        <div className="p-3 bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center flex-shrink-0">
+                <MessageSquare className="w-4 h-4 text-white" />
               </div>
-              <div>
-                <h2 className="font-bold text-white text-lg">Messages</h2>
-                <p className="text-xs text-burgundy-200">{isCoach ? "Coach Dashboard" : "Your Coach"}</p>
+              <div className="min-w-0">
+                <h2 className="font-bold text-white text-base truncate">Messages</h2>
               </div>
             </div>
             {/* Only show toggle button for coaches - students don't need to browse coaches */}
             {isCoach && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleReplyAllWaiting}
                   disabled={replyingAllWaiting || waitingCount === 0}
                   className={cn(
-                    "text-white hover:bg-white/20 gap-1.5",
+                    "text-white hover:bg-white/20 gap-1 px-2 h-8",
                     waitingCount > 0 ? "bg-amber-500/40" : "opacity-50"
                   )}
                   title={waitingCount > 0 ? `Reply to ${waitingCount} waiting conversations with AI` : "No conversations waiting for reply"}
                 >
                   {replyingAllWaiting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <Zap className="w-4 h-4" />
+                    <Zap className="w-3.5 h-3.5" />
                   )}
-                  <span className="hidden sm:inline">Reply All</span>
                   <span className={cn(
                     "px-1.5 py-0.5 text-white text-[10px] font-bold rounded-full",
                     waitingCount > 0 ? "bg-amber-500" : "bg-white/30"
@@ -1284,10 +1274,10 @@ export function MessagesClient({
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowMentors(!showMentors)}
-                  className={cn("text-white hover:bg-white/20 gap-1.5", showMentors && "bg-white/20")}
+                  className={cn("text-white hover:bg-white/20 gap-1 px-2 h-8", showMentors && "bg-white/20")}
                 >
-                  <Users className="w-4 h-4" />
-                  {showMentors ? "Chats" : "Students"}
+                  <Users className="w-3.5 h-3.5" />
+                  <span className="text-xs">{showMentors ? "Chats" : "Students"}</span>
                 </Button>
               </div>
             )}

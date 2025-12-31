@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
 
     const coachId = session.user.id;
 
+    console.log(`[REPLY-ALL] Coach ID: ${coachId}, Role: ${session.user.role}`);
+
     // Get all conversations where coach is involved
     const [sentTo, receivedFrom] = await Promise.all([
       prisma.message.findMany({
@@ -42,8 +44,11 @@ export async function GET(request: NextRequest) {
     ]));
 
     if (userIds.length === 0) {
+      console.log(`[REPLY-ALL] No conversation partners found`);
       return NextResponse.json({ conversations: [], count: 0 });
     }
+
+    console.log(`[REPLY-ALL] Found ${userIds.length} conversation partners`);
 
     // Get last message for each conversation
     const waitingConversations = [];
@@ -68,6 +73,7 @@ export async function GET(request: NextRequest) {
       });
 
       // Only include if last message was FROM the user (waiting for coach reply)
+      console.log(`[REPLY-ALL] User ${userId}: lastMessage.senderId=${lastMessage?.senderId}, waiting=${lastMessage && lastMessage.senderId === userId}`);
       if (lastMessage && lastMessage.senderId === userId) {
         // Get last 5 messages for context
         const recentMessages = await prisma.message.findMany({
@@ -98,6 +104,8 @@ export async function GET(request: NextRequest) {
     waitingConversations.sort((a, b) =>
       new Date(a.lastMessageAt).getTime() - new Date(b.lastMessageAt).getTime()
     );
+
+    console.log(`[REPLY-ALL] Returning ${waitingConversations.length} waiting conversations`);
 
     return NextResponse.json({
       conversations: waitingConversations,
