@@ -50,11 +50,16 @@ function getFallbackThumbnail(title: string, slug: string): string {
   return FALLBACK_THUMBNAILS.default;
 }
 
-// Courses to hide from catalog (not ready for public)
+// Courses to hide from catalog (not ready for public or internal only)
 const HIDDEN_COURSE_SLUGS = [
+  // NARC courses - not ready
   "narc-recovery-coach-certification",
   "narcissistic-abuse-recovery-coach",
   "anrc-certification",
+  // Pro Accelerator courses - OTO only, not for public catalog
+  "fm-pro-advanced-clinical",
+  "fm-pro-master-depth",
+  "fm-pro-practice-path",
 ];
 
 async function getCourses() {
@@ -159,7 +164,9 @@ export default async function CoursesPage() {
     title: course.title,
     description: course.description,
     shortDescription: course.shortDescription,
-    thumbnail: course.thumbnail || getFallbackThumbnail(course.title, course.slug),
+    thumbnail: (course.thumbnail && course.thumbnail.trim() !== "")
+      ? course.thumbnail
+      : getFallbackThumbnail(course.title, course.slug),
     difficulty: course.difficulty,
     duration: course.duration,
     isFeatured: course.isFeatured,
