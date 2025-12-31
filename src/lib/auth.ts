@@ -34,28 +34,51 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("[AUTH] Login attempt for:", credentials?.email);
+
         if (!credentials?.email || !credentials?.password) {
+          console.log("[AUTH] Missing credentials");
           throw new Error("Invalid credentials");
         }
+
+        const email = credentials.email.toLowerCase();
+        console.log("[AUTH] Looking up user:", email);
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase() },
+          where: { email },
         });
 
-        if (!user || !user.passwordHash) {
+        if (!user) {
+          console.log("[AUTH] User not found:", email);
           throw new Error("Invalid credentials");
         }
 
+        if (!user.passwordHash) {
+          console.log("[AUTH] User has no passwordHash:", email);
+          throw new Error("Invalid credentials");
+        }
+
+        console.log("[AUTH] User found:", {
+          id: user.id,
+          email: user.email,
+          isActive: user.isActive,
+          hashLength: user.passwordHash?.length,
+          hashPrefix: user.passwordHash?.substring(0, 7),
+        });
+
         if (!user.isActive) {
+          console.log("[AUTH] Account deactivated:", email);
           throw new Error("Account is deactivated");
         }
 
         let isPasswordValid = false;
         try {
+          console.log("[AUTH] Comparing password...");
           isPasswordValid = await bcrypt.compare(
             credentials.password,
             user.passwordHash
           );
+          console.log("[AUTH] Password valid:", isPasswordValid);
         } catch (bcryptError) {
           console.error("[AUTH] bcrypt.compare error:", bcryptError, {
             email: credentials.email,
@@ -66,6 +89,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         if (!isPasswordValid) {
+          console.log("[AUTH] Invalid password for:", email);
           throw new Error("Invalid credentials");
         }
 
