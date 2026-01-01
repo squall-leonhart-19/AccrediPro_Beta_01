@@ -28,18 +28,22 @@ export async function GET(request: NextRequest) {
     console.log(`[TEST-WH-EMAILS] Sending test emails to ${email}`);
 
     const results: { day: string; success: boolean; error?: string }[] = [];
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     // Day 1
     const day1 = await sendWHReminderDay1Email(email, firstName);
     results.push({ day: "Day 1 (not started)", success: day1.success, error: day1.error });
+    await delay(1000);
 
     // Day 3 (3 lessons)
     const day3 = await sendWHReminderDay3Email(email, firstName, 3);
     results.push({ day: "Day 3 (3/9 lessons)", success: day3.success, error: day3.error });
+    await delay(1000);
 
     // Day 5 (5 lessons)
     const day5 = await sendWHReminderDay5Email(email, firstName, 5);
     results.push({ day: "Day 5 (5/9 lessons)", success: day5.success, error: day5.error });
+    await delay(1000);
 
     // Day 6 (8 lessons - so close!)
     const day6 = await sendWHReminderDay6Email(email, firstName, 8);
