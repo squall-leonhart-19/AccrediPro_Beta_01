@@ -17,8 +17,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, firstName = "Test", secret } = body;
 
-    // Simple secret protection
-    if (secret !== process.env.CRON_SECRET) {
+    // Simple secret protection (use CRON_SECRET or NEXTAUTH_SECRET)
+    const validSecret = process.env.CRON_SECRET || process.env.NEXTAUTH_SECRET;
+    if (secret !== validSecret) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
