@@ -28,10 +28,10 @@ async function getUserOnboardingData(userId: string) {
     },
   });
 
-  // Check if user is mini-diploma-only (single fm-mini-diploma enrollment, not completed)
+  // Check if user is mini-diploma-only (single mini-diploma enrollment, not completed)
   const isMiniDiplomaOnly =
     enrollments.length === 1 &&
-    enrollments[0].course.slug === "fm-mini-diploma" &&
+    (enrollments[0].course.slug === "fm-mini-diploma" || enrollments[0].course.slug === "womens-health-mini-diploma") &&
     enrollments[0].status !== "COMPLETED";
 
   // Get coach name from first enrollment with a coach

@@ -206,14 +206,24 @@ export default async function DashboardPage() {
   } = await getDashboardData(session.user.id);
 
   // Check if user ONLY has Mini Diploma enrollment (redirect to Mini Diploma dashboard)
-  const hasMiniDiplomaOnly =
+  const hasFMMiniDiplomaOnly =
     enrollments.length === 1 &&
     enrollments[0].course.slug === "fm-mini-diploma" &&
     enrollments[0].status !== "COMPLETED";
 
-  if (hasMiniDiplomaOnly) {
+  const hasWomensHealthMiniDiplomaOnly =
+    enrollments.length === 1 &&
+    enrollments[0].course.slug === "womens-health-mini-diploma" &&
+    enrollments[0].status !== "COMPLETED";
+
+  if (hasFMMiniDiplomaOnly) {
     const { redirect } = await import("next/navigation");
     redirect("/mini-diploma");
+  }
+
+  if (hasWomensHealthMiniDiplomaOnly) {
+    const { redirect } = await import("next/navigation");
+    redirect("/womens-health-diploma");
   }
 
   const completedCourses = enrollments.filter((e) => e.status === "COMPLETED").length;

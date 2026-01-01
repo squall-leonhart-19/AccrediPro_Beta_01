@@ -10,53 +10,18 @@ interface PageProps {
   params: Promise<{ lessonNumber: string }>;
 }
 
-async function getEnrollmentAndLessons(userId: string) {
-  const enrollment = await prisma.enrollment.findFirst({
-    where: {
-      userId,
-      course: {
-        slug: "womens-health-mini-diploma",
-      },
-    },
-    include: {
-      course: {
-        include: {
-          modules: {
-            where: { isPublished: true },
-            include: {
-              lessons: {
-                where: { isPublished: true },
-                orderBy: { order: "asc" },
-              },
-            },
-            orderBy: { order: "asc" },
-          },
-        },
-      },
-    },
-  });
-
-  return enrollment;
-}
-
-async function getLessonProgress(userId: string, courseId: string) {
-  const progress = await prisma.lessonProgress.findMany({
-    where: {
-      userId,
-      lesson: {
-        module: {
-          courseId,
-        },
-      },
-    },
-    select: {
-      lessonId: true,
-      isCompleted: true,
-    },
-  });
-
-  return new Set(progress.filter((p) => p.isCompleted).map((p) => p.lessonId));
-}
+// Hardcoded lessons matching the React components
+const LESSONS = [
+  { id: 1, title: "Meet Your Hormones" },
+  { id: 2, title: "The Monthly Dance" },
+  { id: 3, title: "When Hormones Go Rogue" },
+  { id: 4, title: "The Gut-Hormone Axis" },
+  { id: 5, title: "Thyroid & Energy" },
+  { id: 6, title: "Stress & Your Adrenals" },
+  { id: 7, title: "Food as Medicine" },
+  { id: 8, title: "Life Stage Support" },
+  { id: 9, title: "Your Next Step" },
+];
 
 export default async function WomensHealthLessonPage({ params }: PageProps) {
   const session = await getServerSession(authOptions);
@@ -71,74 +36,72 @@ export default async function WomensHealthLessonPage({ params }: PageProps) {
     notFound();
   }
 
-  const enrollment = await getEnrollmentAndLessons(session.user.id);
+  // Check enrollment exists
+  const enrollment = await prisma.enrollment.findFirst({
+    where: {
+      userId: session.user.id,
+      course: { slug: "womens-health-mini-diploma" },
+    },
+  });
 
   if (!enrollment) {
-    // User doesn't have women's health enrollment
     redirect("/dashboard");
   }
 
-  // Check access expiry for LEAD users
-  // Note: userType and accessExpiresAt fields require schema migration
+  // Get user data for access check
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
+    select: {
+      firstName: true,
+      email: true,
+      userType: true,
+      accessExpiresAt: true,
+    },
   });
 
-  // Use type assertion until schema is migrated
-  const userType = (user as any)?.userType;
-  const accessExpiresAt = (user as any)?.accessExpiresAt;
-
-  if (userType === "LEAD" && accessExpiresAt) {
+  // Check access expiry for LEAD users
+  if (user?.userType === "LEAD" && user?.accessExpiresAt) {
     const now = new Date();
-    if (now > new Date(accessExpiresAt)) {
-      // Access expired - redirect to upgrade page
+    if (now > new Date(user.accessExpiresAt)) {
       redirect("/womens-health-diploma?expired=true");
     }
   }
 
-  // Get all lessons in order
-  const allLessons = enrollment.course.modules.flatMap((module) =>
-    module.lessons.map((lesson) => ({
-      id: lesson.id,
-      title: lesson.title,
-      moduleId: module.id,
-    }))
+  // Get completed lessons from user tags
+  const completionTags = await prisma.userTag.findMany({
+    where: {
+      userId: session.user.id,
+      tag: { startsWith: "wh-lesson-complete:" },
+    },
+  });
+
+  const completedLessons = new Set(
+    completionTags.map((t) => parseInt(t.tag.replace("wh-lesson-complete:", "")))
   );
 
-  // Check if the requested lesson exists
-  if (lessonNumber > allLessons.length) {
-    notFound();
-  }
+  // Test user bypasses sequential access
+  const isTestUser = user?.email === "at.seed019@gmail.com";
 
-  const currentLesson = allLessons[lessonNumber - 1];
-  const completedLessonIds = await getLessonProgress(session.user.id, enrollment.courseId);
-
-  // Test user bypasses sequential access requirement
-  const isTestUser = session.user.email === "at.seed019@gmail.com";
-
-  // Check if previous lessons are completed (lesson 1 is always accessible)
-  // Test user can access any lesson
+  // Check if previous lesson is completed (lesson 1 always accessible)
   if (lessonNumber > 1 && !isTestUser) {
-    const previousLesson = allLessons[lessonNumber - 2];
-    if (!completedLessonIds.has(previousLesson.id)) {
-      // Previous lesson not completed, redirect to it
+    if (!completedLessons.has(lessonNumber - 1)) {
       redirect(`/womens-health-diploma/lesson/${lessonNumber - 1}`);
     }
   }
 
-  const firstName = session.user.firstName || "Student";
-  const isCompleted = completedLessonIds.has(currentLesson.id);
+  const firstName = user?.firstName || session.user.firstName || "Student";
+  const isCompleted = completedLessons.has(lessonNumber);
 
   return (
     <WomensHealthLessonContainer
       lessonNumber={lessonNumber}
-      lessonId={currentLesson.id}
+      lessonId={`wh-lesson-${lessonNumber}`}
       firstName={firstName}
       isCompleted={isCompleted}
       userId={session.user.id}
       enrollmentId={enrollment.id}
       courseId={enrollment.courseId}
-      moduleId={currentLesson.moduleId}
+      moduleId="wh-module-1"
     />
   );
 }

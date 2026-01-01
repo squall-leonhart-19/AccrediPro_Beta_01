@@ -19,28 +19,25 @@ export function WomensHealthLessonContainer({
   lessonId,
   firstName,
   isCompleted,
+  userId,
   courseId,
-  moduleId,
 }: LessonContainerProps) {
   const router = useRouter();
 
   const handleComplete = async () => {
     try {
-      // Mark lesson as complete using the existing progress API
-      const response = await fetch("/api/progress/complete", {
+      // Save lesson completion using user tags API
+      await fetch("/api/user/tag", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lessonId,
-          courseId,
-          moduleId,
+          tag: `wh-lesson-complete:${lessonNumber}`,
+          value: new Date().toISOString(),
         }),
       });
 
-      const data = await response.json();
-
       // If all 9 lessons are complete, trigger mini diploma completion
-      if (data.success && lessonNumber === 9) {
+      if (lessonNumber === 9) {
         await fetch("/api/mini-diploma/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
