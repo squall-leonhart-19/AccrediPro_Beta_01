@@ -16,7 +16,14 @@ async function getCompletionData(userId: string) {
             firstName: true,
             lastName: true,
             email: true,
-            tags: true,
+            tags: {
+                where: {
+                    tag: { startsWith: "wh-lesson-complete:" },
+                },
+                select: {
+                    tag: true,
+                },
+            },
             certificates: {
                 where: {
                     course: {
@@ -35,9 +42,7 @@ async function getCompletionData(userId: string) {
     if (!user) return null;
 
     // Check if all 9 lessons are complete
-    const completedLessons = user.tags.filter(tag =>
-        tag.startsWith("wh-lesson-complete:")
-    ).length;
+    const completedLessons = user.tags.length;
 
     return {
         firstName: user.firstName || "Friend",

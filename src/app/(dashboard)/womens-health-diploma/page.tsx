@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { TestCompleteAllButton } from "./test-complete-button";
 
 export const dynamic = "force-dynamic";
 
@@ -443,6 +444,11 @@ export default async function WomensHealthDiplomaPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Test Button - Only for test user */}
+        {isTestUser && (
+          <TestCompleteAllButton />
+        )}
       </div>
     </div>
   );

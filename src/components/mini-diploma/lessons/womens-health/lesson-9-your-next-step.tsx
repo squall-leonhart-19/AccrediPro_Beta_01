@@ -92,30 +92,15 @@ Women's health impacts:
         {
             id: 9,
             type: 'coach',
-            content: `If you're hungry to go deeper, our full Women's Health & Hormones Certification dives into clinical application, advanced protocols, and how to actually work with clients professionally.`,
+            content: `That's amazing! I love your energy! 🙌`,
         },
         {
             id: 10,
-            type: 'system',
-            content: `**What's Next?**
-This Mini Diploma gave you the foundations.
-
-The full certification includes:
-• 60+ hours of advanced training
-• Detailed protocols and case studies
-• Client intake and assessment tools
-• Practitioner-level lab interpretation
-• Business building for health coaches
-• Certificate to work professionally`,
-            systemStyle: 'info',
+            type: 'coach',
+            content: `Congratulations, {name}! 🎊 You've officially completed the Women's Health & Hormones Mini Diploma!`,
         },
         {
             id: 11,
-            type: 'coach',
-            content: `But first - congratulations! 🎊 You've earned your Women's Health Mini Diploma. Go claim your certificate!`,
-        },
-        {
-            id: 12,
             type: 'system',
             content: `**Certificate Unlocked!**
 You've completed all 9 lessons.
@@ -128,9 +113,9 @@ Your official Women's Health & Hormones Mini Diploma certificate is ready to dow
             systemStyle: 'takeaway',
         },
         {
-            id: 13,
+            id: 12,
             type: 'coach',
-            content: `Thank you for learning with me, {name}. You're going to do amazing things with this knowledge. Stay in touch! 💕`,
+            content: `Thank you for learning with me, {name}. You're going to do amazing things with this knowledge. I'll be in touch soon! 💕`,
         },
     ];
 

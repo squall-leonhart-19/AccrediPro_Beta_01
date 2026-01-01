@@ -57,13 +57,16 @@ export function LessonBase({
     firstName = "friend",
     moduleIntroAudioUrl,
 }: LessonBaseProps) {
-    const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-    const [displayedMessages, setDisplayedMessages] = useState<Message[]>([]);
-    const [isTyping, setIsTyping] = useState(true);
+    // If already completed, show everything instantly
+    const [currentMessageIndex, setCurrentMessageIndex] = useState(isCompleted ? messages.length : 0);
+    const [displayedMessages, setDisplayedMessages] = useState<Message[]>(
+        isCompleted ? messages.filter(m => m.type !== 'user-choice') : []
+    );
+    const [isTyping, setIsTyping] = useState(!isCompleted);
     const [userResponses, setUserResponses] = useState<string[]>([]);
     const [playingAudioId, setPlayingAudioId] = useState<number | null>(null);
     const [showReaction, setShowReaction] = useState<string | null>(null);
-    const [lessonComplete, setLessonComplete] = useState(false);
+    const [lessonComplete, setLessonComplete] = useState(isCompleted);
     const chatEndRef = useRef<HTMLDivElement>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
