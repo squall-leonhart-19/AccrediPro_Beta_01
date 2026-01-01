@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { sendWomensHealthWelcomeEmail, sendFreebieWelcomeEmail } from "@/lib/email";
 
 // Universal password for all mini diploma leads
 const LEAD_PASSWORD = "coach2026";
@@ -256,8 +257,27 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // TODO: Send welcome email with login details
-        // await sendWelcomeEmail(email, firstName, LEAD_PASSWORD);
+        // Send welcome email with login details
+        try {
+            if (course === "womens-health") {
+                await sendWomensHealthWelcomeEmail({
+                    to: email.toLowerCase(),
+                    firstName: firstName.trim(),
+                    isExistingUser: false,
+                    password: LEAD_PASSWORD,
+                });
+            } else {
+                await sendFreebieWelcomeEmail({
+                    to: email.toLowerCase(),
+                    firstName: firstName.trim(),
+                    isExistingUser: false,
+                });
+            }
+            console.log(`[OPTIN] Welcome email sent to ${email}`);
+        } catch (emailError) {
+            console.error("[OPTIN] Failed to send welcome email:", emailError);
+            // Don't fail registration if email fails
+        }
 
         // TODO: Track in analytics/Facebook CAPI
         // await trackOptIn(email, course);
