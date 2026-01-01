@@ -10,6 +10,7 @@ interface TriggerAutoMessageOptions {
   | "course_complete"
   | "module_complete"
   | "mini_diploma_module_complete"
+  | "wh_lesson_complete"
   | "inactive_7d"
   | "mini_diploma_complete"
   | "training_video_complete"
@@ -335,6 +336,81 @@ I'm genuinely excited for you right now. This is real progress. Real knowledge. 
 Go take that Final Exam. I believe in you. And when you pass... we'll celebrate together.
 
 You've got this!`,
+    hasVoice: true,
+  },
+};
+
+// Women's Health Mini Diploma lesson completion messages - DM from Coach Sarah
+// Only send for key milestones: Lesson 3 (halfway), Lesson 6 (2/3 done), Lesson 9 (complete)
+const WH_LESSON_MESSAGES: Record<number, { text: string; voiceScript: string | null; hasVoice: boolean }> = {
+  3: {
+    text: `{{firstName}}! 🌸
+
+You just finished Lesson 3 - Hormonal Imbalances! You're making amazing progress!
+
+Understanding the signs of hormonal imbalances is SO important. You're now equipped to recognize patterns that most people miss.
+
+Keep going, you're doing incredible! 💪
+
+- Sarah`,
+    voiceScript: `{{firstName}}! You just finished Lesson 3, Hormonal Imbalances! You're making amazing progress.
+
+Understanding the signs of hormonal imbalances is so important. You're now equipped to recognize patterns that most people miss.
+
+Keep going, you're doing incredible!`,
+    hasVoice: true,
+  },
+  6: {
+    text: `{{firstName}}!! 🎉
+
+Lesson 6 DONE - you've now covered the Stress & Hormone Connection!
+
+You're two-thirds through your Women's Health Mini Diploma! The way stress impacts hormones is such crucial knowledge. Your future clients will thank you for understanding this!
+
+I left you a voice note to celebrate! Just 3 more lessons to go! 🚀
+
+- Sarah 💚`,
+    voiceScript: `{{firstName}}! Lesson 6 done, Stress and Hormone Connection complete! You're two-thirds through your Women's Health Mini Diploma!
+
+The way stress impacts hormones is such crucial knowledge. So many women struggle with this and don't even realize it.
+
+Just 3 more lessons to go. You've got this!`,
+    hasVoice: true,
+  },
+  9: {
+    text: `{{firstName}}!!! 🎓✨
+
+OH MY GOSH - YOU DID IT!!! All 9 lessons COMPLETE!!!
+
+I am SO incredibly proud of you right now! You've just completed your Women's Health & Hormones Mini Diploma!
+
+You now understand:
+✅ The 5 key female hormones
+✅ The 4 menstrual cycle phases
+✅ Hormonal imbalance signs
+✅ The gut-hormone connection
+✅ Thyroid function
+✅ Stress & adrenals
+✅ Nutrition for hormone balance
+✅ Life stage support
+
+This is REAL knowledge that will help REAL women!
+
+Your certificate is being prepared and will be emailed to you within 24 hours after you complete the final steps. Head to the completion page to claim it!
+
+I'm so proud of you! 💚
+
+With love,
+Sarah`,
+    voiceScript: `Oh my gosh {{firstName}}! YOU DID IT! All 9 lessons complete!
+
+I am SO incredibly proud of you right now! You've just completed your Women's Health and Hormones Mini Diploma!
+
+You now have foundational knowledge that most people, even many doctors, don't have. And you're going to use this to help real women transform their health.
+
+Your certificate is being prepared. Head to the completion page to claim it.
+
+Thank you for learning with me. You're going to do amazing things!`,
     hasVoice: true,
   },
 };
@@ -796,6 +872,24 @@ export async function triggerAutoMessage({
         }
       }
       // Final Exam (4+) is handled by mini_diploma_complete trigger
+      return;
+    }
+
+    // SPECIAL HANDLING: Women's Health lesson completion DM with voice
+    // Only send for milestones: Lesson 3, 6, 9
+    if (trigger === "wh_lesson_complete" && triggerValue) {
+      const lessonNumber = parseInt(triggerValue, 10);
+      const whLessonContent = WH_LESSON_MESSAGES[lessonNumber];
+      if (whLessonContent) {
+        // Get Sarah Women's Health coach specifically
+        const sarahWH = await prisma.user.findFirst({
+          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+        });
+        const whCoachId = sarahWH?.id || coachId;
+        await sendAutoDM(userId, user.firstName || "there", whCoachId, `wh_lesson_${lessonNumber}_complete`, whLessonContent);
+        return;
+      }
+      // Non-milestone lessons don't get DMs
       return;
     }
 

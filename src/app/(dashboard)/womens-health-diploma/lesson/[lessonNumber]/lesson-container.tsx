@@ -36,6 +36,18 @@ export function WomensHealthLessonContainer({
         }),
       });
 
+      // Trigger auto-DM for milestone lessons (3, 6, 9)
+      if (lessonNumber === 3 || lessonNumber === 6 || lessonNumber === 9) {
+        await fetch("/api/auto-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            trigger: "wh_lesson_complete",
+            triggerValue: lessonNumber.toString(),
+          }),
+        });
+      }
+
       // If all 9 lessons are complete, trigger mini diploma completion
       if (lessonNumber === 9) {
         await fetch("/api/mini-diploma/complete", {

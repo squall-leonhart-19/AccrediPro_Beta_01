@@ -7,7 +7,12 @@ import { sendEmail } from "@/lib/email";
  * GET /api/cron/issue-mini-diploma-certificates
  *
  * Called by cron job (e.g., every hour) to auto-issue certificates
- * for mini diploma completions that are at least 48 hours old.
+ * for mini diploma completions that are at least 24 hours old.
+ *
+ * When certificate is issued:
+ * - Certificate is created in database
+ * - Email notification is sent
+ * - User gets 30-day graduate access (accessExpiresAt extended)
  */
 export async function GET(request: NextRequest) {
     try {
@@ -20,11 +25,11 @@ export async function GET(request: NextRequest) {
         }
 
         const now = new Date();
-        const cutoffTime = new Date(now.getTime() - 48 * 60 * 60 * 1000); // 48 hours ago
+        const cutoffTime = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
 
         // Find users who:
         // 1. Have completed their mini diploma (miniDiplomaCompletedAt is set)
-        // 2. Completed at least 48 hours ago
+        // 2. Completed at least 24 hours ago
         // 3. Don't have a certificate yet for the mini diploma course
         const usersToIssue = await prisma.user.findMany({
             where: {
@@ -113,6 +118,23 @@ export async function GET(request: NextRequest) {
                     },
                 });
 
+                // Grant 30-day graduate access
+                const graduateAccessExpiry = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: {
+                        accessExpiresAt: graduateAccessExpiry,
+                        hasCertificateBadge: true,
+                    },
+                });
+
+                // Add graduate tag for tracking
+                await prisma.userTag.upsert({
+                    where: { userId_tag: { userId: user.id, tag: "mini-diploma-graduate" } },
+                    update: { value: now.toISOString() },
+                    create: { userId: user.id, tag: "mini-diploma-graduate", value: now.toISOString() },
+                });
+
                 issuedCount++;
                 results.push({
                     email: user.email,
@@ -162,9 +184,12 @@ export async function GET(request: NextRequest) {
                                         <a href="${certificateUrl}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">Download Your Certificate</a>
                                     </div>
 
-                                    <div style="background: #f0f9f0; border: 1px solid #10b981; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                                        <p style="margin: 0 0 10px 0; font-weight: bold; color: #059669;">🎁 Ready for the Full Certification?</p>
-                                        <p style="margin: 0; color: #555; font-size: 14px;">Take your knowledge to practitioner level with the full certification program. As a Mini Diploma graduate, you're eligible for our special graduate discount!</p>
+                                    <div style="background: #fff3e0; border: 1px solid #ff9800; border-radius: 8px; padding: 20px; margin: 25px 0;">
+                                        <p style="margin: 0 0 10px 0; font-weight: bold; color: #e65100;">🎁 Your 30-Day Graduate Access is Active!</p>
+                                        <p style="margin: 0; color: #555; font-size: 14px;">As a Mini Diploma graduate, you now have <strong>30 days of exclusive access</strong> to browse our full course catalog with special graduate pricing (20% off). Explore your next certification!</p>
+                                        <div style="text-align: center; margin-top: 15px;">
+                                            <a href="${process.env.NEXTAUTH_URL}/catalog" style="background: #ff9800; color: white; padding: 10px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 14px;">Browse Catalog →</a>
+                                        </div>
                                     </div>
                                 </div>
 

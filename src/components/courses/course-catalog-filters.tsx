@@ -112,6 +112,8 @@ interface CourseCatalogFiltersProps {
     wishlistIds?: string[];
     isLoggedIn?: boolean;
     miniDiplomaCompletedAt?: string | null;
+    graduateAccessExpiresAt?: string | null;
+    isGraduate?: boolean;
 }
 
 // Default coach when none assigned
@@ -136,25 +138,23 @@ const ACCREDITATIONS = [
 
 // Graduate pricing constants
 const FULL_PRICE = 1997;
-const GRADUATE_PRICE = 997;
-const GRADUATE_DISCOUNT_HOURS = 72; // 72 hours flash sale
+const GRADUATE_PRICE = 1597; // 20% graduate discount
 
-// Helper to calculate time remaining
-const getTimeRemaining = (completedAt: string | null): { expired: boolean; hours: number; minutes: number; seconds: number } | null => {
-    if (!completedAt) return null;
+// Helper to calculate time remaining for graduate access
+const getGraduateTimeRemaining = (expiresAt: string | null): { expired: boolean; days: number; hours: number; minutes: number } | null => {
+    if (!expiresAt) return null;
 
-    const completedDate = new Date(completedAt);
-    const expiryDate = new Date(completedDate.getTime() + GRADUATE_DISCOUNT_HOURS * 60 * 60 * 1000);
+    const expiryDate = new Date(expiresAt);
     const now = new Date();
     const diff = expiryDate.getTime() - now.getTime();
 
-    if (diff <= 0) return { expired: true, hours: 0, minutes: 0, seconds: 0 };
+    if (diff <= 0) return { expired: true, days: 0, hours: 0, minutes: 0 };
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    return { expired: false, hours, minutes, seconds };
+    return { expired: false, days, hours, minutes };
 };
 
 // Career Path & Earning Potential Data for each course type
@@ -448,6 +448,8 @@ export function CourseCatalogFilters({
     wishlistIds = [],
     isLoggedIn = false,
     miniDiplomaCompletedAt = null,
+    graduateAccessExpiresAt = null,
+    isGraduate = false,
 }: CourseCatalogFiltersProps) {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
@@ -455,21 +457,21 @@ export function CourseCatalogFilters({
     const [sortBy, setSortBy] = useState<string>("featured");
     const [localWishlist, setLocalWishlist] = useState<Set<string>>(new Set(wishlistIds));
     const [wishlistLoading, setWishlistLoading] = useState<string | null>(null);
-    const [countdown, setCountdown] = useState(getTimeRemaining(miniDiplomaCompletedAt));
+    const [graduateCountdown, setGraduateCountdown] = useState(getGraduateTimeRemaining(graduateAccessExpiresAt));
 
-    // Update countdown every second
+    // Update countdown every minute (for days/hours display)
     useEffect(() => {
-        if (!miniDiplomaCompletedAt) return;
+        if (!graduateAccessExpiresAt) return;
 
         const timer = setInterval(() => {
-            setCountdown(getTimeRemaining(miniDiplomaCompletedAt));
-        }, 1000);
+            setGraduateCountdown(getGraduateTimeRemaining(graduateAccessExpiresAt));
+        }, 60000); // Update every minute
 
         return () => clearInterval(timer);
-    }, [miniDiplomaCompletedAt]);
+    }, [graduateAccessExpiresAt]);
 
     // Check if user qualifies for graduate discount
-    const hasGraduateDiscount = countdown && !countdown.expired;
+    const hasGraduateDiscount = isGraduate && graduateCountdown && !graduateCountdown.expired;
 
     const enrollmentMap = new Map(enrollments.map((e) => [e.courseId, e]));
 
@@ -851,7 +853,7 @@ export function CourseCatalogFilters({
                                             </div>
                                         </div>
 
-                                        {/* Price Section - With Graduate Flash Sale */}
+                                        {/* Price Section - With Graduate Access Discount */}
                                         <div className="mb-2 sm:mb-4">
                                             {course.isFree ? (
                                                 <div className="flex items-center gap-1 sm:gap-2">
@@ -860,29 +862,28 @@ export function CourseCatalogFilters({
                                                 </div>
                                             ) : hasGraduateDiscount ? (
                                                 <div className="space-y-2">
-                                                    {/* Graduate Flash Sale Banner */}
-                                                    <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white rounded-lg p-2 text-center animate-pulse">
+                                                    {/* Graduate Access Banner */}
+                                                    <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg p-2 text-center">
                                                         <div className="flex items-center justify-center gap-2 text-xs font-bold">
-                                                            <Flame className="w-4 h-4" />
-                                                            <span>GRADUATE FLASH SALE</span>
-                                                            <Flame className="w-4 h-4" />
+                                                            <GraduationCap className="w-4 h-4" />
+                                                            <span>GRADUATE EXCLUSIVE</span>
                                                         </div>
                                                         <div className="text-[10px] opacity-90 mt-0.5">
-                                                            Before we close the spot!
+                                                            20% off for Mini Diploma graduates
                                                         </div>
                                                     </div>
-                                                    {/* Countdown Timer */}
+                                                    {/* Days Remaining */}
                                                     <div className="flex items-center justify-center gap-1 text-xs">
-                                                        <span className="text-gray-500">Ends in:</span>
-                                                        <span className="font-mono font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">
-                                                            {String(countdown?.hours || 0).padStart(2, '0')}:{String(countdown?.minutes || 0).padStart(2, '0')}:{String(countdown?.seconds || 0).padStart(2, '0')}
+                                                        <span className="text-gray-500">Access expires in:</span>
+                                                        <span className="font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                                                            {graduateCountdown?.days || 0} days
                                                         </span>
                                                     </div>
                                                     {/* Price Display */}
                                                     <div className="flex items-center justify-center gap-2">
                                                         <span className="text-lg text-gray-400 line-through">${FULL_PRICE}</span>
-                                                        <span className="text-2xl font-bold text-green-600">${GRADUATE_PRICE}</span>
-                                                        <Badge className="bg-green-100 text-green-700 text-xs">Save $1,000!</Badge>
+                                                        <span className="text-2xl font-bold text-emerald-600">${GRADUATE_PRICE}</span>
+                                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">Save $400!</Badge>
                                                     </div>
                                                 </div>
                                             ) : (

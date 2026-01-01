@@ -138,23 +138,35 @@ async function getUserWishlist(userId: string) {
   });
 }
 
-async function getUserMiniDiplomaCompletion(userId: string) {
+async function getUserGraduateStatus(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { miniDiplomaCompletedAt: true },
+    select: {
+      miniDiplomaCompletedAt: true,
+      accessExpiresAt: true,
+    },
   });
-  return user?.miniDiplomaCompletedAt || null;
+
+  // Check if user has active graduate access (30-day window)
+  const now = new Date();
+  const hasGraduateAccess = user?.accessExpiresAt && user.accessExpiresAt > now;
+
+  return {
+    miniDiplomaCompletedAt: user?.miniDiplomaCompletedAt || null,
+    accessExpiresAt: hasGraduateAccess ? user?.accessExpiresAt : null,
+    isGraduate: hasGraduateAccess,
+  };
 }
 
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions);
-  const [courses, categories, enrollments, specialOffers, wishlist, miniDiplomaCompletedAt] = await Promise.all([
+  const [courses, categories, enrollments, specialOffers, wishlist, graduateStatus] = await Promise.all([
     getCourses(),
     getCategories(),
     session?.user?.id ? getUserEnrollments(session.user.id) : [],
     getActiveSpecialOffers(),
     session?.user?.id ? getUserWishlist(session.user.id) : [],
-    session?.user?.id ? getUserMiniDiplomaCompletion(session.user.id) : null,
+    session?.user?.id ? getUserGraduateStatus(session.user.id) : { miniDiplomaCompletedAt: null, accessExpiresAt: null, isGraduate: false },
   ]);
 
   // Transform the data for the client component
@@ -226,7 +238,9 @@ export default async function CoursesPage() {
         specialOffers={specialOffersData}
         wishlistIds={wishlistIds}
         isLoggedIn={!!session?.user?.id}
-        miniDiplomaCompletedAt={miniDiplomaCompletedAt?.toISOString() || null}
+        miniDiplomaCompletedAt={graduateStatus.miniDiplomaCompletedAt?.toISOString() || null}
+        graduateAccessExpiresAt={graduateStatus.accessExpiresAt?.toISOString() || null}
+        isGraduate={graduateStatus.isGraduate}
       />
     </div>
   );
