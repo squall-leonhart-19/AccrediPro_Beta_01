@@ -91,9 +91,8 @@ Affects 1 in 10 women:
         },
         {
             id: 8,
-            type: 'voice-note',
-            content: `Here's something important: PCOS isn't just about the ovaries. It's a metabolic condition that affects the whole body. That's why diet and lifestyle changes can be so powerful for managing it.`,
-            voiceDuration: '0:20',
+            type: 'coach',
+            content: `💡 Here's something important: PCOS isn't just about the ovaries. It's a metabolic condition that affects the whole body. That's why diet and lifestyle changes can be so powerful for managing it.`,
         },
         {
             id: 9,

@@ -91,9 +91,8 @@ export function LessonThyroidEnergy({
         },
         {
             id: 8,
-            type: 'voice-note',
-            content: `I've seen so many women told their thyroid is "fine" when it's not. Always ask for a complete panel, and look at optimal ranges, not just "normal" ranges. There's a big difference!`,
-            voiceDuration: '0:20',
+            type: 'coach',
+            content: `💡 I've seen so many women told their thyroid is "fine" when it's not. Always ask for a complete panel, and look at optimal ranges, not just "normal" ranges. There's a big difference!`,
         },
         {
             id: 9,

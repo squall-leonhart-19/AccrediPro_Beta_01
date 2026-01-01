@@ -22,16 +22,23 @@ export function LessonMeetYourHormones({
     const messages: Message[] = [
         {
             id: 1,
-            type: 'coach',
-            content: `Hey {name}! 💕 I'm so excited you're here to learn about women's hormonal health!`,
+            type: 'pre-recorded-audio',
+            content: `🎧 Welcome to Module 1!`,
+            audioUrl: '/audio/womens-health/module-1-intro.mp3',
+            audioDuration: '0:45',
         },
         {
             id: 2,
             type: 'coach',
-            content: `This journey is going to change how you understand your body - and help you support other women on their health journeys too.`,
+            content: `Hey {name}! 💕 I'm so excited you're here to learn about women's hormonal health!`,
         },
         {
             id: 3,
+            type: 'coach',
+            content: `This journey is going to change how you understand your body - and help you support other women on their health journeys too.`,
+        },
+        {
+            id: 4,
             type: 'user-choice',
             content: `Before we dive in, how familiar are you with hormones?`,
             choices: [
@@ -42,12 +49,12 @@ export function LessonMeetYourHormones({
             showReaction: true,
         },
         {
-            id: 4,
+            id: 5,
             type: 'coach',
             content: `Perfect! Let's start with the key players in your hormonal orchestra. Yes, I said orchestra - because hormones work together like a symphony! 🎵`,
         },
         {
-            id: 5,
+            id: 6,
             type: 'system',
             content: `**The Big 5 Female Hormones**
 • **Estrogen** - The "feminine" hormone: affects skin, bones, mood, and reproduction
@@ -58,17 +65,17 @@ export function LessonMeetYourHormones({
             systemStyle: 'info',
         },
         {
-            id: 6,
+            id: 7,
             type: 'coach',
             content: `Here's what most people don't realize: these hormones don't work in isolation. When one is off, it affects ALL the others.`,
         },
         {
-            id: 7,
+            id: 8,
             type: 'coach',
             content: `That's why treating just one hormone rarely works. You have to look at the whole picture! 🧩`,
         },
         {
-            id: 8,
+            id: 9,
             type: 'user-choice',
             content: `Which hormone are you most curious about?`,
             choices: [
@@ -79,7 +86,7 @@ export function LessonMeetYourHormones({
             showReaction: true,
         },
         {
-            id: 9,
+            id: 10,
             type: 'system',
             content: `**The Hormone Hierarchy**
 Think of it like this: Your body prioritizes survival hormones (cortisol) over sex hormones (estrogen, progesterone).
@@ -90,18 +97,17 @@ This is why stress wreaks havoc on your cycle!`,
             systemStyle: 'takeaway',
         },
         {
-            id: 10,
+            id: 11,
             type: 'coach',
             content: `This concept is called "pregnenolone steal" - and understanding it is key to helping women balance their hormones naturally.`,
         },
         {
-            id: 11,
-            type: 'voice-note',
-            content: `Let me give you a quick tip: when a woman comes to you with hormonal issues, always ask about her stress levels first. Stress is often the root cause that throws everything else off balance.`,
-            voiceDuration: '0:22',
+            id: 12,
+            type: 'coach',
+            content: `💡 Quick tip: when a woman comes to you with hormonal issues, always ask about her stress levels first. Stress is often the root cause that throws everything else off balance.`,
         },
         {
-            id: 12,
+            id: 13,
             type: 'system',
             content: `**Key Insight**
 Hormonal imbalance is rarely about one hormone being "bad." It's about the relationships between all your hormones.
@@ -110,12 +116,12 @@ Hormonal imbalance is rarely about one hormone being "bad." It's about the relat
             systemStyle: 'quote',
         },
         {
-            id: 13,
+            id: 14,
             type: 'coach',
             content: `In our next lesson, we'll explore the beautiful monthly dance of your menstrual cycle - and how each phase affects how you feel.`,
         },
         {
-            id: 14,
+            id: 15,
             type: 'coach',
             content: `You're off to an amazing start, {name}! See you in the next lesson! 🌸`,
         },

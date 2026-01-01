@@ -76,9 +76,8 @@ When you're chronically stressed:
         },
         {
             id: 7,
-            type: 'voice-note',
-            content: `The term "adrenal fatigue" is controversial, but the symptoms are real. I prefer to call it HPA axis dysfunction. Your hypothalamus, pituitary, and adrenals get out of sync from chronic stress, and that affects everything.`,
-            voiceDuration: '0:22',
+            type: 'coach',
+            content: `💡 The term "adrenal fatigue" is controversial, but the symptoms are real. I prefer to call it HPA axis dysfunction. Your hypothalamus, pituitary, and adrenals get out of sync from chronic stress, and that affects everything.`,
         },
         {
             id: 8,

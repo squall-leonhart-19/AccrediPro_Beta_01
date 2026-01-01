@@ -80,9 +80,8 @@ export function LessonMonthlyDance({
         },
         {
             id: 8,
-            type: 'voice-note',
-            content: `When I started tracking my cycle and adjusting my schedule accordingly, everything changed. I stopped feeling broken on low-energy days and started honoring what my body actually needed.`,
-            voiceDuration: '0:25',
+            type: 'coach',
+            content: `💡 When I started tracking my cycle and adjusting my schedule accordingly, everything changed. I stopped feeling broken on low-energy days and started honoring what my body actually needed.`,
         },
         {
             id: 9,

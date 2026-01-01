@@ -22,16 +22,23 @@ export function LessonFoodAsMedicine({
     const messages: Message[] = [
         {
             id: 1,
-            type: 'coach',
-            content: `Welcome to Module 3, {name}! 🥗 Now we put everything together with practical action steps.`,
+            type: 'pre-recorded-audio',
+            content: `🎧 Welcome to Module 3!`,
+            audioUrl: '/audio/womens-health/module-3-intro.mp3',
+            audioDuration: '0:40',
         },
         {
             id: 2,
             type: 'coach',
-            content: `Food is medicine - and the RIGHT foods can significantly help balance your hormones. Let's explore the most powerful strategies!`,
+            content: `Welcome to Module 3, {name}! 🥗 Now we put everything together with practical action steps.`,
         },
         {
             id: 3,
+            type: 'coach',
+            content: `Food is medicine - and the RIGHT foods can significantly help balance your hormones. Let's explore the most powerful strategies!`,
+        },
+        {
+            id: 4,
             type: 'system',
             content: `**Hormone-Balancing Nutrition Pillars**
 • **Protein at every meal** - Stabilizes blood sugar
@@ -42,7 +49,7 @@ export function LessonFoodAsMedicine({
             systemStyle: 'info',
         },
         {
-            id: 4,
+            id: 5,
             type: 'user-choice',
             content: `Which pillar do you think you could improve most?`,
             choices: [
@@ -53,12 +60,12 @@ export function LessonFoodAsMedicine({
             showReaction: true,
         },
         {
-            id: 5,
+            id: 6,
             type: 'coach',
             content: `Now let me share one of my favorite hormone-balancing practices: seed cycling! 🌱`,
         },
         {
-            id: 6,
+            id: 7,
             type: 'system',
             content: `**Seed Cycling for Hormones**
 **Days 1-14 (Follicular Phase)**
@@ -75,13 +82,12 @@ Add to smoothies, oatmeal, or salads!`,
             systemStyle: 'exercise',
         },
         {
-            id: 7,
-            type: 'voice-note',
-            content: `Seed cycling isn't magic, but it provides key nutrients your body needs at different phases. Combined with other healthy habits, many women notice real improvements in PMS and cycle regularity.`,
-            voiceDuration: '0:18',
+            id: 8,
+            type: 'coach',
+            content: `💡 Seed cycling isn't magic, but it provides key nutrients your body needs at different phases. Combined with other healthy habits, many women notice real improvements in PMS and cycle regularity.`,
         },
         {
-            id: 8,
+            id: 9,
             type: 'system',
             content: `**Foods That Hurt Hormone Balance**
 • **Sugar** - Spikes insulin, increases inflammation
@@ -92,7 +98,7 @@ Add to smoothies, oatmeal, or salads!`,
             systemStyle: 'comparison',
         },
         {
-            id: 9,
+            id: 10,
             type: 'user-choice',
             content: `What's one food you could reduce to support your hormones?`,
             choices: [
@@ -103,7 +109,7 @@ Add to smoothies, oatmeal, or salads!`,
             showReaction: true,
         },
         {
-            id: 10,
+            id: 11,
             type: 'system',
             content: `**Blood Sugar is KEY**
 When blood sugar spikes and crashes:
@@ -117,12 +123,12 @@ When blood sugar spikes and crashes:
             systemStyle: 'takeaway',
         },
         {
-            id: 11,
+            id: 12,
             type: 'coach',
             content: `Remember: you don't have to be perfect. Progress over perfection! Even adding 2-3 of these changes can make a noticeable difference.`,
         },
         {
-            id: 12,
+            id: 13,
             type: 'coach',
             content: `Next lesson: we'll cover how to support women through different life stages - from periods to perimenopause. So important! 💕`,
         },

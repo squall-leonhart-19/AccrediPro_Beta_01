@@ -77,9 +77,8 @@ The transition begins:
         },
         {
             id: 7,
-            type: 'voice-note',
-            content: `Perimenopause deserves SO much more attention. Women in this stage often feel gaslit by doctors who dismiss their symptoms. If you can help women understand what's happening in their bodies during this time, you'll be giving them an incredible gift.`,
-            voiceDuration: '0:22',
+            type: 'coach',
+            content: `💡 Perimenopause deserves SO much more attention. Women in this stage often feel gaslit by doctors who dismiss their symptoms. If you can help women understand what's happening in their bodies during this time, you'll be giving them an incredible gift.`,
         },
         {
             id: 8,

@@ -62,9 +62,8 @@ export function LessonYourNextStep({
         },
         {
             id: 6,
-            type: 'voice-note',
-            content: `I truly believe that women's health is one of the most impactful areas you can work in. So many women are suffering unnecessarily. With what you've learned, you can make a real difference - even if it's just helping one person understand their body better.`,
-            voiceDuration: '0:25',
+            type: 'coach',
+            content: `💡 I truly believe that women's health is one of the most impactful areas you can work in. So many women are suffering unnecessarily. With what you've learned, you can make a real difference - even if it's just helping one person understand their body better.`,
         },
         {
             id: 7,

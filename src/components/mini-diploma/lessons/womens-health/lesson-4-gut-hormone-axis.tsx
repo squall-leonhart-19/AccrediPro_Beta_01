@@ -22,16 +22,23 @@ export function LessonGutHormoneAxis({
     const messages: Message[] = [
         {
             id: 1,
-            type: 'coach',
-            content: `Welcome to Module 2, {name}! 🎉 Now we're getting into the connections that most doctors miss.`,
+            type: 'pre-recorded-audio',
+            content: `🎧 Welcome to Module 2!`,
+            audioUrl: '/audio/womens-health/module-2-intro.mp3',
+            audioDuration: '0:40',
         },
         {
             id: 2,
             type: 'coach',
-            content: `Did you know your gut health directly affects your hormones? Let me introduce you to the estrobolome...`,
+            content: `Welcome to Module 2, {name}! 🎉 Now we're getting into the connections that most doctors miss.`,
         },
         {
             id: 3,
+            type: 'coach',
+            content: `Did you know your gut health directly affects your hormones? Let me introduce you to the estrobolome...`,
+        },
+        {
+            id: 4,
             type: 'system',
             content: `**What is the Estrobolome?**
 A collection of gut bacteria that helps metabolize and eliminate estrogen from your body.
@@ -41,7 +48,7 @@ A collection of gut bacteria that helps metabolize and eliminate estrogen from y
             systemStyle: 'info',
         },
         {
-            id: 4,
+            id: 5,
             type: 'user-choice',
             content: `Did you know gut bacteria could affect your hormones?`,
             choices: [
@@ -52,12 +59,12 @@ A collection of gut bacteria that helps metabolize and eliminate estrogen from y
             showReaction: true,
         },
         {
-            id: 5,
+            id: 6,
             type: 'coach',
             content: `Here's why this matters: if your gut is out of balance, you could eat perfectly and still have hormonal issues!`,
         },
         {
-            id: 6,
+            id: 7,
             type: 'system',
             content: `**Signs Your Gut is Affecting Your Hormones**
 • Bloating, especially premenstrual
@@ -71,13 +78,12 @@ A collection of gut bacteria that helps metabolize and eliminate estrogen from y
             systemStyle: 'comparison',
         },
         {
-            id: 7,
-            type: 'voice-note',
-            content: `I always tell my clients: you cannot fully balance your hormones without addressing gut health first. They're intimately connected. Start with the gut, and often the hormones follow.`,
-            voiceDuration: '0:18',
+            id: 8,
+            type: 'coach',
+            content: `💡 I always tell my clients: you cannot fully balance your hormones without addressing gut health first. They're intimately connected. Start with the gut, and often the hormones follow.`,
         },
         {
-            id: 8,
+            id: 9,
             type: 'system',
             content: `**Gut Health Quick Wins**
 • **Fiber** - 25-30g daily for healthy elimination
@@ -88,7 +94,7 @@ A collection of gut bacteria that helps metabolize and eliminate estrogen from y
             systemStyle: 'takeaway',
         },
         {
-            id: 9,
+            id: 10,
             type: 'user-choice',
             content: `Which gut health habit would be easiest for you to start?`,
             choices: [
@@ -99,12 +105,12 @@ A collection of gut bacteria that helps metabolize and eliminate estrogen from y
             showReaction: true,
         },
         {
-            id: 10,
+            id: 11,
             type: 'coach',
             content: `Small changes add up! Even adding one serving of fermented foods daily can make a difference over time.`,
         },
         {
-            id: 11,
+            id: 12,
             type: 'system',
             content: `**The Elimination Connection**
 Fun fact: You should have 1-2 bowel movements DAILY.
@@ -113,7 +119,7 @@ If you're constipated, estrogen gets reabsorbed instead of eliminated. This is a
             systemStyle: 'stats',
         },
         {
-            id: 12,
+            id: 13,
             type: 'coach',
             content: `Next up: the thyroid! This tiny gland controls your entire metabolism. Let's see how it connects to your hormonal health. 🦋`,
         },
