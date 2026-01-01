@@ -1293,6 +1293,58 @@ export async function sendWHReminderDay1Email(to: string, firstName: string) {
   });
 }
 
+// Women's Health Reminder Email - Day 2 (soft nudge)
+export async function sendWHReminderDay2Email(to: string, firstName: string, completedLessons: number) {
+  const nextLesson = completedLessons + 1;
+  const lessonTitles: Record<number, string> = {
+    1: "Meet Your Hormones",
+    2: "The Menstrual Cycle Phases",
+    3: "Signs of Hormonal Imbalance",
+    4: "The Gut-Hormone Connection",
+    5: "Nutrition for Hormone Balance",
+    6: "Stress & Your Hormones",
+    7: "Sleep & Hormonal Health",
+    8: "Exercise & Hormones",
+    9: "Putting It All Together",
+  };
+
+  const content = completedLessons === 0 ? `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Quick tip, ${firstName}!</h2>
+
+    <p style="color: #555; font-size: 16px;">I wanted to share something that might help...</p>
+
+    <p style="color: #555; font-size: 16px;">A lot of women tell me they're "too busy" to start. But here's the secret: <strong>Lesson 1 takes just 6 minutes</strong>. That's less time than scrolling Instagram!</p>
+
+    <p style="color: #555; font-size: 16px;">And once you start, you'll understand WHY you've been feeling the way you have. It's like finally getting the owner's manual for your body.</p>
+
+    ${primaryButton('Start Lesson 1 (6 mins)', `${BASE_URL}/womens-health-diploma/lesson/1`)}
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Just try one lesson. I promise it'll be worth it!<br/><strong>Sarah</strong></p>
+  ` : `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Great start, ${firstName}!</h2>
+
+    <p style="color: #555; font-size: 16px;">You've completed ${completedLessons} lesson${completedLessons > 1 ? 's' : ''} already - that's awesome!</p>
+
+    <p style="color: #555; font-size: 16px;">Up next is <strong>Lesson ${nextLesson}: ${lessonTitles[nextLesson] || 'Your Next Lesson'}</strong>. This one builds perfectly on what you just learned.</p>
+
+    ${highlightBox(`
+      <p style="margin: 0; font-size: 14px; color: #555;">Pro tip: Try to do 2-3 lessons in a row when you have 20 minutes. The concepts connect beautifully!</p>
+    `, 'cream')}
+
+    ${primaryButton(`Continue to Lesson ${nextLesson}`, `${BASE_URL}/womens-health-diploma/lesson/${nextLesson}`)}
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Keep the momentum going!<br/><strong>Sarah</strong></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: completedLessons === 0
+      ? `${firstName}, a quick tip from Sarah`
+      : `Great start ${firstName}! Ready for Lesson ${nextLesson}?`,
+    html: emailWrapper(content, `A quick message about your Women's Health Mini Diploma`),
+  });
+}
+
 // Women's Health Reminder Email - Day 3 (in progress)
 export async function sendWHReminderDay3Email(to: string, firstName: string, completedLessons: number) {
   const remaining = 9 - completedLessons;
@@ -1385,6 +1437,85 @@ export async function sendWHReminderDay6Email(to: string, firstName: string, com
     to,
     subject: `FINAL DAY ${firstName}! Your access expires tomorrow`,
     html: emailWrapper(content, `Last chance to complete your Women's Health Mini Diploma!`),
+  });
+}
+
+// Women's Health Reminder Email - Day 7 (access expired)
+export async function sendWHExpiredEmail(to: string, firstName: string, completedLessons: number) {
+  const content = completedLessons === 0 ? `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">${firstName}, your access has ended</h2>
+
+    <p style="color: #555; font-size: 16px;">Your 7-day access to the Women's Health Mini Diploma has expired.</p>
+
+    <p style="color: #555; font-size: 16px;">I know life gets busy, and sometimes timing just isn't right. But I don't want you to miss out on understanding your hormones and health.</p>
+
+    ${highlightBox(`
+      <p style="margin: 0 0 8px 0; font-size: 15px; color: #722F37; font-weight: bold;">Ready to try again?</p>
+      <p style="margin: 0; font-size: 14px; color: #555;">Reply to this email and I'll give you another chance to complete your mini diploma.</p>
+    `, 'cream')}
+
+    <p style="color: #555; font-size: 16px;">Or if you're ready to go deeper, check out our full Women's Health Certification - it includes everything in the mini diploma plus so much more.</p>
+
+    ${primaryButton('View Full Certification', `${BASE_URL}/catalog`)}
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">I'm here when you're ready!<br/><strong>Sarah</strong></p>
+  ` : `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">${firstName}, you were so close!</h2>
+
+    <p style="color: #555; font-size: 16px;">Your 7-day access has expired, and you completed <strong>${completedLessons} of 9 lessons</strong>.</p>
+
+    <p style="color: #555; font-size: 16px;">You were making great progress! I'd hate to see all that learning go to waste.</p>
+
+    ${highlightBox(`
+      <p style="margin: 0 0 8px 0; font-size: 15px; color: #2D6A4F; font-weight: bold;">Want to finish?</p>
+      <p style="margin: 0; font-size: 14px; color: #555;">Reply to this email and I'll extend your access so you can complete your certificate. Just ${9 - completedLessons} more lessons!</p>
+    `, 'green')}
+
+    <p style="color: #555; font-size: 16px; margin-top: 20px;">Or upgrade to our full certification and get unlimited access plus advanced modules.</p>
+
+    ${primaryButton('View Full Certification', `${BASE_URL}/catalog`)}
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Let me know what works for you!<br/><strong>Sarah</strong></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: completedLessons > 0
+      ? `${firstName}, you were ${9 - completedLessons} lessons away!`
+      : `${firstName}, your mini diploma access has ended`,
+    html: emailWrapper(content, `Your Women's Health Mini Diploma access has expired`),
+  });
+}
+
+// Women's Health Graduate Welcome Email (after certificate issued)
+export async function sendWHGraduateWelcomeEmail(to: string, firstName: string) {
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">You did it, ${firstName}!</h2>
+
+    <p style="color: #555; font-size: 16px;">Your Women's Health & Hormones Mini Diploma certificate is on its way to your inbox!</p>
+
+    <p style="color: #555; font-size: 16px;">I'm so proud of you for completing all 9 lessons. You now understand more about women's health than most people ever will.</p>
+
+    ${highlightBox(`
+      <p style="margin: 0 0 12px 0; font-size: 15px; color: #2D6A4F; font-weight: bold;">Your Graduate Benefits:</p>
+      <ul style="margin: 0; padding-left: 20px; color: #555;">
+        <li style="margin: 5px 0;"><strong>30 days</strong> continued access to your lessons</li>
+        <li style="margin: 5px 0;"><strong>20% OFF</strong> our full certification program</li>
+        <li style="margin: 5px 0;">Your official certificate to share</li>
+      </ul>
+    `, 'green')}
+
+    <p style="color: #555; font-size: 16px;">Want to go deeper? Our full Women's Health Certification covers advanced topics, client protocols, and how to build a practice helping other women.</p>
+
+    ${primaryButton('Explore Full Certification (20% OFF)', `${BASE_URL}/catalog`)}
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">Congratulations again! You should be proud of yourself.<br/><strong>Sarah</strong></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Congratulations ${firstName}! Your certificate is ready`,
+    html: emailWrapper(content, `You've earned your Women's Health Mini Diploma!`),
   });
 }
 
