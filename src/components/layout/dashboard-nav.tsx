@@ -58,12 +58,19 @@ const fullNavItems = [
 // Minimal nav for Mini Diploma users - maximum focus for completion
 // Shows: Lessons, Introduce Yourself, Chat, and LOCKED Training (teaser)
 // Note: locked state is determined dynamically based on isMiniDiplomaOnly
-const getMiniDiplomaNavItems = (isLocked: boolean) => [
-  { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
-  { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
-  { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
-];
+const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) => {
+  // Route to appropriate mini diploma based on course
+  const lessonPath = courseSlug === "womens-health-mini-diploma"
+    ? "/womens-health-diploma"
+    : "/mini-diploma";
+
+  return [
+    { href: lessonPath, label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
+    { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
+    { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+    // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
+  ];
+};
 
 // Minimal nav for FM Preview users - Module 0 & 1 only
 // Shows: Lessons, Chat, and locked full certification CTA
@@ -101,18 +108,22 @@ export function DashboardNav() {
   // Check if user has miniDiplomaCategory - this means they're a mini diploma user (regardless of completion)
   // Mini diploma users should ALWAYS see the minimal nav, just locked/unlocked based on completion
   const isMiniDiplomaUser = !!user?.miniDiplomaCategory;
+  const miniDiplomaCourseSlug = user?.miniDiplomaCourseSlug;
 
   // Check if user is FM Preview only (enrolled only in fm-preview course)
   const isFMPreviewOnly = user?.isFMPreviewOnly === true;
 
+  // Check if user is a LEAD (free mini diploma user with 7-day access)
+  const isLeadUser = user?.userType === "LEAD";
+
   // Select nav items based on user type
   // FM Preview users: show minimal nav with locked full certification CTA
-  // Mini diploma users: show minimal nav with locked/unlocked Masterclass based on completion
+  // Mini diploma users (LEAD or with category): show minimal nav with locked/unlocked Masterclass based on completion
   // Other users: show full nav
   const navItems = isFMPreviewOnly
     ? getFMPreviewNavItems()
-    : isMiniDiplomaUser
-      ? getMiniDiplomaNavItems(isMiniDiplomaOnly) // locked if not completed yet
+    : (isMiniDiplomaUser || isLeadUser)
+      ? getMiniDiplomaNavItems(isMiniDiplomaOnly, miniDiplomaCourseSlug) // locked if not completed yet
       : fullNavItems;
 
   const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {

@@ -154,6 +154,17 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
+        // Check mini diploma status for LEAD users
+        let miniDiplomaCourseSlug: string | null = null;
+        if (user.miniDiplomaCategory) {
+          // Map category to course slug
+          const categoryToSlug: Record<string, string> = {
+            "womens-health": "womens-health-mini-diploma",
+            "functional-medicine": "fm-mini-diploma",
+          };
+          miniDiplomaCourseSlug = categoryToSlug[user.miniDiplomaCategory] || null;
+        }
+
         // Note: Don't include image/avatar in JWT - it can cause token size issues
         // Avatar is fetched separately when needed
         return {
@@ -162,9 +173,13 @@ export const authOptions: NextAuthOptions = {
           name: `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.email,
           image: null, // Removed to prevent JWT bloat
           role: user.role,
+          userType: (user as any).userType || "STUDENT",
           firstName: user.firstName,
           lastName: user.lastName,
           isFirstLogin,
+          miniDiplomaCategory: user.miniDiplomaCategory || null,
+          miniDiplomaCourseSlug,
+          accessExpiresAt: (user as any).accessExpiresAt?.toISOString() || null,
         };
       },
     }),
@@ -179,9 +194,13 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.userType = user.userType;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.isFirstLogin = user.isFirstLogin;
+        token.miniDiplomaCategory = user.miniDiplomaCategory;
+        token.miniDiplomaCourseSlug = user.miniDiplomaCourseSlug;
+        token.accessExpiresAt = user.accessExpiresAt;
       }
       return token;
     },
@@ -189,9 +208,13 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.userType = token.userType as "LEAD" | "STUDENT" | undefined;
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
+        session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
+        session.user.miniDiplomaCourseSlug = token.miniDiplomaCourseSlug as string | null;
+        session.user.accessExpiresAt = token.accessExpiresAt as string | null;
       }
       return session;
     },

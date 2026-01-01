@@ -6,23 +6,29 @@ declare module "next-auth" {
     user: {
       id: string;
       role: string;
+      userType?: "LEAD" | "STUDENT";
       firstName: string | null;
       lastName: string | null;
       isFirstLogin?: boolean;
       miniDiplomaCategory?: string | null;
+      miniDiplomaCourseSlug?: string | null;
       isMiniDiplomaOnly?: boolean;
       isFMPreviewOnly?: boolean;
+      accessExpiresAt?: string | null;
     } & DefaultSession["user"];
   }
 
   interface User extends DefaultUser {
     role: string;
+    userType?: "LEAD" | "STUDENT";
     firstName: string | null;
     lastName: string | null;
     isFirstLogin?: boolean;
     miniDiplomaCategory?: string | null;
+    miniDiplomaCourseSlug?: string | null;
     isMiniDiplomaOnly?: boolean;
     isFMPreviewOnly?: boolean;
+    accessExpiresAt?: string | null;
   }
 }
 
@@ -30,11 +36,14 @@ declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id: string;
     role: string;
+    userType?: "LEAD" | "STUDENT";
     firstName: string | null;
     lastName: string | null;
     isFirstLogin?: boolean;
     miniDiplomaCategory?: string | null;
+    miniDiplomaCourseSlug?: string | null;
     isMiniDiplomaOnly?: boolean;
     isFMPreviewOnly?: boolean;
+    accessExpiresAt?: string | null;
   }
 }
