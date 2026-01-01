@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { generateCertificateId } from "@/lib/certificate-service";
 import { sendEmail } from "@/lib/email";
+import { triggerAutoMessage } from "@/lib/auto-messages";
 
 /**
  * GET /api/cron/issue-mini-diploma-certificates
@@ -214,6 +215,16 @@ export async function GET(request: NextRequest) {
                         data: { certificateId: certificate.id },
                     },
                 });
+
+                // Send certificate ready DM from Sarah (Women's Health only)
+                if (enrollment.course.slug === "womens-health-mini-diploma") {
+                    await triggerAutoMessage({
+                        userId: user.id,
+                        trigger: "wh_certificate_ready",
+                    }).catch((err) => {
+                        console.error(`Failed to send certificate DM to ${user.email}:`, err);
+                    });
+                }
 
                 console.log(`✅ Certificate ${certificateNumber} issued for ${user.email}`);
             } catch (error) {

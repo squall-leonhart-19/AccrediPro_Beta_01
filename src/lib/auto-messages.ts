@@ -11,6 +11,9 @@ interface TriggerAutoMessageOptions {
   | "module_complete"
   | "mini_diploma_module_complete"
   | "wh_lesson_complete"
+  | "wh_access_expiring"
+  | "wh_certificate_ready"
+  | "wh_inactive_reminder"
   | "inactive_7d"
   | "mini_diploma_complete"
   | "training_video_complete"
@@ -337,6 +340,111 @@ Go take that Final Exam. I believe in you. And when you pass... we'll celebrate 
 
 You've got this!`,
     hasVoice: true,
+  },
+};
+
+// Women's Health DM messages for access expiring, certificate ready, and inactive reminder
+const WH_DM_MESSAGES: Record<string, { text: string; voiceScript: string | null; hasVoice: boolean }> = {
+  access_expiring_2days: {
+    text: `{{firstName}}! 💕
+
+Quick heads up - your access to the Women's Health Mini Diploma expires in just 2 days!
+
+You've been making progress, and I don't want you to miss out on completing it. The certificate is waiting for you!
+
+Each lesson is only about 6 minutes. You can totally finish this!
+
+What do you say - ready to knock out those remaining lessons?
+
+- Sarah 🌸`,
+    voiceScript: `Hey {{firstName}}! Quick heads up. Your access to the Women's Health Mini Diploma expires in just 2 days!
+
+You've been making progress and I don't want you to miss out. The certificate is waiting for you!
+
+Each lesson is only about 6 minutes. You can totally finish this! Let me know if you need any help.`,
+    hasVoice: true,
+  },
+  access_expiring_1day: {
+    text: `{{firstName}}!! ⏰
+
+This is your LAST DAY to complete your Women's Health Mini Diploma!
+
+Your access expires tomorrow and I really don't want you to miss getting your certificate.
+
+Whatever lessons you have left - you can do this TODAY. Each one is just 6 minutes.
+
+Go finish it now! I believe in you! 💪
+
+- Sarah`,
+    voiceScript: `{{firstName}}! This is your last day! Your access expires tomorrow and I really don't want you to miss getting your certificate.
+
+Whatever lessons you have left, you can do this today. Each one is just 6 minutes. Go finish it now! I believe in you!`,
+    hasVoice: true,
+  },
+  certificate_ready: {
+    text: `{{firstName}}!!! 🎓✨
+
+YOUR CERTIFICATE IS READY!!!
+
+I am SO proud of you! You completed all 9 lessons and your official Women's Health & Hormones Mini Diploma certificate has been issued!
+
+Check your email - I sent you a link to download it. You can also find it in your dashboard under Certificates.
+
+As a graduate, you now have:
+✅ 30 days of continued access
+✅ 20% off our full certification program
+✅ Your official certificate to share!
+
+Thank you for learning with me. You now know more about women's health than most people ever will!
+
+Celebrate yourself today! 🎉
+
+With so much pride,
+Sarah 💚`,
+    voiceScript: `{{firstName}}! Your certificate is ready! I am SO proud of you!
+
+You completed all 9 lessons and your official Women's Health and Hormones Mini Diploma certificate has been issued!
+
+Check your email for the download link. As a graduate, you now have 30 days of continued access and 20% off our full certification.
+
+Thank you for learning with me. Celebrate yourself today!`,
+    hasVoice: true,
+  },
+  inactive_2days: {
+    text: `Hey {{firstName}}! 👋
+
+I noticed you haven't been back to your Women's Health lessons in a couple of days.
+
+Is everything okay? Life gets busy, I totally get it!
+
+Just wanted to check in and remind you that your lessons are waiting. Each one is only about 6 minutes - perfect for a quick coffee break!
+
+If you're stuck or have any questions, just reply here. I'm always happy to help!
+
+- Sarah 💕`,
+    voiceScript: `Hey {{firstName}}! I noticed you haven't been back to your lessons in a couple of days.
+
+Is everything okay? Life gets busy, I get it! Just wanted to check in. Your lessons are waiting, and each one is only about 6 minutes.
+
+If you're stuck or have questions, just message me back. I'm here to help!`,
+    hasVoice: true,
+  },
+  inactive_3days: {
+    text: `{{firstName}}, just checking in again! 🌸
+
+It's been a few days since I've seen you in your Women's Health lessons.
+
+I know starting something new can feel overwhelming sometimes. But remember - you signed up for a reason! That curiosity about your hormones and health is worth following.
+
+You don't have to do it all at once. Just one lesson today. That's it!
+
+What do you say? Ready to jump back in?
+
+I'm rooting for you! 💪
+
+- Sarah`,
+    voiceScript: null,
+    hasVoice: false,
   },
 };
 
@@ -891,6 +999,49 @@ export async function triggerAutoMessage({
       }
       // Non-milestone lessons don't get DMs
       return;
+    }
+
+    // SPECIAL HANDLING: Women's Health access expiring DM (1 or 2 days left)
+    if (trigger === "wh_access_expiring" && triggerValue) {
+      const daysLeft = triggerValue; // "1" or "2"
+      const messageKey = daysLeft === "1" ? "access_expiring_1day" : "access_expiring_2days";
+      const whContent = WH_DM_MESSAGES[messageKey];
+      if (whContent) {
+        const sarahWH = await prisma.user.findFirst({
+          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+        });
+        const whCoachId = sarahWH?.id || coachId;
+        await sendAutoDM(userId, user.firstName || "there", whCoachId, `wh_access_expiring_${daysLeft}day`, whContent);
+        return;
+      }
+    }
+
+    // SPECIAL HANDLING: Women's Health certificate ready DM
+    if (trigger === "wh_certificate_ready") {
+      const whContent = WH_DM_MESSAGES["certificate_ready"];
+      if (whContent) {
+        const sarahWH = await prisma.user.findFirst({
+          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+        });
+        const whCoachId = sarahWH?.id || coachId;
+        await sendAutoDM(userId, user.firstName || "there", whCoachId, "wh_certificate_ready", whContent);
+        return;
+      }
+    }
+
+    // SPECIAL HANDLING: Women's Health inactive reminder DM (2 or 3 days)
+    if (trigger === "wh_inactive_reminder" && triggerValue) {
+      const daysInactive = triggerValue; // "2" or "3"
+      const messageKey = daysInactive === "2" ? "inactive_2days" : "inactive_3days";
+      const whContent = WH_DM_MESSAGES[messageKey];
+      if (whContent) {
+        const sarahWH = await prisma.user.findFirst({
+          where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+        });
+        const whCoachId = sarahWH?.id || coachId;
+        await sendAutoDM(userId, user.firstName || "there", whCoachId, `wh_inactive_${daysInactive}days`, whContent);
+        return;
+      }
     }
 
     // Handle DM triggers with voice messages

@@ -8,13 +8,14 @@ import {
   sendWHReminderDay6Email,
   sendWHExpiredEmail,
 } from "@/lib/email";
+import { triggerAutoMessage } from "@/lib/auto-messages";
 
 /**
- * CRON: Send Women's Health Mini Diploma reminder emails
+ * CRON: Send Women's Health Mini Diploma reminder emails + DMs
  *
  * Runs daily via Vercel Cron (recommended: 10 AM EST / 3 PM UTC)
  *
- * Email Sequence (7-day access):
+ * EMAIL Sequence (7-day access):
  * - Day 0: Welcome email (sent on optin, not here)
  * - Day 1: "Lesson 1 is waiting" (if 0 lessons done)
  * - Day 2: Soft nudge / "Great start!" (based on progress)
@@ -22,6 +23,11 @@ import {
  * - Day 5: Urgency - "Only 2 days left!"
  * - Day 6: FINAL - "Last chance - expires tomorrow"
  * - Day 7+: Access expired email (offer to restart or upgrade)
+ *
+ * DM Sequence:
+ * - Access expiring in 2 days: Urgency DM with voice
+ * - Access expiring in 1 day: Final DM with voice
+ * - Inactive 2-3 days: Re-engagement DM with voice
  *
  * Uses UserTag to track which reminders have been sent to avoid duplicates.
  */
@@ -37,7 +43,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("[CRON-WH-REMINDER] Starting Women's Health reminder emails...");
+    console.log("[CRON-WH-REMINDER] Starting Women's Health reminder emails + DMs...");
 
     const now = new Date();
     const results = {
@@ -48,6 +54,8 @@ export async function GET(request: NextRequest) {
       day5Sent: 0,
       day6Sent: 0,
       expiredSent: 0,
+      dmAccessExpiring: 0,
+      dmInactive: 0,
       skipped: 0,
       errors: 0,
       details: [] as string[],
@@ -70,6 +78,8 @@ export async function GET(request: NextRequest) {
         email: true,
         firstName: true,
         miniDiplomaOptinAt: true,
+        accessExpiresAt: true,
+        lastLoginAt: true,
         tags: {
           select: { tag: true, value: true },
         },
@@ -88,6 +98,16 @@ export async function GET(request: NextRequest) {
         (now.getTime() - user.miniDiplomaOptinAt.getTime()) / (24 * 60 * 60 * 1000)
       );
 
+      // Calculate days until access expires
+      const daysUntilExpiry = user.accessExpiresAt
+        ? Math.ceil((user.accessExpiresAt.getTime() - now.getTime()) / (24 * 60 * 60 * 1000))
+        : 7;
+
+      // Calculate days since last login (for inactive check)
+      const daysSinceLogin = user.lastLoginAt
+        ? Math.floor((now.getTime() - user.lastLoginAt.getTime()) / (24 * 60 * 60 * 1000))
+        : daysSinceOptin; // If never logged in, treat as inactive since optin
+
       // Get completed lessons count from tags
       const completedLessons = user.tags.filter((t) =>
         t.tag.startsWith("wh-lesson-complete:")
@@ -102,12 +122,16 @@ export async function GET(request: NextRequest) {
 
       // Check which reminders have been sent
       const sentReminders = user.tags
-        .filter((t) => t.tag.startsWith("wh-reminder-sent:"))
+        .filter((t) => t.tag.startsWith("wh-reminder-sent:") || t.tag.startsWith("wh-dm-sent:"))
         .map((t) => t.tag);
 
       const firstName = user.firstName || "there";
 
       try {
+        // ============================================
+        // EMAILS (daily based on optin day)
+        // ============================================
+
         // Day 6 reminder (final day) - HIGHEST PRIORITY
         if (daysSinceOptin >= 6 && !sentReminders.includes("wh-reminder-sent:day6")) {
           await sendWHReminderDay6Email(user.email, firstName, completedLessons);
@@ -115,55 +139,105 @@ export async function GET(request: NextRequest) {
             data: { userId: user.id, tag: "wh-reminder-sent:day6", value: now.toISOString() },
           });
           results.day6Sent++;
-          results.details.push(`${user.email}: Sent Day 6 (final day)`);
-          continue;
+          results.details.push(`${user.email}: Sent Day 6 email (final day)`);
         }
-
         // Day 5 reminder (urgency)
-        if (daysSinceOptin >= 5 && !sentReminders.includes("wh-reminder-sent:day5")) {
+        else if (daysSinceOptin >= 5 && !sentReminders.includes("wh-reminder-sent:day5")) {
           await sendWHReminderDay5Email(user.email, firstName, completedLessons);
           await prisma.userTag.create({
             data: { userId: user.id, tag: "wh-reminder-sent:day5", value: now.toISOString() },
           });
           results.day5Sent++;
-          results.details.push(`${user.email}: Sent Day 5 (urgency)`);
-          continue;
+          results.details.push(`${user.email}: Sent Day 5 email (urgency)`);
         }
-
         // Day 3 reminder (progress update)
-        if (daysSinceOptin >= 3 && !sentReminders.includes("wh-reminder-sent:day3")) {
+        else if (daysSinceOptin >= 3 && !sentReminders.includes("wh-reminder-sent:day3")) {
           await sendWHReminderDay3Email(user.email, firstName, completedLessons);
           await prisma.userTag.create({
             data: { userId: user.id, tag: "wh-reminder-sent:day3", value: now.toISOString() },
           });
           results.day3Sent++;
-          results.details.push(`${user.email}: Sent Day 3 (progress)`);
-          continue;
+          results.details.push(`${user.email}: Sent Day 3 email (progress)`);
         }
-
         // Day 2 reminder (soft nudge)
-        if (daysSinceOptin >= 2 && !sentReminders.includes("wh-reminder-sent:day2")) {
+        else if (daysSinceOptin >= 2 && !sentReminders.includes("wh-reminder-sent:day2")) {
           await sendWHReminderDay2Email(user.email, firstName, completedLessons);
           await prisma.userTag.create({
             data: { userId: user.id, tag: "wh-reminder-sent:day2", value: now.toISOString() },
           });
           results.day2Sent++;
-          results.details.push(`${user.email}: Sent Day 2 (soft nudge)`);
-          continue;
+          results.details.push(`${user.email}: Sent Day 2 email (soft nudge)`);
         }
-
         // Day 1 reminder (haven't started)
-        if (daysSinceOptin >= 1 && completedLessons === 0 && !sentReminders.includes("wh-reminder-sent:day1")) {
+        else if (daysSinceOptin >= 1 && completedLessons === 0 && !sentReminders.includes("wh-reminder-sent:day1")) {
           await sendWHReminderDay1Email(user.email, firstName);
           await prisma.userTag.create({
             data: { userId: user.id, tag: "wh-reminder-sent:day1", value: now.toISOString() },
           });
           results.day1Sent++;
-          results.details.push(`${user.email}: Sent Day 1 (not started)`);
-          continue;
+          results.details.push(`${user.email}: Sent Day 1 email (not started)`);
         }
 
-        results.skipped++;
+        // ============================================
+        // DMs: Access expiring (1-2 days left)
+        // ============================================
+        if (daysUntilExpiry === 2 && !sentReminders.includes("wh-dm-sent:expiring-2days")) {
+          await triggerAutoMessage({
+            userId: user.id,
+            trigger: "wh_access_expiring",
+            triggerValue: "2",
+          });
+          await prisma.userTag.create({
+            data: { userId: user.id, tag: "wh-dm-sent:expiring-2days", value: now.toISOString() },
+          });
+          results.dmAccessExpiring++;
+          results.details.push(`${user.email}: Sent DM - access expiring in 2 days`);
+        } else if (daysUntilExpiry === 1 && !sentReminders.includes("wh-dm-sent:expiring-1day")) {
+          await triggerAutoMessage({
+            userId: user.id,
+            trigger: "wh_access_expiring",
+            triggerValue: "1",
+          });
+          await prisma.userTag.create({
+            data: { userId: user.id, tag: "wh-dm-sent:expiring-1day", value: now.toISOString() },
+          });
+          results.dmAccessExpiring++;
+          results.details.push(`${user.email}: Sent DM - access expiring in 1 day`);
+        }
+
+        // ============================================
+        // DMs: Inactive users (haven't logged in 2-3 days)
+        // ============================================
+        // Only send if they have some progress but stopped
+        if (completedLessons > 0 && completedLessons < 9) {
+          if (daysSinceLogin === 2 && !sentReminders.includes("wh-dm-sent:inactive-2days")) {
+            await triggerAutoMessage({
+              userId: user.id,
+              trigger: "wh_inactive_reminder",
+              triggerValue: "2",
+            });
+            await prisma.userTag.create({
+              data: { userId: user.id, tag: "wh-dm-sent:inactive-2days", value: now.toISOString() },
+            });
+            results.dmInactive++;
+            results.details.push(`${user.email}: Sent DM - inactive 2 days`);
+          } else if (daysSinceLogin === 3 && !sentReminders.includes("wh-dm-sent:inactive-3days")) {
+            await triggerAutoMessage({
+              userId: user.id,
+              trigger: "wh_inactive_reminder",
+              triggerValue: "3",
+            });
+            await prisma.userTag.create({
+              data: { userId: user.id, tag: "wh-dm-sent:inactive-3days", value: now.toISOString() },
+            });
+            results.dmInactive++;
+            results.details.push(`${user.email}: Sent DM - inactive 3 days`);
+          }
+        }
+
+        if (!results.details.some(d => d.startsWith(user.email))) {
+          results.skipped++;
+        }
       } catch (error) {
         results.errors++;
         const errMsg = error instanceof Error ? error.message : "Unknown error";
@@ -248,6 +322,8 @@ export async function GET(request: NextRequest) {
       day5Sent: results.day5Sent,
       day6Sent: results.day6Sent,
       expiredSent: results.expiredSent,
+      dmAccessExpiring: results.dmAccessExpiring,
+      dmInactive: results.dmInactive,
       skipped: results.skipped,
       errors: results.errors,
     });
