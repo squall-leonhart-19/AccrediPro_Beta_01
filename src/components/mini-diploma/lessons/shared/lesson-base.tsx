@@ -206,6 +206,15 @@ export function LessonBase({
 
         const style = msg.systemStyle || 'info';
 
+        // Helper to render text with **bold** markers
+        const renderTextWithBold = (text: string) => {
+            if (!text.includes('**')) return text;
+            const parts = text.split(/\*\*/);
+            return parts.map((part, j) =>
+                j % 2 === 1 ? <strong key={j} className="font-semibold">{part}</strong> : part
+            );
+        };
+
         return (
             <div className={`rounded-2xl p-5 border-2 ${bgStyles[style]} mx-2 my-1`}>
                 <div className="flex items-start gap-3">
@@ -221,13 +230,13 @@ export function LessonBase({
                             } else if (line.startsWith('•') || line.startsWith('✓')) {
                                 return (
                                     <p key={i} className="text-slate-700 text-sm ml-1 mb-1.5">
-                                        {line}
+                                        {renderTextWithBold(line)}
                                     </p>
                                 );
                             } else if (line.startsWith('→')) {
                                 return (
                                     <p key={i} className="text-slate-500 text-sm font-medium mt-2">
-                                        {line}
+                                        {renderTextWithBold(line)}
                                     </p>
                                 );
                             } else if (line.includes('**')) {
