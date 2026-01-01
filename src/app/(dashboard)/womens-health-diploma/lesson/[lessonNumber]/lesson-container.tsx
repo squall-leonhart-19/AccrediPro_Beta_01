@@ -56,7 +56,7 @@ export function WomensHealthLessonContainer({
       // Go to next lesson
       router.push(`/womens-health-diploma/lesson/${lessonNumber + 1}`);
     } else {
-      // Final lesson - go to completion page with Trustpilot review request
+      // Final lesson - handleComplete is awaited before this is called
       router.push("/womens-health-diploma/complete");
     }
   };

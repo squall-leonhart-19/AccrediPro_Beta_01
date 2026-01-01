@@ -176,8 +176,8 @@ export function LessonBase({
         }, currentChoiceMsg.showReaction ? 800 : 300);
     };
 
-    const handleComplete = () => {
-        onComplete?.();
+    const handleComplete = async () => {
+        await onComplete?.();
         onNext?.();
     };
 
