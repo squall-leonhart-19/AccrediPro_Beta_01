@@ -11,6 +11,64 @@ const COURSE_SLUGS: Record<string, string> = {
     "functional-medicine": "fm-mini-diploma",
 };
 
+// Coach emails by mini diploma type
+const COACH_EMAILS: Record<string, string> = {
+    "womens-health": "sarah_womenhealth@accredipro-certificate.com",
+    "functional-medicine": "sarah@accredipro-certificate.com",
+};
+
+// Welcome messages by mini diploma type
+const WELCOME_MESSAGES: Record<string, { text: (firstName: string) => string; voiceScript: (firstName: string) => string }> = {
+    "womens-health": {
+        text: (firstName: string) => `Hey ${firstName}! 💕
+
+Welcome to your Women's Health Mini Diploma! I'm Sarah, and I'll be guiding you through this journey.
+
+I'm SO excited you're here to learn about women's hormones and health! This is going to change how you understand your body.
+
+Here's what's waiting for you:
+
+✨ 9 interactive lessons (about 60 minutes total)
+✨ Everything from hormones to nutrition to life stages
+✨ A certificate when you complete!
+
+The lessons are designed like a chat with me - you'll get to respond and engage as we go. It makes learning so much more fun!
+
+I've helped hundreds of women understand their bodies better, and I can't wait to share this knowledge with you.
+
+Ready to start? Head to Lesson 1 and let's dive in!
+
+Talk soon,
+Sarah 🌸`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah! Welcome to your Women's Health Mini Diploma! I'm so excited you're here. Over the next 9 lessons, I'm going to teach you everything about women's hormones and health. Head to Lesson 1 when you're ready and let's get started! Talk soon!`,
+    },
+    "functional-medicine": {
+        text: (firstName: string) => `Hey ${firstName}! 💕
+
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+
+Welcome! This is the start of something special, and I'm SO excited you're here!
+
+Inside your dashboard you'll find:
+
+✨ Your certification ready to start
+✨ Your Roadmap showing where you're headed
+✨ Direct access to message me anytime
+
+I know you might be wondering if this is really for you... maybe feeling a mix of excited and nervous? I felt the exact same way when I started!
+
+But here's what I know: you signed up for a reason. Something inside you said YES to this. Let's find out what that is together.
+
+Hit reply anytime - tell me a little about yourself! What brought you here? What's your "why"?
+
+I'm here for you every step of the way!
+
+Talk soon,
+Sarah ✨`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions - - Talk soon ${firstName}!.`,
+    },
+};
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -123,6 +181,12 @@ export async function POST(request: NextRequest) {
         const accessExpiresAt = new Date();
         accessExpiresAt.setDate(accessExpiresAt.getDate() + 7);
 
+        // Find the appropriate coach for this mini diploma
+        const coachEmail = COACH_EMAILS[course];
+        const coach = coachEmail ? await prisma.user.findUnique({
+            where: { email: coachEmail },
+        }) : null;
+
         // Create user and enrollment in transaction
         const user = await prisma.user.create({
             data: {
@@ -138,6 +202,7 @@ export async function POST(request: NextRequest) {
                 miniDiplomaCategory: course,
                 miniDiplomaOptinAt: new Date(),
                 accessExpiresAt,
+                assignedCoachId: coach?.id || null,
                 enrollments: {
                     create: {
                         courseId: courseData.id,
@@ -146,6 +211,50 @@ export async function POST(request: NextRequest) {
                 },
             },
         });
+
+        // Send welcome message from the appropriate Sarah coach
+        if (coach) {
+            const welcomeContent = WELCOME_MESSAGES[course];
+            if (welcomeContent) {
+                try {
+                    // Create text welcome message
+                    await prisma.message.create({
+                        data: {
+                            senderId: coach.id,
+                            receiverId: user.id,
+                            content: welcomeContent.text(firstName.trim()),
+                            messageType: "DIRECT",
+                        },
+                    });
+
+                    // Schedule voice message (will be processed by cron)
+                    await prisma.scheduledVoiceMessage.create({
+                        data: {
+                            senderId: coach.id,
+                            receiverId: user.id,
+                            voiceText: welcomeContent.voiceScript(firstName.trim()),
+                            textContent: `🎤 Voice message from Sarah`,
+                            scheduledFor: new Date(Date.now() + 30 * 1000), // 30 seconds later
+                            status: "PENDING",
+                        },
+                    });
+
+                    // Create notification
+                    await prisma.notification.create({
+                        data: {
+                            userId: user.id,
+                            type: "NEW_MESSAGE",
+                            title: "Welcome message from Sarah! 🎤",
+                            message: "Sarah has sent you a personal welcome message",
+                            data: { senderId: coach.id },
+                        },
+                    });
+                } catch (msgError) {
+                    console.error("Failed to send welcome message:", msgError);
+                    // Don't fail the registration if messaging fails
+                }
+            }
+        }
 
         // TODO: Send welcome email with login details
         // await sendWelcomeEmail(email, firstName, LEAD_PASSWORD);
