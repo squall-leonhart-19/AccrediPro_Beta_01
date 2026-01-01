@@ -268,13 +268,12 @@ export default async function WomensHealthDiplomaPage() {
                 Congratulations! 🎉
               </h2>
               <p className="text-burgundy-200 mb-6 max-w-md mx-auto">
-                You've completed all 9 lessons and earned your Women's Health Mini Diploma!
-                Your certificate is ready to download.
+                You&apos;ve completed all 9 lessons! Your certificate will be emailed to you within 24-48 hours after you complete the final step.
               </p>
-              <Link href="/certificates">
+              <Link href="/womens-health-diploma/complete">
                 <Button size="lg" className="bg-white text-burgundy-600 hover:bg-burgundy-50 font-bold shadow-lg">
                   <Award className="w-5 h-5 mr-2" />
-                  Download Your Certificate
+                  Claim Your Certificate
                 </Button>
               </Link>
             </CardContent>
@@ -424,13 +423,17 @@ export default async function WomensHealthDiplomaPage() {
           <CardContent className="p-5">
             <div className="flex items-center gap-4">
               <div className="relative flex-shrink-0">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-burgundy-400 to-burgundy-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                  S
-                </div>
+                <Image
+                  src="/coaches/sarah-coach.webp"
+                  alt="Sarah"
+                  width={56}
+                  height={56}
+                  className="w-14 h-14 rounded-full object-cover shadow-lg"
+                />
                 <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900">Questions? I'm here to help!</h3>
+                <h3 className="font-semibold text-gray-900">Questions? I&apos;m here to help!</h3>
                 <p className="text-gray-600 text-sm">
                   Send me a message anytime
                 </p>

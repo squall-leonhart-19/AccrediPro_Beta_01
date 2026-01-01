@@ -72,7 +72,7 @@ export function CompletionContent({
                             </li>
 
                             <li className="pl-1">
-                                <strong className="text-[#2D6A4F]">Step 2:</strong> Send me a quick message on <strong>Heartbeat</strong> that says:
+                                <strong className="text-[#2D6A4F]">Step 2:</strong> Send me a quick message in our <strong>private chat</strong> that says:
                                 <br />
                                 <em>&quot;Review left ✅&quot;</em>
                                 <br />
