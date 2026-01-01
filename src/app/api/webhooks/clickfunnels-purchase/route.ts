@@ -466,20 +466,16 @@ export async function POST(request: NextRequest) {
         }
 
         // =====================================================
-        // 3. SEND WELCOME EMAIL (with deduplication)
+        // 3. SEND WELCOME EMAIL (with deduplication via UserTag)
         // =====================================================
 
-        // Check for recent webhook to prevent duplicate emails
-        const recentWebhook = await prisma.webhookEvent.findFirst({
-            where: {
-                eventType: "clickfunnels.purchase",
-                processedAt: { gte: new Date(Date.now() - 5 * 60 * 1000) }, // Last 5 minutes
-                payload: { path: ["_processed", "email"], equals: normalizedEmail },
-            },
+        // Check if welcome email already sent using tag (reliable deduplication)
+        const alreadySentWelcome = await prisma.userTag.findUnique({
+            where: { userId_tag: { userId: user.id, tag: "welcome_email_sent" } },
         });
 
-        if (recentWebhook && !isNewUser) {
-            console.log(`[CF Purchase] ⏭️ Skipping duplicate email for ${normalizedEmail} (recent webhook found)`);
+        if (alreadySentWelcome) {
+            console.log(`[CF Purchase] ⏭️ Welcome email already sent to ${normalizedEmail}, skipping`);
         } else {
             try {
                 // Verify email with NeverBounce before sending
@@ -492,6 +488,10 @@ export async function POST(request: NextRequest) {
                     console.log(`[CF Purchase] ✅ Email verified (${emailVerification.result}), sending welcome email to ${normalizedEmail}...`);
                     const emailResult = await sendWelcomeEmail(normalizedEmail, firstName || "Student");
                     if (emailResult.success) {
+                        // Mark welcome email as sent
+                        await prisma.userTag.create({
+                            data: { userId: user.id, tag: "welcome_email_sent", value: new Date().toISOString() },
+                        });
                         console.log(`[CF Purchase] ✅ Welcome email sent successfully`);
                     } else {
                         console.error(`[CF Purchase] ❌ Welcome email failed:`, emailResult.error);

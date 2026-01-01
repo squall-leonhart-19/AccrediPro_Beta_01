@@ -589,12 +589,23 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 3. Send welcome email (for all purchases - new and existing users need login info)
-    try {
-      await sendWelcomeEmail(user.email!, user.firstName || "Student");
-      console.log(`Sent welcome email to ${normalizedEmail}`);
-    } catch (emailError) {
-      console.error("Failed to send welcome email:", emailError);
+    // 3. Send welcome email (only once - check tag first to prevent duplicates)
+    const alreadySentWelcome = await prisma.userTag.findUnique({
+      where: { userId_tag: { userId: user.id, tag: "welcome_email_sent" } },
+    });
+
+    if (!alreadySentWelcome) {
+      try {
+        await sendWelcomeEmail(user.email!, user.firstName || "Student");
+        await prisma.userTag.create({
+          data: { userId: user.id, tag: "welcome_email_sent", value: new Date().toISOString() },
+        });
+        console.log(`Sent welcome email to ${normalizedEmail}`);
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
+      }
+    } else {
+      console.log(`[Dedup] Welcome email already sent to ${normalizedEmail}, skipping`);
     }
 
     // 4. Send Purchase event to Meta CAPI
