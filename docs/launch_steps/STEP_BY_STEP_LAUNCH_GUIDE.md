@@ -267,3 +267,142 @@ Add to `src/app/api/webhooks/clickfunnels-purchase/route.ts`:
 ```
 
 > ✅ **HN Pro mapping added** - Dec 29, 2025
+
+---
+
+## 🤖 AUTOMATION ARCHITECTURE (Master Plan)
+
+### Phase 1: Purchase Flow (✅ IMPLEMENTED)
+
+```
+ClickFunnels Purchase
+        ↓
+1. ✅ Create/find user (password: Futurecoach2025)
+2. ✅ Add purchase tag (e.g., fm_certification_purchased)
+3. ✅ Enroll in course(s)
+4. ✅ NeverBounce verify email
+5. ✅ Send welcome email
+6. ✅ Send enrollment email
+7. ✅ Fire Meta CAPI Purchase event
+8. ✅ Auto-DM: Sarah intro (0 min)
+9. ✅ Auto-DM: Coach follow-up (+5 min)
+```
+
+---
+
+### Niche → Coach Mapping (✅ IMPLEMENTED)
+
+**File:** `src/config/niches/index.ts`
+
+| Niche Code | Certification | Assigned Coach | Pixel |
+|------------|---------------|----------------|-------|
+| FM | Functional Medicine | Sarah | fm-health |
+| WH | Women's Hormone Health | Sarah | fm-health |
+| IM | Integrative Medicine | Sarah | fm-health |
+| HN | Holistic Nutrition | Sarah | fm-health |
+| NR | Narcissistic Recovery | Olivia | mental-health |
+| ND | Neurodiversity | Olivia | mental-health |
+| GL | Grief & Loss | Olivia | mental-health |
+| LC | Life Coaching | Marcus | life-coaching |
+| SE | Spiritual Energy | Luna | spiritual |
+| SI | Sex & Intimacy | Luna | spiritual |
+| HB | Herbalism | Sage | herbalism |
+| TM | Therapy Modalities | Maya | yoga-movement |
+| PW | Pet Wellness | Bella | pet-wellness |
+| FB | Fertility & Birth | Emma | parenting |
+| PC | Parenting Coach | Emma | parenting |
+| CF | Christian Faith | Grace | faith |
+
+---
+
+### DM Templates (✅ IMPLEMENTED)
+
+**File:** `docs/messaging/DM_TEMPLATES.md`
+
+| Template | Sent At | Contains |
+|----------|---------|----------|
+| Sarah Intro | 0 min | Welcome + assigns coach + income proof |
+| Coach Follow-up | +5 min | Personal intro + story ask + income goal question |
+
+**Income Messaging by Niche:**
+- Life Coaching: $10K-$25K/month
+- Business: $10K-$30K/month
+- FM/Health: $8K-$20K/month
+- Mental Health: $6K-$15K/month
+
+---
+
+### Tag System
+
+| Tag Type | Format | Example |
+|----------|--------|---------|
+| **Purchase** | `[slug]_purchased` | `fm_certification_purchased` |
+| **Suppression** | `suppress_[reason]` | `suppress_bounced`, `suppress_complained` |
+| **Lifecycle** | descriptive | `welcome_email_sent`, `certificate_earned` |
+
+---
+
+### Email Deliverability (✅ IMPLEMENTED)
+
+**Smart Email Recovery System:**
+
+| Feature | Status |
+|---------|--------|
+| NeverBounce verification on signup | ✅ |
+| AI typo detection on bounce | ✅ |
+| Auto-fix valid suggestions | ✅ |
+| Admin UI at `/admin/email-issues` | ✅ |
+| Hard bounce suppression | ✅ |
+| Spam complaint suppression | ✅ |
+
+---
+
+### Phase 2: Lifecycle Automation (🟡 PENDING)
+
+| Step | Timing | What Happens | Status |
+|------|--------|--------------|--------|
+| Day 3 Reminder | +72h | "How's Module 1 going?" | ❌ |
+| Day 7 Check-in | +168h | "1 week in! Progress check" | ❌ |
+| Day 14 Motivation | +336h | "Halfway there!" | ❌ |
+| Day 30 Push | +720h | "Time to finish + certificate!" | ❌ |
+| Inactivity Nudge | 5 days no login | "Haven't seen you..." | ❌ |
+| Certificate Congrats | On completion | "You did it! + upsell" | ❌ |
+
+---
+
+### Phase 3: Community Automation (❌ PENDING)
+
+| Feature | Status |
+|---------|--------|
+| Auto-join coach's community group | ❌ |
+| Welcome post on join | ❌ |
+| Milestone celebrations | ❌ |
+
+---
+
+## 📋 Launch Checklist (Per Niche)
+
+**Before Launch:**
+- [ ] Course content generated (21 modules L1 + 20 modules L2-L4)
+- [ ] Course imported to database
+- [ ] Course thumbnails generated
+- [ ] Sales page created
+- [ ] ClickFunnels product created with correct SKU
+- [ ] Webhook URL configured: `https://sarah.accredipro.academy/api/webhooks/clickfunnels-purchase`
+- [ ] Pixel configured with correct category
+- [ ] Product mapping added to `route.ts` (if new keywords needed)
+
+**Automatic (No Setup Needed):**
+- ✅ User account creation
+- ✅ Course enrollment
+- ✅ Welcome + enrollment emails
+- ✅ Sarah intro DM (0 min)
+- ✅ Coach follow-up DM (+5 min)
+- ✅ Meta CAPI purchase event
+- ✅ NeverBounce email verification
+- ✅ Bounce recovery AI
+
+---
+
+**Last Updated:** Jan 2, 2026
+
