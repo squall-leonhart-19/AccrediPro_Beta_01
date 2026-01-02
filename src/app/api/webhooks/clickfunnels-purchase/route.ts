@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { sendWelcomeEmail } from "@/lib/email";
 import { verifyEmail } from "@/lib/neverbounce";
+import { sendPurchaseDMs } from "@/lib/auto-dm-service";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 
 /**
@@ -522,6 +523,25 @@ export async function POST(request: NextRequest) {
             } catch (enrollError) {
                 console.error("[CF Purchase] Failed to send enrollment email:", enrollError);
             }
+        }
+
+        // =====================================================
+        // 4A. SEND AUTOMATED COACH DMS (Sarah intro + Coach follow-up)
+        // =====================================================
+
+        try {
+            const dmResult = await sendPurchaseDMs({
+                userId: user.id,
+                firstName: firstName || "there",
+                courseSlug: courseSlug,
+            });
+            if (dmResult) {
+                console.log(`[CF Purchase] ✅ Auto-DMs triggered (Sarah now, Coach in 5 min)`);
+            } else {
+                console.log(`[CF Purchase] ⏭️ Auto-DMs skipped (niche not found or already sent)`);
+            }
+        } catch (dmError) {
+            console.error("[CF Purchase] Failed to send auto-DMs:", dmError);
         }
 
         // =====================================================
