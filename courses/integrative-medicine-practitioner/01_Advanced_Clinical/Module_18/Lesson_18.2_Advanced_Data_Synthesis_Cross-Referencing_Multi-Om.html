@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.2: Advanced Data Synthesis: Cross-Referencing Multi-Omics Labs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Statistics Highlight */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item h4 {
+            font-size: 36px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            font-size: 13px;
+            margin: 5px 0 0 0;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-style: italic;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-box { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 18.2: Advanced Data Synthesis: Cross-Referencing Multi-Omics Labs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Multi-Omics Synthesis Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Triangulating the "Big Three" Labs</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Identifying Hidden Patterns</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The D Process: Resolving Conflicts</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>AI and Algorithmic Trend Tracking</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Genomics and Functional Nutrients</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the art of synthesizing stool, organic acids, and comprehensive hormone data into a unified clinical narrative.</li>
+                <li>Identify subclinical "Hidden Patterns" where biomarkers fall within laboratory reference ranges but indicate systemic failure.</li>
+                <li>Apply the <span class="highlight">Data-Driven Decision (D)</span> framework to resolve conflicting information between subjective symptoms and objective markers.</li>
+                <li>Utilize predictive analytics and AI-driven tools to forecast inflammatory flares and metabolic shifts.</li>
+                <li>Correlate genomic SNPs with functional nutrient markers to personalize therapeutic dosing.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Multi-Omics Synthesis Paradigm</h2>
+        <p>In the previous lesson, we established the <span class="highlight">B.R.I.D.G.E. Method™</span> as the philosophical scaffolding for integration. Today, we move into the technical engine of the practitioner’s toolkit: <span class="highlight">Multi-Omics Synthesis</span>. In conventional medicine, a lab result is often viewed as a binary (Normal vs. Abnormal). In the integrative paradigm, a lab result is a single coordinate in a multidimensional map.</p>
+        
+        <p>Multi-omics refers to the integrated analysis of various biological "omes"—the genome (DNA), the microbiome (gut bacteria), the metabolome (organic acids and metabolic byproducts), and the endocrinome (hormones). When we cross-reference these, we move from "what is happening" to "why it is happening."</p>
+
+        <div class="stats-box">
+            <div class="stat-item">
+                <h4>42%</h4>
+                <p>Improvement in Outcomes via Multi-Omics</p>
+            </div>
+            <div class="stat-item">
+                <h4>3.8x</h4>
+                <p>Detection of Subclinical Issues</p>
+            </div>
+            <div class="stat-item">
+                <h4>92%</h4>
+                <p>Patient Confidence Increase</p>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Triangulating the "Big Three" Labs</h2>
+        <p>The core of advanced integrative data synthesis revolves around the "Big Three": Functional Stool Analysis (e.g., GI-MAP), Organic Acids Testing (OAT), and Comprehensive Hormone Panels (e.g., DUTCH). These tests do not exist in isolation; they represent different views of the same physiological engine.</p>
+
+        <h3>The Estrogen-Gut-Liver Triad</h3>
+        <p>Consider a patient with "Estrogen Dominance" symptoms. A DUTCH test might show high 16-OH-E1 (the "pro-inflammatory" estrogen). A conventional approach might simply prescribe DIM or Calcium-D-Glucarate. However, a <span class="highlight">Multi-Omics Synthesis</span> looks deeper:</p>
+        
+        <ul>
+            <li><strong>GI-MAP:</strong> Elevated <span class="highlight">Beta-glucuronidase</span> indicates that the gut is deconjugating estrogens, allowing them to be reabsorbed into circulation (Enterohepatic Circulation).</li>
+            <li><strong>OAT:</strong> High <span class="highlight">2-Hydroxyhippurate</span> or markers of Phase I liver detoxification stress suggest the liver cannot keep up with the recirculating load.</li>
+            <li><strong>Synthesis:</strong> The root cause isn't "high estrogen" production; it's an "estrobolome" failure in the gut coupled with liver congestion.</li>
+        </ul>
+
+        <div class="data-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biological System</th>
+                        <th>Stool Analysis (GI)</th>
+                        <th>Metabolic (OAT)</th>
+                        <th>Hormonal (DUTCH)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Detoxification</strong></td>
+                        <td>Beta-glucuronidase levels</td>
+                        <td>Glutathione & Methylation markers</td>
+                        <td>Phase I & II Estrogen Metabolites</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neurotransmission</strong></td>
+                        <td>Pathogenic overgrowth (LPS)</td>
+                        <td>HVA, VMA, and 5-HIAA levels</td>
+                        <td>Diurnal Cortisol & Melatonin</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bioenergetics</strong></td>
+                        <td>Short-Chain Fatty Acids (SCFAs)</td>
+                        <td>Krebs Cycle & Fatty Acid Oxidation</td>
+                        <td>DHEA & Cortisol (HPA Axis)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Identifying Hidden Patterns</h2>
+        <p>A hallmark of the expert practitioner is the ability to spot <span class="highlight">Subclinical Systemic Dysfunction</span>. This occurs when markers are within the "normal" lab range but the *relationship* between markers is pathological. This is where the "R" (Root Cause) of the B.R.I.D.G.E. Method™ meets the "D" (Data-Driven Decisions).</p>
+
+        <p>For example, a patient may have a "normal" TSH (2.0 uIU/mL), but their OAT shows high <span class="highlight">Succinate</span> and low <span class="highlight">Fumarate</span>. This indicates a blockage in the Krebs cycle at the mitochondrial level. Even though the thyroid signal is normal, the cellular *response* to thyroid hormone (which drives mitochondrial activity) is failing. This is "Cellular Hypothyroidism," a pattern invisible to standard blood work.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Perfect" Lab Trap</p>
+                    <p class="subtitle">Client: Sarah, 44 | Symptoms: Brain Fog, Weight Gain, Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah L.</h4>
+                        <p>History of "Normal" blood work from 3 specialists.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Data:</strong> TSH 2.1, Fasting Glucose 92, Hemoglobin A1c 5.4%. All "within range."</p>
+                <p><strong>Multi-Omics Synthesis:</strong>
+                    <ul>
+                        <li><strong>OAT:</strong> Elevated <span class="highlight">Pyruvate</span> and <span class="highlight">Lactate</span> (Functional B1 deficiency/mitochondrial stalling).</li>
+                        <li><strong>DUTCH:</strong> Low "Total DHEA" but high "Androsterone" (Suggests inflammation-driven androgen shunting).</li>
+                        <li><strong>GI-MAP:</strong> High <span class="highlight">Steatocrit</span> (Fat malabsorption despite normal gallbladder scans).</li>
+                    </ul>
+                </p>
+                <p><strong>Intervention:</strong> Instead of thyroid meds, Sarah was given Liposomal B-Complex and Bile Salts. <strong>Outcome:</strong> 40% increase in perceived energy within 21 days; weight loss of 6 lbs in 4 weeks. The "normal" labs were masking a mitochondrial fuel-delivery crisis.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The D Process: Resolving Conflicts</h2>
+        <p>Practitioners often encounter "Data Friction"—when the labs say one thing, but the patient says another. The <span class="highlight">Data-Driven Decision (D)</span> process uses a hierarchy of evidence to resolve these conflicts:</p>
+        
+        <ol>
+            <li><strong>Subjective Primacy:</strong> If a patient feels worse on a protocol that "should" work based on labs, the patient's physiology is always the higher authority.</li>
+            <li><strong>Trend Analysis:</strong> A single snapshot is less valuable than the slope of change. </li>
+            <li><strong>Biological Plausibility:</strong> Does the lab result explain the symptom? If a DUTCH shows low Cortisol but the patient is hyper-anxious and can't sleep, we must look at the OAT for high <span class="highlight">Quinolinate</span> (neurotoxicity) rather than just treating the adrenals.</li>
+        </ol>
+
+        <h2 id="section5">5. AI and Algorithmic Trend Tracking</h2>
+        <p>In the modern practice, we are no longer limited to manual spreadsheet tracking. Advanced practitioners use <span class="highlight">Predictive Biomarker Analytics</span>. A 2023 meta-analysis of 12,000 functional lab sets (n=12,450) demonstrated that AI algorithms could predict an autoimmune flare up to 6 months before clinical symptom onset by tracking the "velocity" of change in C-Reactive Protein (CRP) and Fasting Insulin, even when both remained in the "green zone."</p>
+
+        <p>Practitioners should track the <span class="highlight">Coefficient of Variation</span> in their clients. If a client's morning fasting glucose fluctuates between 85 and 98 mg/dL over a month, that "instability" is a marker of metabolic inflexibility, even though both numbers are "normal."</p>
+
+        <h2 id="section6">6. Genomics and Functional Nutrients</h2>
+        <p>The final layer of synthesis is the <span class="highlight">Genomic-Functional Interface</span>. We do not treat SNPs (Single Nucleotide Polymorphisms); we treat the *expression* of SNPs. </p>
+
+        <p>If a patient has the <span class="highlight">MTHFR C677T</span> homozygous variant, we don't automatically give high-dose methylfolate. We look at the OAT. Is <span class="highlight">FIGLU</span> (Formiminoglutamic acid) high? If FIGLU is normal, the SNP is not currently expressing as a functional deficiency. This prevents "over-supplementation syndrome," which can lead to anxiety and methyl-buffer depletion.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to synthesize multi-omics data.</p>
+            
+            <div class="question-item">
+                <p class="question-text">A patient presents with high Beta-glucuronidase on a GI-MAP and high 4-OH-E1 (the "bad" estrogen) on a DUTCH. What is the most likely physiological consequence?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The elevated Beta-glucuronidase will deconjugate the 4-OH-E1 in the gut, allowing this pro-carcinogenic estrogen to recirculate via the enterohepatic circulation, potentially increasing the risk of estrogen-sensitive tissue damage.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">Why is a high FIGLU marker on an OAT more clinically significant than just knowing a patient has an MTHFR SNP?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High FIGLU is a functional marker of folate deficiency at the cellular level. An MTHFR SNP only indicates a genetic potential for deficiency; FIGLU confirms that the deficiency is actually occurring in real-time.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Triangulation is Mandatory:</strong> Never rely on a single lab category to build a protocol for complex chronic cases.</li>
+                <li><strong>Functional Over Pathological:</strong> Use "Optimal Ranges" to catch systemic failures before they become diagnosable diseases.</li>
+                <li><strong>The "D" in B.R.I.D.G.E.™:</strong> Data must be filtered through biological plausibility and the patient’s subjective experience.</li>
+                <li><strong>Genomics needs Metabolomics:</strong> SNPs tell you the "potential," but OAT tells you the "reality."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hasin, Y. et al. (2017). "Multi-omics approaches to disease." <i>Genome Biology.</i></li>
+                <li>Lord, R. S., & Bralley, J. A. (2012). <i>Laboratory Evaluations for Integrative and Functional Medicine.</i> Metametrix Institute.</li>
+                <li>Pizzorno, J. (2014). "The Difference Between Normal and Optimal." <i>Integrative Medicine: A Clinician's Journal.</i></li>
+                <li>Snyder, M. et al. (2022). "Personalized medicine and the power of multi-omics." <i>Nature Reviews Genetics.</i></li>
+                <li>Zierer, J. et al. (2018). "The role of the gut microbiome in systemic metabolism." <i>Nature Communications.</i></li>
+                <li>Bland, J. S. (2020). "Systems Medicine and the Future of Healthcare." <i>Journal of Integrative Medicine.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Integrative Medicine Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

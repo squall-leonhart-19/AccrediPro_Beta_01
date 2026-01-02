@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.5: Digital Program Development & Hybrid Models</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #fdfafb;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Intimacy */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f1c40f, #d4af37);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #d4af37;
+        }
+
+        /* Content Styles */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #f3e8ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #4c1d95;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4af37;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f3e8ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: #ffffff;
+            border-left: 5px solid #7c3aed;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development & Scaling</p>
+            <h1 class="lesson-title">Lesson 5: Digital Program Development & Hybrid Models</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#digital-transformation"><span class="section-num">1</span>Digitalizing the I.N.T.I.M.A.T.E. Method™</a></li>
+                <li><a href="#lms-ux"><span class="section-num">2</span>LMS Selection & Intimate UX</a></li>
+                <li><a href="#hybrid-models"><span class="section-num">3</span>The Hybrid Mastery Model</a></li>
+                <li><a href="#gamification"><span class="section-num">4</span>Gamification & Pleasure Capacity</a></li>
+                <li><a href="#security"><span class="section-num">5</span>Security & Privacy Protocols</a></li>
+                <li><a href="#scaling"><span class="section-num">6</span>Scalability & Revenue Architecture</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Translate the somatic and emotional components of the I.N.T.I.M.A.T.E. Method™ into high-impact digital modules.</li>
+                <li>Evaluate and select a Learning Management System (LMS) that prioritizes client psychological safety and data privacy.</li>
+                <li>Design a hybrid coaching structure that balances high-margin 1-on-1 sessions with scalable digital automation.</li>
+                <li>Implement gamification strategies to drive engagement during the "Transform" and "Expand" phases of the coaching arc.</li>
+                <li>Establish advanced security measures to protect sensitive sexual wellness content and client identities.</li>
+            </ul>
+        </div>
+
+        <h2 id="digital-transformation">1. The Digital Transformation: Translating Intimacy</h2>
+        <p>The transition from a 1-on-1 clinical or coaching setting to a digital environment requires more than just recording videos. In sexual wellness coaching, we are dealing with high levels of <span class="highlight">vulnerability, shame, and somatic experience</span>. Moving the <strong>I.N.T.I.M.A.T.E. Connection Method™</strong> online involves architecting a digital "container" that feels as safe as your coaching room.</p>
+
+        <p>When digitalizing the framework, you must consider the "Somatic Gap"—the lack of physical presence. To bridge this, digital programs must leverage <span class="highlight">high-fidelity audio for guided meditations</span> (The Mindful Presence phase) and interactive workbooks for the "Investigate" phase. A 2022 study by Beattie et al. found that digital sexual health interventions were most effective when they incorporated <strong>multimodal delivery</strong> (video, audio, and reflective journaling) rather than text-only formats.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Digital I.N.T.I.M.A.T.E. Translation</div>
+            <p class="principle-text">
+                <strong>Investigate:</strong> Interactive digital assessments and automated "Sexual Script" discovery tools.<br>
+                <strong>Normalize:</strong> Video libraries of diverse experiences and statistical data visualizations.<br>
+                <strong>Trust:</strong> Onboarding sequences focused on digital safety and boundary setting.<br>
+                <strong>Ignite:</strong> High-production sensory awakening guides and desire-mapping tools.
+            </p>
+        </div>
+
+        <h2 id="lms-ux">2. LMS Selection and User Experience (UX)</h2>
+        <p>Your choice of Learning Management System (LMS) is the digital equivalent of your office decor. For intimacy coaching, the UX must be <span class="highlight">minimalist, non-distracting, and deeply private</span>. Platforms like Kajabi, Mighty Networks, or specialized HIPAA-compliant portals (like Quenza) offer different strengths.</p>
+
+        <p>Key UX requirements for sexual wellness programs include:</p>
+        <ul>
+            <li><strong>Discreet Access:</strong> Mobile apps that don't display explicit titles on the home screen.</li>
+            <li><strong>Progress Continuity:</strong> Clients should be able to pause a somatic exercise and return exactly where they left off.</li>
+            <li><strong>Community Isolation:</strong> If including a community element, ensure it is hosted on a private server, not a Facebook group, to protect client anonymity.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">74%</div>
+                    <div class="stat-label">Client Retention via Mobile Apps</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Engagement with Video vs. Text</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">88%</div>
+                    <div class="stat-label">Privacy Concern Rating</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="hybrid-models">3. Hybrid Coaching Models: The Scalability Gold Standard</h2>
+        <p>The <span class="highlight">Hybrid Model</span> is the most profitable and effective structure for a Level 3 coach. It combines the scalability of digital courses with the high-impact transformation of 1-on-1 sessions. In this model, the "Investigate" and "Normalize" phases are often handled via pre-recorded modules, while the "Transform" and "Expand" phases involve direct coaching.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Pure Digital (DIY)</th>
+                        <th>Hybrid Model</th>
+                        <th>High-Touch 1-on-1</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Scalability</strong></td>
+                        <td>Infinite</td>
+                        <td>Moderate-High</td>
+                        <td>Low</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Results</strong></td>
+                        <td>Variable (20-30% completion)</td>
+                        <td>High (70-85% completion)</td>
+                        <td>Very High</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price Point</strong></td>
+                        <td>$197 - $497</td>
+                        <td>$997 - $2,997</td>
+                        <td>$5,000+</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time Commitment</strong></td>
+                        <td>Passive</td>
+                        <td>4-6 hours/month per cohort</td>
+                        <td>Weekly sessions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Hybrid Pivot</p>
+                    <p class="subtitle">Scaling Intimacy for Busy Professionals</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 45</h4>
+                        <p>Presenting: Performance anxiety and loss of libido in a 15-year marriage.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> Marcus enrolled in a 12-week Hybrid program. He watched "Normalize" and "Trust" modules on his commute. Every two weeks, he had a 45-minute "Mastery Session" to discuss the somatic "Ignite" exercises he was practicing with his wife.</p>
+                <p><strong>Outcome:</strong> By moving the foundational education to digital modules, the coach spent 100% of the live time on high-level emotional processing. Marcus reported a 60% increase in sexual confidence (measured via IIEF-5) within 8 weeks, while the coach's time-per-client decreased by 50%.</p>
+            </div>
+        </div>
+
+        <h2 id="gamification">4. Gamification of Intimacy and Pleasure</h2>
+        <p>Gamification is not about making sex a "game," but about using <span class="highlight">dopaminergic reinforcement</span> to help clients overcome the resistance inherent in trauma-informed work. When clients reach the "Expand" phase of the I.N.T.I.M.A.T.E. Method™, their goal is to increase pleasure capacity—a process that requires consistent practice.</p>
+
+        <p>Effective gamification elements in sexual wellness include:</p>
+        <ul>
+            <li><strong>Pleasure Streaks:</strong> Tracking daily mindful presence or sensory focus exercises.</li>
+            <li><strong>Milestone Badges:</strong> Unlocking "The Art of Attunement" badge after completing the Module 6 exercises.</li>
+            <li><strong>Progress Visualization:</strong> A "Pleasure Map" that fills in with color as the client explores different sensory zones.</li>
+        </ul>
+        <p>A 2023 meta-analysis (Garnett et al.) found that wellness apps with gamified progress tracking showed a <strong>statistically significant effect size (d = 0.48)</strong> on behavioral adherence compared to non-gamified versions.</p>
+
+        <h2 id="security">5. Content Protection and Advanced Privacy</h2>
+        <p>When hosting digital programs, you are a steward of the client's most sensitive data. Security is a non-negotiable component of the <span class="highlight">Trust</span> pillar in the I.N.T.I.M.A.T.E. Method™. If a client fears their data could be leaked, they will never fully engage with the "Transform" phase.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Security Checklist for Intimacy Coaches</div>
+            <p class="principle-text">
+                1. <strong>Discreet Billing:</strong> Ensure credit card statements show a neutral company name (e.g., "AP Media" instead of "Sex Mastery Academy").<br>
+                2. <strong>End-to-End Encryption:</strong> Use LMS platforms that encrypt data at rest and in transit.<br>
+                3. <strong>Video Watermarking:</strong> Protect your intellectual property and client privacy by using dynamic watermarking on all video content.<br>
+                4. <strong>Two-Factor Authentication (2FA):</strong> Require 2FA for all client logins to prevent unauthorized access to their journals and progress.
+            </p>
+        </div>
+
+        <h2 id="scaling">6. Scalability and the Revenue Architecture</h2>
+        <p>The ultimate goal of Level 3 program development is to decouple your income from your hours. By creating a <span class="highlight">Digital Ecosystem</span>, you create a ladder for your clients:</p>
+        <ol>
+            <li><strong>Entry Level:</strong> Self-paced "Normalize & Investigate" course ($197).</li>
+            <li><strong>Mid-Tier:</strong> Hybrid "I.N.T.I.M.A.T.E. Mastery" Group Program ($1,497).</li>
+            <li><strong>High-Tier:</strong> 1-on-1 "Expansion" Intensive ($5,000+).</li>
+        </ol>
+        <p>This architecture allows you to serve 100+ clients simultaneously through the digital portal while reserving your energy for the 5-10 clients who need deep, trauma-informed 1-on-1 support.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What is the primary benefit of the "Hybrid Model" for a Sex & Intimacy coach compared to a pure digital course?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Hybrid Model significantly increases client completion rates (up to 85%) and allows for deeper emotional transformation during the 'Transform' and 'Expand' phases, while still maintaining scalability through pre-recorded foundational modules.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does "Discreet Billing" support the I.N.T.I.M.A.T.E. Connection Method™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It directly supports the 'Trust' pillar by ensuring the client's privacy is protected from prying eyes (e.g., shared bank accounts), reducing the initial 'Brake' of fear or shame associated with seeking sexual wellness coaching.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Digital programs must bridge the "Somatic Gap" through high-quality audio and interactive reflective tools.</li>
+                <li>The Hybrid Model is the optimal balance between high revenue, client results, and coach time-freedom.</li>
+                <li>Gamification, when applied ethically, increases adherence to pleasure-expanding exercises.</li>
+                <li>Data security and discreet access are fundamental to maintaining the "Trust" pillar in a digital environment.</li>
+                <li>Architecture your programs into a ladder to serve different client needs and financial capacities.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Andersson, G. et al. (2019). "Internet-delivered psychological treatments: from proof-of-concept to implementation." World Psychiatry.</li>
+                <li>Beattie, A. J. et al. (2022). "Digital health interventions for sexual dysfunction: A systematic review and meta-analysis." Journal of Sexual Medicine.</li>
+                <li>Döring, N. (2020). "Technology-mediated sexual health education and coaching: A review of current trends." Archives of Sexual Behavior.</li>
+                <li>Garnett, C. et al. (2023). "Gamification in wellness and health apps: A systematic review of effect sizes." Health Psychology Review.</li>
+                <li>Kocaballi, A. B. et al. (2021). "The ethics of digital health: Privacy and data protection in sexual wellness." Digital Health Journal.</li>
+                <li>Ruzek, J. I. et al. (2021). "The Role of Human Support in Internet-Based Interventions for Emotional Disorders." Clinical Psychology Review.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Sex & Intimacy Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential Certification Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

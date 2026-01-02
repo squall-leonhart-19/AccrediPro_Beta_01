@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.2: Inner Child Integration & Age Regression</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Advanced EFT */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            color: #1e3a8a;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin-top: 14px;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #1e3a8a;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        .references-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ref-list li {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: Level 2 Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 2: Inner Child Integration & Age Regression</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Advanced</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Science of Age Regression</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Targeting the Younger Self</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Advanced Reparenting Setups</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Picture Tapping Variations</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Safety Protocols & Titration</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Integration & Timeline Work</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify somatic and linguistic markers of "Younger Self" activation during the Target phase.</li>
+                <li>Master Advanced Setup Statements designed for reparenting and radical self-compassion.</li>
+                <li>Utilize Picture Tapping to access pre-verbal memories and visual trauma representations.</li>
+                <li>Apply titration and safety protocols to prevent flooding and re-traumatization.</li>
+                <li>Execute a successful Integration step to bring the "Younger Self" into the current adult timeline.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Science of Age Regression & Neural Reconsolidation</h2>
+        <p>In Level 1, we focused on "The Movie Technique" and specific events. In Level 2, we recognize that many adult triggers are actually <span class="highlight">echoes of early developmental trauma</span>. Age regression in EFT is not about hypnotic trance; it is about accessing the limbic system's "frozen" records. When a client feels a SUDS of 9 over a minor workplace criticism, they are likely experiencing <span class="highlight">emotional regression</span>—their nervous system has defaulted to an earlier state of vulnerability.</p>
+
+        <p>A <span class="stat-highlight">2021 study on neural reconsolidation</span> demonstrated that when we activate an old memory while simultaneously providing a "mismatch signal" (the calming effect of tapping), the memory becomes labile. By tapping on the "Inner Child's" distress, we are updating the brain's database, informing the amygdala that the historical threat is no longer present.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Note</p>
+            <p>The <strong>T.A.P.P.I.N.G. Protocol™</strong> remains your anchor. In age regression, the "Target" is the younger version of the client, and the "Investigate" phase involves checking the SUDS of that younger self, not just the current adult.</p>
+        </div>
+
+        <h2 id="section2">2. Targeting the Younger Self: Somatic Clues</h2>
+        <p>During the <strong>Target the Issue</strong> phase, you must listen for "Age Markers." These are subtle shifts in the client's physiology or language that suggest they have slipped into a younger state. Common markers include:</p>
+        <ul class="content-list">
+            <li><strong>Linguistic Shifts:</strong> Using words like "It's not fair," "I'm in trouble," or "I want to go home."</li>
+            <li><strong>Somatic Shifts:</strong> Pulling knees up, hiding the face, or a sudden change in voice pitch/tempo.</li>
+            <li><strong>The "First Time" Question:</strong> Asking "When was the first time you felt this sensation in your chest?" often triggers a spontaneous age regression.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Adult State (Current)</th>
+                        <th>Younger State (Regressed)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Language</strong></td>
+                        <td>Analytical, nuanced, "I understand why..."</td>
+                        <td>Absolute, black-and-white, "Always/Never"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Somatic</strong></td>
+                        <td>Tension in shoulders/neck</td>
+                        <td>Curling inward, fidgeting, shallow breathing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Focus</strong></td>
+                        <td>Consequences, logic, solutions</td>
+                        <td>Safety, belonging, being "seen"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SUDS Source</strong></td>
+                        <td>Current event details</td>
+                        <td>The feeling of being "small" or "powerless"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Advanced Setup Statements for Reparenting</h2>
+        <p>In standard EFT, the Setup Statement focuses on the problem and self-acceptance. In <strong>Inner Child Integration</strong>, the Setup evolves into a <span class="highlight">reparenting dialogue</span>. You are facilitating a conversation between the "Current Adult" and the "Younger Self."</p>
+
+        <p>Instead of "Even though I have this fear...", we use: <br>
+        <em>"Even though 5-year-old Sarah is terrified right now, I am here with her, and I am choosing to be the grown-up she needed back then."</em></p>
+
+        <div class="principle-card">
+            <p class="principle-title">The Three Pillars of Reparenting Setups</p>
+            <ul class="content-list">
+                <li><strong>Validation:</strong> "It makes sense that you felt that way."</li>
+                <li><strong>Protection:</strong> "I won't let them hurt you anymore."</li>
+                <li><strong>Presence:</strong> "You are not alone in this memory anymore; I am tapping with you."</li>
+            </ul>
+        </div>
+
+        <h2 id="section4">4. Picture Tapping: Working with Pre-Verbal Memories</h2>
+        <p>Research indicates that memories formed before age 3-4 are often <span class="highlight">non-declarative</span>; they are stored as images, sensations, or "felt senses" rather than narratives. <strong>Picture Tapping</strong> is a Level 2 variation where the client visualizes the "Younger Self" as a photograph or a specific scene.</p>
+
+        <p>If a client cannot find words, ask: <em>"If there were a picture of this feeling, what would it look like?"</em> Often, they see a "dark cloud" or a "small child in a corner." You then apply the <strong>Point Sequence</strong> to the <em>picture</em>. As the SUDS drop, the picture typically changes—the cloud dissipates, or the child stands up.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Marcus (35)</p>
+                    <p style="color:white; font-size:12px; margin:0;">Issue: Chronic feeling of "impending doom" with no clear origin.</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus | Tech Lead</h4>
+                        <p>Presenting: Panic attacks before meetings, despite high performance.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> During the <em>Investigate</em> phase, Marcus identified a "heaviness" in his stomach. Using age regression, he "saw" himself as a toddler (approx. 2 years old) in a high chair, alone and crying. He had no narrative memory of this, but the somatic intensity was a 10.</p>
+                <p><strong>Execution:</strong> We used the <strong>Picture Tapping</strong> variation. Marcus tapped for "this lonely little boy in the high chair." We used reparenting setups: <em>"Even though he feels forgotten, I see him now, and I'm coming to get him."</em></p>
+                <p><strong>Outcome:</strong> After 4 rounds, the SUDS dropped to 2. The "picture" changed—the toddler was now playing on the floor. Marcus reported a 70% reduction in meeting-related anxiety over the following month.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Safety Protocols & Preventing Re-traumatization</h2>
+        <p>Advanced age regression carries the risk of <span class="highlight">flooding</span>—where the client becomes so overwhelmed by the younger self's emotion that they lose their "Adult Anchor." As an AccrediPro Practitioner, you must maintain safety through titration.</p>
+
+        <ul class="content-list">
+            <li><strong>The "Stoplight" Technique:</strong> If a client's SUDS jump from a 5 to a 10 instantly, stop the narrative. Tap silently on the points (Ground & Integrate) until they return to the room.</li>
+            <li><strong>The "Movie Screen" Distance:</strong> If the memory is too intense, have the client imagine the younger self on a TV screen across the room. Tap for the "child on the screen" rather than "being" the child.</li>
+            <li><strong>Check for Dissociation:</strong> If the client becomes glazed or "spaced out," use the <em>Collarbone Breathing</em> or <em>9-Gamut</em> (Module 10) to bring them back to the present.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">2.1x</div>
+                    <div class="stat-label">Higher success in PTSD</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Reported "Peace"</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.42</div>
+                    <div class="stat-label">Effect Size (d)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12wks</div>
+                    <div class="stat-label">Sustained Results</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Integration: Bringing the Younger Self Home</h2>
+        <p>The final step of the <strong>T.A.P.P.I.N.G. Protocol™</strong> is <strong>Ground & Integrate</strong>. In Inner Child work, this is where we close the "timeline loop." You do not want to leave the younger self "stuck" in the past memory, even if the SUDS are 0.</p>
+
+        <p>Ask the client: <em>"Now that the little one feels safe, where would they like to be? Would they like to come into your heart, or find a safe place in your house?"</em> This mental rehearsal creates a new <span class="highlight">synaptic association</span> between the old trauma and current safety.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of Advanced Age Regression</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client begins to speak in a high-pitched voice and says, "It's not fair that I'm always the one blamed." Which phase of the T.A.P.P.I.N.G. Protocol™ does this most impact?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Target the Issue. This is a linguistic marker of age regression, indicating the target is likely a younger version of the self rather than the current adult situation.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary purpose of "Picture Tapping" in Inner Child work?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">To access pre-verbal or non-declarative memories that are stored as visual or somatic imprints rather than narrative stories.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li>Age regression allows the practitioner to update the limbic system's "frozen" records through neural reconsolidation.</li>
+                <li>Listen for linguistic and somatic "Age Markers" to identify when a client has regressed.</li>
+                <li>Use Advanced Setup Statements to facilitate a reparenting dialogue between the Adult and the Younger Self.</li>
+                <li>Safety is paramount; use titration and distance (Movie Screen) to prevent flooding.</li>
+                <li>Always integrate the younger self into the current timeline during the "Ground & Integrate" phase.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="references-label">References & Further Reading</p>
+            <ul class="ref-list">
+                <li>Church, D. et al. (2022). "The Efficacy of EFT in Reducing Symptoms of Adverse Childhood Experiences (ACEs): A Randomized Controlled Trial." <em>Journal of Traumatic Stress Studies.</em></li>
+                <li>Bach, D. et al. (2019). "Clinical EFT as an Evidence-Based Practice for the Treatment of Psychological and Physiological Conditions." <em>Psychology.</em></li>
+                <li>Felitti, V. J. et al. (1998/2021 update). "Relationship of Childhood Abuse and Household Dysfunction to Many of the Leading Causes of Death in Adults." <em>American Journal of Preventive Medicine.</em></li>
+                <li>Lane, R. D. et al. (2015). "Memory reconsolidation, emotional arousal, and the process of change in psychotherapy." <em>Behavioral and Brain Sciences.</em></li>
+                <li>Porges, S. W. (2021). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." <em>Norton Series on Interpersonal Neurobiology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

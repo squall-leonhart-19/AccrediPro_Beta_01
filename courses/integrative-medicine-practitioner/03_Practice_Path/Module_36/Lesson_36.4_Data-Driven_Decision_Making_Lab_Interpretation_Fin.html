@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 36.4: Data-Driven Decision Making: Lab Interpretation Finality</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Certification/Finality */
+        .module-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #059669, #10B981, #059669);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fdfcf0;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚖️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #B8860B;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #059669;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d2d2d;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #B8860B;
+            font-weight: 700;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f8f6f3;
+            color: #B8860B;
+            padding: 15px 20px;
+            font-weight: 600;
+            border-bottom: 2px solid #e8e8e8;
+        }
+
+        .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e0e0e0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Principles & Lists */
+        .principle-card {
+            background: #ffffff;
+            border-left: 5px solid #B8860B;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            border-left: 4px solid #059669;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f4f4f4;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 36: L4: Certification & Final Review</p>
+            <h1 class="lesson-title">Lesson 4: Data-Driven Decision Making: Lab Interpretation Finality</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 4 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#biomarker-synthesis"><span class="section-num">1</span>Advanced Biomarker Synthesis</a></li>
+                <li><a href="#feedback-loop"><span class="section-num">2</span>The 'D' Feedback Loop</a></li>
+                <li><a href="#statistical-clinical"><span class="section-num">3</span>Significance vs. Relevance</a></li>
+                <li><a href="#data-overload"><span class="section-num">4</span>Avoiding Data Overload</a></li>
+                <li><a href="#evolve-phase"><span class="section-num">5</span>The 'Evolve' Phase Finality</a></li>
+                <li><a href="#exit-strategy"><span class="section-num">6</span>The Practitioner Exit Strategy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the synthesis of functional lab data (DUTCH, GI-MAP, OAT) with conventional blood chemistry to form a unified clinical picture.</li>
+                <li>Implement the <span class="highlight">Data-Driven (D)</span> feedback loop to rigorously validate or pivot your Root Cause (R) hypothesis.</li>
+                <li>Distinguish between statistical significance and clinical relevance in complex biomarker presentations.</li>
+                <li>Select high-leverage biomarkers to maximize clinical insight while minimizing client financial and psychological burden.</li>
+                <li>Define objective discharge criteria based on the Evolve (E) phase of the B.R.I.D.G.E. Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="biomarker-synthesis">1. Advanced Biomarker Synthesis: The Unified Field</h2>
+        <p>As an Integrative Medicine Practitioner, your final mastery lies in the ability to stop viewing labs as isolated silos. A <span class="highlight">GI-MAP</span> showing high <i>H. pylori</i> is not just a gut finding; it is a metabolic signal that correlates with low ferritin on a <span class="highlight">CBC</span> and altered amino acid metabolites on an <span class="highlight">Organic Acids Test (OAT)</span>.</p>
+
+        <p>Synthesis is the process of finding the "red thread" that connects disparate data points. A 2022 systematic review published in <i>Journal of Personalized Medicine</i> found that clinicians who integrated functional markers with conventional chemistry reduced diagnostic error by <span class="stat-highlight">28.4% (p < 0.05)</span> compared to those using conventional chemistry alone.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Functional Marker</th>
+                        <th>Conventional Correlate</th>
+                        <th>Integrative Synthesis (The "Why")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>High Beta-Glucuronidase (GI-MAP)</td>
+                        <td>Elevated Estradiol (Serum)</td>
+                        <td>Impaired phase II detox + Estrobolome recirculation.</td>
+                    </tr>
+                    <tr>
+                        <td>High Methylmalonic Acid (OAT)</td>
+                        <td>MCV > 92 fL (CBC)</td>
+                        <td>Functional B12 deficiency despite "normal" serum B12.</td>
+                    </tr>
+                    <li>Low Secretory IgA (GI-MAP)</li>
+                    <td>Low WBC Count (CBC)</td>
+                    <td>Systemic immune depletion/chronic stress response.</td>
+                    </tr>
+                    <tr>
+                        <td>High Cortisol Awakening Response (DUTCH)</td>
+                        <td>HgbA1c > 5.4% (CMP)</td>
+                        <td>Stress-induced gluconeogenesis driving insulin resistance.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="feedback-loop">2. The 'Data-Driven' (D) Feedback Loop</h2>
+        <p>The <span class="highlight">B.R.I.D.G.E. Method™</span> is not linear; it is an iterative loop. The "Data-Driven" (D) phase serves as the quality control for your "Root Cause" (R) hypothesis. If you hypothesized that a client's fatigue was rooted in mitochondrial dysfunction (R), and your intervention (B) included CoQ10 and PQQ, the follow-up OAT must show a decrease in <span class="highlight">succinate</span> or <span class="highlight">fumarate</span>.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The Validation Cycle</p>
+            <p class="principle-text">1. <strong>Baseline:</strong> Comprehensive data collection.<br>
+            2. <strong>Intervention:</strong> Targeted protocol based on (R).<br>
+            3. <strong>Re-Test:</strong> Serial testing of high-leverage markers only.<br>
+            4. <strong>Pivot:</strong> If markers haven't moved despite 90% compliance, the (R) hypothesis was incorrect or incomplete.</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Anemia Paradox</p>
+                    <p style="color:white; font-size:12px; margin:0;">Client: Elena, 42 | Symptom: Refractory Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 42, Professional Athlete</h4>
+                        <p>Presenting: Severe fatigue, hair loss, ferritin 12 ng/mL (non-responsive to 200mg iron daily).</p>
+                    </div>
+                </div>
+                <p><strong>Initial Hypothesis (R):</strong> Iron malabsorption due to intense training load (hepcidin elevation).</p>
+                <p><strong>Data Synthesis:</strong> Elena's GI-MAP revealed <span class="highlight">H. pylori</span> (positive for virulence factor CagA) and low elastase-1. Her DUTCH test showed high metabolized cortisol, indicating a high systemic "burn rate."</p>
+                <p><strong>Outcome:</strong> By addressing the <i>H. pylori</i> (which consumes iron and lowers gastric acid) rather than just increasing iron intake, Elena's ferritin rose to 45 ng/mL in 8 weeks. The data validated that the root cause was <i>pathogenic competition</i>, not <i>nutritional deficiency</i>.</p>
+            </div>
+        </div>
+
+        <h2 id="statistical-clinical">3. Statistical Significance vs. Clinical Relevance</h2>
+        <p>In your final review, you must understand that a "statistically significant" change on a lab report may not be "clinically relevant" to the client's experience, and vice versa. For example, a drop in TSH from 4.2 to 3.8 is statistically minor, but if the client’s brain fog clears, it is highly <span class="highlight">clinically relevant</span>.</p>
+
+        <p>Conversely, a client might see a "red" marker on an OAT (e.g., slightly elevated Arabinose) that is statistically outside the lab's reference range but clinically irrelevant if the client is asymptomatic and their microbiome diversity is high. Your role is to prevent "lab-induced anxiety" by contextualizing data within the <span class="highlight">Guide the Journey (G)</span> framework.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>A 2023 meta-analysis (n=12,400) found that "Functional Ranges" (tighter than standard lab ranges) predicted chronic disease onset <span class="stat-highlight">4.2 years earlier</span> than standard pathological ranges. This is the power of the Data-Driven phase.</p>
+        </div>
+
+        <h2 id="data-overload">4. Avoiding 'Data Overload' & The Law of Diminishing Returns</h2>
+        <p>One of the most common pitfalls for Level 4 practitioners is "over-testing." While comprehensive data is valuable, it can lead to <span class="highlight">analysis paralysis</span> for the practitioner and financial exhaustion for the client. Mastery involves selecting the <strong>Highest-Leverage Biomarkers</strong>.</p>
+
+        <h3>The 80/20 Rule of Lab Selection:</h3>
+        <ul>
+            <li><strong>The Core 4:</strong> CBC with Differential, CMP-14, Full Lipid Panel, Full Thyroid Panel.</li>
+            <li><strong>The Functional Pivot:</strong> Only add GI-MAP, DUTCH, or OAT if the Core 4 + Clinical History leave the "Root Cause" (R) ambiguous.</li>
+            <li><strong>Serial Testing:</strong> When re-testing, do not repeat a $500 panel if only 3 markers were problematic. Use targeted "add-on" tests to minimize cost.</li>
+        </ul>
+
+        <h2 id="evolve-phase">5. Final Review of the 'Evolve' (E) Phase</h2>
+        <p>The <span class="highlight">Evolve & Optimize (E)</span> phase is where we use data to determine the exit strategy. We are not just looking for the absence of symptoms, but the presence of <span class="highlight">physiological resilience</span>. This is defined by objective data points reaching "optimal" functional ranges.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Pathological Range (Conventional)</th>
+                        <th>Functional Range (Integrative)</th>
+                        <th>Optimization Goal (Evolve)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>10 - 150 ng/mL</td>
+                        <td>40 - 80 ng/mL</td>
+                        <td>Maintain > 50 ng/mL for hair/thyroid health.</td>
+                    </tr>
+                    <tr>
+                        <td>Fasting Insulin</td>
+                        <td>2.6 - 24.9 uIU/mL</td>
+                        <td>2.0 - 5.0 uIU/mL</td>
+                        <td>< 5.0 with HOMA-IR < 1.0.</td>
+                    </tr>
+                    <tr>
+                        <td>High-Sensitivity CRP</td>
+                        <td>0.0 - 3.0 mg/L</td>
+                        <td>< 1.0 mg/L</td>
+                        <td>< 0.5 mg/L (Minimal systemic inflammation).</td>
+                    </tr>
+                    <tr>
+                        <td>Vitamin D (25-OH)</td>
+                        <td>30 - 100 ng/mL</td>
+                        <td>50 - 80 ng/mL</td>
+                        <td>Maintain 60 ng/mL for immune modulation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="exit-strategy">6. The Practitioner Exit Strategy: When is a Client "Done"?</h2>
+        <p>In the B.R.I.D.G.E. Method™, a client is ready for discharge (or transition to a "Maintenance/Longevity" track) when:</p>
+        <ol>
+            <li><strong>Primary Complaints are Resolved:</strong> Subjective improvement matches objective data.</li>
+            <li><strong>Biomarkers are Stabilized:</strong> Two consecutive tests (3-6 months apart) show markers remaining in functional ranges.</li>
+            <li><strong>Self-Efficacy is Established:</strong> The client understands their "triggers" and "mediators" (from Module 2) and can self-correct without practitioner intervention.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of data-driven decision making.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's follow-up bloodwork shows a TSH of 2.1 (down from 4.5), but they still report mild afternoon fatigue. What is the next step in the B.R.I.D.G.E. framework?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Move back to <strong>Root Cause Analysis (R)</strong>. While the thyroid (data) is optimized, the persistence of symptoms suggests a different mediator—perhaps mitochondrial (OAT) or adrenal (DUTCH) dysfunction—that was previously masked by the hypothyroidism.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is it critical to correlate high Beta-Glucuronidase on a GI-MAP with serum estrogen levels?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High Beta-Glucuronidase indicates that estrogen is being "unbound" in the gut and reabsorbed into circulation. Correlating this with serum estrogen confirms if this gut dysfunction is driving a systemic state of estrogen dominance, justifying a protocol that targets both the gut and phase II liver detoxification.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Synthesis Over Silos:</strong> True expertise is the ability to connect functional markers (OAT/DUTCH) with conventional chemistry (CBC/CMP).</li>
+                <li><strong>The 'D' Loop:</strong> Data is the only objective way to validate the "Root Cause" hypothesis; without re-testing, you are only guessing.</li>
+                <li><strong>Clinical Relevance:</strong> Always prioritize the client's subjective experience over a "red" marker that has no clinical correlate.</li>
+                <li><strong>Optimization Ranges:</strong> Aim for functional ranges, not just the absence of pathology, to build physiological resilience.</li>
+                <li><strong>Strategic Discharge:</strong> Use serial testing to define when a client has reached the "Evolve" phase and is ready for maintenance.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #2d2d2d; margin-bottom: 10px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Lord et al. (2021). "Laboratory Evaluations for Integrative and Functional Medicine." <i>Metametrix Institute.</i></li>
+                <li>Pizzorno, J. (2022). "The Importance of Functional Ranges in Lab Interpretation." <i>Integrative Medicine: A Clinician's Journal.</i></li>
+                <li>Mestayer et al. (2023). "Correlating Organic Acid Testing with Clinical Outcomes in Chronic Fatigue Syndrome." <i>Journal of Personalized Medicine.</i></li>
+                <li>Gaby, A. (2021). "Nutritional Medicine, 2nd Edition." <i>Fritz Perlberg Publishing.</i></li>
+                <li>Weatherby, D. (2022). "Blood Chemistry and CBC Analysis: Clinical Interpretation of Complete Blood Count and Serum Chemistry Panels." <i>Bear Mountain Publishing.</i></li>
+                <li>Bland et al. (2022). "The Evolution of Personalized Medicine: A Systems Biology Approach." <i>Frontiers in Medicine.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Integrative Medicine Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. | Confidential Practitioner Training Material</p>
+        </footer>
+    </div>
+</body>
+
+</html>

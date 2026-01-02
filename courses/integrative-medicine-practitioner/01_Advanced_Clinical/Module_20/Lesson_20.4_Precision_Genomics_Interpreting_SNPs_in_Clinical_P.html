@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.4: Precision Genomics: Interpreting SNPs in Clinical Practice</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Assessment Tools */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🧬';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0ea5e9;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Box */
+        .stat-highlight {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0369a1;
+            line-height: 1;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #0369a1;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border-left: 6px solid #0369a1;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 14px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 4: Precision Genomics: Interpreting SNPs in Clinical Practice</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🧬 Advanced Clinical Track</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#methylation"><span class="section-num">1</span>The Methylation Matrix</a></li>
+                <li><a href="#detox"><span class="section-num">2</span>Genomics of Detoxification</a></li>
+                <li><a href="#nutrients"><span class="section-num">3</span>Vitamin D & Lipid Genomics</a></li>
+                <li><a href="#hierarchy"><span class="section-num">4</span>Phenotype vs. Genotype</a></li>
+                <li><a href="#ethics"><span class="section-num">5</span>Ethical Communication</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>The B.R.I.D.G.E. Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the interpretation of the complete methylation cycle beyond MTHFR, including COMT, MTR, and CBS.</li>
+                <li>Analyze Phase I and Phase II detoxification SNPs to identify "pathological detoxifiers."</li>
+                <li>Evaluate the clinical significance of VDR and FADS1/2 polymorphisms in nutrient optimization.</li>
+                <li>Develop a hierarchy of clinical decision-making that prioritizes phenotypic biomarkers over genetic potential.</li>
+                <li>Apply ethical frameworks to genetic counseling, avoiding "genetic fatalism."</li>
+            </ul>
+        </div>
+
+        <p>In previous lessons, we explored the dynamic markers of health: functional blood chemistry, organic acids, and the microbiome. These provide a "snapshot" of the client's current physiological state. However, to truly <span class="highlight">Individualize Care</span> within the B.R.I.D.G.E. Method™, we must look at the blueprint—the genetic predispositions that dictate how a client responds to their environment.</p>
+
+        <p>Precision genomics is not about diagnosing disease; it is about identifying <span class="highlight">Single Nucleotide Polymorphisms (SNPs)</span> that alter enzyme kinetics. A 2021 study in the <i>Journal of Personalized Medicine</i> highlighted that while genetics may load the gun, epigenetics pulls the trigger. As a practitioner, your role is to ensure the trigger is never pulled.</p>
+
+        <h2 id="methylation">1. Beyond MTHFR: The Methylation Matrix</h2>
+        <p>While the MTHFR SNP has gained mainstream notoriety, interpreting it in isolation is a clinical error. Methylation is a complex gears-within-gears system. To optimize the "I" in B.R.I.D.G.E., we must look at the synergistic flow between the Folate Cycle, the Methionine Cycle, and the Transsulfuration Pathway.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">40-60%</div>
+            <div>Of the general population carries at least one MTHFR C677T variant, which can reduce enzyme efficiency by up to 70% in homozygous individuals.</div>
+        </div>
+
+        <h3>Key Players in the Matrix:</h3>
+        <ul>
+            <li><strong>MTR & MTRR:</strong> These enzymes work together to recycle homocysteine back into methionine using Vitamin B12. SNPs here (like MTR A2756G) often lead to a "functional B12 deficiency" even when serum levels appear normal.</li>
+            <li><strong>COMT (Catechol-O-Methyltransferase):</strong> Responsible for breaking down dopamine, epinephrine, and estrogens. The "Slow" COMT (AA/Met-Met) variant results in higher dopamine levels, correlating with higher cognitive focus but significantly <span class="highlight">decreased stress resilience</span>.</li>
+            <li><strong>CBS (Cystathionine Beta-Synthase):</strong> The "drain" of the methylation cycle. An up-regulated CBS SNP can "pull" intermediates out of the methylation cycle into the transsulfuration pathway, leading to high ammonia and sulfite levels, often necessitating a low-sulfur diet before methylation support is introduced.</li>
+        </ul>
+
+        <h2 id="detox">2. Nutrigenomics of Detoxification</h2>
+        <p>Detoxification is a two-phase process (as discussed in Module 10). Genetic SNPs determine the speed of these phases. A common clinical challenge is the "Pathological Detoxifier"—someone with a fast Phase I (CYP450) and a slow Phase II.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>SNP Group</th>
+                        <th>Function</th>
+                        <th>Clinical Manifestation of Variation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CYP1A2 / CYP2D6</strong></td>
+                        <td>Phase I: Activation of toxins/drugs</td>
+                        <td>"Ultra-rapid" metabolizers may clear medications too fast or create excessive reactive oxygen species (ROS).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GSTM1 / GSTT1</strong></td>
+                        <td>Phase II: Glutathione conjugation</td>
+                        <td>"Null" genotypes (deletion of the gene) result in a total lack of enzyme production, increasing oxidative stress risk.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NAT2</strong></td>
+                        <td>Phase II: Acetylation</td>
+                        <td>"Slow Acetylators" are at higher risk for toxicity from environmental pollutants and certain medications (e.g., isoniazid).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SOD2</strong></td>
+                        <td>Mitochondrial Protection</td>
+                        <td>A polymorphism here reduces the ability to neutralize superoxide, making the client highly sensitive to heavy metals.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Environmental Sensitivity" Client</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 42</h4>
+                        <p>Symptoms: Chronic fatigue, chemical sensitivity, "brain fog" after eating out, and estrogen dominance (heavy cycles).</p>
+                    </div>
+                </div>
+                <p><strong>Genomic Findings:</strong> Elena was homozygous for <strong>CYP1B1</strong> (fast Phase I activation of estrogens) and had a <strong>GSTM1 Null</strong> genotype (zero glutathione S-transferase production). Additionally, she had a <strong>Slow COMT</strong>.</p>
+                <p><strong>Intervention:</strong> Instead of a standard "detox," we prioritized <i>slowing</i> Phase I with grapefruit seed extract and <i>supporting</i> Phase II with liposomal glutathione and DIM (to redirect estrogen pathways). We addressed her COMT by ensuring adequate magnesium and avoiding high-catecholamine triggers.</p>
+                <p><strong>Outcome:</strong> 60% reduction in chemical sensitivity scores and normalized menstrual cycles within three months.</p>
+            </div>
+        </div>
+
+        <h2 id="nutrients">3. Vitamin D Receptor (VDR) & Omega-3 Metabolism</h2>
+        <p>Standardized RDAs (Recommended Dietary Allowances) are based on the average population. However, genetic variations in transport and receptor sensitivity mean that "average" is often insufficient for the individual.</p>
+
+        <h3>The VDR Polymorphism</h3>
+        <p>The <span class="highlight">Vitamin D Receptor (VDR)</span> SNPs (such as Taq1 or Bsm1) influence how effectively the body utilizes Vitamin D once it's in the blood. A client might have a "normal" serum level of 45 ng/mL but exhibit symptoms of deficiency (bone pain, low immunity) because their receptors are less efficient. In the B.R.I.D.G.E. framework, we aim for the higher end of the range (60-80 ng/mL) for these individuals.</p>
+
+        <h3>FADS1 & FADS2: The Omega-3 Bottleneck</h3>
+        <p>These genes code for enzymes that convert plant-based ALA (alpha-linolenic acid) into the active long-chain fatty acids EPA and DHA. A 2022 study showed that individuals with certain FADS variants have a <span class="highlight">30% lower conversion rate</span>. For these clients, a vegan diet high in flax/chia will not provide sufficient neuroprotection, necessitating direct EPA/DHA supplementation.</p>
+
+        <h2 id="hierarchy">4. Clinical Decision-Making: Phenotype vs. Genotype</h2>
+        <p>A critical rule in the B.R.I.D.G.E. Method™: <strong>Treat the patient, not the SNP.</strong> Just because a client has a "bad" gene does not mean that gene is being expressed.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Hierarchy of Evidence</div>
+            <div class="principle-text">
+                When data points conflict, use this order of operations:
+                <ul>
+                    <li><strong>Level 1: Clinical Presentation</strong> (What are the symptoms?)</li>
+                    <li><strong>Level 2: Phenotypic Biomarkers</strong> (What does the blood/OAT/stool show <i>now</i>?)</li>
+                    <li><strong>Level 3: Genotype</strong> (What is the <i>potential</i> for dysfunction?)</li>
+                </ul>
+                <i>Example: If a client has MTHFR homozygous but their serum Folate and Homocysteine (phenotype) are perfect, do NOT give high-dose methylfolate. You may cause "over-methylation" symptoms like anxiety.</i>
+            </div>
+        </div>
+
+        <h2 id="ethics">5. Ethical Considerations & Epigenetic Empowerment</h2>
+        <p>Genetic data can be overwhelming for clients, leading to "genetic fatalism"—the belief that they are destined for a disease. As an Integrative Practitioner, your communication must focus on <span class="highlight">Epigenetic Empowerment</span>.</p>
+        
+        <p>A 2023 meta-analysis (n=12,400) confirmed that lifestyle interventions (diet, sleep, stress management) can modify the expression of over 500 genes involved in inflammation and tumor suppression. Your message should be: "Your genes are the blueprint, but your lifestyle is the contractor."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client presents with high homocysteine and high serum B12. Which SNP is likely involved, and why?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This suggests a "transport" or "recycling" issue, likely an <strong>MTR</strong> or <strong>MTRR</strong> SNP. The B12 is present in the blood but isn't being utilized by the enzyme to convert homocysteine back to methionine.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">Why should you check CBS status before starting high-dose methyl-donors?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">If CBS is up-regulated (fast), adding methyl donors can accelerate the production of ammonia and hydrogen sulfide, leading to "brain fog" and fatigue. The "drain" must be supported first.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Look Beyond MTHFR:</strong> Methylation is a system; assess COMT (mood/estrogen), MTR (B12), and CBS (sulfur) for a complete picture.</li>
+                <li><strong>Detox Balance:</strong> Identify "pathological detoxifiers" who have a mismatch between Phase I activation and Phase II conjugation speeds.</li>
+                <li><strong>Nutrient Specificity:</strong> Use VDR and FADS1/2 to justify higher-than-average dosing for Vitamin D and Omega-3s.</li>
+                <li><strong>Hierarchy of Care:</strong> Always prioritize current blood chemistry (phenotype) over genetic SNPs (genotype).</li>
+                <li><strong>Empowerment:</strong> Use genomics to motivate lifestyle changes, not to predict inevitable illness.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lynch, B. (2018). "Dirty Genes: A Breakthrough Program to Treat the Root Cause of Illness." HarperOne.</li>
+                <li>Minozzi et al. (2021). "The Role of MTHFR Polymorphisms in Cardiovascular Disease: A Systematic Review." <i>Journal of Personalized Medicine</i>.</li>
+                <li>Yan et al. (2022). "FADS1 and FADS2 Gene Polymorphisms and Their Influence on Polyunsaturated Fatty Acid Levels." <i>Nutrients</i>.</li>
+                <li>Jirtle, R. L., & Skinner, M. K. (2007). "Environmental Epigenomics and Disease Susceptibility." <i>Nature Reviews Genetics</i>.</li>
+                <li>Whirl-Carrillo et al. (2023). "Pharmacogenomics Knowledge for Personalized Medicine." <i>Clinical Pharmacology & Therapeutics</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple toggle for reveal buttons
+        document.querySelectorAll('.reveal-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const answer = button.nextElementSibling;
+                if (answer.style.display === 'block') {
+                    answer.style.display = 'none';
+                } else {
+                    answer.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

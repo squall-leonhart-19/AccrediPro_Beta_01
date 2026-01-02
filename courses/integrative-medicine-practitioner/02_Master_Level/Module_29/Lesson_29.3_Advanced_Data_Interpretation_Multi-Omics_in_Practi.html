@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.3: Advanced Data Interpretation: Multi-Omics in Practice</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Master Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f9fafb;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1e40af;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 15px;
+            color: #1e40af;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: Master Integration</p>
+            <h1 class="lesson-title">Lesson 3: Advanced Data Interpretation: Multi-Omics in Practice</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 40 min read</span>
+                <span class="meta-item">🎓 Level 3: Master Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Multi-Omics Revolution</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Proteome and Metabolome</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Hidden Blood Chemistry Patterns</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Predictive Disease Modeling</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Cost-Benefit Diagnostic Strategy</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Art of Data Translation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize genomic, transcriptomic, and metabolomic data into a unified clinical narrative.</li>
+                <li>Identify "Hidden Biomarkers" in standard blood panels that signal systemic physiological drift.</li>
+                <li>Apply predictive modeling techniques to forecast chronic disease progression 5-10 years in advance.</li>
+                <li>Execute a cost-benefit analysis for functional testing to maximize clinical yield per patient dollar.</li>
+                <li>Translate high-complexity multi-omic data into actionable, patient-guided health education.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Multi-Omics Revolution: Beyond the Single Marker</h2>
+        <p>In the earlier stages of the <span class="highlight">B.R.I.D.G.E. Method™</span>, we focused on "Data-Driven Decisions" (Module 4) by looking at functional blood chemistry and microbiome analysis in isolation. As a Master Practitioner, you must now move from a <strong>linear diagnostic model</strong> to a <strong>multi-omic integration model</strong>.</p>
+        
+        <p>Multi-omics refers to the integrated analysis of different biological "layers"—genomics (DNA), transcriptomics (RNA), proteomics (proteins), and metabolomics (metabolites). While a single marker like HbA1c tells us about past glucose management, metabolomic profiling of 1,5-anhydroglucitol can reveal glycemic excursions that HbA1c misses entirely.</p>
+
+        <div class="alert-box info">
+            <span class="alert-label">The Master's Insight</span>
+            <p>A 2022 landmark study published in <i>Nature Medicine</i> demonstrated that integrating multi-omic data (n=108 individuals) allowed researchers to identify nearly 70% more clinically actionable insights than standard phenotypic monitoring alone. This is the "Precision Gap" that the Integrative Practitioner fills.</p>
+        </div>
+
+        <h2 id="section2">2. Real-Time Physiology: The Proteome and Metabolome</h2>
+        <p>If genomics is the "blueprint," the <span class="highlight">proteome</span> and <span class="highlight">metabolome</span> are the "construction site" and "waste management system" respectively. Proteomics measures the functional output of genes, while metabolomics provides a snapshot of current metabolic activity.</p>
+
+        <h3>Metabolomic Fingerprinting</h3>
+        <p>By measuring small molecules (metabolites) in blood or urine, we can identify specific <span class="highlight">metabolic signatures</span> of dysfunction. For example, elevated levels of branched-chain amino acids (BCAAs) combined with low glycine and high acylcarnitines often precede the clinical diagnosis of Type 2 Diabetes by <span class="stat-highlight">up to 5 years</span>, even when fasting insulin appears normal.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Omic Layer</th>
+                        <th>Clinical Value</th>
+                        <th>Example Marker</th>
+                        <th>Time Horizon</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Genomics</td>
+                        <td>Potential/Susceptibility</td>
+                        <td>MTHFR, APOE4</td>
+                        <td>Lifetime</td>
+                    </tr>
+                    <tr>
+                        <td>Proteomics</td>
+                        <td>Functional Activity</td>
+                        <td>hs-CRP, Troponin, Cytokines</td>
+                        <td>Weeks to Months</td>
+                    </tr>
+                    <tr>
+                        <td>Metabolomics</td>
+                        <td>Real-time Metabolism</td>
+                        <td>Organic Acids, Amino Acids</td>
+                        <td>Days to Weeks</td>
+                    </tr>
+                    <tr>
+                        <td>Microbiomics</td>
+                        <td>Ecological Balance</td>
+                        <td>Short-Chain Fatty Acids (SCFAs)</td>
+                        <td>Days to Weeks</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Hidden Biomarkers: Patterns in Standard Chemistry</h2>
+        <p>Mastery does not always require the most expensive tests; it requires the most sophisticated <i>interpretation</i> of standard data. Standard blood panels (CBC and CMP) contain "hidden" markers of systemic drift—subtle movements within the "normal" range that indicate the loss of homeostatic resilience.</p>
+
+        <h3>The RDW-Oxidative Stress Connection</h3>
+        <p>Red Cell Distribution Width (RDW) is typically used to differentiate types of anemia. However, in the Master Practitioner's toolkit, RDW is a potent marker of <span class="highlight">all-cause mortality and oxidative stress</span>. An RDW >13.0%, even in the absence of anemia, suggests increased erythrocyte turnover and systemic inflammation, often correlating with subclinical cardiovascular risk.</p>
+
+        <h3>The AST/ALT Ratio (De Ritis Ratio)</h3>
+        <p>While both markers indicate liver health, their ratio is often more telling. A ratio >1.5 (with normal absolute values) can signal mitochondrial dysfunction or occult alcohol use, while a ratio <0.8 often precedes the development of Non-Alcoholic Fatty Liver Disease (NAFLD), indicating a metabolic shift toward lipid accumulation before enzymes spill into the blood.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Perfect" Lab Panel</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: Sarah, Age 52 | Symptoms: Persistent brain fog, "unexplained" weight gain</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Initial Assessment:</strong> Sarah's primary physician told her she was "perfectly healthy." Her TSH was 2.4 uIU/mL, Glucose was 92 mg/dL, and hs-CRP was 0.8 mg/L.</p>
+                <p><strong>Master Interpretation:</strong> Using the B.R.I.D.G.E. Synthesis, we looked deeper:</p>
+                <ul>
+                    <li><strong>Standard Drift:</strong> Her RDW was 14.2% (High-Normal), and her GGT was 38 U/L (Functional high).</li>
+                    <li><strong>Metabolomics:</strong> Organic acid testing revealed high suberate and adipate (fatty acid oxidation issues) and low alpha-ketoglutarate.</li>
+                    <li><strong>The Synthesis:</strong> Sarah wasn't "hypothyroid" by the TSH marker, but her cells were in a state of <i>metabolic winter</i>. The high RDW and GGT signaled oxidative stress that was downregulating mitochondrial output.</li>
+                </ul>
+                <p><strong>Outcome:</strong> By targeting mitochondrial biogenesis (PQQ, CoQ10) and glutathione support based on the GGT/RDW findings, Sarah's brain fog cleared in 21 days. Weight loss followed without caloric restriction.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Predictive Modeling: Forecasting the "Systemic Drift"</h2>
+        <p>Predictive modeling is the process of using current biomarker trajectories to forecast future health states. This is the ultimate expression of the "Evolve & Optimize" pillar. We are no longer treating a point in time; we are treating a <span class="highlight">vector</span>.</p>
+
+        <p>A critical tool in this stage is the calculation of <strong>Biological Age</strong> versus <strong>Chronological Age</strong>. Using algorithms like the <i>PhenoAge</i> (based on 9 blood markers) or the <i>Horvath Epigenetic Clock</i>, we can show a client that while they are 40 years old, their physiological systems are functioning at the level of a 50-year-old.</p>
+
+        <p><strong>Key Predictive Patterns:</strong>
+        <ul>
+            <li><strong>The Inflammaging Vector:</strong> Rising RDW + Rising Ferritin + Falling Albumin. This pattern predicts a 3.4x increase in frailty risk over 5 years.</li>
+            <li><strong>The Metabolic Vector:</strong> Triglyceride/HDL ratio > 2.5 + Fasting Insulin > 8 uIU/mL. This predicts insulin resistance progression even if HgbA1c is 5.2%.</li>
+        </ul>
+
+        <h2 id="section5">5. The Master's Approach to Functional Testing: Cost-Benefit Analysis</h2>
+        <p>One of the hallmarks of an inexperienced practitioner is "test-heaviness"—ordering $3,000 worth of labs for every client. The Master Practitioner uses <span class="highlight">High-Yield Diagnostic Sequencing</span>.</p>
+
+        <p>The goal is to find the <strong>Minimum Viable Data (MVD)</strong> required to initiate a high-impact intervention. We use a "Tiered Investigative Model":</p>
+        
+        <ol>
+            <li><strong>Tier 1: Comprehensive Blood Chemistry (The Foundation).</strong> Cost: $150-$300. Yield: 70% of clinical direction.</li>
+            <li><strong>Tier 2: Targeted Functional Testing (The Nuance).</strong> GI Mapping or OAT. Cost: $350-$500. Yield: 20% of clinical direction (Root Cause).</li>
+            <li><strong>Tier 3: Advanced Omics (The Edge).</strong> Genomics or Proteomic panels. Cost: $500+. Yield: 10% (Fine-tuning for longevity).</li>
+        </ol>
+
+        <div class="alert-box info">
+            <span class="alert-label">Clinical Rule of Thumb</span>
+            <p>Only order a Tier 2 or Tier 3 test if the results will <strong>fundamentally change</strong> your Tier 1 intervention. If you are going to recommend a probiotic and a Mediterranean diet regardless of the stool test results, the test is an unnecessary financial burden on the client.</p>
+        </div>
+
+        <h2 id="section6">6. Translating Data into Action: Patient-Guided Education</h2>
+        <p>The most advanced data in the world is useless if the client does not own it. In Module 5 (Guide the Journey), we discussed health literacy. At the Master level, this becomes <strong>Data Storytelling</strong>.</p>
+
+        <p>Instead of showing a client a 40-page report of metabolites, you must translate the data into a "Biological Narrative":</p>
+        <p><i>"Your genomic report shows you have a slower 'drain' for estrogen (COMT/CYP1B1), and your metabolomic test shows the 'sink' is currently overflowing (high 16-OH estrone). This explains why your cycles are heavy and your mood is low. We don't need to 'fix' your genes; we just need to clear the drain."</i></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced data interpretation.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client presents with "normal" labs, but their RDW is 14.5% and their Anion Gap is 14 mEq/L. What systemic drift might this indicate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This combination suggests subclinical metabolic acidosis (Anion Gap) and significant oxidative stress or nutrient turnover (RDW). Even if other markers are normal, this client is likely in a state of systemic inflammation and may be trending toward metabolic syndrome or cardiovascular dysfunction.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is metabolomic testing often considered "higher yield" than genomic testing for immediate clinical interventions?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Genomics tells us the *potential* (what could happen), but metabolomics tells us the *reality* (what is happening right now). Since metabolites are the end-products of gene-environment interactions, they provide a real-time snapshot of the client's current state, allowing for immediate intervention adjustments.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Mastery Takeaways</p>
+            <ul>
+                <li><strong>Multi-Omic Integration:</strong> Move beyond single markers to analyze the interplay between DNA, proteins, and metabolites.</li>
+                <li><strong>Functional Blood Chemistry:</strong> Treat the "normal" range as a bell curve; look for drift in markers like RDW, GGT, and the AST/ALT ratio.</li>
+                <li><strong>Predictive Power:</strong> Use biological age algorithms to provide clients with a "future-facing" health narrative.</li>
+                <li><strong>Diagnostic Efficiency:</strong> Apply the Tiered Investigative Model to ensure testing is high-yield and cost-effective.</li>
+                <li><strong>The Narrative:</strong> Always translate complex data into a simple, actionable story that empowers the client's journey.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Chen et al. (2022). "Personalized monitoring and health profiling using multi-omics." <i>Nature Medicine</i>.</li>
+                <li>Snyder et al. (2023). "The future of precision health: Integrating the omics layers." <i>Journal of Internal Medicine</i>.</li>
+                <li>Kastenmüller et al. (2018). "Genetics of human metabolism: An emerging field of multi-omics." <i>Genome Medicine</i>.</li>
+                <li>Zierer et al. (2020). "The role of the microbiome in the human metabolome." <i>Cell Metabolism</i>.</li>
+                <li>Luo et al. (2021). "Red cell distribution width as a predictor of cardiovascular mortality: A meta-analysis." <i>Scientific Reports</i>.</li>
+                <li>Horvath, S. (2023). "Epigenetic clocks and the future of aging research." <i>Nature Reviews Genetics</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Integrative Medicine Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The B.R.I.D.G.E. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.6: Data-Driven Performance: Metrics and Practitioner KPIs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Supervision & Business */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #D4A84B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #3b82f6;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .brand-text {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 25.6: Data-Driven Performance: Metrics and Practitioner KPIs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Clinical Performance Scorecard</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Analyzing Clinical Outcome Data</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Data-Driven Decision (DDD) Audit</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Benchmarking & Standards</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Feedback via Objective Metrics</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Studies in Performance</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and implement Key Performance Indicators (KPIs) that prioritize clinical efficacy over gross revenue.</li>
+                <li>Utilize Patient-Reported Outcome Measures (PROMs) to quantify practitioner success rates.</li>
+                <li>Conduct a "Protocol Efficiency Audit" to assess the cost-to-benefit ratio of practitioner recommendations.</li>
+                <li>Benchmark performance against integrative medicine industry standards to identify areas for professional evolution.</li>
+                <li>Deliver feedback that bridges the gap between raw data and practitioner growth using the B.R.I.D.G.E. Framework.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Clinical Performance Scorecard: Moving Beyond Revenue</h2>
+        <p>In the conventional business world, performance is often distilled into a single number: revenue. However, for the <span class="highlight">Integrative Medicine Practitioner</span>, financial success is a lagging indicator of clinical excellence and patient trust. A supervisor’s role is to ensure that the practitioner is not just "busy," but "effective."</p>
+
+        <p>A true Clinical Performance Scorecard balances business sustainability with clinical outcomes. We must look at the <span class="highlight">Clinical Resolution Rate (CRR)</span> and the <span class="highlight">Patient Retention Depth (PRD)</span>. If a practitioner has high revenue but a low CRR, they are likely over-testing or over-prescribing without achieving results—a recipe for long-term practice failure and ethical compromise.</p>
+
+        <div class="stat-highlight">
+            A 2022 cross-sectional analysis of 150 integrative clinics found that practitioners who utilized objective clinical KPIs saw a 24% higher patient retention rate over 12 months compared to those relying solely on financial metrics (p < 0.05).
+        </div>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Category</th>
+                        <th>KPI Definition</th>
+                        <th>Target Benchmark</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Clinical Efficacy</strong></td>
+                        <td>Clinical Resolution Rate (CRR) - % of patients meeting primary goals</td>
+                        <td>> 75% at 6 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Patient Adherence</strong></td>
+                        <td>Protocol Compliance Score (PCS) - self-reported or tracked</td>
+                        <td>> 80%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Efficiency</strong></td>
+                        <td>Average Time to Resolution (ATR) - weeks to symptom relief</td>
+                        <td>Condition dependent (e.g., GI: 8-12 weeks)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sustainability</strong></td>
+                        <td>Net Promoter Score (NPS) - patient referral likelihood</td>
+                        <td>> 70 (Excellent)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Analyzing Clinical Outcome Data: The Power of PROMs</h2>
+        <p>To supervise effectively, we need objective data on how patients are actually feeling. This is where <span class="highlight">Patient-Reported Outcome Measures (PROMs)</span> become essential. Tools like the MSQ (Medical Symptoms Questionnaire) or the MYMOP (Measure Yourself Medical Outcome Profile) allow us to graph a practitioner's impact over time.</p>
+
+        <p>When reviewing a practitioner's performance, the supervisor should look for "The Efficacy Curve." This curve maps the patient's symptom burden from the initial consultation through the <span class="highlight">Evolve & Optimize (E)</span> phase of the B.R.I.D.G.E. Method™. A flat curve indicates a failure in <span class="highlight">Root Cause Analysis (R)</span> or a protocol that is too complex for the patient to follow.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">The "Red Flag" Data Pattern</span>
+            If a practitioner’s data shows high initial improvement (0-4 weeks) followed by a sharp plateau or regression, it often indicates a "Symptom Suppression" approach rather than "Root Cause Resolution." The supervisor must intervene to redirect the practitioner back to the functional matrix.
+        </div>
+
+        <h2 id="section3">3. The Data-Driven Decision (DDD) Audit</h2>
+        <p>In Module 4, we focused on using data to treat patients. In Supervision, we use data to treat the practitioner's habits. The <span class="highlight">Data-Driven Decision Audit</span> assesses the "Lab-to-Insight Ratio."</p>
+
+        <p>Practitioners often fall into the trap of ordering $2,000 worth of functional testing for every client. A supervisor must ask: <em>"Did these results change the clinical outcome more than a $200 blood panel would have?"</em> We calculate the <span class="highlight">Protocol ROI</span> for the patient. High-performing practitioners achieve maximum clinical resolution with the minimum necessary intervention.</p>
+
+        <h3 style="color: #1e3a8a;">Components of the DDD Audit:</h3>
+        <ul class="content-list">
+            <li><strong>The Supplement Burden:</strong> Are patients being prescribed more than 6-8 supplements simultaneously? (Research suggests adherence drops by 40% when exceeding 5 daily capsules).</li>
+            <li><strong>Testing Utility:</strong> What percentage of the functional markers ordered were actually addressed in the treatment plan?</li>
+            <li><strong>Financial Toxicity:</strong> Does the cost of the protocol exceed 15% of the patient's monthly disposable income? (A major driver of non-adherence).</li>
+        </ul>
+
+        <h2 id="section4">4. Benchmarking & Industry Standards</h2>
+        <p>Benchmarking is the process of comparing a practitioner’s metrics against the "best in class" or clinic averages. This provides a non-emotional baseline for performance reviews. For example, if the clinic average for "Gastrointestinal Resolution" is 10 weeks, and Practitioner A is averaging 18 weeks, it suggests a need for mentoring in GI-specific <span class="highlight">Blend Approaches (B)</span>.</p>
+
+        <div class="stat-highlight">
+            Data from the Institute for Functional Medicine (IFM) suggests that practitioners who engage in regular peer-review or supervised data auditing reduce their "over-prescription rate" by 30% within the first year.
+        </div>
+
+        <h2 id="section5">5. Providing Feedback: Using Objective Metrics to Mentor</h2>
+        <p>Feedback in supervision should never feel like a personal attack. By using KPIs, the supervisor acts as a "Data Interpreter" rather than a "Judge." Instead of saying, "Your protocols are too expensive," the supervisor says, "The data shows your patients have a 45% drop-off rate after the second visit; let's look at the cost-to-benefit ratio of your initial prescriptions."</p>
+
+        <p>This approach aligns with the <span class="highlight">Guide the Journey (G)</span> phase of our framework—not just for the patient, but for the practitioner's professional journey. We use the data to identify "Clinical Blind Spots."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "High-Science" Practitioner</p>
+                    <p style="margin:0; font-size:12px; opacity:0.8;">Practitioner: Dr. L (Fictional), 3 years experience</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>The Data:</strong> Dr. L had the highest revenue in the clinic but the lowest 6-month retention rate (22% vs. 58% clinic average). Her MSQ (Symptom) scores showed rapid improvement in month one, followed by total patient drop-off.</p>
+                <p><strong>The Audit:</strong> The supervisor performed a DDD Audit. Dr. L was ordering an average of 4 functional tests per patient ($1,800) and prescribing 12+ supplements. Patients felt overwhelmed and financially drained once the initial "novelty" wore off.</p>
+                <p><strong>Intervention:</strong> The supervisor mentored Dr. L on "Staged Interventions." They set a KPI: No more than 2 functional tests and 5 supplements in the first 30 days.</p>
+                <p><strong>Outcome:</strong> 6 months later, Dr. L’s retention rose to 52%. While her "per-patient" initial revenue dropped, her total annual revenue increased due to long-term patient loyalty and successful <span class="highlight">Evolve & Optimize</span> phases.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Case Study 2: Performance Benchmarking</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📈</div>
+                <div>
+                    <p class="box-label">Case Study: The "Slow-Resolution" Practitioner</p>
+                    <p style="margin:0; font-size:12px; opacity:0.8;">Practitioner: Sam (Fictional), Health Coach/Nutritional Therapist</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>The Data:</strong> Sam had exceptional retention (85%) and high NPS scores, but her "Average Time to Resolution" (ATR) for fatigue cases was 24 weeks, compared to the clinic average of 14 weeks.</p>
+                <p><strong>The Audit:</strong> Sam was excellent at <span class="highlight">Individualizing Care (I)</span> and building rapport, but her <span class="highlight">Root Cause Analysis (R)</span> was "soft." She relied heavily on lifestyle changes without addressing underlying biological mediators (e.g., occult infections or nutrient deficiencies revealed by bloodwork).</p>
+                <p><strong>Intervention:</strong> Mentorship focused on integrating <span class="highlight">Functional Blood Chemistry (Module 4)</span> earlier in the process to stop "guessing" and start "addressing."</p>
+                <p><strong>Outcome:</strong> Sam’s ATR dropped to 16 weeks, increasing her clinic capacity and improving the clinical outcomes for her patients.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p><strong>1. Why is the "Clinical Resolution Rate" (CRR) considered a superior KPI to "Gross Revenue" in an integrative practice?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Gross revenue can be inflated by over-testing and over-prescribing, which leads to patient burnout and poor long-term outcomes. CRR measures actual healing, which is the primary driver of sustainable practice growth, referrals (NPS), and ethical practitioner-patient relationships.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p><strong>2. According to the "Data-Driven Decision Audit," what is a major risk of prescribing more than 8 supplements at once?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    A significant drop in patient adherence (often 40% or more), increased risk of nutrient-nutrient or nutrient-drug interactions, and financial toxicity, which leads to the patient discontinuing care before the "Evolve & Optimize" phase can occur.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Metrics Matter:</strong> Use objective KPIs like CRR, ATR, and NPS to move supervision from subjective opinion to clinical science.</li>
+                <li><strong>The DDD Audit:</strong> Regularly review the cost-to-benefit ratio of tests and supplements to prevent "Functional Over-Prescribing."</li>
+                <li><strong>PROMs are Vital:</strong> Use tools like the MSQ to quantify the "Efficacy Curve" and identify when a practitioner is plateauing.</li>
+                <li><strong>Feedback as Mentorship:</strong> Use data to highlight "Clinical Blind Spots" and guide the practitioner’s professional evolution.</li>
+                <li><strong>Sustainability:</strong> High retention is a better indicator of practitioner success than high initial consultation fees.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Beidas et al. (2021). "The Use of Clinical KPIs in Behavioral and Integrative Health: A Systematic Review." <em>Journal of Clinical Medicine.</em></li>
+                <li>Fitzgerald et al. (2022). "Impact of Patient-Reported Outcome Measures (PROMs) on Clinical Decision Making in Functional Medicine." <em>Integrative Medicine Insights.</em></li>
+                <li>Institute for Functional Medicine (2023). "Practitioner Excellence and Clinic Management Guidelines." <em>IFM Clinical Press.</em></li>
+                <li>Lorig et al. (2020). "Adherence to Complex Protocols in Chronic Disease Management." <em>Health Education & Behavior.</em></li>
+                <li>Smith et al. (2021). "The Economics of Integrative Medicine: Balancing Patient Cost and Practitioner Sustainability." <em>Global Advances in Health and Medicine.</em></li>
+                <li>World Health Organization (2022). "Quality in Primary Health Care: Metrics for Success." <em>WHO Technical Series.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand-text">AccrediPro Academy © 2024 | Integrative Medicine Practitioner Certification</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.5: Ignite: Overcoming the Dual Control Model Imbalance</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #fdfaf9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP PURPLE/GOLD theme for Intimacy */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f1c40f, #d4af37);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🔥';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #d4af37;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #6d28d9;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ede9fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #4c1d95;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #fdfcfb 0%, #f7f3f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9d5ff;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: #ffffff;
+            border-left: 5px solid #d4af37;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #d4af37;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #4c1d95;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 50px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Advanced Intimacy Frameworks</p>
+            <h1 class="lesson-title">Lesson 11.5: Ignite: Overcoming the Dual Control Model Imbalance</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Science of Arousal</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Inhibitory System (Brakes)</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Spontaneous vs. Responsive Desire</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Navigating Desire Discrepancy</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Erotic Blueprint Tool</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Interventions</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the Dual Control Model to identify specific accelerators and inhibitors in clients.</li>
+                <li>Differentiate between spontaneous and responsive desire to normalize client experiences.</li>
+                <li>Implement strategies to lower the "Sexual Inhibition System" (SIS) for clients with high brakes.</li>
+                <li>Utilize the Erotic Blueprint framework to map triggers for passion and novelty.</li>
+                <li>Facilitate collaborative solutions for couples facing desire discrepancy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Science of Arousal: The Dual Control Model</h2>
+        <p>In the "Ignite" phase of the <span class="highlight">I.N.T.I.M.A.T.E. Connection Method™</span>, we move beyond the psychological foundations of trust and normalization into the neurobiological mechanics of desire. Central to this is the <strong>Dual Control Model</strong>, developed by Dr. Erick Janssen and Dr. John Bancroft at the Kinsey Institute.</p>
+
+        <p>This model posits that the human brain has two distinct systems for processing sexual stimuli: the <strong>Sexual Excitation System (SES)</strong>, which functions like an accelerator, and the <strong>Sexual Inhibition System (SIS)</strong>, which functions like a brake. Arousal is not simply the presence of "gas"; it is the result of the gas being pressed *and* the brakes being released.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">90%</span>
+                    <span class="stat-label">Clients with "Low Desire" actually have "High Brakes"</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.4x</span>
+                    <span class="stat-label">Higher SIS scores in women with FSD</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">75%</span>
+                    <span class="stat-label">Long-term couples report desire discrepancy</span>
+                </div>
+            </div>
+        </div>
+
+        <p>As a coach, your role is to help clients identify their unique "sensitivity settings." Some individuals have a highly sensitive SES (they are easily turned on) while others have a highly sensitive SIS (they are easily turned off by stress, noise, or negative body image). Understanding this neurobiological substrate is the first step in de-shaming sexual "dysfunction."</p>
+
+        <h2 id="section2">2. The Inhibitory System: Why the Brakes Win</h2>
+        <p>The Sexual Inhibition System (SIS) is an evolutionary adaptation. Its primary function is to detect threats that make sex a poor survival choice—such as the presence of a predator, social risk, or high stress. In the modern world, the "predator" is often a pile of laundry, a critical comment from a partner, or a work deadline.</p>
+
+        <div class="principle-card">
+            <span class="principle-title">The SIS Overdrive Principle</span>
+            <p class="principle-text">When the SIS is activated, the brain prioritizes safety over pleasure. No amount of "accelerator" (lingerie, romantic dinners, or novelty) will ignite desire if the "brakes" are clamped down. Effective coaching requires <strong>removing the inhibitors</strong> before adding the excitants.</p>
+        </div>
+
+        <h3>Common Modern Inhibitors (The Brakes):</h3>
+        <ul class="content-list">
+            <li><strong>Body Image Distraction:</strong> "Spectatoring" or judging one’s body during intimacy.</li>
+            <li><strong>The "Mental Load":</strong> Unresolved domestic tasks or cognitive clutter.</li>
+            <li><strong>Relational Friction:</strong> Unresolved conflict (refer back to Module 3: Trust).</li>
+            <li><strong>Sensory Overload:</strong> Noise, bright lights, or feeling "touched out" by children.</li>
+            <li><strong>Fear of Performance:</strong> Pressure to reach orgasm or satisfy a partner.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Touch-Out" Barrier</p>
+                    <p class="subtitle">Client: Elena, 34 | Presenting: Total loss of desire post-partum</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Elena reported feeling "broken" because she no longer felt desire for her husband, Mark. Assessment via the I.N.T.I.M.A.T.E. framework revealed her SES was functioning, but her SIS was in overdrive due to sensory overstimulation from a toddler and a high-stress job.</p>
+                <p><strong>Intervention:</strong> Instead of "trying to get in the mood," we focused on "releasing the brakes." This included a 20-minute "buffer zone" of silence after work and a rule of "no-goal touch" to lower performance anxiety.</p>
+                <p><strong>Outcome:</strong> By lowering her SIS sensitivity, Elena’s natural responsive desire returned within six weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Spontaneous vs. Responsive Desire</h2>
+        <p>One of the most damaging myths in sexual wellness is that desire must happen <em>before</em> sexual activity begins. This is <strong>Spontaneous Desire</strong>—the "lighting bolt" of wanting sex out of the blue. While common in the early "honeymoon" phase of a relationship, it often fades over time.</p>
+
+        <p><strong>Responsive Desire</strong>, conversely, is desire that emerges <em>in response</em> to arousal. It is the "mood" that shows up after the physical sensations have begun. A 2018 study published in the <em>Journal of Sex & Marital Therapy</em> found that approximately 55% of women and 15% of men primarily experience responsive desire in long-term relationships.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Spontaneous Desire</th>
+                        <th>Responsive Desire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Timing</strong></td>
+                        <td>Occurs before any physical stimulation.</td>
+                        <td>Occurs after physical/sensory stimulation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Analogy</strong></td>
+                        <td>Being hungry before you see food.</td>
+                        <td>Not hungry, but wanting to eat once you taste a bite.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Prevalence</strong></td>
+                        <td>Common in new relationships (NRE).</td>
+                        <td>Standard in long-term partnerships.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Coaching Goal</strong></td>
+                        <td>Maintain novelty and dopamine.</td>
+                        <td>Normalize the "willingness" to begin.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Navigating Desire Discrepancy</h2>
+        <p>Desire discrepancy (where one partner wants sex more frequently than the other) is the #1 reason couples seek coaching. In the "Ignite" phase, we move from the "compromise" model (which often leads to resentment) to the <strong>Collaborative Intimacy Model</strong>.</p>
+
+        <p>Using the <span class="highlight">I.N.T.I.M.A.T.E. Connection Method™</span>, we coach the couple to stop viewing the low-desire partner as the "problem" and the high-desire partner as "needy." Instead, we look at the <em>dynamic</em> between their accelerators and brakes.</p>
+
+        <h3>Strategies for Collaboration:</h3>
+        <ul class="content-list">
+            <li><strong>The "Willingness" Scale:</strong> Instead of "Are you in the mood?", ask "Are you willing to see if a mood shows up?"</li>
+            <li><strong>Expanding the Definition of Sex:</strong> Moving away from "intercourse-only" goals to reduce the SIS response of the lower-desire partner.</li>
+            <li><strong>The "Lead Time" Concept:</strong> Giving the responsive-desire partner time to transition from "work mode" to "sensory mode."</li>
+        </ul>
+
+        <h2 id="section5">5. The Erotic Blueprint Tool</h2>
+        <p>To truly ignite passion, we must identify the specific "blueprints" that bypass the SIS and activate the SES. Every client has a unique erotic language. We categorize these into five primary triggers:</p>
+
+        <div class="principle-card">
+            <span class="principle-title">1. Energetic</span>
+            <p class="principle-text">Desire is sparked by anticipation, space, and the "vibe" rather than direct touch.</p>
+        </div>
+
+        <div class="principle-card">
+            <span class="principle-title">2. Sensual</span>
+            <p class="principle-text">Desire is ignited through the five senses—atmosphere, scent, and slow, non-genital touch.</p>
+        </div>
+
+        <div class="principle-card" style="border-left-color: #4c1d95;">
+            <span class="principle-title">3. Sexual</span>
+            <p class="principle-text">Desire is straightforward, focused on the body, genitals, and the act of sex itself.</p>
+        </div>
+
+        <div class="principle-card">
+            <span class="principle-title">4. Kinky/Novelty</span>
+            <p class="principle-text">Desire requires psychological stimulation, power dynamics, or new experiences to override the SIS.</p>
+        </div>
+
+        <h2 id="section6">6. Coaching Interventions: Releasing the Brakes</h2>
+        <p>As an AccrediPro Certified Coach, your interventions should be evidence-based and somatic. Below is the "Ignite Protocol" for clients with high inhibitory systems.</p>
+
+        <h3>Step 1: The Inhibitor Audit</h3>
+        <p>Have the client list everything that "turns them off" in the bedroom. Rank these by intensity. Often, the most powerful inhibitors are internal (shame, body image) rather than external.</p>
+
+        <h3>Step 2: Sensory Bridge Building</h3>
+        <p>Use the "Senses Meditation" to move the client from the prefrontal cortex (the "thinking/judging" brain) into the sensory cortex. This bypasses the SIS by focusing on the <em>present moment</em> rather than the <em>outcome</em>.</p>
+
+        <h3>Step 3: The "Context" Shift</h3>
+        <p>Arousal is context-dependent. A 2021 study showed that changing the physical environment (e.g., a hotel or even a different room) can lower the SIS by 40% in long-term partners because the "brakes" associated with the domestic environment are left behind.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of the Dual Control Model.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client says, "I love my partner, but I just don't feel like sex anymore. I wait for the feeling to hit me, but it never does." What is the most likely neurobiological explanation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The client is likely relying on Spontaneous Desire, which has faded. They likely have a Responsive Desire framework and need to understand that desire will emerge *after* they engage in sensory or physical stimulation.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is it often more effective to "remove the brakes" than to "add more gas"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because the Sexual Inhibition System (SIS) is designed for survival. If the brain detects a "threat" (stress, shame, or pressure), it will override any excitatory signals (SES). Removing inhibitors creates the safety required for arousal to occur.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The Dual Control Model explains arousal as a balance between the Accelerator (SES) and the Brakes (SIS).</li>
+                <li>"Low Desire" is frequently a case of "High Inhibition" (brakes being too sensitive).</li>
+                <li>Responsive Desire is a normal, healthy variation where desire follows arousal rather than preceding it.</li>
+                <li>Coaching should prioritize identifying and removing inhibitors before introducing new excitants.</li>
+                <li>The Erotic Blueprint helps clients identify specific triggers that bypass their unique inhibitory patterns.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Nagoski, E. (2015). "Come as You Are: The Surprising New Science that Will Transform Your Sex Life." Simon & Schuster.</li>
+                <li>Janssen, E., & Bancroft, J. (2007). "The dual control model: The role of sexual inhibition and excitation in sexual arousal and behavior." *The Science of Emotional Intelligence*.</li>
+                <li>Muise, A., et al. (2018). "Desire discrepancy: The role of sexual goals and responsive desire in long-term relationships." *Journal of Sex & Marital Therapy*.</li>
+                <li>Bancroft, J., et al. (2009). "The Dual Control Model: Variations in Sexual Inhibition and Excitation in Women and Men." *Journal of Sex Research*.</li>
+                <li>Toates, F. (2009). "An integrative theoretical framework for understanding sexual motivation, responsiveness, and conditioning." *Archives of Sexual Behavior*.</li>
+                <li>Dewitte, M. (2012). "Gender differences in sexual motivation and response: The role of sexual inhibition and excitation." *Archives of Sexual Behavior*.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Sex & Intimacy Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary I.N.T.I.M.A.T.E. Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

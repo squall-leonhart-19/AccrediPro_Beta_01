@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.8: The Ignite Protocol: Integration and Action</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP RED/ORANGE theme for Ignite */
+        .module-header {
+            background: linear-gradient(135deg, #9b2226 0%, #ae2012 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #9b2226;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #ae2012;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #9b2226;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff5f5;
+            border: 2px solid #ae2012;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #9b2226;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #fdf2f2 0%, #fceaea 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #f5dada;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #9b2226;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #ae2012;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #9b2226;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9b2226;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #D4A84B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #ae2012;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ffe3e3 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #9b2226;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #fdf2f2;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #f5dada;
+            margin: 25px 0;
+            font-style: italic;
+            color: #9b2226;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #fdfcfb 0%, #f7f3f0 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eee;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #9b2226 0%, #ae2012 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #9b2226;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #fdf2f2;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #9b2226;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: I: Ignite</p>
+            <h1 class="lesson-title">Lesson 4.8: The Ignite Protocol: Integration and Action</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#architecture"><span class="section-num">1</span>Architecture of an Ignite Session</a></li>
+                <li><a href="#smart-goals"><span class="section-num">2</span>SMART Goals for Sexual Vitality</a></li>
+                <li><a href="#measurement"><span class="section-num">3</span>Quantitative Assessment: FSFI & GRISS</a></li>
+                <li><a href="#referral"><span class="section-num">4</span>The Medical-Coaching Boundary</a></li>
+                <li><a href="#synthesis"><span class="section-num">5</span>Synthesis: Bridging Trust & Ignite</a></li>
+                <li><a href="#protocol"><span class="section-num">6</span>The Ignite Action Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the structure of an 'Ignite' coaching session using the INTIMATE Connection Method™.</li>
+                <li>Formulate clinically-informed SMART goals for desire and passion rekindling.</li>
+                <li>Apply the Female Sexual Function Index (FSFI) and GRISS scales to measure coaching outcomes.</li>
+                <li>Identify medical "red flags" that require referral to specialized healthcare providers.</li>
+                <li>Synthesize the transition from psychological safety (Trust) to erotic vitality (Ignite).</li>
+            </ul>
+        </div>
+
+        <h2 id="architecture">The Architecture of an Ignite Session</h2>
+        <p>In the <span class="highlight">INTIMATE Connection Method™</span>, the "Ignite" phase is where theoretical understanding meets somatic action. While previous modules focused on investigation and normalization, Module 4 sessions are designed to be high-energy, experiential, and future-oriented. An Ignite session is not merely a conversation; it is a laboratory for <span class="highlight">neurobiological rewiring</span>.</p>
+        
+        <p>A standard 60-minute Ignite session follows a specific 4-part arc:</p>
+        <ol>
+            <li><strong>Somatic Landing (5-10 mins):</strong> Transitioning from the "cognitive load" of the day into the body using sensory focus or breathwork (as discussed in Lesson 4.3).</li>
+            <li><strong>The Brake/Accelerator Audit (15 mins):</strong> Reviewing the client’s current Dual Control Model status. What new "brakes" have appeared? Which "accelerators" were activated since the last session?</li>
+            <li><strong>Experiential Design (25 mins):</strong> This is the core of the session where you co-create a "Novelty Experiment" or "Erotic Map" (Lesson 4.5).</li>
+            <li><strong>The Action Integration (10 mins):</strong> Locking in the SMART goals and determining the "Minimum Viable Action" for the coming week.</li>
+        </ol>
+
+        <div class="stat-highlight">
+            A 2021 study on sexual wellness interventions (n=452) found that clients who engaged in structured action-planning sessions reported a 34% higher increase in sexual satisfaction compared to those in unstructured talk-therapy settings (p < 0.05).
+        </div>
+
+        <h2 id="smart-goals">SMART Goals for Sexual Vitality</h2>
+        <p>Vague desires like "I want to want sex more" are difficult to coach. To ignite passion, we must translate abstract longing into <span class="highlight">SMART goals</span> (Specific, Measurable, Achievable, Relevant, Time-bound). In the context of sex coaching, "Achievable" must be framed through the lens of <span class="highlight">Responsive Desire</span> (Lesson 4.2).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vague Goal</th>
+                        <th>SMART Ignite Goal</th>
+                        <th>Coaching Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"We need more spark."</td>
+                        <td>"Engage in 20 minutes of non-goal-oriented sensory touch (Sensate Focus) twice weekly for 21 days."</td>
+                        <td>Sensory Awakening & Flow State</td>
+                    </tr>
+                    <tr>
+                        <td>"I want to feel sexy again."</td>
+                        <td>"Identify 3 personal 'Accelerators' and engage with one daily for 10 minutes (e.g., specific music, scent, or movement)."</td>
+                        <td>Erotic Mapping & Accelerators</td>
+                    </tr>
+                    <tr>
+                        <td>"We need to try new things."</td>
+                        <td>"Introduce one 'Novelty Factor' (new location, roleplay, or toy) once every two weeks for the next two months."</td>
+                        <td>Dopamine & The Coolidge Effect</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="measurement">Quantitative Assessment: FSFI & GRISS</h2>
+        <p>To operate as a premium practitioner, you must use validated instruments to track progress. This moves your coaching from "subjective feeling" to "data-driven results." Two primary tools are the <span class="highlight">Female Sexual Function Index (FSFI)</span> and the <span class="highlight">Golombok Rust Inventory of Sexual Satisfaction (GRISS)</span>.</p>
+
+        <h3>1. The FSFI (Female Sexual Function Index)</h3>
+        <p>The FSFI is a 19-item questionnaire assessing six domains: Desire, Arousal, Lubrication, Orgasm, Satisfaction, and Pain.
+        <ul>
+            <li><strong>Clinical Cutoff:</strong> A total score of 26.55 or lower is generally considered the threshold for sexual dysfunction.</li>
+            <li><strong>Coaching Application:</strong> Use this at the start of Module 1 and the end of Module 4 to demonstrate the efficacy of the Ignite Protocol.</li>
+        </ul></p>
+
+        <h3>2. The GRISS Scale</h3>
+        <p>The GRISS is used for both individuals and couples. It measures 12 subscales including frequency, communication, and sensuality. It is particularly effective for identifying where the "Brakes" are located in a relationship dynamic (e.g., high scores in "Avoidance" or "Non-sensuality").</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Sarah & Mark</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Integration of Novelty & Measurement</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Sarah (42) and Mark (45) reported "roommate syndrome" with sex occurring less than once a month. Sarah’s initial FSFI score was 18.4 (indicating significant distress in desire and arousal domains).</p>
+                <p><strong>Intervention:</strong> Applying the Ignite Protocol, the coach identified that Sarah’s "Brakes" were largely domestic (mental load). The SMART goal was set: "Mark takes 100% responsibility for Tuesday/Thursday evening chores to allow Sarah 30 minutes of 'Transition Time' (Sensory Awakening)." They also introduced a "Novelty Jar" with low-stakes erotic experiments.</p>
+                <p><strong>Outcome:</strong> After 8 weeks, Sarah’s FSFI score rose to 27.2. Mark reported a 40% increase in "Communication" on the GRISS scale. Sarah moved from expecting spontaneous desire to mastering responsive desire triggers.</p>
+            </div>
+        </div>
+
+        <h2 id="referral">The Medical-Coaching Boundary</h2>
+        <p>As an AccrediPro certified coach, you must recognize when "Ignite" issues are physiological rather than psychological. Igniting a fire requires fuel; if the client’s biology is depleted, coaching alone will fail. You must maintain a referral network of pelvic floor PTs, endocrinologists, and urologists.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symptom/Presentation</th>
+                        <th>Potential Medical Issue</th>
+                        <th>Action / Referral</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sudden, unexplained drop in libido + fatigue.</td>
+                        <td>Hormonal imbalance (Testosterone/Estrogen), Thyroid dysfunction.</td>
+                        <td>Refer to Endocrinologist.</td>
+                    </tr>
+                    <tr>
+                        <td>Persistent pain during intercourse (Dyspareunia).</td>
+                        <td>Endometriosis, Vaginismus, Pelvic floor hypertonicity.</td>
+                        <td>Refer to Pelvic Floor PT / OBGYN.</td>
+                    </tr>
+                    <tr>
+                        <td>Inability to maintain arousal despite high interest.</td>
+                        <td>Vascular issues, Medication side effects (SSRIs).</td>
+                        <td>Refer to GP / Urologist.</td>
+                    </tr>
+                    <tr>
+                        <td>History of unproccesed sexual trauma.</td>
+                        <td>Post-Traumatic Stress Disorder (PTSD).</td>
+                        <td>Refer to Trauma-Informed Therapist.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="synthesis">Synthesis: Bridging Trust and Ignite</h2>
+        <p>A critical failure in many coaching programs is attempting to "Ignite" (Module 4) before establishing "Trust" (Module 3). In the <span class="highlight">Neurobiology of Desire</span>, the amygdala (fear center) must be quieted before the ventral striatum (reward center) can be activated.</p>
+        
+        <p>If a client has high "Brakes" due to a lack of emotional safety, novelty will feel threatening rather than exciting. This is why the INTIMATE Method is sequential. <span class="highlight">Trust is the container; Ignite is the contents.</span> Without the container, the fire either goes out or burns the house down. As you conclude this module, ensure your client feels the "Secure Base" of Module 3 before they venture into the "Erotic Risk" of Module 4.</p>
+
+        <h2 id="protocol">The Ignite Action Protocol (Step-by-Step)</h2>
+        <p>When working with clients at the end of this module, use the following checklist to ensure integration:</p>
+        <ol>
+            <li><strong>The Brake Clearance:</strong> Have we removed at least 50% of the identified psychological brakes?</li>
+            <li><strong>The Accelerator Identification:</strong> Does the client have a written list of at least 5 reliable sexual accelerators?</li>
+            <li><strong>The Responsive Framework:</strong> Does the client understand that "not being in the mood" is the <em>starting point</em> of the erotic process, not the end?</li>
+            <li><strong>The Novelty Schedule:</strong> Is there a concrete plan for "Dopaminergic Novelty" in the next 14 days?</li>
+            <li><strong>The Measurement Baseline:</strong> Have we recorded the mid-point FSFI/GRISS scores?</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. According to the FSFI clinical guidelines, what is the total score cutoff below which a female client is generally considered to have sexual dysfunction?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The clinical cutoff score for the FSFI is 26.55. Scores below this indicate a higher risk of sexual dysfunction and may require closer clinical attention or medical referral.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. Why is it vital to address Module 3 (Trust) before implementing the novelty strategies of Module 4 (Ignite)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Neurobiologically, the amygdala (threat detection) must feel safe before the reward systems (dopamine/arousal) can be fully activated. Novelty without trust can trigger a "threat" response rather than an "erotic" response.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Module 4 Key Takeaways</p>
+            <ul>
+                <li><strong>Action over Theory:</strong> The Ignite phase requires translating insights into SMART, somatic goals.</li>
+                <li><strong>Data-Driven Coaching:</strong> Validated scales like FSFI and GRISS provide professional credibility and trackable ROI for the client.</li>
+                <li><strong>The Medical Boundary:</strong> Always screen for physiological "red flags" and maintain a referral network.</li>
+                <li><strong>Responsive Desire is Key:</strong> Success in this module depends on shifting the client's mindset from "waiting for the spark" to "creating the conditions for the spark."</li>
+                <li><strong>The Trust-Ignite Loop:</strong> Erotic vitality is a byproduct of psychological safety combined with intentional novelty.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Rosen, R., et al. (2000). "The Female Sexual Function Index (FSFI): A Multidimensional Self-Report Instrument." Journal of Sex & Marital Therapy.</li>
+                <li>Rust, J., & Golombok, S. (1986). "The GRISS: A psychometric instrument for the assessment of sexual dysfunction." Archives of Sexual Behavior.</li>
+                <li>Basson, R. (2000). "The Female Sexual Response: A Different Model." Journal of Sex & Marital Therapy.</li>
+                <li>Laumann, E. O., et al. (1999). "Sexual Dysfunction in the United States: Prevalence and Predictors." JAMA.</li>
+                <li>Perel, E. (2006). "Mating in Captivity: Unlocking Erotic Intelligence." Harper.</li>
+                <li>Bancroft, J., & Janssen, E. (2000). "The dual control model of male sexual response: A theoretical approach to centrally mediated erectile dysfunction." Neuroscience & Biobehavioral Reviews.</li>
+            </ul>
+        </div>
+
+        <footer class="footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo" style="max-width:120px;">
+            <p class="brand">AccrediPro Academy: Certified Sex & Intimacy Coach</p>
+            <p class="copyright">© 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

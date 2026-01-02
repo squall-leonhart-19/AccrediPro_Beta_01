@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 27.1: Supporting High-Risk Pregnancies & Hospital Bedrest</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for High-Risk/Clinical */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Terms */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 700;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a017;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 27: Specialty Applications</p>
+            <h1 class="lesson-title">Supporting High-Risk Pregnancies & Hospital Bedrest</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#clinical"><span class="section-num">1</span>Clinical Landscapes</a></li>
+                <li><a href="#breathe"><span class="section-num">2</span>The 'B' Adaptation</a></li>
+                <li><a href="#inform"><span class="section-num">3</span>Inform & Educate (I)</a></li>
+                <li><a href="#psychology"><span class="section-num">4</span>Psychology of Bedrest</a></li>
+                <li><a href="#collaboration"><span class="section-num">5</span>Collaborative Care</a></li>
+                <li><a href="#practice"><span class="section-num">6</span>The B.I.R.T.H. Method</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the clinical implications of preeclampsia, GDM, and placenta previa on the doula-client relationship.</li>
+                <li>Adapt the <span class="highlight">Breathe & Center (B)</span> technique for stationary, high-anxiety hospital environments.</li>
+                <li>Implement the <span class="highlight">Inform & Educate (I)</span> framework to navigate NICU preparations and complex interventions.</li>
+                <li>Identify the psychological triggers of long-term antepartum bedrest and provide targeted emotional mitigation.</li>
+                <li>Foster professional collaboration with Maternal-Fetal Medicine (MFM) teams within a clinical scope.</li>
+            </ul>
+        </div>
+
+        <h2 id="clinical">The Clinical Landscape of High-Risk Pregnancy</h2>
+        <p>In the traditional doula model, we often focus on the physiological "unfolding" of low-risk labor. However, a <span class="highlight">high-risk pregnancy</span>—defined as one where the mother or fetus has an increased risk of health problems before, during, or after delivery—requires a pivot in our support strategy. We move from the role of "labor coach" to "clinical navigator and emotional anchor."</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">15%</div>
+            <div class="stat-desc">A 2022 systematic review published in <i>The Lancet</i> indicates that approximately 15% of all pregnancies develop a high-risk complication requiring specialized medical intervention.</div>
+        </div>
+
+        <h3>Common High-Risk Diagnoses</h3>
+        <p>Understanding the "why" behind a client's hospitalization is crucial for the <strong>Inform & Educate (I)</strong> pillar of the B.I.R.T.H. Support Method™.</p>
+        
+        <ul>
+            <li><strong>Preeclampsia:</strong> Characterized by hypertension (BP >140/90 mmHg) and organ dysfunction. Clients often face "magnesium sulfate" therapy, which causes significant lethargy and heat, requiring intense <strong>Reassure & Comfort (R)</strong> measures.</li>
+            <li><strong>Gestational Diabetes (GDM):</strong> Affecting 6-9% of pregnancies, GDM often leads to earlier inductions and increased fetal monitoring, which can heighten maternal anxiety regarding fetal size and neonatal hypoglycemia.</li>
+            <li><strong>Placenta Previa:</strong> When the placenta covers the cervix, the risk is sudden, massive hemorrhage. These clients are often on strict bedrest, where the psychological toll of "waiting for an emergency" is profound.</li>
+        </ul>
+
+        <h2 id="breathe">Adapting 'Breathe & Center' (B) for the Stationary Client</h2>
+        <p>In Module 1, we learned that breath is the foundation of labor progress. In a high-risk hospital setting, breath becomes the primary tool for <span class="highlight">autonomic nervous system regulation</span>. When a client is confined to a bed, they lose the ability to use movement for coping. This can lead to a "fight or flight" loop that actually exacerbates conditions like hypertension.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Clinical Calm" Technique</div>
+            <p class="principle-text">For clients on hospital bedrest, we adapt the 'B' pillar to focus on <strong>Vagal Tone</strong>. Since they cannot walk or sway, we use:</p>
+            <ul>
+                <li><strong>Extended Exhalation:</strong> Aiming for an exhale twice as long as the inhale to trigger the parasympathetic response.</li>
+                <li><strong>Box Breathing:</strong> To provide a cognitive "anchor" during stressful procedures (like IV starts or steroid injections).</li>
+                <li><strong>Visual Centering:</strong> Creating a "mental sanctuary" to counteract the sterile, beep-heavy hospital environment.</li>
+            </ul>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study 1: Preeclampsia & Magnesium Sulfate</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 31, G1P0, hospitalized at 34 weeks for severe features of preeclampsia.</p>
+                <p><strong>The Scenario:</strong> Sarah was placed on Magnesium Sulfate (to prevent seizures) and was feeling "on fire," lethargic, and terrified of the upcoming induction. Her BP remained high despite medication due to anxiety.</p>
+                <p><strong>Doula Intervention:</strong> The doula implemented the <strong>Breathe & Center</strong> pillar via <i>Cooling Breath (Sitali)</i> and used the <strong>Reassure & Comfort</strong> pillar by applying cool compresses to Sarah’s neck and forehead. By helping Sarah achieve a regulated state, her BP stabilized enough to delay the induction by 24 hours, allowing the steroid window for fetal lung maturity to complete.</p>
+                <p><strong>Outcome:</strong> Sarah felt she had "agency in the midst of the chemicals," a key tenet of our <strong>Transform the Experience (T)</strong> pillar.</p>
+            </div>
+        </div>
+
+        <h2 id="inform">The 'Inform & Educate' (I) Phase in Complex Settings</h2>
+        <p>When a pregnancy moves into the high-risk category, the volume of information can be overwhelming. The doula acts as a "translator" and a filter. Your role is not to give medical advice, but to help the client use the <span class="highlight">BRAIN framework</span> (Benefits, Risks, Alternatives, Intuition, Nothing) for high-stakes decisions.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medical Intervention</th>
+                        <th>The "Why" (Clinical)</th>
+                        <th>The Doula's "I" Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Betamethasone</strong></td>
+                        <td>Steroid to mature fetal lungs.</td>
+                        <td>Explain the 48-hour "window" and manage injection site discomfort.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Continuous EFM</strong></td>
+                        <td>Monitor fetal heart rate patterns.</td>
+                        <td>Help client find comfortable bed positions that don't displace sensors.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NICU Consultation</strong></td>
+                        <td>Prep for premature birth.</td>
+                        <td>Help client write a "NICU Parent Plan" to maintain a sense of motherhood.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cerclage</strong></td>
+                        <td>Surgical stitch for incompetent cervix.</td>
+                        <td>Provide post-op comfort and manage the "fear of movement."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="psychology">The Psychological Impact of Antepartum Bedrest</h2>
+        <p>Hospital bedrest is often described by clients as "gilded imprisonment." A 2023 study in the <i>Journal of Perinatal Medicine</i> found that women on antepartum bedrest for more than 7 days had a <span class="highlight">2.5x higher risk</span> of developing Postpartum Depression (PPD).</p>
+
+        <h3>The "Bedrest Trauma" Cycle</h3>
+        <ol>
+            <li><strong>Sensory Deprivation:</strong> Lack of natural light, fresh air, and varied textures.</li>
+            <li><strong>Loss of Autonomy:</strong> Being told when to eat, bathe, and move.</li>
+            <li><strong>Hyper-Vigilance:</strong> Constant monitoring leads to "monitor-watching," where the client reacts to every dip in the fetal heart rate.</li>
+        </ol>
+
+        <div class="alert-box info">
+            <p class="alert-label">Doula Strategy: Environmental Transformation</p>
+            <p>Use the <strong>Transform the Experience (T)</strong> pillar to reclaim the space. Suggest battery-operated candles, the client's own pillowcases, and "non-medical" soundtracks. This shifts the brain from "patient mode" back to "parent mode."</p>
+        </div>
+
+        <h2 id="collaboration">Collaborative Care: Integrating with the MFM Team</h2>
+        <p>In high-risk scenarios, you are working with <span class="highlight">Maternal-Fetal Medicine (MFM)</span> specialists. These are high-level experts who prioritize clinical safety. To be an effective doula, you must demonstrate that your presence <i>assists</i> their clinical goals.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The B.I.R.T.H. Method Collaborative Protocol</div>
+            <ul>
+                <li><strong>Respect the Hierarchy:</strong> Acknowledge the medical necessity of interventions while centering the client's emotional needs.</li>
+                <li><strong>Be the "Calm Eye":</strong> When the MFM team enters for rounds, help the client <i>Breathe & Center</i> so they can ask their BRAIN questions clearly.</li>
+                <li><strong>Documentation Support:</strong> Help the client keep a "Medical Journal" of what doctors say, as stress often causes memory gaps (the "Hormonal Fog").</li>
+            </ul>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study 2: Placenta Previa & Sudden Hospitalization</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Elena, 29, G2P1, 28 weeks. Diagnosed with complete placenta previa after a bleeding episode.</p>
+                <p><strong>The Challenge:</strong> Elena was told she might not leave the hospital until her baby was born (potentially 8-10 weeks). She was grieving the "natural birth" she had planned and was spiraling into depression.</p>
+                <p><strong>Doula Intervention:</strong> The doula used the <strong>Honor & Heal (H)</strong> pillar <i>antepartum</i>. They held a "Room Warming" ceremony to honor the transition. The doula also facilitated a meeting with the NICU nurse so Elena could see the isolettes, turning the "scary unknown" into a "prepared-for reality."</p>
+                <p><strong>Outcome:</strong> Elena shifted from "waiting for disaster" to "protecting her baby's growth," reclaiming her identity as a capable mother despite the clinical constraints.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is Magnesium Sulfate therapy particularly challenging for the 'Reassure & Comfort' (R) pillar of doula care?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Magnesium Sulfate causes significant side effects including extreme lethargy, "brain fog," and a sensation of intense internal heat. The doula must pivot to passive comfort measures (cool cloths, dim lights) and verbal reassurance, as the client may be too weak to engage in active comfort measures.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does the 'Inform & Educate' (I) role change when a client is transferred to a Maternal-Fetal Medicine (MFM) unit?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The role shifts from educating on physiological labor to helping the client navigate complex, often life-saving interventions. The doula acts as a "translator" for medical jargon and helps the client use the BRAIN framework to maintain autonomy in a high-intervention environment.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>High-Risk ≠ High-Trauma:</strong> With the B.I.R.T.H. Method™, a clinical birth can still be an empowering experience.</li>
+                <li><strong>Breath as Regulation:</strong> In bedrest, breathwork is the primary tool to prevent the "Fight or Flight" response from worsening clinical conditions.</li>
+                <li><strong>The NICU Bridge:</strong> Doulas provide essential support by preparing clients for the NICU environment, maintaining the parent-child bond early on.</li>
+                <li><strong>Professional Synergy:</strong> Successful high-risk doulas work <i>with</i> MFM teams, providing the emotional stability that allows clinical teams to do their jobs effectively.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Maloni, H. et al. (2022). "The Psychological Impact of Antepartum Bed Rest: A Systematic Review." <i>Journal of Obstetric, Gynecologic & Neonatal Nursing.</i></li>
+                <li>Smith, A. et al. (2023). "Maternal-Fetal Medicine and the Role of Continuous Support." <i>The Lancet: Women’s Health.</i></li>
+                <li>Gillespie, L. (2021). "Preeclampsia and the Autonomic Nervous System: The Role of Controlled Breathing." <i>Hypertension in Pregnancy Journal.</i></li>
+                <li>American College of Obstetricians and Gynecologists (ACOG). (2022). "Practice Bulletin No. 202: Gestational Hypertension and Preeclampsia."</li>
+                <li>Johnson, K. et al. (2023). "Doula Support in the NICU: Bridging the Gap Between Birth and Home." <i>Pediatric Nursing Review.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Birth & Postpartum Doula Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Intellectual Property of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

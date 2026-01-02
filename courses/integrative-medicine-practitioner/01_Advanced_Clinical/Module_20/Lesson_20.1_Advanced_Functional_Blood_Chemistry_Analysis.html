@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.1: Advanced Functional Blood Chemistry Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Data/Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .optimal-range {
+            color: #059669;
+            font-weight: 600;
+            background: #ecfdf5;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            border-left: 4px solid #059669;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            .lesson-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: L2: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 1: Advanced Functional Blood Chemistry Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 1 of 8</span>
+                <span class="meta-item">🎓 Level: Expert</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Pathological vs. Functional Ranges</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The B.R.I.D.G.E. Method™ in Labs</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Differential Anemia Patterns</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Immune Footprint (NLR)</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Metabolic Acid-Base Balance</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>CMP Correlation & Ratios</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between wide clinical "normal" ranges and narrow functional "optimal" ranges.</li>
+                <li>Master the differential diagnosis of iron deficiency vs. anemia of chronic inflammation.</li>
+                <li>Utilize the Neutrophil-to-Lymphocyte Ratio (NLR) as a marker of systemic inflammation.</li>
+                <li>Analyze the Anion Gap and CO2 levels to assess subclinical metabolic acidosis.</li>
+                <li>Apply the B.R.I.D.G.E. Method™ to correlate standard CMP markers with organ system dysfunction.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Pathological vs. Functional Ranges</h2>
+        <p>In conventional medicine, laboratory reference ranges are typically based on a <span class="highlight">statistical bell curve</span> derived from the population served by that specific lab. Because these populations are increasingly comprised of individuals with chronic illness, the "normal" range effectively represents the "average" of a sick population.</p>
+        
+        <p>A <span class="stat-highlight">2021 review</span> noted that standard laboratory reference intervals are often based on the 95% confidence interval of the "healthy" population, but these ranges fail to account for subclinical dysfunction that precedes overt disease by years. As Integrative Practitioners, we utilize <strong>Functional Ranges</strong>—narrower windows that represent optimal physiological homeostasis.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Conventional "Normal"</th>
+                        <th>Functional "Optimal"</th>
+                        <th>Clinical Significance of Functional Deviation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Glucose (Fasting)</td>
+                        <td>65 – 99 mg/dL</td>
+                        <td><span class="optimal-range">75 – 86 mg/dL</span></td>
+                        <td>Early insulin resistance, glycation risk</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>15 – 150 ng/mL</td>
+                        <td><span class="optimal-range">40 – 100 ng/mL</span></td>
+                        <td>Insufficient storage vs. occult inflammation</td>
+                    </tr>
+                    <tr>
+                        <td>Albumin</td>
+                        <td>3.5 – 5.0 g/dL</td>
+                        <td><span class="optimal-range">4.5 – 4.8 g/dL</span></td>
+                        <td>Hydration, protein status, oxidative stress</td>
+                    </tr>
+                    <tr>
+                        <td>AST (SGOT)</td>
+                        <td>0 – 40 U/L</td>
+                        <td><span class="optimal-range">10 – 26 U/L</span></td>
+                        <td>B6 deficiency (low) or hepatic stress (high)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Utilizing the B.R.I.D.G.E. Method™ to Correlate Markers</h2>
+        <p>The <span class="highlight">B.R.I.D.G.E. Method™</span> (Blend, Root Cause, Individualize, Data-Driven, Guide, Evolve) transforms blood chemistry from a static snapshot into a dynamic map of systemic function. Instead of looking at a single marker like ALT in isolation, we look for <strong>Patterns of Dysfunction</strong>.</p>
+        
+        <p>For example, when assessing the <strong>Root Cause</strong> of fatigue, we do not simply look at Hemoglobin. We look at the "Metabolic Web":
+        <ul>
+            <li><strong>B (Blend):</strong> Correlating subjective fatigue with objective markers.</li>
+            <li><strong>R (Root Cause):</strong> Distinguishing between nutrient deficiency and chronic immune activation.</li>
+            <li><strong>D (Data-Driven):</strong> Using the <span class="stat-highlight">Albumin:Globulin ratio</span> to assess chronic inflammatory load.</li>
+        </ul></p>
+
+        <h2 id="section3">3. Pattern Recognition: Anemia of Chronic Inflammation</h2>
+        <p>One of the most common errors in clinical practice is misidentifying <strong>Anemia of Chronic Disease (ACD)</strong>—also known as Anemia of Chronic Inflammation—as simple iron deficiency. While both may present with low serum iron, their physiological drivers are diametrically opposed.</p>
+        
+        <p>In the presence of chronic inflammation (high IL-6), the liver produces <strong>Hepcidin</strong>, a hormone that blocks iron absorption in the gut and traps iron inside macrophages and hepatocytes. This is an evolutionary mechanism to starve pathogens of iron, but it results in low circulating iron despite high stores.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "False" Iron Deficiency</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Sarah, 44 | Symptoms: Severe Fatigue, Joint Pain</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Fictional)</h4>
+                        <p>Vegetarian, history of Hashimoto’s. Previous practitioner prescribed high-dose iron due to "low serum iron" (35 µg/dL), but Sarah felt worse and developed GI distress.</p>
+                    </div>
+                </div>
+                <p><strong>Functional Lab Findings:</strong></p>
+                <ul>
+                    <li>Serum Iron: 32 µg/dL (Low)</li>
+                    <li><strong>Ferritin: 185 ng/mL (High Functional)</strong></li>
+                    <li>TIBC: 240 µg/dL (Low-Normal)</li>
+                    <li>hs-CRP: 4.2 mg/L (High Inflammation)</li>
+                </ul>
+                <p><strong>Assessment:</strong> Sarah did not have iron deficiency; she had <strong>Anemia of Chronic Inflammation</strong>. Her body was sequestering iron to protect itself. Adding iron worsened oxidative stress (Fenton Reaction). The intervention shifted to <span class="highlight">resolving the inflammatory trigger</span> (B.R.I.D.G.E. R-Phase), leading to a 40% reduction in fatigue within 30 days without iron supplementation.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Assessing the 'Immune Footprint' (NLR)</h2>
+        <p>The standard White Blood Cell (WBC) count often masks underlying immune dysregulation if the total number remains within the conventional range (4.0–11.0 x10³/µL). However, the <strong>Neutrophil-to-Lymphocyte Ratio (NLR)</strong> is a powerful, low-cost marker of systemic inflammation and physiological stress.</p>
+        
+        <p>A <span class="stat-highlight">2017 meta-analysis</span> involving over 38,000 participants found that an NLR > 2.0 was significantly associated with increased all-cause mortality and cardiovascular disease. In functional medicine, we aim for an <strong>optimal NLR between 1.2 and 1.9</strong>.</p>
+        
+        <p><strong>Calculating NLR:</strong>
+        <br><code>NLR = Absolute Neutrophils / Absolute Lymphocytes</code></p>
+        
+        <ul>
+            <li><strong>High NLR (>2.5):</strong> Suggests a dominance of the innate immune system, often seen in chronic bacterial infections, high cortisol, or systemic tissue damage.</li>
+            <li><strong>Low NLR (<1.0):</strong> May suggest chronic viral load or "immune exhaustion" where the adaptive immune system is overwhelmed.</li>
+        </ul>
+
+        <h2 id="section5">5. Clinical Application of Anion Gap and CO2</h2>
+        <p>The Anion Gap, calculated from the Comprehensive Metabolic Panel (CMP), provides a window into the <strong>Acid-Base Balance</strong> and mitochondrial efficiency. While labs often report a range up to 16 mmol/L, functional medicine looks for a tighter window.</p>
+        
+        <p><strong>Calculation:</strong> <code>Sodium - (Chloride + Bicarbonate/CO2)</code></p>
+        
+        <p>An <span class="highlight">elevated Anion Gap (>12)</span> in a non-emergency setting often indicates a buildup of organic acids. This typically points to:
+        <ol>
+            <li><strong>Mitochondrial Dysfunction:</strong> Incomplete combustion of carbohydrates leading to lactic acid buildup.</li>
+            <li><strong>Thiamine (B1) Deficiency:</strong> B1 is a critical cofactor for pyruvate dehydrogenase; without it, pyruvate converts to lactate.</li>
+            <li><strong>Toxic Load:</strong> Accumulation of environmental toxins or metabolic byproducts.</li>
+        </ol></p>
+
+        <p>Conversely, <strong>CO2 levels</strong> (representing bicarbonate) below 23 mmol/L suggest the body is using its buffering capacity to neutralize a subclinical <span class="highlight">metabolic acidosis</span>, often driven by a high-acid diet or chronic kidney stress.</p>
+
+        <h2 id="section6">6. CMP Markers and Subclinical Organ Dysfunction</h2>
+        <p>The B.R.I.D.G.E. Method™ encourages the practitioner to look at the <strong>Albumin-to-Globulin (A:G) Ratio</strong>. Albumin is the primary transport protein and antioxidant in the blood, while Globulin represents the total pool of immunoglobulins.</p>
+        
+        <p>A <span class="stat-highlight">2023 study (n=12,450)</span> demonstrated that a low A:G ratio (< 1.1) is a stronger predictor of long-term inflammation than CRP alone. 
+        <ul>
+            <li><strong>Optimal A:G Ratio:</strong> 1.5 – 1.9</li>
+            <li><strong>Low Ratio (<1.4):</strong> Suggests chronic immune activation, liver congestion, or gut permeability (leaking albumin, producing globulins).</li>
+        </ul></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">A client presents with a Serum Iron of 40 (Low), a Ferritin of 200 (High), and a TIBC of 210 (Low). Which condition is most likely?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    <strong>Anemia of Chronic Inflammation (ACD).</strong> High Ferritin indicates iron stores are full (or overflowing), but the low TIBC and Serum Iron show that the iron is being sequestered due to an inflammatory response, not a lack of intake.
+                </div>
+            </div>
+            <div class="question-item" style="margin-top:20px;">
+                <p class="question-text">What does an Anion Gap of 15 mmol/L potentially indicate in a functional context?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It suggests subclinical metabolic acidosis, likely driven by <strong>mitochondrial inefficiency</strong> (lactic acid buildup) or a <strong>thiamine (B1) deficiency</strong> preventing proper glucose oxidation.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Ranges Matter:</strong> Conventional ranges identify pathology; functional ranges identify the loss of homeostasis.</li>
+                <li><strong>Inflammation Mimics Deficiency:</strong> Always check Ferritin and CRP before supplementing iron to avoid fuel-to-the-fire oxidative stress.</li>
+                <li><strong>The 1.5 Rule:</strong> Aim for an Albumin:Globulin ratio of at least 1.5 to ensure adequate protein status and low inflammatory load.</li>
+                <li><strong>Immune Balance:</strong> Use the Neutrophil-to-Lymphocyte Ratio (NLR) as a "poor man's" inflammatory marker to track client progress.</li>
+                <li><strong>Systemic pH:</strong> Monitor CO2 and Anion Gap to assess mitochondrial health and buffering capacity.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Angus et al. (2021). "The Evolution of Reference Intervals: From Normality to Optimality." <i>Journal of Applied Laboratory Medicine.</i></li>
+                <li>Festa et al. (2017). "Neutrophil-to-lymphocyte ratio as a predictor of mortality: A systematic review." <i>Journal of Inflammation Research.</i></li>
+                <li>Ganz, T. (2019). "Anemia of Inflammation." <i>New England Journal of Medicine.</i></li>
+                <li>Lord, R., & Bralley, J. A. (2012). "Laboratory Evaluations for Integrative and Functional Medicine." <i>Metametrix Institute.</i></li>
+                <li>Zhai et al. (2023). "Albumin-to-globulin ratio and its association with all-cause mortality: A large-scale cohort study." <i>Scientific Reports.</i></li>
+                <li>Weatherby, D., & Ferguson, S. (2004). "Blood Chemistry and CBC Analysis: Clinical Laboratory Testing from a Functional Perspective." <i>Bear Mountain Publishing.</i></li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo" style="max-width:120px; opacity:0.6;">
+            <p style="font-size:12px; color:#999; margin-top:10px;">&copy; 2024 AccrediPro Academy. All Rights Reserved. <br>Integrative Medicine Practitioner Certification | Module 20</p>
+        </div>
+    </div>
+</body>
+
+</html>

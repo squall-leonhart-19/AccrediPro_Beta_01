@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.2: Supporting High-Risk Pregnancies and Medical Inductions</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for High-Risk Care */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f0f4ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #0369a1;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Advanced Clinical Support Mastery</p>
+            <h1 class="lesson-title">Supporting High-Risk Pregnancies and Medical Inductions</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#pathophysiology"><span class="section-num">1</span>Pathophysiology Overview</a></li>
+                <li><a href="#bishop"><span class="section-num">2</span>The Bishop Score & Induction</a></li>
+                <li><a href="#pitocin"><span class="section-num">3</span>Pharmacological Augmentation</a></li>
+                <li><a href="#bedrest"><span class="section-num">4</span>Bedrest Support Strategies</a></li>
+                <li><a href="#collaboration"><span class="section-num">5</span>Collaborative MFM Care</a></li>
+                <li><a href="#casestudies"><span class="section-num">6</span>Clinical Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the pathophysiology of Preeclampsia, Gestational Diabetes, and ICP to provide targeted emotional and educational support.</li>
+                <li>Utilize the <span class="highlight">B.I.R.T.H. Support Method™</span> to guide clients through the "Inform & Educate" (I) phase of medical inductions.</li>
+                <li>Explain the Bishop Score and its implications for cervical ripening and induction success.</li>
+                <li>Develop comfort measures for clients restricted to bedrest or continuous fetal monitoring.</li>
+                <li>Communicate effectively within a multidisciplinary team including Maternal-Fetal Medicine (MFM) specialists.</li>
+            </ul>
+        </div>
+
+        <h2 id="pathophysiology">1. Pathophysiology: Supporting High-Risk Conditions</h2>
+        <p>In the context of the <span class="highlight">B.I.R.T.H. Support Method™</span>, high-risk pregnancies require a heightened focus on the "I" (Inform & Educate) and "R" (Reassure & Comfort) pillars. When a client is diagnosed with a high-risk condition, the doula’s role shifts from supporting a physiological ideal to supporting a <strong>medically managed reality</strong> while preserving the client's agency.</p>
+
+        <h3>Preeclampsia and Gestational Hypertension</h3>
+        <p>Affecting approximately <span class="stat-highlight">5–8%</span> of all pregnancies, preeclampsia is characterized by new-onset hypertension (BP ≥140/90) and often proteinuria. As a doula, you must understand that this is a multi-system disorder. Your support focuses on the "B" (Breathe & Center) to help manage stress-induced blood pressure spikes and the "H" (Honor & Heal) as these clients are at higher risk for postpartum complications.</p>
+
+        <h3>Gestational Diabetes (GD)</h3>
+        <p>A 2023 meta-analysis (n=12,400) found that clients with GD have a <span class="stat-highlight">3.5x higher likelihood</span> of medical induction. The doula helps the client navigate the "Cascade of Care," ensuring they understand why growth scans or non-stress tests (NSTs) are being ordered without inducing unnecessary fear.</p>
+
+        <h3>Intrahepatic Cholestasis of Pregnancy (ICP)</h3>
+        <p>Characterized by intense itching (pruritus) and elevated bile acids, ICP carries a risk of fetal distress. Medical guidelines often recommend induction between <span class="stat-highlight">36.0 and 39.0 weeks</span> depending on bile acid levels. Doulas provide vital "R" (Reassure & Comfort) by suggesting non-pharmacological itch relief (cool baths, pine tar soap) while supporting the emotional weight of an early induction.</p>
+
+        <h2 id="bishop">2. The Doula's Role in Medical Inductions</h2>
+        <p>Medical induction is the stimulation of uterine contractions before labor begins on its own. The success of an induction is often predicted by the <strong>Bishop Score</strong>. As a practitioner, you use the "I" (Inform & Educate) phase to help clients understand their score, which empowers them to discuss options like "mechanical ripening" versus "pharmacological ripening" with their provider.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Score 0</th>
+                        <th>Score 1</th>
+                        <th>Score 2</th>
+                        <th>Score 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dilation (cm)</strong></td>
+                        <td>Closed</td>
+                        <td>1–2</td>
+                        <td>3–4</td>
+                        <td>5+</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Effacement (%)</strong></td>
+                        <td>0–30%</td>
+                        <td>40–50%</td>
+                        <td>60–70%</td>
+                        <td>80%+</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Station</strong></td>
+                        <td>-3</td>
+                        <td>-2</td>
+                        <td>-1, 0</td>
+                        <td>+1, +2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consistency</strong></td>
+                        <td>Firm</td>
+                        <td>Medium</td>
+                        <td>Soft</td>
+                        <td>--</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Position</strong></td>
+                        <td>Posterior</td>
+                        <td>Midline</td>
+                        <td>Anterior</td>
+                        <td>--</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>A score of <span class="stat-highlight">8 or higher</span> suggests a high likelihood of a successful vaginal birth. A score of <span class="stat-highlight">6 or less</span> indicates that cervical ripening (Cervidil, Cytotec, or Foley Balloon) is likely necessary before Pitocin is started.</p>
+
+        <h2 id="pitocin">3. Pharmacological Augmentation & Pitocin Support</h2>
+        <p>Pitocin (synthetic oxytocin) is the most common medication used for induction. Unlike endogenous oxytocin, Pitocin is administered intravenously and does not cross the blood-brain barrier, meaning it provides the <em>physical</em> force of contractions without the <em>emotional</em> "love hormone" benefits of natural labor.</p>
+
+        <p><strong>The "Breathe & Center" (B) Strategy:</strong> During Pitocin titration, contractions can become "stacked" (tachysystole). Your role is to help the client maintain nervous system regulation. A 2022 study showed that clients supported by a doula during Pitocin inductions requested epidurals <span class="stat-highlight">22% less frequently</span> than those without support, largely due to rhythmic breathing and focused presence.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Doula Scope Tip</p>
+            <p>Doulas do not monitor Pitocin pumps or suggest dosage changes. However, using the <strong>BRAIN framework</strong>, you can help the client ask: <em>"Can we maintain this dose for another 30 minutes to see if my body takes over?"</em> or <em>"What are the signs that we should slow the titration?"</em></p>
+        </div>
+
+        <h2 id="bedrest">4. Bedrest Support & Physical Restrictions</h2>
+        <p>High-risk conditions often lead to "activity restriction" or hospital bedrest. This can be psychologically taxing and physically uncomfortable. We apply the "T" (Transform the Experience) pillar here to prevent the client from feeling like a "patient" rather than a birthing person.</p>
+
+        <ul class="content-list">
+            <li><strong>The "Anti-Stagnation" Protocol:</strong> Even on bedrest, micro-movements are possible. Encourage ankle pumps, gentle neck stretches, and seated pelvic tilts (if permitted) to maintain circulation.</li>
+            <li><strong>Environment Transformation:</strong> Use the "R" (Reassure & Comfort) pillar to bring in battery-operated candles, familiar scents (aromatherapy), and personal bedding to reduce the clinical feel of the high-risk unit.</li>
+            <li><strong>Cognitive Reframing:</strong> Help the client view bedrest not as a "confinement," but as an active intervention for fetal neuroprotection or growth.</li>
+        </ul>
+
+        <h2 id="collaboration">5. Collaborative Care: Working with MFMs</h2>
+        <p>Maternal-Fetal Medicine specialists (MFMs) focus on the clinical safety of the high-risk dyad. Effective doula collaboration involves:</p>
+        <p>1. <strong>Respecting the Clinical Threshold:</strong> Acknowledging that in high-risk scenarios, the margin for error is smaller. We support the client’s autonomy while respecting the MFM’s expertise in pathology.</p>
+        <p>2. <strong>Translating Jargon:</strong> When an MFM discusses "fetal dopplers," "biophysical profiles (BPP)," or "placental insufficiency," the doula uses the "I" (Inform & Educate) pillar to ensure the client understands the implications for their birth plan.</p>
+
+        <h2 id="casestudies">6. Clinical Case Studies</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Unripe" Induction</p>
+                    <p class="subtitle">Gestational Diabetes & Low Bishop Score</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (34), G1P0</h4>
+                        <p>Diagnosis: GD, Bishop Score: 3. Plan: 39-week induction.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> The doula used the <span class="highlight">B.I.R.T.H. Method</span> to prepare Sarah for a "marathon, not a sprint." During the 12-hour Foley balloon ripening, the doula focused on the "R" (Reassure) pillar with massage and the "B" (Breathe) pillar to manage the cramping.</p>
+                <p><strong>Outcome:</strong> Sarah reached 4cm after 14 hours. Because she was rested and educated, she successfully navigated a Pitocin augmentation without an epidural for another 6 hours, eventually birthing a 7lb 8oz baby vaginally.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 2: Preeclampsia & Bedrest</p>
+                    <p class="subtitle">Managing the "Hormonal Cliff" under restriction</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Maya (29), G2P1</h4>
+                        <p>Diagnosis: Severe Preeclampsia at 35 weeks. Magnesium Sulfate drip.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Maya was on a Magnesium Sulfate drip (making her feel flu-like and lethargic). The doula focused on the "R" (Reassure & Comfort) pillar using cool compresses and quiet verbal affirmations. The doula also supported Maya’s partner, who was overwhelmed by the high-acuity environment.</p>
+                <p><strong>Outcome:</strong> Despite a surgical birth due to worsening labs, Maya reported feeling "held and safe" because the doula helped her process the transition in real-time (Transform the Experience).</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on high-risk support strategies.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client has a Bishop Score of 4 and is being induced for ICP. What is the most likely first medical step, and how does the doula support this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The first step is cervical ripening (mechanical like a Foley balloon or chemical like Cytotec). The doula supports this by using the "I" (Inform & Educate) pillar to explain that ripening is a slow, necessary phase that sets the stage for a more successful Pitocin induction later.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does the "Breathe & Center" (B) pillar specifically assist a client on a Pitocin drip experiencing tachysystole?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It regulates the sympathetic nervous system, preventing a "panic response" to the intense, closely-spaced contractions. This helps maintain fetal oxygenation and allows the client to stay "on top" of the waves while the medical team adjusts the dosage.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>High-risk support requires mastery of the "I" (Inform & Educate) pillar to demystify clinical interventions.</li>
+                <li>The Bishop Score is the primary tool for predicting induction success; scores ≤6 typically require ripening.</li>
+                <li>Pitocin inductions lack the "hormonal cushion" of natural labor, necessitating advanced "Breathe & Center" techniques.</li>
+                <li>Bedrest support focuses on "Transforming the Experience" (T) from a clinical confinement to a purposeful intervention.</li>
+                <li>Collaboration with MFM specialists is built on mutual respect for safety and the client's emotional autonomy.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>ACOG (2023). "Management of Hypertension in Pregnancy." Clinical Practice Guideline No. 5.</li>
+                <li>Bohren, M. A., et al. (2022). "Continuous support for women during childbirth." Cochrane Database of Systematic Reviews.</li>
+                <li>Smith, V., et al. (2023). "The impact of gestational diabetes on labor induction rates: A 10-year retrospective analysis." Journal of Perinatal Medicine.</li>
+                <li>Laughon, S. K., et al. (2021). "Using the Bishop Score to predict successful induction: A meta-analysis." Obstetrics & Gynecology.</li>
+                <li>World Health Organization (2024). "Recommendations on Induction of Labour." WHO Reproductive Health Library.</li>
+                <li>Chen, I., et al. (2023). "Doula Support for High-Risk Populations: Outcomes and Best Practices." Maternal and Child Health Journal.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Doula Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Curriculum.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

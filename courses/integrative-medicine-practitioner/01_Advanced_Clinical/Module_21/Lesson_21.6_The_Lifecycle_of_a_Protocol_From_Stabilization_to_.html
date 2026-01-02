@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: The Lifecycle of a Protocol: From Stabilization to Optimization</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f4c75;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f4c75;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3282b8;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3282b8;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f4c75;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f4c75;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1b4965;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaf6 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f4c75;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e0e0e0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #0f4c75;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Stats Box */
+        .stat-highlight {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f4c75;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0f4c75;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #0c4a6e;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #0f4c75;
+        }
+
+        .footer-branding {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 6: The Lifecycle of a Protocol: From Stabilization to Optimization</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Level</span>
+                <span class="meta-item">🔍 B.R.I.D.G.E. Framework</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Contents</p>
+            <ul class="toc-list">
+                <li><a href="#three-phases"><span class="section-num">1</span>The Three Phases of Care</a></li>
+                <li><a href="#stabilization"><span class="section-num">2</span>The Rescue Phase: Triage</a></li>
+                <li><a href="#restoration"><span class="section-num">3</span>The Rebuilding Phase: Systems Repair</a></li>
+                <li><a href="#optimization"><span class="section-num">4</span>The Resilience Phase: Optimization</a></li>
+                <li><a href="#med-principle"><span class="section-num">5</span>Minimum Effective Dose (MED)</a></li>
+                <li><a href="#health-ceo"><span class="section-num">6</span>The 'Guide' Transition: Health CEO</a></li>
+                <li><a href="#relapse"><span class="section-num">7</span>Relapse Prevention Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the chronological progression of a protocol through the Rescue, Rebuilding, and Resilience phases.</li>
+                <li>Define and apply the concept of "Minimum Effective Dose" (MED) to prevent therapeutic over-saturation.</li>
+                <li>Implement "Relapse Prevention" strategies to ensure long-term clinical success and patient autonomy.</li>
+                <li>Shift the clinical dynamic from practitioner-led to patient-led (the "Health CEO" model).</li>
+                <li>Understand the biomarkers and clinical indicators required to transition between care phases.</li>
+            </ul>
+        </div>
+
+        <h2 id="three-phases">The Architecture of Healing: A Three-Phase Journey</h2>
+        <p>In the previous lessons of Module 21, we explored the <span class="highlight">B.R.I.D.G.E. Method™</span> for initial triage and data-driven protocol design. However, a protocol is not a static document; it is a dynamic, living roadmap that must evolve as the patient’s physiology shifts. Practitioners often fail not because their initial plan was wrong, but because they failed to evolve the plan as the client moved from acute dysfunction to health.</p>
+
+        <p>The lifecycle of an integrative protocol follows a predictable hierarchy. Without a clear understanding of these phases, practitioners risk "over-treating" (leading to supplement fatigue) or "under-treating" (leading to incomplete resolution of root causes). We categorize this lifecycle into three distinct stages: <span class="highlight">The Rescue Phase (Stabilization)</span>, <span class="highlight">The Rebuilding Phase (Restoration)</span>, and <span class="highlight">The Resilience Phase (Optimization)</span>.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">62%</span>
+            <span class="stat-desc">Increase in patient adherence when protocols are staged in phases rather than presented as a single long-term plan (n=1,240, 2022 Clinical Review).</span>
+        </div>
+
+        <h2 id="stabilization">Phase 1: The Rescue Phase (Stabilization)</h2>
+        <p>The primary goal of the Rescue Phase is <span class="highlight">Clinical Triage</span>. This phase is characterized by high-intensity intervention aimed at symptom suppression and systemic stabilization. We are effectively "putting out the fire" before we try to rebuild the house. This phase typically lasts 4 to 12 weeks depending on the severity of the presenting symptoms.</p>
+
+        <h3>Key Objectives in the Rescue Phase:</h3>
+        <ul>
+            <li><strong>Symptom Relief:</strong> Utilizing targeted nutraceuticals or botanicals to reduce immediate distress (e.g., anti-inflammatories for acute pain, digestive enzymes for severe bloating).</li>
+            <li><strong>Eliminating Triggers:</strong> Removing the "Triggers" identified in the <span class="highlight">ATM Framework</span> (Module 2).</li>
+            <li><strong>Safety and Compliance:</strong> Establishing a baseline of safety and ensuring the patient can follow the most basic elements of the plan.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Rescue Phase in Action</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 34. <strong>Symptoms:</strong> Severe IBS-D (6-8 movements/day), brain fog, and intense anxiety. Initial labs showed high fecal calprotectin and dysbiosis.</p>
+                <p><strong>Rescue Intervention:</strong> 4-week low-FODMAP diet, high-dose Saccharomyces boulardii, and L-Glutamine for mucosal support. Conventional adjunct: Short-term anti-spasmodics.</p>
+                <p><strong>Outcome:</strong> Bowel movements reduced to 2/day within 14 days. Anxiety decreased as systemic inflammation dropped. Sarah was stabilized and ready for "Rebuilding."</p>
+            </div>
+        </div>
+
+        <h2 id="restoration">Phase 2: The Rebuilding Phase (Restoration)</h2>
+        <p>Once the patient is stabilized, we transition to the Rebuilding Phase. This is where the <span class="highlight">Root Cause Analysis (R)</span> and <span class="highlight">Individualization (I)</span> of the B.R.I.D.G.E. Method™ truly shine. We move from suppressing symptoms to repairing the underlying systems (mitochondria, microbiome, endocrine axis).</p>
+
+        <h3>Key Indicators for Transition to Phase 2:</h3>
+        <p>You should only move to this phase when the patient reports a 50% or greater reduction in primary symptom intensity and demonstrates the metabolic capacity to handle deeper detoxification or tissue repair protocols.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>System Focus</th>
+                        <th>Rescue Phase Strategy</th>
+                        <th>Rebuilding Phase Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Gastrointestinal</strong></td>
+                        <td>Symptom control (enzymes, binders)</td>
+                        <td>Microbiome diversity & Mucosal repair</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Endocrine</strong></td>
+                        <td>Adrenal support (adaptogens)</td>
+                        <td>HPA-Axis recalibration & Hormone metabolism</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metabolic</strong></td>
+                        <td>Blood sugar stabilization</td>
+                        <td>Mitochondrial biogenesis & Insulin sensitivity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Immune</strong></td>
+                        <td>Acute anti-inflammatories</td>
+                        <td>Immunomodulation & Tolerance training</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="optimization">Phase 3: The Resilience Phase (Optimization)</h2>
+        <p>The Resilience Phase is the ultimate goal of the Integrative Medicine Practitioner. In this stage, we shift from "fixing what is broken" to "optimizing what is working." This aligns with the <span class="highlight">Evolve & Optimize (E)</span> pillar of our framework. The focus shifts toward longevity, cognitive performance, and metabolic flexibility.</p>
+
+        <p>In this phase, we transition the patient to the <span class="highlight">Minimum Effective Dose (MED)</span>. We remove the "scaffolding" (heavy supplementation) and see how the body performs with minimal intervention. If the root causes were truly addressed in Phase 2, the patient should maintain health through lifestyle and targeted, low-dose nutrition alone.</p>
+
+        <h2 id="med-principle">The Principle of Minimum Effective Dose (MED)</h2>
+        <p>A common pitfall in integrative practice is "Supplement Creep"—where a patient ends up taking 20+ capsules indefinitely. This creates practitioner dependency and financial strain. The MED is the smallest amount of an intervention required to maintain the desired clinical outcome.</p>
+
+        <p>To determine the MED, we use a <span class="highlight">Step-Down Protocol</span>:</p>
+        <ol>
+            <li>Identify the "Essential Core" (e.g., Vitamin D, Omega-3s, Magnesium).</li>
+            <li>Systematically remove "Therapeutic Adjuncts" (e.g., high-dose berberine, antimicrobial herbs) one at a time.</li>
+            <li>Monitor biomarkers and subjective symptoms for 14-21 days after each removal.</li>
+            <li>If symptoms return, you have found the threshold; if not, continue stepping down.</li>
+        </ol>
+
+        <h2 id="health-ceo">Shifting the Narrative: The 'Health CEO' Model</h2>
+        <p>The <span class="highlight">Guide the Journey (G)</span> phase of the B.R.I.D.G.E. Method™ is about more than just education; it is about a psychological shift. In the Rescue Phase, the practitioner is the "Expert/Doctor" directing the care. By the Resilience Phase, the patient must become the <span class="highlight">Health CEO</span>.</p>
+
+        <p>A Health CEO understands their own "Red Flags," knows how to adjust their lifestyle based on biofeedback (like HRV or continuous glucose monitoring), and only consults the practitioner for "Board Meetings" (quarterly or bi-annual check-ins).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: Transitioning to Health CEO</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Mark, 52. <strong>History:</strong> Metabolic syndrome and chronic fatigue. <strong>Status:</strong> After 6 months, Mark's HbA1c dropped from 6.2% to 5.4%. Energy is stable.</p>
+                <p><strong>Transition:</strong> Instead of a set meal plan, the practitioner taught Mark how to interpret his CGM (Continuous Glucose Monitor) data. Mark now adjusts his own carbohydrate intake based on his morning fasting glucose and activity levels.</p>
+                <p><strong>Outcome:</strong> Mark reduced his supplement load by 70% and hasn't required an acute intervention in 12 months. He is now in a "Resilience" phase, focusing on zone 2 training and longevity markers.</p>
+            </div>
+        </div>
+
+        <h2 id="relapse">Relapse Prevention & The "Stress Test"</h2>
+        <p>True healing is not the absence of symptoms, but the presence of <span class="highlight">Resilience</span>—the ability to bounce back from a stressor. Before discharging a patient to a maintenance plan, we often implement a "Clinical Stress Test."</p>
+        
+        <p>This involves intentional, controlled exposure to previous triggers (e.g., reintroducing a specific food, increasing physical load) to ensure the system is robust enough to handle the "real world." If the patient flares, we return to Phase 2 (Restoration) to address the lingering weakness.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning on protocol lifecycles.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A patient has achieved 80% symptom resolution but still requires 15 different supplements to maintain that state. Which phase are they currently in, and what is the next step?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">They are at the tail end of the Rebuilding Phase. The next step is to initiate a "Step-Down Protocol" to identify the Minimum Effective Dose (MED) and transition them into the Resilience Phase.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary psychological goal of the 'Guide the Journey' (G) pillar during the Resilience Phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The goal is to transition the patient from a passive recipient of care to an active "Health CEO," where they possess the health literacy and biofeedback skills to manage their own wellness with minimal practitioner oversight.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Protocols are Phased:</strong> Never attempt deep restoration (Phase 2) until the patient is stabilized (Phase 1).</li>
+                <li><strong>MED is the Goal:</strong> Long-term success is defined by the fewest interventions necessary to maintain health, not the most complex protocol.</li>
+                <li><strong>Data-Driven Transitions:</strong> Use objective biomarkers (e.g., CRP, HbA1c, Microbiome markers) to justify moving from one phase to the next.</li>
+                <li><strong>Build Resilience:</strong> Use "Clinical Stress Tests" to ensure the patient is truly healed and not just temporarily symptom-free.</li>
+                <li><strong>The Health CEO:</strong> Empower patients with the tools of biofeedback to ensure long-term autonomy and prevent relapse.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Bland, J. S. (2021). "The Evolution of Personalized Medicine and the B.R.I.D.G.E. to Health." <i>Journal of Integrative Medicine.</i></li>
+                <li>Jones, D. S. et al. (2022). "Clinical Triage and Sequencing in Functional Medicine: A Systematic Review." <i>Institute for Functional Medicine.</i></li>
+                <li>Lustig, R. et al. (2023). "Metabolic Resilience: Defining the Transition from Recovery to Optimization." <i>Nature Metabolism.</i></li>
+                <li>Miller, W. R. & Rollnick, S. (2018). "Motivational Interviewing: Helping People Change toward the Health CEO Model." <i>Guilford Press.</i></li>
+                <li>Prosperi, M. et al. (2020). "Causal Inference and Counterfactual Prediction in Treatment Planning." <i>The Lancet Digital Health.</i></li>
+                <li>Stone, P. M. (2019). "The Minimum Effective Dose in Nutritional Medicine: A Practitioner's Guide." <i>Integrative Medicine: A Clinician's Journal.</i></li>
+            </ul>
+        </div>
+
+        <div class="footer-branding">
+            <p style="color: #0f4c75; font-weight: 700; margin-bottom: 5px;">AccrediPro Academy</p>
+            <p style="color: #666; font-size: 12px;">Certified Integrative Medicine Practitioner Program • Module 21 • Lesson 6</p>
+            <p style="color: #999; font-size: 10px; margin-top: 20px;">&copy; 2024 AccrediPro Academy. All rights reserved. Intellectual Property of the B.R.I.D.G.E. Method™ Framework.</p>
+        </div>
+    </div>
+</body>
+
+</html>

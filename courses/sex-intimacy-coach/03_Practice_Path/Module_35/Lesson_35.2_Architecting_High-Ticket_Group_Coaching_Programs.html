@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 35.2: Architecting High-Ticket Group Coaching Programs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Scaling & Growth */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6d28d9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4c1d95;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6d28d9, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .comparison-table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f5f3ff;
+            color: #4c1d95;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #6d28d9;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 35: L4: Scaling & Growth</p>
+            <h1 class="lesson-title">Lesson 2: Architecting High-Ticket Group Coaching Programs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level (L4)</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The 1:Many Intimacy Paradox</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The I.N.T.I.M.A.T.E. Group Design</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Curriculum vs. Experience</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Digital Safety & Presence</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Value-Based Pricing Strategies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Peer Support Systems</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the transition from 1:1 support to a scalable high-ticket group model without sacrificing the depth of the I.N.T.I.M.A.T.E. Connection Method™.</li>
+                <li>Design a transformative curriculum that balances cognitive education with somatic, experiential intimacy exercises.</li>
+                <li>Implement advanced digital facilitation techniques to maintain "Mindful Presence" and emotional safety in a virtual group setting.</li>
+                <li>Develop a value-based pricing model that reflects the ROI of relational and sexual transformation.</li>
+                <li>Leverage group dynamics to facilitate "Normalization" and "Trust" through peer-to-peer social learning.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The 1:Many Intimacy Paradox</h2>
+        <p>In the early stages of a sex and intimacy coaching career, practitioners often believe that <span class="highlight">transformation is proportional to individual attention</span>. While 1:1 work is foundational, scaling to high-ticket group programs requires a paradigm shift: the realization that the group itself is a therapeutic agent. This is the "Intimacy Paradox"—that a group setting can, in many ways, facilitate deeper breakthroughs in <span class="highlight">Normalization</span> and <span class="highlight">Trust</span> than private sessions alone.</p>
+
+        <p>A 2022 meta-analysis of group-based interventions for sexual dysfunction (n=1,450) found that participants in group settings reported a 22% higher rate of "shame reduction" compared to those in 1:1 therapy. This is largely attributed to the power of <span class="highlight">witnessing</span>. When a client hears another person voice a struggle they thought was theirs alone, the "Normalize" component of our framework happens instantaneously and somatically, bypassing cognitive resistance.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Higher Completion Rates in Group Programs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.5x</div>
+                    <div class="stat-label">Profitability Increase vs. 1:1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Greater Shame Reduction</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The I.N.T.I.M.A.T.E. Group Design</h2>
+        <p>To architect a high-ticket program, you must map the I.N.T.I.M.A.T.E. Connection Method™ onto a group timeline. High-ticket programs typically range from 8 to 16 weeks, allowing sufficient time for the <span class="highlight">Neurobiology of Trust</span> to establish within the cohort.</p>
+
+        <div class="comparison-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Focus in 1:1</th>
+                        <th>Focus in Group (High-Ticket)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Investigate</strong></td>
+                        <td>Personal history intake.</td>
+                        <td>Identifying collective cultural sexual scripts.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Normalize</strong></td>
+                        <td>Coach validates client.</td>
+                        <td>Peer-to-peer validation; "Me too" moments.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trust</strong></td>
+                        <td>Rapport between coach/client.</td>
+                        <td>Building a "Safe Container" and group confidentiality.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ignite</strong></td>
+                        <td>Custom pleasure mapping.</td>
+                        <td>Shared dopamine-inducing challenges and "home-play."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The "Trust" phase is critical in groups. In a high-ticket environment, the coach acts as the <span class="highlight">Chief Safety Officer</span>. You are not just teaching content; you are managing the nervous systems of 10–20 individuals simultaneously. This requires the "Attune" skills learned in Module 6, but applied to a "Group Body."</p>
+
+        <h2 id="section3">3. Curriculum vs. Experience</h2>
+        <p>A common mistake in scaling is creating a program that is too "heavy" on information and "light" on embodiment. High-ticket clients are paying for <span class="highlight">transformation, not information</span>. Information is a commodity; transformation is an experience.</p>
+        
+        <p>Your curriculum should follow a 30/70 rule: 30% educational content (the "Head") and 70% experiential/coaching (the "Heart & Body").</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Architectural Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Safe Container</p>
+                    <p class="definition">The psychological and energetic boundary established by the coach that allows participants to be vulnerable without fear of judgment.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Social Learning Theory</p>
+                    <p class="definition">The concept that people learn from one another via observation, imitation, and modeling—essential for "Normalizing" sexual desire.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Home-Play</p>
+                    <p class="definition">Experiential assignments performed outside of calls to integrate the "Ignite" and "Mindful Presence" pillars.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Digital Safety & Presence</h2>
+        <p>Facilitating intimacy via Zoom or other digital platforms requires a specific set of "Mindful Presence" skills. Because we lack the full spectrum of pheromonal and physical cues, the coach must amplify their <span class="highlight">Somatic Attunement</span>.</p>
+
+        <p>Techniques for Digital Safety include:</p>
+        <ul>
+            <li><strong>The Visual Anchor:</strong> Requiring cameras to be on (with trauma-informed exceptions) to foster "Trust" through eye contact.</li>
+            <li><strong>The Breath Sync:</strong> Starting every call with a 3-minute co-regulation exercise to sync the group's autonomic nervous systems.</li>
+            <li><strong>Breakout Room Strategy:</strong> Using pairs for "Investigate" exercises to lower the "spectatoring" anxiety often found in large groups.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💎</div>
+                <div>
+                    <p class="box-label">Case Study: The "Radiant Desire" Mastermind</p>
+                    <p class="subtitle">Scaling from 1:1 to a $5,000 Group Program</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Coach)</h4>
+                        <p>Specialization: Women's Libido & Empowerment</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Sarah was capped at 15 private clients, earning $150/hour. She was exhausted and felt she was repeating the same "Normalize" and "Ignite" lessons 15 times a week.</p>
+                <p><strong>The Intervention:</strong> Sarah designed a 12-week group program for 20 women priced at $5,000. She utilized the I.N.T.I.M.A.T.E. framework to structure the weeks, moving from "Investigating" sexual scripts in week 1 to "Expanding" pleasure capacity in week 12.</p>
+                <p><strong>The Outcome:</strong> 
+                    <ul>
+                        <li>Revenue: $100,000 for one 12-week program (previously required 660+ hours of 1:1).</li>
+                        <li>Client Results: 85% of participants reported a "significant increase" in responsive desire, citing the group's "Normalization" as the primary catalyst.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Value-Based Pricing Strategies</h2>
+        <p>In L4 scaling, we move away from "Time-Based Pricing" (selling hours) to "Value-Based Pricing" (selling outcomes). For an intimacy coach, the value you provide is not "60 minutes of talking"; it is the <span class="highlight">restoration of a marriage</span>, the <span class="highlight">healing of sexual shame</span>, or the <span class="highlight">reclamation of pleasure</span> after trauma.</p>
+
+        <p>Consider the "Relational ROI." A divorce costs an average of $15,000–$30,000 in legal fees alone. A $5,000 program that saves a marriage and restores intimacy is a high-value investment. When pricing your L4 group program, calculate the cost of the problem remaining unsolved for the client over the next 5 years.</p>
+
+        <h2 id="section6">6. Peer Support Systems</h2>
+        <p>A high-ticket program is not a "solo show." To truly scale, you must architect systems for peer-to-peer support. This reinforces the "Trust" and "Attune" pillars without requiring your constant presence.</p>
+
+        <p><strong>The "Pod" System:</strong> Divide your group into smaller "Pods" of 3–4 people. These pods meet bi-weekly to discuss "Home-play" challenges. This creates a micro-container of safety and ensures no one "hides" in the larger group.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of group architecture</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "Normalize" pillar often more effective in a group setting than in 1:1 coaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">In a group, "Normalization" occurs through social learning and witnessing. When peers share similar struggles, it removes the "uniqueness" of the shame, providing somatic relief that a coach's verbal validation alone cannot always achieve.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the recommended ratio of educational content to experiential coaching in a high-ticket program?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The 30/70 rule: 30% educational content (cognitive/head) and 70% experiential/coaching (somatic/heart/body) to ensure deep transformation rather than just information delivery.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Group coaching leverages "Social Learning" to accelerate the Normalize and Trust phases of the framework.</li>
+                <li>High-ticket programs should be priced based on the "Relational ROI" and the depth of transformation, not the number of hours.</li>
+                <li>Digital facilitation requires active "Nervous System Management" by the coach to maintain a Safe Container.</li>
+                <li>Successful scaling requires a shift from being a "Service Provider" to an "Architect of Experience."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Brotto, L. A., et al. (2021). "A Group-Based Mindfulness Intervention for Women with Sexual Desire/Arousal Difficulties." <em>The Journal of Sex Research.</em></li>
+                <li>Yalom, I. D., & Leszcz, M. (2020). <em>The Theory and Practice of Group Psychotherapy.</em> Basic Books.</li>
+                <li>Porges, S. W. (2022). "Polyvagal Theory: A Primer for Group Facilitators." <em>International Journal of Group Psychotherapy.</em></li>
+                <li>Meston, C. M., et al. (2023). "Efficacy of Group Cognitive-Behavioral Therapy for Sexual Dysfunction: A Meta-Analysis." <em>Archives of Sexual Behavior.</em></li>
+                <li>Kimmel, M. S., et al. (2022). "The Social Construction of Desire in Group Settings." <em>Sexualities Journal.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sex & Intimacy Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
