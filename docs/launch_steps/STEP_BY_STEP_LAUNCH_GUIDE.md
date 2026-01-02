@@ -406,3 +406,171 @@ ClickFunnels Purchase
 
 **Last Updated:** Jan 2, 2026
 
+---
+
+## 📧 Email Flow (Automatic)
+
+### Email Strategy: Generic Welcome + Specific Enrollment
+
+| Email | When Sent | Template Type | What It Says |
+|-------|-----------|---------------|--------------|
+| **Welcome** | First purchase ever | Generic | "Welcome to AccrediPro Academy!" (positions for bigger ecosystem) |
+| **Enrollment** | Each course enrollment | Course-specific | "You're enrolled in {{courseName}}!" (pulled from database) |
+| **Pro VIP** | Pro Accelerator purchase | Niche-specific | VIP welcome with niche code |
+
+**Why Generic Welcome?**
+- Positions for future upsells
+- "You joined an ACADEMY, not just a course"
+- Works for all products without changes
+
+**No Code Changes Needed:**
+- Welcome email: ✅ Same for all
+- Enrollment email: ✅ Auto-pulls course title from DB
+- Coach DMs: ✅ Auto-selects based on niche config
+
+---
+
+## 🛒 ClickFunnels Setup (Detailed)
+
+### A. Create Product in CF
+
+| Field | What to Enter | Example |
+|-------|---------------|---------|
+| **Product Name** | Full certification name with ™ | `Certified Holistic Nutrition Coach™` |
+| **Price** | $97 (L1) or $397 (Pro) | `97.00` |
+| **SKU** | **EXACT course slug from database** | `holistic-nutrition-coach-certification` |
+
+> ⚠️ **CRITICAL:** SKU must match the database course slug EXACTLY!
+
+### B. SKU Reference Table
+
+| Niche | L1 SKU (Main $97) | Pro SKU (Bundle $397) |
+|-------|-------------------|----------------------|
+| FM | `functional-medicine-complete-certification` | `fm-pro-accelerator` |
+| HN | `holistic-nutrition-coach-certification` | `hn-pro-accelerator` |
+| WH | `womens-hormone-health-coach-certification` | `wh-pro-accelerator` |
+| NR | `narcissistic-abuse-recovery-coach-certification` | `nr-pro-accelerator` |
+| ND | `neurodiversity-coach-certification` | `nd-pro-accelerator` |
+| GL | `grief-loss-coach-certification` | `gl-pro-accelerator` |
+| LC | `life-coach-certification` | `lc-pro-accelerator` |
+| SE | `spiritual-energy-practitioner-certification` | `se-pro-accelerator` |
+| SI | `sex-intimacy-coach-certification` | `si-pro-accelerator` |
+| HB | `herbalist-practitioner-certification` | `hb-pro-accelerator` |
+| TM | `eft-tapping-practitioner-certification` | `tm-pro-accelerator` |
+| PW | `pet-wellness-coach-certification` | `pw-pro-accelerator` |
+| FB | `birth-postpartum-doula-certification` | `fb-pro-accelerator` |
+| PC | `parenting-coach-certification` | `pc-pro-accelerator` |
+| CF | `christian-life-coach-certification` | `cf-pro-accelerator` |
+| IM | `integrative-medicine-practitioner-certification` | `im-pro-accelerator` |
+
+### C. Webhook Configuration
+
+**URL (SAME for ALL products):**
+```
+https://sarah.accredipro.academy/api/webhooks/clickfunnels-purchase
+```
+
+**That's it!** No other webhook config needed. Routing is automatic based on SKU.
+
+---
+
+## 📊 Meta Pixel Setup
+
+### A. Pixel Category Assignment
+
+Each niche uses a pixel from its category:
+
+| Pixel Category | Pixel # | Niches Using It |
+|----------------|---------|-----------------|
+| fm-health | 1 | FM, WH, IM, HN |
+| mental-health | 2 | NR, ND, GL |
+| life-coaching | 3 | LC |
+| spiritual | 4 | SE, SI |
+| herbalism | 5 | HB |
+| yoga-movement | 6 | TM |
+| pet-wellness | 7 | PW |
+| parenting | 8 | FB, PC |
+| faith | 9 | CF |
+| business | 10 | (upsells) |
+
+### B. Where to Add Pixel ID
+
+1. **Checkout Page Header:** Add Facebook pixel base code with your pixel ID
+2. **CAPI is Automatic:** The webhook fires Purchase event to Meta automatically
+
+### C. What CAPI Sends
+
+```javascript
+{
+  event_name: "Purchase",
+  user_data: {
+    em: [hashed_email],
+    fn: [hashed_first_name],
+    // ... other PII hashed
+  },
+  custom_data: {
+    value: 97.00,  // or 397.00 for Pro
+    currency: "USD",
+    content_name: "Certified Holistic Nutrition Coach"
+  }
+}
+```
+
+---
+
+## 📋 Launch Status Tracker (All 16 Niches)
+
+| Code | Niche | Course | CF Product | Pixel | DM Config | Status |
+|------|-------|--------|------------|-------|-----------|--------|
+| FM | Functional Medicine | ✅ | ✅ | ✅ | ✅ | 🟢 LIVE |
+| HN | Holistic Nutrition | ✅ | 🟡 | 🟡 | ✅ | 🟡 READY |
+| WH | Women's Hormone Health | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| IM | Integrative Medicine | 🔄 | ❌ | ❌ | ✅ | 🔴 PENDING |
+| NR | Narcissistic Recovery | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| ND | Neurodiversity | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| GL | Grief & Loss | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| LC | Life Coaching | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| SE | Spiritual Energy | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| SI | Sex & Intimacy | 🔄 | ❌ | ❌ | ✅ | 🔴 PENDING |
+| HB | Herbalism | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| TM | EFT/Tapping | 🔄 | ❌ | ❌ | ✅ | 🔴 PENDING |
+| PW | Pet Wellness | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| FB | Birth & Postpartum | 🔄 | ❌ | ❌ | ✅ | 🔴 PENDING |
+| PC | Parenting Coach | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+| CF | Christian Life Coach | ✅ | ❌ | ❌ | ✅ | 🔴 PENDING |
+
+**Legend:**
+- ✅ Complete
+- 🟡 In Progress
+- 🔄 Generating
+- ❌ Not Started
+- 🟢 LIVE = Accepting sales
+- 🟡 READY = Ready to launch
+- 🔴 PENDING = Needs work
+
+---
+
+## 🚀 Quick Launch Steps (Summary)
+
+**To launch a new niche:**
+
+```
+1. ✅ Verify course exists in database
+2. 📦 Create CF product with exact SKU
+3. 🔗 Add webhook URL (same for all)
+4. 📊 Add pixel ID to checkout page
+5. 🎉 Done! Everything else is automatic
+```
+
+**What's Automatic:**
+- User account creation
+- Course enrollment
+- Welcome email (generic)
+- Enrollment email (course-specific)
+- Sarah DM (0 min)
+- Coach DM (+5 min)
+- Meta CAPI Purchase
+- NeverBounce verification
+- Bounce recovery AI
+
+
