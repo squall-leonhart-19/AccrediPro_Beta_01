@@ -1,4 +1,5 @@
 import NeverBounce from "neverbounce";
+import prisma from "@/lib/prisma";
 
 /**
  * NeverBounce Email Verification Service
@@ -95,8 +96,12 @@ export async function verifyEmail(email: string): Promise<EmailVerificationResul
     let reason: string | undefined;
     if (result === "invalid") {
       reason = "This email address appears to be invalid. Please check for typos.";
+      // AUTO-SUPPRESS: Mark this email as bounced to prevent future sends
+      await suppressEmailByAddress(email, "neverbounce_invalid");
     } else if (result === "disposable") {
       reason = "Temporary/disposable emails are not allowed. Please use a permanent email address.";
+      // AUTO-SUPPRESS: Mark this email as bounced to prevent future sends
+      await suppressEmailByAddress(email, "neverbounce_disposable");
     }
 
     return {
@@ -146,4 +151,45 @@ const DISPOSABLE_DOMAINS = [
 export function isDisposableEmail(email: string): boolean {
   const domain = email.split("@")[1]?.toLowerCase();
   return DISPOSABLE_DOMAINS.includes(domain);
+}
+
+/**
+ * Auto-suppress an email address when NeverBounce returns invalid/disposable
+ * This prevents future email sends to bad addresses
+ */
+async function suppressEmailByAddress(email: string, source: string): Promise<void> {
+  try {
+    const normalizedEmail = email.toLowerCase();
+
+    // Find user by email
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail }
+    });
+
+    if (!user) {
+      console.log(`[NEVERBOUNCE] No user found for ${normalizedEmail}, cannot suppress`);
+      return;
+    }
+
+    // Find suppress_bounced tag
+    const tag = await prisma.marketingTag.findUnique({
+      where: { slug: "suppress_bounced" }
+    });
+
+    if (!tag) {
+      console.warn(`[NEVERBOUNCE] suppress_bounced tag not found in database`);
+      return;
+    }
+
+    // Add suppression tag
+    await prisma.userMarketingTag.upsert({
+      where: { userId_tagId: { userId: user.id, tagId: tag.id } },
+      create: { userId: user.id, tagId: tag.id, source },
+      update: { source } // Update source if already exists
+    });
+
+    console.log(`⚠️ [NEVERBOUNCE] Auto-suppressed ${normalizedEmail} (source: ${source})`);
+  } catch (error) {
+    console.error(`[NEVERBOUNCE] Failed to suppress ${email}:`, error);
+  }
 }

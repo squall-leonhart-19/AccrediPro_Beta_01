@@ -1,267 +1,369 @@
-# 📊 AccrediPro Pixel Architecture - Category Mapping
+# 📊 AccrediPro Pixel Architecture - 15-Pixel Maximum Targeting
 
-> **532+ Courses → 10 Pixels**  
-> Complete mapping of all 50 categories to Meta advertising pixels
-
----
-
-## 🎯 PIXEL SUMMARY
-
-| Pixel | # Categories | # Courses | % of Total | Target Audience |
-|-------|--------------|-----------|------------|-----------------|
-| 🏥 **FM/HEALTH** | 22 | ~210 | 39% | Women 30-60, health seekers |
-| 🧠 **MENTAL HEALTH** | 10 | ~95 | 18% | Trauma survivors, NARC, neurodivergent |
-| 🎯 **LIFE COACHING** | 8 | ~60 | 11% | Personal development seekers |
-| 🔮 **SPIRITUAL** | 4 | ~40 | 8% | Spiritual seekers, manifesting |
-| 🌿 **HERBALISM** | 3 | ~35 | 7% | Natural medicine lovers |
-| 🧘 **YOGA/MOVEMENT** | 3 | ~35 | 7% | Yoga/fitness community |
-| 🐾 **PET** | 2 | ~24 | 5% | Pet owners |
-| 👨‍👩‍👧 **PARENTING** | 2 | ~22 | 4% | Parents, families |
-| 🙏 **FAITH** | 1 | 12 | 2% | Christians, church ministries |
-| 💼 **BUSINESS** | 1 | 10 | 2% | Practitioners, entrepreneurs |
-| **TOTAL** | **50** | **532+** | **100%** | |
+> **532+ Courses → 15 Pixels**  
+> Optimized for maximum ROAS with granular audience targeting
 
 ---
 
-## 🏥 PIXEL 1: FM/HEALTH (MEGA PIXEL)
+## 🎯 15-PIXEL SUMMARY
 
-*The powerhouse pixel with 22 categories and 210+ courses. Your bread and butter.*
-
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 0 | Functional Medicine (Core) | 5 |
-| 1 | Women's Health & Hormones | 15 |
-| 2 | Hormones & Metabolism | 13 |
-| 3 | Gut Health | 14 |
-| 4 | Autoimmune & Inflammation | 13 |
-| 6 | Nutrition & Lifestyle | 14 |
-| 8 | Advanced Functional Medicine | 13 |
-| 19 | Bodywork & Massage Therapy | 12 |
-| 20 | Biohacking & Longevity | 12 |
-| 21 | Fertility, Birth & Postpartum | 10 |
-| 22 | Fitness & Athletic Performance | 10 |
-| 23 | Clinical & Condition-Specific | 11 |
-| 24 | Genetics & Advanced Testing | 7 |
-| 27 | Men's Health | 9 |
-| 28 | Specialized Body Systems | 9 |
-| 32 | Diet & Nutrition Approaches | 12 |
-| 33 | Environmental & Lifestyle | 10 |
-| 49 | Healthcare Professional Tracks | 15 |
-
-**Total: ~210 courses (39% of catalog)**
+| # | Pixel | Flagship Course | Target Audience |
+|---|-------|-----------------|-----------------|
+| 1 | 🌸 **WOMEN'S HORMONES** | Women's Hormone Health Coach | Women 35-55, menopause, PCOS |
+| 2 | 🤰 **FERTILITY & BIRTH** | Birth & Postpartum Doula | TTC, pregnant, new moms |
+| 3 | 🏥 **FUNCTIONAL MEDICINE** | FM Practitioner | Gut, autoimmune, clinical |
+| 4 | 💔 **NARC & RELATIONSHIP TRAUMA** | NARC Recovery Coach | Abuse survivors, toxic relationships |
+| 5 | 💋 **SEX & INTIMACY** | Sex & Intimacy Coach | Couples, women 30-50 |
+| 6 | 🧩 **NEURODIVERSITY** | ADHD Support Specialist | Parents, adults ADHD/Autism |
+| 7 | 🎨 **THERAPY MODALITIES** | EFT/Tapping Practitioner | Coaches wanting therapy tools |
+| 8 | 😢 **GRIEF & END OF LIFE** | Death Doula / Grief Coach | Bereavement, families |
+| 9 | 🎯 **LIFE COACHING** | Life Coach | Career, purpose, transitions |
+| 10 | 🔮 **SPIRITUAL & ENERGY HEALING** | Energy Healing Practitioner | Reiki, manifestation, crystals |
+| 11 | 🌿 **HERBALISM & NATURAL MEDICINE** | Herbalism Practitioner | Plant medicine, naturopathic |
+| 12 | 🐾 **PET WELLNESS** | Pet Wellness Coach | Pet parents, dog/cat owners |
+| 13 | 👶 **PARENTING & CHILD DEV** | Conscious Parenting + Play Therapy | Parents, child psychology |
+| 14 | 🙏 **FAITH-BASED** | Christian Life Coach | Church community, biblical |
+| 15 | 🩺 **INTEGRATIVE MEDICINE** | Integrative Medicine Practitioner | Bridge naturopathic + allopathic |
 
 ---
 
-## 🧠 PIXEL 2: MENTAL HEALTH & TRAUMA
+## 🌸 PIXEL 1: WOMEN'S HORMONES
 
-*High-intent buyers in recovery. NARC is a goldmine.*
+*Your #1 buyer demographic. Women 35-55 with hormone issues.*
 
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 5 | Mental Health & Nervous System | 15 |
-| 9 | Emotional & Holistic Wellness | 12 |
-| 13 | Narcissistic Abuse & Relationship Trauma | 11 |
-| 25 | Addiction & Recovery | 10 |
-| 35 | Senior & End-of-Life | 8 |
-| 38 | Grief & Bereavement | 15 |
-| 40 | Neurodiversity (Expanded) | 10 |
-| 42 | Veterans & Military | 6 |
-| 43 | Disability Wellness | 6 |
+**Flagship:** Certified Women's Hormone Health Coach™
 
-**Total: ~95 courses (18% of catalog)**
+**Courses:**
+- Women's Hormone Health Coach
+- Menopause & Perimenopause Coach
+- PCOS & Metabolic Health Coach
+- Thyroid & Hashimoto's Specialist
+- Estrogen Dominance Coach
+- Adrenal & Cortisol Coach for Women
+- PMS & PMDD Support Coach
+- Women's Wellness (40+) Coach
 
----
-
-## 🎯 PIXEL 3: LIFE COACHING
-
-*ICF-style credentials for transformation seekers.*
-
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 11 | Holistic Lifestyle & Personal Dev | 8 |
-| 17 | Life Coaching & Personal Dev | 13 |
-| 31 | Specialized Populations | 11 |
-| 34 | LGBTQ+ & Inclusive Wellness | 5 |
-| 44 | Cultural & Identity | 5 |
-| 45 | Personal Development Foundations | 7 |
-| 46 | Money & Abundance | 5 |
-| 47 | Productivity & Time | 5 |
-
-**Total: ~60 courses (11% of catalog)**
+**Target:** Women 35-55, menopause symptoms, weight gain, fatigue, mood swings
 
 ---
 
-## 🔮 PIXEL 4: SPIRITUAL & ENERGY
+## 🤰 PIXEL 2: FERTILITY & BIRTH
 
-*Mindvalley competitor. High engagement, high belief.*
+*High emotion, high spending. Mothers are the most willing buyers.*
 
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 15 | Spiritual Healing & Energy Work | 19 |
-| 26 | Sexual Wellness & Intimacy | 9 |
-| 41 | Sexuality & Intimacy (Expanded) | 5 |
-| 48 | Spiritual & Energy (Expanded) | 10 |
+**Flagship:** Certified Birth & Postpartum Doula™
 
-**Total: ~40 courses (8% of catalog)**
+**Courses:**
+- Fertility & Preconception Coach
+- Birth & Postpartum Doula
+- Lactation & Breastfeeding Educator
+- Postpartum Depletion Recovery Coach
+- Baby Led Weaning Specialist
+- Prenatal Wellness Coach
+- Miscarriage & Loss Support Coach
+- Hypnobirthing Coach
 
----
-
-## 🌿 PIXEL 5: HERBALISM & TRADITIONAL MEDICINE
-
-*$50B+ market, barely touched by competitors.*
-
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 14 | Herbalism & Plant Medicine | 15 |
-| 18 | Ayurveda & Traditional Medicine | 10 |
-| 29 | Alternative & Traditional Therapies | 10 |
-
-**Total: ~35 courses (7% of catalog)**
+**Target:** TTC women, pregnant, new mothers 25-40
 
 ---
 
-## 🧘 PIXEL 6: YOGA & MOVEMENT
+## 🏥 PIXEL 3: FUNCTIONAL MEDICINE (CORE)
 
-*$37B industry. Yoga Alliance disruption.*
+*Your proven performer. Clinical health seekers.*
 
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 10 | Art, Music, Sound Therapies | 12 |
-| 16 | Yoga & Movement | 13 |
-| 30 | Mind-Body Modalities | 10 |
+**Flagship:** Certified Functional Medicine Practitioner™ ✅ LIVE
 
-**Total: ~35 courses (7% of catalog)**
+**Courses:**
+- FM Practitioner (LIVE)
+- Gut Health & Microbiome Coach
+- Autoimmune & AIP Coach
+- Holistic Nutrition Coach
+- Detox & Cleanse Specialist
+- Blood Chemistry Analyst
+- Anti-Aging & Longevity Coach
+- Sleep Health Coach
+- Weight Loss Coach
+- Diabetes & Blood Sugar Coach
+
+**Target:** Health seekers, chronic illness, practitioners upgrading
 
 ---
 
-## 🐾 PIXEL 7: PET WELLNESS
+## 💔 PIXEL 4: NARC & RELATIONSHIP TRAUMA
+
+*TikTok virality. Massive demand. High emotional intent.*
+
+**Flagship:** Certified Narcissistic Abuse Recovery Coach™
+
+**Courses:**
+- NARC Recovery Coach
+- Betrayal Trauma Coach
+- Codependency Recovery Coach
+- Toxic Relationship Recovery Coach
+- Attachment Style Coach
+- Trauma Bond Recovery Coach
+- Gaslighting & Manipulation Recovery Coach
+- Divorce Healing & Rebuilding Coach
+
+**Target:** Women 30-55, abuse survivors, toxic relationship recovery
+
+---
+
+## 💋 PIXEL 5: SEX & INTIMACY
+
+*Taboo = low competition. High demand.*
+
+**Flagship:** Certified Sex & Intimacy Coach™
+
+**Courses:**
+- Sex & Intimacy Coach
+- Couples Intimacy Coach
+- Sexual Trauma Recovery Coach
+- Libido & Desire Coach
+- Pelvic Floor Health Coach
+- Menopause Sexual Health Coach
+- Tantra & Sacred Sexuality Coach
+
+**Target:** Couples, women 30-50, relationship healing
+
+---
+
+## 🧩 PIXEL 6: NEURODIVERSITY
+
+*Parents of ADHD/Autism kids + adults discovering late diagnosis.*
+
+**Flagship:** Certified ADHD Support Specialist™
+
+**Courses:**
+- ADHD Support Specialist
+- Autism Support Specialist
+- Autism & Neurodiversity Support Specialist
+- Sensory Processing Coach
+- Executive Function Coach
+- Neurodivergent Family Support Coach
+
+**Target:** Parents of ND kids, adults with ADHD/Autism, educators
+
+---
+
+## 🎨 PIXEL 7: THERAPY MODALITIES
+
+*Therapy-adjacent tools for coaches. High perceived value.*
+
+**Flagship:** Certified EFT/Tapping Practitioner™
+
+**Courses:**
+- EFT/Tapping Practitioner
+- NLP Master Practitioner
+- Clinical Hypnotherapy Coach
+- Art Therapy Coach
+- Polyvagal & Nervous System Coach
+- Somatic Healing Coach
+- Trauma-Informed Coach
+- EMDR Foundations Coach
+- IFS Informed Coach
+- Breathwork Practitioner
+
+**Target:** Coaches wanting therapy tools, therapists adding modalities
+
+---
+
+## 😢 PIXEL 8: GRIEF & END OF LIFE
+
+*Death Doula is trending. Emotional, high-touch niche.*
+
+**Flagship:** Certified Death Doula™ / Certified Grief & Loss Coach™
+
+**Courses:**
+- Death Doula (End of Life)
+- Grief & Loss Coach
+- Bereavement Support Specialist
+- Hospice Support Coach
+- Miscarriage & Pregnancy Loss Coach
+
+**Target:** Families, seniors, bereavement support
+
+---
+
+## 🎯 PIXEL 9: LIFE COACHING
+
+*Classic ICF competitor. Broad appeal.*
+
+**Flagship:** Certified Life Coach™
+
+**Courses:**
+- Life Coach
+- Career Transition Coach
+- Purpose & Meaning Coach
+- Confidence & Self-Esteem Coach
+- Financial Wellness Coach
+- Divorce & Transition Coach
+- Retirement & Purpose Planner
+- Empty Nest & Midlife Reinvention Coach
+
+**Target:** Career changers, mid-life transitions, purpose seekers
+
+---
+
+## 🔮 PIXEL 10: SPIRITUAL & ENERGY HEALING
+
+*Mindvalley competitor. High belief, high engagement.*
+
+**Flagship:** Certified Energy Healing Practitioner™
+
+**Courses:**
+- Energy Healing Practitioner
+- Reiki Master Teacher
+- Crystal Healing Coach
+- Chakra Healing Coach
+- Manifestation & Law of Attraction Coach
+- Human Design Coach
+- Akashic Records Practitioner
+- Tarot & Oracle Coach
+- Spiritual Life Coach
+- Qigong & Energy Movement Coach
+
+**Target:** Spiritual seekers, manifestation community, Mindvalley audience
+
+---
+
+## 🌿 PIXEL 11: HERBALISM & NATURAL MEDICINE
+
+*$50B+ market. Barely touched by competitors.*
+
+**Flagship:** Certified Herbalism Practitioner™
+
+**Courses:**
+- Herbalism Practitioner
+- Ayurvedic Health Counselor
+- Medicinal Mushroom Specialist
+- Chinese Herbal Medicine Coach
+- Aromatherapy Consultant
+- Plant Medicine Coach
+- Herbal Immune Support Coach
+- Wildcrafting & Foraging Coach
+
+**Target:** Natural medicine lovers, holistic health seekers
+
+---
+
+## 🐾 PIXEL 12: PET WELLNESS
 
 *Passionate pet parents. Emotional buyers.*
 
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 12 | Equine, Animal, Nature Therapy | 9 |
-| 37 | Pet Wellness & Animal Care | 15 |
+**Flagship:** Certified Pet Wellness Coach™
 
-**Total: ~24 courses (5% of catalog)**
+**Courses:**
+- Pet Wellness Coach
+- Canine Nutrition Specialist
+- Dog Behavior & Psychology Coach
+- Equine Assisted Therapy Facilitator
+- Cat Wellness Specialist
 
----
-
-## 👨‍👩‍👧 PIXEL 8: PARENTING & FAMILY
-
-*Parents will invest in their kids.*
-
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 7 | Family, Parenting & Special Pops | 11 |
-| 39 | Parenting (Expanded) | 11 |
-
-**Total: ~22 courses (4% of catalog)**
+**Target:** Pet parents, dog/cat owners, animal lovers
 
 ---
 
-## 🙏 PIXEL 9: FAITH-BASED
+## 👶 PIXEL 13: PARENTING & CHILD DEVELOPMENT
 
-*Christians seeking alignment with Biblical coaching.*
+*Parents invest in their kids. High willingness to pay.*
 
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 50 | Faith-Based Coaching | 12 |
+**Flagship:** Certified Conscious Parenting Coach™ + Certified Play Therapy Coach™
 
-**Total: 12 courses (2% of catalog)**
+**Courses:**
+- Conscious Parenting Coach
+- Positive Parenting Coach
+- Play Therapy Coach
+- Teen Anxiety & Resiliency Coach
+- Special Needs Family Coach
+- Divorce & Co-Parenting Specialist
+- Potty Training Consultant
+- Baby Sleep Coach
 
----
-
-## 💼 PIXEL 10: BUSINESS & PRACTICE BUILDING
-
-*High-ticket backend for practitioners.*
-
-| Cat # | Category Name | Courses |
-|-------|---------------|---------|
-| 36 | Business & Practice Building | 10 |
-
-**Total: 10 courses (2% of catalog)**
+**Target:** Parents, especially mothers 28-45
 
 ---
 
-## 📋 COMPLETE CATEGORY → PIXEL MAPPING
+## 🙏 PIXEL 14: FAITH-BASED
 
-| Cat # | Category Name | Courses | Pixel |
-|-------|---------------|---------|-------|
-| 0 | Functional Medicine | 5 | 🏥 FM/HEALTH |
-| 1 | Women's Health & Hormones | 15 | 🏥 FM/HEALTH |
-| 2 | Hormones & Metabolism | 13 | 🏥 FM/HEALTH |
-| 3 | Gut Health | 14 | 🏥 FM/HEALTH |
-| 4 | Autoimmune & Inflammation | 13 | 🏥 FM/HEALTH |
-| 5 | Mental Health & Nervous System | 15 | 🧠 MENTAL HEALTH |
-| 6 | Nutrition & Lifestyle | 14 | 🏥 FM/HEALTH |
-| 7 | Family, Parenting & Special Pops | 11 | 👨‍👩‍👧 PARENTING |
-| 8 | Advanced Functional Medicine | 13 | 🏥 FM/HEALTH |
-| 9 | Emotional & Holistic Wellness | 12 | 🧠 MENTAL HEALTH |
-| 10 | Art, Music, Sound Therapies | 12 | 🧘 YOGA/MOVEMENT |
-| 11 | Holistic Lifestyle & Personal Dev | 8 | 🎯 LIFE COACHING |
-| 12 | Equine, Animal, Nature Therapy | 9 | 🐾 PET |
-| 13 | Narcissistic Abuse & Relationship | 11 | 🧠 MENTAL HEALTH |
-| 14 | Herbalism & Plant Medicine | 15 | 🌿 HERBALISM |
-| 15 | Spiritual Healing & Energy Work | 19 | 🔮 SPIRITUAL |
-| 16 | Yoga & Movement | 13 | 🧘 YOGA/MOVEMENT |
-| 17 | Life Coaching & Personal Dev | 13 | 🎯 LIFE COACHING |
-| 18 | Ayurveda & Traditional Medicine | 10 | 🌿 HERBALISM |
-| 19 | Bodywork & Massage Therapy | 12 | 🏥 FM/HEALTH |
-| 20 | Biohacking & Longevity | 12 | 🏥 FM/HEALTH |
-| 21 | Fertility, Birth & Postpartum | 10 | 🏥 FM/HEALTH |
-| 22 | Fitness & Athletic Performance | 10 | 🏥 FM/HEALTH |
-| 23 | Clinical & Condition-Specific | 11 | 🏥 FM/HEALTH |
-| 24 | Genetics & Advanced Testing | 7 | 🏥 FM/HEALTH |
-| 25 | Addiction & Recovery | 10 | 🧠 MENTAL HEALTH |
-| 26 | Sexual Wellness & Intimacy | 9 | 🔮 SPIRITUAL |
-| 27 | Men's Health | 9 | 🏥 FM/HEALTH |
-| 28 | Specialized Body Systems | 9 | 🏥 FM/HEALTH |
-| 29 | Alternative & Traditional | 10 | 🌿 HERBALISM |
-| 30 | Mind-Body Modalities | 10 | 🧘 YOGA/MOVEMENT |
-| 31 | Specialized Populations | 11 | 🎯 LIFE COACHING |
-| 32 | Diet & Nutrition Approaches | 12 | 🏥 FM/HEALTH |
-| 33 | Environmental & Lifestyle | 10 | 🏥 FM/HEALTH |
-| 34 | LGBTQ+ & Inclusive | 5 | 🎯 LIFE COACHING |
-| 35 | Senior & End-of-Life | 8 | 🧠 MENTAL HEALTH |
-| 36 | Business & Practice Building | 10 | 💼 BUSINESS |
-| 37 | Pet Wellness & Animal Care | 15 | 🐾 PET |
-| 38 | Grief & Bereavement | 15 | 🧠 MENTAL HEALTH |
-| 39 | Parenting (Expanded) | 11 | 👨‍👩‍👧 PARENTING |
-| 40 | Neurodiversity (Expanded) | 10 | 🧠 MENTAL HEALTH |
-| 41 | Sexuality & Intimacy | 5 | 🔮 SPIRITUAL |
-| 42 | Veterans & Military | 6 | 🧠 MENTAL HEALTH |
-| 43 | Disability Wellness | 6 | 🧠 MENTAL HEALTH |
-| 44 | Cultural & Identity | 5 | 🎯 LIFE COACHING |
-| 45 | Personal Dev Foundations | 7 | 🎯 LIFE COACHING |
-| 46 | Money & Abundance | 5 | 🎯 LIFE COACHING |
-| 47 | Productivity & Time | 5 | 🎯 LIFE COACHING |
-| 48 | Spiritual & Energy (Expanded) | 10 | 🔮 SPIRITUAL |
-| 49 | Healthcare Professional Tracks | 15 | 🏥 FM/HEALTH |
-| 50 | Faith-Based Coaching | 12 | 🙏 FAITH |
+*Loyal church community. Biblical coaching.*
+
+**Flagship:** Certified Christian Life Coach™
+
+**Courses:**
+- Christian Life Coach
+- Biblical Counseling Coach
+- Faith-Based Wellness Coach
+- Ministry Leadership Coach
+
+**Target:** Christians, church ministries, faith community
 
 ---
 
-## 🚀 LAUNCH PRIORITY
+## 🩺 PIXEL 15: INTEGRATIVE MEDICINE
 
-### Phase 1: Already Running (FM Pixel)
-- ✅ Functional Medicine Practitioner
+*Your "bridge" — Naturopathic meets Allopathic. YOUR MOAT.*
 
-### Phase 2: 8-Pixel Launch (Now)
-1. 🏥 Holistic Nutrition Coach (FM Pixel)
-2. 🧠 NARC Recovery Coach (Mental Health Pixel)
-3. 🙏 Christian Life Coach (Faith Pixel)
-4. 🎯 Life Coach (Life Coaching Pixel)
-5. 🧠 Grief & Loss Coach (Mental Health Pixel)
-6. 🔮 Energy Healing Practitioner (Spiritual Pixel)
-7. 👨‍👩‍👧 Conscious Parenting Coach (Parenting Pixel)
-8. 🐾 Pet Wellness Coach (Pet Pixel)
+**Flagship:** Certified Integrative Medicine Practitioner™
 
-### Phase 3: Scale Winners
-- Double down on highest ROAS pixels
-- Add 5-10 courses per winning pixel
+**Courses:**
+- Integrative Medicine Practitioner
+- Functional Lab Testing Coach
+- Nutritional Genomics (DNA) Consultant
+- MTHFR & Methylation Coach
+- Environmental Toxin Specialist
+- Mold Toxicity & Detox Expert
+
+**Target:** Nurses, practitioners, healthcare workers bridging conventional + holistic
 
 ---
 
-*Document Created: December 27, 2024*  
-*AccrediPro Academy — 532 Courses, 10 Pixels, 1 Empire*
+## ✅ FLAGSHIP GENERATION STATUS
+
+| # | Pixel | Flagship | Status |
+|---|-------|----------|--------|
+| 1 | 🌸 WOMEN'S HORMONES | Women's Hormone Health Coach | ✅ Generated |
+| 2 | 🤰 FERTILITY & BIRTH | Birth & Postpartum Doula | ❌ Need to generate |
+| 3 | 🏥 FUNCTIONAL MEDICINE | FM Practitioner | ✅ LIVE |
+| 4 | 💔 NARC & TRAUMA | NARC Recovery Coach | ✅ Generated |
+| 5 | 💋 SEX & INTIMACY | Sex & Intimacy Coach | ❌ Need to generate |
+| 6 | 🧩 NEURODIVERSITY | ADHD Support Specialist | ✅ Generated |
+| 7 | 🎨 THERAPY MODALITIES | EFT/Tapping Practitioner | ❌ Need to generate |
+| 8 | 😢 GRIEF & END OF LIFE | Grief & Loss Coach | ✅ Generated |
+| 9 | 🎯 LIFE COACHING | Life Coach | ✅ Generated |
+| 10 | 🔮 SPIRITUAL & ENERGY | Energy Healing Practitioner | ✅ Generated |
+| 11 | 🌿 HERBALISM | Herbalism Practitioner | ✅ Generated |
+| 12 | 🐾 PET | Pet Wellness Coach | ✅ Generated |
+| 13 | 👶 PARENTING | Conscious Parenting + Play Therapy | ✅ / ❌ Play Therapy |
+| 14 | 🙏 FAITH | Christian Life Coach | ✅ Generated |
+| 15 | 🩺 INTEGRATIVE MEDICINE | Integrative Medicine Practitioner | ❌ Need to generate |
+
+**Generated:** 11/15  
+**Need to Generate:** Birth Doula, Sex Coach, EFT/Tapping, Play Therapy, Integrative Medicine
+
+---
+
+## 📈 BUDGET ALLOCATION (at $1.5K/day)
+
+| Pixel | Daily Budget | CPC Estimate |
+|-------|--------------|--------------|
+| 🌸 WOMEN'S HORMONES | $175 | $0.80-1.50 |
+| 🤰 FERTILITY & BIRTH | $100 | $1.00-1.80 |
+| 🏥 FUNCTIONAL MEDICINE | $150 | $1.00-2.00 |
+| 💔 NARC & TRAUMA | $150 | $0.50-1.20 |
+| 💋 SEX & INTIMACY | $75 | $1.50-3.00 |
+| 🧩 NEURODIVERSITY | $75 | $1.20-2.00 |
+| 🎨 THERAPY MODALITIES | $75 | $1.50-2.50 |
+| 😢 GRIEF & END OF LIFE | $75 | $0.60-1.00 |
+| 🎯 LIFE COACHING | $100 | $1.20-2.00 |
+| 🔮 SPIRITUAL & ENERGY | $75 | $0.80-1.50 |
+| 🌿 HERBALISM | $50 | $0.70-1.30 |
+| 🐾 PET | $75 | $0.80-1.50 |
+| 👶 PARENTING | $75 | $0.70-1.30 |
+| 🙏 FAITH | $50 | $0.40-0.90 |
+| 🩺 INTEGRATIVE MEDICINE | $100 | $2.00-4.00 |
+
+---
+
+*Document Updated: January 1, 2026*  
+*AccrediPro Academy — 532 Courses, 15 Pixels, Maximum Targeting*

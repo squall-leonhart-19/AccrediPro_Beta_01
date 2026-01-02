@@ -120,6 +120,59 @@ PREDEFINED_METHODOLOGIES = {
             {"letter": "T", "meaning": "Transform", "description": "Renewal of mind and heart through Christ."},
             {"letter": "H", "meaning": "Hope", "description": "Cultivate hope and trust in God's faithfulness."}
         ]
+    },
+    # ========================================================================
+    # NEW FLAGSHIP COURSES - 15-Pixel Architecture Completion
+    # ========================================================================
+    "Birth & Postpartum Doula": {
+        "acronym": "BIRTH",
+        "full_name": "The B.I.R.T.H. Support Method™",
+        "letters": [
+            {"letter": "B", "meaning": "Breathe & Center", "description": "Ground the mother with breath work, calm techniques, and presence during labor."},
+            {"letter": "I", "meaning": "Inform & Educate", "description": "Empower with evidence-based information for informed decisions."},
+            {"letter": "R", "meaning": "Reassure & Comfort", "description": "Provide physical comfort measures, emotional support, and continuous reassurance."},
+            {"letter": "T", "meaning": "Transform the Experience", "description": "Help create a positive, empowering birth memory regardless of how labor unfolds."},
+            {"letter": "H", "meaning": "Honor & Heal", "description": "Support postpartum recovery, bonding, and the sacred transition to motherhood."}
+        ]
+    },
+    "Sex & Intimacy Coach": {
+        "acronym": "INTIMATE",
+        "full_name": "The I.N.T.I.M.A.T.E. Connection Method™",
+        "letters": [
+            {"letter": "I", "meaning": "Investigate", "description": "Explore sexual history, beliefs, and patterns without judgment."},
+            {"letter": "N", "meaning": "Normalize", "description": "Reduce shame by normalizing desires, concerns, and variations in sexuality."},
+            {"letter": "T", "meaning": "Trust", "description": "Build emotional safety and trust as the foundation for intimacy."},
+            {"letter": "I", "meaning": "Ignite", "description": "Rekindle desire and passion through mindful practices."},
+            {"letter": "M", "meaning": "Mindful Presence", "description": "Cultivate embodied awareness and present-moment connection."},
+            {"letter": "A", "meaning": "Attune", "description": "Develop attunement to self and partner's needs and desires."},
+            {"letter": "T", "meaning": "Transform", "description": "Heal sexual wounds, trauma, and limiting beliefs."},
+            {"letter": "E", "meaning": "Expand", "description": "Expand capacity for pleasure, connection, and intimacy."}
+        ]
+    },
+    "EFT Tapping Practitioner": {
+        "acronym": "TAPPING",
+        "full_name": "The T.A.P.P.I.N.G. Protocol™",
+        "letters": [
+            {"letter": "T", "meaning": "Target the Issue", "description": "Identify the specific emotion, memory, or belief to address."},
+            {"letter": "A", "meaning": "Assess Intensity", "description": "Rate the emotional intensity on the 0-10 SUDS scale."},
+            {"letter": "P", "meaning": "Prepare with Setup", "description": "Create the setup statement with acceptance and acknowledgment."},
+            {"letter": "P", "meaning": "Point Sequence", "description": "Tap through the meridian points while voicing the issue."},
+            {"letter": "I", "meaning": "Investigate Changes", "description": "Check in with body sensations and emotional shifts."},
+            {"letter": "N", "meaning": "Navigate Aspects", "description": "Address different aspects and layers that emerge."},
+            {"letter": "G", "meaning": "Ground & Integrate", "description": "Complete the session with positive statements and integration."}
+        ]
+    },
+    "Integrative Medicine Practitioner": {
+        "acronym": "BRIDGE",
+        "full_name": "The B.R.I.D.G.E. Method™",
+        "letters": [
+            {"letter": "B", "meaning": "Blend Approaches", "description": "Integrate conventional medicine with evidence-based natural therapies."},
+            {"letter": "R", "meaning": "Root Cause Analysis", "description": "Look beyond symptoms to identify underlying imbalances."},
+            {"letter": "I", "meaning": "Individualize Care", "description": "Create personalized protocols based on genetics, lifestyle, and preferences."},
+            {"letter": "D", "meaning": "Data-Driven Decisions", "description": "Use functional lab testing and biomarkers to guide treatment."},
+            {"letter": "G", "meaning": "Guide the Journey", "description": "Educate and empower patients to take ownership of their health."},
+            {"letter": "E", "meaning": "Evolve & Optimize", "description": "Continuously refine approach based on outcomes and new research."}
+        ]
     }
 }
 

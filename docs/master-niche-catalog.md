@@ -1146,7 +1146,114 @@ ELITE MASTERY ($4,997-$10,000)
 
 ---
 
-*Document Updated: December 27, 2024*  
+*Document Updated: January 1, 2026*  
 *AccrediPro Academy — The World's Largest Wellness Certification Platform*
+
+---
+
+# 🚀 15-PIXEL FLAGSHIP COURSES (Priority Generation Queue)
+
+*These are the flagship courses for each of the 15 pixels. Generate these first.*
+
+## ✅ ALREADY GENERATED
+
+| Pixel | Flagship Course | Status |
+|-------|-----------------|--------|
+| 🌸 Women's Hormones | Women's Hormone Health Coach | ✅ Generated |
+| 🏥 Functional Medicine | Functional Medicine Practitioner | ✅ LIVE |
+| 💔 NARC & Trauma | Narcissistic Abuse Recovery Coach | ✅ Generated |
+| 🧩 Neurodiversity | ADHD Support Specialist | ✅ Generated |
+| 😢 Grief & End of Life | Grief & Loss Coach | ✅ Generated |
+| 🎯 Life Coaching | Life Coach | ✅ Generated |
+| 🔮 Spiritual & Energy | Energy Healing Practitioner | ✅ Generated |
+| 🌿 Herbalism | Herbalism Practitioner | ✅ Generated |
+| 🐾 Pet Wellness | Pet Wellness Coach | ✅ Generated |
+| 👶 Parenting | Conscious Parenting Coach | ✅ Generated |
+| 🙏 Faith-Based | Christian Life Coach | ✅ Generated |
+
+## ❌ NEED TO GENERATE
+
+| Pixel | Flagship Course | Priority |
+|-------|-----------------|----------|
+| 🤰 Fertility & Birth | **Certified Birth & Postpartum Doula™** | HIGH |
+| 💋 Sex & Intimacy | **Certified Sex & Intimacy Coach™** | HIGH |
+| 🎨 Therapy Modalities | **Certified EFT/Tapping Practitioner™** | HIGH |
+| 👶 Parenting (2nd) | **Certified Play Therapy Coach™** | MEDIUM |
+| 🎨 Therapy Modalities (2nd) | **Certified Polyvagal & Nervous System Coach™** | MEDIUM |
+| 🩺 Integrative Medicine | **Certified Integrative Medicine Practitioner™** | HIGH |
+
+---
+
+## 🆕 NEW COURSES TO ADD TO CATALOG
+
+### Certified Birth & Postpartum Doula™
+**Pixel:** 🤰 Fertility & Birth  
+**Price:** $97-397  
+**Upsell:** Advanced Birth Support Specialist™
+
+### Certified Sex & Intimacy Coach™
+**Pixel:** 💋 Sex & Intimacy  
+**Price:** $97-397  
+**Upsell:** Couples Intimacy Specialist™
+
+### Certified EFT/Tapping Practitioner™
+**Pixel:** 🎨 Therapy Modalities  
+**Price:** $97-397  
+**Upsell:** Advanced Tapping Specialist™
+
+### Certified Polyvagal & Nervous System Coach™
+**Pixel:** 🎨 Therapy Modalities  
+**Price:** $97-397  
+**Upsell:** Somatic Nervous System Specialist™
+
+### Certified Play Therapy Coach™
+**Pixel:** 👶 Parenting  
+**Price:** $97-397  
+**Upsell:** Child Therapeutic Play Specialist™
+
+### Certified Integrative Medicine Practitioner™
+**Pixel:** 🩺 Integrative Medicine  
+**Price:** $97-497  
+**Upsell:** Advanced Integrative Practice Specialist™  
+**Description:** The "bridge" between Naturopathic and Allopathic medicine. YOUR MOAT.
+
+### Certified Positive Parenting Coach™
+**Pixel:** 👶 Parenting  
+**Price:** $97-397  
+**Upsell:** Positive Discipline Specialist™
+
+---
+
+# 📊 UPDATED FINAL STATISTICS
+
+| Metric | Count |
+|--------|-------|
+| **Total Categories** | 50 |
+| **Total Courses** | 540+ |
+| **Total Specializations** | 540+ |
+| **Total Pixels** | 15 |
+| **Total Certifications Available** | 1,080+ |
+
+---
+
+# 🎯 15-PIXEL ARCHITECTURE REFERENCE
+
+| # | Pixel | Key Courses |
+|---|-------|-------------|
+| 1 | 🌸 WOMEN'S HORMONES | Menopause, PCOS, Thyroid, Hormones |
+| 2 | 🤰 FERTILITY & BIRTH | Doula, Fertility, Postpartum |
+| 3 | 🏥 FUNCTIONAL MEDICINE | FM, Gut, Autoimmune, Nutrition, Longevity |
+| 4 | 💔 NARC & TRAUMA | NARC, Codependency, Betrayal, Toxic Relationships |
+| 5 | 💋 SEX & INTIMACY | Sex Coach, Intimacy, Couples, Sexual Wellness |
+| 6 | 🧩 NEURODIVERSITY | ADHD, Autism, Sensory, Executive Function |
+| 7 | 🎨 THERAPY MODALITIES | EFT, NLP, Art Therapy, Polyvagal, Hypnotherapy |
+| 8 | 😢 GRIEF & END OF LIFE | Death Doula, Grief Coach, Bereavement |
+| 9 | 🎯 LIFE COACHING | Life Coach, Career, Purpose, Transitions |
+| 10 | 🔮 SPIRITUAL & ENERGY | Reiki, Energy Healing, Crystal, Chakra, Manifestation |
+| 11 | 🌿 HERBALISM | Herbalism, Ayurveda, Plant Medicine |
+| 12 | 🐾 PET WELLNESS | Pet Wellness, Dog Behavior, Equine |
+| 13 | 👶 PARENTING | Conscious Parenting, Play Therapy, Positive Parenting |
+| 14 | 🙏 FAITH-BASED | Christian Life Coach, Biblical Counseling |
+| 15 | 🩺 INTEGRATIVE MEDICINE | Bridge Naturopathic + Allopathic, Lab Testing |
 
 

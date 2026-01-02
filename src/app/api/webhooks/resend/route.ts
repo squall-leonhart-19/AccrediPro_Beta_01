@@ -181,6 +181,8 @@ export async function POST(request: NextRequest) {
 
       case "email.delivery_delayed":
         console.warn(`[WEBHOOK] Email delivery delayed for ${emailSend.userId}:`, data);
+        // Track delays and suppress after 2 delays for this user
+        await handleDeliveryDelayed(emailSend.userId);
         break;
 
       case "email.complained":
@@ -311,5 +313,33 @@ async function addSuppressionTag(userId: string, tagSlug: string) {
     }
   } catch (error) {
     console.error(`Failed to add suppression tag ${tagSlug}:`, error);
+  }
+}
+
+// Helper: Handle delivery delayed - suppress after 2 delays
+async function handleDeliveryDelayed(userId: string) {
+  const MAX_DELAYS_BEFORE_SUPPRESS = 2;
+
+  try {
+    // Count recent delivery delays for this user (last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const delayCount = await prisma.emailEvent.count({
+      where: {
+        emailSend: { userId },
+        eventType: "email.delivery_delayed",
+        createdAt: { gte: sevenDaysAgo }
+      }
+    });
+
+    console.log(`[WEBHOOK] User ${userId} has ${delayCount} delivery delays in last 7 days`);
+
+    if (delayCount >= MAX_DELAYS_BEFORE_SUPPRESS) {
+      console.log(`⚠️ [WEBHOOK] Auto-suppressing ${userId} after ${delayCount} delivery delays`);
+      await addSuppressionTag(userId, "suppress_bounced");
+    }
+  } catch (error) {
+    console.error("Failed to handle delivery delay:", error);
   }
 }
