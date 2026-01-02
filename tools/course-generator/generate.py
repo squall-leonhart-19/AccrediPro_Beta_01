@@ -329,6 +329,96 @@ Return ONLY the complete HTML document."""
         
         return None
     
+    def export_modules_json(self, output_path: Path) -> None:
+        """Export a simple modules.json with certification info and module list"""
+        if not self.outline or not self.methodology:
+            print("⚠️ Cannot export modules.json - missing outline or methodology")
+            return
+        
+        # Niche config mapping (code -> coach, pixel)
+        NICHE_CONFIG = {
+            "FM": {"coach": "sarah", "pixel": "fm-health"},
+            "HN": {"coach": "sarah", "pixel": "fm-health"},
+            "WH": {"coach": "sarah", "pixel": "fm-health"},
+            "IM": {"coach": "sarah", "pixel": "fm-health"},
+            "NR": {"coach": "olivia", "pixel": "mental-health"},
+            "ND": {"coach": "olivia", "pixel": "mental-health"},
+            "GL": {"coach": "olivia", "pixel": "mental-health"},
+            "LC": {"coach": "marcus", "pixel": "life-coaching"},
+            "SE": {"coach": "luna", "pixel": "spiritual"},
+            "SI": {"coach": "luna", "pixel": "spiritual"},
+            "HB": {"coach": "sage", "pixel": "herbalism"},
+            "TM": {"coach": "maya", "pixel": "yoga-movement"},
+            "PW": {"coach": "bella", "pixel": "pet-wellness"},
+            "FB": {"coach": "emma", "pixel": "parenting"},
+            "PC": {"coach": "emma", "pixel": "parenting"},
+            "CF": {"coach": "grace", "pixel": "faith"},
+        }
+        
+        # Try to determine niche code from course name
+        course_name_upper = self.course_name.upper()
+        niche_code = None
+        if "FUNCTIONAL MEDICINE" in course_name_upper or "FM" in course_name_upper:
+            niche_code = "FM"
+        elif "HOLISTIC NUTRITION" in course_name_upper or "NUTRITION" in course_name_upper:
+            niche_code = "HN"
+        elif "HORMONE" in course_name_upper or "WOMEN" in course_name_upper:
+            niche_code = "WH"
+        elif "INTEGRATIVE" in course_name_upper:
+            niche_code = "IM"
+        elif "NARCISS" in course_name_upper or "ABUSE" in course_name_upper:
+            niche_code = "NR"
+        elif "NEURODIVERS" in course_name_upper or "ADHD" in course_name_upper:
+            niche_code = "ND"
+        elif "GRIEF" in course_name_upper or "LOSS" in course_name_upper:
+            niche_code = "GL"
+        elif "LIFE COACH" in course_name_upper:
+            niche_code = "LC"
+        elif "SPIRITUAL" in course_name_upper or "ENERGY" in course_name_upper:
+            niche_code = "SE"
+        elif "SEX" in course_name_upper or "INTIMACY" in course_name_upper:
+            niche_code = "SI"
+        elif "HERB" in course_name_upper:
+            niche_code = "HB"
+        elif "EFT" in course_name_upper or "TAPPING" in course_name_upper:
+            niche_code = "TM"
+        elif "PET" in course_name_upper or "ANIMAL" in course_name_upper:
+            niche_code = "PW"
+        elif "BIRTH" in course_name_upper or "DOULA" in course_name_upper or "FERTILITY" in course_name_upper:
+            niche_code = "FB"
+        elif "PARENT" in course_name_upper or "CHILD" in course_name_upper:
+            niche_code = "PC"
+        elif "CHRISTIAN" in course_name_upper or "FAITH" in course_name_upper:
+            niche_code = "CF"
+        else:
+            niche_code = "FM"  # Default fallback
+        
+        niche_info = NICHE_CONFIG.get(niche_code, {"coach": "sarah", "pixel": "fm-health"})
+        
+        # Extract module names (L1 only - modules 0-15)
+        modules = self.outline.get('modules', [])
+        module_list = []
+        for m in modules:
+            if m.get('number', 0) <= 15:  # L1 modules only
+                module_list.append(f"Module {m['number']}: {m['title']}")
+        
+        # Build the JSON
+        modules_data = {
+            "certification": self.methodology.get('full_name', self.course_name),
+            "method": self.methodology.get('acronym', '') + f" ({self.methodology.get('acronym_expansion', '')})",
+            "slug": self._get_course_slug(),
+            "niche_code": niche_code,
+            "coach": niche_info["coach"],
+            "pixel": niche_info["pixel"],
+            "total_modules": len(module_list),
+            "modules": module_list
+        }
+        
+        # Save to output path
+        modules_json_path = output_path / "modules.json"
+        modules_json_path.write_text(json.dumps(modules_data, indent=2))
+        print(f"✅ Exported modules.json ({len(module_list)} modules)")
+    
     async def generate_module(self, module: Dict, fill_gaps_only: bool = False) -> Dict:
         """Generate all content for a module"""
         module_num = module['number']
@@ -498,6 +588,9 @@ Return ONLY the complete HTML document."""
                 
                 output_path.mkdir(parents=True, exist_ok=True)
                 (output_path / "course_outline.json").write_text(json.dumps(self.outline, indent=2))
+        
+        # Export modules.json with certification info
+        self.export_modules_json(output_path)
         
         # Generate modules in parallel batches
         modules = self.outline.get('modules', [])
