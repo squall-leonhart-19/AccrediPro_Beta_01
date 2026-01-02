@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { sendCourseEnrollmentEmail, sendProAcceleratorEnrollmentEmail } from "@/lib/email";
+import { verifyEmail } from "@/lib/neverbounce";
 
 const addTagSchema = z.object({
   userId: z.string(),
@@ -11,11 +13,44 @@ const addTagSchema = z.object({
 });
 
 // Tag to Course mapping for automatic enrollment
-const TAG_TO_COURSE_SLUG: Record<string, string> = {
+// Supports single course OR array of courses (for Pro Accelerator bundles)
+const TAG_TO_COURSE_SLUG: Record<string, string | string[]> = {
+  // FM Main Certification
   functional_medicine_complete_certification_purchased: "functional-medicine-complete-certification",
+  fm_certification_purchased: "functional-medicine-complete-certification",
+
+  // FM Pro Accelerator Bundle (all 3 courses at once)
+  fm_pro_accelerator_purchased: [
+    "fm-pro-advanced-clinical",
+    "fm-pro-master-depth",
+    "fm-pro-practice-path"
+  ],
   fm_pro_advanced_clinical_purchased: "fm-pro-advanced-clinical",
   fm_pro_master_depth_purchased: "fm-pro-master-depth",
   fm_pro_practice_path_purchased: "fm-pro-practice-path",
+
+  // Holistic Nutrition
+  holistic_nutrition_coach_certification_purchased: "holistic-nutrition-coach-certification",
+  hn_certification_purchased: "holistic-nutrition-coach-certification",
+  hn_pro_accelerator_purchased: [
+    "hn-pro-advanced-clinical",
+    "hn-pro-master-depth",
+    "hn-pro-practice-path"
+  ],
+
+  // NARC Recovery
+  narc_recovery_coach_certification_purchased: "narc-recovery-coach-certification",
+  narc_certification_purchased: "narc-recovery-coach-certification",
+  narc_pro_accelerator_purchased: [
+    "narc-pro-advanced-clinical",
+    "narc-pro-master-depth",
+    "narc-pro-practice-path"
+  ],
+
+  // Other certifications as they're added
+  christian_life_coach_certification_purchased: "christian-life-coach-certification",
+  life_coach_certification_purchased: "life-coach-certification",
+  grief_loss_coach_certification_purchased: "grief-loss-coach-certification",
 };
 
 // Helper function to enroll user in a course
@@ -260,24 +295,69 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Auto-enrollment for FM Pro Pack purchased tags
-    const courseSlug = TAG_TO_COURSE_SLUG[data.tag];
-    if (courseSlug) {
-      const enrollResult = await enrollUserInCourse(data.userId, courseSlug);
+    // Auto-enrollment for purchase tags (supports single course or bundle)
+    const courseMapping = TAG_TO_COURSE_SLUG[data.tag];
+    if (courseMapping) {
+      const courseSlugs = Array.isArray(courseMapping) ? courseMapping : [courseMapping];
+      const enrolledCourses: string[] = [];
+      const isProAccelerator = data.tag.includes('pro_accelerator');
 
-      if (enrollResult.success) {
-        const enrollmentMessage = enrollResult.alreadyEnrolled
-          ? `Tag added. User was already enrolled in ${enrollResult.courseName}.`
-          : `Tag added + User enrolled in ${enrollResult.courseName}!`;
+      // Get user info for email
+      const targetUser = await prisma.user.findUnique({
+        where: { id: data.userId },
+        select: { email: true, firstName: true }
+      });
 
-        return NextResponse.json({
-          success: true,
-          message: enrollmentMessage,
-          tag,
-          courseEnrolled: !enrollResult.alreadyEnrolled,
-          courseName: enrollResult.courseName,
-        });
+      for (const slug of courseSlugs) {
+        const enrollResult = await enrollUserInCourse(data.userId, slug);
+        if (enrollResult.success && enrollResult.courseName && !enrollResult.alreadyEnrolled) {
+          enrolledCourses.push(enrollResult.courseName);
+        }
       }
+
+      // Send enrollment email(s) if user found and courses enrolled
+      if (targetUser && targetUser.email && enrolledCourses.length > 0) {
+        try {
+          const emailCheck = await verifyEmail(targetUser.email);
+          if (emailCheck.isValid) {
+            if (isProAccelerator) {
+              // Determine niche for Pro Accelerator email
+              const niche = data.tag.startsWith('hn_') ? 'HN' :
+                data.tag.startsWith('narc_') ? 'NARC' : 'FM';
+              await sendProAcceleratorEnrollmentEmail(
+                targetUser.email,
+                targetUser.firstName || 'Student',
+                niche
+              );
+              console.log(`[Tags API] ✅ Pro Accelerator email sent (${niche})`);
+            } else {
+              // Standard enrollment email
+              await sendCourseEnrollmentEmail(
+                targetUser.email,
+                targetUser.firstName || 'Student',
+                enrolledCourses[0],
+                courseSlugs[0]
+              );
+              console.log(`[Tags API] ✅ Enrollment email sent for ${enrolledCourses[0]}`);
+            }
+          }
+        } catch (emailError) {
+          console.error('[Tags API] Failed to send enrollment email:', emailError);
+        }
+      }
+
+      const courseList = enrolledCourses.join(', ');
+      const enrollmentMessage = enrolledCourses.length > 0
+        ? `Tag added + User enrolled in: ${courseList}!`
+        : `Tag added. User was already enrolled in all courses.`;
+
+      return NextResponse.json({
+        success: true,
+        message: enrollmentMessage,
+        tag,
+        coursesEnrolled: enrolledCourses,
+        emailSent: enrolledCourses.length > 0 && !!targetUser,
+      });
     }
 
     return NextResponse.json({
