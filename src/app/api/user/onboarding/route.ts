@@ -13,6 +13,7 @@ const onboardingSchema = z.object({
   healthBackground: z.string().optional(),
   certificationGoal: z.string().optional(),
   learningGoal: z.string().optional(),
+  currentField: z.string().optional(), // NEW: profession/field for upsell targeting
   weeklyHours: z.number().optional(),
   experienceLevel: z.string().optional(),
   focusAreas: z.array(z.string()).default([]),
@@ -39,26 +40,33 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = onboardingSchema.parse(body);
 
-    // Update user profile
+    // Update user profile - use type assertion for new fields that may not be in Prisma types yet
+    const updateData: Record<string, any> = {
+      firstName: data.firstName || undefined,
+      lastName: data.lastName || undefined,
+      phone: data.phone || undefined,
+      location: data.location || null,
+      timezone: data.timezone || null,
+      healthBackground: data.healthBackground || data.personalMessage || null,
+      certificationGoal: data.certificationGoal || null,
+      learningGoal: data.learningGoal || null,
+      weeklyHours: data.weeklyHours || null,
+      experienceLevel: data.experienceLevel || null,
+      focusAreas: data.focusAreas,
+      avatar: data.avatar || undefined,
+      bio: data.bio || undefined,
+      hasCompletedProfile: true,
+      hasCompletedOnboarding: true,
+    };
+
+    // Add currentField if provided (may need DB migration)
+    if (data.currentField) {
+      updateData.currentField = data.currentField;
+    }
+
     const user = await prisma.user.update({
       where: { id: session.user.id },
-      data: {
-        firstName: data.firstName || undefined,
-        lastName: data.lastName || undefined,
-        phone: data.phone || undefined,
-        location: data.location || null,
-        timezone: data.timezone || null,
-        healthBackground: data.healthBackground || data.personalMessage || null,
-        certificationGoal: data.certificationGoal || null,
-        learningGoal: data.learningGoal || null,
-        weeklyHours: data.weeklyHours || null,
-        experienceLevel: data.experienceLevel || null,
-        focusAreas: data.focusAreas,
-        avatar: data.avatar || undefined,
-        bio: data.bio || undefined,
-        hasCompletedProfile: true,
-        hasCompletedOnboarding: true,
-      },
+      data: updateData as any,
     });
 
     // Create tags based on onboarding data for segmentation

@@ -53,6 +53,7 @@ model User {
   healthBackground  String?   // Their health journey
   certificationGoal String?   // What certification they're working towards
   learningGoal      String?   // Career change, add to practice, personal
+  currentField      String?   // NEW: profession/field for upsell targeting
   weeklyHours       Int?      // Hours available per week
   experienceLevel   String?   // Beginner, Some experience, Professional
   focusAreas        String[]  // Specific health areas of interest
@@ -115,6 +116,19 @@ model User {
   assignedTickets   SupportTicket[]   @relation("AssignedTickets")
   sentTicketMessages TicketMessage[]  @relation("SentTicketMessages")
   emailBounces      EmailBounce[]
+
+  // Network Effects Suite
+  podMemberships    PodMember[]       @relation("UserPodMemberships")
+  podMessages       PodMessage[]      @relation("UserPodMessages")
+  cohortId          String?
+  cohort            Cohort?           @relation("UserCohort", fields: [cohortId], references: [id])
+  successEvents     SuccessEvent[]    @relation("UserSuccessEvents")
+  incomeLogs        IncomeLog[]       @relation("UserIncomeLogs")
+  incomeMilestones  IncomeMilestone[] @relation("UserIncomeMilestones")
+  referralsSent     Referral[]        @relation("UserReferralsSent")
+  referralsReceived Referral[]        @relation("UserReferralsReceived")
+  podEngagements    PodEngagement[]   // My Circle analytics
+  podUserMessages   PodUserMessage[]  // User messages for admin view
 
   @@index([email])
   @@index([role])
@@ -2291,3 +2305,215 @@ model TicketMessage {
   @@index([createdAt])
 }
 
+
+// ==========================================
+// NETWORK EFFECTS SUITE
+// ==========================================
+
+// Zombie Profiles - AI-controlled personas for social proof
+model ZombieProfile {
+  id              String   @id @default(cuid())
+  name            String
+  avatar          String?
+  location        String?  // "Texas", "California" for authenticity
+  personalityType String   // "leader", "struggler", "questioner", "buyer"
+  progressCurve   Json?    // Day-by-day progress pattern
+  backstory       String?  // Short bio for authenticity
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  // Relations
+  podMemberships  PodMember[]
+  podMessages     PodMessage[]
+  successEvents   SuccessEvent[]
+
+  @@index([personalityType])
+  @@index([isActive])
+}
+
+// Study Pods - 5-person accountability groups
+model StudyPod {
+  id          String   @id @default(cuid())
+  name        String   // "Rising Stars", "The Achievers"
+  cohortId    String?
+  cohort      Cohort?  @relation(fields: [cohortId], references: [id])
+  courseId    String?  // Optional: pod for specific course
+  maxMembers  Int      @default(5)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  members     PodMember[]
+  messages    PodMessage[]
+
+  @@index([cohortId])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model PodMember {
+  id          String   @id @default(cuid())
+  podId       String
+  pod         StudyPod @relation(fields: [podId], references: [id], onDelete: Cascade)
+  userId      String?  // Null if zombie
+  user        User?    @relation("UserPodMemberships", fields: [userId], references: [id])
+  zombieId    String?  // Null if real user
+  zombie      ZombieProfile? @relation(fields: [zombieId], references: [id])
+  isZombie    Boolean  @default(false)
+  isCoach     Boolean  @default(false)  // Coach Sarah flag
+  progress    Int      @default(0)
+  lastActiveAt DateTime?
+  joinedAt    DateTime @default(now())
+
+  @@unique([podId, userId])
+  @@index([podId])
+  @@index([userId])
+  @@index([zombieId])
+}
+
+model PodMessage {
+  id          String   @id @default(cuid())
+  podId       String
+  pod         StudyPod @relation(fields: [podId], references: [id], onDelete: Cascade)
+  senderId    String?  // Real user
+  sender      User?    @relation("UserPodMessages", fields: [senderId], references: [id])
+  zombieId    String?  // Zombie sender
+  zombie      ZombieProfile? @relation(fields: [zombieId], references: [id])
+  isCoach     Boolean  @default(false)
+  isSystem    Boolean  @default(false)  // System messages
+  content     String   @db.Text
+  offerTag    String?  // "pro_accelerator", "coaching", "done_for_you"
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([podId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+// Cohorts - Class identity system
+model Cohort {
+  id            String   @id @default(cuid())
+  name          String   // "FM Class #48"
+  slug          String   @unique
+  courseCategory String?  // "functional-medicine", "holistic-nutrition"
+  startDate     DateTime
+  endDate       DateTime?
+  targetCertDate DateTime?
+  maxMembers    Int      @default(100)
+  memberCount   Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  // Relations
+  members       User[]   @relation("UserCohort")
+  pods          StudyPod[]
+
+  @@index([slug])
+  @@index([courseCategory])
+  @@index([isActive])
+  @@index([startDate])
+}
+
+// Success Events - Feed of celebrations
+model SuccessEvent {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation("UserSuccessEvents", fields: [userId], references: [id])
+  zombieId    String?
+  zombie      ZombieProfile? @relation(fields: [zombieId], references: [id])
+  eventType   String   // "certified", "milestone_500", "streak_14", "first_client", "course_complete"
+  eventData   Json?    // Additional context
+  message     String?  // Custom celebration message
+  isZombie    Boolean  @default(false)
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([eventType])
+  @@index([isVisible])
+  @@index([createdAt])
+}
+
+// Income Tracking - Log practitioner earnings
+model IncomeLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("UserIncomeLogs", fields: [userId], references: [id])
+  amount      Float
+  source      String?  // "client_session", "package", "course_sold"
+  clientName  String?  // Optional: which client
+  notes       String?
+  loggedAt    DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([loggedAt])
+}
+
+model IncomeMilestone {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("UserIncomeMilestones", fields: [userId], references: [id])
+  milestone   String   // "first_500", "first_1000", "first_5000", "first_10000"
+  amount      Float    // Actual amount when reached
+  celebrated  Boolean  @default(false)
+  reachedAt   DateTime @default(now())
+
+  @@unique([userId, milestone])
+  @@index([userId])
+  @@index([milestone])
+}
+
+// Referral Program
+model Referral {
+  id            String   @id @default(cuid())
+  referrerId    String
+  referrer      User     @relation("UserReferralsSent", fields: [referrerId], references: [id])
+  referredId    String?
+  referred      User?    @relation("UserReferralsReceived", fields: [referredId], references: [id])
+  code          String   @unique
+  status        String   @default("pending") // "pending", "clicked", "converted"
+  clickCount    Int      @default(0)
+  rewardType    String?  // "credit", "bonus_module", "discount"
+  rewardAmount  Float?
+  rewardIssued  Boolean  @default(false)
+  convertedAt   DateTime?
+  createdAt     DateTime @default(now())
+
+  @@index([referrerId])
+  @@index([code])
+  @@index([status])
+}
+
+// ==================== MY CIRCLE (POD) ENGAGEMENT ANALYTICS ====================
+
+model PodEngagement {
+  id            String   @id @default(cuid())
+  userId        String
+  eventType     String   // 'visit', 'message', 'reaction', 'dfy_click', 'educational_view'
+  metadata      Json?    // { daysSinceEnrollment, messageId, reactionType, contentType }
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// User-typed messages in My Circle pods (for admin viewing)
+model PodUserMessage {
+  id                  String   @id @default(cuid())
+  userId              String
+  content             String   @db.Text
+  daysSinceEnrollment Int      // What day in their journey
+  aiResponderName     String?  // Who responded (Sarah, zombie name)
+  aiResponse          String?  @db.Text // The AI response they received
+  createdAt           DateTime @default(now())
+  
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@index([daysSinceEnrollment])
+}

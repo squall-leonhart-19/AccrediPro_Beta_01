@@ -56,6 +56,19 @@ interface RoadmapData {
     userName: string;
     userEmail: string;
     memberSince: string;
+    // Dynamic date fields
+    enrolledAt: string | null;
+    daysToCompletion: number | null;
+    targetDate: string | null;
+    hoursPerWeek: number;
+    lessonsCompleted: number;
+    totalLessons: number;
+    // Onboarding personalization data
+    onboarding: {
+        learningGoal: string | null;
+        currentField: string | null;
+        focusAreas: string[];
+    };
 }
 
 interface PersonalRoadmapProps {
@@ -137,27 +150,61 @@ const STATE_CTA: Record<string, {
     },
 };
 
-// Success testimonials for social proof
-const TESTIMONIALS = [
-    {
-        quote: "I went from corporate burnout to earning $6K/month helping clients transform their health. Sarah's roadmap made it possible.",
-        name: "Jennifer M.",
-        role: "Certified FM Practitioner",
-        income: "$6,200/month",
-    },
-    {
-        quote: "Within 6 months of certification, I had a waitlist of clients. The step-by-step approach removed all the guesswork.",
-        name: "Lisa R.",
-        role: "Working Practitioner",
-        income: "$8,500/month",
-    },
-    {
-        quote: "This isn't just a certification — it's a complete business blueprint. I'm now making more than my corporate job.",
-        name: "Michelle K.",
-        role: "Advanced Practitioner",
-        income: "$12,000/month",
-    },
-];
+// Testimonial type
+interface Testimonial {
+    quote: string;
+    name: string;
+    role: string;
+    income: string;
+    field?: string;
+}
+
+// Field-specific testimonials for matched social proof
+const TESTIMONIALS_BY_FIELD: Record<string, Testimonial[]> = {
+    healthcare: [
+        { quote: "As a nurse for 15 years, I was burned out. Now I run my own functional medicine practice and earn $8K/month doing what I love.", name: "Sarah T.", role: "Former RN → FM Practitioner", income: "$8,200/month", field: "healthcare" },
+        { quote: "My medical background gave me a head start. Within 4 months I had 12 paying clients and replaced my hospital income.", name: "Dr. Amanda L.", role: "Former PA → FM Coach", income: "$11,500/month", field: "healthcare" },
+        { quote: "I went from physical therapy to functional medicine. Best career move ever - more income, better hours, happier clients.", name: "Karen W.", role: "Former PT → FM Practitioner", income: "$9,800/month", field: "healthcare" },
+    ],
+    teacher: [
+        { quote: "Teaching skills transferred perfectly to coaching. I explain complex health concepts in ways clients actually understand.", name: "Jennifer M.", role: "Former Teacher → FM Coach", income: "$7,500/month", field: "teacher" },
+        { quote: "After 20 years in education, I wanted something new. Now I help families transform their health and earn twice my teaching salary.", name: "Linda R.", role: "Retired Educator → Practitioner", income: "$6,800/month", field: "teacher" },
+        { quote: "Summer breaks became my certification time. Now I coach full-time and never looked back.", name: "Patricia S.", role: "Former High School Teacher", income: "$8,200/month", field: "teacher" },
+    ],
+    corporate: [
+        { quote: "I went from corporate burnout to earning $10K/month helping executives optimize their health. Best pivot of my life.", name: "Michelle K.", role: "Former Corporate Manager", income: "$10,400/month", field: "corporate" },
+        { quote: "My business background helped me scale fast. Year one I replaced my corporate salary. Year two I doubled it.", name: "Jessica H.", role: "Former Marketing Director", income: "$14,200/month", field: "corporate" },
+        { quote: "Left my cubicle, kept my income. Now I work from anywhere helping busy professionals transform their health.", name: "Emily B.", role: "Former HR Executive", income: "$9,500/month", field: "corporate" },
+    ],
+    stay_at_home: [
+        { quote: "Started while my kids napped. 8 months later, I'm earning $5K/month on my own schedule. Mom life + career is possible!", name: "Rebecca L.", role: "Mom of 3 → FM Coach", income: "$5,200/month", field: "stay_at_home" },
+        { quote: "I wanted to contribute financially without sacrificing family time. Now I see clients evenings only and earn $6K/month.", name: "Amanda J.", role: "Stay-at-Home Mom → Practitioner", income: "$6,100/month", field: "stay_at_home" },
+        { quote: "Nap time became study time. Now I have a thriving practice that fits around school pickups.", name: "Christina M.", role: "Full-Time Mom → Wellness Coach", income: "$4,800/month", field: "stay_at_home" },
+    ],
+    entrepreneur: [
+        { quote: "Added FM coaching to my existing business. It's now my highest-margin service at $12K/month.", name: "Diana P.", role: "Business Owner", income: "$12,500/month", field: "entrepreneur" },
+        { quote: "My third business is finally the one that lights me up. Helping others get healthy while building wealth is the dream.", name: "Nicole F.", role: "Serial Entrepreneur", income: "$15,800/month", field: "entrepreneur" },
+        { quote: "I sold my previous business to pursue this. Best investment I ever made in myself.", name: "Rachel D.", role: "Former Business Owner", income: "$11,200/month", field: "entrepreneur" },
+    ],
+    fitness: [
+        { quote: "Personal training maxed out at $4K/month. Adding functional medicine coaching doubled my income immediately.", name: "Tiffany R.", role: "Personal Trainer → FM Coach", income: "$9,200/month", field: "fitness" },
+        { quote: "My gym clients wanted nutrition help. Now I offer complete wellness packages at premium rates.", name: "Stephanie G.", role: "Gym Owner → Integrated Coach", income: "$13,500/month", field: "fitness" },
+        { quote: "Went from $50/hour training sessions to $300/hour functional medicine consultations.", name: "Ashley M.", role: "Former CrossFit Coach", income: "$10,800/month", field: "fitness" },
+    ],
+    wellness: [
+        { quote: "My yoga studio income was unpredictable. Now I have consistent $8K months with nutrition and lifestyle coaching.", name: "Samantha K.", role: "Yoga Instructor → FM Practitioner", income: "$8,400/month", field: "wellness" },
+        { quote: "Added functional medicine to my massage practice. Clients get better results and I doubled my rates.", name: "Lauren W.", role: "Massage Therapist → Holistic Coach", income: "$7,600/month", field: "wellness" },
+        { quote: "Acupuncture certification + FM certification = clients who pay premium and get premium results.", name: "Christine L.", role: "Acupuncturist → Integrative Practitioner", income: "$11,200/month", field: "wellness" },
+    ],
+    default: [
+        { quote: "I went from corporate burnout to earning $6K/month helping clients transform their health. Sarah's roadmap made it possible.", name: "Jennifer M.", role: "Certified FM Practitioner", income: "$6,200/month", field: "" },
+        { quote: "Within 6 months of certification, I had a waitlist of clients. The step-by-step approach removed all the guesswork.", name: "Lisa R.", role: "Working Practitioner", income: "$8,500/month", field: "" },
+        { quote: "This isn't just a certification — it's a complete business blueprint. I'm now making more than my corporate job.", name: "Michelle K.", role: "Advanced Practitioner", income: "$12,000/month", field: "" },
+    ],
+};
+
+// Default testimonials
+const TESTIMONIALS = TESTIMONIALS_BY_FIELD.default;
 
 export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmapProps) {
     const cta = STATE_CTA[data.state] || STATE_CTA.exploration;
@@ -213,7 +260,13 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                             </p>
 
                             <div className="flex flex-wrap items-center gap-3 text-sm text-burgundy-200">
-                                {data.memberSince && (
+                                {data.enrolledAt && (
+                                    <span className="flex items-center gap-1">
+                                        <Clock className="w-4 h-4" />
+                                        Started {data.enrolledAt}
+                                    </span>
+                                )}
+                                {!data.enrolledAt && data.memberSince && (
                                     <span className="flex items-center gap-1">
                                         <Clock className="w-4 h-4" />
                                         Member since {data.memberSince}
@@ -223,11 +276,23 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                                     <Target className="w-4 h-4 text-gold-400" />
                                     Step {Math.max(data.currentStep, 1)} of 4
                                 </span>
+                                {data.daysToCompletion !== null && data.daysToCompletion > 0 && (
+                                    <span className="flex items-center gap-1 bg-green-500/20 px-2 py-0.5 rounded-full">
+                                        <Zap className="w-4 h-4 text-green-300" />
+                                        <span className="text-green-200 font-medium">Cert by {data.targetDate}</span>
+                                    </span>
+                                )}
                             </div>
                         </div>
 
                         {/* Quick Stats */}
                         <div className="hidden lg:flex flex-col gap-2 text-right">
+                            {data.daysToCompletion !== null && data.daysToCompletion > 0 && (
+                                <div className="px-4 py-2 bg-green-500/20 rounded-lg backdrop-blur-sm border border-green-400/30">
+                                    <p className="text-2xl font-bold text-green-300">{data.daysToCompletion} days</p>
+                                    <p className="text-xs text-green-200">to certification • {data.targetDate}</p>
+                                </div>
+                            )}
                             <div className="px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm">
                                 <p className="text-2xl font-bold text-gold-400">{data.totalProgress}%</p>
                                 <p className="text-xs text-burgundy-200">Overall Progress</p>
@@ -242,6 +307,68 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                     </div>
                 </CardContent>
             </Card>
+
+            {/* ========== YOUR PROFILE: Personalized Goals ========== */}
+            {(data.onboarding.learningGoal || data.onboarding.currentField || data.onboarding.focusAreas.length > 0) && (
+                <Card className="border border-burgundy-100 bg-gradient-to-r from-burgundy-50 to-purple-50">
+                    <CardContent className="p-5">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-burgundy-100 flex items-center justify-center">
+                                <Target className="w-5 h-5 text-burgundy-600" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-900">Your Personalized Path</h3>
+                                <p className="text-sm text-gray-500">Based on your goals and situation</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Goal */}
+                            {data.onboarding.learningGoal && (
+                                <div className="p-4 bg-white rounded-xl border border-burgundy-100">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Rocket className="w-4 h-4 text-burgundy-500" />
+                                        <span className="text-xs font-semibold text-burgundy-600 uppercase">Your Goal</span>
+                                    </div>
+                                    <p className="font-medium text-gray-900 capitalize text-sm">
+                                        {data.onboarding.learningGoal.replace(/_/g, ' ')}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Current Field */}
+                            {data.onboarding.currentField && (
+                                <div className="p-4 bg-white rounded-xl border border-purple-100">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Users className="w-4 h-4 text-purple-500" />
+                                        <span className="text-xs font-semibold text-purple-600 uppercase">Your Background</span>
+                                    </div>
+                                    <p className="font-medium text-gray-900 capitalize text-sm">
+                                        {data.onboarding.currentField.replace(/_/g, ' ')}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Focus Areas */}
+                            {data.onboarding.focusAreas.length > 0 && (
+                                <div className="p-4 bg-white rounded-xl border border-amber-100">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Zap className="w-4 h-4 text-amber-500" />
+                                        <span className="text-xs font-semibold text-amber-600 uppercase">Focus Areas</span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-1">
+                                        {data.onboarding.focusAreas.slice(0, 3).map((area, i) => (
+                                            <Badge key={i} variant="secondary" className="text-xs bg-amber-50 text-amber-700">
+                                                {area}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* ========== PRIMARY CTA: Your Next Action ========== */}
             <Card className="border-2 border-gold-300 bg-gradient-to-r from-gold-50 via-amber-50 to-gold-50 shadow-lg overflow-hidden relative">
@@ -437,7 +564,7 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                 </CardContent>
             </Card>
 
-            {/* ========== SOCIAL PROOF: Success Stories ========== */}
+            {/* ========== SOCIAL PROOF: Success Stories (Matched to Field) ========== */}
             <Card className="border border-gray-200 overflow-hidden bg-gradient-to-br from-gray-50 to-white">
                 <CardContent className="p-6">
                     <div className="flex items-center gap-3 mb-6">
@@ -445,17 +572,26 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                             <Users className="w-5 h-5 text-purple-600" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-gray-900">Success Stories</h3>
-                            <p className="text-sm text-gray-500">From practitioners just like you</p>
+                            <h3 className="font-bold text-gray-900">
+                                {data.onboarding.currentField
+                                    ? "People Like You Who Succeeded"
+                                    : "Success Stories"}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                                {data.onboarding.currentField
+                                    ? `From ${data.onboarding.currentField.replace(/_/g, ' ')}s who made the leap`
+                                    : "From practitioners just like you"}
+                            </p>
                         </div>
                         <Badge className="ml-auto bg-purple-100 text-purple-700">2,847+ Certified</Badge>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-4">
-                        {TESTIMONIALS.map((testimonial, i) => (
+                        {/* Use matched testimonials if field is set, otherwise use default */}
+                        {(TESTIMONIALS_BY_FIELD[data.onboarding.currentField || ''] || TESTIMONIALS).map((testimonial, i) => (
                             <div key={i} className="p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
                                 <Quote className="w-6 h-6 text-gold-400 mb-2" />
-                                <p className="text-sm text-gray-700 mb-3 line-clamp-3">{testimonial.quote}</p>
+                                <p className="text-sm text-gray-700 mb-3 line-clamp-4">{testimonial.quote}</p>
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>

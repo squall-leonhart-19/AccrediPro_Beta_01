@@ -46,6 +46,11 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email },
+          include: {
+            marketingTags: {
+              include: { tag: true },
+            },
+          },
         });
 
         if (!user) {
@@ -165,6 +170,11 @@ export const authOptions: NextAuthOptions = {
           miniDiplomaCourseSlug = categoryToSlug[user.miniDiplomaCategory] || null;
         }
 
+        // Check if user has FM certification tag for My Circle access
+        const hasFMCertification = user.marketingTags?.some(
+          (t) => t.tag.slug === "functional_medicine_complete_certification_purchased"
+        ) || false;
+
         // Note: Don't include image/avatar in JWT - it can cause token size issues
         // Avatar is fetched separately when needed
         return {
@@ -180,6 +190,7 @@ export const authOptions: NextAuthOptions = {
           miniDiplomaCategory: user.miniDiplomaCategory || null,
           miniDiplomaCourseSlug,
           accessExpiresAt: (user as any).accessExpiresAt?.toISOString() || null,
+          hasFMCertification,
         };
       },
     }),
@@ -201,6 +212,7 @@ export const authOptions: NextAuthOptions = {
         token.miniDiplomaCategory = user.miniDiplomaCategory;
         token.miniDiplomaCourseSlug = user.miniDiplomaCourseSlug;
         token.accessExpiresAt = user.accessExpiresAt;
+        token.hasFMCertification = user.hasFMCertification;
       }
       return token;
     },
@@ -215,6 +227,7 @@ export const authOptions: NextAuthOptions = {
         session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
         session.user.miniDiplomaCourseSlug = token.miniDiplomaCourseSlug as string | null;
         session.user.accessExpiresAt = token.accessExpiresAt as string | null;
+        session.user.hasFMCertification = token.hasFMCertification as boolean;
       }
       return session;
     },

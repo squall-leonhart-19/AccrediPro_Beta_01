@@ -1,0 +1,801 @@
+"use client";
+
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import {
+    Users,
+    Send,
+    Crown,
+    MessageCircle,
+    Sparkles,
+    ArrowLeft,
+    Trophy,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { COACH_SARAH } from "@/lib/zombies";
+
+interface PodMessage {
+    id: string;
+    senderName: string;
+    senderAvatar?: string;
+    senderType: "coach" | "zombie" | "user";
+    content: string;
+    createdAt: Date;
+    isCoach: boolean;
+}
+
+interface ZombieProfile {
+    id: string;
+    name: string;
+    avatar?: string;
+    personalityType: string;
+}
+
+interface CurrentUser {
+    id: string;
+    name: string;
+    avatar?: string;
+    progress: number;
+}
+
+interface PodChatClientProps {
+    podName: string;
+    messages: PodMessage[];
+    zombies: ZombieProfile[];
+    currentUser: CurrentUser | null;
+    daysSinceEnrollment: number;
+}
+
+function timeAgo(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+// FM Module names for leaderboard (21 modules total = 5% per module)
+const FM_MODULES = [
+    "Orientation",           // 0: 0-4%
+    "FM Foundations",        // 1: 5-9%
+    "Health Coaching",       // 2: 10-14%
+    "Clinical Assessment",   // 3: 15-19%
+    "Ethics & Scope",        // 4: 20-24%
+    "Functional Nutrition",  // 5: 25-29%
+    "Gut Health",            // 6: 30-34%
+    "Stress & Adrenals",     // 7: 35-39%
+    "Blood Sugar",           // 8: 40-44%
+    "Women's Hormones",      // 9: 45-49%
+    "Perimenopause",         // 10: 50-54%
+    "Thyroid Health",        // 11: 55-59%
+    "Metabolic Health",      // 12: 60-64%
+    "Autoimmunity",          // 13: 65-69%
+    "Mental Health",         // 14: 70-74%
+    "Cardiometabolic",       // 15: 75-79%
+    "Energy & Mito",         // 16: 80-84%
+    "Detox",                 // 17: 85-89%
+    "Immune Health",         // 18: 90-94%
+    "Protocol Building",     // 19: 95-99%
+    "Certified! 🎓",         // 20: 100%
+];
+
+// Convert progress % to current module name
+function getModuleName(progress: number): string {
+    if (progress >= 100) return FM_MODULES[20];
+    const moduleIndex = Math.floor(progress / 5);
+    return FM_MODULES[Math.min(moduleIndex, FM_MODULES.length - 1)];
+}
+
+// Zombie progress: FOMO design - relative to USER's progress
+// Some zombies are AHEAD to create "I need to catch up" feeling
+function getZombieProgress(personality: string, daysSinceEnrollment: number, userProgress: number = 35): number {
+    // Use USER's actual progress as base, then apply personality offsets
+    // This creates FOMO because some zombies are always ahead!
+
+    // Personality offsets (FOMO design):
+    // - Leader: Always 20% ahead of user (creates urgency)
+    // - Buyer: Always 10% ahead (invested in Pro, doing well)
+    // - Questioner: Same as user (relatable peer)
+    // - Struggler: 15% behind user (makes user feel accomplished)
+    const offsets: Record<string, number> = {
+        leader: 20,      // Always ahead - "They're crushing it!"
+        buyer: 10,       // Slightly ahead - "Pro is working for them"
+        questioner: 0,   // Same pace - relatable
+        struggler: -15,  // Behind - makes user feel good
+    };
+
+    const offset = offsets[personality] || 0;
+    const progress = userProgress + offset;
+
+    // Add small variance (±3%) based on personality index for variety
+    const personalityIndex = Object.keys(offsets).indexOf(personality);
+    const variance = (Math.sin(personalityIndex * 1.5) * 3);
+
+    // Clamp between 5% and 100% (no one at 0%)
+    return Math.min(Math.max(Math.round(progress + variance), 5), 100);
+}
+
+// LocalStorage key for persisting user messages - USER-SPECIFIC
+// Each user gets their own storage key so messages don't bleed between accounts
+function getStorageKey(userId: string): string {
+    return `pod-chat-messages-${userId}`;
+}
+
+export function PodChatClient({
+    podName,
+    messages: initialMessages,
+    zombies,
+    currentUser,
+    daysSinceEnrollment,
+}: PodChatClientProps) {
+    const [inputValue, setInputValue] = useState("");
+    const [chatMessages, setChatMessages] = useState<PodMessage[]>([]);
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingResponder, setTypingResponder] = useState<{ name: string; avatar?: string; isCoach: boolean } | null>(null);
+    const [isSending, setIsSending] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Reactions state - tracks user's reactions to messages
+    const [reactions, setReactions] = useState<Record<string, { hearts: number; fire: number; userReacted: string | null }>>({});
+
+    // Pre-seed reactions for script messages
+    useEffect(() => {
+        const preSeeded: Record<string, { hearts: number; fire: number; userReacted: string | null }> = {};
+        initialMessages.forEach(msg => {
+            // Educational tips and coach messages get more reactions
+            const isEducational = msg.content.includes("tip:") || msg.content.includes("formula") || msg.content.includes("questions:");
+            const isCelebration = msg.content.includes("🎉") || msg.content.includes("FIRST CLIENT");
+            preSeeded[msg.id] = {
+                hearts: isEducational ? Math.floor(Math.random() * 3) + 2 : Math.floor(Math.random() * 2),
+                fire: isCelebration ? Math.floor(Math.random() * 4) + 2 : 0,
+                userReacted: null,
+            };
+        });
+        setReactions(preSeeded);
+    }, [initialMessages]);
+
+    // Analytics - track engagement events
+    const trackEngagement = useCallback((eventType: string, metadata?: Record<string, any>) => {
+        fetch("/api/pod/engagement", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ eventType, metadata: { ...metadata, daysSinceEnrollment } }),
+        }).catch(() => { }); // Fire and forget
+    }, [daysSinceEnrollment]);
+
+    // Track page visit on mount
+    useEffect(() => {
+        trackEngagement("visit");
+    }, [trackEngagement]);
+
+    const handleReaction = (msgId: string, type: 'hearts' | 'fire') => {
+        setReactions(prev => {
+            const current = prev[msgId] || { hearts: 0, fire: 0, userReacted: null };
+            if (current.userReacted === type) {
+                // Remove reaction
+                return { ...prev, [msgId]: { ...current, [type]: current[type] - 1, userReacted: null } };
+            } else {
+                // Add reaction (remove previous if different)
+                const newCounts = { ...current };
+                if (current.userReacted) {
+                    newCounts[current.userReacted as 'hearts' | 'fire'] -= 1;
+                }
+                newCounts[type] += 1;
+                // Track reaction engagement
+                trackEngagement("reaction", { messageId: msgId, reactionType: type });
+                return { ...prev, [msgId]: { ...newCounts, userReacted: type } };
+            }
+        });
+    };
+
+    // Active now dots - 3-4 random zombies are "online"
+    const [activeZombieIds] = useState<string[]>(() => {
+        const shuffled = [...zombies].sort(() => Math.random() - 0.5);
+        const numActive = 3 + Math.floor(Math.random() * 2); // 3-4 active
+        return shuffled.slice(0, numActive).map(z => z.id);
+    });
+
+    // Streak counter from localStorage
+    const [streak, setStreak] = useState(1);
+
+    useEffect(() => {
+        if (!currentUser?.id) return;
+        const streakKey = `pod-streak-${currentUser.id}`;
+        const lastVisitKey = `pod-last-visit-${currentUser.id}`;
+
+        const stored = localStorage.getItem(streakKey);
+        const lastVisit = localStorage.getItem(lastVisitKey);
+        const today = new Date().toDateString();
+
+        if (lastVisit === today) {
+            // Already visited today, keep current streak
+            setStreak(stored ? parseInt(stored) : 1);
+        } else {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (lastVisit === yesterday.toDateString()) {
+                // Consecutive day, increment streak
+                const newStreak = (stored ? parseInt(stored) : 0) + 1;
+                setStreak(newStreak);
+                localStorage.setItem(streakKey, newStreak.toString());
+            } else {
+                // Streak broken, reset to 1
+                setStreak(1);
+                localStorage.setItem(streakKey, "1");
+            }
+            localStorage.setItem(lastVisitKey, today);
+        }
+    }, [currentUser?.id]);
+
+    // Progress Milestones - celebrate achievements
+    const [showMilestone, setShowMilestone] = useState<{
+        percent: number;
+        title: string;
+        message: string;
+        emoji: string;
+    } | null>(null);
+
+    const MILESTONES = [
+        { percent: 25, title: "Quarter Champion! 🎯", message: "You've completed 25% of your certification. You're building real expertise!", emoji: "🎯" },
+        { percent: 50, title: "Halfway Hero! 🔥", message: "50% complete! You're halfway to becoming a Certified Practitioner!", emoji: "🔥" },
+        { percent: 75, title: "Almost There! 💪", message: "75% done! The finish line is in sight. You've got this!", emoji: "💪" },
+        { percent: 100, title: "CERTIFIED! 🏆", message: "Congratulations! You've completed your Functional Medicine Certification!", emoji: "🏆" },
+    ];
+
+    useEffect(() => {
+        if (!currentUser?.id) return;
+        const progress = currentUser.progress;
+        const milestoneKey = `pod-milestones-${currentUser.id}`;
+        const seenMilestones: number[] = JSON.parse(localStorage.getItem(milestoneKey) || "[]");
+
+        // Check each milestone
+        for (const milestone of MILESTONES) {
+            if (progress >= milestone.percent && !seenMilestones.includes(milestone.percent)) {
+                // Show this milestone!
+                setShowMilestone(milestone);
+                // Mark as seen
+                seenMilestones.push(milestone.percent);
+                localStorage.setItem(milestoneKey, JSON.stringify(seenMilestones));
+                // Track engagement
+                trackEngagement("milestone", { milestone: milestone.percent, progress });
+                break; // Only show one at a time
+            }
+        }
+    }, [currentUser?.id, currentUser?.progress, trackEngagement]);
+
+    // Load messages from localStorage + initial scripted messages
+    useEffect(() => {
+        if (!currentUser?.id) {
+            setChatMessages(initialMessages);
+            return;
+        }
+
+        const storageKey = getStorageKey(currentUser.id);
+        const stored = localStorage.getItem(storageKey);
+        const userMessages: PodMessage[] = stored ? JSON.parse(stored) : [];
+
+        // Merge initial scripted messages with user's stored messages
+        const allMessages = [...initialMessages, ...userMessages.map((m: PodMessage) => ({
+            ...m,
+            createdAt: new Date(m.createdAt),
+        }))];
+
+        // Sort by date
+        allMessages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        setChatMessages(allMessages);
+    }, [initialMessages, currentUser?.id]);
+
+    // Save user messages to localStorage - USER-SPECIFIC
+    const saveUserMessages = useCallback((messages: PodMessage[]) => {
+        if (!currentUser?.id) return;
+
+        const storageKey = getStorageKey(currentUser.id);
+        // Only save messages from user or AI responses (not scripted)
+        const userMessages = messages.filter(m =>
+            m.id.startsWith("user-") || m.id.startsWith("response-") || m.id.startsWith("fallback-")
+        );
+        localStorage.setItem(storageKey, JSON.stringify(userMessages));
+    }, [currentUser?.id]);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [chatMessages]);
+
+    // Call Anthropic API for response
+    const handleSend = async () => {
+        if (!inputValue.trim() || !currentUser || isSending) return;
+
+        setIsSending(true);
+
+        // Add user message immediately
+        const userMessage: PodMessage = {
+            id: `user-${Date.now()}`,
+            senderName: currentUser.name,
+            senderAvatar: currentUser.avatar,
+            senderType: "user",
+            content: inputValue,
+            createdAt: new Date(),
+            isCoach: false,
+        };
+
+        const updatedMessages = [...chatMessages, userMessage];
+        setChatMessages(updatedMessages);
+        saveUserMessages(updatedMessages);
+
+        // Track message engagement
+        trackEngagement("message", { contentLength: inputValue.length });
+
+        const sentMessage = inputValue;
+        setInputValue("");
+
+        try {
+            // REALISTIC: Wait 10-20 seconds BEFORE showing typing indicator
+            // This simulates the responder "reading" the message
+            const preTypingDelay = 10000 + Math.random() * 10000;
+            await new Promise(resolve => setTimeout(resolve, preTypingDelay));
+
+            // Call Anthropic API first to get WHO will respond
+            const res = await fetch("/api/pod-chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: sentMessage,
+                    conversationHistory: chatMessages.slice(-10),
+                    zombies,
+                    daysSinceEnrollment,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.success && data.response) {
+                // Now show typing indicator with the ACTUAL responder's info
+                setTypingResponder({
+                    name: data.response.senderName,
+                    avatar: data.response.senderAvatar,
+                    isCoach: data.response.isCoach,
+                });
+                setIsTyping(true);
+
+                // Wait for typing delay - LONGER for realistic feel (15-30 seconds)
+                const typingDelay = 15000 + Math.random() * 15000;
+                await new Promise(resolve => setTimeout(resolve, typingDelay));
+
+                // Add AI response
+                const newMessages = [...updatedMessages, {
+                    id: data.response.id,
+                    senderName: data.response.senderName,
+                    senderAvatar: data.response.senderAvatar,
+                    senderType: data.response.senderType,
+                    content: data.response.content,
+                    createdAt: new Date(data.response.createdAt),
+                    isCoach: data.response.isCoach,
+                }];
+                setChatMessages(newMessages);
+                saveUserMessages(newMessages);
+
+                // Save to database for admin viewing
+                fetch("/api/pod/message", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        content: sentMessage,
+                        daysSinceEnrollment,
+                        aiResponderName: data.response.senderName,
+                        aiResponse: data.response.content,
+                    }),
+                }).catch(() => { }); // Fire and forget
+            }
+        } catch (error) {
+            console.error("Failed to send message:", error);
+            // Fallback response
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            const fallbackMessages = [...updatedMessages, {
+                id: `fallback-${Date.now()}`,
+                senderName: "Coach Sarah M.",
+                senderAvatar: COACH_SARAH.avatar,
+                senderType: "coach" as const,
+                content: "Thanks for sharing! Keep up the great work! 💪",
+                createdAt: new Date(),
+                isCoach: true,
+            }];
+            setChatMessages(fallbackMessages);
+            saveUserMessages(fallbackMessages);
+        } finally {
+            setIsTyping(false);
+            setTypingResponder(null);
+            setIsSending(false);
+        }
+    };
+
+    // Build student list - pass user's actual progress so zombies are relative to user
+    const userProgress = currentUser?.progress || 35;
+    const studentMembers = zombies.map((z) => ({
+        id: z.id,
+        name: z.name,
+        avatar: z.avatar,
+        progress: getZombieProgress(z.personalityType, daysSinceEnrollment, userProgress),
+    })).sort((a, b) => b.progress - a.progress);
+
+    if (currentUser) {
+        studentMembers.push({
+            id: currentUser.id,
+            name: currentUser.name,
+            avatar: currentUser.avatar,
+            progress: currentUser.progress,
+        });
+        studentMembers.sort((a, b) => b.progress - a.progress);
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* Milestone Celebration Modal */}
+            {showMilestone && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center animate-in zoom-in-95 duration-300">
+                        {/* Confetti effect with emojis */}
+                        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                            <div className="absolute top-4 left-8 text-4xl animate-bounce">🎉</div>
+                            <div className="absolute top-8 right-12 text-3xl animate-bounce delay-100">⭐</div>
+                            <div className="absolute top-12 left-16 text-2xl animate-bounce delay-200">✨</div>
+                            <div className="absolute top-6 right-24 text-3xl animate-bounce delay-300">🎊</div>
+                        </div>
+
+                        {/* Main celebration emoji */}
+                        <div className="text-7xl mb-4 animate-pulse">{showMilestone.emoji}</div>
+
+                        {/* Title */}
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                            {showMilestone.title}
+                        </h2>
+
+                        {/* Progress bar */}
+                        <div className="w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden">
+                            <div
+                                className="h-full bg-gradient-to-r from-burgundy-500 to-burgundy-600 rounded-full transition-all duration-1000"
+                                style={{ width: `${showMilestone.percent}%` }}
+                            />
+                        </div>
+                        <p className="text-sm text-gray-500 mb-4">{showMilestone.percent}% Complete</p>
+
+                        {/* Message */}
+                        <p className="text-gray-600 mb-6">{showMilestone.message}</p>
+
+                        {/* Continue button */}
+                        <Button
+                            onClick={() => setShowMilestone(null)}
+                            className="bg-burgundy-600 hover:bg-burgundy-700 text-white px-8 py-2"
+                        >
+                            Keep Going! 🚀
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {/* Header */}
+            <div className="bg-white border-b shadow-sm sticky top-0 z-40">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        <div className="flex items-center gap-4">
+                            <Link href="/dashboard">
+                                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-burgundy-600 -ml-2">
+                                    <ArrowLeft className="w-4 h-4 mr-2" />
+                                    <span className="hidden sm:inline">Dashboard</span>
+                                </Button>
+                            </Link>
+                            <div className="h-6 w-px bg-gray-200 hidden sm:block" />
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-burgundy-500 to-burgundy-600 flex items-center justify-center shadow-lg shadow-burgundy-200/50">
+                                    <Users className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                    <h1 className="text-lg font-bold text-gray-900">{podName}</h1>
+                                    <p className="text-xs text-gray-500 hidden sm:block">Day {daysSinceEnrollment} of your journey</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {streak > 1 && (
+                                <Badge className="bg-orange-50 text-orange-700 border border-orange-200">
+                                    🔥 {streak} day streak
+                                </Badge>
+                            )}
+                            <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                <span className="hidden sm:inline">{studentMembers.length + 1} Members</span>
+                                <span className="sm:hidden">{studentMembers.length + 1}</span>
+                            </Badge>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="flex flex-col lg:flex-row gap-6">
+
+                    {/* Sidebar */}
+                    <div className="w-full lg:w-80 xl:w-96 space-y-4 lg:sticky lg:top-24 lg:self-start">
+
+                        {/* Coach Card */}
+                        <Card className="bg-gradient-to-br from-gold-50 to-amber-50 border-gold-200">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-4">
+                                    <Avatar className="w-14 h-14 border-2 border-gold-300 shadow-lg">
+                                        <AvatarImage src={COACH_SARAH.avatar} />
+                                        <AvatarFallback className="bg-gold-100 text-gold-700 font-bold">SM</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <p className="font-bold text-gray-900">{COACH_SARAH.name}</p>
+                                        <Badge className="text-xs bg-gold-100 text-gold-700 border-gold-200 mt-1">
+                                            <Crown className="w-3 h-3 mr-1" />
+                                            Your Mentor
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Student Leaderboard */}
+                        <Card className="bg-white">
+                            <CardHeader className="pb-3">
+                                <CardTitle className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                    <Trophy className="w-4 h-4 text-burgundy-500" />
+                                    Pod Leaderboard
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-2 pt-0">
+                                {studentMembers.map((member, index) => {
+                                    const isCurrentUser = currentUser && member.id === currentUser.id;
+                                    return (
+                                        <div
+                                            key={member.id}
+                                            className={cn(
+                                                "flex items-center gap-3 p-3 rounded-xl transition-all",
+                                                isCurrentUser ? "bg-burgundy-50 ring-1 ring-burgundy-200" : "hover:bg-gray-50"
+                                            )}
+                                        >
+                                            <div className="w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold shrink-0">
+                                                {index + 1}
+                                            </div>
+                                            <div className="relative">
+                                                <Avatar className="w-9 h-9 border-2 border-white shadow shrink-0">
+                                                    <AvatarImage src={member.avatar} />
+                                                    <AvatarFallback className="bg-burgundy-100 text-burgundy-700 text-xs font-medium">
+                                                        {member.name.split(" ").map(n => n[0]).join("")}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                {/* Active now green dot */}
+                                                {!isCurrentUser && activeZombieIds.includes(member.id) && (
+                                                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className={cn(
+                                                    "text-sm font-medium truncate",
+                                                    isCurrentUser ? "text-burgundy-700" : "text-gray-900"
+                                                )}>
+                                                    {member.name}
+                                                    {isCurrentUser && <span className="text-burgundy-500"> (You)</span>}
+                                                </p>
+                                                <p className="text-[11px] text-gray-500 truncate mt-0.5">
+                                                    📚 {getModuleName(member.progress)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </CardContent>
+                        </Card>
+
+                        {/* DFY Counter - Social Proof */}
+                        {daysSinceEnrollment >= 15 && (
+                            <Card className="bg-gradient-to-br from-burgundy-50 to-burgundy-100/50 border-burgundy-200">
+                                <CardContent className="p-4 text-center">
+                                    <p className="text-sm font-medium text-burgundy-700">
+                                        ✨ 3 pod members enrolled in DFY this quarter
+                                    </p>
+                                    <p className="text-xs text-burgundy-500 mt-1">
+                                        Only 1 spot remaining
+                                    </p>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+
+                    {/* Chat Area */}
+                    <div className="flex-1 min-w-0">
+                        <Card className="bg-white flex flex-col" style={{ height: 'calc(100vh - 140px)', minHeight: '500px' }}>
+                            <CardHeader className="py-3 px-4 border-b shrink-0">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <CardTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                                            <MessageCircle className="w-5 h-5 text-burgundy-600" />
+                                            Private Accountability Group
+                                        </CardTitle>
+                                        <p className="text-xs text-gray-500 mt-0.5">Your coach + 5 peers supporting your journey</p>
+                                    </div>
+                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{chatMessages.length} messages</span>
+                                </div>
+                            </CardHeader>
+
+                            {/* Messages */}
+                            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
+                                {/* Pinned DFY Announcement - Shows after Day 18 */}
+                                {daysSinceEnrollment >= 18 && (
+                                    <div className="bg-gradient-to-r from-gold-50 to-amber-50 border border-gold-200 rounded-xl p-4 mb-4 relative">
+                                        <div className="absolute -top-2 left-4 bg-gold-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                                            📌 PINNED
+                                        </div>
+                                        <div className="flex items-start gap-3 mt-1">
+                                            <Avatar className="w-10 h-10 border-2 border-gold-200">
+                                                <AvatarImage src={COACH_SARAH.avatar} />
+                                                <AvatarFallback className="bg-gold-100 text-gold-700">SM</AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <p className="text-sm font-medium text-gold-700 mb-1">Coach Sarah M.</p>
+                                                <p className="text-sm text-gray-700">
+                                                    🌿 <strong>DFY Practice Launch spots are LIMITED</strong> - If you want help setting up your website, booking system, and client attraction system, DM me. Only 4 spots per quarter and 3 are already taken!
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {chatMessages.map((msg) => {
+                                    const isCurrentUser = msg.senderType === "user";
+                                    return (
+                                        <div key={msg.id} className={cn("flex gap-3", isCurrentUser && "flex-row-reverse")}>
+                                            <Avatar className="w-9 h-9 shrink-0 border border-white shadow-sm">
+                                                <AvatarImage src={msg.senderAvatar} />
+                                                <AvatarFallback className={cn(
+                                                    "text-xs font-medium",
+                                                    msg.isCoach ? "bg-gold-100 text-gold-700" : "bg-burgundy-100 text-burgundy-700"
+                                                )}>
+                                                    {msg.senderName.split(" ").map(n => n[0]).join("")}
+                                                </AvatarFallback>
+                                            </Avatar>
+
+                                            <div className={cn("max-w-[80%] sm:max-w-[70%]", isCurrentUser && "text-right")}>
+                                                <div className={cn("flex items-center gap-2 mb-1", isCurrentUser && "flex-row-reverse")}>
+                                                    <span className={cn(
+                                                        "text-sm font-medium",
+                                                        msg.isCoach ? "text-gold-700" : "text-gray-900"
+                                                    )}>
+                                                        {msg.senderName}
+                                                    </span>
+                                                    {msg.isCoach && (
+                                                        <Badge className="text-[10px] bg-gold-100 text-gold-700 border-0 h-4 px-1">Coach</Badge>
+                                                    )}
+                                                    <span className="text-[10px] text-gray-400">{timeAgo(new Date(msg.createdAt))}</span>
+                                                </div>
+                                                <div className={cn(
+                                                    "rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+                                                    isCurrentUser
+                                                        ? "bg-burgundy-500 text-white rounded-br-sm"
+                                                        : msg.isCoach
+                                                            ? "bg-gold-50 text-gray-800 border border-gold-200 rounded-bl-sm"
+                                                            : "bg-white text-gray-800 border border-gray-200 rounded-bl-sm"
+                                                )}>
+                                                    {msg.content}
+                                                </div>
+                                                {/* Quick reactions */}
+                                                {!isCurrentUser && (
+                                                    <div className="flex items-center gap-1 mt-1">
+                                                        <button
+                                                            onClick={() => handleReaction(msg.id, 'hearts')}
+                                                            className={cn(
+                                                                "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-all",
+                                                                reactions[msg.id]?.userReacted === 'hearts'
+                                                                    ? "bg-pink-100 text-pink-600"
+                                                                    : "bg-gray-100 hover:bg-pink-50 text-gray-500 hover:text-pink-500"
+                                                            )}
+                                                        >
+                                                            ❤️ {reactions[msg.id]?.hearts || 0}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleReaction(msg.id, 'fire')}
+                                                            className={cn(
+                                                                "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-all",
+                                                                reactions[msg.id]?.userReacted === 'fire'
+                                                                    ? "bg-orange-100 text-orange-600"
+                                                                    : "bg-gray-100 hover:bg-orange-50 text-gray-500 hover:text-orange-500"
+                                                            )}
+                                                        >
+                                                            🔥 {reactions[msg.id]?.fire || 0}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+
+                                {isTyping && typingResponder && (
+                                    <div className="flex gap-3">
+                                        <Avatar className="w-9 h-9 border border-white shadow-sm">
+                                            <AvatarImage src={typingResponder.avatar} />
+                                            <AvatarFallback className={cn(
+                                                "text-xs font-medium",
+                                                typingResponder.isCoach ? "bg-gold-100 text-gold-700" : "bg-burgundy-100 text-burgundy-700"
+                                            )}>
+                                                {typingResponder.name.split(" ").map(n => n[0]).join("")}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <span className={cn(
+                                                "text-xs font-medium mb-1 block",
+                                                typingResponder.isCoach ? "text-gold-700" : "text-gray-600"
+                                            )}>
+                                                {typingResponder.name} is typing...
+                                            </span>
+                                            <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-2.5 border border-gray-200 shadow-sm">
+                                                <div className="flex gap-1">
+                                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                                                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={messagesEndRef} />
+                            </div>
+
+                            {/* Input */}
+                            {currentUser && (
+                                <div className="p-4 border-t bg-white shrink-0">
+                                    {/* Show prompt if user hasn't messaged recently */}
+                                    {chatMessages.filter(m => m.senderType === "user").length === 0 && daysSinceEnrollment >= 2 && (
+                                        <div className="mb-3 bg-burgundy-50 border border-burgundy-200 rounded-lg p-3 text-center">
+                                            <p className="text-sm text-burgundy-700">
+                                                💬 Your pod wants to hear from you! Share an update or ask a question.
+                                            </p>
+                                        </div>
+                                    )}
+                                    <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-3">
+                                        <Input
+                                            value={inputValue}
+                                            onChange={(e) => setInputValue(e.target.value)}
+                                            placeholder="Share your progress..."
+                                            className="flex-1 h-11 rounded-xl border-gray-200"
+                                            disabled={isSending}
+                                        />
+                                        <Button
+                                            type="submit"
+                                            className="h-11 px-5 bg-burgundy-500 hover:bg-burgundy-600 text-white rounded-xl"
+                                            disabled={!inputValue.trim() || isSending}
+                                        >
+                                            <Send className="w-4 h-4" />
+                                        </Button>
+                                    </form>
+                                </div>
+                            )}
+
+                            {!currentUser && (
+                                <div className="p-4 border-t bg-amber-50 shrink-0">
+                                    <p className="text-sm text-amber-700 text-center">
+                                        👀 Viewing as coach — students see their own participation here
+                                    </p>
+                                </div>
+                            )}
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

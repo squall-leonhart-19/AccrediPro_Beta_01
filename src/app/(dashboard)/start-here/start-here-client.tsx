@@ -165,6 +165,18 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                 reward: "+25 XP",
             },
             {
+                id: "roadmap",
+                label: "View Your Personalized Roadmap",
+                description: "See your custom path to success based on your goals",
+                completed: questionsCompleted, // Completed once they view it after onboarding
+                link: questionsCompleted ? "/my-personal-roadmap-by-coach-sarah" : null,
+                action: questionsCompleted ? null : () => setShowQuestionsWizard(true), // Must complete onboarding first
+                icon: Map,
+                color: "emerald",
+                emoji: "🗺️",
+                reward: "+15 XP",
+            },
+            {
                 id: "tutorial",
                 label: "Take the Platform Tour",
                 description: "Get a quick walkthrough of all the amazing features",
@@ -173,7 +185,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                 action: tourCompleted ? null : startTour,
                 icon: Compass,
                 color: "purple",
-                emoji: "🗺️",
+                emoji: "🧭",
                 reward: "+10 XP",
             },
             {
@@ -290,13 +302,45 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                             <Rocket className="w-3 h-3 text-burgundy-500" /> Your journey begins here
                                         </span>
                                         <span className="flex items-center gap-1">
-                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 80 XP!
+                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 95 XP!
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Checklist Items */}
                                 <div className="p-6 space-y-3">
+                                    {/* Sarah Welcome Video */}
+                                    <div className="mb-6 rounded-xl overflow-hidden bg-burgundy-50 border border-burgundy-200">
+                                        <div className="p-4 border-b border-burgundy-200 bg-gradient-to-r from-burgundy-600 to-burgundy-700">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30">
+                                                    <img src="/coaches/sarah-coach.webp" alt="Coach Sarah" className="w-full h-full object-cover" />
+                                                </div>
+                                                <div className="text-white">
+                                                    <p className="font-semibold text-sm">Welcome from Coach Sarah 👋</p>
+                                                    <p className="text-xs text-burgundy-200">Watch this first before getting started</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            className="aspect-video"
+                                            dangerouslySetInnerHTML={{
+                                                __html: `
+                                                <script src="https://fast.wistia.com/player.js" async></script>
+                                                <script src="https://fast.wistia.com/embed/7w51vpdty2.js" async type="module"></script>
+                                                <style>
+                                                    wistia-player[media-id='7w51vpdty2']:not(:defined) { 
+                                                        background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/7w51vpdty2/swatch'); 
+                                                        display: block; 
+                                                        filter: blur(5px); 
+                                                        padding-top:56.25%; 
+                                                    }
+                                                </style>
+                                                <wistia-player media-id="7w51vpdty2" aspect="1.7777777777777777"></wistia-player>
+                                            `}}
+                                        />
+                                    </div>
+
                                     {checklist.map((item, index) => {
                                         const stepNumber = index + 1;
                                         const IconComponent = item.icon;
@@ -407,7 +451,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                 <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mx-auto mb-3">
                                                     <Award className="w-8 h-8 text-white" />
                                                 </div>
-                                                <h3 className="text-xl font-bold mb-2">You're All Set! +80 XP Earned!</h3>
+                                                <h3 className="text-xl font-bold mb-2">You're All Set! +95 XP Earned!</h3>
                                                 <p className="text-white/90 text-sm max-w-md mx-auto">
                                                     Congratulations! You've completed all getting started steps. Now let's begin your learning journey!
                                                 </p>

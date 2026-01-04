@@ -417,58 +417,92 @@ export default async function CareerCenterPage() {
                         </p>
                     </div>
 
-                    {/* Improved Step Cards */}
+                    {/* Improved Step Cards with YOU ARE HERE marker */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {careerSteps.map((step, index) => {
                             const incomeLabels = ["$3K-5K/mo", "$5K-10K/mo", "$10K-30K/mo", "$30K-50K+/mo"];
+
+                            // Determine step status based on user progress
+                            const isCompleted = userProgress.currentStep > step.step;
+                            const isCurrent = userProgress.currentStep === step.step ||
+                                (userProgress.currentStep === 0 && step.step === 1) ||
+                                (userProgress.currentStep === 1 && step.step === 1);
+                            const isUpcoming = userProgress.currentStep < step.step && !isCurrent;
+
                             return (
                                 <div key={step.step} className="relative">
                                     {/* Connector Arrow */}
                                     {index < careerSteps.length - 1 && (
                                         <div className="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2 z-10">
-                                            <ArrowRight className="w-4 h-4 text-gray-300" />
+                                            <ArrowRight className={`w-4 h-4 ${isCompleted ? 'text-green-400' : 'text-gray-300'}`} />
                                         </div>
                                     )}
 
-                                    <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md ${step.color === "gold" ? "border-gold-300 bg-gradient-to-br from-gold-50 to-amber-50 ring-2 ring-gold-200 shadow-md" :
-                                        step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50" :
-                                            step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" :
-                                                step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50" :
-                                                    "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50"
+                                    <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md relative ${isCurrent
+                                            ? "ring-4 ring-gold-300/50 border-gold-400 bg-gradient-to-br from-gold-50 to-amber-50 shadow-lg shadow-gold-100"
+                                            : isCompleted
+                                                ? "border-green-300 bg-gradient-to-br from-green-50 to-emerald-50"
+                                                : step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 opacity-75" :
+                                                    step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 opacity-75" :
+                                                        step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-75" :
+                                                            "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50 opacity-75"
                                         }`}>
+                                        {/* YOU ARE HERE Badge */}
+                                        {isCurrent && (
+                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                                                <Badge className="bg-gold-500 text-white border-0 shadow-md animate-pulse whitespace-nowrap">
+                                                    <Sparkles className="w-3 h-3 mr-1" />
+                                                    YOU ARE HERE
+                                                </Badge>
+                                            </div>
+                                        )}
+
+                                        {/* Completed Checkmark */}
+                                        {isCompleted && (
+                                            <div className="absolute -top-3 -right-3 z-20">
+                                                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
+                                                    <CheckCircle className="w-5 h-5 text-white" />
+                                                </div>
+                                            </div>
+                                        )}
+
                                         {/* Step Badge */}
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${step.color === "gold" ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
-                                                step.color === "emerald" ? "bg-emerald-500 text-white" :
-                                                    step.color === "amber" ? "bg-amber-500 text-white" :
-                                                        step.color === "blue" ? "bg-blue-500 text-white" :
-                                                            "bg-burgundy-600 text-white"
+                                        <div className="flex items-center justify-between mb-3 mt-2">
+                                            <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${isCurrent ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
+                                                    isCompleted ? "bg-green-500 text-white" :
+                                                        step.color === "emerald" ? "bg-emerald-500 text-white" :
+                                                            step.color === "amber" ? "bg-amber-500 text-white" :
+                                                                step.color === "blue" ? "bg-blue-500 text-white" :
+                                                                    "bg-burgundy-600 text-white"
                                                 }`}>
+                                                {isCompleted && <CheckCircle className="w-3 h-3 mr-1" />}
                                                 STEP {step.step}
                                             </div>
                                         </div>
 
                                         {/* Title & Subtitle */}
                                         <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
-                                        <p className={`text-xs font-semibold mb-2 ${step.color === "gold" ? "text-gold-700" :
-                                            step.color === "emerald" ? "text-emerald-700" :
-                                                step.color === "amber" ? "text-amber-700" :
-                                                    step.color === "blue" ? "text-blue-700" :
-                                                        "text-burgundy-700"
+                                        <p className={`text-xs font-semibold mb-2 ${isCurrent ? "text-gold-700" :
+                                                isCompleted ? "text-green-700" :
+                                                    step.color === "emerald" ? "text-emerald-700" :
+                                                        step.color === "amber" ? "text-amber-700" :
+                                                            step.color === "blue" ? "text-blue-700" :
+                                                                "text-burgundy-700"
                                             }`}>{step.subtitle}</p>
 
                                         {/* Description */}
                                         <p className="text-xs text-gray-600 leading-relaxed mb-3">{step.description}</p>
 
                                         {/* Income Potential */}
-                                        <div className={`mt-auto pt-2 border-t ${step.color === "gold" ? "border-gold-200" :
-                                            step.color === "emerald" ? "border-emerald-200" :
-                                                step.color === "amber" ? "border-amber-200" :
-                                                    step.color === "blue" ? "border-blue-200" :
-                                                        "border-burgundy-200"
+                                        <div className={`mt-auto pt-2 border-t ${isCurrent ? "border-gold-200" :
+                                                isCompleted ? "border-green-200" :
+                                                    step.color === "emerald" ? "border-emerald-200" :
+                                                        step.color === "amber" ? "border-amber-200" :
+                                                            step.color === "blue" ? "border-blue-200" :
+                                                                "border-burgundy-200"
                                             }`}>
                                             <p className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">Earning Potential</p>
-                                            <p className={`text-sm font-bold ${step.color === "gold" ? "text-green-600" : "text-green-600"}`}>
+                                            <p className="text-sm font-bold text-green-600">
                                                 {incomeLabels[index]}
                                             </p>
                                         </div>

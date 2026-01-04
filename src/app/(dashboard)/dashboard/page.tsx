@@ -8,6 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DashboardWrapper } from "@/components/dashboard/dashboard-wrapper";
+import { IncomeProjectionWidget, DaysCountdownWidget, StreakWidget, ContinueLearningWidget } from "@/components/dashboard/completion-widgets";
+import { SuccessFeedCompact } from "@/components/success-feed";
+import { StudyPodWidgetCompact } from "@/components/study-pod-widget";
+import { generateZombieSuccessEvents } from "@/lib/success-events";
+import { getZombiesForPod, getRandomPodName, ZOMBIE_PROFILES } from "@/lib/zombies";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
 
 // Force dynamic rendering - no caching
@@ -183,6 +188,16 @@ async function getDashboardData(userId: string) {
     nextLesson,
     completedLessonsCount: completedLessons,
     hasWatchedTraining: !!trainingTag,
+    // Calculate total lessons for countdown
+    totalLessons: enrollments.reduce((acc, e) => {
+      return acc + e.course.modules.reduce((mAcc, m) => mAcc + m.lessons.length, 0);
+    }, 0),
+    // Get first enrollment date
+    firstEnrolledAt: enrollments.length > 0
+      ? enrollments.reduce((oldest, e) => e.enrolledAt < oldest ? e.enrolledAt : oldest, enrollments[0].enrolledAt)
+      : new Date(),
+    // Check if user has Pro Accelerator
+    hasPro: enrollments.some(e => e.course.slug.includes('pro') || e.course.title.toLowerCase().includes('accelerator')),
   };
 }
 
@@ -203,6 +218,9 @@ export default async function DashboardPage() {
     nextLesson,
     completedLessonsCount,
     hasWatchedTraining,
+    totalLessons,
+    firstEnrolledAt,
+    hasPro,
   } = await getDashboardData(session.user.id);
 
   // Check if user ONLY has Mini Diploma enrollment (redirect to Mini Diploma dashboard)
@@ -287,142 +305,106 @@ export default async function DashboardPage() {
   return (
     <DashboardWrapper userName={firstName} userId={session.user.id} hasCompletedOnboarding={hasCompletedOnboarding}>
       <div className="space-y-6 animate-fade-in">
-        {/* ACCREDIPRO HERO HEADER */}
-        <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
+        {/* COMPACT ACCREDIPRO HERO HEADER */}
+        <Card className="bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
           </div>
-          <CardContent className="p-6 md:p-8 relative">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-              <div className="flex-1">
-                {/* AccrediPro Branding */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                    <Shield className="w-6 h-6 text-gold-400" />
-                  </div>
-                  <div>
-                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 mb-1">
-                      AccrediPro Dashboard
-                    </Badge>
-                    <h1 className="text-2xl md:text-3xl font-bold text-white">
-                      Welcome back, {firstName}!
-                    </h1>
-                  </div>
+          <CardContent className="p-5 md:p-6 relative">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Left: Welcome + Stats */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                  <Shield className="w-6 h-6 text-gold-400" />
                 </div>
-
-                {/* Career Context */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 mb-4 max-w-md">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gold-400/20 flex items-center justify-center">
-                      <GraduationCap className="w-5 h-5 text-gold-300" />
-                    </div>
-                    <div>
-                      <p className="text-burgundy-200 text-xs">Your Career Path</p>
-                      <p className="text-white font-semibold">{specialization.name} Practitioner</p>
-                    </div>
-                    <Badge className="ml-auto bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
-                      {currentCareer.title}
-                    </Badge>
-                  </div>
+                <div>
+                  <p className="text-burgundy-200 text-sm">AccrediPro Academy</p>
+                  <h1 className="text-xl md:text-2xl font-bold text-white">
+                    Welcome back, {firstName}!
+                  </h1>
                 </div>
-
-                <p className="text-burgundy-100 text-base max-w-lg">
-                  {getCareerMessage()}
-                </p>
               </div>
 
-              {/* Next Best Step Card */}
-              <div className="lg:w-80 bg-white rounded-2xl p-5 shadow-xl">
-                <div className="flex items-center gap-2 text-burgundy-700 font-semibold mb-3">
-                  <Target className="w-5 h-5" />
-                  Your Next Step
+              {/* Right: Quick Career Info */}
+              <div className="flex items-center gap-4 text-sm">
+                <div className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+                  <p className="text-burgundy-200 text-xs">Career Stage</p>
+                  <p className="text-white font-semibold">{currentCareer.title}</p>
                 </div>
-                {nextLesson ? (
-                  <>
-                    <p className="text-gray-900 font-medium mb-1 line-clamp-2">
-                      {nextLesson.title}
-                    </p>
-                    <p className="text-gray-500 text-sm mb-4">
-                      Continue building toward {currentCareer.title}.
-                    </p>
-                    <Link href={`/learning/${nextLesson.courseSlug}/${nextLesson.lessonId}`}>
-                      <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
-                        <Play className="w-4 h-4 mr-2" />
-                        Continue Lesson
-                      </Button>
-                    </Link>
-                  </>
-                ) : enrollments.length === 0 ? (
-                  <>
-                    <p className="text-gray-900 font-medium mb-1">
-                      Start Your Free Mini Diploma
-                    </p>
-                    <p className="text-gray-500 text-sm mb-4">
-                      Begin your journey to certification with AccrediPro.
-                    </p>
-                    <Link href="/my-personal-roadmap-by-coach-sarah">
-                      <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
-                        View My Roadmap
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-gray-900 font-medium mb-1">
-                      Explore Your Next Certification
-                    </p>
-                    <p className="text-gray-500 text-sm mb-4">
-                      Continue advancing your AccrediPro career.
-                    </p>
-                    <Link href="/my-personal-roadmap-by-coach-sarah">
-                      <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
-                        View My Roadmap
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
-                  </>
-                )}
+                <div className="px-4 py-2 bg-gold-400/20 backdrop-blur-sm rounded-lg border border-gold-400/30">
+                  <p className="text-gold-200 text-xs">Income Potential</p>
+                  <p className="text-gold-100 font-semibold">{CAREER_STAGES[currentCareer.stage]?.income || "$3K-$5K/mo"}</p>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Stats Grid - Cleaner Design */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Card className="bg-gradient-to-br from-burgundy-500 to-burgundy-600 border-0 shadow-lg">
-            <CardContent className="p-4 text-center">
-              <BookOpen className="w-6 h-6 text-white/80 mx-auto mb-2" />
-              <p className="text-3xl font-bold text-white">{inProgressCourses}</p>
-              <p className="text-xs text-burgundy-100">Active Courses</p>
-            </CardContent>
-          </Card>
+        {/* Continue Learning Widget - prominent next action */}
+        {nextLesson && enrollments.length > 0 && (
+          <ContinueLearningWidget
+            lessonTitle={nextLesson.title}
+            moduleTitle={nextLesson.moduleName || "Current Module"}
+            courseTitle={enrollments[0]?.course?.title || "Your Course"}
+            progress={totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0}
+            estimatedMinutes={12}
+            lessonUrl={`/courses/${nextLesson.courseSlug}/lessons/${nextLesson.lessonId}`}
+          />
+        )}
 
-          <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 border-0 shadow-lg">
-            <CardContent className="p-4 text-center">
-              <CheckCircle className="w-6 h-6 text-white/80 mx-auto mb-2" />
-              <p className="text-3xl font-bold text-white">{completedCourses}</p>
-              <p className="text-xs text-emerald-100">Completed</p>
-            </CardContent>
-          </Card>
+        {/* Completion Motivation Widgets + Stats - Combined Row */}
+        {enrollments.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+            {/* Income Projection */}
+            <div className="col-span-1 md:col-span-2 lg:col-span-2">
+              <IncomeProjectionWidget
+                progress={totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0}
+                hasPro={hasPro}
+                className="h-full"
+              />
+            </div>
 
-          <Card className="bg-gradient-to-br from-gold-500 to-amber-500 border-0 shadow-lg">
-            <CardContent className="p-4 text-center">
-              <Award className="w-6 h-6 text-white/80 mx-auto mb-2" />
-              <p className="text-3xl font-bold text-white">{certificates}</p>
-              <p className="text-xs text-amber-100">Certificates</p>
-            </CardContent>
-          </Card>
+            {/* Days to Certification */}
+            <DaysCountdownWidget
+              enrolledAt={new Date(firstEnrolledAt)}
+              lessonsCompleted={completedLessonsCount}
+              totalLessons={totalLessons}
+              className="col-span-1"
+            />
 
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-lg">
-            <CardContent className="p-4 text-center">
-              <Clock className="w-6 h-6 text-white/80 mx-auto mb-2" />
-              <p className="text-3xl font-bold text-white">{formatWatchTime(totalWatchTime) || "0m"}</p>
-              <p className="text-xs text-blue-100">Study Time</p>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Streak */}
+            <StreakWidget
+              currentStreak={userStreak?.currentStreak || 0}
+              longestStreak={userStreak?.longestStreak || 0}
+              className="col-span-1"
+            />
+
+            {/* Quick Stats - compact inline with brand colors */}
+            <Card className="bg-gradient-to-br from-burgundy-600 to-burgundy-700 border-0 shadow-md col-span-1">
+              <CardContent className="p-3 text-center flex flex-col justify-center h-full">
+                <BookOpen className="w-5 h-5 text-white/80 mx-auto mb-1" />
+                <p className="text-2xl font-bold text-white">{inProgressCourses}</p>
+                <p className="text-xs text-burgundy-100">Active</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-gold-500 to-gold-600 border-0 shadow-md col-span-1">
+              <CardContent className="p-3 text-center flex flex-col justify-center h-full">
+                <Award className="w-5 h-5 text-white/80 mx-auto mb-1" />
+                <p className="text-2xl font-bold text-white">{certificates}</p>
+                <p className="text-xs text-gold-100">Certs</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-burgundy-500 to-burgundy-600 border-0 shadow-md col-span-1">
+              <CardContent className="p-3 text-center flex flex-col justify-center h-full">
+                <Clock className="w-5 h-5 text-white/80 mx-auto mb-1" />
+                <p className="text-2xl font-bold text-white">{formatWatchTime(totalWatchTime) || "0m"}</p>
+                <p className="text-xs text-burgundy-100">Time</p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
@@ -725,29 +707,32 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* FIX #9 - Student Momentum */}
-            <Card className="card-premium bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-              <CardContent className="p-5">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-green-600" />
-                  Student Momentum
-                </h3>
-                <div className="bg-white rounded-lg p-4 border border-green-100">
-                  <p className="text-sm text-gray-700 italic mb-2">
-                    "Just completed my first intake session with confidence."
-                  </p>
-                  <p className="text-xs text-green-600 font-medium">
-                    — Working Practitioner
-                  </p>
-                </div>
-                <Link href="/community">
-                  <Button variant="ghost" size="sm" className="w-full mt-3 text-green-700 hover:bg-green-100">
-                    View Student Progress
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            {/* Success Feed - Community Wins */}
+            <SuccessFeedCompact
+              events={generateZombieSuccessEvents(4).map(e => ({
+                id: e.zombieId,
+                userName: e.zombieName,
+                eventType: e.eventType,
+                message: e.message,
+                createdAt: e.createdAt,
+                isZombie: true,
+              }))}
+            />
+
+            {/* Study Pod Widget */}
+            <StudyPodWidgetCompact
+              podName={getRandomPodName()}
+              members={[
+                ...getZombiesForPod(4).map((z, i) => ({
+                  id: z.name.toLowerCase().replace(/\s+/g, '-'),
+                  name: z.name,
+                  avatar: z.avatar,
+                  progress: [45, 32, 28, 55][i] || 30,
+                  isCurrentUser: false,
+                })),
+                { id: 'current-user', name: 'You', progress: Math.round((completedLessonsCount / Math.max(totalLessons, 1)) * 100), isCurrentUser: true },
+              ]}
+            />
 
             {/* Quick Links - Hide Roadmap/Career Center until training watched */}
             <Card className="card-premium">
@@ -780,6 +765,13 @@ export default async function DashboardPage() {
                     <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
                       <MessageSquare className="w-4 h-4 text-purple-600" />
                       <span className="text-sm text-gray-700">Community</span>
+                    </div>
+                  </Link>
+                  <Link href="/my-pod" className="block">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                      <Users className="w-4 h-4 text-burgundy-600" />
+                      <span className="text-sm text-gray-700">My Study Pod</span>
+                      <Badge className="ml-auto bg-burgundy-100 text-burgundy-700 text-xs">New</Badge>
                     </div>
                   </Link>
                 </div>

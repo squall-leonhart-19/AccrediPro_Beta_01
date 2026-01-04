@@ -66,7 +66,71 @@ const PRIMARY_GOALS = [
     },
 ];
 
-// Step 2: Income Goals (AOV indicator)
+// Step 2: Current Field/Profession (for upsell targeting)
+const CURRENT_FIELDS = [
+    {
+        id: "healthcare",
+        label: "Healthcare Professional",
+        emoji: "🩺",
+        description: "Nurse, doctor, therapist, allied health",
+    },
+    {
+        id: "teacher",
+        label: "Teacher / Educator",
+        emoji: "👩‍🏫",
+        description: "K-12, college, corporate training",
+    },
+    {
+        id: "corporate",
+        label: "Corporate Employee",
+        emoji: "💼",
+        description: "Office job, 9-5 position",
+    },
+    {
+        id: "stay_at_home",
+        label: "Stay-at-Home Parent",
+        emoji: "🏠",
+        description: "Caring for family at home",
+    },
+    {
+        id: "entrepreneur",
+        label: "Business Owner / Entrepreneur",
+        emoji: "🚀",
+        description: "Running my own business",
+    },
+    {
+        id: "fitness",
+        label: "Fitness Professional",
+        emoji: "🏋️",
+        description: "Personal trainer, gym owner, instructor",
+    },
+    {
+        id: "wellness",
+        label: "Wellness Professional",
+        emoji: "🧘",
+        description: "Yoga, massage, acupuncture, etc.",
+    },
+    {
+        id: "student",
+        label: "Student",
+        emoji: "🎓",
+        description: "Currently in school or training",
+    },
+    {
+        id: "transition",
+        label: "In Career Transition",
+        emoji: "🔄",
+        description: "Between jobs or changing careers",
+    },
+    {
+        id: "other",
+        label: "Other",
+        emoji: "✨",
+        description: "Something else entirely",
+    },
+];
+
+// Step 3: Income Goals (AOV indicator)
 const INCOME_GOALS = [
     {
         id: "under_2k",
@@ -237,8 +301,43 @@ const COUNTRY_CODES = [
     { code: "+64", country: "NZ", flag: "🇳🇿", label: "New Zealand" },
 ];
 
+// Step-specific Sarah audio context (for voice messages)
+const STEP_AUDIO_CONTEXT: Record<number, {
+    message: string;
+    audioUrl?: string; // For pre-recorded audio when available
+}> = {
+    1: {
+        message: "This helps me understand what's driving you. Whether you want a career change or to help your family — I'll personalize everything for you.",
+    },
+    2: {
+        message: "Knowing your background helps me show you success stories from people just like you. Nurses, teachers, moms — they've all built thriving practices!",
+    },
+    3: {
+        message: "Don't be shy with your income goal! Our graduates average $9,200/month in their first year. Dream big — I'll show you how to get there.",
+    },
+    4: {
+        message: "Your timeline helps me create a realistic action plan. Whether you're in a hurry or taking it slow — we'll match your pace.",
+    },
+    5: {
+        message: "I've helped thousands of people in situations just like yours. This helps me tailor my guidance specifically for you.",
+    },
+    6: {
+        message: "Be honest here! Understanding your approach to investing in yourself helps me recommend the right options and payment plans.",
+    },
+    7: {
+        message: "These obstacles are more common than you think! We have specific solutions for each one. You're not alone.",
+    },
+    8: {
+        message: "Pick what excites you most! These niches will help me recommend the perfect specializations for your practice.",
+    },
+    9: {
+        message: "Almost done! Your personalized dashboard is ready — just one more click to see your custom learning path!",
+    },
+};
+
 interface OnboardingData {
     primaryGoal: string;
+    currentField: string; // NEW: for upsell targeting
     incomeGoal: string;
     timeline: string;
     currentSituation: string;
@@ -262,6 +361,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
     const [step, setStep] = useState(1);
     const [data, setData] = useState<OnboardingData>({
         primaryGoal: "",
+        currentField: "", // NEW
         incomeGoal: "",
         timeline: "",
         currentSituation: "",
@@ -275,19 +375,20 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
         personalMessage: "",
     });
 
-    const totalSteps = 8;
+    const totalSteps = 9; // Added Current Field question
     const progress = (step / totalSteps) * 100;
 
     const canProceed = () => {
         switch (step) {
             case 1: return data.primaryGoal !== "";
-            case 2: return data.incomeGoal !== "";
-            case 3: return data.timeline !== "";
-            case 4: return data.currentSituation !== "";
-            case 5: return data.investmentReadiness !== "";
-            case 6: return data.obstacles.length > 0;
-            case 7: return data.niches.length > 0;
-            case 8: return true; // Contact info optional
+            case 2: return data.currentField !== ""; // NEW
+            case 3: return data.incomeGoal !== "";
+            case 4: return data.timeline !== "";
+            case 5: return data.currentSituation !== "";
+            case 6: return data.investmentReadiness !== "";
+            case 7: return data.obstacles.length > 0;
+            case 8: return data.niches.length > 0;
+            case 9: return true; // Contact info optional
             default: return true;
         }
     };
@@ -348,6 +449,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     learningGoal: data.primaryGoal,
+                    currentField: data.currentField, // NEW: for upsell targeting
                     focusAreas: data.niches,
                     incomeGoal: data.incomeGoal,
                     timeline: data.timeline,
@@ -376,6 +478,10 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
         {
             title: `Hey ${userName || "there"}! What's your #1 goal?`,
             subtitle: "This helps us personalize your learning path"
+        },
+        {
+            title: "What do you currently do for work?",
+            subtitle: "This helps us show you relevant success stories"
         },
         {
             title: "What's your income goal?",
@@ -426,6 +532,37 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
 
                 {/* Content */}
                 <div className="p-6 overflow-y-auto flex-1">
+                    {/* Sarah Voice Message Bubble */}
+                    {STEP_AUDIO_CONTEXT[step] && (
+                        <div className="mb-5 flex items-start gap-3 bg-gradient-to-r from-burgundy-50 to-purple-50 p-4 rounded-xl border border-burgundy-100">
+                            {/* Sarah Avatar */}
+                            <div className="relative flex-shrink-0">
+                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-burgundy-200">
+                                    <img
+                                        src="/coaches/sarah-coach.webp"
+                                        alt="Coach Sarah"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                {/* Audio bars indicator */}
+                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-burgundy-500 rounded-full flex items-center justify-center">
+                                    <div className="flex gap-0.5 items-end">
+                                        <div className="w-0.5 h-1.5 bg-white rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                                        <div className="w-0.5 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                                        <div className="w-0.5 h-1 bg-white rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                                    </div>
+                                </div>
+                            </div>
+                            {/* Message content */}
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold text-burgundy-600 mb-1">Coach Sarah says:</p>
+                                <p className="text-sm text-gray-700 leading-relaxed">
+                                    {STEP_AUDIO_CONTEXT[step].message}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Step 1: Primary Goal */}
                     {step === 1 && (
                         <div className="space-y-3">
@@ -453,8 +590,28 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 2: Income Goal */}
+                    {/* Step 2: Current Field (NEW) */}
                     {step === 2 && (
+                        <div className="grid grid-cols-2 gap-3">
+                            {CURRENT_FIELDS.map((field) => (
+                                <button
+                                    key={field.id}
+                                    onClick={() => setData({ ...data, currentField: field.id })}
+                                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-center ${data.currentField === field.id
+                                        ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    <span className="text-3xl">{field.emoji}</span>
+                                    <p className="font-medium text-gray-900 text-sm">{field.label}</p>
+                                    <p className="text-xs text-gray-500">{field.description}</p>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Step 3: Income Goal */}
+                    {step === 3 && (
                         <div className="space-y-3">
                             {INCOME_GOALS.map((goal) => (
                                 <button
@@ -482,8 +639,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 3: Timeline */}
-                    {step === 3 && (
+                    {/* Step 4: Timeline */}
+                    {step === 4 && (
                         <div className="space-y-3">
                             {TIMELINE_OPTIONS.map((option) => (
                                 <button
@@ -507,8 +664,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 4: Current Situation */}
-                    {step === 4 && (
+                    {/* Step 5: Current Situation */}
+                    {step === 5 && (
                         <div className="grid grid-cols-2 gap-3">
                             {CURRENT_SITUATIONS.map((situation) => (
                                 <button
@@ -527,8 +684,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 5: Investment Readiness */}
-                    {step === 5 && (
+                    {/* Step 6: Investment Readiness */}
+                    {step === 6 && (
                         <div className="space-y-3">
                             {INVESTMENT_READINESS.map((option) => (
                                 <button
@@ -556,8 +713,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 6: Obstacles */}
-                    {step === 6 && (
+                    {/* Step 7: Obstacles */}
+                    {step === 7 && (
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
                                 {OBSTACLES.map((obstacle) => (
@@ -596,8 +753,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 7: Health Niches */}
-                    {step === 7 && (
+                    {/* Step 8: Health Niches */}
+                    {step === 8 && (
                         <div>
                             <p className="text-gray-500 mb-4">Select up to 3 topics that excite you most</p>
                             <div className="flex flex-wrap gap-3">
@@ -630,8 +787,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         </div>
                     )}
 
-                    {/* Step 8: Contact & Final */}
-                    {step === 8 && (
+                    {/* Step 9: Contact & Final */}
+                    {step === 9 && (
                         <div className="space-y-6">
                             <div>
                                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">

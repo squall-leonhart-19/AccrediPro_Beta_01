@@ -15,6 +15,7 @@ declare module "next-auth" {
       isMiniDiplomaOnly?: boolean;
       isFMPreviewOnly?: boolean;
       accessExpiresAt?: string | null;
+      hasFMCertification?: boolean;
     } & DefaultSession["user"];
   }
 
@@ -29,6 +30,7 @@ declare module "next-auth" {
     isMiniDiplomaOnly?: boolean;
     isFMPreviewOnly?: boolean;
     accessExpiresAt?: string | null;
+    hasFMCertification?: boolean;
   }
 }
 
@@ -45,5 +47,6 @@ declare module "next-auth/jwt" {
     isMiniDiplomaOnly?: boolean;
     isFMPreviewOnly?: boolean;
     accessExpiresAt?: string | null;
+    hasFMCertification?: boolean;
   }
 }

@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sendWelcomeEmail } from "@/lib/email";
 import crypto from "crypto";
+import { verifyEmail } from "@/lib/neverbounce";
+import { detectEmailTypo } from "@/lib/email-typo-detector";
 
 /**
  * ClickFunnels Webhook Endpoint
@@ -404,6 +406,48 @@ export async function POST(request: NextRequest) {
     }
 
     // Handle purchases
+    // 0. PRE-VALIDATE EMAIL with NeverBounce (before creating user)
+    console.log(`[CF] Pre-validating email: ${normalizedEmail}`);
+    const emailValidation = await verifyEmail(normalizedEmail);
+
+    if (!emailValidation.isValid) {
+      console.warn(`⚠️ [CF] Invalid email detected: ${normalizedEmail} (${emailValidation.result})`);
+
+      // Try to detect typo suggestion
+      const typoResult = await detectEmailTypo(normalizedEmail);
+
+      // Create EmailBounce record for admin review
+      await prisma.emailBounce.upsert({
+        where: {
+          userId_originalEmail: {
+            userId: "pre-validation",
+            originalEmail: normalizedEmail
+          }
+        },
+        create: {
+          userId: "pre-validation",
+          originalEmail: normalizedEmail,
+          bounceType: `pre_validation_${emailValidation.result}`,
+          bounceReason: `ClickFunnels purchase - email failed NeverBounce: ${emailValidation.reason || emailValidation.result}`,
+          status: typoResult.hasSuggestion ? "pending" : "needs_manual",
+          suggestedEmail: typoResult.suggestedEmail,
+          suggestionSource: typoResult.source,
+          suggestionConfidence: typoResult.confidence,
+          neverBounceResult: emailValidation.result,
+          neverBounceCheckedAt: new Date(),
+        },
+        update: {
+          bounceCount: { increment: 1 },
+          bounceReason: `ClickFunnels purchase - email failed NeverBounce: ${emailValidation.reason || emailValidation.result}`,
+          neverBounceResult: emailValidation.result,
+          neverBounceCheckedAt: new Date(),
+        },
+      });
+
+      console.log(`⚠️ [CF] Created EmailBounce record for ${normalizedEmail}. Suggested: ${typoResult.suggestedEmail || 'none'}`);
+      // Don't block the purchase - still create user but flag them
+    }
+
     // 1. Find or create user
     let user = await prisma.user.findUnique({
       where: { email: normalizedEmail },

@@ -65,10 +65,23 @@ interface RoadmapData {
     userName: string;
     userEmail: string;
     memberSince: string;
+    // New: Dynamic date fields
+    enrolledAt: string | null;
+    daysToCompletion: number | null;
+    targetDate: string | null;
+    hoursPerWeek: number;
+    lessonsCompleted: number;
+    totalLessons: number;
+    // Onboarding personalization data
+    onboarding: {
+        learningGoal: string | null;
+        currentField: string | null;
+        focusAreas: string[];
+    };
 }
 
 async function getRoadmapData(userId: string): Promise<RoadmapData> {
-    // Get user info
+    // Get user info including onboarding data
     const user = await prisma.user.findUnique({
         where: { id: userId },
         select: {
@@ -77,6 +90,9 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
             email: true,
             createdAt: true,
             miniDiplomaCompletedAt: true,
+            // Onboarding data for personalization
+            learningGoal: true,
+            focusAreas: true,
         },
     });
 
@@ -86,6 +102,13 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
     const memberSince = user?.createdAt
         ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
         : "";
+
+    // Store onboarding data for personalization
+    const onboardingData = {
+        learningGoal: user?.learningGoal || null,
+        currentField: (user as any)?.currentField || null,
+        focusAreas: user?.focusAreas || [],
+    };
 
     // Get all enrollments with progress
     const enrollments = await prisma.enrollment.findMany({
@@ -206,6 +229,57 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
 
     const totalProgress = Math.round((completedSteps.filter(s => s > 0).length / 4) * 100);
 
+    // Calculate dynamic date estimates
+    const firstEnrollment = enrollments.length > 0
+        ? enrollments.reduce((oldest, e) => e.enrolledAt < oldest.enrolledAt ? e : oldest)
+        : null;
+
+    const enrolledAt = firstEnrollment?.enrolledAt
+        ? new Date(firstEnrollment.enrolledAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        : null;
+
+    // Calculate total lessons across all enrollments
+    let totalLessons = 0;
+    let lessonsCompleted = 0;
+    for (const enrollment of enrollments) {
+        for (const mod of enrollment.course.modules) {
+            totalLessons += mod.lessons.length;
+            lessonsCompleted += mod.lessons.filter(l => completedLessonIds.has(l.id)).length;
+        }
+    }
+
+    // Calculate days to completion based on pace
+    let daysToCompletion: number | null = null;
+    let targetDate: string | null = null;
+
+    if (firstEnrollment && lessonsCompleted > 0) {
+        const daysSinceEnrollment = Math.max(1, Math.floor(
+            (Date.now() - new Date(firstEnrollment.enrolledAt).getTime()) / (1000 * 60 * 60 * 24)
+        ));
+        const pace = lessonsCompleted / daysSinceEnrollment; // lessons per day
+        const remainingLessons = totalLessons - lessonsCompleted;
+
+        if (pace > 0) {
+            daysToCompletion = Math.ceil(remainingLessons / pace);
+            const target = new Date();
+            target.setDate(target.getDate() + daysToCompletion);
+            targetDate = target.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+    } else if (totalLessons > 0) {
+        // Default: assume 5 lessons/day for realistic estimate (not 1)
+        daysToCompletion = Math.min(90, Math.ceil(totalLessons / 5));
+        const target = new Date();
+        target.setDate(target.getDate() + daysToCompletion);
+        targetDate = target.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Cap daysToCompletion at 90 for display
+    if (daysToCompletion && daysToCompletion > 90) {
+        daysToCompletion = 90;
+    }
+
+    const hoursPerWeek = 5; // Default 5 hours/week
+
     return {
         state,
         currentStep,
@@ -223,6 +297,13 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
         userName,
         userEmail,
         memberSince,
+        enrolledAt,
+        daysToCompletion,
+        targetDate,
+        hoursPerWeek,
+        lessonsCompleted,
+        totalLessons,
+        onboarding: onboardingData,
     };
 }
 

@@ -33,6 +33,7 @@ import {
   Lock,
   Unlock,
   Sparkles,
+  Users2,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -88,6 +89,8 @@ const coachNavItems = [
 const adminNavItems = [
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/users", label: "User Management", icon: Shield },
+  { href: "/admin/pod-analytics", label: "Pod Analytics", icon: Users },
+  { href: "/admin/pod-messages", label: "Pod Messages", icon: MessageSquare },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -116,6 +119,27 @@ export function DashboardNav() {
   // Check if user is a LEAD (free mini diploma user with 7-day access)
   const isLeadUser = user?.userType === "LEAD";
 
+  // Check if user has FM Certification for My Circle access
+  const hasFMCertification = user?.hasFMCertification === true || isAdmin;
+
+  // Build full nav items with conditional My Circle
+  const getFullNavItems = () => {
+    const items = [...fullNavItems];
+    // Add My Circle after Messages if user has FM certification
+    if (hasFMCertification) {
+      const messagesIndex = items.findIndex(item => item.href === "/messages");
+      if (messagesIndex !== -1) {
+        items.splice(messagesIndex + 1, 0, {
+          href: "/my-pod",
+          label: "My Circle",
+          icon: Users2,
+          tourId: "my-circle",
+        });
+      }
+    }
+    return items;
+  };
+
   // Select nav items based on user type
   // FM Preview users: show minimal nav with locked full certification CTA
   // Mini diploma users (LEAD or with category): show minimal nav with locked/unlocked Masterclass based on completion
@@ -124,7 +148,7 @@ export function DashboardNav() {
     ? getFMPreviewNavItems()
     : (isMiniDiplomaUser || isLeadUser)
       ? getMiniDiplomaNavItems(isMiniDiplomaOnly, miniDiplomaCourseSlug) // locked if not completed yet
-      : fullNavItems;
+      : getFullNavItems();
 
   const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {
     if (!key) return 0;
