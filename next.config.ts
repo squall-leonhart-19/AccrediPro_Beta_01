@@ -81,3 +81,4 @@ export default withSentryConfig(nextConfig, {
     },
   },
 });
+// Sun Jan  4 03:23:01 CET 2026
