@@ -410,41 +410,24 @@ export async function POST(request: NextRequest) {
     console.log(`[CF] Pre-validating email: ${normalizedEmail}`);
     const emailValidation = await verifyEmail(normalizedEmail);
 
+    // Store validation result for later (will create EmailBounce after user exists)
+    let invalidEmailData: { result: string; reason?: string; typoSuggestion?: string; typoSource?: string; typoConfidence?: number } | null = null;
+
     if (!emailValidation.isValid) {
       console.warn(`⚠️ [CF] Invalid email detected: ${normalizedEmail} (${emailValidation.result})`);
 
       // Try to detect typo suggestion
       const typoResult = await detectEmailTypo(normalizedEmail);
 
-      // Create EmailBounce record for admin review
-      await prisma.emailBounce.upsert({
-        where: {
-          userId_originalEmail: {
-            userId: "pre-validation",
-            originalEmail: normalizedEmail
-          }
-        },
-        create: {
-          userId: "pre-validation",
-          originalEmail: normalizedEmail,
-          bounceType: `pre_validation_${emailValidation.result}`,
-          bounceReason: `ClickFunnels purchase - email failed NeverBounce: ${emailValidation.reason || emailValidation.result}`,
-          status: typoResult.hasSuggestion ? "pending" : "needs_manual",
-          suggestedEmail: typoResult.suggestedEmail,
-          suggestionSource: typoResult.source,
-          suggestionConfidence: typoResult.confidence,
-          neverBounceResult: emailValidation.result,
-          neverBounceCheckedAt: new Date(),
-        },
-        update: {
-          bounceCount: { increment: 1 },
-          bounceReason: `ClickFunnels purchase - email failed NeverBounce: ${emailValidation.reason || emailValidation.result}`,
-          neverBounceResult: emailValidation.result,
-          neverBounceCheckedAt: new Date(),
-        },
-      });
+      invalidEmailData = {
+        result: emailValidation.result,
+        reason: emailValidation.reason,
+        typoSuggestion: typoResult.suggestedEmail || undefined,
+        typoSource: typoResult.source || undefined,
+        typoConfidence: typoResult.confidence,
+      };
 
-      console.log(`⚠️ [CF] Created EmailBounce record for ${normalizedEmail}. Suggested: ${typoResult.suggestedEmail || 'none'}`);
+      console.log(`⚠️ [CF] Will create EmailBounce after user. Suggested: ${typoResult.suggestedEmail || 'none'}`);
       // Don't block the purchase - still create user but flag them
     }
 
@@ -523,6 +506,41 @@ export async function POST(request: NextRequest) {
           where: { id: user.id },
           data: updates,
         });
+      }
+    }
+
+    // Create EmailBounce record if email was flagged as invalid (now that user exists)
+    if (invalidEmailData && user) {
+      try {
+        await prisma.emailBounce.upsert({
+          where: {
+            userId_originalEmail: {
+              userId: user.id,
+              originalEmail: normalizedEmail
+            }
+          },
+          create: {
+            userId: user.id,
+            originalEmail: normalizedEmail,
+            bounceType: `pre_validation_${invalidEmailData.result}`,
+            bounceReason: `ClickFunnels purchase - email failed NeverBounce: ${invalidEmailData.reason || invalidEmailData.result}`,
+            status: invalidEmailData.typoSuggestion ? "pending" : "needs_manual",
+            suggestedEmail: invalidEmailData.typoSuggestion,
+            suggestionSource: invalidEmailData.typoSource,
+            suggestionConfidence: invalidEmailData.typoConfidence,
+            neverBounceResult: invalidEmailData.result,
+            neverBounceCheckedAt: new Date(),
+          },
+          update: {
+            bounceCount: { increment: 1 },
+            bounceReason: `ClickFunnels purchase - email failed NeverBounce: ${invalidEmailData.reason || invalidEmailData.result}`,
+            neverBounceResult: invalidEmailData.result,
+            neverBounceCheckedAt: new Date(),
+          },
+        });
+        console.log(`⚠️ [CF] Created EmailBounce record for ${normalizedEmail}`);
+      } catch (bounceError) {
+        console.error(`[CF] Failed to create EmailBounce:`, bounceError);
       }
     }
 
