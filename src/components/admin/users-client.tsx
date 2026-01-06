@@ -2055,9 +2055,9 @@ export function UsersClient({ courses }: UsersClientProps) {
                                     <td className="p-2 font-mono">{payment.ipAddress || "N/A"}</td>
                                     <td className="p-2">
                                       <span className={`px-1.5 py-0.5 rounded text-xs ${payment.status === "COMPLETED" ? "bg-green-100 text-green-700" :
-                                          payment.status === "REFUNDED" ? "bg-yellow-100 text-yellow-700" :
-                                            payment.status === "CHARGEBACK" ? "bg-red-100 text-red-700" :
-                                              "bg-gray-100 text-gray-700"
+                                        payment.status === "REFUNDED" ? "bg-yellow-100 text-yellow-700" :
+                                          payment.status === "CHARGEBACK" ? "bg-red-100 text-red-700" :
+                                            "bg-gray-100 text-gray-700"
                                         }`}>{payment.status}</span>
                                     </td>
                                   </tr>
@@ -2231,6 +2231,85 @@ export function UsersClient({ courses }: UsersClientProps) {
                           )}
                         </div>
                       </div>
+
+                      {/* NEW: Email Sends - Communication Evidence */}
+                      {activityData.emailSends && activityData.emailSends.length > 0 && (
+                        <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                          <p className="text-sm font-semibold text-indigo-800 mb-3">📧 Email Communications ({activityData.emailSends.length})</p>
+                          <div className="max-h-36 overflow-y-auto">
+                            <table className="w-full text-xs">
+                              <thead className="bg-indigo-100 sticky top-0">
+                                <tr>
+                                  <th className="text-left p-2">Subject</th>
+                                  <th className="text-left p-2">Sent</th>
+                                  <th className="text-left p-2">Delivered</th>
+                                  <th className="text-left p-2">Opened</th>
+                                  <th className="text-left p-2">Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {activityData.emailSends.map((email: any) => (
+                                  <tr key={email.id} className="border-t hover:bg-indigo-50">
+                                    <td className="p-2 truncate max-w-[200px]" title={email.subject}>{email.subject}</td>
+                                    <td className="p-2 font-mono">{email.sentAt ? new Date(email.sentAt).toLocaleString() : "-"}</td>
+                                    <td className="p-2">{email.deliveredAt ? <span className="text-green-600">✓</span> : "-"}</td>
+                                    <td className="p-2">{email.openedAt ? <span className="text-green-600">✓</span> : "-"}</td>
+                                    <td className="p-2">
+                                      <span className={`px-1.5 py-0.5 rounded text-xs ${email.status === "DELIVERED" ? "bg-green-100 text-green-700" :
+                                          email.status === "OPENED" ? "bg-blue-100 text-blue-700" :
+                                            email.status === "BOUNCED" ? "bg-red-100 text-red-700" :
+                                              "bg-gray-100 text-gray-700"
+                                        }`}>{email.status}</span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* NEW: Support Tickets - Communication Evidence */}
+                      {activityData.supportTickets && activityData.supportTickets.length > 0 ? (
+                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                          <p className="text-sm font-semibold text-orange-800 mb-3">🎫 Support Tickets ({activityData.supportTickets.length})</p>
+                          <div className="space-y-3 max-h-48 overflow-y-auto">
+                            {activityData.supportTickets.map((ticket: any) => (
+                              <div key={ticket.id} className="p-3 bg-white rounded border">
+                                <div className="flex justify-between items-start mb-2">
+                                  <div>
+                                    <p className="font-medium text-sm">#{ticket.ticketNumber}: {ticket.subject}</p>
+                                    <p className="text-xs text-gray-500">Created: {new Date(ticket.createdAt).toLocaleString()}</p>
+                                  </div>
+                                  <span className={`px-1.5 py-0.5 rounded text-xs ${ticket.status === "CLOSED" || ticket.status === "RESOLVED" ? "bg-green-100 text-green-700" :
+                                      ticket.status === "NEW" ? "bg-blue-100 text-blue-700" :
+                                        "bg-yellow-100 text-yellow-700"
+                                    }`}>{ticket.status}</span>
+                                </div>
+                                {ticket.messages && ticket.messages.length > 0 && (
+                                  <div className="mt-2 space-y-1">
+                                    <p className="text-xs text-gray-500">{ticket.messages.length} messages:</p>
+                                    {ticket.messages.slice(0, 3).map((msg: any, i: number) => (
+                                      <div key={i} className={`text-xs p-2 rounded ${msg.isFromCustomer ? "bg-gray-100" : "bg-blue-50"}`}>
+                                        <span className="font-medium">{msg.isFromCustomer ? "Customer" : "Staff"}: </span>
+                                        <span className="text-gray-600">{msg.content.substring(0, 100)}...</span>
+                                      </div>
+                                    ))}
+                                    {ticket.messages.length > 3 && (
+                                      <p className="text-xs text-gray-400">+{ticket.messages.length - 3} more messages</p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-sm font-semibold text-green-800">✅ No Support Tickets</p>
+                          <p className="text-xs text-green-600">No cancellation or complaint requests on file.</p>
+                        </div>
+                      )}
 
                       {/* Activity Logs (Downloads, etc.) */}
                       <div>

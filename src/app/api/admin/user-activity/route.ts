@@ -31,6 +31,8 @@ export async function GET(request: NextRequest) {
             payments,
             resourceDownloads,
             quizAttempts,
+            emailSends,
+            supportTickets,
         ] = await Promise.all([
             // User info - includes NEW dispute evidence fields
             prisma.user.findUnique({
@@ -225,6 +227,48 @@ export async function GET(request: NextRequest) {
                 orderBy: { completedAt: "desc" },
                 take: 20,
             }),
+
+            // NEW: Email sends for communication evidence
+            prisma.emailSend.findMany({
+                where: { userId },
+                select: {
+                    id: true,
+                    toEmail: true,
+                    subject: true,
+                    status: true,
+                    sentAt: true,
+                    deliveredAt: true,
+                    openedAt: true,
+                    clickedAt: true,
+                    bouncedAt: true,
+                },
+                orderBy: { sentAt: "desc" },
+                take: 50,
+            }),
+
+            // NEW: Support tickets for communication evidence
+            prisma.supportTicket.findMany({
+                where: { userId },
+                select: {
+                    id: true,
+                    ticketNumber: true,
+                    subject: true,
+                    status: true,
+                    category: true,
+                    createdAt: true,
+                    resolvedAt: true,
+                    closedAt: true,
+                    messages: {
+                        select: {
+                            content: true,
+                            isFromCustomer: true,
+                            createdAt: true,
+                        },
+                        orderBy: { createdAt: "asc" },
+                    },
+                },
+                orderBy: { createdAt: "desc" },
+            }),
         ]);
 
         if (!user) {
@@ -286,6 +330,8 @@ export async function GET(request: NextRequest) {
             payments,
             resourceDownloads,
             quizAttempts,
+            emailSends,
+            supportTickets,
             activityLogs: [], // Don't fetch full logs - just show count in stats
         });
     } catch (error) {
