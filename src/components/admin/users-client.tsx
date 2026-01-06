@@ -1978,6 +1978,22 @@ export function UsersClient({ courses }: UsersClientProps) {
                             <p className="text-gray-500">Total Login Count</p>
                             <p className="font-mono text-xs">{activityData.stats.totalLogins} times</p>
                           </div>
+                          <div className="pt-2 border-t mt-2 col-span-2 grid grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-gray-500">TOS Accepted</p>
+                              <p className="font-mono text-xs text-blue-600 font-bold">
+                                {activityData.legalAcceptance?.tosAcceptedAt
+                                  ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString()
+                                  : "Not Recorded"}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Registration IP</p>
+                              <p className="font-mono text-xs text-blue-600 font-bold">
+                                {activityData.registrationEvidence?.ip || "Not Captured"}
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -2256,9 +2272,9 @@ export function UsersClient({ courses }: UsersClientProps) {
                                     <td className="p-2">{email.openedAt ? <span className="text-green-600">✓</span> : "-"}</td>
                                     <td className="p-2">
                                       <span className={`px-1.5 py-0.5 rounded text-xs ${email.status === "DELIVERED" ? "bg-green-100 text-green-700" :
-                                          email.status === "OPENED" ? "bg-blue-100 text-blue-700" :
-                                            email.status === "BOUNCED" ? "bg-red-100 text-red-700" :
-                                              "bg-gray-100 text-gray-700"
+                                        email.status === "OPENED" ? "bg-blue-100 text-blue-700" :
+                                          email.status === "BOUNCED" ? "bg-red-100 text-red-700" :
+                                            "bg-gray-100 text-gray-700"
                                         }`}>{email.status}</span>
                                     </td>
                                   </tr>
@@ -2282,8 +2298,8 @@ export function UsersClient({ courses }: UsersClientProps) {
                                     <p className="text-xs text-gray-500">Created: {new Date(ticket.createdAt).toLocaleString()}</p>
                                   </div>
                                   <span className={`px-1.5 py-0.5 rounded text-xs ${ticket.status === "CLOSED" || ticket.status === "RESOLVED" ? "bg-green-100 text-green-700" :
-                                      ticket.status === "NEW" ? "bg-blue-100 text-blue-700" :
-                                        "bg-yellow-100 text-yellow-700"
+                                    ticket.status === "NEW" ? "bg-blue-100 text-blue-700" :
+                                      "bg-yellow-100 text-yellow-700"
                                     }`}>{ticket.status}</span>
                                 </div>
                                 {ticket.messages && ticket.messages.length > 0 && (
