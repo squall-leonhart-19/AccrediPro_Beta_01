@@ -17,8 +17,26 @@ import time
 import os
 import json
 import argparse
+import random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+
+
+def randomize_number(base: int, variance: float = 0.15) -> int:
+    """Generate random non-round number within variance of base.
+    Examples: 500 -> 397-603-ish, 10000 -> 8500-11500-ish
+    Returns non-round numbers (not ending in 00 or 50).
+    """
+    low = int(base * (1 - variance))
+    high = int(base * (1 + variance))
+    num = random.randint(low, high)
+    # Avoid round numbers (ending in 00 or 50)
+    last_two = num % 100
+    if last_two == 0:
+        num += random.choice([3, 7, 13, 17, 23, 27, 33, 37, 43, 47])
+    elif last_two == 50:
+        num += random.choice([-3, -7, 3, 7, 13, -13])
+    return num
 
 # =============================================================================
 # API CONFIGURATION
@@ -77,27 +95,31 @@ Premium course thumbnail. 16:9 aspect ratio. Soft purple and gold color palette 
 LEVEL_CONFIG = {
     "certified": {
         "prefix": "Certified",
+        "title_format": "CERTIFIED {course_title}™",
         "income_multiplier": 1.0,
         "reviews_multiplier": 1.0,
-        "hint": "woman in her 40s, warm approachable expression"
+        "hint": "woman in her 40s, warm approachable expression, natural casual phone selfie quality"
     },
     "advanced": {
         "prefix": "Advanced",
+        "title_format": "ADVANCED {course_title}™",
         "income_multiplier": 1.4,
         "reviews_multiplier": 1.3,
-        "hint": "confident woman in her mid-40s, slightly more polished professional appearance"
+        "hint": "confident woman in her mid-40s, slightly more polished, natural lighting like good iPhone photo"
     },
     "master": {
         "prefix": "Master",
+        "title_format": "MASTER {course_title}™",
         "income_multiplier": 1.8,
         "reviews_multiplier": 1.6,
-        "hint": "distinguished woman in her late 40s, elegant professional blazer, quietly confident presence"
+        "hint": "distinguished woman in her late 40s, natural authentic look, not overly staged or professional"
     },
     "practice": {
         "prefix": "Practice Director",
+        "title_format": "PRACTICE DIRECTOR {course_title}™",
         "income_multiplier": 2.3,
         "reviews_multiplier": 2.0,
-        "hint": "accomplished woman in her 50s, refined executive style, warm leadership presence"
+        "hint": "accomplished woman in her 50s, authentic approachable presence, real person not stock photo"
     }
 }
 
@@ -113,18 +135,20 @@ MASTER_TEMPLATE = """You are an expert at creating high-converting course thumbn
 
 ## YOUR TASK
 
-Generate a prompt for: **{level_prefix} {course_title}™**
+Generate a prompt for: **{full_title}**
 - Income: ${income:,}/mo  
 - Reviews: {reviews}
 - Person hint: {hint}
 
 ## CRITICAL RULES:
 1. Use EXACTLY the same structure as the examples above
-2. Keep the same authentic, natural, photorealistic style
-3. DO NOT make it look corporate or overly staged
-4. Apply the person hint subtly - just slight touches, nothing extreme
-5. Keep the same warm, professional, approachable vibe
-6. The setting should still feel natural (NOT corporate boardrooms or executive suites)
+2. The CENTER TITLE TEXT must be exactly: "{full_title}"
+3. AMATEUR AUTHENTIC STYLE: Make the image look like a high-quality iPhone photo, NOT a professional studio shot
+4. The person should look like a REAL person sharing their success, not a model or stock photo
+5. Natural lighting, slight imperfections allowed, authentic candid energy
+6. DO NOT make it look overly polished, corporate, or staged
+7. Keep warm, approachable vibe - like someone took a great photo of themselves
+8. The setting should feel real and lived-in, not a studio backdrop
 
 Generate ONLY the prompt text. No markdown, no explanations."""
 
@@ -139,12 +163,19 @@ def generate_prompt(course_name: str, base_income: int, base_reviews: int,
     
     config = LEVEL_CONFIG[level]
     
-    income = int(base_income * config["income_multiplier"])
-    reviews = int(base_reviews * config["reviews_multiplier"])
+    # Calculate and randomize to avoid round numbers
+    raw_income = int(base_income * config["income_multiplier"])
+    raw_reviews = int(base_reviews * config["reviews_multiplier"])
+    income = randomize_number(raw_income, variance=0.12)
+    reviews = randomize_number(raw_reviews, variance=0.15)
+    
+    # Generate full title with level prefix (e.g., "ADVANCED Gut Health Coach™")
+    full_title = config["title_format"].format(course_title=course_name)
     
     system_prompt = MASTER_TEMPLATE.format(
         v3_examples=V3_CRO_EXAMPLES,
         course_title=course_name,
+        full_title=full_title,
         level_prefix=config["prefix"],
         income=income,
         reviews=reviews,
