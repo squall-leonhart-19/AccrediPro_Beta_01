@@ -168,6 +168,37 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
     const [phoneValue, setPhoneValue] = useState(user.phone || "");
     const [isSavingPhone, setIsSavingPhone] = useState(false);
 
+    // Name editing state (for settings tab)
+    const [isEditingNameSettings, setIsEditingNameSettings] = useState(false);
+    const [firstNameValue, setFirstNameValue] = useState(user.firstName || "");
+    const [lastNameValue, setLastNameValue] = useState(user.lastName || "");
+    const [isSavingName, setIsSavingName] = useState(false);
+
+    const handleSaveName = async () => {
+        if (!firstNameValue.trim() || !lastNameValue.trim()) {
+            return;
+        }
+        setIsSavingName(true);
+        try {
+            const response = await fetch("/api/user/profile", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    firstName: firstNameValue.trim(),
+                    lastName: lastNameValue.trim(),
+                }),
+            });
+            if (response.ok) {
+                setIsEditingNameSettings(false);
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Failed to save name:", error);
+        } finally {
+            setIsSavingName(false);
+        }
+    };
+
     const handleSavePhone = async () => {
         setIsSavingPhone(true);
         try {
@@ -747,8 +778,66 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                             </h3>
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div className="p-4 bg-gray-50 rounded-xl">
-                                    <p className="text-sm text-gray-500 mb-1">Full Name</p>
-                                    <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-500 mb-1 flex items-center gap-1">
+                                                <User className="w-3 h-3" />
+                                                Full Name
+                                            </p>
+                                            {isEditingNameSettings ? (
+                                                <div className="space-y-2 mt-2">
+                                                    <div className="flex gap-2">
+                                                        <Input
+                                                            value={firstNameValue}
+                                                            onChange={(e) => setFirstNameValue(e.target.value)}
+                                                            placeholder="First name"
+                                                            className="h-9"
+                                                        />
+                                                        <Input
+                                                            value={lastNameValue}
+                                                            onChange={(e) => setLastNameValue(e.target.value)}
+                                                            placeholder="Last name"
+                                                            className="h-9"
+                                                        />
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={handleSaveName}
+                                                            disabled={isSavingName || !firstNameValue.trim() || !lastNameValue.trim()}
+                                                            className="h-8 bg-burgundy-600 hover:bg-burgundy-700"
+                                                        >
+                                                            {isSavingName ? <Loader2 className="w-3 h-3 animate-spin" /> : "Save"}
+                                                        </Button>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            onClick={() => {
+                                                                setIsEditingNameSettings(false);
+                                                                setFirstNameValue(user.firstName || "");
+                                                                setLastNameValue(user.lastName || "");
+                                                            }}
+                                                            className="h-8"
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+                                            )}
+                                        </div>
+                                        {!isEditingNameSettings && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setIsEditingNameSettings(true)}
+                                                className="text-burgundy-600 hover:text-burgundy-700"
+                                            >
+                                                <Pencil className="w-4 h-4" />
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="p-4 bg-gray-50 rounded-xl">
                                     <p className="text-sm text-gray-500 mb-1">Email Address</p>
