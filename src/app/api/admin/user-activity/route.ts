@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
         const [
             user,
             loginHistory,
+            firstLoginRecord,
             enrollments,
             lessonProgressCount,
             recentLessonProgress,
@@ -76,6 +77,18 @@ export async function GET(request: NextRequest) {
                     loginMethod: true,
                     isFirstLogin: true,
                 },
+            }),
+
+            // Fallback for Registration Evidence (Get oldest login)
+            prisma.loginHistory.findFirst({
+                where: { userId },
+                orderBy: { createdAt: "asc" },
+                select: {
+                    ipAddress: true,
+                    userAgent: true,
+                    device: true,
+                    browser: true,
+                }
             }),
 
             // Enrollments - minimal fields, no deep nesting
@@ -303,10 +316,10 @@ export async function GET(request: NextRequest) {
 
         // NEW: Registration evidence section
         const registrationEvidence = {
-            ip: user.registrationIp,
-            userAgent: user.registrationUserAgent,
-            device: user.registrationDevice,
-            browser: user.registrationBrowser,
+            ip: user.registrationIp || firstLoginRecord?.ipAddress || null,
+            userAgent: user.registrationUserAgent || firstLoginRecord?.userAgent || null,
+            device: user.registrationDevice || firstLoginRecord?.device || "Unknown",
+            browser: user.registrationBrowser || firstLoginRecord?.browser || "Unknown",
             timestamp: user.createdAt,
         };
 
@@ -324,6 +337,7 @@ export async function GET(request: NextRequest) {
             registrationEvidence,
             legalAcceptance,
             loginHistory,
+            firstLoginRecord,
             enrollments,
             lessonProgress: recentLessonProgress,
             certificates,
