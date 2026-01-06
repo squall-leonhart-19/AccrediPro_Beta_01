@@ -2006,8 +2006,10 @@ export function UsersClient({ courses }: UsersClientProps) {
                             onClick={() => {
                               // Generate and download evidence PDF
                               const evidenceText = `
-DISPUTE EVIDENCE REPORT
-=======================
+================================================================================
+                        DISPUTE EVIDENCE REPORT
+================================================================================
+Document ID: EVD-${Date.now()}-${selectedUser?.id?.slice(0, 8)}
 Generated: ${new Date().toISOString()}
 
 USER INFORMATION
@@ -2016,11 +2018,25 @@ Name: ${selectedUser?.firstName} ${selectedUser?.lastName}
 Email: ${selectedUser?.email}
 Account Created: ${activityData.stats.accountCreated ? new Date(activityData.stats.accountCreated).toLocaleString() : 'N/A'}
 
-LEGAL ACCEPTANCE
-----------------
+LEGAL ACCEPTANCE (TERMS OF SERVICE)
+------------------------------------
 TOS Accepted: ${activityData.legalAcceptance?.tosAcceptedAt ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString() : 'MISSING'}
-TOS Version: ${activityData.legalAcceptance?.tosVersion || 'N/A'}
+TOS Version: ${activityData.legalAcceptance?.tosVersion || '1.0'}
 Refund Policy Accepted: ${activityData.legalAcceptance?.refundPolicyAcceptedAt ? new Date(activityData.legalAcceptance.refundPolicyAcceptedAt).toLocaleString() : 'MISSING'}
+
+Full Terms: https://learn.accredipro.academy/terms-of-service
+Full Refund Policy: https://learn.accredipro.academy/refund-policy
+
+REFUND POLICY CUSTOMER AGREED TO:
+---------------------------------
+"ALL SALES ARE FINAL. NO REFUNDS.
+Due to the immediate-access nature of Digital Products, you expressly 
+acknowledge and agree that:
+- You waive any right to request a refund for any reason whatsoever
+- You waive any right to cancel your purchase after payment processing
+- You waive any right to initiate a payment dispute or chargeback
+- You waive any right to claim non-delivery after receiving access"
+(Source: Terms of Service, Article IV)
 
 REGISTRATION EVIDENCE
 ---------------------
