@@ -295,6 +295,7 @@ export async function POST(request: NextRequest) {
         const lineItems = data.line_items || data.products || [];
         const firstLineItem = lineItems[0] || {};
         const productsVariant = firstLineItem.products_variant || {};
+        const productsPrice = firstLineItem.products_price || {}; // NEW
         const originalProduct = firstLineItem.original_product || {};
 
         // Extract email (CF 2.0 uses email_address)
@@ -304,9 +305,9 @@ export async function POST(request: NextRequest) {
         const phone = contact.phone_number || data.phone_number || body.phone || "";
 
         // Extract product info
-        const productSku = productsVariant.sku || originalProduct.sku || "";
+        const productSku = productsVariant.sku || productsPrice.sku || originalProduct.sku || "";
         const productName = productsVariant.name || originalProduct.name || firstLineItem.name || body.product_name || "FM Mini Diploma";
-        const productAmount = parseFloat(firstLineItem.amount || firstLineItem.price || productsVariant.amount || body.amount) || 27;
+        const productAmount = parseFloat(firstLineItem.amount || firstLineItem.price || productsVariant.amount || productsPrice.amount || body.amount) || 27;
 
         // Extract Address Info (Try to find in contact addresses)
         const addresses = contact.addresses || [];

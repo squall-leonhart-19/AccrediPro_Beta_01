@@ -218,6 +218,7 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
     const lineItems = data.line_items as Array<Record<string, unknown>> | undefined;
     const firstLineItem = lineItems?.[0];
     const productsVariant = firstLineItem?.products_variant as Record<string, unknown> | undefined;
+    const productsPrice = firstLineItem?.products_price as Record<string, unknown> | undefined; // Look for price object
     const originalProduct = firstLineItem?.original_product as Record<string, unknown> | undefined;
 
     // Get contact info - CF uses email_address, not email
@@ -228,7 +229,7 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
 
     // Get product info from products_variant (has SKU) or original_product
     const productSku = productsVariant?.sku;
-    const productId = productsVariant?.id || originalProduct?.id || firstLineItem?.id;
+    const productId = productsVariant?.id || productsPrice?.id || originalProduct?.id || firstLineItem?.id;
     const productName = productsVariant?.name || originalProduct?.name;
 
     console.log("Parsed contact:", { contactEmail, contactFirstName, contactLastName });
@@ -243,7 +244,8 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
         productId: String(productSku || productId || ""),
         productName: productName ? String(productName) : undefined,
         transactionId: String(data.id || data.public_id || ""),
-        amount: data.total_amount ? Number(data.total_amount) : undefined,
+        amount: data.total_amount ? Number(data.total_amount) :
+          (productsPrice?.amount ? Number(productsPrice.amount) : undefined),
         eventType: String(body.event_type || "purchase"),
       };
     }
