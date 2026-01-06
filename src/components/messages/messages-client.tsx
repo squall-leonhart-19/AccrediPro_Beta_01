@@ -287,7 +287,13 @@ export function MessagesClient({
   const [replyingAllWaiting, setReplyingAllWaiting] = useState(false);
   const [waitingCount, setWaitingCount] = useState(0);
 
+  // Pagination state
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -348,18 +354,56 @@ export function MessagesClient({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const fetchMessages = useCallback(async (userId: string) => {
+  const fetchMessages = useCallback(async (userId: string, isRefresh = false) => {
     try {
-      const response = await fetch(`/api/messages?userId=${userId}`);
+      const response = await fetch(`/api/messages?userId=${userId}&limit=50`);
       const data = await response.json();
       if (data.success && isMountedRef.current) {
         setMessages(data.data);
-        scrollToBottom();
+        setHasMoreMessages(data.hasMore || false);
+        setNextCursor(data.nextCursor || null);
+        if (!isRefresh) {
+          scrollToBottom();
+        }
       }
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     }
   }, []);
+
+  // Load more older messages
+  const loadMoreMessages = useCallback(async () => {
+    if (!selectedUser || !nextCursor || loadingMore) return;
+
+    setLoadingMore(true);
+    const container = messagesContainerRef.current;
+    const scrollHeightBefore = container?.scrollHeight || 0;
+
+    try {
+      const response = await fetch(
+        `/api/messages?userId=${selectedUser.id}&cursor=${nextCursor}&limit=30`
+      );
+      const data = await response.json();
+
+      if (data.success && isMountedRef.current) {
+        setMessages((prev) => [...data.data, ...prev]);
+        setHasMoreMessages(data.hasMore || false);
+        setNextCursor(data.nextCursor || null);
+
+        // Maintain scroll position after prepending messages
+        requestAnimationFrame(() => {
+          if (container) {
+            const scrollHeightAfter = container.scrollHeight;
+            container.scrollTop = scrollHeightAfter - scrollHeightBefore;
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load more messages:", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [selectedUser, nextCursor, loadingMore]);
 
   useEffect(() => {
     if (selectedUser) {
@@ -372,7 +416,7 @@ export function MessagesClient({
       }).catch(console.error);
 
       const interval = setInterval(() => {
-        fetchMessages(selectedUser.id);
+        fetchMessages(selectedUser.id, true); // isRefresh=true to not scroll
       }, 5000);
 
       // Poll for typing indicator
@@ -1261,7 +1305,7 @@ export function MessagesClient({
         ref={imageInputRef}
         onChange={(e) => handleFileSelect(e, "image")}
         className="hidden"
-        accept="image/*"
+        accept="image/*,.webp,.png,.jpg,.jpeg,.gif,.heic,.heif"
       />
 
       {/* Conversations Sidebar */}
@@ -1626,7 +1670,7 @@ export function MessagesClient({
             {/* Main Content Area */}
             <div className="flex-1 flex overflow-hidden">
               {/* Messages Container */}
-              <div className="flex-1 overflow-y-auto px-4 py-4">
+              <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4">
                 {/* Pinned Founder Message - show for ADMIN only (AccrediPro Founder) */}
                 {!isCoach && selectedUser?.role === "ADMIN" && messages.length > 0 && (
                   <div className="mb-4 p-3 bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl border border-gold-200 relative">
@@ -1709,6 +1753,27 @@ export function MessagesClient({
                   </div>
                 ) : (
                   <div className="space-y-3">
+                    {/* Load More Button */}
+                    {hasMoreMessages && (
+                      <div className="flex justify-center py-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={loadMoreMessages}
+                          disabled={loadingMore}
+                          className="text-xs text-gray-500 hover:text-gray-700"
+                        >
+                          {loadingMore ? (
+                            <>
+                              <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                              Loading...
+                            </>
+                          ) : (
+                            "Load earlier messages"
+                          )}
+                        </Button>
+                      </div>
+                    )}
                     {messages.map((message, index) => {
                       const isOwn = message.senderId === currentUserId;
                       const showDate =

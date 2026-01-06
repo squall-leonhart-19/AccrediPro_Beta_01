@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
+    const cursor = searchParams.get("cursor"); // For pagination - load older messages
+    const limit = parseInt(searchParams.get("limit") || "50");
 
     if (!userId) {
       return NextResponse.json(
@@ -37,6 +39,7 @@ export async function GET(request: NextRequest) {
           { senderId: session.user.id, receiverId: userId },
           { senderId: userId, receiverId: session.user.id },
         ],
+        ...(cursor ? { createdAt: { lt: new Date(cursor) } } : {}),
       },
       include: {
         reactions: true,
@@ -49,21 +52,35 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: { createdAt: "asc" },
-      take: 100,
+      orderBy: { createdAt: "desc" }, // Get most recent first
+      take: limit + 1, // Take one extra to check if more exist
     });
 
-    // Mark received messages as read
-    await prisma.message.updateMany({
-      where: {
-        senderId: userId,
-        receiverId: session.user.id,
-        isRead: false,
-      },
-      data: { isRead: true },
-    });
+    // Check if there are more older messages
+    const hasMore = messages.length > limit;
+    const messagesList = hasMore ? messages.slice(0, -1) : messages;
 
-    return NextResponse.json({ success: true, data: messages });
+    // Reverse to show oldest first in the chat
+    messagesList.reverse();
+
+    // Mark received messages as read (only on initial load, not on "load more")
+    if (!cursor) {
+      await prisma.message.updateMany({
+        where: {
+          senderId: userId,
+          receiverId: session.user.id,
+          isRead: false,
+        },
+        data: { isRead: true },
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: messagesList,
+      hasMore,
+      nextCursor: hasMore && messagesList.length > 0 ? messagesList[0].createdAt : null,
+    });
   } catch (error) {
     console.error("Fetch messages error:", error);
     return NextResponse.json(
