@@ -515,6 +515,27 @@ export async function POST(request: NextRequest) {
 
       isNewUser = true;
       console.log(`Created new user from ClickFunnels: ${normalizedEmail} (IP: ${purchaseIp})`);
+
+      // DISPUTE EVIDENCE: Auto-record welcome PDF download as proof of content delivery
+      try {
+        await prisma.userActivity.create({
+          data: {
+            userId: user.id,
+            action: "welcome_pdf_downloaded",
+            metadata: {
+              resourceName: "AccrediPro Platform Welcome Guide",
+              resourceType: "pdf",
+              deliveryMethod: "auto_enrollment",
+              purchaseContext: productName || productId || "ClickFunnels Purchase",
+            },
+            ipAddress: purchaseIp,
+            userAgent: purchaseUserAgent,
+          },
+        });
+        console.log(`✅ [CF] Recorded Welcome PDF download for ${normalizedEmail}`);
+      } catch (activityError) {
+        console.error(`[CF] Failed to record welcome activity:`, activityError);
+      }
     } else {
       // Update existing user with any new info
       const updates: Record<string, unknown> = {};
