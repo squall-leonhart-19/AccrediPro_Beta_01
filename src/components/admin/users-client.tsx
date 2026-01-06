@@ -395,11 +395,18 @@ export function UsersClient({ courses }: UsersClientProps) {
             totalWatchTime: 0,
             certificatesEarned: 0,
           },
+          legalAcceptance: data.legalAcceptance || null,
+          registrationEvidence: data.registrationEvidence || null,
           loginHistory: data.loginHistory || [],
           enrollments: data.enrollments || [],
           lessonProgress: data.lessonProgress || [],
           certificates: data.certificates || [],
           activityLogs: data.activityLogs || [],
+          payments: data.payments || [],
+          quizAttempts: data.quizAttempts || [],
+          resourceDownloads: data.resourceDownloads || [],
+          emailSends: data.emailSends || [],
+          supportTickets: data.supportTickets || [],
         });
       } else {
         console.error('Activity API error:', res.status);
