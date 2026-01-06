@@ -36,7 +36,6 @@ export default function FMCourseCertificationPage() {
     const [messages, setMessages] = useState<{ role: string; content: string; fromServer?: boolean }[]>([]);
     const [inputValue, setInputValue] = useState("");
 
-    const [isTyping, setIsTyping] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [emailError, setEmailError] = useState("");
     const [showProactivePopup, setShowProactivePopup] = useState(false);
@@ -199,7 +198,6 @@ export default function FMCourseCertificationPage() {
         setInputValue("");
         // Add user message locally (will be synced from server on next poll)
         setMessages(prev => [...prev, { role: "user", content: userMessage }]);
-        setIsTyping(true);
 
         try {
             await fetch("/api/chat/sales", {
@@ -213,11 +211,9 @@ export default function FMCourseCertificationPage() {
                     userEmail
                 })
             });
-            // Don't add fake acknowledgment - let polling sync real admin replies
-            // Show typing for 2 seconds to indicate message was received
-            setTimeout(() => setIsTyping(false), 2000);
+            // No typing indicator - auto-reply comes in ~1 minute via polling
         } catch {
-            setIsTyping(false);
+            // Silent fail - message will still sync via polling
         }
     };
 
@@ -374,20 +370,6 @@ export default function FMCourseCertificationPage() {
                                             </div>
                                         </div>
                                     ))}
-                                    {isTyping && (
-                                        <div className="flex gap-2 mb-3">
-                                            <img
-                                                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
-                                                alt="Sarah"
-                                                className="w-7 h-7 rounded-full"
-                                            />
-                                            <div className="bg-white border border-gray-200 p-3 rounded-xl flex gap-1">
-                                                <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></span>
-                                                <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></span>
-                                                <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></span>
-                                            </div>
-                                        </div>
-                                    )}
                                     <div ref={messagesEndRef} />
                                 </div>
 
