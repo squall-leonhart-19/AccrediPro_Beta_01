@@ -270,10 +270,18 @@ export default function TicketsPage() {
     }
   };
 
+  // Mobile sidebar state
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [showCustomerPanel, setShowCustomerPanel] = useState(true);
+
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-slate-50">
+    <div className="flex h-[calc(100vh-64px)] bg-slate-100 overflow-hidden">
       {/* Left Panel - Ticket List */}
-      <div className="w-[400px] bg-white border-r flex flex-col">
+      <div className={cn(
+        "w-[380px] min-w-[380px] bg-white border-r flex flex-col shadow-sm",
+        "lg:flex",
+        !showSidebar && "hidden"
+      )}>
         {/* Header */}
         <div className="p-4 border-b bg-gradient-to-r from-[#722F37] to-[#8B3D47]">
           <div className="flex items-center justify-between mb-3">
@@ -472,28 +480,50 @@ export default function TicketsPage() {
       </div>
 
       {/* Center Panel - Conversation */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white">
+      <div className="flex-1 flex flex-col min-w-0 bg-white shadow-sm">
         {selectedTicket ? (
           <>
             {/* Header */}
-            <div className="h-16 border-b px-6 flex items-center justify-between bg-white flex-shrink-0">
+            <div className="h-[72px] border-b px-6 flex items-center justify-between bg-gradient-to-r from-white to-slate-50 flex-shrink-0">
               <div className="flex items-center gap-4 min-w-0">
+                {/* Toggle sidebar button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden h-8 w-8"
+                  onClick={() => setShowSidebar(!showSidebar)}
+                >
+                  <MessageSquare className="w-4 h-4" />
+                </Button>
+                <Avatar className="w-10 h-10 border-2 border-[#722F37]/20">
+                  <AvatarImage src={selectedTicket.user?.avatar || undefined} />
+                  <AvatarFallback className="bg-[#722F37] text-white font-semibold">
+                    {selectedTicket.customerName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-slate-400">#{selectedTicket.ticketNumber}</span>
-                    <h2 className="font-semibold text-slate-900 truncate">
-                      {selectedTicket.subject}
+                    <h2 className="font-bold text-slate-900 truncate">
+                      {selectedTicket.customerName}
                     </h2>
+                    <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                      #{selectedTicket.ticketNumber}
+                    </span>
+                    {(() => {
+                      const category = detectCategory(selectedTicket.subject);
+                      const categoryStyle = CATEGORY_COLORS[category] || CATEGORY_COLORS.General;
+                      return (
+                        <span className={cn(
+                          "text-[10px] px-2 py-0.5 rounded-full font-semibold border",
+                          categoryStyle.bg, categoryStyle.text, categoryStyle.border
+                        )}>
+                          {category}
+                        </span>
+                      );
+                    })()}
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <Mail className="w-3 h-3" />
-                      {selectedTicket.customerEmail}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {format(new Date(selectedTicket.createdAt), "MMM d, yyyy")}
-                    </span>
+                  <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                    <span className="font-medium text-slate-700">{selectedTicket.subject}</span>
                   </div>
                 </div>
               </div>
@@ -580,70 +610,135 @@ export default function TicketsPage() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                {/* Toggle Customer Panel */}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setShowCustomerPanel(!showCustomerPanel)}
+                >
+                  <User className={cn("w-4 h-4", showCustomerPanel && "text-[#722F37]")} />
+                </Button>
               </div>
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-6 bg-slate-50">
-              <div className="max-w-3xl mx-auto space-y-4">
-                {selectedTicket.messages.map((msg, idx) => {
-                  const isCustomer = msg.isFromCustomer;
-                  const showDateSeparator = idx === 0 ||
-                    format(new Date(msg.createdAt), "yyyy-MM-dd") !==
-                    format(new Date(selectedTicket.messages[idx - 1].createdAt), "yyyy-MM-dd");
-
-                  return (
-                    <div key={msg.id}>
-                      {showDateSeparator && (
-                        <div className="flex items-center justify-center my-6">
-                          <div className="text-[10px] text-slate-400 bg-white px-3 py-1 rounded-full border">
-                            {format(new Date(msg.createdAt), "MMMM d, yyyy")}
-                          </div>
+            <ScrollArea className="flex-1 bg-gradient-to-b from-slate-50 to-slate-100">
+              <div className="p-6">
+                <div className="max-w-3xl mx-auto space-y-4">
+                  {/* Ticket Info Card */}
+                  <div className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Mail className="w-4 h-4 text-slate-400" />
+                          <span className="text-sm text-slate-600">{selectedTicket.customerEmail}</span>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(selectedTicket.customerEmail);
+                              toast.success("Email copied!");
+                            }}
+                            className="text-[#722F37] hover:text-[#5A252C]"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                      )}
-                      <div className={cn("flex gap-3", !isCustomer && "flex-row-reverse")}>
-                        <Avatar className="w-8 h-8 flex-shrink-0">
-                          <AvatarFallback className={cn(
-                            "text-xs font-semibold",
-                            isCustomer
-                              ? "bg-slate-100 text-slate-600"
-                              : "bg-[#722F37] text-white"
-                          )}>
-                            {isCustomer ? selectedTicket.customerName.charAt(0) : "S"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className={cn("max-w-[75%]", !isCustomer && "text-right")}>
-                          <div className={cn(
-                            "inline-block px-4 py-3 rounded-2xl text-sm",
-                            isCustomer
-                              ? "bg-white border text-slate-800 rounded-tl-sm shadow-sm"
-                              : msg.isInternal
-                                ? "bg-amber-50 border-2 border-amber-200 text-slate-800 rounded-tr-sm"
-                                : "bg-[#722F37] text-white rounded-tr-sm shadow-sm"
-                          )}>
-                            {msg.isInternal && (
-                              <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 mb-1">
-                                <Zap className="w-3 h-3" />
-                                INTERNAL NOTE
-                              </div>
-                            )}
-                            <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-slate-400" />
+                          <span className="text-sm text-slate-600">
+                            Created {format(new Date(selectedTicket.createdAt), "MMMM d, yyyy 'at' h:mm a")}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {selectedTicket.user?.marketingTags?.slice(0, 2).map((mt: any, i: number) => (
+                          <Badge
+                            key={i}
+                            variant="secondary"
+                            className="text-[10px]"
+                            style={{
+                              backgroundColor: `${mt.tag?.color || "#6B7280"}15`,
+                              color: mt.tag?.color || "#6B7280",
+                            }}
+                          >
+                            {mt.tag?.name || "Tag"}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedTicket.messages.map((msg, idx) => {
+                    const isCustomer = msg.isFromCustomer;
+                    const showDateSeparator = idx === 0 ||
+                      format(new Date(msg.createdAt), "yyyy-MM-dd") !==
+                      format(new Date(selectedTicket.messages[idx - 1].createdAt), "yyyy-MM-dd");
+
+                    return (
+                      <div key={msg.id}>
+                        {showDateSeparator && (
+                          <div className="flex items-center justify-center my-8">
+                            <div className="h-px flex-1 bg-slate-200" />
+                            <div className="text-[11px] font-medium text-slate-400 bg-slate-50 px-4 py-1.5 rounded-full border mx-4">
+                              {format(new Date(msg.createdAt), "EEEE, MMMM d, yyyy")}
+                            </div>
+                            <div className="h-px flex-1 bg-slate-200" />
                           </div>
-                          <div className={cn(
-                            "text-[10px] text-slate-400 mt-1 px-1",
-                            !isCustomer && "text-right"
+                        )}
+                        <div className={cn("flex gap-3", !isCustomer && "flex-row-reverse")}>
+                          <Avatar className={cn(
+                            "w-9 h-9 flex-shrink-0 border-2",
+                            isCustomer ? "border-slate-200" : "border-[#722F37]/20"
                           )}>
-                            {format(new Date(msg.createdAt), "h:mm a")}
-                            {!isCustomer && msg.sentBy?.name && (
-                              <span className="ml-2">• {msg.sentBy.name}</span>
-                            )}
+                            <AvatarFallback className={cn(
+                              "text-xs font-bold",
+                              isCustomer
+                                ? "bg-slate-100 text-slate-600"
+                                : "bg-[#722F37] text-white"
+                            )}>
+                              {isCustomer ? selectedTicket.customerName.charAt(0).toUpperCase() : "S"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className={cn("max-w-[75%]", !isCustomer && "text-right")}>
+                            <div className={cn(
+                              "text-[11px] font-medium mb-1 px-1",
+                              isCustomer ? "text-slate-500" : "text-[#722F37]"
+                            )}>
+                              {isCustomer ? selectedTicket.customerName : "Support Team"}
+                            </div>
+                            <div className={cn(
+                              "inline-block px-4 py-3 rounded-2xl text-sm shadow-sm",
+                              isCustomer
+                                ? "bg-white border border-slate-200 text-slate-800 rounded-tl-sm"
+                                : msg.isInternal
+                                  ? "bg-amber-50 border-2 border-amber-300 text-slate-800 rounded-tr-sm"
+                                  : "bg-gradient-to-br from-[#722F37] to-[#5A252C] text-white rounded-tr-sm"
+                            )}>
+                              {msg.isInternal && (
+                                <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 mb-2 pb-2 border-b border-amber-200">
+                                  <Zap className="w-3 h-3" />
+                                  INTERNAL NOTE - Not visible to customer
+                                </div>
+                              )}
+                              <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                            </div>
+                            <div className={cn(
+                              "text-[10px] text-slate-400 mt-1.5 px-1",
+                              !isCustomer && "text-right"
+                            )}>
+                              {format(new Date(msg.createdAt), "h:mm a")}
+                              {!isCustomer && msg.sentBy?.name && (
+                                <span className="ml-2 text-slate-500">• {msg.sentBy.name}</span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-                <div ref={messagesEndRef} />
+                    );
+                  })}
+                  <div ref={messagesEndRef} />
+                </div>
               </div>
             </ScrollArea>
 
@@ -748,7 +843,26 @@ export default function TicketsPage() {
 
       {/* Right Panel - Customer Details */}
       {selectedTicket && (
-        <div className="w-[320px] bg-white border-l flex-shrink-0 flex flex-col overflow-hidden">
+        <div className={cn(
+          "w-[320px] min-w-[320px] bg-white border-l flex-shrink-0 flex flex-col overflow-hidden shadow-sm",
+          "lg:flex",
+          !showCustomerPanel && "hidden"
+        )}>
+          {/* Panel Header */}
+          <div className="h-[72px] border-b px-4 flex items-center justify-between bg-gradient-to-r from-slate-50 to-white flex-shrink-0">
+            <h3 className="font-bold text-slate-900 flex items-center gap-2">
+              <User className="w-4 h-4 text-[#722F37]" />
+              Customer Details
+            </h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 lg:hidden"
+              onClick={() => setShowCustomerPanel(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
           <ScrollArea className="flex-1">
             <div className="p-4">
               {/* Customer Header */}
