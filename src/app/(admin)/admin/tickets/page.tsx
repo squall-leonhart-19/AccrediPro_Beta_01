@@ -7,7 +7,7 @@ import {
   Search, Filter, RefreshCcw, CheckCircle2, XCircle,
   MessageSquare, User, Clock, Star, Paperclip, Send,
   MoreVertical, Mail, Layout, LifeBuoy, Zap, ChevronRight,
-  Sparkles, Trash2, UserPlus, Reply, DollarSign, CreditCard, Copy, ExternalLink, Merge, Tag as TagIcon, Plus
+  Sparkles, Trash2, UserPlus, Reply, DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -251,21 +251,75 @@ const CustomerDetailsSidebar = ({ ticket, onClose }: { ticket: Ticket; onClose?:
         ) : (
           <div className="space-y-2">
             {user.submittedTickets.filter(t => t.id !== ticket.id).map((otherTicket) => (
-              <div key={otherTicket.id} className="p-3 border rounded-lg bg-slate-50 hover:bg-white hover:shadow-sm transition-all group">
+              <a
+                key={otherTicket.id}
+                href={`#${otherTicket.id}`}
+                className="block p-3 border rounded-lg bg-slate-50 hover:bg-white hover:shadow-sm transition-all group cursor-pointer"
+              >
                 <div className="flex justify-between items-start mb-1">
                   <span className="text-xs font-bold text-slate-700">#{otherTicket.ticketNumber}</span>
                   <StatusBadge status={otherTicket.status} />
                 </div>
-                <p className="text-xs text-slate-600 font-medium line-clamp-1 mb-2">{otherTicket.subject}</p>
-                <div className="flex justify-between items-center border-t pt-2 mt-1">
-                  <span className="text-[10px] text-slate-400">{new Date(otherTicket.createdAt).toLocaleDateString()}</span>
-                  <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2 text-blue-600 hover:bg-blue-50">
-                    Merge <Merge className="w-3 h-3 ml-1" />
-                  </Button>
+                <p className="text-xs text-slate-600 font-medium line-clamp-1">{otherTicket.subject}</p>
+                <div className="text-[10px] text-slate-400 mt-2">
+                  {new Date(otherTicket.createdAt).toLocaleDateString()}
                 </div>
-              </div>
+              </a>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Tags Management */}
+      <div className="p-4 border-t">
+        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <TagIcon className="w-4 h-4 text-purple-600" /> Tags
+        </h3>
+
+        {/* Existing Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {user.marketingTags && user.marketingTags.length > 0 ? (
+            user.marketingTags.map((mt: any) => (
+              <Badge
+                key={mt.id}
+                variant="secondary"
+                className="text-[10px] px-2 py-0.5 bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100"
+              >
+                {mt.tag?.name || mt.tag?.slug || 'Tag'}
+              </Badge>
+            ))
+          ) : (
+            <span className="text-xs text-slate-400 italic">No tags assigned</span>
+          )}
+        </div>
+
+        {/* Add Tag */}
+        {isAddingTag ? (
+          <div className="flex gap-2">
+            <Input
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+              placeholder="Tag name..."
+              className="h-8 text-xs flex-1"
+              onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
+              autoFocus
+            />
+            <Button size="sm" className="h-8 px-3" onClick={handleAddTag}>
+              <Plus className="w-3 h-3" />
+            </Button>
+            <Button size="sm" variant="ghost" className="h-8 px-2" onClick={() => setIsAddingTag(false)}>
+              ✕
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full h-8 text-xs text-slate-600 border-dashed hover:border-purple-400 hover:text-purple-600"
+            onClick={() => setIsAddingTag(true)}
+          >
+            <Plus className="w-3 h-3 mr-1" /> Add Tag
+          </Button>
         )}
       </div>
     </div>
