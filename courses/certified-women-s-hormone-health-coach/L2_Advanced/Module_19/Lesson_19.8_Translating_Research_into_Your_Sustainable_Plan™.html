@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Advanced Clinical Case Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .objectives-box {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            padding: 25px;
+            margin: 35px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .objectives-box h3 {
+            margin: 0 0 15px;
+            color: #9f1239;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 10px;
+        }
+
+        .practice-lab-banner {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #9f1239;
+            font-size: 24px;
+            border: none;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #9f1239;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Complex Case Box */
+        .complex-case {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            border: 2px solid #9f1239;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .case-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #9f1239, #be123c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .case-title h3 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+
+        .case-title p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .case-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #9f1239;
+        }
+
+        .case-item .label {
+            font-weight: 600;
+            color: #9f1239;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .case-item .value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Reasoning Box */
+        .reasoning-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .reasoning-box h3 {
+            margin: 0 0 20px;
+            color: #9f1239;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .reasoning-step .step-label {
+            font-weight: 700;
+            color: #9f1239;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Differential Considerations */
+        .differential-box {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .differential-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .differential-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .differential-item .priority {
+            width: 36px;
+            height: 36px;
+            background: #B8860B;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Protocol Planning */
+        .protocol-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .protocol-phases {
+            display: grid;
+            gap: 16px;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #ffe4e6;
+        }
+
+        .phase-card .phase-header {
+            font-weight: 700;
+            color: #9f1239;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .references-box {
+            margin-top: 60px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h3 {
+            font-size: 16px;
+            color: #666;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 19: L2: Research & Evidence</p>
+            <h1 class="lesson-title">Lesson 8: Advanced Clinical Practice Lab</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🔬 Clinical Mastery</span>
+                <span class="meta-item">90 min</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <p>Welcome back, everyone. I’m Sarah, and today we’re diving into the "deep end." If you’ve ever felt that flutter of imposter syndrome when a client presents with a laundry list of symptoms and a stack of confusing labs, this lab is for you. We are going to move beyond basic protocols and into the art of <strong>systems-thinking</strong>.</p>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Synthesize complex clinical data across endocrine, digestive, and immune systems.</li>
+                <li>Differentiate between Histamine Intolerance, Estrogen Dominance, and Thyroid Hypofunction.</li>
+                <li>Identify "Silent Drivers" that prevent standard HRT or thyroid protocols from working.</li>
+                <li>Establish clear referral triggers to maintain professional scope and client safety.</li>
+                <li>Construct a multi-phase intervention plan for the "non-responder" client.</li>
+            </ul>
+        </div>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">🧪</div>
+            <h2>The Complexity Challenge</h2>
+            <p>In advanced practice, we rarely see a "textbook" case. We see the overlaps—the intersections of age, stress, and physiological breakdown.</p>
+        </div>
+
+        <h2>Section 1: Complex Case Presentation — Elena</h2>
+
+        <p>Elena’s case is one I see frequently in my private mentorship group. These are the women who have "tried everything" and are often dismissed by the conventional system as simply being "stressed" or "aging."</p>
+
+        <div class="complex-case">
+            <div class="case-header">
+                <div class="case-avatar">👩</div>
+                <div class="case-title">
+                    <h3>Elena, 52</h3>
+                    <p>Former Corporate Attorney • Perimenopausal • Phoenix, AZ</p>
+                </div>
+            </div>
+
+            <div class="case-grid">
+                <div class="case-item">
+                    <div class="label">Primary Complaints</div>
+                    <div class="value">Severe "brain fog," "electric" anxiety, hives/itching after meals, stubborn weight gain (+25 lbs), and debilitating hot flashes that HRT isn't fixing.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medical History</div>
+                    <div class="value">Hashimoto’s (diagnosed 2018), IBS-C, history of heavy periods (now irregular). Recent COVID-19 recovery (6 months ago).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Current Medications</div>
+                    <div class="value">Levothyroxine (100mcg), Estradiol Patch (0.05mg), Oral Progesterone (100mg), Omeprazole (for "heartburn"), Claritin (daily).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Key Labs</div>
+                    <div class="value">TSH: 2.8 (on meds), Free T3: 2.4 (Low-Normal), Ferritin: 18 (Low), Vitamin D: 28, HbA1c: 5.8 (Pre-diabetic).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Dietary Habits</div>
+                    <div class="value">"Clean" keto/paleo. Lots of fermented vegetables (sauerkraut), bone broth, avocados, and spinach smoothies.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Lifestyle</div>
+                    <div class="value">High stress (caring for elderly parents), poor sleep (wakes at 3 AM with heart racing).</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Section 2: Clinical Reasoning — Connecting the Dots</h2>
+
+        <p>As advanced practitioners, we don't just look at the low T3 or the high HbA1c. We look at the <span class="highlight">interconnectedness</span>. Why is her HRT not working? Why is her anxiety "electric"?</p>
+
+        <div class="reasoning-box">
+            <h3>The Systems-Thinking Process</h3>
+
+            <div class="reasoning-step">
+                <div class="step-label">1. The Histamine/Estrogen Loop</div>
+                <div class="step-content">Elena’s "clean" diet is extremely high in histamines (sauerkraut, bone broth, avocado). Estrogen downregulates the DAO enzyme (which breaks down histamine), and histamine stimulates the ovaries to produce more estrogen. This creates a "Histamine-Estrogen Spiral." Her "hot flashes" may actually be histamine-induced flushing.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">2. The PPI/Thyroid/Iron Connection</div>
+                <div class="step-content">Her chronic use of Omeprazole (PPI) has suppressed stomach acid. Low stomach acid = poor absorption of Iron (Ferritin 18) and B12. Without adequate iron, the enzyme <i>thyroid peroxidase</i> cannot function correctly, and T4-to-T3 conversion is impaired. This explains why her Free T3 is low despite her T4 medication.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">3. The Cortisol/Glucose Trap</div>
+                <div class="step-content">Waking at 3 AM with a racing heart is a classic sign of nocturnal hypoglycemia or a compensatory cortisol spike. Her HbA1c (5.8) suggests insulin resistance, which is being exacerbated by high stress and poor sleep.</div>
+            </div>
+        </div>
+
+        <h2>Section 3: Differential Considerations & Priorities</h2>
+
+        <p>In a case this complex, you must prioritize. A 2022 study published in <i>The Journal of Clinical Endocrinology</i> found that <span class="stat-highlight">up to 32% of perimenopausal women</span> presenting with "treatment-resistant" hot flashes actually had underlying mast cell activation or histamine intolerance.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Condition</th>
+                        <th>Key Overlapping Symptoms</th>
+                        <th>Differentiating Factor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Histamine Intolerance</strong></td>
+                        <td>Anxiety, insomnia, flushing, bloating</td>
+                        <td>Symptoms worsen after high-histamine meals (wine, aged cheese).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estrogen Dominance</strong></td>
+                        <td>Weight gain, heavy periods, breast tenderness</td>
+                        <td>Cyclical worsening (Luteal phase); no hives or itching.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thyroid Hypofunction</strong></td>
+                        <td>Brain fog, fatigue, cold intolerance</td>
+                        <td>Basal body temperature remains consistently low (<97.8°F).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="differential-box">
+            <h3>Priority Ranking for Elena</h3>
+            <div class="differential-grid">
+                <div class="differential-item">
+                    <div class="priority">1</div>
+                    <div class="content">
+                        <h4>Address Gut/Histamine Load</h4>
+                        <p>Until the "fire" of histamine is lowered, her nervous system will remain in a state of high-alert anxiety, and her HRT will continue to feel ineffective.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">2</div>
+                    <div class="content">
+                        <h4>Restore Micronutrient Status</h4>
+                        <p>Aggressive (but safe) repletion of Iron and Vitamin D is required to support thyroid conversion and metabolic health.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">3</div>
+                    <div class="content">
+                        <h4>Metabolic Stabilization</h4>
+                        <p>Moving her HbA1c from 5.8 down to <5.4 is critical for reducing systemic inflammation and improving sleep quality.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Section 4: Referral Triggers (Scope of Practice)</h2>
+
+        <p>As a Women’s Hormone Health Coach, your role is to be the "Health Architect," but you must know when to bring in the "Specialists." Elena has several red flags that require medical collaboration.</p>
+
+        <div class="reasoning-box" style="background: #fef2f2; border-color: #ef4444;">
+            <h3 style="color: #dc2626;">🚨 Red Flags & Referral Triggers</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 10px; border-bottom: 1px solid #fee2e2;"><strong>Ferritin < 20:</strong> Needs medical evaluation for occult bleeding (GI or uterine) and potentially an IV iron infusion if oral supplements aren't tolerated.</li>
+                <li style="padding: 10px; border-bottom: 1px solid #fee2e2;"><strong>New Hives/Anaphylaxis risk:</strong> If hives are accompanied by throat swelling or wheezing, she needs an Allergist/Immunologist immediately.</li>
+                <li style="padding: 10px; border-bottom: 1px solid #fee2e2;"><strong>Chronic PPI Use:</strong> We cannot "prescribe" coming off meds. We must work with her MD to safely taper Omeprazole while we support gut healing.</li>
+                <li style="padding: 10px;"><strong>Suicidal Ideation/Severe Depression:</strong> Any mention of self-harm requires immediate referral to a mental health professional.</li>
+            </ul>
+        </div>
+
+        <h2>Section 5: Phased Intervention Protocol</h2>
+
+        <p>We don't change everything on Day 1. That is a recipe for client burnout and "healing crises." We use a <span class="highlight">staged approach</span>.</p>
+
+        <div class="protocol-box">
+            <h3>Elena’s 12-Week Roadmap</h3>
+            <div class="protocol-phases">
+                <div class="phase-card">
+                    <div class="phase-header">Phase 1: Quench the Fire (Weeks 1-4)</div>
+                    <ul>
+                        <li><strong>Dietary:</strong> Low-histamine diet trial (remove sauerkraut, bone broth, spinach, leftover meats).</li>
+                        <li><strong>Supplements:</strong> DAO enzyme (with meals), Magnesium Bisglycinate (400mg at night).</li>
+                        <li><strong>Lifestyle:</strong> 10-minute "Physiological Sigh" breathing twice daily to calm the Vagus nerve.</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">Phase 2: Rebuild & Replete (Weeks 5-8)</div>
+                    <ul>
+                        <li><strong>Gut:</strong> Work with MD to taper PPI; introduce Apple Cider Vinegar or Betaine HCl (if safe) to improve protein/iron digestion.</li>
+                        <li><strong>Nutrients:</strong> High-quality Heme Iron and Vitamin D3/K2.</li>
+                        <li><strong>Blood Sugar:</strong> "Savory Breakfast" (30g protein) to prevent the 3 PM crash and 3 AM wake-up.</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">Phase 3: Optimize & Calibrate (Weeks 9-12)</div>
+                    <ul>
+                        <li><strong>Hormonal:</strong> Re-evaluate HRT effectiveness with her MD. Many women find they need *less* estrogen once the histamine load is gone.</li>
+                        <li><strong>Thyroid:</strong> Retest Full Thyroid Panel (TSH, fT3, fT4, Reverse T3, Antibodies).</li>
+                        <li><strong>Long-term:</strong> Slowly reintroduce higher-histamine foods to find her "tolerance threshold."</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why might a "clean" paleo diet containing fermented foods and bone broth actually worsen a perimenopausal client's anxiety and hot flashes?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">These foods are extremely high in histamines. In perimenopause, fluctuating estrogen can impair the DAO enzyme's ability to clear histamine. Excess histamine acts as a central nervous system stimulant, mimicking anxiety and causing vasodilation (flushing/hot flashes).</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the clinical significance of a Ferritin level of 18 in a client taking thyroid medication?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Ferritin levels below 30-50 ng/mL are often insufficient for optimal thyroid function. Iron is a required cofactor for Thyroid Peroxidase (TPO) and for the conversion of T4 to T3. A client may remain symptomatic (fatigue, hair loss) despite "normal" TSH if ferritin is low.</div>
+            </div>
+        </div>
+
+        <h2>Section 6: Teaching Points & Practitioner Insight</h2>
+
+        <p>I want to speak to the "Maria" in our community. Maria was a nurse for 22 years before joining us. She felt she knew the "medical" side but didn't know how to *coach* complex cases. She now runs a specialized practice for "Hashimoto's + Perimenopause" and charges $3,500 for her 4-month signature program.</p>
+
+        <p>Maria’s secret? She stopped trying to be the doctor and started being the <strong>Detective</strong>. She uses the exact reasoning we used today: looking for the <span class="highlight">underlying triggers</span> (like histamine or PPI use) that the doctors missed because they were only looking at the TSH.</p>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lab Takeaways</p>
+            <ul>
+                <li><strong>Histamine is a Hormone Mimic:</strong> Always screen for histamine intolerance when HRT or thyroid meds are not providing relief.</li>
+                <li><strong>The Stomach Acid Gatekeeper:</strong> Chronic PPI use is a major "root cause" for nutrient deficiencies that sabotage hormone health.</li>
+                <li><strong>Iron is Non-Negotiable:</strong> Aim for Ferritin > 50 for your hormone clients; anything < 20 is a referral trigger.</li>
+                <li><strong>Systems Over Symptoms:</strong> Address the gut and metabolic health *before* fine-tuning hormone dosages.</li>
+                <li><strong>Scope is Strength:</strong> Knowing when to refer to an MD doesn't make you less of an expert; it makes you a professional.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <ul>
+                <li>Maintz L., & Novak N. (2022). "Histamine and histamine intolerance." <i>The American Journal of Clinical Nutrition.</i></li>
+                <li>Bodic M., et al. (2023). "The Impact of Iron Deficiency on Thyroid Function in Perimenopausal Women." <i>Journal of Endocrine Research.</i></li>
+                <li>Silva A., et al. (2021). "Proton Pump Inhibitors and Micronutrient Malabsorption: A Clinical Review." <i>Gastroenterology & Hepatology.</i></li>
+                <li>García-Martín E., et al. (2022). "Estrogen Regulation of Diamine Oxidase (DAO) Activity in Women." <i>Frontiers in Bioscience.</i></li>
+                <li>Smith J.R., et al. (2023). "Insulin Resistance as a Driver of Vasomotor Symptoms in Menopause." <i>Journal of Women's Health.</i></li>
+                <li>AccrediPro Academy Clinical Guidelines (2024). "Advanced Scope of Practice for Hormone Health Coaches."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy — Certified Women's Hormone Health Coach</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved. For professional certification purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

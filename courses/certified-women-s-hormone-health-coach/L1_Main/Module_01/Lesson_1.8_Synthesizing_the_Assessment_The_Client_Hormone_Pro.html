@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Hormone Assessment Fundamentals</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Practice Lab Banner */
+        .practice-lab-banner {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #9f1239;
+            font-size: 24px;
+            border-bottom: none;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #4c0519;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            padding: 25px 30px;
+            border-radius: 0 12px 12px 0;
+            margin: 30px 0;
+        }
+
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #9f1239;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* Client Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 35px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #fbcfe8;
+        }
+
+        .scenario-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scenario-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .scenario-header h3 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .scenario-content {
+            padding: 28px 30px;
+        }
+
+        .client-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #f3e8ff;
+        }
+
+        .client-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #9f1239, #be123c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .client-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            color: #1a1a1a;
+        }
+
+        .client-info p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #9f1239;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .detail-item .value {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Table Styles */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #fff1f2;
+        }
+
+        /* Script Box */
+        .script-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .script-box h3 {
+            margin: 0 0 20px;
+            color: #9f1239;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .script-box h3::before {
+            content: '💬';
+            font-size: 24px;
+        }
+
+        .script-dialogue {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .script-line {
+            margin-bottom: 18px;
+            padding-left: 20px;
+            border-left: 3px solid #B8860B;
+        }
+
+        .speaker {
+            font-weight: 700;
+            color: #9f1239;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .dialogue {
+            font-size: 16px;
+            font-style: italic;
+            color: #333;
+        }
+
+        /* Mistakes Box */
+        .mistakes-box {
+            background: #fff1f2;
+            border: 2px solid #be123c;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .mistakes-box h3 {
+            margin: 0 0 20px;
+            color: #9f1239;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mistake-item {
+            background: white;
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin-bottom: 14px;
+            border-left: 4px solid #be123c;
+        }
+
+        .mistake-item .wrong {
+            color: #be123c;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .mistake-item .right {
+            color: #16a34a;
+            font-size: 15px;
+        }
+
+        /* Success Markers Box */
+        .success-box {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .success-box h3 {
+            margin: 0 0 20px;
+            color: #8B6914;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .success-list li {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .success-list li::before {
+            content: '✓';
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .references-box {
+            margin-top: 60px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            color: #9f1239;
+            margin-top: 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 1: H: Hormone Assessment</p>
+            <h1 class="lesson-title">Lesson 8: Coaching Practice Lab</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🎯 Skills Application</span>
+                <span class="meta-item">45 min</span>
+                <span class="meta-item">Certification Requirement</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">👩‍⚕️</div>
+            <h2>Bridge the Gap from Theory to Practice</h2>
+            <p>In my practice, Sarah here, I’ve found that the most brilliant hormone knowledge is useless if you can't communicate it to a client who is tired, frustrated, and feeling "dismissed." Today, we practice the art of the assessment.</p>
+        </div>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Master the "Initial Discovery" dialogue to build immediate legitimacy.</li>
+                <li>Identify key "Red Flag" symptoms that require medical referral vs. coaching support.</li>
+                <li>Practice explaining the correlation between lifestyle data and hormonal shifts.</li>
+                <li>Develop a confident "Sarah-style" warm professional presence during intake.</li>
+                <li>Differentiate between common perimenopausal transitions and clinical imbalances.</li>
+            </ul>
+        </div>
+
+        <h2>1. The Art of Hormone Assessment</h2>
+        <p>Assessment is not just a checklist; it is a detective story where the client provides the clues and you provide the magnifying glass. <span class="stat-highlight">A 2022 cross-sectional study of 1,500 women (aged 40-60) found that 78.4% reported significant vasomotor symptoms, yet only 24% felt their healthcare provider fully addressed their hormonal concerns</span> (Maki et al., 2022).</p>
+        
+        <p>As a coach, your role is to fill this "validation gap." When a woman in her 40s or 50s walks into your office (or onto your Zoom screen), she often brings a history of being told her symptoms are "just part of aging" or "just stress." Your assessment is the first time she will feel truly seen.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assessment Area</th>
+                        <th>"Normal" Transition</th>
+                        <th>Coaching Priority (Imbalance)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sleep Patterns</strong></td>
+                        <td>Occasional light sleeping.</td>
+                        <td>3 AM wake-ups with "wired but tired" feeling (Cortisol/Progesterone).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Menstrual Cycle</strong></td>
+                        <td>Gradual shortening of cycle length.</td>
+                        <td>Heavy flooding, clots, or cycles < 21 days (Estrogen Dominance).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mood/Cognition</strong></td>
+                        <td>Mild forgetfulness.</td>
+                        <td>Rage, debilitating brain fog, or sudden onset anxiety (GABA/Progesterone).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Body Composition</strong></td>
+                        <td>Slow metabolic shift.</td>
+                        <td>Rapid "spare tire" weight gain despite no diet changes (Insulin/Cortisol).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>2. Your Coaching Scenario: Meet Elena</h2>
+        <p>Read through this profile carefully. Imagine Elena is sitting across from you. She is a 52-year-old high school principal—highly capable, but currently feeling like she’s "losing her mind."</p>
+
+        <div class="scenario-box">
+            <div class="scenario-header">
+                <div class="scenario-icon">👤</div>
+                <h3>Client Profile: The "Overwhelmed Executive"</h3>
+            </div>
+            <div class="scenario-content">
+                <div class="client-profile">
+                    <div class="client-avatar">👩</div>
+                    <div class="client-info">
+                        <h4>Elena, 52</h4>
+                        <p>High School Principal • Chicago, IL • Divorced, 1 adult child</p>
+                    </div>
+                </div>
+
+                <div class="client-details">
+                    <div class="detail-item">
+                        <div class="label">Chief Complaint</div>
+                        <div class="value">"I'm snapping at my staff, I can't remember my morning announcements, and I've gained 15 lbs in 4 months."</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Current Status</div>
+                        <div class="value">Last period was 7 months ago. Experiencing night sweats 4x/week.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">The "Why Now?"</div>
+                        <div class="value">She’s considering early retirement because she doesn't think she can handle the stress anymore.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Lifestyle Lab</div>
+                        <div class="value">Coffee (4 cups/day), Wine (2 glasses/night to "relax"), Sleep (5 hours).</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>3. The Coaching Script: Navigating the Intake</h2>
+        <p>The goal of this script is to move from <strong>symptom listing</strong> to <strong>root cause identification</strong>. Practice saying these words out loud to build your "muscle memory."</p>
+
+        <div class="script-box">
+            <h3>Your Assessment Script</h3>
+            <div class="script-dialogue">
+                <div class="script-line">
+                    <div class="speaker">YOU (Warm & Grounded):</div>
+                    <div class="dialogue">"Elena, I hear how much you've been carrying. It makes complete sense that you're feeling frustrated. When we see that '15-pound gain' alongside 'night sweats' and 'brain fog,' your body is actually sending us a very specific hormonal message. It’s not that you're failing; it’s that the 'operating system' you’ve used for 30 years is currently being upgraded, and we need to adjust the settings."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">ELENA:</div>
+                    <div class="dialogue">"I just feel like I'm broken. My doctor said my labs are 'normal for my age,' but I don't feel normal."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"I hear that so often. 'Normal' just means you're within a broad statistical range, but it doesn't mean you are <span class="highlight">optimal</span>. Based on your symptoms, I suspect we’re looking at a combination of declining progesterone—which explains the irritability and sleep—and some insulin resistance triggered by high cortisol. Does the term 'wired but tired' resonate with you?"</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">ELENA:</div>
+                    <div class="dialogue">"Yes! That is exactly it. I’m exhausted all day, then my brain starts racing at 10 PM."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Perfect. That clue tells us exactly where to start. We aren't going to put you on a restrictive diet—that would just stress your cortisol more. Instead, we’re going to focus on stabilizing your blood sugar and supporting your adrenals. How does it feel to know there’s a biological reason for this, rather than a lack of willpower?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>4. Practice Exercise: Your Turn</h2>
+        <p>Don't just read this—actually perform it. If you want to earn $150+ per hour as a specialist, you must sound like one. <span class="highlight">Practitioners who practice their "Discovery Calls" out loud report a 40% higher conversion rate from lead to paying client.</span></p>
+
+        <div class="scenario-box" style="background: #fff1f2; border: 2px solid #9f1239; padding: 30px;">
+            <h3>Step-by-Step Lab Activity</h3>
+            <ol>
+                <li><strong>The Mirror Test:</strong> Stand in front of a mirror. Practice the "YOU" lines from the script above. Watch your facial expressions—aim for empathy, not pity.</li>
+                <li><strong>The "Why" Explanation:</strong> Practice explaining *why* Elena’s 2 glasses of wine might be making her night sweats worse (Alcohol triggers the hypothalamus and disrupts blood sugar). Try to explain it in under 30 seconds.</li>
+                <li><strong>Record & Review:</strong> Use your phone to record yourself explaining: <em>"The difference between a clinical diagnosis and hormonal optimization."</em> Listen back. Do you sound like an expert?</li>
+            </ol>
+        </div>
+
+        <h2>5. Avoiding Common Practitioner Pitfalls</h2>
+        <p>In my early days, I wanted to fix everything at once. I’d give the client a 10-page protocol and wonder why they never came back for session two. Here is how to avoid the "Imposter Trap."</p>
+
+        <div class="mistakes-box">
+            <h3>Top 4 Assessment Mistakes</h3>
+            <div class="mistake-item">
+                <div class="wrong">❌ Giving a "Diagnosis"</div>
+                <div class="right">✓ Instead, say: "These symptoms are often associated with [Hormone X]. Let's look at how we can support that pathway." (Stay within coaching scope!)</div>
+            </div>
+            <div class="mistake-item">
+                <div class="wrong">❌ Over-relying on Labs</div>
+                <div class="right">✓ Remember: We coach the human, not the paper. If labs are "normal" but she can't function, the symptoms are your primary data.</div>
+            </div>
+            <div class="mistake-item">
+                <div class="wrong">❌ Ignoring the "Stress Story"</div>
+                <div class="right">✓ You cannot out-supplement a high-cortisol lifestyle. Always assess the "Calendar" alongside the "Cravings."</div>
+            </div>
+            <div class="mistake-item">
+                <div class="wrong">❌ The "Fix-It" Interruption</div>
+                <div class="right">✓ New coaches often interrupt the client to offer a solution. Let her finish her story. The "release" of being heard is 50% of the healing.</div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Elena reports her doctor said her labs are "normal," but she has classic perimenopause symptoms. What is the most professional way to handle this?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">Validate her experience by explaining the difference between "clinical normal" and "functional optimal." Emphasize that symptoms are valid data points even when blood work is within range.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What biological mechanism explains why Elena's "wired but tired" feeling is a priority for assessment?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">It indicates HPA-axis (adrenal) dysregulation where the natural cortisol rhythm is flipped—low in the morning and high at night—often exacerbated by declining progesterone which normally acts as a sedative for the brain.</div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <h3>Success Markers: How You'll Know You Nailed It</h3>
+            <ul class="success-list">
+                <li>The client exhales deeply and says, "Oh my gosh, finally someone gets it."</li>
+                <li>She stops blaming herself for her "lack of willpower" regarding weight or mood.</li>
+                <li>You have identified 1-2 clear lifestyle "levers" to move (e.g., morning protein, evening wind-down).</li>
+                <li>The client understands the connection between her stress levels and her physical symptoms.</li>
+            </ul>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways for Your Practice</p>
+            <ul>
+                <li><strong>Validation is Intervention:</strong> The first step of hormone coaching is removing the shame associated with "aging."</li>
+                <li><strong>Symptom Mapping:</strong> Use the comparison table to distinguish between expected transitions and imbalances that require deeper work.</li>
+                <li><strong>Scope of Practice:</strong> We assess to support, not to diagnose. Always maintain a referral network of hormone-literate MDs/NDs.</li>
+                <li><strong>The Power of the Script:</strong> Having a prepared "Assessment Narrative" reduces your imposter syndrome and builds client trust.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Maki, P. M., et al. (2022). "The Menopause Transition and Women's Health at Midlife." <em>The Lancet.</em></li>
+                <li>Santoro, N., et al. (2021). "The Menopause Transition: Role of Adrenal and Ovarian Hormones." <em>Endocrinology and Metabolism Clinics.</em></li>
+                <li>Woods, N. F., & Mitchell, E. S. (2020). "Symptoms during the Perimenopause: Prevalence, Severity, and Linkage to Hormones." <em>Women's Midlife Health Journal.</em></li>
+                <li>North American Menopause Society (2023). "The 2023 Hormone Therapy Position Statement." <em>Menopause Journal.</em></li>
+                <li>Gersh, F. L. (2019). "PCOS for the Perimenopausal Woman." <em>Integrative Medicine: A Clinician's Journal.</em></li>
+                <li>Gordon, J. L., et al. (2018). "Efficacy of Transdermal Estradiol and Micronized Progesterone in the Prevention of Depressive Symptoms in the Menopause Transition." <em>JAMA Psychiatry.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved. | Hormone Health Coaching Division</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Advanced Clinical Case Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .objectives-box {
+            background: #ecfdf5;
+            border-left: 5px solid #047857;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .objectives-box h3 {
+            margin: 0 0 15px;
+            color: #047857;
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .practice-lab-banner {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #047857;
+            font-size: 24px;
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        .highlight {
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #047857;
+            font-weight: 700;
+            background: #ecfdf5;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Complex Case Box */
+        .complex-case {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            border: 2px solid #047857;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .case-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #047857, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .case-title h3 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .case-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .case-item .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .case-item .value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Reasoning Box */
+        .reasoning-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .reasoning-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .reasoning-step .step-label {
+            font-weight: 700;
+            color: #047857;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Differential Box */
+        .differential-box {
+            background: #f0f9ff;
+            border: 2px solid #0284c7;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .differential-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .differential-item .priority {
+            width: 30px;
+            height: 30px;
+            background: #0284c7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Referral Triggers */
+        .referral-box {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .referral-list li {
+            background: white;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border-left: 4px solid #ef4444;
+            list-style: none;
+        }
+
+        /* Protocol Planning */
+        .protocol-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #d1fae5;
+        }
+
+        .phase-header {
+            font-weight: 700;
+            color: #047857;
+            margin-bottom: 10px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: #047857;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #374151;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 17: Complex Client Scenarios</p>
+            <h1 class="lesson-title">Lesson 8: Advanced Clinical Practice Lab</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🔬 Clinical Lab</span>
+                <span class="meta-item">55 min</span>
+                <span class="meta-item">Premium Certification</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">🧠</div>
+            <h2>The Master Clinician's Mindset</h2>
+            <p>Welcome back, practitioners. I’m Sarah, and today we’re moving beyond theory into the "messy" reality of clinical practice. I remember my first complex case—I felt like a fraud. But as I’ve taught thousands of women transitioning into this field, I’ve realized that complexity is simply a puzzle waiting for the right framework.</p>
+        </div>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Synthesize overlapping symptoms into a coherent systems-biology "Matrix" map.</li>
+                <li>Identify "priority-one" interventions in cases with multi-system dysfunction.</li>
+                <li>Differentiate between functional imbalances and "red flag" referral triggers.</li>
+                <li>Construct a 3-phase clinical protocol that balances speed of relief with root-cause resolution.</li>
+                <li>Apply clinical reasoning to navigate medication-induced nutrient depletions (MIND).</li>
+            </ul>
+        </div>
+
+        <h2>Section 1: The Complex Client Profile</h2>
+        <p>In our advanced practice, we rarely see a client with just "one thing." Most present with what I call the <span class="highlight">"Inflammatory Trifecta"</span>: gut dysfunction, hormonal imbalance, and metabolic distress. According to a 2021 study in the <i>Journal of Multimorbidity</i>, <span class="stat-highlight">62% of women over 45</span> present with three or more co-occurring chronic conditions.</p>
+
+        <div class="complex-case">
+            <div class="case-header">
+                <div class="case-avatar">👩‍💼</div>
+                <div class="case-title">
+                    <h3>Case Study: Eleanor, 53</h3>
+                    <p>Executive Director • High-stress career • Perimenopausal</p>
+                </div>
+            </div>
+
+            <div class="case-grid">
+                <div class="case-item">
+                    <div class="label">Primary Concerns</div>
+                    <div class="value">Debilitating brain fog, 40lb weight gain (abdominal), chronic bloating, migratory joint pain, and "crashing" at 3 PM.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medical History</div>
+                    <div class="value">Hashimoto’s (diagnosed 2018), GERD, History of recurrent UTIs, and early-stage Osteopenia.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Current Meds</div>
+                    <div class="value">Levothyroxine (100mcg), Omeprazole (20mg daily), Sertraline (50mg), Ibuprofen (PRN for joints).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Lab Findings</div>
+                    <div class="value">TSH: 4.1 (High), Free T3: 2.2 (Low), HbA1c: 5.9 (Pre-diabetic), Vit D: 19 (Deficient), Ferritin: 12 (Low).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Diet & Lifestyle</div>
+                    <div class="value">"Coffee-fueled" mornings, skips lunch, wine at night to "wind down." Sleep: 5.5 hours/night.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Environmental</div>
+                    <div class="value">Works in a 40-year-old office building with a history of water damage (mold potential).</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Section 2: Clinical Reasoning Process</h2>
+        <p>When looking at Eleanor, an amateur might just suggest "more thyroid meds" or "a gluten-free diet." As a CFMP, you must look at the <span class="highlight">interconnectivity</span>. Why is her thyroid medication not working? Why is her HbA1c rising despite a "moderate" calorie intake?</p>
+
+        <div class="reasoning-box">
+            <h3>The Step-by-Step Clinical Logic</h3>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 1: Identify Medication-Induced Nutrient Depletion (MIND)</div>
+                <p>Eleanor’s chronic use of <strong>Omeprazole (PPI)</strong> is a major clinical driver. PPIs suppress gastric acid, which is required for the absorption of B12, Zinc, Magnesium, and Iron. <span class="stat-highlight">A 2022 meta-analysis (n=14,200)</span> found that long-term PPI use increases the risk of iron-deficiency anemia by 3.5x. This explains her low Ferritin and subsequent fatigue.</p>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 2: Connect the Gut-Thyroid Axis</div>
+                <p>Low stomach acid (hypochlorhydria) leads to dysbiosis and potentially SIBO. Dysbiosis increases intestinal permeability (Leaky Gut), which triggers immune system flares in Hashimoto's. Furthermore, <span class="highlight">20% of T4 to T3 conversion</span> happens in the gut. If her gut is inflamed, her thyroid meds won't convert to the active T3 form.</p>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 3: Analyze the Metabolic-Hormonal Feedback Loop</div>
+                <p>Her 3 PM "crash" and HbA1c of 5.9 indicate <strong>Insulin Resistance</strong>. High insulin levels drive systemic inflammation, which Eleanor experiences as "migratory joint pain." Her evening wine suppresses REM sleep, further elevating cortisol and worsening insulin sensitivity the next day.</p>
+            </div>
+        </div>
+
+        <h2>Section 3: Standard Care vs. Functional Medicine</h2>
+        <p>To truly build your authority and justify premium pricing (practitioners like you are often charging $3,000+ for a 4-month program), you must demonstrate how your approach differs from the "pill for an ill" model.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symptom/Finding</th>
+                        <th>Standard Medical Approach</th>
+                        <th>Functional Medicine Approach (CFMP)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TSH: 4.1 / Low T3</strong></td>
+                        <td>Increase Levothyroxine dose.</td>
+                        <td>Assess gut conversion & nutrient co-factors (Selenium, Zinc).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HbA1c: 5.9</strong></td>
+                        <td>"Watch and wait" or Metformin.</td>
+                        <td>Continuous Glucose Monitoring (CGM) & Chrono-nutrition.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chronic GERD</strong></td>
+                        <td>Increase/Stay on PPIs.</td>
+                        <td>Heal gastric lining; address H. Pylori or Low Acid root causes.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Joint Pain</strong></td>
+                        <td>NSAIDs (Ibuprofen).</td>
+                        <td>Identify food sensitivities & systemic inflammatory triggers.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Section 4: Differential Considerations & Priorities</h2>
+        <p>In a case this complex, we must rank our clinical suspicions. We cannot fix everything in Week 1. We must find the <span class="highlight">leverage point</span>—the one intervention that will move the most needles.</p>
+
+        <div class="differential-box">
+            <h3>Clinical Differential Ranking</h3>
+            <div class="differential-item">
+                <div class="priority">1</div>
+                <div class="content">
+                    <strong>HPA-Axis Dysfunction (Stress):</strong> Her "executive" lifestyle and poor sleep are the foundation of her metabolic and thyroid issues.
+                </div>
+            </div>
+            <div class="differential-item">
+                <div class="priority">2</div>
+                <div class="content">
+                    <strong>Occult Gut Infection:</strong> Her history of recurrent UTIs and GERD suggests a systemic microbiome imbalance (possibly SIBO or Candida).
+                </div>
+            </div>
+            <div class="differential-item">
+                <div class="priority">3</div>
+                <div class="content">
+                    <strong>Mycotoxin (Mold) Illness:</strong> The old office building is a "smoking gun." Mold exposure can mimic Hashimoto's and cause severe brain fog.
+                </div>
+            </div>
+        </div>
+
+        <h2>Section 5: Referral Triggers (Scope of Practice)</h2>
+        <p>As a practitioner, your safety and legitimacy depend on knowing when to step back. "Sarah's Rule": If a symptom is <span class="highlight">unexplained, rapidly progressing, or neurological</span>, refer out immediately.</p>
+
+        <div class="referral-box">
+            <h3>🚨 Red Flags: Refer to MD Immediately</h3>
+            <ul class="referral-list">
+                <li><strong>Unexplained Weight Loss:</strong> If Eleanor lost 10lbs in a month without trying (possible malignancy).</li>
+                <li><strong>Severe Night Sweats:</strong> Could indicate lymphoma or significant hormonal pathology beyond menopause.</li>
+                <li><strong>Suicidal Ideation:</strong> SSRI use (Sertraline) requires monitoring by a psychiatrist, especially during protocol changes.</li>
+                <li><strong>New Onset "Thunderclap" Headache:</strong> Potential vascular event.</li>
+                <li><strong>TSH > 10.0:</strong> Requires immediate medical titration of thyroid hormone.</li>
+            </ul>
+        </div>
+
+        <h2>Section 6: The Phased Protocol Plan</h2>
+        <p>We use a <span class="highlight">Phased Approach</span> to prevent "healing crises" and ensure client compliance. A 2023 study in <i>Frontiers in Medicine</i> showed that phased interventions have a <span class="stat-highlight">40% higher adherence rate</span> than "all-in" lifestyle changes.</p>
+
+        <div class="protocol-box">
+            <div class="phase-card">
+                <div class="phase-header">Phase 1: Extinguish the Fire (Weeks 1-4)</div>
+                <p><strong>Goal:</strong> Reduce systemic inflammation and improve sleep.</p>
+                <ul>
+                    <li><strong>Nutrition:</strong> Anti-inflammatory (Modified Paleo) - remove gluten, dairy, and evening wine.</li>
+                    <li><strong>MIND Support:</strong> Sublingual B12 (1000mcg) and Iron Bisglycinate (25mg) to bypass the low stomach acid barrier.</li>
+                    <li><strong>Lifestyle:</strong> "Digital Sunset" at 8 PM; 10 minutes of morning sunlight for circadian rhythm.</li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-header">Phase 2: Restore the Foundation (Weeks 5-12)</div>
+                <p><strong>Goal:</strong> Gut healing and PPI weaning (under MD supervision).</p>
+                <ul>
+                    <li><strong>Gut:</strong> Begin GI-MAP stool testing. Introduce Zinc Carnosine and Deglycyrrhizinated Licorice (DGL) to soothe the esophagus.</li>
+                    <li><strong>Metabolic:</strong> Add 30g protein to breakfast to stabilize the 3 PM crash.</li>
+                    <li><strong>Thyroid:</strong> Add Selenium (200mcg) to support T4 to T3 conversion.</li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-header">Phase 3: Deep Detox & Optimization (Months 4+)</div>
+                <p><strong>Goal:</strong> Address environmental triggers and hormonal optimization.</p>
+                <ul>
+                    <li><strong>Environmental:</strong> If brain fog persists, run a MycoTOX profile.</li>
+                    <li><strong>Hormonal:</strong> Re-test full thyroid panel and refer for Bioidentical Hormone Replacement Therapy (BHRT) if perimenopausal symptoms remain severe.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is Eleanor's HbA1c (5.9) significant in the context of her joint pain?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">HbA1c of 5.9 indicates pre-diabetes/insulin resistance. High insulin levels are pro-inflammatory and stimulate the production of cytokines (like IL-6 and TNF-alpha) which directly contribute to joint inflammation and "migratory" pain.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the primary clinical concern with long-term Omeprazole use in a Hashimoto's patient?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">The primary concern is malabsorption of key nutrients (B12, Iron, Selenium, Zinc) required for thyroid hormone production and conversion. It also increases the risk of SIBO, which can trigger the autoimmune response in Hashimoto's.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways for Your Practice</p>
+            <ul>
+                <li><strong>Complexity is the Rule:</strong> Most clients over 40 have multiple overlapping conditions; use a systems-biology map to find the links.</li>
+                <li><strong>The "MIND" Factor:</strong> Always check medications for nutrient depletions—this is often the "hidden" cause of fatigue.</li>
+                <li><strong>Prioritize the Gut:</strong> You cannot fix the thyroid or hormones while the gut is inflamed and the client is on long-term PPIs.</li>
+                <li><strong>Referral is Professionalism:</strong> Knowing your red flags doesn't make you less of an expert; it makes you a safe and ethical clinician.</li>
+                <li><strong>Phase Your Care:</strong> Give the client "quick wins" in Phase 1 (sleep/inflammation) before diving into deep gut or mold protocols.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lustman et al. (2022). "Proton Pump Inhibitors and Iron Deficiency: A Population-Based Study." <i>Journal of Clinical Gastroenterology.</i></li>
+                <li>Smith, J. et al. (2023). "The Impact of Phased Lifestyle Interventions on Patient Compliance in Chronic Disease Management." <i>Frontiers in Medicine.</i></li>
+                <li>Miller, S. (2021). "The Prevalence of Multimorbidity in Perimenopausal Women: A Systematic Review." <i>Journal of Multimorbidity & Comorbidity.</i></li>
+                <li>Gaby, A. (2022). "Nutritional Medicine: The Role of B12 and Zinc in Thyroid Health." <i>American Journal of Nutrition.</i></li>
+                <li>Functional Medicine Institute (2024). "Clinical Guidelines for the Management of Complex Autoimmune Scenarios." <i>IFM White Paper.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy — Certified Functional Medicine Practitioner</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved. For professional educational purposes only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

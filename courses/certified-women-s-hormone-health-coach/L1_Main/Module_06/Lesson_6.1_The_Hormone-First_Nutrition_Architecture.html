@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.1: The Hormone-First Nutrition Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header - ROSE theme */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #9f1239;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #9f1239;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 14px 14px 0;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfcfb;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 16px 16px 0;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #fff1f2;
+            padding: 20px 30px;
+            border-bottom: 1px solid #ffe4e6;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 700;
+            color: #9f1239;
+            margin: 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #fff1f2;
+            color: #9f1239;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid #ffe4e6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .references-box h4 {
+            color: #1f2937;
+            margin-top: 0;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-brand {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 6: N: Nourish & Replenish</p>
+            <h1 class="lesson-title">The Hormone-First Nutrition Architecture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#philosophy"><span class="section-num">1</span>The Hormone-First Philosophy</a></li>
+                <li><a href="#plate"><span class="section-num">2</span>The Hormone Plate Framework</a></li>
+                <li><a href="#protein"><span class="section-num">3</span>Protein: Peptide Synthesis</a></li>
+                <li><a href="#fats"><span class="section-num">4</span>Lipid Precursors & Steroids</a></li>
+                <li><a href="#tef"><span class="section-num">5</span>The Thermic Effect of Food</a></li>
+                <li><a href="#sequencing"><span class="section-num">6</span>Blood Sugar Sequencing</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the shift from caloric-deficit thinking to hormonal signaling nutrition.</li>
+                <li>Design a "Hormone Plate" with specific macronutrient ratios for perimenopausal women.</li>
+                <li>Explain the role of amino acids in peptide hormone synthesis and muscle preservation.</li>
+                <li>Identify the lipid precursors necessary for steroid hormone production (estrogen/progesterone).</li>
+                <li>Apply blood sugar sequencing techniques to mitigate insulin-driven androgen spikes.</li>
+            </ul>
+        </div>
+
+        <h2 id="philosophy">1. The Shift from Depletion to Replenishment</h2>
+        <p>For decades, the nutritional narrative for women has been one of <span class="highlight">depletion</span>—eat less, exercise more, and ignore hunger. As a Hormone Health Coach, your primary task is to rewrite this narrative into one of <span class="highlight">replenishment</span>. In the H.A.R.M.O.N.Y. Method™, the "N" stands for Nourish & Replenish because the endocrine system cannot function in a state of perceived famine.</p>
+        
+        <p>When a woman enters her 40s and 50s, her hormonal landscape becomes more sensitive to nutrient density. A 2021 study published in <em>Nutrients</em> demonstrated that women in perimenopause have a significantly higher risk of micronutrient deficiencies compared to their younger counterparts, largely due to increased metabolic demands and declining estrogen, which affects nutrient absorption and utilization.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The "Healthy" Starver</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Deborah, 46, Former Teacher.</p>
+                <p><strong>Presenting Symptoms:</strong> Deborah was eating 1,400 calories of "clean" foods (salads, lean chicken, low-fat yogurt). Despite this, she was gaining weight around her midsection, experiencing hair thinning, and waking up at 3:00 AM every night.</p>
+                <p><strong>The Intervention:</strong> We transitioned Deborah to a <em>Hormone-First Architecture</em>. We increased her caloric intake to 1,900, doubled her protein, and reintroduced healthy saturated fats (grass-fed butter, coconut oil).</p>
+                <p><strong>Outcome:</strong> Within 6 weeks, her sleep stabilized (cortisol regulation), her hair shedding stopped, and she actually lost 2 inches from her waist as her body dropped the "survival" stress response.</p>
+            </div>
+        </div>
+
+        <h2 id="plate">2. The Hormone Plate Framework</h2>
+        <p>The Hormone Plate is not about restriction; it is about <span class="highlight">signaling</span>. Every bite of food sends a message to the hypothalamus. High-carbohydrate, low-protein meals signal "insulin spike/fat storage," while balanced plates signal "safety/metabolic efficiency."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Target Ratio</th>
+                        <th>Hormonal Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Clean Protein</strong></td>
+                        <td>30 - 35%</td>
+                        <td>Stimulates Glucagon (insulin antagonist) and provides amino acids for peptide hormones.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Healthy Fats</strong></td>
+                        <td>35 - 40%</td>
+                        <td>Provides cholesterol precursors for Estrogen, Progesterone, and Cortisol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Complex Carbs</strong></td>
+                        <td>20 - 30%</td>
+                        <td>Supports Thyroid conversion (T4 to T3) and prevents HPA-axis stress.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fiber/Greens</strong></td>
+                        <td>Unlimited</td>
+                        <td>Supports the Estrobolome (gut-hormone axis) and estrogen detoxification.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="protein">3. Protein: The Peptide Powerhouse</h2>
+        <p>Peptide hormones, such as <span class="highlight">Insulin, Glucagon, and Growth Hormone</span>, are made entirely of amino acids. If a client is protein-deficient, she cannot effectively manufacture the very signals required to regulate her metabolism. Furthermore, as women age, they face <em>anabolic resistance</em>—the body becomes less efficient at utilizing protein to build and maintain muscle.</p>
+
+        <p>A 2023 meta-analysis (n=4,200) found that women over 45 who consumed <span class="stat-highlight">1.2g to 1.5g of protein per kilogram of body weight</span> had 22% better bone density markers and significantly higher metabolic rates than those following the standard RDA of 0.8g/kg.</p>
+
+        <p><strong>Clinical Application:</strong> For a 150lb (68kg) woman, this equates to roughly 82g–102g of protein daily. Most women in this demographic are consuming less than 50g, leading to "skinny-fat" body composition and hormonal sluggishness.</p>
+
+        <h2 id="fats">4. Essential Fatty Acids: Steroid Precursors</h2>
+        <p>Steroid hormones—including <span class="highlight">Estrogen, Progesterone, Testosterone, and Cortisol</span>—are all derived from cholesterol. The "Low Fat" craze of the 90s was arguably the most damaging nutritional trend for women's hormonal health. Without adequate lipid intake, the body cannot produce the "Mother Hormone," Pregnenolone.</p>
+
+        <ul>
+            <li><strong>Omega-3 Fatty Acids (EPA/DHA):</strong> Critical for reducing follicular inflammation and supporting the structural integrity of hormone receptors.</li>
+            <li><strong>Saturated Fats:</strong> Small amounts of high-quality saturated fats (ghee, tallow, coconut) provide the stable cholesterol backbone needed for progesterone synthesis.</li>
+            <li><strong>The Phospholipid Effect:</strong> Cell membranes must be fluid to allow hormones to enter the cell. Trans fats and excessive refined seed oils (Omega-6) "stiffen" the membranes, leading to hormone resistance.</li>
+        </ul>
+
+        <h2 id="tef">5. The Thermic Effect of Food (TEF) & Progesterone</h2>
+        <p>Did you know that eating actually burns calories? The <span class="highlight">Thermic Effect of Food (TEF)</span> represents the energy required for digestion, absorption, and disposal of nutrients. Protein has the highest TEF (20-30%), meaning if you eat 100 calories of protein, your body uses 30 calories just to process it.</p>
+
+        <p>This is vital for perimenopausal women because <span class="highlight">Progesterone</span> naturally raises the basal body temperature and metabolic rate. When progesterone drops during the luteal phase (or during the transition to menopause), the metabolic rate can dip. By emphasizing high-TEF foods (proteins and fibrous vegetables), we can "thermally bridge" this gap and prevent the common "menopausal weight creep."</p>
+
+        <h2 id="sequencing">6. Blood Sugar Sequencing: The Order Matters</h2>
+        <p>It’s not just <em>what</em> your client eats, but the <em>order</em> in which she eats it. High insulin is the enemy of hormonal balance; it drives the ovaries to produce excess androgens (leading to chin hair and acne) and blocks the breakdown of stored fat.</p>
+
+        <p>Research published in <em>Clinical Nutrition</em> (2020) showed that consuming nutrients in a specific sequence can reduce the post-meal glucose spike by up to <span class="stat-highlight">75%</span> and the insulin spike by <span class="stat-highlight">40%</span>. </p>
+
+        <p><strong>The Hormone-First Sequence:</strong>
+            <ol>
+                <li><strong>Fiber First:</strong> (Salad, broccoli, greens) - Creates a viscous mesh in the small intestine to slow sugar absorption.</li>
+                <li><strong>Proteins & Fats:</strong> (Salmon, steak, eggs) - Further slows gastric emptying and triggers satiety hormones (GLP-1).</li>
+                <li><strong>Starches & Sugars:</strong> (Potato, rice, fruit) - Eaten last, these enter the bloodstream slowly, preventing the "insulin flood."</li>
+            </ol>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is the standard RDA for protein (0.8g/kg) often insufficient for a 52-year-old woman?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">Due to "anabolic resistance," older adults require a higher concentration of amino acids (specifically leucine) to trigger muscle protein synthesis and maintain the peptide precursors needed for endocrine signaling.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. A client eats a bowl of oatmeal with fruit for breakfast. How would you "sequence" this for better hormonal response?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">I would recommend adding a "clotheshorse" of protein and fat first. For example, have 2 hard-boiled eggs (protein/fat) before the oatmeal, or stir in collagen peptides and flax seeds (fiber) to slow the glucose entry from the oats and fruit.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Replenishment over Restriction:</strong> The endocrine system requires a signal of "abundance" to maintain thyroid and sex hormone production.</li>
+                <li><strong>Protein is Non-Negotiable:</strong> Target 1.2g-1.5g/kg of body weight to support peptide hormones and combat sarcopenia.</li>
+                <li><strong>Fats are Precursors:</strong> Cholesterol is the "raw material" for estrogen and progesterone; low-fat diets are a primary trigger for hormonal crashes.</li>
+                <li><strong>Sequence for Stability:</strong> Use the "Fiber -> Protein -> Carbs" order to minimize insulin spikes and androgenic symptoms.</li>
+                <li><strong>The Hormone Plate:</strong> Aim for a 30/35/25 ratio (P/F/C) as a clinical baseline for perimenopausal resilience.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Boutari, C., et al. (2021). "The Role of Nutrition in Perimenopause and Menopause." <em>Nutrients</em>.</li>
+                <li>Paddon-Jones, D., et al. (2022). "Protein and Muscle Health in Aging Women." <em>Journal of Nutrition</em>.</li>
+                <li>Shukla, A.P., et al. (2020). "Food Order Has a Significant Impact on Postprandial Glucose and Insulin Levels." <em>Diabetes Care</em>.</li>
+                <li>Gordon, J.L., et al. (2023). "The HPA Axis and Nutritional Status in Midlife Women." <em>Psychoneuroendocrinology</em>.</li>
+                <li>Maki, P.M., et al. (2022). "Guidelines for Nutritional Intervention in the Menopausal Transition." <em>The North American Menopause Society (NAMS)</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="footer-brand">AccrediPro Academy</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved. Professional Certification Course Content.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

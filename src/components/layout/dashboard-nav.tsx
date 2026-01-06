@@ -130,7 +130,7 @@ export function DashboardNav() {
       const messagesIndex = items.findIndex(item => item.href === "/messages");
       if (messagesIndex !== -1) {
         items.splice(messagesIndex + 1, 0, {
-          href: "/my-pod",
+          href: "/my-circle",
           label: "My Circle",
           icon: Users2,
           tourId: "my-circle",

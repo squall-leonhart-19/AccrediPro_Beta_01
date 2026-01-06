@@ -440,8 +440,17 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                             </p>
                         </div>
                         <div className="hidden sm:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
-                            <CheckCircle className="w-5 h-5 text-green-400" />
-                            <span className="text-white font-semibold">{data.completedSteps.filter(s => s > 0).length}/4 Complete</span>
+                            {data.completedSteps.filter(s => s > 0).length > 0 ? (
+                                <>
+                                    <CheckCircle className="w-5 h-5 text-green-400" />
+                                    <span className="text-white font-semibold">{data.completedSteps.filter(s => s > 0).length}/4 Complete</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Rocket className="w-5 h-5 text-gold-400" />
+                                    <span className="text-white font-semibold">Starting Your Journey</span>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -526,6 +535,26 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                                                 {step.description}
                                             </p>
 
+                                            {/* Unlock hint for locked steps */}
+                                            {locked && step.step === 2 && (
+                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                                                    <Sparkles className="w-3 h-3" />
+                                                    Unlocks when you complete Step 1 certification
+                                                </p>
+                                            )}
+                                            {locked && step.step === 3 && (
+                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                                                    <Sparkles className="w-3 h-3" />
+                                                    Unlocks after building your practice
+                                                </p>
+                                            )}
+                                            {locked && step.step === 4 && (
+                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                                                    <Sparkles className="w-3 h-3" />
+                                                    Unlocks after mastering advanced skills
+                                                </p>
+                                            )}
+
                                             {/* Action Button for Current/Available Steps */}
                                             {(current || (step.step === 1 && data.state === "exploration")) && (
                                                 <Link href={cta.href} className="mt-3 inline-block">
@@ -556,10 +585,27 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                     {/* Progress Bar */}
                     <div className="mt-6 pt-4 border-t border-gray-100">
                         <div className="flex items-center justify-between text-sm mb-2">
-                            <span className="text-gray-600">Your Overall Journey</span>
-                            <span className="font-bold text-burgundy-700">{data.totalProgress}% Complete</span>
+                            <span className="text-gray-600 flex items-center gap-2">
+                                <TrendingUp className="w-4 h-4 text-burgundy-500" />
+                                Your Overall Journey
+                            </span>
+                            <span className="font-bold text-burgundy-700">
+                                {data.totalProgress === 0 ? (
+                                    <span className="text-amber-600">Just Getting Started!</span>
+                                ) : data.totalProgress < 25 ? (
+                                    `${data.totalProgress}% - Building Momentum!`
+                                ) : data.totalProgress < 50 ? (
+                                    `${data.totalProgress}% - Making Great Progress!`
+                                ) : data.totalProgress < 75 ? (
+                                    `${data.totalProgress}% - Over Halfway There!`
+                                ) : data.totalProgress < 100 ? (
+                                    `${data.totalProgress}% - Almost There!`
+                                ) : (
+                                    `100% - You Made It!`
+                                )}
+                            </span>
                         </div>
-                        <Progress value={data.totalProgress} className="h-3" />
+                        <Progress value={Math.max(data.totalProgress, 5)} className="h-3" />
                     </div>
                 </CardContent>
             </Card>

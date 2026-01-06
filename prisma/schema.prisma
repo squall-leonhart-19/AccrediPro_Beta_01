@@ -12,110 +12,121 @@ datasource db {
 // ==================== USER & AUTH ====================
 
 model User {
-  id                String    @id @default(cuid())
-  email             String?   @unique  // Optional for fake social proof profiles
-  emailVerified     DateTime?
-  passwordHash      String?
-  firstName         String?
-  lastName          String?
-  avatar            String?
-  bio               String?
-  phone             String?
-  location          String?   // City, State
-  timezone          String?
-  role              UserRole  @default(STUDENT)
-  userType          UserType  @default(STUDENT) // LEAD = free mini diploma, STUDENT = paid
-  accessExpiresAt   DateTime? // For LEAD users: 7-day access limit
-  isActive          Boolean   @default(true)
-  isFakeProfile     Boolean   @default(false)  // Social proof profiles - excluded from stats/emails
-  hasCompletedOnboarding Boolean @default(false)
-  hasCompletedProfile Boolean @default(false)
-  lastLoginAt       DateTime?
-  firstLoginAt      DateTime? // Track first ever login
-  loginCount        Int       @default(0)
-  leadSource        String?   // Where they came from (freebie, webinar, etc.)
-  leadSourceDetail  String?   // Specific detail (which freebie, etc.)
-  assignedCoachId   String?   // Auto-assigned coach based on category
+  id                     String    @id @default(cuid())
+  email                  String?   @unique // Optional for fake social proof profiles
+  emailVerified          DateTime?
+  passwordHash           String?
+  firstName              String?
+  lastName               String?
+  avatar                 String?
+  bio                    String?
+  phone                  String?
+  location               String? // City, State
+  timezone               String?
+  role                   UserRole  @default(STUDENT)
+  userType               UserType  @default(STUDENT) // LEAD = free mini diploma, STUDENT = paid
+  accessExpiresAt        DateTime? // For LEAD users: 7-day access limit
+  isActive               Boolean   @default(true)
+  isFakeProfile          Boolean   @default(false) // Social proof profiles - excluded from stats/emails
+  hasCompletedOnboarding Boolean   @default(false)
+  hasCompletedProfile    Boolean   @default(false)
+  lastLoginAt            DateTime?
+  firstLoginAt           DateTime? // Track first ever login
+  loginCount             Int       @default(0)
+  leadSource             String? // Where they came from (freebie, webinar, etc.)
+  leadSourceDetail       String? // Specific detail (which freebie, etc.)
+  assignedCoachId        String? // Auto-assigned coach based on category
 
   // Meta (Facebook) Tracking for Conversions API
-  fbclid            String?   // Facebook Click ID from URL
-  fbc               String?   // Facebook Browser Cookie (_fbc)
-  fbp               String?   // Facebook Pixel Cookie (_fbp)
+  fbclid String? // Facebook Click ID from URL
+  fbc    String? // Facebook Browser Cookie (_fbc)
+  fbp    String? // Facebook Pixel Cookie (_fbp)
+
+  // Dispute Evidence - Registration Data
+  registrationIp        String? // IP address at account creation
+  registrationUserAgent String? // Full user agent at registration
+  registrationDevice    String? // Device type (Desktop/Mobile/Tablet)
+  registrationBrowser   String? // Browser at registration
+
+  // Legal Acceptance Timestamps (accepting on login = agreeing to TOS)
+  tosAcceptedAt          DateTime? // When Terms of Service was accepted
+  tosVersion             String? // Version of TOS accepted (e.g., "2026-01-06")
+  refundPolicyAcceptedAt DateTime? // When Refund Policy was accepted
+  refundPolicyVersion    String? // Version of refund policy accepted
 
   // Mini Diploma Freebie (Lead Magnet)
-  miniDiplomaCategory String?  // functional-medicine, autism, gut-health, etc.
-  miniDiplomaOptinAt  DateTime? // When they opted in
+  miniDiplomaCategory    String? // functional-medicine, autism, gut-health, etc.
+  miniDiplomaOptinAt     DateTime? // When they opted in
   miniDiplomaCompletedAt DateTime? // When they completed the mini diploma
-  graduateOfferDeadline DateTime? // 3-day countdown for graduate discount
-  hasCertificateBadge Boolean @default(false) // Has mini diploma badge
+  graduateOfferDeadline  DateTime? // 3-day countdown for graduate discount
+  hasCertificateBadge    Boolean   @default(false) // Has mini diploma badge
 
   // Profile/Onboarding Data
-  healthBackground  String?   // Their health journey
-  certificationGoal String?   // What certification they're working towards
-  learningGoal      String?   // Career change, add to practice, personal
+  healthBackground  String? // Their health journey
+  certificationGoal String? // What certification they're working towards
+  learningGoal      String? // Career change, add to practice, personal
   // currentField      String?   // TEMPORARILY REMOVED - DB sync issue
-  weeklyHours       Int?      // Hours available per week
-  experienceLevel   String?   // Beginner, Some experience, Professional
-  focusAreas        String[]  // Specific health areas of interest
+  weeklyHours       Int? // Hours available per week
+  experienceLevel   String? // Beginner, Some experience, Professional
+  focusAreas        String[] // Specific health areas of interest
 
   // Mentor Profile Fields (for coaches/instructors)
-  qualifications    String[]  // Certifications, degrees
-  personalQuote     String?   // Motivational quote
-  avgResponseTime   Int?      // Average response time in minutes
-  specialties       String[]  // Areas of expertise
-  availabilityNote  String?   // e.g., "Replies within 24 hours"
-  level             Int       @default(1)  // Gamification level
-  xp                Int       @default(0)  // Experience points
-  knowledgeBase     String?   @db.Text     // AI Knowledge Base for this mentor
+  qualifications   String[] // Certifications, degrees
+  personalQuote    String? // Motivational quote
+  avgResponseTime  Int? // Average response time in minutes
+  specialties      String[] // Areas of expertise
+  availabilityNote String? // e.g., "Replies within 24 hours"
+  level            Int      @default(1) // Gamification level
+  xp               Int      @default(0) // Experience points
+  knowledgeBase    String?  @db.Text // AI Knowledge Base for this mentor
 
-
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  accounts          Account[]
-  sessions          Session[]
-  enrollments       Enrollment[]
-  progress          LessonProgress[]
-  certificates      Certificate[]
-  sentMessages      Message[]         @relation("SentMessages")
-  receivedMessages  Message[]         @relation("ReceivedMessages")
+  accounts               Account[]
+  sessions               Session[]
+  enrollments            Enrollment[]
+  progress               LessonProgress[]
+  certificates           Certificate[]
+  sentMessages           Message[]               @relation("SentMessages")
+  receivedMessages       Message[]               @relation("ReceivedMessages")
   scheduledVoiceSent     ScheduledVoiceMessage[] @relation("ScheduledVoiceSender")
   scheduledVoiceReceived ScheduledVoiceMessage[] @relation("ScheduledVoiceReceiver")
-  communityPosts    CommunityPost[]
-  postComments      PostComment[]
-  notifications     Notification[]
-  mentorSessions    MentorSession[]   @relation("MentorSessions")
-  bulkEmailsSent    BulkEmail[]       @relation("BulkEmailSender")
-  bulkDMsSent       BulkDM[]          @relation("BulkDMSender")
-  studentSessions   MentorSession[]   @relation("StudentSessions")
-  passwordResets    PasswordReset[]
-  coachedCourses    Course[]          @relation("CourseCoach")
-  courseReviews     CourseReview[]
-  badges            UserBadge[]
-  streak            UserStreak?
-  moduleProgress    ModuleProgress[]
-  postLikes         PostLike[]
-  commentLikes      CommentLike[]
-  commentReactions  CommentReaction[]
-  tags              UserTag[]
-  loginHistory      LoginHistory[]
-  marketingTags     UserMarketingTag[]
-  sequenceEnrollments SequenceEnrollment[]
-  emailSends        EmailSend[]
-  assignedCoach     User?             @relation("CoachAssignment", fields: [assignedCoachId], references: [id])
-  assignedStudents  User[]            @relation("CoachAssignment")
-  coachedCommunities CategoryCommunity[] @relation("CommunityCoach")
-  wishlist          Wishlist[]
-  dfyPurchases      DFYPurchase[]
-  lessonNotes       LessonNote[]
-  quizAttempts      QuizAttempt[]
-  quizProgress      QuizProgress[]
-  salesChatReplies  SalesChat[]       @relation("SalesChatReplies")
-  submittedTickets  SupportTicket[]   @relation("UserTickets")
-  assignedTickets   SupportTicket[]   @relation("AssignedTickets")
-  sentTicketMessages TicketMessage[]  @relation("SentTicketMessages")
-  emailBounces      EmailBounce[]
+  communityPosts         CommunityPost[]
+  postComments           PostComment[]
+  notifications          Notification[]
+  mentorSessions         MentorSession[]         @relation("MentorSessions")
+  bulkEmailsSent         BulkEmail[]             @relation("BulkEmailSender")
+  bulkDMsSent            BulkDM[]                @relation("BulkDMSender")
+  studentSessions        MentorSession[]         @relation("StudentSessions")
+  passwordResets         PasswordReset[]
+  coachedCourses         Course[]                @relation("CourseCoach")
+  courseReviews          CourseReview[]
+  badges                 UserBadge[]
+  streak                 UserStreak?
+  moduleProgress         ModuleProgress[]
+  postLikes              PostLike[]
+  commentLikes           CommentLike[]
+  commentReactions       CommentReaction[]
+  tags                   UserTag[]
+  loginHistory           LoginHistory[]
+  marketingTags          UserMarketingTag[]
+  sequenceEnrollments    SequenceEnrollment[]
+  emailSends             EmailSend[]
+  assignedCoach          User?                   @relation("CoachAssignment", fields: [assignedCoachId], references: [id])
+  assignedStudents       User[]                  @relation("CoachAssignment")
+  coachedCommunities     CategoryCommunity[]     @relation("CommunityCoach")
+  wishlist               Wishlist[]
+  dfyPurchases           DFYPurchase[]
+  lessonNotes            LessonNote[]
+  quizAttempts           QuizAttempt[]
+  quizProgress           QuizProgress[]
+  salesChatReplies       SalesChat[]             @relation("SalesChatReplies")
+  submittedTickets       SupportTicket[]         @relation("UserTickets")
+  assignedTickets        SupportTicket[]         @relation("AssignedTickets")
+  sentTicketMessages     TicketMessage[]         @relation("SentTicketMessages")
+  emailBounces           EmailBounce[]
 
   // Network Effects Suite
   podMemberships    PodMember[]       @relation("UserPodMemberships")
@@ -127,8 +138,12 @@ model User {
   incomeMilestones  IncomeMilestone[] @relation("UserIncomeMilestones")
   referralsSent     Referral[]        @relation("UserReferralsSent")
   referralsReceived Referral[]        @relation("UserReferralsReceived")
-  podEngagements    PodEngagement[]   // My Circle analytics
-  podUserMessages   PodUserMessage[]  // User messages for admin view
+  podEngagements    PodEngagement[] // My Circle analytics
+  podUserMessages   PodUserMessage[] // User messages for admin view
+
+  // Dispute Evidence
+  payments          Payment[] // All payment transactions
+  resourceDownloads ResourceDownload[] // File download tracking
 
   @@index([email])
   @@index([role])
@@ -144,8 +159,8 @@ enum UserRole {
 }
 
 enum UserType {
-  LEAD      // Free mini diploma user with 7-day access
-  STUDENT   // Paid user with full access
+  LEAD // Free mini diploma user with 7-day access
+  STUDENT // Paid user with full access
 }
 
 model Account {
@@ -203,51 +218,52 @@ model PasswordReset {
 // ==================== COURSES & CONTENT ====================
 
 model Course {
-  id              String       @id @default(cuid())
-  title           String
-  slug            String       @unique
-  description     String       @db.Text
+  id               String          @id @default(cuid())
+  title            String
+  slug             String          @unique
+  description      String          @db.Text
   shortDescription String?
-  thumbnail       String?
-  previewVideo    String?      // Wistia video ID
-  price           Decimal?     @db.Decimal(10, 2)
-  regularPrice    Decimal?     @db.Decimal(10, 2) // Original price for strikethrough display
-  isFree          Boolean      @default(false)
-  isPublished     Boolean      @default(false)
-  isFeatured      Boolean      @default(false)
-  difficulty      Difficulty   @default(BEGINNER)
-  duration        Int?         // Total duration in minutes
-  certificateType CertificateType @default(COMPLETION)
+  thumbnail        String?
+  previewVideo     String? // Wistia video ID
+  price            Decimal?        @db.Decimal(10, 2)
+  regularPrice     Decimal?        @db.Decimal(10, 2) // Original price for strikethrough display
+  isFree           Boolean         @default(false)
+  isPublished      Boolean         @default(false)
+  isFeatured       Boolean         @default(false)
+  difficulty       Difficulty      @default(BEGINNER)
+  duration         Int? // Total duration in minutes
+  certificateType  CertificateType @default(COMPLETION)
 
   // SEO fields
   metaTitle       String?
-  metaDescription String?      @db.Text
+  metaDescription String? @db.Text
 
   // Course content
-  learningOutcomes String[]    // What students will learn (bullet points)
-  targetAudience  String?      @db.Text // Who is this course for
-  estimatedWeeks  Int?         // Estimated completion time in weeks
-  enrollmentLimit Int?         // Max students (null = unlimited)
+  learningOutcomes String[] // What students will learn (bullet points)
+  targetAudience   String?  @db.Text // Who is this course for
+  estimatedWeeks   Int? // Estimated completion time in weeks
+  enrollmentLimit  Int? // Max students (null = unlimited)
 
-  categoryId      String?
-  instructorId    String?
-  coachId         String?      // Assigned coach for 1:1 support
+  categoryId   String?
+  instructorId String?
+  coachId      String? // Assigned coach for 1:1 support
 
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  publishedAt     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
 
   // Relations
-  category        Category?    @relation(fields: [categoryId], references: [id])
-  coach           User?        @relation("CourseCoach", fields: [coachId], references: [id])
-  modules         Module[]
-  enrollments     Enrollment[]
-  certificates    Certificate[]
-  tags            CourseTag[]
-  reviews         CourseReview[]
-  analytics       CourseAnalytics?
-  offers          OfferCourse[]
-  wishlist        Wishlist[]
+  category     Category?        @relation(fields: [categoryId], references: [id])
+  coach        User?            @relation("CourseCoach", fields: [coachId], references: [id])
+  modules      Module[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+  tags         CourseTag[]
+  reviews      CourseReview[]
+  analytics    CourseAnalytics?
+  offers       OfferCourse[]
+  wishlist     Wishlist[]
+  payments     Payment[] // Dispute evidence - payment records
 
   @@index([slug])
   @@index([categoryId])
@@ -270,30 +286,30 @@ enum CertificateType {
 }
 
 model Category {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  slug        String   @unique
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
   description String?
   icon        String?
   color       String?
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
+  order       Int     @default(0)
+  isActive    Boolean @default(true)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  courses     Course[]
-  community   CategoryCommunity?
+  courses   Course[]
+  community CategoryCommunity?
 
   @@index([slug])
 }
 
 model Tag {
-  id        String      @id @default(cuid())
-  name      String      @unique
-  slug      String      @unique
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
 
-  courses   CourseTag[]
+  courses CourseTag[]
 
   @@index([slug])
 }
@@ -302,28 +318,28 @@ model CourseTag {
   courseId String
   tagId    String
 
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([courseId, tagId])
 }
 
 model Module {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
   description String?
-  order       Int      @default(0)
-  isPublished Boolean  @default(false)
+  order       Int     @default(0)
+  isPublished Boolean @default(false)
 
-  courseId    String
+  courseId String
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  lessons     Lesson[]
-  progress    ModuleProgress[]
-  quiz        ModuleQuiz?
+  course       Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons      Lesson[]
+  progress     ModuleProgress[]
+  quiz         ModuleQuiz?
   certificates Certificate[]
 
   @@index([courseId])
@@ -331,26 +347,26 @@ model Module {
 }
 
 model Lesson {
-  id              String      @id @default(cuid())
-  title           String
-  description     String?     @db.Text
-  content         String?     @db.Text  // Rich text content
-  videoId         String?     // Wistia video ID
-  videoDuration   Int?        // Duration in seconds
-  order           Int         @default(0)
-  isPublished     Boolean     @default(false)
-  isFreePreview   Boolean     @default(false)
-  lessonType      LessonType  @default(VIDEO)
+  id            String     @id @default(cuid())
+  title         String
+  description   String?    @db.Text
+  content       String?    @db.Text // Rich text content
+  videoId       String? // Wistia video ID
+  videoDuration Int? // Duration in seconds
+  order         Int        @default(0)
+  isPublished   Boolean    @default(false)
+  isFreePreview Boolean    @default(false)
+  lessonType    LessonType @default(VIDEO)
 
-  moduleId        String
+  moduleId String
 
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  module          Module      @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  progress        LessonProgress[]
-  resources       LessonResource[]
-  notes           LessonNote[]
+  module    Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress  LessonProgress[]
+  resources LessonResource[]
+  notes     LessonNote[]
 
   @@index([moduleId])
   @@index([order])
@@ -366,17 +382,18 @@ enum LessonType {
 }
 
 model LessonResource {
-  id        String   @id @default(cuid())
-  title     String
-  type      ResourceType
-  url       String
-  size      Int?     // File size in bytes
+  id    String       @id @default(cuid())
+  title String
+  type  ResourceType
+  url   String
+  size  Int? // File size in bytes
 
-  lessonId  String
+  lessonId String
 
   createdAt DateTime @default(now())
 
-  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lesson    Lesson             @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  downloads ResourceDownload[] // Dispute evidence - download tracking
 
   @@index([lessonId])
 }
@@ -394,18 +411,18 @@ enum ResourceType {
 // ==================== ENROLLMENT & PROGRESS ====================
 
 model Enrollment {
-  id              String           @id @default(cuid())
-  userId          String
-  courseId        String
-  status          EnrollmentStatus @default(ACTIVE)
-  progress        Float            @default(0) // 0-100 percentage
-  enrolledAt      DateTime         @default(now())
-  completedAt     DateTime?
-  expiresAt       DateTime?
-  lastAccessedAt  DateTime?
+  id             String           @id @default(cuid())
+  userId         String
+  courseId       String
+  status         EnrollmentStatus @default(ACTIVE)
+  progress       Float            @default(0) // 0-100 percentage
+  enrolledAt     DateTime         @default(now())
+  completedAt    DateTime?
+  expiresAt      DateTime?
+  lastAccessedAt DateTime?
 
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course          Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
   @@index([userId])
@@ -422,23 +439,23 @@ enum EnrollmentStatus {
 }
 
 model LessonProgress {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   userId        String
   lessonId      String
-  isCompleted   Boolean  @default(false)
-  watchTime     Int      @default(0) // Seconds watched (for videos)
-  lastPosition  Int      @default(0) // Last video position in seconds
-  timeSpent     Int      @default(0) // Total time spent on lesson (seconds) - for analytics
-  visitCount    Int      @default(0) // How many times visited
-  scrollDepth   Int      @default(0) // Max scroll percentage reached (for text lessons)
+  isCompleted   Boolean   @default(false)
+  watchTime     Int       @default(0) // Seconds watched (for videos)
+  lastPosition  Int       @default(0) // Last video position in seconds
+  timeSpent     Int       @default(0) // Total time spent on lesson (seconds) - for analytics
+  visitCount    Int       @default(0) // How many times visited
+  scrollDepth   Int       @default(0) // Max scroll percentage reached (for text lessons)
   lastVisitedAt DateTime? // Track last visit for "continue where you left off"
   completedAt   DateTime?
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson        Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId])
   @@index([userId])
@@ -448,104 +465,104 @@ model LessonProgress {
 // ==================== LESSON NOTES & HIGHLIGHTS ====================
 
 model LessonNote {
-  id            String       @id @default(cuid())
-  userId        String
-  lessonId      String
-  type          NoteType     @default(NOTE)
-  content       String       @db.Text  // For notes: the note text. For highlights: the highlighted text
-  noteText      String?      @db.Text  // Additional note attached to a highlight
-  position      Int?         // Character position in the content (for highlights)
-  color         String?      // Highlight color (yellow, green, blue, pink)
+  id       String   @id @default(cuid())
+  userId   String
+  lessonId String
+  type     NoteType @default(NOTE)
+  content  String   @db.Text // For notes: the note text. For highlights: the highlighted text
+  noteText String?  @db.Text // Additional note attached to a highlight
+  position Int? // Character position in the content (for highlights)
+  color    String? // Highlight color (yellow, green, blue, pink)
 
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson        Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@index([userId, lessonId])
   @@index([lessonId])
 }
 
 enum NoteType {
-  NOTE       // General note about the lesson
-  HIGHLIGHT  // Text highlight with optional note
+  NOTE // General note about the lesson
+  HIGHLIGHT // Text highlight with optional note
 }
 
 // ==================== MODULE QUIZZES ====================
 
 model ModuleQuiz {
-  id              String        @id @default(cuid())
-  moduleId        String        @unique // One quiz per module
-  title           String
-  description     String?       @db.Text
-  passingScore    Int           @default(70) // Percentage needed to pass
-  maxAttempts     Int?          // null = unlimited
-  timeLimit       Int?          // Time limit in minutes, null = no limit
-  isRequired      Boolean       @default(true) // Required to unlock next module
-  isPublished     Boolean       @default(false)
-  showCorrectAnswers Boolean    @default(true) // Show correct answers after submission
+  id                 String  @id @default(cuid())
+  moduleId           String  @unique // One quiz per module
+  title              String
+  description        String? @db.Text
+  passingScore       Int     @default(70) // Percentage needed to pass
+  maxAttempts        Int? // null = unlimited
+  timeLimit          Int? // Time limit in minutes, null = no limit
+  isRequired         Boolean @default(true) // Required to unlock next module
+  isPublished        Boolean @default(false)
+  showCorrectAnswers Boolean @default(true) // Show correct answers after submission
 
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  module          Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  questions       QuizQuestion[]
-  attempts        QuizAttempt[]
-  progress        QuizProgress[]
+  module    Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  questions QuizQuestion[]
+  attempts  QuizAttempt[]
+  progress  QuizProgress[]
 
   @@index([moduleId])
 }
 
 model QuizQuestion {
-  id              String        @id @default(cuid())
-  quizId          String
-  question        String        @db.Text
-  explanation     String?       @db.Text // Shown after answering
-  questionType    QuestionType  @default(MULTIPLE_CHOICE)
-  order           Int           @default(0)
-  points          Int           @default(1) // Points for this question
+  id           String       @id @default(cuid())
+  quizId       String
+  question     String       @db.Text
+  explanation  String?      @db.Text // Shown after answering
+  questionType QuestionType @default(MULTIPLE_CHOICE)
+  order        Int          @default(0)
+  points       Int          @default(1) // Points for this question
 
-  createdAt       DateTime      @default(now())
+  createdAt DateTime @default(now())
 
-  quiz            ModuleQuiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  answers         QuizAnswer[]
-  responses       QuizResponse[]
+  quiz      ModuleQuiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers   QuizAnswer[]
+  responses QuizResponse[]
 
   @@index([quizId])
   @@index([order])
 }
 
 enum QuestionType {
-  MULTIPLE_CHOICE   // Single correct answer
-  MULTI_SELECT      // Multiple correct answers
-  TRUE_FALSE        // True/False
+  MULTIPLE_CHOICE // Single correct answer
+  MULTI_SELECT // Multiple correct answers
+  TRUE_FALSE // True/False
 }
 
 model QuizAnswer {
-  id              String        @id @default(cuid())
-  questionId      String
-  answer          String        @db.Text
-  isCorrect       Boolean       @default(false)
-  order           Int           @default(0)
+  id         String  @id @default(cuid())
+  questionId String
+  answer     String  @db.Text
+  isCorrect  Boolean @default(false)
+  order      Int     @default(0)
 
-  question        QuizQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
 }
 
 // Quiz progress - for saving partial quiz responses
 model QuizProgress {
-  id              String     @id @default(cuid())
+  id              String   @id @default(cuid())
   userId          String
   quizId          String
-  responses       Json       // { questionId: [answerIds] }
-  currentQuestion Int        @default(0)
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  responses       Json // { questionId: [answerIds] }
+  currentQuestion Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quiz            ModuleQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz ModuleQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
   @@unique([userId, quizId])
   @@index([userId])
@@ -553,20 +570,20 @@ model QuizProgress {
 }
 
 model QuizAttempt {
-  id              String        @id @default(cuid())
-  userId          String
-  quizId          String
-  score           Int           // Percentage score
-  pointsEarned    Int           @default(0)
-  pointsPossible  Int           @default(0)
-  passed          Boolean       @default(false)
-  timeSpent       Int?          // Time spent in seconds
-  startedAt       DateTime      @default(now())
-  completedAt     DateTime?
+  id             String    @id @default(cuid())
+  userId         String
+  quizId         String
+  score          Int // Percentage score
+  pointsEarned   Int       @default(0)
+  pointsPossible Int       @default(0)
+  passed         Boolean   @default(false)
+  timeSpent      Int? // Time spent in seconds
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
 
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quiz            ModuleQuiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  responses       QuizResponse[]
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz      ModuleQuiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  responses QuizResponse[]
 
   @@index([userId])
   @@index([quizId])
@@ -574,15 +591,15 @@ model QuizAttempt {
 }
 
 model QuizResponse {
-  id              String        @id @default(cuid())
+  id              String   @id @default(cuid())
   attemptId       String
   questionId      String
-  selectedAnswers String[]      // Array of answer IDs selected
-  isCorrect       Boolean       @default(false)
-  pointsEarned    Int           @default(0)
+  selectedAnswers String[] // Array of answer IDs selected
+  isCorrect       Boolean  @default(false)
+  pointsEarned    Int      @default(0)
 
-  attempt         QuizAttempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  question        QuizQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  attempt  QuizAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@unique([attemptId, questionId])
   @@index([attemptId])
@@ -591,21 +608,21 @@ model QuizResponse {
 // ==================== CERTIFICATES ====================
 
 model Certificate {
-  id              String          @id @default(cuid())
-  certificateNumber String        @unique
-  userId          String
-  courseId        String
-  moduleId        String?         // For module mini-diplomas (null = course certificate)
-  type            CertificateType
-  score           Int?            // Score achieved on quiz/exam
-  issuedAt        DateTime        @default(now())
-  expiresAt       DateTime?
-  pdfUrl          String?
-  verificationUrl String?
+  id                String          @id @default(cuid())
+  certificateNumber String          @unique
+  userId            String
+  courseId          String
+  moduleId          String? // For module mini-diplomas (null = course certificate)
+  type              CertificateType
+  score             Int? // Score achieved on quiz/exam
+  issuedAt          DateTime        @default(now())
+  expiresAt         DateTime?
+  pdfUrl            String?
+  verificationUrl   String?
 
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course          Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  module          Module?         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module Module? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId, moduleId]) // Unique per user+course+module combo
   @@index([certificateNumber])
@@ -621,8 +638,8 @@ model Wishlist {
   courseId  String
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
   @@index([userId])
@@ -639,35 +656,35 @@ model Message {
 
   // Attachment fields
   attachmentUrl  String?
-  attachmentType String?   // "image", "file", "voice", "ai_voice"
+  attachmentType String? // "image", "file", "voice", "ai_voice"
   attachmentName String?
-  voiceDuration  Int?      // Duration in seconds for voice messages
+  voiceDuration  Int? // Duration in seconds for voice messages
 
   // Reply threading
-  replyToId   String?     // Parent message ID for replies
-  replyTo     Message?    @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
-  replies     Message[]   @relation("MessageReplies")
+  replyToId String? // Parent message ID for replies
+  replyTo   Message?  @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies   Message[] @relation("MessageReplies")
 
   // AI Voice message
-  isAiVoice   Boolean     @default(false) // True if generated by TTS
-  transcription String?   @db.Text // Voice-to-text transcription
+  isAiVoice     Boolean @default(false) // True if generated by TTS
+  transcription String? @db.Text // Voice-to-text transcription
 
   // Read receipts
-  readAt      DateTime?   // When the message was read
+  readAt DateTime? // When the message was read
 
   // Scheduled messages
-  scheduledAt DateTime?   // When to send the message
-  isScheduled Boolean     @default(false) // True if message is scheduled
+  scheduledAt DateTime? // When to send the message
+  isScheduled Boolean   @default(false) // True if message is scheduled
 
-  senderId    String
-  receiverId  String
+  senderId   String
+  receiverId String
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  sender      User        @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver    User        @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
-  reactions   MessageReaction[]
+  sender    User              @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver  User              @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  reactions MessageReaction[]
 
   @@index([senderId])
   @@index([receiverId])
@@ -677,38 +694,39 @@ model Message {
 
 // Scheduled voice messages (for delayed sending)
 model ScheduledVoiceMessage {
-  id            String   @id @default(cuid())
-  senderId      String   // Sarah coach ID
-  receiverId    String   // Student to receive message
-  voiceText     String   @db.Text // Text to convert to voice
-  textContent   String   @db.Text // Fallback text content
-  
-  scheduledFor  DateTime // When to send
-  sentAt        DateTime? // When actually sent
-  status        String   @default("PENDING") // PENDING, PROCESSING, SENT, FAILED
-  
+  id          String @id @default(cuid())
+  senderId    String // Sarah coach ID
+  receiverId  String // Student to receive message
+  voiceText   String @db.Text // Text to convert to voice
+  textContent String @db.Text // Fallback text content
+
+  scheduledFor DateTime // When to send
+  sentAt       DateTime? // When actually sent
+  status       String    @default("PENDING") // PENDING, PROCESSING, SENT, FAILED
+
   // For retry logic
-  attempts      Int      @default(0)
-  lastError     String?  @db.Text
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  sender        User     @relation("ScheduledVoiceSender", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver      User     @relation("ScheduledVoiceReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
-  
+  attempts  Int     @default(0)
+  lastError String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender   User @relation("ScheduledVoiceSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ScheduledVoiceReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
   @@index([status, scheduledFor])
   @@index([receiverId])
 }
+
 model MessageReaction {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   messageId String
   userId    String
-  emoji     String   // The emoji character
+  emoji     String // The emoji character
 
   createdAt DateTime @default(now())
 
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@unique([messageId, userId, emoji])
   @@index([messageId])
@@ -735,26 +753,26 @@ enum MessageType {
 }
 
 model CommunityPost {
-  id          String        @id @default(cuid())
-  title       String
-  content     String        @db.Text
-  isPinned    Boolean       @default(false)
-  isLocked    Boolean       @default(false)
-  viewCount   Int           @default(0)
-  likeCount   Int           @default(0)
-  reactions   Json?         // Store emoji reactions as JSON: {"❤️": 132, "🔥": 85, ...}
+  id        String  @id @default(cuid())
+  title     String
+  content   String  @db.Text
+  isPinned  Boolean @default(false)
+  isLocked  Boolean @default(false)
+  viewCount Int     @default(0)
+  likeCount Int     @default(0)
+  reactions Json? // Store emoji reactions as JSON: {"❤️": 132, "🔥": 85, ...}
 
   authorId    String
-  categoryId  String?       // Legacy: general category like "tips", "wins"
-  communityId String?       // Links to category-based community
+  categoryId  String? // Legacy: general category like "tips", "wins"
+  communityId String? // Links to category-based community
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  community   CategoryCommunity? @relation(fields: [communityId], references: [id], onDelete: SetNull)
-  comments    PostComment[]
-  likes       PostLike[]
+  author    User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  community CategoryCommunity? @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  comments  PostComment[]
+  likes     PostLike[]
 
   @@index([authorId])
   @@index([isPinned])
@@ -762,13 +780,13 @@ model CommunityPost {
 }
 
 model PostLike {
-  id        String        @id @default(cuid())
+  id        String   @id @default(cuid())
   postId    String
   userId    String
-  createdAt DateTime      @default(now())
+  createdAt DateTime @default(now())
 
-  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([postId, userId])
   @@index([postId])
@@ -776,21 +794,21 @@ model PostLike {
 }
 
 model PostComment {
-  id        String   @id @default(cuid())
-  content   String   @db.Text
-  likeCount Int      @default(0)
+  id        String @id @default(cuid())
+  content   String @db.Text
+  likeCount Int    @default(0)
 
-  postId    String
-  authorId  String
-  parentId  String?  // For nested replies
+  postId   String
+  authorId String
+  parentId String? // For nested replies
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  parent    PostComment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies   PostComment[] @relation("CommentReplies")
+  post      CommunityPost     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent    PostComment?      @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   PostComment[]     @relation("CommentReplies")
   likes     CommentLike[]
   reactions CommentReaction[]
 
@@ -799,13 +817,13 @@ model PostComment {
 }
 
 model CommentLike {
-  id        String      @id @default(cuid())
+  id        String   @id @default(cuid())
   commentId String
   userId    String
-  createdAt DateTime    @default(now())
+  createdAt DateTime @default(now())
 
-  comment   PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([commentId, userId])
   @@index([commentId])
@@ -813,14 +831,14 @@ model CommentLike {
 }
 
 model CommentReaction {
-  id        String      @id @default(cuid())
+  id        String   @id @default(cuid())
   commentId String
   userId    String
-  emoji     String      // e.g., "❤️", "🔥", "👏", "💯", "🎉"
-  createdAt DateTime    @default(now())
+  emoji     String // e.g., "❤️", "🔥", "👏", "💯", "🎉"
+  createdAt DateTime @default(now())
 
-  comment   PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([commentId, userId, emoji])
   @@index([commentId])
@@ -835,15 +853,15 @@ model MentorSession {
   studentId   String
   status      SessionStatus @default(PENDING)
   scheduledAt DateTime?
-  duration    Int?          // Duration in minutes
+  duration    Int? // Duration in minutes
   notes       String?       @db.Text
   meetingUrl  String?
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  mentor      User          @relation("MentorSessions", fields: [mentorId], references: [id], onDelete: Cascade)
-  student     User          @relation("StudentSessions", fields: [studentId], references: [id], onDelete: Cascade)
+  mentor  User @relation("MentorSessions", fields: [mentorId], references: [id], onDelete: Cascade)
+  student User @relation("StudentSessions", fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([mentorId])
   @@index([studentId])
@@ -860,17 +878,17 @@ enum SessionStatus {
 // ==================== NOTIFICATIONS ====================
 
 model Notification {
-  id        String           @id @default(cuid())
-  userId    String
-  type      NotificationType
-  title     String
-  message   String
-  data      Json?            // Additional data for the notification
-  isRead    Boolean          @default(false)
+  id      String           @id @default(cuid())
+  userId  String
+  type    NotificationType
+  title   String
+  message String
+  data    Json? // Additional data for the notification
+  isRead  Boolean          @default(false)
 
-  createdAt DateTime         @default(now())
+  createdAt DateTime @default(now())
 
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([isRead])
@@ -892,14 +910,14 @@ enum NotificationType {
 // ==================== WEBHOOKS & EVENTS ====================
 
 model WebhookEvent {
-  id          String   @id @default(cuid())
-  eventType   String
-  payload     Json
-  status      String   @default("pending") // pending, sent, failed
-  attempts    Int      @default(0)
-  lastError   String?
+  id        String  @id @default(cuid())
+  eventType String
+  payload   Json
+  status    String  @default("pending") // pending, sent, failed
+  attempts  Int     @default(0)
+  lastError String?
 
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
   processedAt DateTime?
 
   @@index([eventType])
@@ -907,14 +925,14 @@ model WebhookEvent {
 }
 
 model WebhookEndpoint {
-  id          String   @id @default(cuid())
-  url         String
-  secret      String
-  events      String[] // Array of event types to subscribe to
-  isActive    Boolean  @default(true)
+  id       String   @id @default(cuid())
+  url      String
+  secret   String
+  events   String[] // Array of event types to subscribe to
+  isActive Boolean  @default(true)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([isActive])
 }
@@ -922,22 +940,22 @@ model WebhookEndpoint {
 // ==================== BULK COMMUNICATIONS ====================
 
 model BulkEmail {
-  id          String          @id @default(cuid())
-  subject     String
-  content     String          @db.Text
-  status      BulkEmailStatus @default(DRAFT)
-  recipientType String        // all, enrolled, completed, etc.
-  filters     Json?           // Additional filters for recipients
-  sentCount   Int             @default(0)
-  failedCount Int             @default(0)
-  scheduledAt DateTime?
-  sentAt      DateTime?
+  id            String          @id @default(cuid())
+  subject       String
+  content       String          @db.Text
+  status        BulkEmailStatus @default(DRAFT)
+  recipientType String // all, enrolled, completed, etc.
+  filters       Json? // Additional filters for recipients
+  sentCount     Int             @default(0)
+  failedCount   Int             @default(0)
+  scheduledAt   DateTime?
+  sentAt        DateTime?
 
-  senderId    String?
-  sender      User?           @relation("BulkEmailSender", fields: [senderId], references: [id])
+  senderId String?
+  sender   User?   @relation("BulkEmailSender", fields: [senderId], references: [id])
 
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([senderId])
@@ -952,21 +970,21 @@ enum BulkEmailStatus {
 }
 
 model BulkDM {
-  id            String        @id @default(cuid())
-  content       String        @db.Text
+  id            String          @id @default(cuid())
+  content       String          @db.Text
   status        BulkEmailStatus @default(DRAFT)
   recipientType String
   filters       Json?
-  sentCount     Int           @default(0)
-  failedCount   Int           @default(0)
+  sentCount     Int             @default(0)
+  failedCount   Int             @default(0)
   scheduledAt   DateTime?
   sentAt        DateTime?
 
-  senderId      String?
-  sender        User?         @relation("BulkDMSender", fields: [senderId], references: [id])
+  senderId String?
+  sender   User?   @relation("BulkDMSender", fields: [senderId], references: [id])
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([senderId])
@@ -975,23 +993,23 @@ model BulkDM {
 // ==================== ANALYTICS ====================
 
 model CourseAnalytics {
-  id            String   @id @default(cuid())
-  courseId      String   @unique
-  totalEnrolled Int      @default(0)
+  id             String  @id @default(cuid())
+  courseId       String  @unique
+  totalEnrolled  Int     @default(0)
   totalCompleted Int     @default(0)
-  avgProgress   Float    @default(0)
-  avgRating     Float    @default(0)
-  totalRevenue  Decimal  @default(0) @db.Decimal(12, 2)
+  avgProgress    Float   @default(0)
+  avgRating      Float   @default(0)
+  totalRevenue   Decimal @default(0) @db.Decimal(12, 2)
 
-  updatedAt     DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
-  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
 }
 
 model UserActivity {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   userId    String
   action    String
   metadata  Json?
@@ -1008,20 +1026,20 @@ model UserActivity {
 // ==================== COURSE REVIEWS ====================
 
 model CourseReview {
-  id        String   @id @default(cuid())
-  userId    String
-  courseId  String
-  rating    Int      // 1-5 stars
-  title     String?
-  content   String   @db.Text
-  isPublic  Boolean  @default(true)
+  id         String  @id @default(cuid())
+  userId     String
+  courseId   String
+  rating     Int // 1-5 stars
+  title      String?
+  content    String  @db.Text
+  isPublic   Boolean @default(true)
   isVerified Boolean @default(false) // Verified purchase
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
   @@index([courseId])
@@ -1031,31 +1049,31 @@ model CourseReview {
 // ==================== GAMIFICATION ====================
 
 model Badge {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  slug        String   @unique
+  id          String @id @default(cuid())
+  name        String @unique
+  slug        String @unique
   description String
-  icon        String   // Icon name or emoji
-  color       String   // Hex color
-  criteria    String   // Description of how to earn
-  points      Int      @default(0)
+  icon        String // Icon name or emoji
+  color       String // Hex color
+  criteria    String // Description of how to earn
+  points      Int    @default(0)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  userBadges  UserBadge[]
+  userBadges UserBadge[]
 
   @@index([slug])
 }
 
 model UserBadge {
-  id        String   @id @default(cuid())
-  userId    String
-  badgeId   String
-  earnedAt  DateTime @default(now())
-  metadata  Json?    // Extra info (e.g., which course)
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+  metadata Json? // Extra info (e.g., which course)
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, badgeId])
   @@index([userId])
@@ -1069,7 +1087,7 @@ model UserStreak {
   lastActiveAt  DateTime @default(now())
   totalPoints   Int      @default(0)
 
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ==================== MODULE PROGRESS ====================
@@ -1081,11 +1099,11 @@ model ModuleProgress {
   isCompleted Boolean   @default(false)
   completedAt DateTime?
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  module      Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, moduleId])
   @@index([userId])
@@ -1097,12 +1115,12 @@ model ModuleProgress {
 model UserTag {
   id        String   @id @default(cuid())
   userId    String
-  tag       String   // e.g., "lead:herbalism", "lifecycle:enrolled", "interest:functional-medicine"
-  value     String?  // Optional value (e.g., course ID, specific detail)
-  metadata  Json?    // Extra data for automation
+  tag       String // e.g., "lead:herbalism", "lifecycle:enrolled", "interest:functional-medicine"
+  value     String? // Optional value (e.g., course ID, specific detail)
+  metadata  Json? // Extra data for automation
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, tag])
   @@index([userId])
@@ -1115,14 +1133,14 @@ model LoginHistory {
   userId       String
   ipAddress    String?
   userAgent    String?
-  location     String?  // City, Country (from IP geolocation)
-  device       String?  // Desktop, Mobile, Tablet
-  browser      String?  // Chrome, Safari, Firefox, etc.
+  location     String? // City, Country (from IP geolocation)
+  device       String? // Desktop, Mobile, Tablet
+  browser      String? // Chrome, Safari, Firefox, etc.
   isFirstLogin Boolean  @default(false)
-  loginMethod  String?  // credentials, google, magic-link
+  loginMethod  String? // credentials, google, magic-link
   createdAt    DateTime @default(now())
 
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
@@ -1132,15 +1150,15 @@ model LoginHistory {
 // ==================== NICHE COACH ASSIGNMENT ====================
 
 model NicheCoach {
-  id          String   @id @default(cuid())
-  niche       String   @unique // e.g., "functional-medicine", "womens-health", "gut-health"
+  id          String  @id @default(cuid())
+  niche       String  @unique // e.g., "functional-medicine", "womens-health", "gut-health"
   coachId     String
-  displayName String   // e.g., "Functional Medicine", "Women's Health"
+  displayName String // e.g., "Functional Medicine", "Women's Health"
   description String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean @default(true)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([niche])
   @@index([coachId])
@@ -1149,21 +1167,21 @@ model NicheCoach {
 // ==================== CATEGORY COMMUNITIES ====================
 
 model CategoryCommunity {
-  id          String   @id @default(cuid())
-  categoryId  String   @unique
+  id          String  @id @default(cuid())
+  categoryId  String  @unique
   name        String
-  description String?  @db.Text
-  welcomePost String?  @db.Text  // Pinned welcome message
-  coachId     String   // Primary coach for this community
-  isActive    Boolean  @default(true)
-  memberCount Int      @default(0)
+  description String? @db.Text
+  welcomePost String? @db.Text // Pinned welcome message
+  coachId     String // Primary coach for this community
+  isActive    Boolean @default(true)
+  memberCount Int     @default(0)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  coach       User     @relation("CommunityCoach", fields: [coachId], references: [id])
-  posts       CommunityPost[]
+  category Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  coach    User            @relation("CommunityCoach", fields: [coachId], references: [id])
+  posts    CommunityPost[]
 
   @@index([categoryId])
   @@index([coachId])
@@ -1173,19 +1191,19 @@ model CategoryCommunity {
 // ==================== AUTO MESSAGES ====================
 
 model AutoMessage {
-  id           String   @id @default(cuid())
-  trigger      String   // first_login, enrollment, inactive_7d, course_complete, etc.
-  triggerValue String?  // Optional: specific course ID, category, etc.
-  fromCoachId  String?  // If null, uses student's assigned coach
-  subject      String?  // For emails
-  content      String   @db.Text
-  messageType  String   @default("dm") // dm, email, notification
-  isActive     Boolean  @default(true)
-  delayMinutes Int      @default(0) // Delay before sending
-  priority     Int      @default(0) // Higher = sent first
+  id           String  @id @default(cuid())
+  trigger      String // first_login, enrollment, inactive_7d, course_complete, etc.
+  triggerValue String? // Optional: specific course ID, category, etc.
+  fromCoachId  String? // If null, uses student's assigned coach
+  subject      String? // For emails
+  content      String  @db.Text
+  messageType  String  @default("dm") // dm, email, notification
+  isActive     Boolean @default(true)
+  delayMinutes Int     @default(0) // Delay before sending
+  priority     Int     @default(0) // Higher = sent first
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([trigger])
   @@index([isActive])
@@ -1194,29 +1212,29 @@ model AutoMessage {
 // ==================== SPECIAL OFFERS & PROMOTIONS ====================
 
 model SpecialOffer {
-  id              String   @id @default(cuid())
-  title           String
-  description     String?  @db.Text
-  code            String?  @unique // Promo code if applicable
-  discountType    String   // percentage, fixed_amount
-  discountValue   Decimal  @db.Decimal(10, 2) // Amount or percentage
-  minPurchase     Decimal? @db.Decimal(10, 2) // Minimum purchase amount
-  maxUses         Int?     // Max total uses
-  maxUsesPerUser  Int?     // Max uses per user
-  usedCount       Int      @default(0)
-  isActive        Boolean  @default(true)
-  isFeatured      Boolean  @default(false) // Show in banner
-  startsAt        DateTime @default(now())
-  expiresAt       DateTime?
-  bannerColor     String?  // Gradient or color for UI
-  bannerIcon      String?  // Icon name
+  id             String    @id @default(cuid())
+  title          String
+  description    String?   @db.Text
+  code           String?   @unique // Promo code if applicable
+  discountType   String // percentage, fixed_amount
+  discountValue  Decimal   @db.Decimal(10, 2) // Amount or percentage
+  minPurchase    Decimal?  @db.Decimal(10, 2) // Minimum purchase amount
+  maxUses        Int? // Max total uses
+  maxUsesPerUser Int? // Max uses per user
+  usedCount      Int       @default(0)
+  isActive       Boolean   @default(true)
+  isFeatured     Boolean   @default(false) // Show in banner
+  startsAt       DateTime  @default(now())
+  expiresAt      DateTime?
+  bannerColor    String? // Gradient or color for UI
+  bannerIcon     String? // Icon name
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Many-to-many relation with courses
-  courses         OfferCourse[]
-  redemptions     OfferRedemption[]
+  courses     OfferCourse[]
+  redemptions OfferRedemption[]
 
   @@index([isActive])
   @@index([code])
@@ -1225,12 +1243,12 @@ model SpecialOffer {
 }
 
 model OfferCourse {
-  id        String       @id @default(cuid())
-  offerId   String
-  courseId  String
+  id       String @id @default(cuid())
+  offerId  String
+  courseId String
 
-  offer     SpecialOffer @relation(fields: [offerId], references: [id], onDelete: Cascade)
-  course    Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  offer  SpecialOffer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  course Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([offerId, courseId])
   @@index([offerId])
@@ -1238,15 +1256,15 @@ model OfferCourse {
 }
 
 model OfferRedemption {
-  id        String       @id @default(cuid())
-  offerId   String
-  userId    String
-  courseId  String?
-  savedAmount Decimal    @db.Decimal(10, 2) // Amount saved
+  id          String  @id @default(cuid())
+  offerId     String
+  userId      String
+  courseId    String?
+  savedAmount Decimal @db.Decimal(10, 2) // Amount saved
 
-  createdAt DateTime     @default(now())
+  createdAt DateTime @default(now())
 
-  offer     SpecialOffer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  offer SpecialOffer @relation(fields: [offerId], references: [id], onDelete: Cascade)
 
   @@index([offerId])
   @@index([userId])
@@ -1265,13 +1283,13 @@ model MarketingTag {
   isActive    Boolean     @default(true)
   userCount   Int         @default(0) // Cached count of users with this tag
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  userTags    UserMarketingTag[]
-  sequenceTriggers Sequence[] @relation("SequenceTriggerTag")
-  sequenceExits    Sequence[] @relation("SequenceExitTag")
+  userTags         UserMarketingTag[]
+  sequenceTriggers Sequence[]         @relation("SequenceTriggerTag")
+  sequenceExits    Sequence[]         @relation("SequenceExitTag")
 
   @@index([slug])
   @@index([category])
@@ -1279,25 +1297,25 @@ model MarketingTag {
 }
 
 enum TagCategory {
-  STAGE       // Lifecycle stage: mini_started, mini_completed, training, challenge, decision, buyer
-  INTENT      // Engagement level: cold, warm, hot
-  BEHAVIOR    // Auto-assigned: email_opener, video_watcher, pricing_viewer
-  SOURCE      // Lead source: freebie_fm, webinar, organic, referral
-  SUPPRESS    // Suppression: purchased, unsubscribed
-  CUSTOM      // User-created tags
+  STAGE // Lifecycle stage: mini_started, mini_completed, training, challenge, decision, buyer
+  INTENT // Engagement level: cold, warm, hot
+  BEHAVIOR // Auto-assigned: email_opener, video_watcher, pricing_viewer
+  SOURCE // Lead source: freebie_fm, webinar, organic, referral
+  SUPPRESS // Suppression: purchased, unsubscribed
+  CUSTOM // User-created tags
 }
 
 model UserMarketingTag {
-  id        String       @id @default(cuid())
-  userId    String
-  tagId     String
-  source    String?      // How tag was added: manual, sequence, automation, import
-  metadata  Json?        // Extra data (e.g., which email triggered it)
+  id       String  @id @default(cuid())
+  userId   String
+  tagId    String
+  source   String? // How tag was added: manual, sequence, automation, import
+  metadata Json? // Extra data (e.g., which email triggered it)
 
-  createdAt DateTime     @default(now())
+  createdAt DateTime @default(now())
 
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tag       MarketingTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag  MarketingTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([userId, tagId])
   @@index([userId])
@@ -1308,38 +1326,38 @@ model UserMarketingTag {
 // ==================== MARKETING AUTOMATION - SEQUENCES ====================
 
 model Sequence {
-  id              String         @id @default(cuid())
-  name            String
-  slug            String         @unique
-  description     String?        @db.Text
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String? @db.Text
 
   // Trigger: When to start this sequence
-  triggerType     SequenceTrigger
-  triggerTagId    String?        // For TAG_ADDED trigger
-  triggerTag      MarketingTag?  @relation("SequenceTriggerTag", fields: [triggerTagId], references: [id])
+  triggerType  SequenceTrigger
+  triggerTagId String? // For TAG_ADDED trigger
+  triggerTag   MarketingTag?   @relation("SequenceTriggerTag", fields: [triggerTagId], references: [id])
 
   // Exit conditions
-  exitTagId       String?        // Exit sequence when this tag is added (e.g., purchased)
-  exitTag         MarketingTag?  @relation("SequenceExitTag", fields: [exitTagId], references: [id])
-  exitOnReply     Boolean        @default(false) // Exit if user replies to any email
-  exitOnClick     Boolean        @default(false) // Exit if user clicks CTA
+  exitTagId   String? // Exit sequence when this tag is added (e.g., purchased)
+  exitTag     MarketingTag? @relation("SequenceExitTag", fields: [exitTagId], references: [id])
+  exitOnReply Boolean       @default(false) // Exit if user replies to any email
+  exitOnClick Boolean       @default(false) // Exit if user clicks CTA
 
   // Settings
-  isActive        Boolean        @default(false)
-  isSystem        Boolean        @default(false)
-  priority        Int            @default(0) // Higher = runs first if multiple match
+  isActive Boolean @default(false)
+  isSystem Boolean @default(false)
+  priority Int     @default(0) // Higher = runs first if multiple match
 
   // Stats (cached)
-  totalEnrolled   Int            @default(0)
-  totalCompleted  Int            @default(0)
-  totalExited     Int            @default(0)
+  totalEnrolled  Int @default(0)
+  totalCompleted Int @default(0)
+  totalExited    Int @default(0)
 
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  emails          SequenceEmail[]
-  enrollments     SequenceEnrollment[]
+  emails      SequenceEmail[]
+  enrollments SequenceEnrollment[]
 
   @@index([slug])
   @@index([isActive])
@@ -1347,80 +1365,80 @@ model Sequence {
 }
 
 enum SequenceTrigger {
-  TAG_ADDED           // When specific tag is added
-  USER_REGISTERED     // New user signup
+  TAG_ADDED // When specific tag is added
+  USER_REGISTERED // New user signup
   MINI_DIPLOMA_STARTED
   MINI_DIPLOMA_COMPLETED
   TRAINING_STARTED
   CHALLENGE_STARTED
   CHALLENGE_COMPLETED
   COURSE_ENROLLED
-  MANUAL              // Manually enrolled by admin
+  MANUAL // Manually enrolled by admin
 }
 
 model SequenceEmail {
-  id              String        @id @default(cuid())
-  sequenceId      String
+  id         String @id @default(cuid())
+  sequenceId String
 
   // Email content (can link to template or custom)
-  emailTemplateId String?       // Link to EmailTemplate
-  customSubject   String?       // Override subject
-  customContent   String?       @db.Text // Override content
+  emailTemplateId String? // Link to EmailTemplate
+  customSubject   String? // Override subject
+  customContent   String? @db.Text // Override content
 
   // Timing
-  order           Int           @default(0)
-  delayDays       Int           @default(0) // Days after previous email
-  delayHours      Int           @default(0) // Hours after previous email
-  sendAtHour      Int?          // Specific hour to send (0-23), null = immediate
-  sendOnWeekends  Boolean       @default(false)
+  order          Int     @default(0)
+  delayDays      Int     @default(0) // Days after previous email
+  delayHours     Int     @default(0) // Hours after previous email
+  sendAtHour     Int? // Specific hour to send (0-23), null = immediate
+  sendOnWeekends Boolean @default(false)
 
   // Conditions (optional)
-  requiresTagId   String?       // Only send if user has this tag
-  skipIfTagId     String?       // Skip if user has this tag
+  requiresTagId String? // Only send if user has this tag
+  skipIfTagId   String? // Skip if user has this tag
 
   // Settings
-  isActive        Boolean       @default(true)
+  isActive Boolean @default(true)
 
   // Stats
-  sentCount       Int           @default(0)
-  openCount       Int           @default(0)
-  clickCount      Int           @default(0)
-  replyCount      Int           @default(0)
+  sentCount  Int @default(0)
+  openCount  Int @default(0)
+  clickCount Int @default(0)
+  replyCount Int @default(0)
 
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  sequence        Sequence      @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
-  emailTemplate   EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
-  sends           EmailSend[]
+  sequence      Sequence       @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  emailTemplate EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
+  sends         EmailSend[]
 
   @@index([sequenceId])
   @@index([order])
 }
 
 model SequenceEnrollment {
-  id              String                  @id @default(cuid())
-  userId          String
-  sequenceId      String
+  id         String @id @default(cuid())
+  userId     String
+  sequenceId String
 
   // Progress
-  status          SequenceEnrollmentStatus @default(ACTIVE)
-  currentEmailIndex Int                   @default(0)
-  nextSendAt      DateTime?               // When next email should be sent
+  status            SequenceEnrollmentStatus @default(ACTIVE)
+  currentEmailIndex Int                      @default(0)
+  nextSendAt        DateTime? // When next email should be sent
 
   // Timestamps
-  enrolledAt      DateTime                @default(now())
-  completedAt     DateTime?
-  exitedAt        DateTime?
-  exitReason      String?                 // completed, tag_added, replied, clicked, manual
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  exitedAt    DateTime?
+  exitReason  String? // completed, tag_added, replied, clicked, manual
 
   // Stats
-  emailsReceived  Int                     @default(0)
-  emailsOpened    Int                     @default(0)
-  emailsClicked   Int                     @default(0)
+  emailsReceived Int @default(0)
+  emailsOpened   Int @default(0)
+  emailsClicked  Int @default(0)
 
-  user            User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sequence        Sequence                @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sequence Sequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
 
   @@unique([userId, sequenceId])
   @@index([userId])
@@ -1439,7 +1457,7 @@ enum SequenceEnrollmentStatus {
 // ==================== EMAIL TRACKING ====================
 
 model EmailSend {
-  id              String        @id @default(cuid())
+  id String @id @default(cuid())
 
   // Who and what
   userId          String
@@ -1447,38 +1465,38 @@ model EmailSend {
   sequenceEmailId String?
 
   // Resend data
-  resendId        String?       @unique // Resend message ID for tracking
+  resendId String? @unique // Resend message ID for tracking
 
   // Email details (snapshot at send time)
-  toEmail         String
-  subject         String
-  preheader       String?
+  toEmail   String
+  subject   String
+  preheader String?
 
   // Status
-  status          EmailStatus   @default(QUEUED)
-  sentAt          DateTime?
-  deliveredAt     DateTime?
-  openedAt        DateTime?
-  clickedAt       DateTime?
-  bouncedAt       DateTime?
-  complainedAt    DateTime?
-  unsubscribedAt  DateTime?
+  status         EmailStatus @default(QUEUED)
+  sentAt         DateTime?
+  deliveredAt    DateTime?
+  openedAt       DateTime?
+  clickedAt      DateTime?
+  bouncedAt      DateTime?
+  complainedAt   DateTime?
+  unsubscribedAt DateTime?
 
   // Engagement
-  openCount       Int           @default(0)
-  clickCount      Int           @default(0)
-  clickedLinks    String[]      // URLs that were clicked
+  openCount    Int      @default(0)
+  clickCount   Int      @default(0)
+  clickedLinks String[] // URLs that were clicked
 
   // Error tracking
-  errorMessage    String?
+  errorMessage String?
 
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  emailTemplate   EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
-  sequenceEmail   SequenceEmail? @relation(fields: [sequenceEmailId], references: [id])
-  events          EmailEvent[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailTemplate EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
+  sequenceEmail SequenceEmail? @relation(fields: [sequenceEmailId], references: [id])
+  events        EmailEvent[]
 
   @@index([userId])
   @@index([emailTemplateId])
@@ -1502,15 +1520,15 @@ enum EmailStatus {
 }
 
 model EmailEvent {
-  id          String    @id @default(cuid())
+  id          String @id @default(cuid())
   emailSendId String
 
-  eventType   String    // delivered, opened, clicked, bounced, complained, unsubscribed
-  eventData   Json?     // Extra data from webhook (IP, user agent, link clicked, etc.)
+  eventType String // delivered, opened, clicked, bounced, complained, unsubscribed
+  eventData Json? // Extra data from webhook (IP, user agent, link clicked, etc.)
 
-  createdAt   DateTime  @default(now())
+  createdAt DateTime @default(now())
 
-  emailSend   EmailSend @relation(fields: [emailSendId], references: [id], onDelete: Cascade)
+  emailSend EmailSend @relation(fields: [emailSendId], references: [id], onDelete: Cascade)
 
   @@index([emailSendId])
   @@index([eventType])
@@ -1520,39 +1538,39 @@ model EmailEvent {
 // ==================== EMAIL BOUNCE RECOVERY ====================
 
 model EmailBounce {
-  id              String   @id @default(cuid())
-  userId          String
-  
+  id     String @id @default(cuid())
+  userId String
+
   // Original bounce info
-  originalEmail   String
-  bounceType      String   // "hard" | "soft" | "complaint"
-  bounceCount     Int      @default(1)
-  bounceReason    String?  @db.Text
-  
+  originalEmail String
+  bounceType    String // "hard" | "soft" | "complaint"
+  bounceCount   Int     @default(1)
+  bounceReason  String? @db.Text
+
   // AI Typo Detection
-  suggestedEmail  String?
-  suggestionSource String? // "rules" | "ai"
+  suggestedEmail       String?
+  suggestionSource     String? // "rules" | "ai"
   suggestionConfidence Float? // 0.0 - 1.0
-  
+
   // NeverBounce Verification
-  neverBounceResult String? // "valid" | "invalid" | "unknown" | "catchall"
+  neverBounceResult    String? // "valid" | "invalid" | "unknown" | "catchall"
   neverBounceCheckedAt DateTime?
-  
+
   // Resolution Status
-  status          String   @default("pending") // "pending" | "auto_fixed" | "manual_fixed" | "ignored" | "no_suggestion"
-  fixedAt         DateTime?
-  fixedBy         String?  // Admin user ID if manually fixed
-  
+  status  String    @default("pending") // "pending" | "auto_fixed" | "manual_fixed" | "ignored" | "no_suggestion"
+  fixedAt DateTime?
+  fixedBy String? // Admin user ID if manually fixed
+
   // Resend tracking
   resendAttempted Boolean  @default(false)
   resendSucceeded Boolean?
-  resendEmailId   String?  // ID of resent EmailSend
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  resendEmailId   String? // ID of resent EmailSend
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, originalEmail])
   @@index([status])
   @@index([bounceType])
@@ -1562,16 +1580,16 @@ model EmailBounce {
 // ==================== META CONVERSIONS TRACKING ====================
 
 model MetaEventLog {
-  id          String    @id @default(cuid())
-  eventName   String    // Lead, Purchase, etc.
-  eventId     String    // Meta event_id for deduplication
-  userEmail   String?
-  pixelId     String?
-  payload     Json?     // What we sent to Meta
-  response    Json?     // What Meta returned
-  status      String    @default("pending") // pending, success, error
+  id        String  @id @default(cuid())
+  eventName String // Lead, Purchase, etc.
+  eventId   String // Meta event_id for deduplication
+  userEmail String?
+  pixelId   String?
+  payload   Json? // What we sent to Meta
+  response  Json? // What Meta returned
+  status    String  @default("pending") // pending, success, error
 
-  createdAt   DateTime  @default(now())
+  createdAt DateTime @default(now())
 
   @@index([eventName])
   @@index([userEmail])
@@ -1581,29 +1599,29 @@ model MetaEventLog {
 // ==================== EMAIL ANALYTICS (Daily Aggregates) ====================
 
 model EmailAnalytics {
-  id          String    @id @default(cuid())
-  date        DateTime  @db.Date // Date for this aggregate
+  id   String   @id @default(cuid())
+  date DateTime @db.Date // Date for this aggregate
 
   // Volume
-  sent        Int       @default(0)
-  delivered   Int       @default(0)
-  bounced     Int       @default(0)
-  complained  Int       @default(0)
+  sent       Int @default(0)
+  delivered  Int @default(0)
+  bounced    Int @default(0)
+  complained Int @default(0)
 
   // Engagement
-  opened      Int       @default(0)
-  uniqueOpens Int       @default(0)
-  clicked     Int       @default(0)
-  uniqueClicks Int      @default(0)
-  unsubscribed Int      @default(0)
+  opened       Int @default(0)
+  uniqueOpens  Int @default(0)
+  clicked      Int @default(0)
+  uniqueClicks Int @default(0)
+  unsubscribed Int @default(0)
 
   // Rates (calculated)
-  deliveryRate Float    @default(0)
-  openRate    Float     @default(0)
-  clickRate   Float     @default(0)
+  deliveryRate Float @default(0)
+  openRate     Float @default(0)
+  clickRate    Float @default(0)
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([date])
   @@index([date])
@@ -1612,20 +1630,20 @@ model EmailAnalytics {
 // ==================== USER CREDIT SCORE (SmartRoute) ====================
 
 model UserCreditProfile {
-  id              String    @id @default(cuid())
-  userId          String    @unique
-  creditScore     Int?      // Actual credit score if provided
-  creditTier      CreditTier @default(UNKNOWN)
-  incomeRange     String?   // e.g., "50k-75k"
-  employmentStatus String?
-  financingInterest Boolean @default(false)
-  lastUpdated     DateTime  @default(now())
+  id                String     @id @default(cuid())
+  userId            String     @unique
+  creditScore       Int? // Actual credit score if provided
+  creditTier        CreditTier @default(UNKNOWN)
+  incomeRange       String? // e.g., "50k-75k"
+  employmentStatus  String?
+  financingInterest Boolean    @default(false)
+  lastUpdated       DateTime   @default(now())
 
   // Calculated fields for SmartRoute
-  recommendedTier String?   // low, mid, high based on behavior
+  recommendedTier String? // low, mid, high based on behavior
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([creditTier])
@@ -1641,16 +1659,16 @@ enum CreditTier {
 // ==================== BEHAVIOR TRACKING ====================
 
 model UserBehavior {
-  id            String    @id @default(cuid())
-  userId        String
-  behaviorType  String    // catalog_view, course_page_view, pricing_view, etc.
-  entityId      String?   // courseId, pageId, etc.
-  count         Int       @default(1)
-  metadata      Json?
-  lastOccurred  DateTime  @default(now())
+  id           String   @id @default(cuid())
+  userId       String
+  behaviorType String // catalog_view, course_page_view, pricing_view, etc.
+  entityId     String? // courseId, pageId, etc.
+  count        Int      @default(1)
+  metadata     Json?
+  lastOccurred DateTime @default(now())
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, behaviorType, entityId])
   @@index([userId])
@@ -1661,20 +1679,20 @@ model UserBehavior {
 // ==================== SCHEDULED JOBS ====================
 
 model ScheduledJob {
-  id            String      @id @default(cuid())
-  jobType       String      // workflow_action, bulk_email, reminder, etc.
-  referenceId   String?     // ID of the related entity
-  userId        String?     // Target user if applicable
-  payload       Json        // Job-specific data
-  scheduledFor  DateTime
-  status        JobStatus   @default(PENDING)
-  attempts      Int         @default(0)
-  maxAttempts   Int         @default(3)
-  lastError     String?     @db.Text
-  executedAt    DateTime?
+  id           String    @id @default(cuid())
+  jobType      String // workflow_action, bulk_email, reminder, etc.
+  referenceId  String? // ID of the related entity
+  userId       String? // Target user if applicable
+  payload      Json // Job-specific data
+  scheduledFor DateTime
+  status       JobStatus @default(PENDING)
+  attempts     Int       @default(0)
+  maxAttempts  Int       @default(3)
+  lastError    String?   @db.Text
+  executedAt   DateTime?
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status])
   @@index([scheduledFor])
@@ -1692,72 +1710,72 @@ enum JobStatus {
 // ==================== CHALLENGES ====================
 
 model Challenge {
-  id            String    @id @default(cuid())
-  title         String
-  slug          String    @unique
-  description   String    @db.Text
-  thumbnail     String?
-  durationDays  Int       @default(7)
-  unlockTime    String    @default("08:00") // Time to unlock next day
-  isActive      Boolean   @default(true)
-  isFeatured    Boolean   @default(false)
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
-  modules       ChallengeModule[]
-  enrollments   ChallengeEnrollment[]
-  badges        ChallengeBadge[]
-  
+  id           String  @id @default(cuid())
+  title        String
+  slug         String  @unique
+  description  String  @db.Text
+  thumbnail    String?
+  durationDays Int     @default(7)
+  unlockTime   String  @default("08:00") // Time to unlock next day
+  isActive     Boolean @default(true)
+  isFeatured   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  modules     ChallengeModule[]
+  enrollments ChallengeEnrollment[]
+  badges      ChallengeBadge[]
+
   @@index([slug])
   @@index([isActive])
 }
 
 model ChallengeModule {
-  id              String    @id @default(cuid())
+  id              String  @id @default(cuid())
   challengeId     String
-  day             Int       // Day 1, 2, 3...
+  day             Int // Day 1, 2, 3...
   title           String
-  description     String?   @db.Text
-  videoId         String?   // Wistia video ID
-  content         String?   @db.Text // Rich text content
-  actionTask      String?   @db.Text // Daily action task
-  communityPrompt String?   // Prompt for community discussion
-  
-  createdAt       DateTime  @default(now())
-  
-  challenge       Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  
+  description     String? @db.Text
+  videoId         String? // Wistia video ID
+  content         String? @db.Text // Rich text content
+  actionTask      String? @db.Text // Daily action task
+  communityPrompt String? // Prompt for community discussion
+
+  createdAt DateTime @default(now())
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
   @@unique([challengeId, day])
   @@index([challengeId])
 }
 
 model ChallengeEnrollment {
-  id              String    @id @default(cuid())
-  userId          String
-  challengeId     String
-  startedAt       DateTime  @default(now())
-  currentDay      Int       @default(1)
-  completedDays   Int[]     @default([])
-  completedAt     DateTime?
-  
-  challenge       Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  
+  id            String    @id @default(cuid())
+  userId        String
+  challengeId   String
+  startedAt     DateTime  @default(now())
+  currentDay    Int       @default(1)
+  completedDays Int[]     @default([])
+  completedAt   DateTime?
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
   @@unique([userId, challengeId])
   @@index([userId])
   @@index([challengeId])
 }
 
 model ChallengeBadge {
-  id              String    @id @default(cuid())
-  challengeId     String
-  day             Int       // 0 = enrollment badge, 7 = completion badge
-  name            String
-  icon            String    // Emoji or icon name
-  description     String?
-  
-  challenge       Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  
+  id          String  @id @default(cuid())
+  challengeId String
+  day         Int // 0 = enrollment badge, 7 = completion badge
+  name        String
+  icon        String // Emoji or icon name
+  description String?
+
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
   @@unique([challengeId, day])
   @@index([challengeId])
 }
@@ -1765,36 +1783,36 @@ model ChallengeBadge {
 // ==================== DFY RESOURCES ====================
 
 model Resource {
-  id            String          @id @default(cuid())
+  id            String           @id @default(cuid())
   title         String
-  description   String?         @db.Text
+  description   String?          @db.Text
   thumbnail     String?
   category      ResourceCategory
-  accessLevel   ResourceAccess  @default(FREE)
-  downloadCount Int             @default(0)
-  isActive      Boolean         @default(true)
-  
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  
-  files         ResourceFile[]
-  
+  accessLevel   ResourceAccess   @default(FREE)
+  downloadCount Int              @default(0)
+  isActive      Boolean          @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  files ResourceFile[]
+
   @@index([category])
   @@index([accessLevel])
 }
 
 model ResourceFile {
-  id          String    @id @default(cuid())
-  resourceId  String
-  name        String
-  url         String
-  fileType    String    // pdf, docx, xlsx, etc.
-  size        Int?      // File size in bytes
-  
-  createdAt   DateTime  @default(now())
-  
-  resource    Resource  @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  
+  id         String @id @default(cuid())
+  resourceId String
+  name       String
+  url        String
+  fileType   String // pdf, docx, xlsx, etc.
+  size       Int? // File size in bytes
+
+  createdAt DateTime @default(now())
+
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
   @@index([resourceId])
 }
 
@@ -1819,93 +1837,93 @@ enum ResourceAccess {
 // ==================== COACH CRM ====================
 
 model Client {
-  id              String        @id @default(cuid())
-  coachId         String
-  name            String
-  email           String?
-  phone           String?
-  avatar          String?
-  notes           String?       @db.Text
-  tags            String[]
-  status          ClientStatus  @default(ACTIVE)
-  
+  id      String       @id @default(cuid())
+  coachId String
+  name    String
+  email   String?
+  phone   String?
+  avatar  String?
+  notes   String?      @db.Text
+  tags    String[]
+  status  ClientStatus @default(ACTIVE)
+
   // Personal Info
-  dateOfBirth     DateTime?
-  gender          String?
-  occupation      String?
-  timezone        String?
-  
+  dateOfBirth DateTime?
+  gender      String?
+  occupation  String?
+  timezone    String?
+
   // Health Profile
-  primaryConcerns String?       @db.Text  // Main health concerns
-  healthGoals     String?       @db.Text  // What they want to achieve
-  currentHealth   String?       @db.Text  // Current health status overview
-  
+  primaryConcerns String? @db.Text // Main health concerns
+  healthGoals     String? @db.Text // What they want to achieve
+  currentHealth   String? @db.Text // Current health status overview
+
   // Health History
-  conditions      String[]      // Diagnosed conditions
-  medications     String[]      // Current medications
-  supplements     String[]      // Current supplements
-  allergies       String[]      // Known allergies
-  surgeries       String?       @db.Text  // Past surgeries
-  familyHistory   String?       @db.Text  // Family health history
-  
+  conditions    String[] // Diagnosed conditions
+  medications   String[] // Current medications
+  supplements   String[] // Current supplements
+  allergies     String[] // Known allergies
+  surgeries     String?  @db.Text // Past surgeries
+  familyHistory String?  @db.Text // Family health history
+
   // Lifestyle
-  dietType        String?       // Vegan, Paleo, etc.
-  sleepHours      Float?        // Average sleep
-  exerciseFreq    String?       // How often they exercise
-  stressLevel     Int?          // 1-10 scale
-  
+  dietType     String? // Vegan, Paleo, etc.
+  sleepHours   Float? // Average sleep
+  exerciseFreq String? // How often they exercise
+  stressLevel  Int? // 1-10 scale
+
   // Assessments (tracked over time as JSON array)
-  assessments     Json?         // [{date, type, score, notes}]
-  
+  assessments Json? // [{date, type, score, notes}]
+
   // Coaching
-  startDate       DateTime?     // When coaching started
-  packageType     String?       // 4-week, 8-week, etc.
-  nextSession     DateTime?     // Next scheduled session
-  lastSession     DateTime?     // Last session date
-  totalSessions   Int           @default(0)
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  
-  sessions        ClientSession[]
-  protocols       ClientProtocol[]
-  tasks           ClientTask[]
-  
+  startDate     DateTime? // When coaching started
+  packageType   String? // 4-week, 8-week, etc.
+  nextSession   DateTime? // Next scheduled session
+  lastSession   DateTime? // Last session date
+  totalSessions Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  ClientSession[]
+  protocols ClientProtocol[]
+  tasks     ClientTask[]
+
   @@index([coachId])
   @@index([status])
 }
 
 model ClientSession {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   clientId    String
   date        DateTime
-  duration    Int?      // Duration in minutes
-  notes       String?   @db.Text
-  sessionType String?   // Initial, Follow-up, Check-in
-  
-  createdAt   DateTime  @default(now())
-  
-  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
+  duration    Int? // Duration in minutes
+  notes       String?  @db.Text
+  sessionType String? // Initial, Follow-up, Check-in
+
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
   @@index([clientId])
   @@index([date])
 }
 
 model ClientProtocol {
-  id          String          @id @default(cuid())
+  id          String         @id @default(cuid())
   clientId    String
   name        String
   description String?
-  steps       Json            // Array of protocol steps
+  steps       Json // Array of protocol steps
   startDate   DateTime?
   endDate     DateTime?
-  status      ProtocolStatus  @default(ACTIVE)
-  
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  
-  client      Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
+  status      ProtocolStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
   @@index([clientId])
 }
 
@@ -1917,13 +1935,13 @@ model ClientTask {
   dueDate     DateTime?
   completed   Boolean   @default(false)
   completedAt DateTime?
-  priority    String?   // low, medium, high
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  
-  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  
+  priority    String? // low, medium, high
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
   @@index([clientId])
   @@index([dueDate])
   @@index([completed])
@@ -1946,52 +1964,52 @@ enum ProtocolStatus {
 // ==================== EBOOKS / LIBRARY ====================
 
 model Ebook {
-  id            String    @id @default(cuid())
-  title         String
-  author        String?
-  description   String?   @db.Text
-  coverImage    String?
-  isFeatured    Boolean   @default(false)
-  isPublished   Boolean   @default(false)
-  accessLevel   ResourceAccess @default(FREE)
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
-  chapters      EbookChapter[]
-  progress      EbookProgress[]
-  
+  id          String         @id @default(cuid())
+  title       String
+  author      String?
+  description String?        @db.Text
+  coverImage  String?
+  isFeatured  Boolean        @default(false)
+  isPublished Boolean        @default(false)
+  accessLevel ResourceAccess @default(FREE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapters EbookChapter[]
+  progress EbookProgress[]
+
   @@index([isPublished])
 }
 
 model EbookChapter {
-  id          String    @id @default(cuid())
-  ebookId     String
-  title       String
-  content     String    @db.Text
-  order       Int       @default(0)
-  
-  createdAt   DateTime  @default(now())
-  
-  ebook       Ebook     @relation(fields: [ebookId], references: [id], onDelete: Cascade)
-  
+  id      String @id @default(cuid())
+  ebookId String
+  title   String
+  content String @db.Text
+  order   Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  ebook Ebook @relation(fields: [ebookId], references: [id], onDelete: Cascade)
+
   @@index([ebookId])
   @@index([order])
 }
 
 model EbookProgress {
-  id              String    @id @default(cuid())
-  userId          String
-  ebookId         String
-  currentChapter  Int       @default(0)
-  completedAt     DateTime?
-  bookmarks       Json?     // Array of bookmarked positions
-  highlights      Json?     // Array of highlights
-  
-  updatedAt       DateTime  @updatedAt
-  
-  ebook           Ebook     @relation(fields: [ebookId], references: [id], onDelete: Cascade)
-  
+  id             String    @id @default(cuid())
+  userId         String
+  ebookId        String
+  currentChapter Int       @default(0)
+  completedAt    DateTime?
+  bookmarks      Json? // Array of bookmarked positions
+  highlights     Json? // Array of highlights
+
+  updatedAt DateTime @updatedAt
+
+  ebook Ebook @relation(fields: [ebookId], references: [id], onDelete: Cascade)
+
   @@unique([userId, ebookId])
   @@index([userId])
   @@index([ebookId])
@@ -2000,44 +2018,44 @@ model EbookProgress {
 // ==================== DFY BUSINESS KITS MARKETPLACE ====================
 
 model DFYProduct {
-  id                String          @id @default(cuid())
-  title             String
-  slug              String          @unique
-  description       String          @db.Text
-  shortDescription  String?
-  thumbnail         String?
-  previewImage      String?         // Mockup image showing what's included
-  price             Decimal         @db.Decimal(10, 2)
-  compareAtPrice    Decimal?        @db.Decimal(10, 2) // Strike-through price
-  productType       DFYProductType
-  category          String          // functional-medicine, gut-health, hormones
-  specialty         String?         // detox, menopause, adrenal, etc.
-  duration          String?         // 4-week, 8-week, 12-week, 6-month
-  sessionsCount     Int?            // Number of coaching sessions
-  materialsCount    Int?            // Number of materials/files included
-  isActive          Boolean         @default(true)
-  isFeatured        Boolean         @default(false)
-  isBestseller      Boolean         @default(false)
-  sortOrder         Int             @default(0)
-  
+  id               String         @id @default(cuid())
+  title            String
+  slug             String         @unique
+  description      String         @db.Text
+  shortDescription String?
+  thumbnail        String?
+  previewImage     String? // Mockup image showing what's included
+  price            Decimal        @db.Decimal(10, 2)
+  compareAtPrice   Decimal?       @db.Decimal(10, 2) // Strike-through price
+  productType      DFYProductType
+  category         String // functional-medicine, gut-health, hormones
+  specialty        String? // detox, menopause, adrenal, etc.
+  duration         String? // 4-week, 8-week, 12-week, 6-month
+  sessionsCount    Int? // Number of coaching sessions
+  materialsCount   Int? // Number of materials/files included
+  isActive         Boolean        @default(true)
+  isFeatured       Boolean        @default(false)
+  isBestseller     Boolean        @default(false)
+  sortOrder        Int            @default(0)
+
   // Reviews
-  avgRating         Float           @default(5.0)
-  reviewCount       Int             @default(0)
-  
+  avgRating   Float @default(5.0)
+  reviewCount Int   @default(0)
+
   // What's included - feature bullets
-  features          String[]        // Array of feature descriptions
-  highlights        String[]        // Key selling points
-  
+  features   String[] // Array of feature descriptions
+  highlights String[] // Key selling points
+
   // For bundles
-  bundleProductIds  String[]        // IDs of products in this bundle
-  bundleDiscount    Decimal?        @db.Decimal(10, 2) // Bundle savings
-  
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  
-  files             DFYProductFile[]
-  purchases         DFYPurchase[]
-  
+  bundleProductIds String[] // IDs of products in this bundle
+  bundleDiscount   Decimal? @db.Decimal(10, 2) // Bundle savings
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  files     DFYProductFile[]
+  purchases DFYPurchase[]
+
   @@index([slug])
   @@index([category])
   @@index([specialty])
@@ -2047,46 +2065,46 @@ model DFYProduct {
 }
 
 enum DFYProductType {
-  CORE_PROGRAM      // 4-week, 8-week, 12-week, 6-month programs
-  SPECIALTY_KIT     // Focused kits (Detox, Gut Reset, Hormone, etc.)
-  BUNDLE            // Multiple products together at discount
-  TEMPLATE_PACK     // Forms, worksheets, assessments
-  MARKETING_KIT     // Social media, email templates
-  EBOOK             // E-Books and guided reading materials
+  CORE_PROGRAM // 4-week, 8-week, 12-week, 6-month programs
+  SPECIALTY_KIT // Focused kits (Detox, Gut Reset, Hormone, etc.)
+  BUNDLE // Multiple products together at discount
+  TEMPLATE_PACK // Forms, worksheets, assessments
+  MARKETING_KIT // Social media, email templates
+  EBOOK // E-Books and guided reading materials
 }
 
 model DFYProductFile {
-  id          String    @id @default(cuid())
+  id          String  @id @default(cuid())
   productId   String
   name        String
   description String?
   fileUrl     String
-  fileType    String    // pdf, docx, xlsx, zip, mp4, canva
-  fileSize    Int?      // Size in bytes
-  category    String?   // client-materials, marketing, session-scripts, etc.
-  sortOrder   Int       @default(0)
-  
-  createdAt   DateTime  @default(now())
-  
-  product     DFYProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
+  fileType    String // pdf, docx, xlsx, zip, mp4, canva
+  fileSize    Int? // Size in bytes
+  category    String? // client-materials, marketing, session-scripts, etc.
+  sortOrder   Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  product DFYProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
   @@index([productId])
   @@index([category])
 }
 
 model DFYPurchase {
-  id              String      @id @default(cuid())
+  id              String         @id @default(cuid())
   userId          String
   productId       String
-  purchasePrice   Decimal     @db.Decimal(10, 2)
-  discountApplied Decimal?    @db.Decimal(10, 2)
+  purchasePrice   Decimal        @db.Decimal(10, 2)
+  discountApplied Decimal?       @db.Decimal(10, 2)
   promoCode       String?
   status          PurchaseStatus @default(COMPLETED)
-  
-  createdAt       DateTime    @default(now())
 
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product         DFYProduct  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product DFYProduct @relation(fields: [productId], references: [id])
 
   @@unique([userId, productId])
   @@index([userId])
@@ -2102,17 +2120,17 @@ enum PurchaseStatus {
 
 // Coach Program Templates (unlocked via DFY purchases)
 model CoachProgramTemplate {
-  id              String    @id @default(cuid())
-  coachId         String    // The coach who owns this template
-  dfyProductId    String?   // Source DFY product if unlocked via purchase
-  name            String
-  description     String?
-  duration        Int       // Duration in weeks
-  structure       Json      // Program structure: {weeks: [{title, sessions, tasks}]}
-  isActive        Boolean   @default(true)
+  id           String  @id @default(cuid())
+  coachId      String // The coach who owns this template
+  dfyProductId String? // Source DFY product if unlocked via purchase
+  name         String
+  description  String?
+  duration     Int // Duration in weeks
+  structure    Json // Program structure: {weeks: [{title, sessions, tasks}]}
+  isActive     Boolean @default(true)
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([coachId])
   @@index([dfyProductId])
@@ -2121,39 +2139,39 @@ model CoachProgramTemplate {
 // ==================== EMAIL TEMPLATES ====================
 
 model EmailTemplate {
-  id              String          @id @default(cuid())
-  slug            String          @unique // welcome, password-reset, module-unlocked, etc.
-  name            String          // Display name: "Welcome Email"
-  description     String?         // "Sent when a new user registers"
-  category        EmailCategory   @default(ACCOUNT)
+  id          String        @id @default(cuid())
+  slug        String        @unique // welcome, password-reset, module-unlocked, etc.
+  name        String // Display name: "Welcome Email"
+  description String? // "Sent when a new user registers"
+  category    EmailCategory @default(ACCOUNT)
 
   // Email content
-  subject         String          // Email subject line
-  preheader       String?         // Preview text in inbox
-  htmlContent     String          @db.Text // Full HTML template
-  textContent     String?         @db.Text // Plain text fallback
+  subject     String // Email subject line
+  preheader   String? // Preview text in inbox
+  htmlContent String  @db.Text // Full HTML template
+  textContent String? @db.Text // Plain text fallback
 
   // Tags for different courses/diplomas
-  courseTag       String?         // null = all courses, or specific: "functional-medicine"
+  courseTag String? // null = all courses, or specific: "functional-medicine"
 
   // Available placeholders
-  placeholders    String[]        // ["firstName", "lastName", "courseName", "moduleTitle"]
+  placeholders String[] // ["firstName", "lastName", "courseName", "moduleTitle"]
 
   // Settings
-  isActive        Boolean         @default(true)
-  isSystem        Boolean         @default(false) // System templates can't be deleted
+  isActive Boolean @default(true)
+  isSystem Boolean @default(false) // System templates can't be deleted
 
   // Analytics (updated by email send hooks)
-  sentCount       Int             @default(0)
-  openCount       Int             @default(0)
-  clickCount      Int             @default(0)
+  sentCount  Int @default(0)
+  openCount  Int @default(0)
+  clickCount Int @default(0)
 
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  sequenceEmails  SequenceEmail[]
-  emailSends      EmailSend[]
+  sequenceEmails SequenceEmail[]
+  emailSends     EmailSend[]
 
   @@index([slug])
   @@index([category])
@@ -2162,29 +2180,29 @@ model EmailTemplate {
 }
 
 enum EmailCategory {
-  ACCOUNT         // Welcome, Password Reset
-  MINI_DIPLOMA    // Enrollment, Module Unlock, Module Complete, Diploma Complete
-  GRADUATE        // Training Unlocked, Challenge emails
-  CERTIFICATION   // Certificate Issued, Payment Receipt
-  ENGAGEMENT      // Inactive Reminder, Coach Reply
-  RESOURCES       // eBook Download, Badge Earned
-  MARKETING       // Course Update, Announcement
+  ACCOUNT // Welcome, Password Reset
+  MINI_DIPLOMA // Enrollment, Module Unlock, Module Complete, Diploma Complete
+  GRADUATE // Training Unlocked, Challenge emails
+  CERTIFICATION // Certificate Issued, Payment Receipt
+  ENGAGEMENT // Inactive Reminder, Coach Reply
+  RESOURCES // eBook Download, Badge Earned
+  MARKETING // Course Update, Announcement
 }
 
 // ==================== SALES LIVE CHAT ====================
 
 model SalesChat {
-  id            String    @id @default(cuid())
-  visitorId     String    // Anonymous visitor ID or session ID
-  page          String    // Which page the chat occurred on
-  message       String    @db.Text
-  isFromVisitor Boolean   @default(true)
-  isRead        Boolean   @default(false)
-  repliedBy     String?   // Admin user ID if human replied
-  repliedByUser User?     @relation("SalesChatReplies", fields: [repliedBy], references: [id])
-  visitorName   String?   // Name if they opted in
-  visitorEmail  String?   // Email if they opted in
-  createdAt     DateTime  @default(now())
+  id            String   @id @default(cuid())
+  visitorId     String // Anonymous visitor ID or session ID
+  page          String // Which page the chat occurred on
+  message       String   @db.Text
+  isFromVisitor Boolean  @default(true)
+  isRead        Boolean  @default(false)
+  repliedBy     String? // Admin user ID if human replied
+  repliedByUser User?    @relation("SalesChatReplies", fields: [repliedBy], references: [id])
+  visitorName   String? // Name if they opted in
+  visitorEmail  String? // Email if they opted in
+  createdAt     DateTime @default(now())
 
   @@index([visitorId])
   @@index([page])
@@ -2193,19 +2211,19 @@ model SalesChat {
 }
 
 model ChatOptin {
-  id              String    @id @default(cuid())
-  visitorId       String    @unique
-  name            String
-  email           String?
-  page            String    // Which page they opted in on
-  ipAddress       String?
-  userAgent       String?   @db.Text
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
+  id        String   @id @default(cuid())
+  visitorId String   @unique
+  name      String
+  email     String?
+  page      String // Which page they opted in on
+  ipAddress String?
+  userAgent String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Email sequence tracking
-  emailsSent      Int       @default(0)  // Number of chat conversion emails sent
-  lastEmailSentAt DateTime?              // When last email was sent
+  emailsSent      Int       @default(0) // Number of chat conversion emails sent
+  lastEmailSentAt DateTime? // When last email was sent
 
   @@index([email])
   @@index([createdAt])
@@ -2241,37 +2259,37 @@ enum TicketCategory {
 }
 
 model SupportTicket {
-  id              String          @id @default(cuid())
-  ticketNumber    Int             @unique @default(autoincrement())
-  subject         String
-  status          TicketStatus    @default(NEW)
-  priority        TicketPriority  @default(MEDIUM)
-  category        TicketCategory  @default(GENERAL)
+  id           String         @id @default(cuid())
+  ticketNumber Int            @unique @default(autoincrement())
+  subject      String
+  status       TicketStatus   @default(NEW)
+  priority     TicketPriority @default(MEDIUM)
+  category     TicketCategory @default(GENERAL)
 
   // Customer info
-  customerName    String
-  customerEmail   String
-  userId          String?         // Link to User if they have an account
-  user            User?           @relation("UserTickets", fields: [userId], references: [id])
+  customerName  String
+  customerEmail String
+  userId        String? // Link to User if they have an account
+  user          User?   @relation("UserTickets", fields: [userId], references: [id])
 
   // Assignment
-  assignedToId    String?
-  assignedTo      User?           @relation("AssignedTickets", fields: [assignedToId], references: [id])
+  assignedToId String?
+  assignedTo   User?   @relation("AssignedTickets", fields: [assignedToId], references: [id])
 
   // Timestamps
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  firstResponseAt DateTime?       // When staff first replied
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  firstResponseAt DateTime? // When staff first replied
   resolvedAt      DateTime?
   closedAt        DateTime?
 
   // Rating
-  rating          Int?            // 1-5 stars
-  ratingComment   String?         @db.Text
-  ratedAt         DateTime?
+  rating        Int? // 1-5 stars
+  ratingComment String?   @db.Text
+  ratedAt       DateTime?
 
   // Messages
-  messages        TicketMessage[]
+  messages TicketMessage[]
 
   @@index([status])
   @@index([priority])
@@ -2283,28 +2301,27 @@ model SupportTicket {
 }
 
 model TicketMessage {
-  id              String        @id @default(cuid())
-  ticketId        String
-  ticket          SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  id       String        @id @default(cuid())
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 
-  content         String        @db.Text
-  isFromCustomer  Boolean       @default(true)
-  isInternal      Boolean       @default(false)  // Internal notes, not sent to customer
+  content        String  @db.Text
+  isFromCustomer Boolean @default(true)
+  isInternal     Boolean @default(false) // Internal notes, not sent to customer
 
   // If from staff
-  sentById        String?
-  sentBy          User?         @relation("SentTicketMessages", fields: [sentById], references: [id])
+  sentById String?
+  sentBy   User?   @relation("SentTicketMessages", fields: [sentById], references: [id])
 
   // Email tracking
-  emailMessageId  String?       // Resend message ID for threading
-  emailSentAt     DateTime?     // When email was sent to customer
+  emailMessageId String? // Resend message ID for threading
+  emailSentAt    DateTime? // When email was sent to customer
 
-  createdAt       DateTime      @default(now())
+  createdAt DateTime @default(now())
 
   @@index([ticketId])
   @@index([createdAt])
 }
-
 
 // ==========================================
 // NETWORK EFFECTS SUITE
@@ -2315,17 +2332,17 @@ model ZombieProfile {
   id              String   @id @default(cuid())
   name            String
   avatar          String?
-  location        String?  // "Texas", "California" for authenticity
-  personalityType String   // "leader", "struggler", "questioner", "buyer"
-  progressCurve   Json?    // Day-by-day progress pattern
-  backstory       String?  // Short bio for authenticity
+  location        String? // "Texas", "California" for authenticity
+  personalityType String // "leader", "struggler", "questioner", "buyer"
+  progressCurve   Json? // Day-by-day progress pattern
+  backstory       String? // Short bio for authenticity
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
 
   // Relations
-  podMemberships  PodMember[]
-  podMessages     PodMessage[]
-  successEvents   SuccessEvent[]
+  podMemberships PodMember[]
+  podMessages    PodMessage[]
+  successEvents  SuccessEvent[]
 
   @@index([personalityType])
   @@index([isActive])
@@ -2333,18 +2350,18 @@ model ZombieProfile {
 
 // Study Pods - 5-person accountability groups
 model StudyPod {
-  id          String   @id @default(cuid())
-  name        String   // "Rising Stars", "The Achievers"
-  cohortId    String?
-  cohort      Cohort?  @relation(fields: [cohortId], references: [id])
-  courseId    String?  // Optional: pod for specific course
-  maxMembers  Int      @default(5)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  name       String // "Rising Stars", "The Achievers"
+  cohortId   String?
+  cohort     Cohort?  @relation(fields: [cohortId], references: [id])
+  courseId   String? // Optional: pod for specific course
+  maxMembers Int      @default(5)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
 
   // Relations
-  members     PodMember[]
-  messages    PodMessage[]
+  members  PodMember[]
+  messages PodMessage[]
 
   @@index([cohortId])
   @@index([isActive])
@@ -2352,18 +2369,18 @@ model StudyPod {
 }
 
 model PodMember {
-  id          String   @id @default(cuid())
-  podId       String
-  pod         StudyPod @relation(fields: [podId], references: [id], onDelete: Cascade)
-  userId      String?  // Null if zombie
-  user        User?    @relation("UserPodMemberships", fields: [userId], references: [id])
-  zombieId    String?  // Null if real user
-  zombie      ZombieProfile? @relation(fields: [zombieId], references: [id])
-  isZombie    Boolean  @default(false)
-  isCoach     Boolean  @default(false)  // Coach Sarah flag
-  progress    Int      @default(0)
+  id           String         @id @default(cuid())
+  podId        String
+  pod          StudyPod       @relation(fields: [podId], references: [id], onDelete: Cascade)
+  userId       String? // Null if zombie
+  user         User?          @relation("UserPodMemberships", fields: [userId], references: [id])
+  zombieId     String? // Null if real user
+  zombie       ZombieProfile? @relation(fields: [zombieId], references: [id])
+  isZombie     Boolean        @default(false)
+  isCoach      Boolean        @default(false) // Coach Sarah flag
+  progress     Int            @default(0)
   lastActiveAt DateTime?
-  joinedAt    DateTime @default(now())
+  joinedAt     DateTime       @default(now())
 
   @@unique([podId, userId])
   @@index([podId])
@@ -2372,19 +2389,19 @@ model PodMember {
 }
 
 model PodMessage {
-  id          String   @id @default(cuid())
-  podId       String
-  pod         StudyPod @relation(fields: [podId], references: [id], onDelete: Cascade)
-  senderId    String?  // Real user
-  sender      User?    @relation("UserPodMessages", fields: [senderId], references: [id])
-  zombieId    String?  // Zombie sender
-  zombie      ZombieProfile? @relation(fields: [zombieId], references: [id])
-  isCoach     Boolean  @default(false)
-  isSystem    Boolean  @default(false)  // System messages
-  content     String   @db.Text
-  offerTag    String?  // "pro_accelerator", "coaching", "done_for_you"
-  isRead      Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id        String         @id @default(cuid())
+  podId     String
+  pod       StudyPod       @relation(fields: [podId], references: [id], onDelete: Cascade)
+  senderId  String? // Real user
+  sender    User?          @relation("UserPodMessages", fields: [senderId], references: [id])
+  zombieId  String? // Zombie sender
+  zombie    ZombieProfile? @relation(fields: [zombieId], references: [id])
+  isCoach   Boolean        @default(false)
+  isSystem  Boolean        @default(false) // System messages
+  content   String         @db.Text
+  offerTag  String? // "pro_accelerator", "coaching", "done_for_you"
+  isRead    Boolean        @default(false)
+  createdAt DateTime       @default(now())
 
   @@index([podId])
   @@index([senderId])
@@ -2393,21 +2410,21 @@ model PodMessage {
 
 // Cohorts - Class identity system
 model Cohort {
-  id            String   @id @default(cuid())
-  name          String   // "FM Class #48"
-  slug          String   @unique
-  courseCategory String?  // "functional-medicine", "holistic-nutrition"
-  startDate     DateTime
-  endDate       DateTime?
+  id             String    @id @default(cuid())
+  name           String // "FM Class #48"
+  slug           String    @unique
+  courseCategory String? // "functional-medicine", "holistic-nutrition"
+  startDate      DateTime
+  endDate        DateTime?
   targetCertDate DateTime?
-  maxMembers    Int      @default(100)
-  memberCount   Int      @default(0)
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
+  maxMembers     Int       @default(100)
+  memberCount    Int       @default(0)
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
 
   // Relations
-  members       User[]   @relation("UserCohort")
-  pods          StudyPod[]
+  members User[]     @relation("UserCohort")
+  pods    StudyPod[]
 
   @@index([slug])
   @@index([courseCategory])
@@ -2417,17 +2434,17 @@ model Cohort {
 
 // Success Events - Feed of celebrations
 model SuccessEvent {
-  id          String   @id @default(cuid())
-  userId      String?
-  user        User?    @relation("UserSuccessEvents", fields: [userId], references: [id])
-  zombieId    String?
-  zombie      ZombieProfile? @relation(fields: [zombieId], references: [id])
-  eventType   String   // "certified", "milestone_500", "streak_14", "first_client", "course_complete"
-  eventData   Json?    // Additional context
-  message     String?  // Custom celebration message
-  isZombie    Boolean  @default(false)
-  isVisible   Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id        String         @id @default(cuid())
+  userId    String?
+  user      User?          @relation("UserSuccessEvents", fields: [userId], references: [id])
+  zombieId  String?
+  zombie    ZombieProfile? @relation(fields: [zombieId], references: [id])
+  eventType String // "certified", "milestone_500", "streak_14", "first_client", "course_complete"
+  eventData Json? // Additional context
+  message   String? // Custom celebration message
+  isZombie  Boolean        @default(false)
+  isVisible Boolean        @default(true)
+  createdAt DateTime       @default(now())
 
   @@index([eventType])
   @@index([isVisible])
@@ -2436,28 +2453,28 @@ model SuccessEvent {
 
 // Income Tracking - Log practitioner earnings
 model IncomeLog {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation("UserIncomeLogs", fields: [userId], references: [id])
-  amount      Float
-  source      String?  // "client_session", "package", "course_sold"
-  clientName  String?  // Optional: which client
-  notes       String?
-  loggedAt    DateTime @default(now())
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation("UserIncomeLogs", fields: [userId], references: [id])
+  amount     Float
+  source     String? // "client_session", "package", "course_sold"
+  clientName String? // Optional: which client
+  notes      String?
+  loggedAt   DateTime @default(now())
+  createdAt  DateTime @default(now())
 
   @@index([userId])
   @@index([loggedAt])
 }
 
 model IncomeMilestone {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation("UserIncomeMilestones", fields: [userId], references: [id])
-  milestone   String   // "first_500", "first_1000", "first_5000", "first_10000"
-  amount      Float    // Actual amount when reached
-  celebrated  Boolean  @default(false)
-  reachedAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation("UserIncomeMilestones", fields: [userId], references: [id])
+  milestone  String // "first_500", "first_1000", "first_5000", "first_10000"
+  amount     Float // Actual amount when reached
+  celebrated Boolean  @default(false)
+  reachedAt  DateTime @default(now())
 
   @@unique([userId, milestone])
   @@index([userId])
@@ -2466,19 +2483,19 @@ model IncomeMilestone {
 
 // Referral Program
 model Referral {
-  id            String   @id @default(cuid())
-  referrerId    String
-  referrer      User     @relation("UserReferralsSent", fields: [referrerId], references: [id])
-  referredId    String?
-  referred      User?    @relation("UserReferralsReceived", fields: [referredId], references: [id])
-  code          String   @unique
-  status        String   @default("pending") // "pending", "clicked", "converted"
-  clickCount    Int      @default(0)
-  rewardType    String?  // "credit", "bonus_module", "discount"
-  rewardAmount  Float?
-  rewardIssued  Boolean  @default(false)
-  convertedAt   DateTime?
-  createdAt     DateTime @default(now())
+  id           String    @id @default(cuid())
+  referrerId   String
+  referrer     User      @relation("UserReferralsSent", fields: [referrerId], references: [id])
+  referredId   String?
+  referred     User?     @relation("UserReferralsReceived", fields: [referredId], references: [id])
+  code         String    @unique
+  status       String    @default("pending") // "pending", "clicked", "converted"
+  clickCount   Int       @default(0)
+  rewardType   String? // "credit", "bonus_module", "discount"
+  rewardAmount Float?
+  rewardIssued Boolean   @default(false)
+  convertedAt  DateTime?
+  createdAt    DateTime  @default(now())
 
   @@index([referrerId])
   @@index([code])
@@ -2488,14 +2505,14 @@ model Referral {
 // ==================== MY CIRCLE (POD) ENGAGEMENT ANALYTICS ====================
 
 model PodEngagement {
-  id            String   @id @default(cuid())
-  userId        String
-  eventType     String   // 'visit', 'message', 'reaction', 'dfy_click', 'educational_view'
-  metadata      Json?    // { daysSinceEnrollment, messageId, reactionType, contentType }
-  createdAt     DateTime @default(now())
-  
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(cuid())
+  userId    String
+  eventType String // 'visit', 'message', 'reaction', 'dfy_click', 'educational_view'
+  metadata  Json? // { daysSinceEnrollment, messageId, reactionType, contentType }
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([eventType])
   @@index([createdAt])
@@ -2506,14 +2523,97 @@ model PodUserMessage {
   id                  String   @id @default(cuid())
   userId              String
   content             String   @db.Text
-  daysSinceEnrollment Int      // What day in their journey
-  aiResponderName     String?  // Who responded (Sarah, zombie name)
+  daysSinceEnrollment Int // What day in their journey
+  aiResponderName     String? // Who responded (Sarah, zombie name)
   aiResponse          String?  @db.Text // The AI response they received
   createdAt           DateTime @default(now())
-  
-  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([createdAt])
   @@index([daysSinceEnrollment])
+}
+
+// ==================== PAYMENT RECORDS (DISPUTE EVIDENCE) ====================
+
+model Payment {
+  id     String @id @default(cuid())
+  userId String
+
+  // Transaction Details
+  amount        Decimal @db.Decimal(10, 2)
+  currency      String  @default("USD")
+  transactionId String? // External payment processor ID
+  processorRef  String? // Payment processor reference (PaymentsAI ID)
+  paymentMethod String? // card, paypal, etc.
+
+  // Card Info (for dispute evidence)
+  cardLast4 String?
+  cardBrand String? // visa, mastercard, amex
+
+  // Billing Info
+  billingEmail   String?
+  billingName    String?
+  billingAddress String? @db.Text
+  billingCity    String?
+  billingState   String?
+  billingZip     String?
+  billingCountry String?
+
+  // Device/IP at Checkout
+  ipAddress         String?
+  userAgent         String?
+  deviceFingerprint String? // Browser fingerprint hash
+
+  // Product Info
+  productName String?
+  productSku  String?
+  courseId    String? // If linked to a course
+
+  // Status
+  status       PaymentStatus @default(COMPLETED)
+  refundedAt   DateTime?
+  refundAmount Decimal?      @db.Decimal(10, 2)
+  chargebackAt DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([transactionId])
+  @@index([createdAt])
+  @@index([status])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+  DISPUTED
+  CHARGEBACK
+}
+
+// ==================== RESOURCE DOWNLOADS (DISPUTE EVIDENCE) ====================
+
+model ResourceDownload {
+  id         String @id @default(cuid())
+  userId     String
+  resourceId String // LessonResource ID
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource LessonResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([resourceId])
+  @@index([createdAt])
 }

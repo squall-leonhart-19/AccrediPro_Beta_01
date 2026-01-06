@@ -17,6 +17,7 @@ export async function POST() {
     await prisma.user.update({
       where: { id: session.user.id },
       data: { hasCompletedOnboarding: true },
+      select: { id: true },
     });
 
     return NextResponse.json({ success: true });

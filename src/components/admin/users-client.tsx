@@ -196,12 +196,16 @@ export function UsersClient({ courses }: UsersClientProps) {
     firstName: "",
     lastName: "",
     password: "",
+    confirmPassword: "",
     role: "STUDENT",
     tags: [] as string[],
   });
   const [createUserError, setCreateUserError] = useState("");
   const [createUserSuccess, setCreateUserSuccess] = useState(false);
   const [createUserTagSearch, setCreateUserTagSearch] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // Add tag state
   const [addTagDialogOpen, setAddTagDialogOpen] = useState(false);
@@ -732,6 +736,18 @@ export function UsersClient({ courses }: UsersClientProps) {
 
   const handleCreateUser = async () => {
     if (!newUserData.email || !newUserData.password) return;
+
+    // Validate password confirmation
+    if (newUserData.password !== newUserData.confirmPassword) {
+      setCreateUserError("Passwords do not match");
+      return;
+    }
+
+    if (newUserData.password.length < 8) {
+      setCreateUserError("Password must be at least 8 characters");
+      return;
+    }
+
     setCreatingUser(true);
     setCreateUserError("");
     setCreateUserSuccess(false);
@@ -760,6 +776,7 @@ export function UsersClient({ courses }: UsersClientProps) {
             firstName: "",
             lastName: "",
             password: "",
+            confirmPassword: "",
             role: "STUDENT",
             tags: [],
           });
@@ -1141,297 +1158,297 @@ export function UsersClient({ courses }: UsersClientProps) {
               <span>Loading users...</span>
             </div>
           ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="px-4 py-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
-                      onChange={selectAll}
-                      className="rounded border-gray-300"
-                    />
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Progress</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Engagement</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Last Active</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredUsers.map((user) => {
-                  const initials = `${user.firstName?.charAt(0) || ""}${user.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
-                  const avgProgress = user.enrollments.length > 0
-                    ? Math.round(user.enrollments.reduce((acc, e) => acc + Number(e.progress), 0) / user.enrollments.length)
-                    : 0;
-                  const completedCourses = user.enrollments.filter((e) => e.status === "COMPLETED").length;
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-4 py-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
+                        onChange={selectAll}
+                        className="rounded border-gray-300"
+                      />
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">User</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Progress</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Engagement</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Last Active</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredUsers.map((user) => {
+                    const initials = `${user.firstName?.charAt(0) || ""}${user.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
+                    const avgProgress = user.enrollments.length > 0
+                      ? Math.round(user.enrollments.reduce((acc, e) => acc + Number(e.progress), 0) / user.enrollments.length)
+                      : 0;
+                    const completedCourses = user.enrollments.filter((e) => e.status === "COMPLETED").length;
 
-                  return (
-                    <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-4 py-4">
-                        <input
-                          type="checkbox"
-                          checked={selectedUsers.includes(user.id)}
-                          onChange={() => toggleUserSelection(user.id)}
-                          className="rounded border-gray-300"
-                        />
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10 ring-2 ring-gray-100">
-                            <AvatarImage src={user.avatar || undefined} />
-                            <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-medium">
-                              {initials}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0">
-                            <p className="font-medium text-gray-900 truncate">
-                              {user.firstName} {user.lastName}
+                    return (
+                      <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
+                        <td className="px-4 py-4">
+                          <input
+                            type="checkbox"
+                            checked={selectedUsers.includes(user.id)}
+                            onChange={() => toggleUserSelection(user.id)}
+                            className="rounded border-gray-300"
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10 ring-2 ring-gray-100">
+                              <AvatarImage src={user.avatar || undefined} />
+                              <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-medium">
+                                {initials}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0">
+                              <p className="font-medium text-gray-900 truncate">
+                                {user.firstName} {user.lastName}
+                              </p>
+                              <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                              {user.phone && (
+                                <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                  <Phone className="w-3 h-3 text-green-500" />
+                                  {user.phone}
+                                </p>
+                              )}
+                              {user.leadSource && (
+                                <p className="text-xs text-gray-400 mt-0.5">
+                                  via {user.leadSource}{user.leadSourceDetail ? ` - ${user.leadSourceDetail}` : ""}
+                                </p>
+                              )}
+                              {user.tags && user.tags.length > 0 && (
+                                <div className="flex items-center gap-1 mt-1">
+                                  <Tag className="w-3 h-3 text-purple-500" />
+                                  <span className="text-xs text-purple-600">{user.tags.length} tag{user.tags.length > 1 ? "s" : ""}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="space-y-1">
+                            <Badge className={`border ${roleColors[user.role] || roleColors.STUDENT}`}>
+                              {user.role}
+                            </Badge>
+                            <div className="flex items-center gap-1">
+                              <span className={`w-2 h-2 rounded-full ${user.isActive ? "bg-green-500" : "bg-gray-300"}`} />
+                              <span className="text-xs text-gray-500">{user.isActive ? "Active" : "Inactive"}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="space-y-2 min-w-[140px]">
+                            {user.enrollments.length > 0 ? (
+                              <>
+                                <div className="flex items-center justify-between text-sm">
+                                  <span className="text-gray-500">{user.enrollments.length} course(s)</span>
+                                  <span className="font-medium text-burgundy-600">{avgProgress}%</span>
+                                </div>
+                                <Progress value={avgProgress} className="h-1.5" />
+                                <div className="flex items-center gap-3 text-xs text-gray-500">
+                                  <span className="flex items-center gap-1">
+                                    <Award className="w-3 h-3 text-gold-500" />
+                                    {user._count.certificates}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <Target className="w-3 h-3 text-green-500" />
+                                    {completedCourses} done
+                                  </span>
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-sm text-gray-400">Not enrolled</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="space-y-1 min-w-[100px]">
+                            {user.streak ? (
+                              <>
+                                <div className="flex items-center gap-1.5 text-sm">
+                                  <Flame className="w-4 h-4 text-orange-500" />
+                                  <span className="font-medium">{user.streak.currentStreak} day streak</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                                  <Star className="w-3 h-3 text-gold-500" />
+                                  <span>{user.streak.totalPoints.toLocaleString()} points</span>
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-sm text-gray-400">No activity</span>
+                            )}
+                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                              <span>{user._count.sentMessages + user._count.receivedMessages} messages</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4">
+                          <div className="space-y-1">
+                            <p className="text-sm font-medium text-gray-900">
+                              {formatRelativeTime(user.lastLoginAt)}
                             </p>
-                            <p className="text-sm text-gray-500 truncate">{user.email}</p>
-                            {user.phone && (
-                              <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                                <Phone className="w-3 h-3 text-green-500" />
-                                {user.phone}
-                              </p>
-                            )}
-                            {user.leadSource && (
-                              <p className="text-xs text-gray-400 mt-0.5">
-                                via {user.leadSource}{user.leadSourceDetail ? ` - ${user.leadSourceDetail}` : ""}
-                              </p>
-                            )}
-                            {user.tags && user.tags.length > 0 && (
-                              <div className="flex items-center gap-1 mt-1">
-                                <Tag className="w-3 h-3 text-purple-500" />
-                                <span className="text-xs text-purple-600">{user.tags.length} tag{user.tags.length > 1 ? "s" : ""}</span>
-                              </div>
-                            )}
+                            <p className="text-xs text-gray-400 flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              Joined {formatDate(user.createdAt)}
+                            </p>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="space-y-1">
-                          <Badge className={`border ${roleColors[user.role] || roleColors.STUDENT}`}>
-                            {user.role}
-                          </Badge>
+                        </td>
+                        <td className="px-4 py-4">
                           <div className="flex items-center gap-1">
-                            <span className={`w-2 h-2 rounded-full ${user.isActive ? "bg-green-500" : "bg-gray-300"}`} />
-                            <span className="text-xs text-gray-500">{user.isActive ? "Active" : "Inactive"}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="space-y-2 min-w-[140px]">
-                          {user.enrollments.length > 0 ? (
-                            <>
-                              <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-500">{user.enrollments.length} course(s)</span>
-                                <span className="font-medium text-burgundy-600">{avgProgress}%</span>
-                              </div>
-                              <Progress value={avgProgress} className="h-1.5" />
-                              <div className="flex items-center gap-3 text-xs text-gray-500">
-                                <span className="flex items-center gap-1">
-                                  <Award className="w-3 h-3 text-gold-500" />
-                                  {user._count.certificates}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Target className="w-3 h-3 text-green-500" />
-                                  {completedCourses} done
-                                </span>
-                              </div>
-                            </>
-                          ) : (
-                            <span className="text-sm text-gray-400">Not enrolled</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="space-y-1 min-w-[100px]">
-                          {user.streak ? (
-                            <>
-                              <div className="flex items-center gap-1.5 text-sm">
-                                <Flame className="w-4 h-4 text-orange-500" />
-                                <span className="font-medium">{user.streak.currentStreak} day streak</span>
-                              </div>
-                              <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                <Star className="w-3 h-3 text-gold-500" />
-                                <span>{user.streak.totalPoints.toLocaleString()} points</span>
-                              </div>
-                            </>
-                          ) : (
-                            <span className="text-sm text-gray-400">No activity</span>
-                          )}
-                          <div className="flex items-center gap-2 text-xs text-gray-400">
-                            <span>{user._count.sentMessages + user._count.receivedMessages} messages</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium text-gray-900">
-                            {formatRelativeTime(user.lastLoginAt)}
-                          </p>
-                          <p className="text-xs text-gray-400 flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            Joined {formatDate(user.createdAt)}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => openDetailDialog(user)}
-                            className="hover:bg-burgundy-50 text-gray-600 hover:text-burgundy-600"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="hover:bg-burgundy-50">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-white">
-                              <DropdownMenuItem
-                                onClick={() => openEmailDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Mail className="w-4 h-4 mr-2 text-burgundy-600" />
-                                Send Email
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => openDmDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <MessageSquare className="w-4 h-4 mr-2 text-burgundy-600" />
-                                Send Direct Message
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => openSendLoginDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Mail className="w-4 h-4 mr-2 text-burgundy-600" />
-                                Send Login Credentials
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => openEnrollDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <GraduationCap className="w-4 h-4 mr-2 text-burgundy-600" />
-                                Enroll in Course
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => openDetailDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Eye className="w-4 h-4 mr-2 text-burgundy-600" />
-                                View Full Profile
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => { openDetailDialog(user); setTimeout(() => setDetailTab("activity"), 100); }}
-                                className="cursor-pointer bg-blue-50 text-blue-700"
-                              >
-                                🛡️ View Activity (Disputes)
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => openPasswordDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Lock className="w-4 h-4 mr-2 text-burgundy-600" />
-                                Change Password
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => openEmailChangeDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Mail className="w-4 h-4 mr-2 text-blue-600" />
-                                Change Email
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => openRoleDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <UserCog className="w-4 h-4 mr-2 text-purple-600" />
-                                Change Role
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => openAddTagDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Tag className="w-4 h-4 mr-2 text-green-600" />
-                                Add Tag
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => openKnowledgeDialog(user)}
-                                className="cursor-pointer"
-                              >
-                                <Bot className="w-4 h-4 mr-2 text-indigo-600" />
-                                Manage AI Knowledge
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleResetMiniDiploma(user)}
-                                disabled={resettingMiniDiploma}
-                                className="cursor-pointer text-amber-600 focus:text-amber-600 focus:bg-amber-50"
-                              >
-                                <RotateCcw className="w-4 h-4 mr-2" />
-                                Reset Mini Diploma
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={async () => {
-                                  if (!confirm(`Clone ${user.firstName} ${user.lastName}'s account? This will:\n\n1. Rename old account to _BROKEN\n2. Create fresh account with same email\n3. Copy all enrollments, tags, progress\n\nNew password: Futurecoach2025`)) return;
-                                  setCloningUser(true);
-                                  try {
-                                    const res = await fetch('/api/admin/users/clone', {
-                                      method: 'POST',
-                                      headers: { 'Content-Type': 'application/json' },
-                                      body: JSON.stringify({ sourceEmail: user.email })
-                                    });
-                                    const data = await res.json();
-                                    if (data.success) {
-                                      alert(`✅ Cloned successfully!\n\nNew password: ${data.newPassword}\nCloned: ${data.cloned.enrollments} enrollments, ${data.cloned.marketingTags} tags`);
-                                      fetchUsers(1, true); // Refresh user list
-                                    } else {
-                                      alert(`❌ Clone failed: ${data.error}`);
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openDetailDialog(user)}
+                              className="hover:bg-burgundy-50 text-gray-600 hover:text-burgundy-600"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="hover:bg-burgundy-50">
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48 bg-white">
+                                <DropdownMenuItem
+                                  onClick={() => openEmailDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Mail className="w-4 h-4 mr-2 text-burgundy-600" />
+                                  Send Email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openDmDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <MessageSquare className="w-4 h-4 mr-2 text-burgundy-600" />
+                                  Send Direct Message
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openSendLoginDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Mail className="w-4 h-4 mr-2 text-burgundy-600" />
+                                  Send Login Credentials
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => openEnrollDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <GraduationCap className="w-4 h-4 mr-2 text-burgundy-600" />
+                                  Enroll in Course
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => openDetailDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Eye className="w-4 h-4 mr-2 text-burgundy-600" />
+                                  View Full Profile
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => { openDetailDialog(user); setTimeout(() => setDetailTab("activity"), 100); }}
+                                  className="cursor-pointer bg-blue-50 text-blue-700"
+                                >
+                                  🛡️ View Activity (Disputes)
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => openPasswordDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Lock className="w-4 h-4 mr-2 text-burgundy-600" />
+                                  Change Password
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openEmailChangeDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Mail className="w-4 h-4 mr-2 text-blue-600" />
+                                  Change Email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openRoleDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <UserCog className="w-4 h-4 mr-2 text-purple-600" />
+                                  Change Role
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openAddTagDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Tag className="w-4 h-4 mr-2 text-green-600" />
+                                  Add Tag
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => openKnowledgeDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Bot className="w-4 h-4 mr-2 text-indigo-600" />
+                                  Manage AI Knowledge
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleResetMiniDiploma(user)}
+                                  disabled={resettingMiniDiploma}
+                                  className="cursor-pointer text-amber-600 focus:text-amber-600 focus:bg-amber-50"
+                                >
+                                  <RotateCcw className="w-4 h-4 mr-2" />
+                                  Reset Mini Diploma
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={async () => {
+                                    if (!confirm(`Clone ${user.firstName} ${user.lastName}'s account? This will:\n\n1. Rename old account to _BROKEN\n2. Create fresh account with same email\n3. Copy all enrollments, tags, progress\n\nNew password: Futurecoach2025`)) return;
+                                    setCloningUser(true);
+                                    try {
+                                      const res = await fetch('/api/admin/users/clone', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ sourceEmail: user.email })
+                                      });
+                                      const data = await res.json();
+                                      if (data.success) {
+                                        alert(`✅ Cloned successfully!\n\nNew password: ${data.newPassword}\nCloned: ${data.cloned.enrollments} enrollments, ${data.cloned.marketingTags} tags`);
+                                        fetchUsers(1, true); // Refresh user list
+                                      } else {
+                                        alert(`❌ Clone failed: ${data.error}`);
+                                      }
+                                    } catch (e) {
+                                      alert(`❌ Clone error: ${e}`);
+                                    } finally {
+                                      setCloningUser(false);
                                     }
-                                  } catch (e) {
-                                    alert(`❌ Clone error: ${e}`);
-                                  } finally {
-                                    setCloningUser(false);
-                                  }
-                                }}
-                                disabled={cloningUser}
-                                className="cursor-pointer text-purple-600 focus:text-purple-600 focus:bg-purple-50"
-                              >
-                                <Copy className="w-4 h-4 mr-2" />
-                                Clone Account (Fix Login Issues)
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() => openDeleteDialog([user.id])}
-                                className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
-                              >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                Delete User
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                                  }}
+                                  disabled={cloningUser}
+                                  className="cursor-pointer text-purple-600 focus:text-purple-600 focus:bg-purple-50"
+                                >
+                                  <Copy className="w-4 h-4 mr-2" />
+                                  Clone Account (Fix Login Issues)
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => openDeleteDialog([user.id])}
+                                  className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                                >
+                                  <Trash2 className="w-4 h-4 mr-2" />
+                                  Delete User
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
 
           {/* Infinite scroll trigger */}
@@ -1463,17 +1480,36 @@ export function UsersClient({ courses }: UsersClientProps) {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">New Password</label>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter new password (min 8 chars)"
-              />
+              <div className="relative">
+                <Input
+                  type={showChangePassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password (min 8 chars)"
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowChangePassword(!showChangePassword)}
+                >
+                  {showChangePassword ? (
+                    <Eye className="h-4 w-4 text-gray-400" />
+                  ) : (
+                    <div className="relative">
+                      <Eye className="h-4 w-4 text-gray-400" />
+                      <div className="absolute top-1/2 left-[-2px] right-[-2px] h-[1.5px] bg-gray-400 rotate-45 transform -translate-y-1/2" />
+                    </div>
+                  )}
+                </Button>
+              </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Confirm Password</label>
               <Input
-                type="password"
+                type={showChangePassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password"
@@ -1945,6 +1981,151 @@ export function UsersClient({ courses }: UsersClientProps) {
                         </div>
                       </div>
 
+                      {/* NEW: Registration Evidence */}
+                      {activityData.registrationEvidence && (
+                        <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                          <p className="text-sm font-semibold text-amber-800 mb-3">🔍 Registration Evidence</p>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="text-gray-500">Registration IP</p>
+                              <p className="font-mono text-xs">{activityData.registrationEvidence.ip || "Not captured"}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Device</p>
+                              <p className="font-mono text-xs">{activityData.registrationEvidence.device || "Unknown"}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Browser</p>
+                              <p className="font-mono text-xs">{activityData.registrationEvidence.browser || "Unknown"}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">User Agent</p>
+                              <p className="font-mono text-xs truncate" title={activityData.registrationEvidence.userAgent}>{activityData.registrationEvidence.userAgent || "Not captured"}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* NEW: Legal Acceptance */}
+                      {activityData.legalAcceptance && (
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-sm font-semibold text-green-800 mb-3">📜 Legal Policy Acceptance</p>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="text-gray-500">Terms of Service Accepted</p>
+                              <p className="font-mono text-xs">{activityData.legalAcceptance.tosAcceptedAt ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString() : "Not recorded"}</p>
+                              {activityData.legalAcceptance.tosVersion && (
+                                <p className="text-xs text-gray-400">Version: {activityData.legalAcceptance.tosVersion}</p>
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Refund Policy Accepted</p>
+                              <p className="font-mono text-xs">{activityData.legalAcceptance.refundPolicyAcceptedAt ? new Date(activityData.legalAcceptance.refundPolicyAcceptedAt).toLocaleString() : "Not recorded"}</p>
+                              {activityData.legalAcceptance.refundPolicyVersion && (
+                                <p className="text-xs text-gray-400">Version: {activityData.legalAcceptance.refundPolicyVersion}</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* NEW: Payment History */}
+                      {activityData.payments && activityData.payments.length > 0 && (
+                        <div className="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                          <p className="text-sm font-semibold text-emerald-800 mb-3">💳 Payment History ({activityData.payments.length})</p>
+                          <div className="max-h-48 overflow-y-auto">
+                            <table className="w-full text-xs">
+                              <thead className="bg-emerald-100 sticky top-0">
+                                <tr>
+                                  <th className="text-left p-2">Date</th>
+                                  <th className="text-left p-2">Amount</th>
+                                  <th className="text-left p-2">Product</th>
+                                  <th className="text-left p-2">Card</th>
+                                  <th className="text-left p-2">IP</th>
+                                  <th className="text-left p-2">Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {activityData.payments.map((payment: any) => (
+                                  <tr key={payment.id} className="border-t hover:bg-emerald-50">
+                                    <td className="p-2 font-mono">{new Date(payment.createdAt).toLocaleString()}</td>
+                                    <td className="p-2 font-bold">${Number(payment.amount).toFixed(2)} {payment.currency}</td>
+                                    <td className="p-2">{payment.productName || payment.productSku || "-"}</td>
+                                    <td className="p-2 font-mono">{payment.cardBrand} ****{payment.cardLast4}</td>
+                                    <td className="p-2 font-mono">{payment.ipAddress || "N/A"}</td>
+                                    <td className="p-2">
+                                      <span className={`px-1.5 py-0.5 rounded text-xs ${payment.status === "COMPLETED" ? "bg-green-100 text-green-700" :
+                                          payment.status === "REFUNDED" ? "bg-yellow-100 text-yellow-700" :
+                                            payment.status === "CHARGEBACK" ? "bg-red-100 text-red-700" :
+                                              "bg-gray-100 text-gray-700"
+                                        }`}>{payment.status}</span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* NEW: Quiz Attempts */}
+                      {activityData.quizAttempts && activityData.quizAttempts.length > 0 && (
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 mb-3">📝 Quiz Attempts ({activityData.quizAttempts.length})</p>
+                          <div className="max-h-36 overflow-y-auto border rounded-lg">
+                            <table className="w-full text-xs">
+                              <thead className="bg-gray-50 sticky top-0">
+                                <tr>
+                                  <th className="text-left p-2">Quiz</th>
+                                  <th className="text-left p-2">Score</th>
+                                  <th className="text-left p-2">Passed</th>
+                                  <th className="text-left p-2">Completed</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {activityData.quizAttempts.map((q: any) => (
+                                  <tr key={q.id} className="border-t hover:bg-gray-50">
+                                    <td className="p-2">{q.quiz?.title || "Quiz"}</td>
+                                    <td className="p-2 font-mono">{q.score}%</td>
+                                    <td className="p-2">{q.passed ? <span className="text-green-600">✓ Pass</span> : <span className="text-red-600">✗ Fail</span>}</td>
+                                    <td className="p-2 font-mono">{q.completedAt ? new Date(q.completedAt).toLocaleString() : "In progress"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* NEW: Resource Downloads */}
+                      {activityData.resourceDownloads && activityData.resourceDownloads.length > 0 && (
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 mb-3">📥 Resource Downloads ({activityData.resourceDownloads.length})</p>
+                          <div className="max-h-36 overflow-y-auto border rounded-lg">
+                            <table className="w-full text-xs">
+                              <thead className="bg-gray-50 sticky top-0">
+                                <tr>
+                                  <th className="text-left p-2">Resource</th>
+                                  <th className="text-left p-2">Type</th>
+                                  <th className="text-left p-2">Downloaded</th>
+                                  <th className="text-left p-2">IP</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {activityData.resourceDownloads.map((dl: any) => (
+                                  <tr key={dl.id} className="border-t hover:bg-gray-50">
+                                    <td className="p-2">{dl.resource?.title || "Resource"}</td>
+                                    <td className="p-2">{dl.resource?.type || "-"}</td>
+                                    <td className="p-2 font-mono">{new Date(dl.createdAt).toLocaleString()}</td>
+                                    <td className="p-2 font-mono">{dl.ipAddress || "N/A"}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Login History */}
                       <div>
                         <p className="text-sm font-semibold text-gray-900 mb-3">🔐 Login History (Last 50)</p>
@@ -2288,13 +2469,12 @@ export function UsersClient({ courses }: UsersClientProps) {
                 return (
                   <label
                     key={course.id}
-                    className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${
-                      isEnrolled
-                        ? 'bg-green-50 border border-green-200 opacity-60'
-                        : isSelected
-                          ? 'bg-burgundy-50 border border-burgundy-300'
-                          : 'hover:bg-gray-50 border border-transparent'
-                    }`}
+                    className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all ${isEnrolled
+                      ? 'bg-green-50 border border-green-200 opacity-60'
+                      : isSelected
+                        ? 'bg-burgundy-50 border border-burgundy-300'
+                        : 'hover:bg-gray-50 border border-transparent'
+                      }`}
                   >
                     <input
                       type="checkbox"
@@ -2546,15 +2726,68 @@ export function UsersClient({ courses }: UsersClientProps) {
                     placeholder="john@example.com"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password *</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={newUserData.password}
-                    onChange={(e) => setNewUserData(prev => ({ ...prev, password: e.target.value }))}
-                    placeholder="Minimum 8 characters"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password *</Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={newUserData.password}
+                        onChange={(e) => setNewUserData(prev => ({ ...prev, password: e.target.value }))}
+                        placeholder="Min 8 characters"
+                        className="pr-10"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <Eye className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <div className="relative">
+                            <Eye className="h-4 w-4 text-gray-400" />
+                            <div className="absolute top-1/2 left-[-2px] right-[-2px] h-[1.5px] bg-gray-400 rotate-45 transform -translate-y-1/2" />
+                          </div>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                    <div className="relative">
+                      <Input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={newUserData.confirmPassword}
+                        onChange={(e) => setNewUserData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                        placeholder="Confirm password"
+                        className={`pr-10 ${newUserData.confirmPassword && newUserData.password !== newUserData.confirmPassword ? 'border-red-500' : ''}`}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      >
+                        {showConfirmPassword ? (
+                          <Eye className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <div className="relative">
+                            <Eye className="h-4 w-4 text-gray-400" />
+                            <div className="absolute top-1/2 left-[-2px] right-[-2px] h-[1.5px] bg-gray-400 rotate-45 transform -translate-y-1/2" />
+                          </div>
+                        )}
+                      </Button>
+                    </div>
+                    {newUserData.confirmPassword && newUserData.password !== newUserData.confirmPassword && (
+                      <p className="text-xs text-red-500">Passwords do not match</p>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Role</Label>
@@ -2581,44 +2814,84 @@ export function UsersClient({ courses }: UsersClientProps) {
                     Apply Tags (optional)
                   </Label>
 
-                  {/* Search existing tags */}
-                  <Input
-                    value={createUserTagSearch}
-                    onChange={(e) => setCreateUserTagSearch(e.target.value)}
-                    placeholder="Search existing tags..."
-                    className="mb-2"
-                  />
+                  {/* Search existing tags or add custom */}
+                  <div className="flex gap-2">
+                    <Input
+                      value={createUserTagSearch}
+                      onChange={(e) => setCreateUserTagSearch(e.target.value)}
+                      placeholder="Search or type custom tag..."
+                      className="flex-1"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && createUserTagSearch.trim()) {
+                          e.preventDefault();
+                          const newTag = createUserTagSearch.trim();
+                          if (!newUserData.tags.includes(newTag)) {
+                            setNewUserData(prev => ({
+                              ...prev,
+                              tags: [...prev.tags, newTag]
+                            }));
+                          }
+                          setCreateUserTagSearch("");
+                        }
+                      }}
+                    />
+                    {createUserTagSearch.trim() && !existingTags.includes(createUserTagSearch.trim()) && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          const newTag = createUserTagSearch.trim();
+                          if (!newUserData.tags.includes(newTag)) {
+                            setNewUserData(prev => ({
+                              ...prev,
+                              tags: [...prev.tags, newTag]
+                            }));
+                          }
+                          setCreateUserTagSearch("");
+                        }}
+                        className="whitespace-nowrap"
+                      >
+                        + Add "{createUserTagSearch.trim()}"
+                      </Button>
+                    )}
+                  </div>
 
                   {/* Existing tags from database */}
                   {loadingTags ? (
                     <div className="text-center py-2 text-gray-500 text-sm">Loading tags...</div>
-                  ) : existingTags.length > 0 && (
+                  ) : (
                     <div className="max-h-32 overflow-y-auto border rounded-lg p-2 bg-gray-50 mb-2">
                       <div className="flex flex-wrap gap-2">
-                        {existingTags
+                        {existingTags.length === 0 ? (
+                          <p className="text-center text-gray-400 text-sm py-1 w-full">No existing tags. Type above to add new tags.</p>
+                        ) : existingTags
                           .filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase()))
-                          .map((tag) => (
-                            <button
-                              key={tag}
-                              type="button"
-                              onClick={() => {
-                                setNewUserData(prev => ({
-                                  ...prev,
-                                  tags: prev.tags.includes(tag)
-                                    ? prev.tags.filter(t => t !== tag)
-                                    : [...prev.tags, tag]
-                                }));
-                              }}
-                              className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
-                                ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
-                                : "bg-white border-gray-200 text-gray-600 hover:bg-burgundy-50 hover:border-burgundy-200"
-                                }`}
-                            >
-                              {tag}
-                            </button>
-                          ))}
-                        {existingTags.filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase())).length === 0 && (
-                          <p className="text-center text-gray-400 text-sm py-1 w-full">No tags match</p>
+                          .length === 0 ? (
+                          <p className="text-center text-gray-400 text-sm py-1 w-full">No tags match. Press Enter or click + to add custom tag.</p>
+                        ) : (
+                          existingTags
+                            .filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase()))
+                            .map((tag) => (
+                              <button
+                                key={tag}
+                                type="button"
+                                onClick={() => {
+                                  setNewUserData(prev => ({
+                                    ...prev,
+                                    tags: prev.tags.includes(tag)
+                                      ? prev.tags.filter(t => t !== tag)
+                                      : [...prev.tags, tag]
+                                  }));
+                                }}
+                                className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
+                                  ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
+                                  : "bg-white border-gray-200 text-gray-600 hover:bg-burgundy-50 hover:border-burgundy-200"
+                                  }`}
+                              >
+                                {tag}
+                              </button>
+                            ))
                         )}
                       </div>
                     </div>
@@ -2715,6 +2988,7 @@ export function UsersClient({ courses }: UsersClientProps) {
                       firstName: "",
                       lastName: "",
                       password: "",
+                      confirmPassword: "",
                       role: "STUDENT",
                       tags: [],
                     });
@@ -2726,7 +3000,7 @@ export function UsersClient({ courses }: UsersClientProps) {
                 <Button
                   onClick={handleCreateUser}
                   className="bg-burgundy-600 hover:bg-burgundy-700"
-                  disabled={creatingUser || !newUserData.email || !newUserData.password}
+                  disabled={creatingUser || !newUserData.email || !newUserData.password || !newUserData.confirmPassword}
                 >
                   {creatingUser ? "Creating..." : "Create User"}
                 </Button>

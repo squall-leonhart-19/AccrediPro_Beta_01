@@ -28,8 +28,11 @@ export async function GET(request: NextRequest) {
             recentLessonProgress,
             certificates,
             activityLogsCount,
+            payments,
+            resourceDownloads,
+            quizAttempts,
         ] = await Promise.all([
-            // Basic user info - minimal fields
+            // User info - includes NEW dispute evidence fields
             prisma.user.findUnique({
                 where: { id: userId },
                 select: {
@@ -41,20 +44,35 @@ export async function GET(request: NextRequest) {
                     firstLoginAt: true,
                     lastLoginAt: true,
                     loginCount: true,
+                    emailVerified: true,
+                    // NEW: Registration evidence
+                    registrationIp: true,
+                    registrationUserAgent: true,
+                    registrationDevice: true,
+                    registrationBrowser: true,
+                    // NEW: Legal acceptance timestamps
+                    tosAcceptedAt: true,
+                    tosVersion: true,
+                    refundPolicyAcceptedAt: true,
+                    refundPolicyVersion: true,
                 },
             }),
 
-            // Login history - reduced to 20 most recent
+            // Login history - reduced to 50 most recent
             prisma.loginHistory.findMany({
                 where: { userId },
                 orderBy: { createdAt: "desc" },
-                take: 20,
+                take: 50,
                 select: {
                     id: true,
                     createdAt: true,
                     ipAddress: true,
+                    userAgent: true,
                     device: true,
                     browser: true,
+                    location: true,
+                    loginMethod: true,
+                    isFirstLogin: true,
                 },
             }),
 
@@ -67,6 +85,7 @@ export async function GET(request: NextRequest) {
                     progress: true,
                     enrolledAt: true,
                     completedAt: true,
+                    lastAccessedAt: true,
                     course: {
                         select: { id: true, title: true, slug: true },
                     },
@@ -79,41 +98,132 @@ export async function GET(request: NextRequest) {
                 where: { userId, isCompleted: true },
             }),
 
-            // OPTIMIZED: Only fetch 10 most recent for display
+            // OPTIMIZED: Only fetch 30 most recent for display
             prisma.lessonProgress.findMany({
                 where: { userId },
                 select: {
                     id: true,
                     isCompleted: true,
                     watchTime: true,
+                    timeSpent: true,
+                    visitCount: true,
+                    completedAt: true,
                     updatedAt: true,
                     lesson: {
                         select: {
                             id: true,
                             title: true,
+                            module: {
+                                select: {
+                                    title: true,
+                                    course: {
+                                        select: { title: true },
+                                    },
+                                },
+                            },
                         },
                     },
                 },
                 orderBy: { updatedAt: "desc" },
-                take: 10,
+                take: 30,
             }),
 
-            // Certificates - minimal fields
+            // Certificates - with certificate number for evidence
             prisma.certificate.findMany({
                 where: { userId },
                 select: {
                     id: true,
+                    certificateNumber: true,
                     issuedAt: true,
+                    type: true,
+                    score: true,
                     course: {
+                        select: { title: true },
+                    },
+                    module: {
                         select: { title: true },
                     },
                 },
                 orderBy: { issuedAt: "desc" },
             }),
 
-            // OPTIMIZED: Just count activity logs
+            // Count activity logs
             prisma.userActivity.count({
                 where: { userId },
+            }),
+
+            // NEW: Payment records for dispute evidence
+            prisma.payment.findMany({
+                where: { userId },
+                select: {
+                    id: true,
+                    amount: true,
+                    currency: true,
+                    transactionId: true,
+                    processorRef: true,
+                    paymentMethod: true,
+                    cardLast4: true,
+                    cardBrand: true,
+                    billingEmail: true,
+                    billingName: true,
+                    billingAddress: true,
+                    billingCity: true,
+                    billingState: true,
+                    billingZip: true,
+                    billingCountry: true,
+                    ipAddress: true,
+                    productName: true,
+                    productSku: true,
+                    status: true,
+                    refundedAt: true,
+                    refundAmount: true,
+                    chargebackAt: true,
+                    createdAt: true,
+                },
+                orderBy: { createdAt: "desc" },
+            }),
+
+            // NEW: Resource downloads for evidence
+            prisma.resourceDownload.findMany({
+                where: { userId },
+                select: {
+                    id: true,
+                    ipAddress: true,
+                    userAgent: true,
+                    createdAt: true,
+                    resource: {
+                        select: {
+                            title: true,
+                            type: true,
+                            url: true,
+                        },
+                    },
+                },
+                orderBy: { createdAt: "desc" },
+                take: 50,
+            }),
+
+            // NEW: Quiz attempts for engagement evidence
+            prisma.quizAttempt.findMany({
+                where: { userId },
+                select: {
+                    id: true,
+                    score: true,
+                    passed: true,
+                    timeSpent: true,
+                    startedAt: true,
+                    completedAt: true,
+                    quiz: {
+                        select: {
+                            title: true,
+                            module: {
+                                select: { title: true },
+                            },
+                        },
+                    },
+                },
+                orderBy: { completedAt: "desc" },
+                take: 20,
             }),
         ]);
 
@@ -121,29 +231,61 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        // Calculate stats using counts instead of fetched arrays
+        // Calculate stats including new data
         const totalWatchTime = recentLessonProgress.reduce((acc, lp) => acc + (lp.watchTime || 0), 0);
+        const totalTimeSpent = recentLessonProgress.reduce((acc, lp) => acc + (lp.timeSpent || 0), 0);
+        const totalPayments = payments.reduce((acc, p) => acc + Number(p.amount), 0);
 
         const stats = {
             totalLogins: user.loginCount,
             firstLogin: user.firstLoginAt,
             lastLogin: user.lastLoginAt,
             accountCreated: user.createdAt,
+            emailVerified: user.emailVerified,
             totalEnrollments: enrollments.length,
             completedCourses: enrollments.filter(e => e.status === "COMPLETED").length,
             lessonsCompleted: lessonProgressCount,
             totalWatchTime,
+            totalTimeSpent,
             certificatesEarned: certificates.length,
             totalActivityLogs: activityLogsCount,
+            // NEW stats
+            totalPayments,
+            paymentCount: payments.length,
+            downloadCount: resourceDownloads.length,
+            quizAttemptCount: quizAttempts.length,
+            quizzesPassed: quizAttempts.filter(q => q.passed).length,
+        };
+
+        // NEW: Registration evidence section
+        const registrationEvidence = {
+            ip: user.registrationIp,
+            userAgent: user.registrationUserAgent,
+            device: user.registrationDevice,
+            browser: user.registrationBrowser,
+            timestamp: user.createdAt,
+        };
+
+        // NEW: Legal acceptance section
+        const legalAcceptance = {
+            tosAcceptedAt: user.tosAcceptedAt,
+            tosVersion: user.tosVersion,
+            refundPolicyAcceptedAt: user.refundPolicyAcceptedAt,
+            refundPolicyVersion: user.refundPolicyVersion,
         };
 
         return NextResponse.json({
             user,
             stats,
+            registrationEvidence,
+            legalAcceptance,
             loginHistory,
             enrollments,
             lessonProgress: recentLessonProgress,
             certificates,
+            payments,
+            resourceDownloads,
+            quizAttempts,
             activityLogs: [], // Don't fetch full logs - just show count in stats
         });
     } catch (error) {
@@ -151,4 +293,3 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Failed to fetch user activity" }, { status: 500 });
     }
 }
-

@@ -12,8 +12,9 @@ import { IncomeProjectionWidget, DaysCountdownWidget, StreakWidget, ContinueLear
 import { SuccessFeedCompact } from "@/components/success-feed";
 import { StudyPodWidgetCompact } from "@/components/study-pod-widget";
 import { generateZombieSuccessEvents } from "@/lib/success-events";
-import { getZombiesForPod, getRandomPodName, ZOMBIE_PROFILES } from "@/lib/zombies";
+import { getZombiesForPod, getRandomPodName, ZOMBIE_PROFILES, getZombieProgress } from "@/lib/zombies";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
+import { getSocialProofStats, getMilestoneCountdown } from "@/lib/social-proof";
 
 // Force dynamic rendering - no caching
 export const dynamic = "force-dynamic";
@@ -302,6 +303,10 @@ export default async function DashboardPage() {
     return "Progress toward your certification";
   };
 
+  // Get social proof stats
+  const socialProof = getSocialProofStats();
+  const milestoneData = getMilestoneCountdown();
+
   return (
     <DashboardWrapper userName={firstName} userId={session.user.id} hasCompletedOnboarding={hasCompletedOnboarding}>
       <div className="space-y-6 animate-fade-in">
@@ -335,6 +340,53 @@ export default async function DashboardPage() {
                   <p className="text-gold-200 text-xs">Income Potential</p>
                   <p className="text-gold-100 font-semibold">{CAREER_STAGES[currentCareer.stage]?.income || "$3K-$5K/mo"}</p>
                 </div>
+              </div>
+            </div>
+
+            {/* Social Proof Bar */}
+            <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
+              {/* Live Now */}
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <span className="text-white font-bold">{socialProof.liveFormatted}</span>
+                <span className="text-burgundy-200 text-sm">learning right now</span>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-6 bg-white/20" />
+
+              {/* Total Community */}
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-gold-400" />
+                <span className="text-white font-bold">{socialProof.totalFormatted}</span>
+                <span className="text-burgundy-200 text-sm">practitioners in our community</span>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-6 bg-white/20" />
+
+              {/* Milestone Countdown */}
+              <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-gold-400" />
+                <span className="text-burgundy-200 text-sm">{milestoneData.urgencyMessage}</span>
+              </div>
+            </div>
+
+            {/* Milestone Progress Bar */}
+            <div className="mt-3 px-4">
+              <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-gold-400 to-gold-500 rounded-full transition-all duration-1000"
+                  style={{ width: `${milestoneData.percentComplete}%` }}
+                />
+                <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-gold-400/50 to-transparent animate-pulse" />
+              </div>
+              <div className="flex justify-between mt-1 text-xs">
+                <span className="text-burgundy-300">{milestoneData.currentTotal.toLocaleString()}</span>
+                <span className="text-gold-300 font-medium">{milestoneData.nextMilestone.toLocaleString()} 🎯</span>
               </div>
             </div>
           </CardContent>
@@ -424,7 +476,7 @@ export default async function DashboardPage() {
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                         </span>
-                        <span className="text-xs font-medium text-green-700">297 learning now</span>
+                        <span className="text-xs font-medium text-green-700">{socialProof.liveFormatted} learning now</span>
                       </div>
                     </div>
                     <Link href="/my-courses">
@@ -722,16 +774,23 @@ export default async function DashboardPage() {
             {/* Study Pod Widget */}
             <StudyPodWidgetCompact
               podName={getRandomPodName()}
-              members={[
-                ...getZombiesForPod(4).map((z, i) => ({
-                  id: z.name.toLowerCase().replace(/\s+/g, '-'),
-                  name: z.name,
-                  avatar: z.avatar,
-                  progress: [45, 32, 28, 55][i] || 30,
-                  isCurrentUser: false,
-                })),
-                { id: 'current-user', name: 'You', progress: Math.round((completedLessonsCount / Math.max(totalLessons, 1)) * 100), isCurrentUser: true },
-              ]}
+              members={(() => {
+                // Calculate days since user enrolled for dynamic zombie progress
+                const daysSinceEnrollment = Math.floor(
+                  (Date.now() - new Date(firstEnrolledAt).getTime()) / (1000 * 60 * 60 * 24)
+                );
+                return [
+                  ...getZombiesForPod(4).map((z) => ({
+                    id: z.name.toLowerCase().replace(/\s+/g, '-'),
+                    name: z.name,
+                    avatar: z.avatar,
+                    // Use dynamic progress based on personality and days enrolled
+                    progress: getZombieProgress(z.personalityType, daysSinceEnrollment),
+                    isCurrentUser: false,
+                  })),
+                  { id: 'current-user', name: 'You', progress: Math.round((completedLessonsCount / Math.max(totalLessons, 1)) * 100), isCurrentUser: true },
+                ];
+              })()}
             />
 
             {/* Quick Links - Hide Roadmap/Career Center until training watched */}
@@ -767,7 +826,7 @@ export default async function DashboardPage() {
                       <span className="text-sm text-gray-700">Community</span>
                     </div>
                   </Link>
-                  <Link href="/my-pod" className="block">
+                  <Link href="/my-circle" className="block">
                     <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
                       <Users className="w-4 h-4 text-burgundy-600" />
                       <span className="text-sm text-gray-700">My Study Pod</span>

@@ -49,13 +49,21 @@ interface OnboardingData {
     interests: string[];
 }
 
-// Helper functions for formatting onboarding data
+// Helper functions for formatting onboarding data - Matches Career Ladder
 function formatIncomeGoal(goal: string): string {
     const goalMap: Record<string, string> = {
-        '10k_plus': '$10,000+/month',
-        '5k_10k': '$5,000 - $10,000/month',
-        '2k_5k': '$2,000 - $5,000/month',
-        '1k_2k': '$1,000 - $2,000/month',
+        '50k_plus': '$50K+/month (Empire Builder)',
+        '30k_50k': '$30K – $50K/month (Step 4)',
+        '10k_30k': '$10K – $30K/month (Step 3)',
+        '5k_10k': '$5K – $10K/month (Step 2)',
+        '3k_5k': '$3K – $5K/month (Step 1)',
+        // Legacy mappings for existing users
+        '30k_plus': '$30K+/month',
+        '20k_30k': '$20K – $30K/month',
+        '10k_20k': '$10K – $20K/month',
+        '10k_plus': '$10K+/month',
+        '2k_5k': '$2K – $5K/month',
+        '1k_2k': '$1K – $2K/month',
         'under_1k': 'Starting out',
     };
     return goalMap[goal] || goal.replace(/_/g, ' ');
@@ -98,9 +106,11 @@ interface StartHereClientProps {
     enrollments: number;
     tourComplete: boolean;
     onboardingData: OnboardingData;
+    hasMessagedCoach?: boolean;
+    hasIntroPost?: boolean;
 }
 
-export function StartHereClient({ user, userId, enrollments, tourComplete: initialTourComplete, onboardingData }: StartHereClientProps) {
+export function StartHereClient({ user, userId, enrollments, tourComplete: initialTourComplete, onboardingData, hasMessagedCoach = false, hasIntroPost = false }: StartHereClientProps) {
     const [showQuestionsWizard, setShowQuestionsWizard] = useState(false);
     const [showTour, setShowTour] = useState(false);
     const [questionsCompleted, setQuestionsCompleted] = useState(user?.hasCompletedOnboarding || false);
@@ -155,14 +165,16 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
             {
                 id: "personalize",
                 label: "Customize Your Experience",
-                description: "Tell us about your goals so we can personalize your journey",
+                description: questionsCompleted
+                    ? "Update your goals anytime to refine your journey"
+                    : "Tell us about your goals so we can personalize your journey",
                 completed: questionsCompleted,
                 link: null,
-                action: questionsCompleted ? null : () => setShowQuestionsWizard(true),
+                action: () => setShowQuestionsWizard(true), // Always allow re-opening
                 icon: Wand2,
                 color: "burgundy",
                 emoji: "✨",
-                reward: "+25 XP",
+                reward: questionsCompleted ? undefined : "+25 XP",
             },
             {
                 id: "roadmap",
@@ -203,28 +215,32 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
             {
                 id: "coach",
                 label: "Say Hi to Your Dedicated Coach",
-                description: "Meet Sarah - she's here to guide your journey!",
-                completed: false,
+                description: hasMessagedCoach
+                    ? "Great job connecting with Coach Sarah!"
+                    : "Meet Sarah - she's here to guide your journey!",
+                completed: hasMessagedCoach,
                 // Opens chat with Sarah M directly
                 link: "/messages?to=sarah",
                 action: null,
                 icon: UserCheck,
                 color: "emerald",
                 emoji: "👋",
-                reward: "+20 XP",
+                reward: hasMessagedCoach ? undefined : "+20 XP",
             },
             {
                 id: "community",
                 label: "Share Your Story with the Community",
-                description: "Introduce yourself to fellow health advocates",
-                completed: false,
+                description: hasIntroPost
+                    ? "Thanks for introducing yourself!"
+                    : "Introduce yourself to fellow health advocates",
+                completed: hasIntroPost,
                 // Links to specific community introduction page
                 link: "/community/cmj94foua0000736vfwdlheir",
                 action: null,
                 icon: Users,
                 color: "orange",
                 emoji: "💬",
-                reward: "+15 XP",
+                reward: hasIntroPost ? undefined : "+15 XP",
             },
         ];
 

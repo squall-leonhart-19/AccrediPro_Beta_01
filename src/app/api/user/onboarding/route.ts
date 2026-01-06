@@ -59,14 +59,15 @@ export async function POST(request: NextRequest) {
       hasCompletedOnboarding: true,
     };
 
-    // Add currentField if provided (may need DB migration)
-    if (data.currentField) {
-      updateData.currentField = data.currentField;
-    }
+    // Note: currentField is temporarily removed from schema - save as tag instead
+    // if (data.currentField) {
+    //   updateData.currentField = data.currentField;
+    // }
 
     const user = await prisma.user.update({
       where: { id: session.user.id },
       data: updateData as any,
+      select: { id: true },
     });
 
     // Create tags based on onboarding data for segmentation
@@ -75,6 +76,11 @@ export async function POST(request: NextRequest) {
     // Primary goal tag
     if (data.learningGoal) {
       tags.push({ tag: `goal:${data.learningGoal}` });
+    }
+
+    // Current field/profession tag (for upsell targeting)
+    if (data.currentField) {
+      tags.push({ tag: `field:${data.currentField}` });
     }
 
     // Income goal tag (AOV indicator)

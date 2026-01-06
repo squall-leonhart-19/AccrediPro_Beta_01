@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Advanced Clinical Case Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .practice-lab-banner {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            border: 2px solid #7c3aed;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #5b21b6;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #6d28d9;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #7c3aed;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        /* Complex Case Box */
+        .complex-case {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            border: 2px solid #7c3aed;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .case-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .case-title h3 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+
+        .case-title p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .case-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .case-item .label {
+            font-weight: 600;
+            color: #7c3aed;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .case-item .value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Clinical Reasoning Box */
+        .reasoning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .reasoning-box h3 {
+            margin: 0 0 20px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-box h3::before {
+            content: '🧠';
+            font-size: 24px;
+        }
+
+        .reasoning-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .reasoning-step .step-label {
+            font-weight: 700;
+            color: #b45309;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .reasoning-step .step-content {
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* Differential Considerations */
+        .differential-box {
+            background: #f0f9ff;
+            border: 2px solid #0284c7;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .differential-box h3 {
+            margin: 0 0 20px;
+            color: #0369a1;
+        }
+
+        .differential-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .differential-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .differential-item .priority {
+            width: 36px;
+            height: 36px;
+            background: #0284c7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .differential-item .content h4 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .differential-item .content p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Referral Triggers */
+        .referral-box {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .referral-box h3 {
+            margin: 0 0 20px;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-box h3::before {
+            content: '🚨';
+            font-size: 24px;
+        }
+
+        .referral-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .referral-list li {
+            background: white;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            font-size: 15px;
+        }
+
+        /* Protocol Planning */
+        .protocol-box {
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .protocol-box h3 {
+            margin: 0 0 20px;
+            color: #059669;
+        }
+
+        .protocol-phases {
+            display: grid;
+            gap: 16px;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #d1fae5;
+        }
+
+        .phase-card .phase-header {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phase-card ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .phase-card li {
+            margin-bottom: 6px;
+        }
+
+        /* Encouragement */
+        .encouragement-box {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #7c3aed;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 18: Advanced Clinical Assessment</p>
+            <h1 class="lesson-title">Practice Lab: Complex Case Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🔬 Advanced Clinical</span>
+                <span class="meta-item">60 min</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">🔬</div>
+            <h2>Advanced Clinical Case Study</h2>
+            <p>This client presents with multiple overlapping conditions. Use your clinical reasoning skills to navigate
+                complexity.</p>
+        </div>
+
+        <h2>Complex Case Presentation</h2>
+
+        <div class="complex-case">
+            <div class="case-header">
+                <div class="case-avatar">👩</div>
+                <div class="case-title">
+                    <h3>Margaret, 56</h3>
+                    <p>Retired teacher, Phoenix, AZ • Divorced, lives alone</p>
+                </div>
+            </div>
+
+            <div class="case-grid">
+                <div class="case-item">
+                    <div class="label">Chief Complaints</div>
+                    <div class="value">Severe fatigue, joint pain, digestive issues, anxiety, poor sleep, weight gain
+                        (35 lbs in 3 years)</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medical History</div>
+                    <div class="value">Hypothyroidism (on Synthroid 75mcg), pre-diabetes, history of H. pylori (treated
+                        2019)</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medications</div>
+                    <div class="value">Synthroid, Metformin 500mg, Omeprazole 20mg daily, occasional Xanax</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Labs (Recent)</div>
+                    <div class="value">TSH 3.2, Free T4 1.0 (low-normal), Vitamin D 22, B12 borderline, HbA1c 6.1</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Diet</div>
+                    <div class="value">"Healthy" — cereal for breakfast, sandwiches, pasta, Diet Coke daily</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Stress Level</div>
+                    <div class="value">High — recent divorce, caring for aging mother, feels isolated</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Clinical Reasoning Process</h2>
+
+        <div class="reasoning-box">
+            <h3>Work Through the Case</h3>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 1: Identify Systems Involved</div>
+                <div class="step-content">Multiple systems are affected: Thyroid/endocrine, digestive (PPI use, H.
+                    pylori history), metabolic (pre-diabetes), neurological (anxiety, sleep), musculoskeletal (joint
+                    pain). This suggests systemic inflammation and potential nutrient deficiencies.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 2: Look for Root Causes</div>
+                <div class="step-content">The omeprazole reduces stomach acid → impairs B12, magnesium, calcium
+                    absorption → affects thyroid conversion. The "healthy" diet is actually high-glycemic → worsens
+                    insulin resistance → increases inflammation → worsens joint pain and fatigue.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 3: Identify the Domino Effect</div>
+                <div class="step-content">Poor gut function → nutrient malabsorption → suboptimal thyroid conversion →
+                    fatigue and weight gain → stress eating → worse blood sugar → more inflammation. It's a vicious
+                    cycle.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 4: Prioritize Interventions</div>
+                <div class="step-content">Start with the gut (address PPI dependency, optimize digestion), then blood
+                    sugar stabilization (dietary changes), then support thyroid conversion (address nutrient
+                    deficiencies). Don't try to fix everything at once.</div>
+            </div>
+        </div>
+
+        <h2>Differential Considerations</h2>
+
+        <div class="differential-box">
+            <h3>What Else Could Be Going On?</h3>
+
+            <div class="differential-grid">
+                <div class="differential-item">
+                    <div class="priority">1</div>
+                    <div class="content">
+                        <h4>Suboptimal Thyroid Treatment</h4>
+                        <p>TSH 3.2 is "normal" but may not be optimal for her. Free T3 not tested. Consider T4-to-T3
+                            conversion issues.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">2</div>
+                    <div class="content">
+                        <h4>SIBO / Gut Dysbiosis</h4>
+                        <p>History of H. pylori, chronic PPI use, digestive symptoms suggest small intestinal bacterial
+                            overgrowth.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">3</div>
+                    <div class="content">
+                        <h4>Perimenopause/Hormonal</h4>
+                        <p>Age 56, joint pain, anxiety, weight gain — could have significant hormonal component beyond
+                            thyroid.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">4</div>
+                    <div class="content">
+                        <h4>Autoimmune Component</h4>
+                        <p>Joint pain + Hashimoto's (likely given hypothyroidism) — rule out other autoimmune processes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>When to Refer</h2>
+
+        <div class="referral-box">
+            <h3>Red Flags — Refer to MD</h3>
+
+            <ul class="referral-list">
+                <li><strong>Unintentional weight loss</strong> with these symptoms could indicate malignancy</li>
+                <li><strong>Severe joint swelling</strong> with redness — needs rheumatology evaluation</li>
+                <li><strong>Chest pain or shortness of breath</strong> — cardiac workup needed</li>
+                <li><strong>Suicidal ideation</strong> — immediate mental health referral</li>
+                <li><strong>HbA1c > 6.5</strong> — requires diabetes management with physician</li>
+            </ul>
+        </div>
+
+        <h2>Your Proposed Protocol</h2>
+
+        <div class="protocol-box">
+            <h3>Phased Intervention Plan</h3>
+
+            <div class="protocol-phases">
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 1: Foundation (Weeks 1-4)</div>
+                    <ul>
+                        <li>Blood sugar stabilization: Remove processed carbs, add protein to every meal</li>
+                        <li>Basic gut support: Digestive enzymes with meals</li>
+                        <li>Sleep hygiene protocol: No screens after 8pm, consistent bedtime</li>
+                        <li>Recommended testing: Full thyroid panel with antibodies, comprehensive stool analysis</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 2: Targeted Support (Weeks 5-8)</div>
+                    <ul>
+                        <li>Based on test results: Address specific gut findings</li>
+                        <li>Nutrient repletion: B12, D3, magnesium as indicated</li>
+                        <li>Anti-inflammatory diet implementation</li>
+                        <li>Stress management: Breathwork, gentle movement</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 3: Optimization (Weeks 9-12)</div>
+                    <ul>
+                        <li>Coordinate with MD on thyroid medication optimization</li>
+                        <li>Fine-tune nutrition based on response</li>
+                        <li>Address lifestyle factors: Social connection, purpose</li>
+                        <li>Retest and reassess</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="encouragement-box">
+            <div class="emoji">🎓</div>
+            <h3>You're Thinking Like a Clinician!</h3>
+            <p>Complex cases require systems thinking, patience, and the humility to refer when needed. You're building
+                the skills to help clients who've been failed by one-size-fits-all approaches.</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy — Advanced Clinical Track</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

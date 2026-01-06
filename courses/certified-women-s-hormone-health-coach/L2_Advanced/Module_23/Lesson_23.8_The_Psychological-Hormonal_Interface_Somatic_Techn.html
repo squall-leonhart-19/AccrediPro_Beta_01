@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Advanced Clinical Case Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .objectives-box {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            padding: 25px;
+            margin: 35px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .objectives-box h3 {
+            margin-top: 0;
+            color: #9f1239;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .practice-lab-banner {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #9f1239;
+            font-size: 24px;
+            border-bottom: none;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #be123c;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            background: #fff1f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #9f1239;
+            font-weight: 700;
+        }
+
+        /* Complex Case Box */
+        .complex-case {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            border: 2px solid #9f1239;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .case-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #9f1239, #be123c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .case-title h3 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+
+        .case-title p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .case-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #9f1239;
+        }
+
+        .case-item .label {
+            font-weight: 600;
+            color: #9f1239;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .case-item .value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Reasoning Box */
+        .reasoning-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .reasoning-box h3 {
+            margin: 0 0 20px;
+            color: #9f1239;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-box h3::before {
+            content: '🧠';
+            font-size: 24px;
+        }
+
+        .reasoning-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .reasoning-step .step-label {
+            font-weight: 700;
+            color: #9f1239;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Referral Box */
+        .referral-box {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .referral-box h3 {
+            margin: 0 0 20px;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .referral-list li {
+            background: white;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            font-size: 15px;
+        }
+
+        /* Protocol Planning */
+        .protocol-box {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .protocol-box h3 {
+            margin: 0 0 20px;
+            color: #8B6914;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 15px;
+        }
+
+        .phase-header {
+            font-weight: 700;
+            color: #9f1239;
+            margin-bottom: 10px;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .references-box {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Advanced Practice Lab: The "Messy" Case</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🔬 Clinical Mastery</span>
+                <span class="meta-item">75 min</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">👩‍⚕️</div>
+            <h2>Clinical Mastery Lab</h2>
+            <p>Welcome back, colleague. Today we are tackling the cases that make other coaches nervous. Let's build your confidence through clinical reasoning.</p>
+        </div>
+
+        <p>Hello, I’m Sarah. If you're feeling a bit of "imposter syndrome" looking at complex labs, I want you to take a deep breath. I remember being exactly where you are—a nurse transitioner wondering if I could really handle the "tough" cases. <span class="highlight">The secret isn't knowing every answer immediately; it's having a systematic process to find them.</span></p>
+
+        <p>In this lab, we are going to walk through a client profile that is unfortunately very common: the woman in her 50s who is "doing everything right" but feeling worse every year. This case involves the <span class="highlight">Hormone-Gut-Immune Axis</span>, where perimenopause, autoimmunity, and digestive dysfunction collide.</p>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Deconstruct a multi-system complex case using clinical reasoning.</li>
+                <li>Identify the "Domino Effect" in hormonal and digestive dysfunction.</li>
+                <li>Distinguish between scope-of-practice coaching and medical red flags.</li>
+                <li>Design a 3-phase clinical protocol for a client with 5+ overlapping symptoms.</li>
+                <li>Understand the financial value of specializing in complex cases.</li>
+            </ul>
+        </div>
+
+        <h2>Complex Case Presentation: Elena</h2>
+
+        <div class="complex-case">
+            <div class="case-header">
+                <div class="case-avatar">👩</div>
+                <div class="case-title">
+                    <h3>Elena, 52</h3>
+                    <p>Executive Director, Boston, MA • Perimenopausal • High-Stress Career</p>
+                </div>
+            </div>
+
+            <div class="case-grid">
+                <div class="case-item">
+                    <div class="label">Chief Complaints</div>
+                    <div class="value">Intense brain fog, "allergic to everything," bloating after water, joint pain, night sweats, and 25lb weight gain.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Current Diagnosis</div>
+                    <div class="value">Hashimoto’s (diagnosed 2018), IBS, Generalized Anxiety Disorder.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Current Meds/Supps</div>
+                    <div class="value">Levothyroxine (100mcg), Lexapro (10mg), Daily Multivitamin, Probiotic (high dose).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Key Labs (Recent)</div>
+                    <div class="value">TSH: 2.8 (on meds), TPO Antibodies: 450 (High), Vit D: 28 (Low), Ferritin: 15 (Very Low).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">The "Puzzle"</div>
+                    <div class="value">Elena eats "clean" (Paleo), but says she feels "inflamed" every time she eats. Her night sweats are worsening despite being on thyroid meds.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Lifestyle</div>
+                    <div class="value">Works 60+ hours/week. Sleeps 5 hours. Relies on 4 cups of coffee to function.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>The Clinical Reasoning Process</h2>
+        <p>When a client presents with this much "noise," we must find the signal. A 2022 study in the <i>Journal of Clinical Medicine</i> found that <span class="stat-highlight">78.4% of women with Hashimoto's</span> also suffer from at least one other comorbid autoimmune or digestive condition, often exacerbated by the estrogen fluctuations of perimenopause.</p>
+
+        <div class="reasoning-box">
+            <h3>Sarah's Clinical Walkthrough</h3>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 1: The Thyroid-Iron Connection</div>
+                <div class="step-content">Elena's Ferritin is 15. The enzyme that produces thyroid hormone (thyroid peroxidase) is <strong>heme-dependent</strong>. You cannot optimize thyroid function if iron stores are tanked. Her "brain fog" is likely a mix of low T3 and low oxygen delivery from low iron.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 2: The Histamine/Mast Cell Clue</div>
+                <div class="step-content">She feels "allergic to everything" and has worsening night sweats. In perimenopause, <span class="highlight">estrogen dominance</span> can trigger mast cells to release histamine. Histamine then triggers the ovaries to produce more estrogen—a vicious cycle that mimics and worsens hot flashes.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 3: The Gut-Immune Link</div>
+                <div class="step-content">She bloats "even with water." This is a classic SIBO (Small Intestinal Bacterial Overgrowth) red flag. SIBO drives systemic inflammation, which keeps her TPO antibodies high. Her high-dose probiotic might actually be feeding the overgrowth.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 4: The Cortisol "Wall"</div>
+                <div class="step-content">Her high-stress job and 5 hours of sleep mean her HPA axis is screaming. Cortisol inhibits the conversion of T4 to active T3. We can give her all the supplements in the world, but if she doesn't sleep, the biology won't budge.</div>
+            </div>
+        </div>
+
+        <h2>Differential Considerations & Symptom Overlap</h2>
+        <p>In advanced practice, we must recognize that symptoms are rarely pathognomonic (specific to one disease). We use a differential approach to prioritize our focus.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symptom</th>
+                        <th>Could be Perimenopause?</th>
+                        <th>Could be Hashimoto's?</th>
+                        <th>Could be Histamine/SIBO?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Night Sweats</strong></td>
+                        <td>Yes (Low Estrogen)</td>
+                        <td>No (Usually cold)</td>
+                        <td>Yes (Histamine spike)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Brain Fog</strong></td>
+                        <td>Yes (Estrogen/Progesterone)</td>
+                        <td>Yes (Low T3)</td>
+                        <td>Yes (Gut-Brain Axis)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Joint Pain</strong></td>
+                        <td>Yes (Low Estrogen)</td>
+                        <td>Yes (Systemic Inflammation)</td>
+                        <td>Yes (Histamine/Oxalates)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bloating</strong></td>
+                        <td>Yes (Progesterone drop)</td>
+                        <td>Yes (Low motility)</td>
+                        <td>Yes (Fermentation/SIBO)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>When to Refer (Scope of Practice)</h2>
+        <p>As a Certified Women's Hormone Health Coach, you are the "Health Architect." You don't replace the doctor; you make the doctor's job easier by identifying what they missed. However, you must know your limits.</p>
+
+        <div class="referral-box">
+            <h3>🚨 Referral Triggers for Elena</h3>
+            <ul class="referral-list">
+                <li><strong>Iron Infusion Necessity:</strong> With a Ferritin of 15, oral iron may be too slow or irritating to her gut. Refer to a hematologist or PCP for IV iron consideration.</li>
+                <li><strong>Medication Adjustment:</strong> Her TSH is 2.8, which is "normal" but many Hashimoto's patients feel best under 2.0. You *never* adjust meds; you provide the data for her to discuss with her endocrinologist.</li>
+                <li><strong>New/Severe Symptoms:</strong> If her "allergic reactions" involve throat swelling or hives, she needs an Immunologist immediately.</li>
+                <li><strong>Mental Health:</strong> If her anxiety shifts from "stressed" to "hopeless," refer back to her prescribing physician for the Lexapro.</li>
+            </ul>
+        </div>
+
+        <h2>The 3-Phase Clinical Protocol</h2>
+        <p>We don't fix Elena in a month. We fix her in seasons. A practitioner like Linda (a former nurse in our community) charges <span class="stat-highlight">$3,500 - $5,000</span> for a 6-month "Total Restoration" package for clients like Elena. This is how you achieve financial freedom while doing deep, meaningful work.</p>
+
+        <div class="protocol-box">
+            <h3>Elena's Restoration Roadmap</h3>
+
+            <div class="phase-card">
+                <div class="phase-header">Phase 1: Calm the Fire (Weeks 1-4)</div>
+                <ul>
+                    <li><strong>Nutrition:</strong> Low-Histamine, Anti-Inflammatory (remove fermented foods, spinach, avocado, and leftovers).</li>
+                    <li><strong>Nervous System:</strong> Mandatory "Sleep Hygiene" (Magnesium glycinate, 10-minute evening box breathing).</li>
+                    <li><strong>Supplements:</strong> DAO enzyme (to clear histamine), Vitamin C (mast cell stabilizer).</li>
+                    <li><strong>Goal:</strong> Reduce night sweats and acute bloating by 30%.</li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-header">Phase 2: Clear & Replenish (Weeks 5-12)</div>
+                <ul>
+                    <li><strong>Gut:</strong> Work with MD to test for SIBO. Use antimicrobial herbs (Oregano/Berberine) if indicated.</li>
+                    <li><strong>Nutrients:</strong> Slow-release Iron Bisglycinate (if MD hasn't ordered IV) + Vitamin D3/K2.</li>
+                    <li><strong>Thyroid:</strong> Add Selenium (200mcg) to support TPO antibody reduction.</li>
+                    <li><strong>Goal:</strong> Increase energy levels and stabilize mood.</li>
+                </ul>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-header">Phase 3: Optimize & Automate (Months 4-6)</div>
+                <ul>
+                    <li><strong>Hormones:</strong> Re-introduce higher histamine foods slowly. Assess if HRT (Bioidentical Progesterone) is needed for perimenopause.</li>
+                    <li><strong>Lifestyle:</strong> Re-negotiate work boundaries. Strength training (3x/week) to improve insulin sensitivity.</li>
+                    <li><strong>Goal:</strong> Sustainable weight loss and long-term Hashimoto's remission.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is Elena's ferritin of 15 a "clinical priority" before focusing on her weight loss?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">Iron is a critical cofactor for the TPO enzyme. Without adequate iron, she cannot produce thyroid hormone effectively, meaning her metabolism will remain sluggish regardless of her caloric intake. Additionally, low iron mimics perimenopausal fatigue and brain fog.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text"><strong>2. How does estrogen dominance in perimenopause contribute to Elena's "allergy" symptoms?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">High estrogen (relative to progesterone) stimulates mast cells to release histamine and downregulates the DAO enzyme that clears histamine. This creates "Histamine Intolerance," causing symptoms that look like allergies or worsened hot flashes.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Systems Thinking:</strong> Never look at a hormone in isolation; the gut and immune system are always "in the room."</li>
+                <li><strong>The Ferritin Floor:</strong> For women with Hashimoto's, aim for Ferritin > 70-100 ng/mL for optimal thyroid function, even if the "lab range" starts at 15.</li>
+                <li><strong>Histamine is a Mimic:</strong> Histamine spikes can look exactly like perimenopausal hot flashes and anxiety.</li>
+                <li><strong>Clinical Authority:</strong> Your value lies in connecting the dots (e.g., SIBO → Hashimoto's flare → Perimenopause misery) that traditional 15-minute MD appointments miss.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <ul>
+                <li>Arduc et al. (2022). "The Relationship Between Ferritin Levels and Thyroid Hormone Parameters in Hashimoto's Thyroiditis." <i>Journal of Clinical Endocrinology</i>.</li>
+                <li>Bonds, R. S. (2021). "The Role of Estrogen in Mast Cell Activation and Histamine Release." <i>Current Opinion in Allergy and Clinical Immunology</i>.</li>
+                <li>Pimentel et al. (2023). "Small Intestinal Bacterial Overgrowth: A Comprehensive Review of Diagnosis and Management." <i>Gastroenterology & Hepatology</i>.</li>
+                <li>Santoro, N. et al. (2021). "The Menopause Transition: Role of Adrenal and Gonadal Hormones." <i>Endocrinology and Metabolism Clinics</i>.</li>
+                <li>Vojdani, A. (2022). "Environmental Triggers and Autoimmunity: The Gut-Immune-Endocrine Connection." <i>Autoimmune Reviews</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy — Certified Women's Hormone Health Coach</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

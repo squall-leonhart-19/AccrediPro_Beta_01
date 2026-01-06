@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Supervision & Mentoring</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .practice-lab-banner {
+            background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+            border: 2px solid #0891b2;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #0e7490;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #0891b2;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #0891b2;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        /* Mentee Profile */
+        .mentee-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .mentee-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mentee-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .mentee-info h3 {
+            margin: 0 0 5px;
+            font-size: 20px;
+        }
+
+        .mentee-info p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .mentee-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .detail-card .label {
+            font-weight: 600;
+            color: #0d9488;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-card .value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Case Review Section */
+        .case-review {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .case-review h3 {
+            margin: 0 0 20px;
+            color: #b45309;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-review h3::before {
+            content: '📋';
+            font-size: 24px;
+        }
+
+        .presented-case {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .presented-case h4 {
+            margin: 0 0 15px;
+            color: #333;
+        }
+
+        /* Teaching Points */
+        .teaching-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .teaching-box h3 {
+            margin: 0 0 20px;
+            color: #16a34a;
+        }
+
+        .teaching-point {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .teaching-point:last-child {
+            margin-bottom: 0;
+        }
+
+        .point-icon {
+            width: 44px;
+            height: 44px;
+            background: #22c55e;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .point-content h4 {
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .point-content p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        /* Feedback Framework */
+        .feedback-box {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            border: 2px solid #8b5cf6;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .feedback-box h3 {
+            margin: 0 0 20px;
+            color: #6d28d9;
+        }
+
+        .feedback-script {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .script-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .script-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .script-section .section-label {
+            font-weight: 700;
+            color: #8b5cf6;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .script-section .dialogue {
+            font-size: 16px;
+            font-style: italic;
+            color: #333;
+            padding-left: 16px;
+            border-left: 3px solid #8b5cf6;
+        }
+
+        /* Supervision Tips */
+        .tips-box {
+            background: #fff7ed;
+            border: 2px solid #f97316;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .tips-box h3 {
+            margin: 0 0 20px;
+            color: #c2410c;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .tip-card .tip-do {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .tip-card .tip-dont {
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        /* Encouragement */
+        .encouragement-box {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #0891b2;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+
+            .mentee-details,
+            .tip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 26: Leadership & Supervision</p>
+            <h1 class="lesson-title">Practice Lab: Mentoring a New Practitioner</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">👥 Master Level</span>
+                <span class="meta-item">50 min</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">👥</div>
+            <h2>Supervision & Mentoring Practice</h2>
+            <p>As a Master Practitioner, you'll guide others. This lab helps you develop your supervision skills.</p>
+        </div>
+
+        <h2>Your Mentee</h2>
+
+        <div class="mentee-box">
+            <div class="mentee-header">
+                <div class="mentee-avatar">👩‍🎓</div>
+                <div class="mentee-info">
+                    <h3>Jennifer, New L1 Graduate</h3>
+                    <p>Just completed her certification, eager but nervous about first clients</p>
+                </div>
+            </div>
+
+            <div class="mentee-details">
+                <div class="detail-card">
+                    <div class="label">Background</div>
+                    <div class="value">Former yoga teacher, passionate about holistic health, no clinical experience
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Strengths</div>
+                    <div class="value">Great rapport builder, very empathetic, strong communication skills</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Growth Areas</div>
+                    <div class="value">Tends to over-explain, unsure about scope of practice, needs confidence</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Her Question</div>
+                    <div class="value">"Can you review this client case? I'm not sure if I handled it correctly."</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>The Case She Presents</h2>
+
+        <div class="case-review">
+            <h3>Jennifer's Client Case</h3>
+
+            <div class="presented-case">
+                <h4>What Jennifer Tells You:</h4>
+                <p>"I had a client, Maria, 44, who came to me with fatigue and digestive issues. I did an intake,
+                    recommended she cut out gluten and dairy, take probiotics, and come back in 4 weeks. But she emailed
+                    me saying she feels worse — more bloated than before. Did I do something wrong?"</p>
+
+                <h4 style="margin-top: 20px;">What You Need to Explore:</h4>
+                <ul>
+                    <li>Did Jennifer assess for contraindications to probiotics (SIBO, histamine issues)?</li>
+                    <li>Was the elimination too aggressive without proper guidance?</li>
+                    <li>Did she set realistic expectations about the timeline?</li>
+                    <li>Is there a scope of practice issue here?</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Your Teaching Approach</h2>
+
+        <div class="teaching-box">
+            <h3>Key Points to Cover with Jennifer</h3>
+
+            <div class="teaching-point">
+                <div class="point-icon">1</div>
+                <div class="point-content">
+                    <h4>Normalize the Learning Experience</h4>
+                    <p>"This is exactly why case review is valuable. Every practitioner has cases that don't go as
+                        expected. It's how we learn."</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">2</div>
+                <div class="point-content">
+                    <h4>Teach the 'Die-Off' Concept</h4>
+                    <p>Explain that probiotics can cause temporary worsening if there's dysbiosis. This isn't failure —
+                        it's information.</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">3</div>
+                <div class="point-content">
+                    <h4>Review Assessment Depth</h4>
+                    <p>Gently explore whether the initial intake was thorough enough. Did she ask about SIBO symptoms?
+                        Stool history?</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">4</div>
+                <div class="point-content">
+                    <h4>Build Her Clinical Reasoning</h4>
+                    <p>Instead of giving the answer, ask: "What might be causing this reaction? What would you do
+                        differently next time?"</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Your Feedback Dialogue</h2>
+
+        <div class="feedback-box">
+            <h3>How to Deliver Constructive Feedback</h3>
+
+            <div class="feedback-script">
+                <div class="script-section">
+                    <div class="section-label">Start with Validation</div>
+                    <div class="dialogue">"Jennifer, I really appreciate you bringing this to me. The fact that you're
+                        questioning and wanting to learn tells me you're going to be an excellent practitioner. Let's
+                        look at this together."</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Ask Before Telling</div>
+                    <div class="dialogue">"Before I share my thoughts, what's YOUR instinct about what might be
+                        happening? What did your gut tell you when you read Maria's email?"</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Teach the Principle</div>
+                    <div class="dialogue">"One thing I learned early on: when someone gets worse on probiotics, it's
+                        often a sign of SIBO or significant dysbiosis. The 'good bugs' are fighting the 'bad bugs' and
+                        it can get messy before it gets better. This is actually valuable clinical information."</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Empower Next Steps</div>
+                    <div class="dialogue">"What would you like to do next with Maria? I'm here to support you, but I
+                        want you to develop your own clinical thinking. What feels right to you?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Supervision Best Practices</h2>
+
+        <div class="tips-box">
+            <h3>Do's and Don'ts of Mentoring</h3>
+
+            <div class="tip-grid">
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Ask questions first</div>
+                    <div class="tip-dont">✗ DON'T: Jump to "here's what you should have done"</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Normalize mistakes as learning</div>
+                    <div class="tip-dont">✗ DON'T: Make them feel incompetent</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Celebrate their instincts</div>
+                    <div class="tip-dont">✗ DON'T: Undermine their confidence</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Teach principles, not just answers</div>
+                    <div class="tip-dont">✗ DON'T: Create dependency on you</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="encouragement-box">
+            <div class="emoji">🌟</div>
+            <h3>You're Becoming a Leader!</h3>
+            <p>The best practitioners don't just help clients — they multiply their impact by training others. Your
+                wisdom and experience are valuable gifts to share.</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy — Master Level</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

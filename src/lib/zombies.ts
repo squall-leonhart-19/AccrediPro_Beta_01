@@ -29,98 +29,50 @@ const STUDENT_AVATARS = [
     "https://i.pravatar.cc/150?img=47",
 ];
 
-// Pre-defined zombie profiles
+// Pre-defined zombie profiles - MUST MATCH pod-scripts-v2.ts characters!
+// These are the 5 core pod members that appear in all scripted messages
 export const ZOMBIE_PROFILES = [
-    // LEADERS - Always ahead, encouraging, buy first
+    // LEADERS - Gina T. and Amber L. from scripts
     {
-        name: "Maria T.",
-        location: "Texas",
+        name: "Gina T.",
+        location: "California",
         personalityType: "leader" as ZombiePersonality,
-        backstory: "Former nurse transitioning to wellness coaching",
+        backstory: "Started 6 weeks ago, crushing it, very encouraging",
         avatar: STUDENT_AVATARS[0],
     },
     {
-        name: "Jennifer L.",
-        location: "California",
+        name: "Amber L.",
+        location: "Texas",
         personalityType: "leader" as ZombiePersonality,
-        backstory: "Mom of three starting her wellness journey",
+        backstory: "Supportive, gives great advice about pacing",
         avatar: STUDENT_AVATARS[1],
     },
+
+    // QUESTIONER - Cheryl W. from scripts
     {
-        name: "Rachel M.",
+        name: "Cheryl W.",
         location: "Florida",
-        personalityType: "leader" as ZombiePersonality,
-        backstory: "Yoga instructor expanding into nutrition",
-        avatar: STUDENT_AVATARS[2],
-    },
-    {
-        name: "Amanda K.",
-        location: "New York",
-        personalityType: "leader" as ZombiePersonality,
-        backstory: "Corporate wellness coach going independent",
-        avatar: STUDENT_AVATARS[3],
-    },
-
-    // STRUGGLERS - Start slow, catch up, relatable
-    {
-        name: "James K.",
-        location: "Arizona",
-        personalityType: "struggler" as ZombiePersonality,
-        backstory: "Working full-time while studying",
-        avatar: STUDENT_AVATARS[4],
-    },
-    {
-        name: "David M.",
-        location: "Colorado",
-        personalityType: "struggler" as ZombiePersonality,
-        backstory: "Career changer at 50, proving it's never too late",
-        avatar: STUDENT_AVATARS[5],
-    },
-    {
-        name: "Donna K.",
-        location: "Washington",
-        personalityType: "struggler" as ZombiePersonality,
-        backstory: "Single mom balancing kids and certification",
-        avatar: STUDENT_AVATARS[6],
-    },
-
-    // QUESTIONERS - Ask questions user might have
-    {
-        name: "Kim L.",
-        location: "Oregon",
         personalityType: "questioner" as ZombiePersonality,
-        backstory: "Detail-oriented learner who asks great questions",
+        backstory: "Was nervous at first, loves gut health, asks great questions",
         avatar: STUDENT_AVATARS[7],
     },
+
+    // STRUGGLER - Lisa K. from scripts
     {
-        name: "Sophia R.",
-        location: "Illinois",
-        personalityType: "questioner" as ZombiePersonality,
-        backstory: "Research-minded student from medical background",
-        avatar: STUDENT_AVATARS[8],
-    },
-    {
-        name: "Emily H.",
-        location: "Pennsylvania",
-        personalityType: "questioner" as ZombiePersonality,
-        backstory: "Always curious, asks the questions others are thinking",
-        avatar: STUDENT_AVATARS[9],
+        name: "Lisa K.",
+        location: "Oregon",
+        personalityType: "struggler" as ZombiePersonality,
+        backstory: "Working full-time, slower pace but persistent",
+        avatar: STUDENT_AVATARS[4],
     },
 
-    // BUYERS - Quick to purchase upgrades, create FOMO
+    // BUYER - Denise P. from scripts
     {
-        name: "Michelle B.",
-        location: "Nevada",
+        name: "Denise P.",
+        location: "Colorado",
         personalityType: "buyer" as ZombiePersonality,
-        backstory: "Invests in herself, sees programs as assets",
+        backstory: "Invested in Pro early, gets certified Day 14, first client Day 25",
         avatar: STUDENT_AVATARS[10],
-    },
-    {
-        name: "Lisa P.",
-        location: "Georgia",
-        personalityType: "buyer" as ZombiePersonality,
-        backstory: "Business-minded, values accelerated paths",
-        avatar: STUDENT_AVATARS[11],
     },
 ];
 
@@ -143,20 +95,11 @@ export function getRandomPodName(): string {
     return POD_NAMES[Math.floor(Math.random() * POD_NAMES.length)];
 }
 
-// Get zombies for a pod (random selection)
-export function getZombiesForPod(count: number = 4): typeof ZOMBIE_PROFILES {
-    // Always include: 1 leader, 1 struggler, 1 questioner, 1 buyer
-    const leaders = ZOMBIE_PROFILES.filter(z => z.personalityType === "leader");
-    const strugglers = ZOMBIE_PROFILES.filter(z => z.personalityType === "struggler");
-    const questioners = ZOMBIE_PROFILES.filter(z => z.personalityType === "questioner");
-    const buyers = ZOMBIE_PROFILES.filter(z => z.personalityType === "buyer");
-
-    return [
-        leaders[Math.floor(Math.random() * leaders.length)],
-        strugglers[Math.floor(Math.random() * strugglers.length)],
-        questioners[Math.floor(Math.random() * questioners.length)],
-        buyers[Math.floor(Math.random() * buyers.length)],
-    ].slice(0, count);
+// Get zombies for a pod - returns the consistent 5 script characters
+// Order: Gina (leader), Amber (leader), Cheryl (questioner), Lisa (struggler), Denise (buyer)
+export function getZombiesForPod(count: number = 5): typeof ZOMBIE_PROFILES {
+    // Return all 5 core characters - they match the scripts exactly
+    return ZOMBIE_PROFILES.slice(0, count);
 }
 
 // Progress curves - how fast zombies progress (day -> progress %)

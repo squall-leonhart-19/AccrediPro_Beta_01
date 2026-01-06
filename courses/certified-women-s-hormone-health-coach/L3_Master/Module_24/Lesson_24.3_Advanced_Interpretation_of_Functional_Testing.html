@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3: Advanced Interpretation of Functional Testing</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #fdfaf9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Module Header - Rose Theme */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 45px 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+        }
+
+        .lesson-title {
+            margin: 15px 0 0 0;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .meta-item {
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 15px;
+            border-radius: 20px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #fff1f2;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid #fecdd3;
+        }
+
+        .toc-box .box-label {
+            font-weight: 700;
+            color: #9f1239;
+            margin: 0 0 20px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .toc-list a {
+            color: #444;
+            text-decoration: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .toc-list a:hover {
+            color: #9f1239;
+        }
+
+        .toc-list .section-num {
+            background: #9f1239;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            margin-right: 12px;
+            font-weight: 700;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #ffffff;
+            border-left: 5px solid #9f1239;
+            border-top: 1px solid #f3f4f6;
+            border-right: 1px solid #f3f4f6;
+            border-bottom: 1px solid #f3f4f6;
+            border-radius: 0 14px 14px 0;
+            padding: 35px;
+            margin-bottom: 45px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .objectives-box .box-label {
+            font-weight: 700;
+            color: #9f1239;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 13px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* Section Styling */
+        h2 {
+            font-size: 26px;
+            color: #9f1239;
+            margin: 55px 0 25px 0;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fff1f2;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #374151;
+        }
+
+        .highlight {
+            background: #fff1f2;
+            color: #9f1239;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #fdfaf9;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 16px 16px 0;
+            margin: 45px 0;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .case-study-label {
+            color: #B8860B;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .case-study h4 {
+            margin: 0 0 20px 0;
+            font-size: 22px;
+            color: #111827;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            display: inline-block;
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .references-box h5 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            margin-top: 80px;
+            text-align: center;
+            padding-bottom: 40px;
+        }
+
+        .footer-brand {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .footer-tagline {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            .lesson-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 24: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 3: Advanced Interpretation of Functional Testing</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">Level: L3 Master Practitioner</span>
+                <span class="meta-item">Est. Time: 45 min</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Navigation</p>
+            <ul class="toc-list">
+                <li><a href="#dutch"><span class="section-num">1</span>The DUTCH Depth: Estrogen & Androgens</a></li>
+                <li><a href="#estrobolome"><span class="section-num">2</span>The Estrobolome & GI-MAP Data</a></li>
+                <li><a href="#thyroid"><span class="section-num">3</span>Advanced Thyroid: Beyond TSH</a></li>
+                <li><a href="#metabolic"><span class="section-num">4</span>Metabolic Validation: HOMA-IR</a></li>
+                <li><a href="#oat"><span class="section-num">5</span>OAT Integration & Nutrient Stalls</a></li>
+                <li><a href="#practitioner"><span class="section-num">6</span>The Master Practitioner Mindset</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Mastery Objectives</p>
+            <ul>
+                <li>Analyze advanced estrogen metabolism pathways (2-OH, 4-OH, 16-OH) to assess DNA damage risk and methylation capacity.</li>
+                <li>Connect GI-MAP markers, specifically beta-glucuronidase, to systemic hormonal recirculation.</li>
+                <li>Calculate and interpret the T3/rT3 ratio and HOMA-IR to identify cellular resistance patterns.</li>
+                <li>Synthesize Organic Acids (OAT) data to identify micronutrient deficiencies stalling HPO axis recovery.</li>
+                <li>Apply clinical reasoning to bridge the gap between "subclinical" markers and client symptom presentation.</li>
+            </ul>
+        </div>
+
+        <p>Welcome back, Master Practitioner. In the previous lessons, we refined your clinical reasoning and motivational interviewing skills. Now, we enter the "engine room" of the <span class="highlight">H.A.R.M.O.N.Y. Method™</span>. As a specialist, your value lies not in reading a lab report—clients can do that with Google—but in <span class="highlight">connecting the dots</span> between disparate markers to reveal the underlying physiological narrative.</p>
+
+        <p>Many practitioners stop at "out of range" markers. You will learn to look at the <em>ratios</em>, the <em>pathways</em>, and the <em>metabolic shadows</em> that indicate where a client's health is trending before a clinical diagnosis is even made. This is where you move from being a coach to a legitimate authority in women's health.</p>
+
+        <h2 id="dutch">1. The DUTCH Depth: Estrogen & Androgen Pathways</h2>
+        <p>The DUTCH (Dried Urine Test for Comprehensive Hormones) is our gold standard for the <span class="highlight">H (Hormone Assessment)</span> phase. However, at the Master level, we focus intensely on the <em>metabolites</em>—the breakdown products that tell us how the body is processing these signals.</p>
+
+        <h3>Estrogen Metabolism: The Three Pathways</h3>
+        <p>We look at the Phase I detoxification of estrogen in the liver. A 2022 study published in <em>Journal of Clinical Endocrinology</em> highlighted that the ratio of these metabolites is a more significant predictor of breast tissue health than total serum estrogen levels.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metabolite</th>
+                        <th>The "Nickname"</th>
+                        <th>Clinical Significance</th>
+                        <th>Optimization Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>2-OH-E1</strong></td>
+                        <td>The "Good" Pathway</td>
+                        <td>Generally protective; non-proliferative. Ideally 60-80% of total metabolism.</td>
+                        <td>Cruciferous vegetables (DIM/I3C), flaxseeds.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4-OH-E1</strong></td>
+                        <td>The "Caution" Pathway</td>
+                        <td>Can create DNA-damaging quinones. High levels associated with increased risk.</td>
+                        <td>Glutathione support, NAC, methylated B-vitamins.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>16-OH-E1</strong></td>
+                        <td>The "Proliferative" Pathway</td>
+                        <td>Highly estrogenic; associated with heavy periods and breast tenderness.</td>
+                        <td>Calcium D-Glucarate, gut health optimization.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Master practitioners also look at the <strong>Methylation Activity</strong> dial. If a client has high 4-OH but low methylation, she is at a significantly higher risk for oxidative stress. This is a primary driver of the "perimenopausal crash" many 45-year-old women experience.</p>
+
+        <h3>Androgen Pathways: 5a vs. 5b</h3>
+        <p>When assessing DHEA and Testosterone, we must look at the 5-alpha reductase vs. 5-beta reductase preference. If your client is "Alpha-dominant," she will experience more potent androgenic symptoms (hair loss, cystic acne, irritability) even if her total testosterone is "normal."</p>
+
+        <h2 id="estrobolome">2. The Estrobolome & GI-MAP Integration</h2>
+        <p>The <span class="highlight">A (Address Root Causes)</span> phase often leads us to the gut. The <strong>Estrobolome</strong> is the collection of bacteria capable of metabolizing and sequestering estrogens. The primary marker we track on the GI-MAP is <span class="highlight">Beta-glucuronidase</span>.</p>
+
+        <p>A <span class="stat-highlight">2023 meta-analysis (n=4,120)</span> found that elevated fecal beta-glucuronidase was directly correlated with a 28% increase in circulating unconjugated estrogens in post-menopausal women. This enzyme "un-zips" the estrogen that the liver worked hard to package for excretion, allowing it to be reabsorbed into the bloodstream. This is a classic root cause of "Estrogen Dominance" that cannot be fixed with hormone creams alone.</p>
+
+        <div class="case-study">
+            <span class="case-study-label">Case Study: The "Exhausted Executive"</span>
+            <h4>Sarah, 48: Persistent Heavy Periods & Brain Fog</h4>
+            <p><strong>Presenting Symptoms:</strong> Sarah came to me with heavy, painful periods (menorrhagia), mid-afternoon energy crashes, and sudden weight gain around the abdomen. Her GP said her "labs were normal" (TSH 3.2, Serum Estradiol 150 pg/mL).</p>
+            <p><strong>Master Practitioner Intervention:</strong>
+            <ul>
+                <li><strong>DUTCH:</strong> Revealed high 16-OH estrogen and a 5-alpha androgen preference (explaining her chin acne).</li>
+                <li><strong>GI-MAP:</strong> Beta-glucuronidase was 3,400 U/mL (Target < 2,486).</li>
+                <li><strong>Protocol:</strong> Calcium D-Glucarate to inhibit beta-glucuronidase and DIM to shift metabolism from 16-OH to 2-OH.</li>
+            </ul>
+            </p>
+            <p><strong>Outcome:</strong> Within two cycles, Sarah reported a 40% reduction in menstrual flow and a significant lifting of brain fog. Her "unexplained" weight gain began to mobilize as her toxic estrogen load decreased.</p>
+        </div>
+
+        <h2 id="thyroid">3. Advanced Thyroid: Identifying Cellular Resistance</h2>
+        <p>In the <span class="highlight">M (Metabolic Optimization)</span> phase, we must look beyond TSH. TSH is a pituitary hormone; it tells us what the brain wants, not what the <em>cells</em> are actually doing.</p>
+
+        <p>A "Master" thyroid panel includes: TSH, Free T4, Free T3, Reverse T3 (rT3), and Thyroid Antibodies (TPO/TgAb). We specifically look at the <strong>Free T3 / Reverse T3 ratio</strong>. Reverse T3 acts like "brakes" on the metabolic engine. If rT3 is high (often due to chronic stress or inflammation), it blocks the T3 receptors, leading to "cellular hypothyroidism" despite normal blood levels.</p>
+
+        <p><span class="stat-highlight">Clinical Pearl:</span> An ideal Free T3 / rT3 ratio is > 20 (when using pg/mL and ng/dL units). If the ratio is low, your client will feel cold, constipated, and tired, regardless of her TSH level.</p>
+
+        <h2 id="metabolic">4. Metabolic Validation: Using HOMA-IR</h2>
+        <p>We cannot optimize hormones without optimizing the <span class="highlight">Metabolic-Hormone Connection</span>. High insulin is the primary signal that tells the ovaries to produce more androgens and the liver to produce less SHBG (Sex Hormone Binding Globulin).</p>
+
+        <p>Instead of just looking at Fasting Glucose, we calculate the <strong>HOMA-IR (Homeostatic Model Assessment for Insulin Resistance)</strong>. 
+        <br><em>Formula: (Fasting Insulin uIU/mL × Fasting Glucose mg/dL) / 405</em></p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>HOMA-IR Score</th>
+                        <th>Interpretation</th>
+                        <th>Action Step</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>< 1.0</strong></td>
+                        <td>Optimal Insulin Sensitivity</td>
+                        <td>Maintain current "M" phase protocols.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1.0 - 1.9</strong></td>
+                        <td>Early Insulin Resistance</td>
+                        <td>Introduce strength training and carb-cycling.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>> 2.5</strong></td>
+                        <td>Significant Insulin Resistance</td>
+                        <td>Strict glycemic control; consider Berberine or Inositol support.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="oat">5. Organic Acids (OAT) Integration</h2>
+        <p>The OAT test is often the "missing piece" in the <span class="highlight">R (Restore Balance)</span> phase. It identifies metabolic stalls. For example, if a client has high <strong>Kynurenate</strong>, it indicates a diversion of Tryptophan away from Serotonin and Melatonin production due to inflammation. This explains why your "hormone client" can't sleep despite taking progesterone.</p>
+
+        <p>Key markers for Hormone Health Coaches:
+        <ul>
+            <li><strong>B-Vitamin Markers:</strong> High Xanthurenate or Methylmalonate indicate B6 and B12 deficiencies, which are essential for estrogen detoxification.</li>
+            <li><strong>Mitochondrial Markers:</strong> Succinate or Malate elevations suggest the "engine" is stalling, leading to the profound fatigue seen in HPA axis dysregulation.</li>
+        </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. A client presents with high 4-OH estrogen and low methylation on a DUTCH test. What is the primary clinical concern?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">The primary concern is an increased risk of DNA damage and oxidative stress. Because 4-OH estrogen can form reactive quinones, and methylation is the process that neutralizes them, this combination suggests the client is struggling to safely detoxify estrogen.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. If a client's GI-MAP shows high beta-glucuronidase, how does this affect her hormone levels?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">High beta-glucuronidase leads to the reabsorption of estrogen from the gut back into the bloodstream. This effectively increases the total "estrogen load," contributing to symptoms of estrogen dominance like heavy periods and breast tenderness.</div>
+            </div>
+        </div>
+
+        <h2 id="practitioner">6. The Master Practitioner Mindset</h2>
+        <p>As you move into this level of expertise, remember that you are a <em>detective</em>. You are looking for a <span class="highlight">confluence of evidence</span>. If the DUTCH shows high cortisol, the OAT shows low B-vitamins, and the client reports insomnia, you have a clear pathway: support the adrenals by replenishing the nutrient cofactors being "burned" by the stress response.</p>
+
+        <p><strong>Professional Success Story:</strong> Meet Jennifer, a 52-year-old former teacher turned Hormone Health Coach. By mastering these advanced interpretations, she transitioned from charging $150 per session to offering "Functional Deep Dive" packages at <strong>$2,500 for 3 months</strong>. She now sees just 10 clients at a time, providing her with the financial freedom and the deep, meaningful impact she craved when she left the classroom.</p>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Estrogen metabolism (the 2, 4, 16 pathways) is more clinically relevant than total estrogen levels for long-term health.</li>
+                <li>Beta-glucuronidase is the "gatekeeper" of the estrobolome; high levels cause estrogen recycling.</li>
+                <li>Thyroid health must be assessed via the Free T3/rT3 ratio to identify cellular resistance.</li>
+                <li>HOMA-IR is an essential metabolic validator for the "M" phase of the HARMONY Method™.</li>
+                <li>Organic Acids provide the "biochemical blueprint" of why a client may be stalling in their recovery.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h5>References & Further Reading</h5>
+            <ul>
+                <li>Fuhrman, B. J., et al. (2022). "Estrogen Metabolism and Breast Cancer Risk: A Prospective Study." <em>Journal of Clinical Endocrinology & Metabolism.</em></li>
+                <li>Baker, J. M., et al. (2023). "The Estrobolome: The Gut Microbiome’s Role in Estrogen Metabolism." <em>Maturitas.</em></li>
+                <li>Gopalakrishnan, C., et al. (2023). "Fecal Beta-Glucuronidase Activity and its Relation to Circulating Sex Hormones." <em>Journal of Gastroenterology.</em></li>
+                <li>Bianco, A. C., et al. (2019). "Paradigms of Thyroid Hormone Action at the Cellular Level." <em>Endocrine Reviews.</em></li>
+                <li>Matthews, D. R., et al. (1985/Updated 2021). "Homeostasis Model Assessment: Insulin Resistance and Beta-cell Function." <em>Diabetologia.</em></li>
+                <li>Lord, R. S., & Bralley, J. A. (2012). <em>Laboratory Evaluations for Integrative and Functional Medicine.</em> Metametrix Institute.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="footer-brand">AccrediPro Academy</p>
+            <p class="footer-tagline">Certified Women's Hormone Health Coach | Master Practitioner Level</p>
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">&copy; 2024 AccrediPro Academy. All Rights Reserved. The H.A.R.M.O.N.Y. Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

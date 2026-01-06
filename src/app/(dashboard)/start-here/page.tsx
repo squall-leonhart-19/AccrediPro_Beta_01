@@ -5,7 +5,13 @@ import { StartHereClient } from "./start-here-client";
 import { cookies } from "next/headers";
 
 async function getStartHereData(userId: string) {
-    const [user, enrollments, userTags] = await Promise.all([
+    // Get Coach Sarah's ID for checking if user messaged her
+    const coachSarah = await prisma.user.findFirst({
+        where: { email: "sarah@accredipro-certificate.com" },
+        select: { id: true },
+    });
+
+    const [user, enrollments, userTags, messagedCoach, hasIntroPost] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -21,6 +27,19 @@ async function getStartHereData(userId: string) {
         prisma.userTag.findMany({
             where: { userId },
             select: { tag: true, value: true, metadata: true },
+        }),
+        // Check if user has messaged Coach Sarah
+        coachSarah ? prisma.message.findFirst({
+            where: {
+                senderId: userId,
+                receiverId: coachSarah.id,
+            },
+            select: { id: true },
+        }) : null,
+        // Check if user has posted in community
+        prisma.communityPost.findFirst({
+            where: { authorId: userId },
+            select: { id: true },
         }),
     ]);
 
@@ -50,6 +69,8 @@ async function getStartHereData(userId: string) {
             obstacles: obstaclesTags.map(t => t.tag.replace('obstacle:', '')),
             interests: interestsTags.map(t => t.tag.replace('interest:', '')),
         },
+        hasMessagedCoach: !!messagedCoach,
+        hasIntroPost: !!hasIntroPost,
     };
 }
 
@@ -57,7 +78,7 @@ export default async function StartHerePage() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return null;
 
-    const { user, enrollments, onboardingData } = await getStartHereData(session.user.id);
+    const { user, enrollments, onboardingData, hasMessagedCoach, hasIntroPost } = await getStartHereData(session.user.id);
 
     // We can't check localStorage from server, so we pass false
     // The client component will check localStorage
@@ -70,6 +91,8 @@ export default async function StartHerePage() {
             enrollments={enrollments}
             tourComplete={tourComplete}
             onboardingData={onboardingData}
+            hasMessagedCoach={hasMessagedCoach}
+            hasIntroPost={hasIntroPost}
         />
     );
 }

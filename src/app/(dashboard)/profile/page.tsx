@@ -7,8 +7,20 @@ import { ProfileTabs } from "./profile-tabs";
 async function getUserProfile(userId: string) {
   return prisma.user.findUnique({
     where: { id: userId },
-    include: {
-      tags: true, // Useful for general profile checking
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      phone: true,
+      avatar: true,
+      bio: true,
+      role: true,
+      emailVerified: true,
+      createdAt: true,
+
+      // Relations
+      tags: true,
       enrollments: {
         include: {
           course: {

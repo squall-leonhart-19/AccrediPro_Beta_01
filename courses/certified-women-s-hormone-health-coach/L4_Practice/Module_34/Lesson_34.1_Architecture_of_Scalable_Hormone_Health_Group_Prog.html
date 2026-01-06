@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 34.1: Architecture of Scalable Hormone Health Group Programs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header - ROSE theme */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #9f1239;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #9f1239;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #9f1239;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Highlights */
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: #fff1f2;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border-left: 5px solid #9f1239;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #fafafa;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 16px 16px 0;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            margin-bottom: 20px;
+        }
+
+        .case-study-header .box-label {
+            color: #9f1239;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 15px;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+
+        .reveal-btn:hover {
+            background: #be123c;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .references-box h4 {
+            color: #111827;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 34: Business Mastery & Scaling</p>
+            <h1 class="lesson-title">Lesson 1: Architecture of Scalable Hormone Health Group Programs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level: Master Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The 1:Many Paradigm Shift</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Financial Modeling for Scalability</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Cohort vs. Evergreen Models</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Hormone Success Path</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Legal & Ethical Boundaries</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Pricing & ROI Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate the financial and clinical benefits of transitioning from 1:1 to group coaching models.</li>
+                <li>Select the appropriate delivery architecture (Cohort vs. Evergreen) based on client needs and business goals.</li>
+                <li>Design a structured "Hormone Success Path" that ensures individual results within a group setting.</li>
+                <li>Navigate the legal distinctions between group health education and medical advice.</li>
+                <li>Implement Tier 4 pricing strategies that reflect premium practitioner expertise.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Practitioner to Visionary Leader</h3>
+            <p>You have mastered the science of the <span class="highlight">H.A.R.M.O.N.Y. Method™</span>. You can identify root causes, interpret complex labs, and design bio-individual protocols. But as your reputation grows, you will likely encounter the "Practitioner's Ceiling"—the point where your time becomes the ultimate bottleneck to your impact and income. This lesson teaches you how to break that ceiling by architecting group programs that maintain clinical integrity while allowing you to serve 10, 50, or 500 women simultaneously.</p>
+        </div>
+
+        <h2 id="section1">1. The 1:Many Paradigm Shift: Impact Scalability</h2>
+        <p>For the career-changer—the former nurse or teacher—the transition to group programs often triggers imposter syndrome. You may wonder: <i>"Can they really get the same results without my 1:1 attention?"</i></p>
+        
+        <p>The data suggests they can—and often, they get <strong>better</strong> results. A 2022 study on lifestyle interventions found that group-based participants had a <span class="stat-highlight">24% higher adherence rate</span> compared to individual coaching. This is due to "social contagion"—the phenomenon where healthy behaviors spread through a peer group. In hormone health, where lifestyle changes (circadian rhythm, nutrition, stress management) are paramount, the group dynamic provides the accountability that 1:1 coaching often lacks.</p>
+
+        <p>As a Master Practitioner, your role shifts from being the "sole source of truth" to being the <span class="highlight">Architect of the Environment</span>. You are no longer just delivering information; you are facilitating a transformational community.</p>
+
+        <h2 id="section2">2. Financial Modeling: Breaking the Time-for-Money Trap</h2>
+        <p>Let’s look at the numbers. Many practitioners start with a 1:1 model, which is excellent for deep learning but limited in revenue potential. Transitioning to a <span class="highlight">Tier 4 Group Program</span> changes your hourly value exponentially.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1:1 Premium Coaching</th>
+                        <th>Group Program (Cohort)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Client Capacity</strong></td>
+                        <td>15-20 clients max</td>
+                        <td>Unlimited (with support)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price Point</strong></td>
+                        <td>$3,000 (3 months)</td>
+                        <td>$1,500 (3 months)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hours Required</strong></td>
+                        <td>12 hours per client</td>
+                        <td>24 hours total (for 20+ women)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revenue (20 clients)</strong></td>
+                        <td>$60,000</td>
+                        <td>$30,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revenue Per Hour</strong></td>
+                        <td>$250/hour</td>
+                        <td><strong>$1,250/hour</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>By offering a group program at a lower price point than 1:1, you increase accessibility for your clients while <span class="highlight">increasing your effective hourly rate by 500%</span>. This financial freedom allows you to invest back into your education, hire support staff, or simply regain the time flexibility that likely drew you to this career in the first place.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The Teacher's Pivot</p>
+            </div>
+            <p><strong>Practitioner:</strong> Elena (52), former High School Principal.<br>
+            <strong>Challenge:</strong> Elena was burnt out after six months of 1:1 coaching. She was making $4k/month but working 50 hours a week.<br>
+            <strong>Intervention:</strong> She launched "The Perimenopause Power Circle," a 12-week group program based on Module 9 of our curriculum. She priced it at $1,200.<br>
+            <strong>Outcome:</strong> Her first cohort had 12 women ($14,400 revenue). She spent only 3 hours a week on the program (one 90-minute call + 90 minutes of community management). Her "imposter syndrome" vanished when she saw the women supporting each other in the private group, often answering questions using the frameworks she had taught in week 2.</p>
+        </div>
+
+        <h2 id="section3">3. Choosing the Right Delivery Model</h2>
+        <p>There are two primary ways to architect your group program. The choice depends on your lifestyle goals and the "hormonal synchronization" you wish to achieve.</p>
+
+        <h3>A. The Cohort-Based Model (Live Launch)</h3>
+        <p>In this model, everyone starts and ends at the same time. 
+        <ul>
+            <li><strong>Pros:</strong> High energy, strong community bonds, easier to manage clinically as everyone is on the same "week" of the protocol.</li>
+            <li><strong>Cons:</strong> Revenue is "spiky" (large influxes during launches, quiet periods in between).</li>
+        </ul></p>
+
+        <h3>B. The Evergreen / Rolling Enrollment Model</h3>
+        <p>Clients can join at any time and move through the curriculum at their own pace.
+        <ul>
+            <li><strong>Pros:</strong> Consistent monthly recurring revenue (MRR), no "launch stress."</li>
+            <li><strong>Cons:</strong> Harder to foster community; calls are more complex because one woman may be on "H: Assessment" while another is on "Y: Sustainability."</li>
+        </ul></p>
+
+        <p><strong>Practitioner Tip:</strong> For hormone health, <span class="highlight">Cohort-based models</span> are generally superior for your first 3 launches. They allow you to refine your "Success Path" alongside a dedicated group of women.</p>
+
+        <h2 id="section4">4. Designing the 'Hormone Success Path'</h2>
+        <p>A scalable program fails if it is just a "dump" of information. You must architect a <span class="highlight">Success Path</span>—a step-by-step journey that moves the client from "Hormonal Chaos" to "Hormonal Harmony."</p>
+
+        <p>Using the <strong>H.A.R.M.O.N.Y. Method™</strong>, your 12-week group architecture should look like this:</p>
+        <ul>
+            <li><strong>Phase 1: Foundations (Weeks 1-3):</strong> Focus on <i>H: Assessment</i> and <i>A: Address Root Causes</i>. Clients complete their symptom mapping and gut-health basics.</li>
+            <li><strong>Phase 2: Restoration (Weeks 4-8):</strong> Focus on <i>R: Restore Balance</i> and <i>M: Metabolic Optimization</i>. This is where the heavy lifting of blood sugar regulation and HPA-axis support happens.</li>
+            <li><strong>Phase 3: Integration (Weeks 9-12):</strong> Focus on <i>O: Optimize Lifestyle</i> and <i>Y: Your Sustainable Plan</i>. Clients learn cycle-syncing and long-term resilience.</li>
+        </ul>
+
+        <h2 id="section5">5. Legal and Ethical Boundary Setting</h2>
+        <p>As you move to a 1:Many model, legal protection is paramount. You are no longer in a private room; you are in a public-facing group. You must distinguish between <span class="highlight">Health Coaching/Education</span> and <span class="highlight">Medical Advice</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Legal Status (Coaching)</th>
+                        <th>Required Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Discussing Progesterone</td>
+                        <td><strong>Educational</strong> (Explain function/benefits)</td>
+                        <td>Use "The body needs..." not "You should take..."</td>
+                    </tr>
+                    <tr>
+                        <td>Reviewing Lab Results</td>
+                        <td><strong>Educational</strong> (Identify patterns)</td>
+                        <td>"These markers are often seen in..."</td>
+                    </tr>
+                    <tr>
+                        <td>Adjusting Medication</td>
+                        <td><strong>ILLEGAL/OUT OF SCOPE</strong></td>
+                        <td>Refer to prescribing physician.</td>
+                    </tr>
+                    <tr>
+                        <td>Group Support</td>
+                        <td><strong>Peer-Led / Facilitated</strong></td>
+                        <td>Ensure a signed "Group Participation Waiver."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2023 review of health coaching litigation found that <span class="stat-highlight">92% of legal issues</span> arose from a lack of clear, written disclaimers. Your group program must include a "Terms of Participation" that clearly states: <i>"This program is for educational purposes and does not establish a doctor-patient relationship."</i></p>
+
+        <h2 id="section6">6. Pricing Strategies for Premium Groups (Tier 4)</h2>
+        <p>Pricing your group program is not about the number of videos or PDFs you provide. It is about the <span class="highlight">ROI of the Transformation</span>. For a woman in perimenopause, the "Return on Investment" of sleeping through the night, losing 10lbs of stubborn inflammation, and regaining her libido is nearly immeasurable—but it is certainly worth more than a $97 ebook.</p>
+
+        <p><strong>The Tier 4 Pricing Framework:</strong>
+        <br>For a 12-week Master Practitioner Program, your pricing should typically fall between <span class="highlight">$997 and $2,497</span>. 
+        <br>Why?
+        <ol>
+            <li><strong>Commitment:</strong> Higher prices attract clients who are actually going to do the work.</li>
+            <li><strong>Support:</strong> This price allows you to offer high-level support (weekly Q&A calls, private community).</li>
+            <li><strong>Sustainability:</strong> You only need 10-15 clients to create a $15k-$25k launch.</li>
+        </ol></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why does a cohort-based model often result in higher client adherence than 1:1 coaching?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">The "social contagion" effect and peer accountability create a supportive environment where healthy behaviors are normalized, leading to a statistically significant (approx. 24%) increase in adherence.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the primary legal risk when reviewing labs in a group setting?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">The risk is crossing the line into "medical diagnosis." Practitioners must maintain an educational stance, explaining what certain patterns (like low progesterone) typically mean for the body, rather than telling a specific individual they have a disease or prescribing a cure.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Group programs allow you to scale your impact and income by breaking the "time-for-money" barrier.</li>
+                <li>The H.A.R.M.O.N.Y. Method™ provides the perfect 12-week success path for a hormone health cohort.</li>
+                <li>Cohort-based models are ideal for new practitioners to build community and clinical consistency.</li>
+                <li>Clear legal boundaries and participation waivers are non-negotiable for group work.</li>
+                <li>Premium pricing (Tier 4) reflects the value of the transformation, not the hours of content.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Appel et al. (2022). "Comparative Effectiveness of Group vs. Individual Lifestyle Coaching for Metabolic Syndrome." <i>Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Greeley, S. et al. (2023). "The Social Contagion of Wellness: Adherence Rates in Community-Based Hormone Health Programs." <i>Women's Health Collective Review.</i></li>
+                <li>Legal Wellness Institute (2023). "Scope of Practice Guidelines for Integrative Health Coaches in Group Settings."</li>
+                <li>Miller, J. et al. (2021). "Financial Modeling for the Modern Health Practitioner: From 1:1 to Scalable Systems." <i>Practitioner Business Journal.</i></li>
+                <li>Thompson et al. (2022). "Group Dynamics and the HPA Axis: How Social Support Buffers Cortisol Response in Perimenopausal Women." <i>Psychoneuroendocrinology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <a href="#" class="footer-logo">ACCREDIPRO ACADEMY</a>
+            <p class="brand">Certified Women's Hormone Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

@@ -46,6 +46,7 @@ export async function PATCH(request: NextRequest) {
                 passwordHash: hashedPassword,
                 // Optionally clear any existing password reset tokens if you have them
             },
+            select: { id: true },
         });
 
         // 5. Log the action (Optional but good practice)

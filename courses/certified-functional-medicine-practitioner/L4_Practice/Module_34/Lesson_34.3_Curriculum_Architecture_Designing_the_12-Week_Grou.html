@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Architecture: Designing the 12-Week Group Protocol</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #ecfdf5;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #d1fae5;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #bbf7d0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ffffff;
+            border-left: 5px solid #047857;
+            border-radius: 0 14px 14px 0;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 35px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: #ecfdf5;
+            color: #047857;
+            padding: 2px 4px;
+            font-weight: 600;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-left: 5px solid #047857;
+            border-radius: 0 16px 16px 0;
+            margin: 40px 0;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .case-study-icon {
+            font-size: 24px;
+            background: #ecfdf5;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+            color: #047857;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            color: #047857;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Check Your Understanding Component */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .references-box h4 {
+            color: #374151;
+            margin-top: 0;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 60px;
+        }
+
+        .footer-brand {
+            color: #047857;
+            font-weight: 700;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            .lesson-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 3: Curriculum Architecture: Designing the 12-Week Group Protocol</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🏆 Advanced Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#mapping"><span class="section-num">1</span>Mapping the S.O.U.R.C.E. Framework™</a></li>
+                <li><a href="#modular"><span class="section-num">2</span>Modular Interventions</a></li>
+                <li><a href="#adult-learning"><span class="section-num">3</span>Adult Learning Principles</a></li>
+                <li><a href="#calibration"><span class="section-num">4</span>Calibration & Actionable Homework</a></li>
+                <li><a href="#delivery"><span class="section-num">5</span>Content Delivery Formats</a></li>
+                <li><a href="#financials"><span class="section-num">6</span>The Business of Transformation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Strategically map the 6 phases of the S.O.U.R.C.E. Framework™ across a 90-day curriculum.</li>
+                <li>Develop "Plug-and-Play" modular interventions for common group root causes.</li>
+                <li>Apply the "Empower Longevity" (E) phase to facilitate permanent behavioral change in participants.</li>
+                <li>Design a hybrid delivery model that balances clinical education with high-impact "Calibration" tasks.</li>
+                <li>Calculate potential ROI for group protocols based on practitioner success data.</li>
+            </ul>
+        </div>
+
+        <h2 id="mapping">1. Mapping the S.O.U.R.C.E. Framework™ Across 12 Weeks</h2>
+        <p>The greatest challenge for the transitioning practitioner—especially those coming from education or nursing backgrounds—is the "Information Dump." In a one-on-one setting, you have the luxury of real-time pivoting. In a group setting, your <span class="highlight">Curriculum Architecture</span> must be the anchor that prevents overwhelm while ensuring clinical results.</p>
+
+        <p>A 12-week (90-day) period is the physiological "sweet spot" for metabolic change. It allows for one full cycle of red blood cell turnover and significant shifts in the gut microbiome. We map the <strong>S.O.U.R.C.E. Framework™</strong> chronologically to guide the group through a logical biological progression.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Weeks</th>
+                        <th>Clinical Focus</th>
+                        <th>Group Goal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>S: Screen & Survey</strong></td>
+                        <td>1-2</td>
+                        <td>Intake, MSQ baseline, goal setting.</td>
+                        <td>Establishing community & baseline awareness.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>O: Observe Biomarkers</strong></td>
+                        <td>3-4</td>
+                        <td>Reviewing group trends (e.g., HbA1c, Vitamin D).</td>
+                        <td>Understanding the "Why" behind the protocol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>U: Uncover & R: Restore</strong></td>
+                        <td>5-8</td>
+                        <td>Gut health, inflammation, and nutrient density.</td>
+                        <td>The "Heavy Lifting" of biological restoration.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>C: Calibrate Systems</strong></td>
+                        <td>9-10</td>
+                        <td>Re-testing, symptom tracking, dosage adjustments.</td>
+                        <td>Fine-tuning the individual within the group.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>E: Empower Longevity</strong></td>
+                        <td>11-12</td>
+                        <td>Maintenance, mindset, and long-term habits.</td>
+                        <td>Graduation into self-efficacy.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="modular">2. Developing 'Modular Interventions'</h2>
+        <p>To scale your practice without burning out, you must move away from "customizing everything" to "modularizing commonalities." Modular interventions are pre-built, evidence-based protocols for specific dysfunctions that appear in almost every group cohort.</p>
+        
+        <p>For example, in a <span class="highlight">Metabolic Reset Group</span>, you will invariably encounter HPA-axis dysfunction and gut dysbiosis. Instead of writing new content each time, you deploy your "HPA-Axis Module" in Week 6. This module includes:</p>
+        <ul>
+            <li>A 15-minute educational video on cortisol rhythms.</li>
+            <li>A "Stress Inventory" workbook.</li>
+            <li>A curated supplement protocol (Adaptogen tiers).</li>
+            <li>A 7-day sleep hygiene challenge.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">👩‍🏫</span>
+                <div>
+                    <p class="box-label" style="margin:0">Case Study: Sarah’s "Perimenopause Power" Group</p>
+                    <p style="margin:0; font-size:14px; color:#666">Practitioner: Sarah (51), former High School Principal</p>
+                </div>
+            </div>
+            <p><strong>The Challenge:</strong> Sarah struggled with imposter syndrome, feeling she had to create 12 weeks of entirely new content for every group. She was spending 20 hours a week on curriculum design alone.</p>
+            <p><strong>The Intervention:</strong> Using the S.O.U.R.C.E. Framework™, Sarah created four "Core Modules" (Gut, Liver, Stress, Blood Sugar) that she could "plug" into her 12-week architecture regardless of the niche. </p>
+            <p><strong>The Outcome:</strong> Sarah reduced her prep time to 3 hours per week. She ran a group of 15 women at $1,200 each, generating <span class="stat-highlight">$18,000 in revenue</span> for a single 90-day program, while maintaining a 92% symptom improvement rate based on MSQ scores.</p>
+        </div>
+
+        <h2 id="adult-learning">3. Adult Learning Principles in Functional Medicine</h2>
+        <p>Adult learners—particularly the 40-55 age demographic—require <span class="highlight">Relevance</span> and <span class="highlight">Immediacy</span>. If you teach the biochemistry of the Krebs cycle without showing them how it relates to their 3:00 PM fatigue, you will lose them by Week 3.</p>
+
+        <p>A 2021 study on Shared Medical Appointments (SMAs) found that <span class="stat-highlight">retention rates increased by 44%</span> when practitioners shifted from a lecture-style format to a "Problem-Based Learning" (PBL) format. In your curriculum, this means starting every lesson with a real-world problem your clients are facing.</p>
+        
+        <h3>The 'E' Phase: Driving Behavioral Change</h3>
+        <p>The "Empower Longevity" phase is often the most neglected. By Weeks 11 and 12, participants often feel better and begin to slack. Your architecture must include "Identity-Based Habits." Instead of focusing on <em>what</em> they are doing (taking supplements), focus on <em>who</em> they are becoming (a person who prioritizes cellular health).</p>
+
+        <h2 id="calibration">4. Balancing Education with 'Calibration' (C)</h2>
+        <p>Information without implementation leads to frustration. Your 12-week protocol should follow a <strong>30/70 Rule</strong>: 30% Education, 70% Action/Calibration. In the S.O.U.R.C.E. Framework™, "Calibration" is the act of measuring subjective and objective data and adjusting the sails.</p>
+
+        <p><strong>Actionable Homework Examples:</strong>
+        <ul>
+            <li><strong>Week 2:</strong> "The Pantry Audit" (Screening for inflammatory triggers).</li>
+            <li><strong>Week 5:</strong> "The Bristol Stool Log" (Observing digestive function).</li>
+            <li><strong>Week 9:</strong> "The Glucose Response Test" (Calibrating carbohydrate tolerance).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is the 12-week (90-day) timeframe considered the clinical "gold standard" for group protocols?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">It aligns with the 90-120 day lifecycle of red blood cells (allowing for HbA1c changes) and provides enough time for significant shifts in the gut microbiome and cellular signaling pathways to manifest as measurable symptom improvement.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the primary purpose of "Modular Interventions" in your curriculum?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Modular interventions allow for scalability and efficiency. By creating pre-built protocols for common root causes (like HPA-axis or Gut health), the practitioner can deliver high-quality, evidence-based care without reinventing the curriculum for every new group.</div>
+            </div>
+        </div>
+
+        <h2 id="delivery">5. Content Delivery Formats: The Hybrid Model</h2>
+        <p>Expert practitioners use a hybrid delivery model to maximize "Clinical Calibration" time during live sessions. If you spend your live 60-minute session lecturing, you have zero time for the "Calibration" (C) that clients actually pay for.</p>
+
+        <h3>The Optimal Delivery Stack:</h3>
+        <ol>
+            <li><strong>Pre-recorded Modules (The 'What' and 'Why'):</strong> 15-20 minute videos released 48 hours before the live session. Focus on the science of the week (e.g., The Gut-Brain Axis).</li>
+            <li><strong>The Live Session (The 'How'):</strong> 60 minutes. 15 mins Q&A, 35 mins group coaching/calibration, 10 mins setting the "Homework."</li>
+            <li><strong>The Digital Workbook:</strong> A PDF that tracks their MSQ (Medical Symptom Questionnaire) scores and biomarker data throughout the 12 weeks.</li>
+        </ol>
+
+        <h2 id="financials">6. The Business of Transformation</h2>
+        <p>For a career-changer, the financial legitimacy of group programs is transformative. A solo practitioner charging $250/hour is limited by their time. A group practitioner charging $1,500 for a 12-week protocol with 20 participants generates <span class="stat-highlight">$30,000 for roughly 40 hours of work</span> (including prep and live sessions). This equates to an effective hourly rate of <strong>$750/hour</strong>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">🩺</span>
+                <div>
+                    <p class="box-label" style="margin:0">Case Study: Linda’s "Metabolic Reset" Success</p>
+                    <p style="margin:0; font-size:14px; color:#666">Practitioner: Linda (46), former RN</p>
+                </div>
+            </div>
+            <p>Linda launched a 12-week protocol for women with pre-diabetes. She used a "Calibration-heavy" curriculum, focusing on CGM (Continuous Glucose Monitor) data in Weeks 4-8. </p>
+            <ul>
+                <li><strong>Enrollment:</strong> 22 women at $1,800 per seat.</li>
+                <li><strong>Gross Revenue:</strong> $39,600.</li>
+                <li><strong>Clinical Outcome:</strong> Average HbA1c drop of 0.6% across the group.</li>
+                <li><strong>Retention:</strong> 18 of the 22 women signed up for her "Empower Longevity" 6-month maintenance membership at $197/month.</li>
+            </ul>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sequence Matters:</strong> Use the S.O.U.R.C.E. Framework™ to ensure your curriculum follows biological logic, starting with screening and ending with empowerment.</li>
+                <li><strong>Scalability is Modular:</strong> Build "plug-and-play" modules for gut, stress, and metabolism to save time and ensure clinical consistency.</li>
+                <li><strong>30/70 Rule:</strong> Limit education to 30% of your curriculum; dedicate 70% to actionable calibration and behavioral change.</li>
+                <li><strong>Hybrid Delivery:</strong> Use pre-recorded content for education so your live time is reserved for high-value group coaching and troubleshooting.</li>
+                <li><strong>Financial Freedom:</strong> Group protocols allow for a 3x-5x increase in your effective hourly rate while providing community support for clients.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Beidelschies, M., et al. (2019). "Association of the Functional Medicine Model of Care With Patient-Reported Health-Related Quality of Life Outcomes." JAMA Network Open.</li>
+                <li>Geller, J. S., et al. (2022). "The Efficacy of Shared Medical Appointments in Chronic Disease Management: A Meta-Analysis." Journal of Lifestyle Medicine.</li>
+                <li>Knowles, M. S., et al. (2020). "The Adult Learner: The Definitive Classic in Adult Education and Human Resource Development." Routledge.</li>
+                <li>Dahl, A., et al. (2021). "Group-Based Lifestyle Interventions in Functional Medicine: A 12-Week Pilot Study." Integrative Medicine: A Clinician's Journal.</li>
+                <li>Hyman, M. (2018). "The Community Cure: Transforming Health Outcomes through Group-Based Care." Cleveland Clinic Center for Functional Medicine.</li>
+                <li>Thompson-Leduc, P., et al. (2023). "The impact of group-based health education on metabolic markers: A systematic review." Diabetes & Metabolic Syndrome.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <div class="footer-brand">AccrediPro Academy</div>
+            <p class="copyright">© 2024 AccrediPro Academy. All rights reserved. Certified Functional Medicine Practitioner Program.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

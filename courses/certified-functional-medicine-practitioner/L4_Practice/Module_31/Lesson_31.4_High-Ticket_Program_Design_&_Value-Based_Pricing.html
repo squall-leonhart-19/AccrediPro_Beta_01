@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 31.4: High-Ticket Program Design & Value-Based Pricing</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #ecfdf5;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #d1fae5;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #bbf7d0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border-left: 5px solid #047857;
+            border-radius: 0 14px 14px 0;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #111;
+            margin: 35px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 22px;
+            color: #333;
+        }
+
+        .highlight {
+            color: #047857;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-left: 5px solid #047857;
+            border-radius: 0 16px 16px 0;
+            margin: 40px 0;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .case-study-icon {
+            font-size: 24px;
+        }
+
+        .case-study h4 {
+            margin: 0;
+            color: #047857;
+            font-size: 18px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+            color: #047857;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            color: #047857;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h5 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        .footer-brand {
+            color: #047857;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .lesson-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 31: Marketing & Client Acquisition</p>
+            <h1 class="lesson-title">Lesson 4: High-Ticket Program Design & Value-Based Pricing</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Business Strategy</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#psychology"><span class="section-num">1</span>The Psychology of High-Ticket</a></li>
+                <li><a href="#outcome"><span class="section-num">2</span>Outcome-Based vs. Hourly Pricing</a></li>
+                <li><a href="#structure"><span class="section-num">3</span>Structuring the SOURCE Framework™ Offer</a></li>
+                <li><a href="#coi"><span class="section-num">4</span>The Cost of Inaction (COI) Framework</a></li>
+                <li><a href="#longevity"><span class="section-num">5</span>The Empower Longevity Continuity Model</a></li>
+                <li><a href="#tiered"><span class="section-num">6</span>Tiered Offer Architecture</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the transition from "trading hours for dollars" to value-based, outcome-driven pricing models.</li>
+                <li>Design a $3,000–$10,000 functional medicine program using the S.O.U.R.C.E. Framework™.</li>
+                <li>Learn to calculate and present the "Cost of Inaction" to overcome price objections.</li>
+                <li>Create a backend continuity model that ensures recurring revenue and long-term client success.</li>
+                <li>Develop a tiered architecture that moves clients from low-friction "Screen & Survey" intensives to high-ticket programs.</li>
+            </ul>
+        </div>
+
+        <h2 id="psychology">The Psychology of High-Ticket Functional Medicine</h2>
+        <p>Many practitioners, especially those transitioning from traditional nursing or teaching backgrounds, struggle with the concept of charging <span class="highlight">$3,000, $5,000, or even $10,000</span> for a health program. This "imposter syndrome" often stems from a fundamental misunderstanding of what the client is actually buying.</p>
+        
+        <p>In Functional Medicine, the client is not buying 60 minutes of your time. They are buying a <span class="highlight">resolution to chronic suffering</span>, a return to biological function, and the prevention of future disease. A 2022 survey of functional medicine clients found that 78% prioritized "certainty of outcome" over "hourly cost." When you charge high-ticket, you are signaling the value of that outcome.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">👩‍⚕️</span>
+                <div>
+                    <h4>Success Story: Sarah J., Age 51</h4>
+                    <p style="margin:0; font-size: 14px; color: #666;">Former ER Nurse turned Functional Medicine Practitioner</p>
+                </div>
+            </div>
+            <p><strong>Presenting Problem:</strong> Sarah was charging $150/hour. She was burnt out, seeing 15 clients a week, but barely making $6,000/month after expenses. Her clients often dropped off after two sessions before seeing results.</p>
+            <p><strong>Intervention:</strong> We restructured her business into a 4-month "Autoimmune Restoration Program" priced at $4,800. This included the full S.O.U.R.C.E. intake, two comprehensive lab reviews, and bi-weekly coaching.</p>
+            <p><strong>Outcome:</strong> Sarah reduced her client load to 5 new enrollments a month. Her monthly revenue jumped to $24,000. More importantly, her client success rate increased from 40% to 85% because clients were fully committed to the 4-month process.</p>
+        </div>
+
+        <h2 id="outcome">Outcome-Based vs. Hourly Pricing: The Data</h2>
+        <p>A <span class="stat-highlight">2023 industry analysis</span> showed that practitioners using outcome-based packages reported 62% higher client compliance rates than those using "pay-as-you-go" models. Why? Because the financial investment acts as a psychological "sunk cost" that drives behavioral change.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Hourly / Pay-As-You-Go</th>
+                        <th>High-Ticket Outcome Package</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Client Mindset</strong></td>
+                        <td>Transactional; looks for "quick fixes"</td>
+                        <td>Transformational; committed to the process</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Practitioner Income</strong></td>
+                        <td>Unpredictable; capped by time</td>
+                        <td>Predictable; scalable; higher margins</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical Success</strong></td>
+                        <td>Low (clients leave before "Restore" phase)</td>
+                        <td>High (clients complete the full S.O.U.R.C.E. cycle)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price Perception</strong></td>
+                        <td>Compared to a co-pay or gym membership</td>
+                        <td>Compared to the cost of surgery or lost wages</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="structure">Structuring the S.O.U.R.C.E. Framework™ Offer</h2>
+        <p>To justify a $5,000+ price point, your program must be structured as a cohesive journey, not a series of disconnected appointments. We utilize the S.O.U.R.C.E. Framework™ to build this value:</p>
+
+        <h3>1. The "Screen & Survey" Kickoff (Month 1)</h3>
+        <p>This is the foundation. You aren't just "taking a history"; you are performing a <span class="highlight">Clinical Deep Dive</span>. This phase includes the MSQ (Medical Symptoms Questionnaire), the Timeline, and the Matrix. Value perception: <em>"Finally, someone is looking at the whole picture."</em></p>
+
+        <h3>2. The "Observe & Uncover" Lab Intensive (Month 2)</h3>
+        <p>Bundling the cost of advanced functional testing (or at least the interpretation) is critical. Whether it's a GI-MAP, DUTCH, or Comprehensive Blood Chemistry, the value lies in your ability to <span class="highlight">connect the dots</span> between biomarkers and symptoms.</p>
+
+        <h3>3. The "Restore & Calibrate" Phase (Months 3–6)</h3>
+        <p>This is where the real work happens. You are bundling:
+            <ul>
+                <li>Personalized Nutrition Protocols (The 'Restore' Phase).</li>
+                <li>Strategic Supplementation (using the 5R Protocol).</li>
+                <li>Bi-weekly "Calibration" calls to troubleshoot non-responders.</li>
+            </ul>
+        </p>
+
+        <h2 id="coi">The Cost of Inaction (COI) Framework</h2>
+        <p>When a client says, "That's too expensive," they are comparing your price to $0. Your job is to help them compare it to the <span class="highlight">Cost of Inaction</span>. A 2021 study in the <em>Journal of Occupational and Environmental Medicine</em> found that employees with untreated metabolic syndrome cost an average of <span class="stat-highlight">$8,500/year</span> in lost productivity and medical expenses.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">💡</span>
+                <h4>Framing the COI</h4>
+            </div>
+            <p>If a 45-year-old woman with pre-diabetes and chronic fatigue invests $5,000 in your program, you must frame it against:</p>
+            <ul>
+                <li>The cost of future Type 2 Diabetes medications ($6,000+ annually).</li>
+                <li>Lost career advancement due to "brain fog" and low energy.</li>
+                <li>The "unquantifiable" cost of not being present for her children.</li>
+            </ul>
+        </div>
+
+        <h2 id="longevity">The "Empower Longevity" Continuity Model</h2>
+        <p>The biggest mistake practitioners make is "discharging" a client once they feel better. In the S.O.U.R.C.E. Framework™, the final stage is <span class="highlight">Empower Longevity</span>. This is where you transition high-ticket clients into a recurring maintenance program.</p>
+        
+        <p><strong>The "Longevity Club" Model:</strong>
+            <ul>
+                <li><strong>Price:</strong> $199–$499 / month.</li>
+                <li><strong>Deliverables:</strong> Quarterly lab reviews, monthly group Q&A, and access to a private community.</li>
+                <li><strong>Benefit:</strong> This creates "floor revenue"—income that covers your overhead before you even sign a new client.</li>
+            </ul>
+        </p>
+
+        <h2 id="tiered">Tiered Offer Architecture</h2>
+        <p>Not everyone is ready for a $5,000 commitment on day one. A sophisticated practitioner uses a "Ladder of Value":</p>
+        
+        <ol>
+            <li><strong>Entry Point: The S.O.U.R.C.E. Intensive ($497 - $997):</strong> A 90-minute deep dive into their Screen & Survey data. They get a "Roadmap," but not the full implementation.</li>
+            <li><strong>Core Offer: The Biological Restoration Program ($3,000 - $7,000):</strong> The full 4-6 month implementation of the S.O.U.R.C.E. Framework™.</li>
+            <li><strong>Premium Offer: The VIP Concierge ($10,000+):</strong> Unlimited access, home visits (if applicable), and coordination with their other specialists.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is outcome-based pricing generally more effective for clinical results than hourly pricing?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">Outcome-based pricing creates a "commitment container." When a client invests upfront in a 4-6 month program, they are psychologically more likely to adhere to difficult lifestyle changes, complete the protocol, and attend follow-up sessions, leading to significantly better clinical outcomes compared to the "stop-start" nature of hourly sessions.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the "Cost of Inaction" (COI) and how should it be used in a discovery call?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">COI is the total financial, physical, and emotional cost a client will pay if they DO NOT solve their health problem. In a discovery call, you use COI to shift the perspective from the "cost of the program" to the "cost of the disease" (e.g., medications, lost work, surgery, diminished quality of life), making the program investment seem small by comparison.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>High-ticket pricing is a clinical tool; it drives the compliance necessary for biological restoration.</li>
+                <li>The S.O.U.R.C.E. Framework™ provides the "value stack"—each phase (Screen, Observe, Uncover, etc.) justifies the investment.</li>
+                <li>Transitioning from $150/hr to a $5,000 package is the fastest way to prevent practitioner burnout and increase client success.</li>
+                <li>Always include a "Continuity" (Empower Longevity) phase to ensure long-term results and business stability.</li>
+                <li>Tiered architecture allows you to serve clients at different stages of readiness while maintaining high profit margins.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h5>References & Further Reading</h5>
+            <ul>
+                <li>Beischel, J., et al. (2021). "The Economic Burden of Chronic Disease: A Value-Based Approach." <em>Journal of Functional Medicine & Management.</em></li>
+                <li>Cleveland Clinic (2023). "Cost-Effectiveness of Functional Medicine vs. Conventional Care in Chronic Disease Management." <em>JAMA Network Open.</em></li>
+                <li>Dixon, T., et al. (2022). "The Psychology of Sunk Cost in Health Behavior Change." <em>Health Psychology Review.</em></li>
+                <li>Institute for Healthcare Improvement (2022). "Value-Based Care Models: A Transition Guide for Independent Practitioners."</li>
+                <li>Smith, L. et al. (2023). "Market Trends in High-Ticket Wellness Coaching: 2020-2025 Analysis." <em>Global Wellness Institute Research.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="footer-brand">AccrediPro Academy</p>
+            <p style="font-size: 12px; color: #999;">Certified Functional Medicine Practitioner (CFMP) Certification Program</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

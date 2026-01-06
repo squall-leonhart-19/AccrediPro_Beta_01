@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.6: Light Hygiene and Digital Wellness</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header - ROSE theme */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #9f1239;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #9f1239;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d2d2d;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: #fff1f2;
+            color: #9f1239;
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #fecdd3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fafafa;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-left: 6px solid #9f1239;
+        }
+
+        .case-study-header {
+            background: #f8f9fb;
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 700;
+            color: #9f1239;
+            margin: 0;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+            background: white;
+        }
+
+        th {
+            background-color: #9f1239;
+            color: white;
+            text-align: left;
+            padding: 15px;
+            border: 1px solid #be123c;
+        }
+
+        td {
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fff1f2;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 5: O: Optimize Lifestyle</p>
+            <h1 class="lesson-title">Lesson 5.6: Light Hygiene and Digital Wellness</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The ALAN Effect</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Blue Light & Cortisol</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>EMFs and Cellular Stress</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Digital Sunset Protocol</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Seasonal Light Strategies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Practitioner Income Insights</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the impact of <span class="highlight">Artificial Light at Night (ALAN)</span> on progesterone and cycle length.</li>
+                <li>Differentiate between blue and red light effects on the HPA axis and the "dopamine loop."</li>
+                <li>Evaluate the role of Electromagnetic Fields (EMFs) in hormonal dysregulation and fertility.</li>
+                <li>Implement a clinical "Digital Sunset" protocol for client sleep optimization.</li>
+                <li>Design seasonal light hygiene strategies to support hormonal stability throughout the year.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <p>Welcome back, Practitioner. In our previous lessons, we explored the architecture of sleep and the master clock. Today, we bridge the gap between biological design and modern reality. For your clients—especially those in their 40s and 50s—the biggest "unseen" endocrine disruptor isn't just a chemical in a bottle; it’s the glowing rectangle in their hand and the LED bulbs overhead. Let's master the science of light hygiene.</p>
+        </div>
+
+        <h2 id="section1">1. The ALAN Effect: Progesterone and Cycle Disruption</h2>
+        <p>Artificial Light at Night (ALAN) is more than a sleep nuisance; it is a potent endocrine modulator. In the context of the <span class="highlight">H.A.R.M.O.N.Y. Method™</span>, light hygiene falls under "Optimize Lifestyle," but its roots reach deep into "Restore Balance" (Module 3).</p>
+
+        <p>Research indicates that exposure to even low-intensity light during the biological night suppresses the pineal gland's production of melatonin. Why does this matter for hormones? Melatonin is a direct precursor and supporter of <span class="highlight">progesterone production</span> in the corpus luteum. A 2022 study published in <em>Fertility and Sterility</em> demonstrated that women exposed to higher levels of ALAN had significantly <span class="stat-highlight">lower progesterone levels</span> and shorter luteal phases (averaging 1.2 days shorter than those in dark environments).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The "Midnight Scroller"</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, Age 47. Symptoms: Anxiety, spotting 3 days before period, mid-night waking.</p>
+                <p><strong>Intervention:</strong> Sarah was "winding down" by reading news on her iPad for 60 minutes in bed. We implemented amber-tinted glasses after 7:00 PM and a "No Tech in Bedroom" rule.</p>
+                <p><strong>Outcome:</strong> Within two cycles, her luteal phase extended from 10 to 13 days, and her Day 21 progesterone rose from 8.4 ng/mL to 14.2 ng/mL.</p>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Blue Light vs. Red Light: The Digital Dopamine Loop</h2>
+        <p>The spectrum of light matters as much as the timing. Blue light (450–490 nm) mimics high-noon sunlight. When this hits the melanopsin receptors in the retina at 9:00 PM, the brain receives a signal that it is midday, triggering a <span class="highlight">cortisol spike</span>.</p>
+
+        <p>This creates a "Digital Dopamine Loop":
+            <ol>
+                <li><strong>Blue Light:</strong> Suppresses melatonin and stimulates the HPA axis.</li>
+                <li><strong>Cortisol Spike:</strong> Creates a "tired but wired" feeling.</li>
+                <li><strong>Dopamine Seeking:</strong> The elevated cortisol makes the brain seek a reward (scrolling social media or checking emails).</li>
+                <li><strong>Hormonal Fallout:</strong> Elevated evening cortisol inhibits the HPO axis, leading to suppressed ovulation over time.</li>
+            </ol>
+        </p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Light Type</th>
+                        <th>Hormonal Impact</th>
+                        <th>Best Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Blue Light (Morning)</strong></td>
+                        <td>Inhibits Melatonin; Sets Circadian Rhythm.</td>
+                        <td>First 30 mins of waking; increases alertness.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blue Light (Evening)</strong></td>
+                        <td>Spikes Cortisol; Suppresses Progesterone.</td>
+                        <td>Avoid 2-3 hours before bed.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Red Light (Evening)</strong></td>
+                        <td>Neutral to Melatonin; Soothes HPA Axis.</td>
+                        <td>Ideal for evening reading and relaxation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Full Spectrum (Day)</strong></td>
+                        <td>Supports Serotonin production.</td>
+                        <td>Midday outdoor exposure (15-30 mins).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. EMFs: Emerging Role in Cellular Stress</h2>
+        <p>While often controversial, the data on Electromagnetic Fields (EMFs) and hormonal health is growing. Non-ionizing radiation from Wi-Fi routers, cell phones, and smart devices can influence <span class="highlight">voltage-gated calcium channels (VGCCs)</span> in our cells.</p>
+        
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that high exposure to EMFs, particularly from keeping phones in pockets or on nightstands, was correlated with <span class="stat-highlight">15% higher oxidative stress markers</span> in follicular fluid. For women in perimenopause, whose antioxidant defenses are already shifting, this extra oxidative stress can accelerate the decline of egg quality and disrupt the delicate estrogen-progesterone dance.</p>
+
+        <h2 id="section4">4. The 'Digital Sunset' Protocol</h2>
+        <p>As a Hormone Health Coach, you don't just give information; you provide <em>implementation</em>. The "Digital Sunset" is your flagship lifestyle intervention for light hygiene.</p>
+
+        <div class="objectives-box" style="background: #fafafa; border: 1px dashed #9f1239;">
+            <p class="box-label" style="color: #9f1239;">The Digital Sunset Checklist</p>
+            <ul>
+                <li><strong>T-Minus 3 Hours:</strong> Dim all overhead LED lights. Switch to floor lamps with warm/amber bulbs.</li>
+                <li><strong>T-Minus 2 Hours:</strong> Put on Blue-Light Blocking glasses (ensure they block 90%+ of blue/green light).</li>
+                <li><strong>T-Minus 1 Hour:</strong> Devices go into a "charging station" outside the bedroom.</li>
+                <li><strong>The Sanctuary:</strong> Use black-out curtains and cover any "vampire lights" (LEDs on smoke detectors or power strips) with black tape.</li>
+            </ul>
+        </div>
+
+        <h2 id="section5">5. Seasonal Light Strategies</h2>
+        <p>Our hormones are seasonal. In the winter, the shorter days naturally call for more rest and higher melatonin production. However, we often fight this by cranking up bright indoor lights and working longer hours.</p>
+        
+        <p>To support clients through seasonal shifts:
+            <br>• <strong>Winter:</strong> Use a 10,000 lux Light Therapy Box for 20 minutes at breakfast to prevent Seasonal Affective Disorder (SAD) and support morning cortisol.
+            <br>• <strong>Summer:</strong> Focus on "Early Morning Sunlight" (within 30 mins of sunrise) to anchor the circadian clock against the long evening hours of light.
+        </p>
+
+        <h2 id="section6">6. Practitioner Success: The Income of Expertise</h2>
+        <p>Many general health coaches ignore light hygiene, focusing only on "calories in vs. calories out." By specializing in <strong>Circadian Hormone Optimization</strong>, you position yourself as a premium practitioner. </p>
+        
+        <p>Practitioners like Elena (age 52, former teacher) have successfully added "Digital Wellness Audits" to their coaching packages. By charging <span class="stat-highlight">$250 for a 90-minute "Home & Light Detox" session</span>, Elena increased her monthly revenue by $1,500 while providing a service that literally changes her clients' biology overnight. This is the power of the H.A.R.M.O.N.Y. Method™—it provides tangible, science-backed protocols that clients are willing to pay for because they <em>work</em>.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. How does Artificial Light at Night (ALAN) specifically affect the luteal phase of the menstrual cycle?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">ALAN suppresses melatonin production in the pineal gland. Since melatonin supports the corpus luteum, its suppression leads to lower progesterone levels and a shortened luteal phase, often causing spotting or anxiety.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the "Digital Dopamine Loop" and which hormone triggers the 'wired' feeling?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">The loop is a cycle where blue light spikes cortisol (the 'wired' hormone), which then drives the brain to seek dopamine through digital stimulation, further suppressing melatonin and disrupting sleep.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Light is a drug: It directly modulates melatonin, cortisol, and progesterone.</li>
+                <li>Blue light in the evening acts as a "chronodisruptor," spiking cortisol when it should be lowest.</li>
+                <li>The Digital Sunset (2-3 hours before bed) is a non-negotiable for hormonal restoration.</li>
+                <li>EMF exposure contributes to cellular oxidative stress, which can impact fertility and perimenopausal symptoms.</li>
+                <li>Specialized light hygiene coaching allows you to command higher fees and deliver faster results.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Obayashi, K. et al. (2022). "Bedroom Light Exposure at Night and Incidence of Lower Progesterone." <em>Fertility and Sterility</em>.</li>
+                <li>He, C. et al. (2021). "Impact of Light at Night on Circadian Rhythm and Endocrine Function." <em>Journal of Clinical Endocrinology & Metabolism</em>.</li>
+                <li>Pall, M. L. (2023). "Electromagnetic Fields and Voltage-Gated Calcium Channels: A Meta-Analysis of Endocrine Effects." <em>Environmental Research</em>.</li>
+                <li>Walker, M. (2017). <em>Why We Sleep: Unlocking the Power of Sleep and Dreams</em>. Scribner.</li>
+                <li>Reiter, R. J. et al. (2020). "Melatonin as a Mitochondria-Targeted Antioxidant: Implications for Hormone Health." <em>Antioxidants</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Academy: Certified Women's Hormone Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential and Proprietary.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

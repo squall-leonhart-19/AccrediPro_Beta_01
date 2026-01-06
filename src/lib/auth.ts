@@ -46,10 +46,21 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email },
-          include: {
+          select: {
+            id: true,
+            email: true,
+            passwordHash: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            isActive: true,
+            firstLoginAt: true,
+            miniDiplomaCategory: true,
+            accessExpiresAt: true,
             marketingTags: {
               include: { tag: true },
             },
+            tags: true, // UserTag - simple string tags from admin create
           },
         });
 
@@ -110,6 +121,7 @@ export const authOptions: NextAuthOptions = {
             firstLoginAt: isFirstLogin ? now : undefined,
             loginCount: { increment: 1 },
           },
+          select: { id: true },
         }).then(() => {
           console.log("[AUTH] Login stats updated for:", user.id);
         }).catch((err) => {
@@ -171,9 +183,14 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Check if user has FM certification tag for My Circle access
-        const hasFMCertification = user.marketingTags?.some(
-          (t) => t.tag.slug === "functional_medicine_complete_certification_purchased"
-        ) || false;
+        // Check both UserMarketingTag (relational) and UserTag (simple string) tables
+        const hasFMCertification =
+          user.marketingTags?.some(
+            (t) => t.tag.slug === "functional_medicine_complete_certification_purchased"
+          ) ||
+          user.tags?.some(
+            (t) => t.tag === "functional_medicine_complete_certification_purchased"
+          ) || false;
 
         // Note: Don't include image/avatar in JWT - it can cause token size issues
         // Avatar is fetched separately when needed

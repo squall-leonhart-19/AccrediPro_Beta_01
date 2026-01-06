@@ -45,7 +45,7 @@ const PRIMARY_GOALS = [
         label: "Build a profitable side business",
         icon: DollarSign,
         color: "emerald",
-        description: "Add $2K-$5K/month while keeping my current job",
+        description: "Add $3K-$10K/month while keeping my current job",
         segment: "side_hustle"
     },
     {
@@ -130,35 +130,42 @@ const CURRENT_FIELDS = [
     },
 ];
 
-// Step 3: Income Goals (AOV indicator)
+// Step 3: Income Goals (AOV indicator) - Matches Career Ladder exactly
 const INCOME_GOALS = [
     {
-        id: "under_2k",
-        label: "Under $2,000/month",
+        id: "3k_5k",
+        label: "$3K – $5K/month",
         emoji: "🌱",
-        description: "Starting small and building up",
+        description: "Step 1: Certified Practitioner",
         aov_tier: "starter"
     },
     {
-        id: "2k_5k",
-        label: "$2,000 - $5,000/month",
+        id: "5k_10k",
+        label: "$5K – $10K/month",
         emoji: "🌿",
-        description: "Comfortable part-time income",
+        description: "Step 2: Working Practitioner",
         aov_tier: "growth"
     },
     {
-        id: "5k_10k",
-        label: "$5,000 - $10,000/month",
-        emoji: "🌳",
-        description: "Full-time coaching income",
+        id: "10k_30k",
+        label: "$10K – $30K/month",
+        emoji: "💎",
+        description: "Step 3: Advanced & Master",
         aov_tier: "professional"
     },
     {
-        id: "10k_plus",
-        label: "$10,000+/month",
+        id: "30k_50k",
+        label: "$30K – $50K/month",
         emoji: "🚀",
-        description: "Building a thriving practice",
+        description: "Step 4: Business Scaler",
         aov_tier: "premium"
+    },
+    {
+        id: "50k_plus",
+        label: "$50K+/month",
+        emoji: "👑",
+        description: "Empire Builder",
+        aov_tier: "elite"
     },
 ];
 
@@ -313,7 +320,7 @@ const STEP_AUDIO_CONTEXT: Record<number, {
         message: "Knowing your background helps me show you success stories from people just like you. Nurses, teachers, moms — they've all built thriving practices!",
     },
     3: {
-        message: "Don't be shy with your income goal! Our graduates average $9,200/month in their first year. Dream big — I'll show you how to get there.",
+        message: "Don't be shy with your income goal! Our top graduates reach $15,000+/month within their first year. Dream big — I'll show you how to get there.",
     },
     4: {
         message: "Your timeline helps me create a realistic action plan. Whether you're in a hurry or taking it slow — we'll match your pace.",
@@ -359,6 +366,8 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWizardProps) {
     const [step, setStep] = useState(1);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isComplete, setIsComplete] = useState(false);
     const [data, setData] = useState<OnboardingData>({
         primaryGoal: "",
         currentField: "", // NEW
@@ -410,6 +419,8 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
     };
 
     const handleComplete = async () => {
+        setIsSubmitting(true);
+
         // Save to localStorage for immediate UI
         if (userId) {
             localStorage.setItem(`onboarding-complete-${userId}`, "true");
@@ -471,7 +482,15 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
             console.error("Error saving onboarding data:", error);
         }
 
-        onComplete(data);
+        setIsSubmitting(false);
+        setIsComplete(true);
+
+        // Auto close after showing success
+        setTimeout(() => {
+            onComplete(data);
+            // Force page refresh to update all data
+            window.location.reload();
+        }, 2500);
     };
 
     const stepContent = [
@@ -512,6 +531,61 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
             subtitle: "Optional but helps us support you better"
         },
     ];
+
+    // Success/Completion Screen
+    if (isComplete) {
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl">
+                    <div className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 p-8 text-white text-center">
+                        <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                            <Check className="w-10 h-10 text-white" />
+                        </div>
+                        <h2 className="text-2xl font-bold mb-2">You're All Set!</h2>
+                        <p className="text-white/80">Your personalized experience is ready</p>
+                    </div>
+                    <div className="p-6 text-center">
+                        <div className="space-y-3 mb-6">
+                            <div className="flex items-center gap-3 text-left p-3 bg-gray-50 rounded-xl">
+                                <div className="w-8 h-8 bg-burgundy-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <Target className="w-4 h-4 text-burgundy-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-900">Personalized Roadmap</p>
+                                    <p className="text-xs text-gray-500">Based on your goals</p>
+                                </div>
+                                <Check className="w-5 h-5 text-emerald-500 ml-auto" />
+                            </div>
+                            <div className="flex items-center gap-3 text-left p-3 bg-gray-50 rounded-xl">
+                                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <Sparkles className="w-4 h-4 text-purple-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-900">Custom Recommendations</p>
+                                    <p className="text-xs text-gray-500">Tailored just for you</p>
+                                </div>
+                                <Check className="w-5 h-5 text-emerald-500 ml-auto" />
+                            </div>
+                            <div className="flex items-center gap-3 text-left p-3 bg-gray-50 rounded-xl">
+                                <div className="w-8 h-8 bg-gold-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <Award className="w-4 h-4 text-gold-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-900">+25 XP Earned</p>
+                                    <p className="text-xs text-gray-500">First step complete!</p>
+                                </div>
+                                <Check className="w-5 h-5 text-emerald-500 ml-auto" />
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                            <div className="w-4 h-4 border-2 border-burgundy-500 border-t-transparent rounded-full animate-spin" />
+                            Loading your dashboard...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -634,7 +708,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                             ))}
                             <p className="text-center text-sm text-gray-500 mt-4 bg-gold-50 p-3 rounded-lg border border-gold-200">
                                 <TrendingUp className="w-4 h-4 inline mr-1 text-gold-600" />
-                                Our graduates average <span className="font-bold text-burgundy-700">$9,200/month</span> within their first year!
+                                Our top graduates reach <span className="font-bold text-burgundy-700">$15,000+/month</span> within their first year!
                             </p>
                         </div>
                     )}
@@ -859,10 +933,15 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                     <div className="flex gap-3">
                         <Button
                             onClick={handleNext}
-                            disabled={!canProceed()}
+                            disabled={!canProceed() || isSubmitting}
                             className="bg-burgundy-600 hover:bg-burgundy-700 px-6 py-5 text-base"
                         >
-                            {step === totalSteps ? (
+                            {isSubmitting ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                    Saving...
+                                </>
+                            ) : step === totalSteps ? (
                                 <>
                                     Finish & See My Dashboard <Sparkles className="w-4 h-4 ml-2" />
                                 </>

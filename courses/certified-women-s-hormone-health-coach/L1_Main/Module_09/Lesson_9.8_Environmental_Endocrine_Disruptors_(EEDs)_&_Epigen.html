@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Module 9 - Coaching Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Practice Lab Banner */
+        .practice-lab-banner {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #9f1239;
+            font-size: 24px;
+            border-bottom: none;
+        }
+
+        .practice-lab-banner h2::after { display: none; }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #9f1239;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #fdfbf7;
+            border-left: 5px solid #9f1239;
+            padding: 25px 30px;
+            margin: 35px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .objectives-box h3 {
+            margin: 0 0 15px 0;
+            color: #9f1239;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .case-study-label {
+            color: #9f1239;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Client Scenario Box */
+        .scenario-box {
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            margin: 35px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #eee;
+        }
+
+        .scenario-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scenario-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .scenario-header h3 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .scenario-content {
+            padding: 28px 30px;
+        }
+
+        .client-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #fff1f2;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .client-avatar {
+            width: 70px;
+            height: 70px;
+            background: #9f1239;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .client-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            color: #1a1a1a;
+        }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #9f1239;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        /* Coaching Script Box */
+        .script-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .script-box h3 {
+            margin: 0 0 20px;
+            color: #9f1239;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .script-box h3::before { content: '💬'; }
+
+        .script-dialogue {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .script-line {
+            margin-bottom: 18px;
+            padding-left: 20px;
+            border-left: 3px solid #9f1239;
+        }
+
+        .speaker {
+            font-weight: 700;
+            color: #9f1239;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .dialogue { font-style: italic; }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #9f1239;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 60px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+        .references-box h4 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .references-box ul {
+            margin: 0;
+            padding-left: 20px;
+            list-style-type: decimal;
+        }
+        .references-box li {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 9: Advanced Hormone Deep Dive</p>
+            <h1 class="lesson-title">Lesson 8: Practice Lab - Coaching Application</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🎯 Practice Lab</span>
+                <span class="meta-item">55 min</span>
+                <span class="meta-item">Clinical Application</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">👩‍⚕️</div>
+            <h2>Bridging Science and Support</h2>
+            <p>In this lab, we translate the complex physiology of Module 9 into a compassionate, actionable coaching conversation.</p>
+        </div>
+
+        <p>Hello, I'm Sarah. In my practice, I’ve found that the "Deep Dive" knowledge we've covered in this module is what truly separates a general wellness coach from a <span class="highlight">Certified Hormone Health Professional</span>. However, having the knowledge is only half the battle; knowing how to communicate it to a client who is frustrated, exhausted, and feeling "broken" is where the real transformation happens.</p>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Apply Module 9 concepts to a realistic perimenopausal insulin resistance case.</li>
+                <li>Practice explaining the "Estrogen-Insulin Loop" without overwhelming the client.</li>
+                <li>Identify common coaching pitfalls when handling complex metabolic cases.</li>
+                <li>Develop a three-step introductory plan for advanced hormonal support.</li>
+                <li>Build confidence in your authority as a specialized practitioner.</li>
+            </ul>
+        </div>
+
+        <h2>Understanding the "Deep Dive" Connection</h2>
+        <p>Before we meet our client, let's look at the data. A 2022 study published in <em>The Journal of Clinical Endocrinology & Metabolism</em> found that <span class="stat-highlight">women in late perimenopause have a 45% higher risk of developing insulin resistance</span> compared to premenopausal women, even when BMI remains constant. This is the "hidden" driver behind the weight gain many of our clients face.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hormonal Shift</th>
+                        <th>Metabolic Impact</th>
+                        <th>Client Symptom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Declining Estradiol</td>
+                        <td>Reduced GLUT4 translocation</td>
+                        <td>Midsection weight gain</td>
+                    </tr>
+                    <tr>
+                        <td>Progesterone Drop</td>
+                        <td>Increased cortisol sensitivity</td>
+                        <td>3 AM wakefulness / Anxiety</td>
+                    </tr>
+                    <tr>
+                        <td>Relative Estrogen Dominance</td>
+                        <td>Thyroid binding globulin increase</td>
+                        <td>Brain fog & Cold hands</td>
+                    </tr>
+                    <tr>
+                        <td>Insulin Spikes</td>
+                        <td>Increased systemic inflammation</td>
+                        <td>Joint pain & Skin tags</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Your Coaching Scenario: Meet Diane</h2>
+        <p>Diane represents the "classic" complex case you will see in your practice. She is educated, has tried the basics, and is looking for the level of expertise you now possess.</p>
+
+        <div class="scenario-box">
+            <div class="scenario-header">
+                <div class="scenario-icon">👤</div>
+                <h3>Client Profile: Diane, 51</h3>
+            </div>
+            <div class="scenario-content">
+                <div class="client-profile">
+                    <div class="client-avatar">👩</div>
+                    <div class="client-info">
+                        <h4>Diane, 51</h4>
+                        <p>High School Principal • Married • "Always the energetic one"</p>
+                    </div>
+                </div>
+
+                <div class="client-details">
+                    <div class="detail-item">
+                        <div class="label">Primary Concern</div>
+                        <div class="value">"The Spare Tire." She has gained 18 lbs in 14 months, all in her abdomen.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Health History</div>
+                        <div class="value">Heavy periods, occasional night sweats, and recent HbA1c of 5.7 (Pre-diabetic).</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Current Habits</div>
+                        <div class="value">Spin class 4x a week, low-fat diet, drinks 2 glasses of wine to "wind down."</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Mindset</div>
+                        <div class="value">Defeated. "I'm doing everything 'right' and getting worse."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <span class="case-study-label">Practitioner Spotlight</span>
+            <p><strong>Meet Maria (Age 52):</strong> A former teacher who joined this program. She struggled with imposter syndrome until she realized her "Diane" clients didn't want a doctor; they wanted a partner who understood the science. Within 6 months of certification, Maria transitioned to full-time coaching, charging <strong>$1,200 for a 12-week intensive</strong>. She now sees 15 clients a month, earning over $6,000/mo with total flexibility.</p>
+        </div>
+
+        <h2>The Coaching Script: Explaining the "Why"</h2>
+        <div class="script-box">
+            <h3>Your Turn: Practice Out Loud</h3>
+            <p>Read this dialogue out loud to build your "practitioner voice."</p>
+
+            <div class="script-dialogue">
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Diane, I've reviewed your history and your recent labs. I want to start by saying: your body isn't failing you. It’s actually responding exactly how it should to a specific hormonal shift we call the 'Insulin-Estrogen Loop.'"</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">DIANE:</div>
+                    <div class="dialogue">"The what? My doctor just said I'm getting older and need to watch my carbs."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"It's a bit more nuanced than just 'watching carbs.' As your estrogen levels fluctuate in perimenopause, your cells actually become less 'sensitive' to insulin. Insulin is like a key that opens the door to your cells for energy. When the key doesn't turn well, your body stores that energy as fat—specifically around the middle—to protect you."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"The spin classes and the low-fat diet you're doing? They are actually adding stress to a system that is already struggling to manage fuel. We don't need to work <em>harder</em>; we need to change the <em>signals</em> we're sending your hormones."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">DIANE:</div>
+                    <div class="dialogue">"That... actually makes sense. I feel like I'm running on a treadmill that's going too fast. So, what's the first signal we change?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Common Mistakes to Avoid</h2>
+        <p>In my early days, I made these mistakes often. Learning to avoid them will fast-track your legitimacy as a coach.</p>
+        
+        <ul>
+            <li><span class="highlight">Mistake #1: The "Information Dump."</span> Don't explain the entire Krebs cycle. Give her enough science to feel validated, but not so much that she feels overwhelmed.</li>
+            <li><span class="highlight">Mistake #2: Over-Promising Quick Fixes.</span> Diane didn't become insulin resistant overnight. Be honest: "We are retraining your metabolism. This takes 12 to 16 weeks of consistency."</li>
+            <li><span class="highlight">Mistake #3: Ignoring the Wine.</span> In Diane’s case, the wine is a major "Insulin Disruptor." Don't be afraid to address it, but do so through the lens of hormone health, not "bad habits."</li>
+            <li><span class="highlight">Mistake #4: Not Charging Your Worth.</span> Complex cases like Diane require your specialized knowledge. Coaches who undercharge often burn out because they provide $1,000 worth of value for $50 a session.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is Diane's 4x/week Spin class potentially counterproductive for her midsection weight gain?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">High-intensity cardio (like Spin) can spike cortisol. In a perimenopausal woman with insulin resistance, elevated cortisol signals the body to store visceral fat (around the organs/midsection) and can further disrupt blood sugar regulation.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the "Success Marker" in the dialogue provided above?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">The success marker is when Diane says, "That... actually makes sense." This indicates she has moved from a state of "self-blame" to "physiological understanding," which is the foundation for behavioral change.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways for Your Practice</p>
+            <ul>
+                <li><strong>Validate through Physiology:</strong> Use the "Deep Dive" science to show the client that her symptoms are biological, not moral failings.</li>
+                <li><strong>The 45% Factor:</strong> Remember that perimenopause increases insulin resistance risk by 45%, making metabolic support mandatory for this age group.</li>
+                <li><strong>Language Matters:</strong> Use metaphors like "The Insulin Key" to make complex endocrinology accessible.</li>
+                <li><strong>Confidence is Credibility:</strong> When you speak with authority about the Estrogen-Insulin loop, you establish the legitimacy required to charge professional rates.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Greendale, G. A., et al. (2019). "Changes in body composition and weight during the menopause transition." <em>JCI Insight.</em></li>
+                <li>Yan, H., et al. (2022). "Estrogen Regulation of Adipose Tissue Functions Involved in Metabolic Health." <em>Trends in Endocrinology & Metabolism.</em></li>
+                <li>Epperson, C. N., et al. (2021). "The Perimenopause Transition: A Critical Window for Metabolic and Cognitive Health." <em>Endocrine Reviews.</em></li>
+                <li>Polotsky, A. J., et al. (2021). "Hormonal Determinants of Insulin Resistance in the Menopause Transition." <em>The Journal of Clinical Endocrinology & Metabolism.</em></li>
+                <li>Maturana, M. A., et al. (2023). "Metabolic Syndrome in Postmenopausal Women: Pathophysiology and Management." <em>International Journal of Women's Health.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

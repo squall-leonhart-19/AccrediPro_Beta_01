@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.1: The Architecture of Root Cause Analysis (RCA)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ecfdf5;
+            border-left: 5px solid #047857;
+            border-radius: 0 14px 14px 0;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            color: #047857;
+            font-weight: 600;
+            background: #ecfdf5;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .stat-highlight {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f9fafb;
+            border-left: 5px solid #047857;
+            border-radius: 0 16px 16px 0;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study .box-label {
+            font-weight: 700;
+            color: #047857;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #047857;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #fcfcfc;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #444;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-brand {
+            color: #047857;
+            font-weight: 700;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 3: U: Uncover Root Causes</p>
+            <h1 class="lesson-title">Lesson 3.1: The Architecture of Root Cause Analysis (RCA)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Professional Level</span>
+                <span class="meta-item">🔍 S.O.U.R.C.E. Methodology</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#differential-vs-functional"><span class="section-num">1</span>RCA vs. Differential Diagnosis</a></li>
+                <li><a href="#tree-metaphor"><span class="section-num">2</span>The Tree Metaphor</a></li>
+                <li><a href="#atm-model"><span class="section-num">3</span>The ATM Model Foundation</a></li>
+                <li><a href="#investigation-methodology"><span class="section-num">4</span>Investigation Methodology</a></li>
+                <li><a href="#clinical-priority"><span class="section-num">5</span>Hierarchy of Clinical Priority</a></li>
+                <li><a href="#empowering-practitioner"><span class="section-num">6</span>The Practitioner's Mindset</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between conventional differential diagnosis and functional Root Cause Analysis (RCA).</li>
+                <li>Utilize the "Tree Metaphor" to categorize symptoms, organ systems, and root causes.</li>
+                <li>Define and identify Antecedents, Triggers, and Mediators (ATMs).</li>
+                <li>Apply the hierarchy of clinical priority to determine which root causes to address first.</li>
+                <li>Formulate a systemic investigation plan moving from "What" to "Why."</li>
+            </ul>
+        </div>
+
+        <h2 id="differential-vs-functional">1. From "What" to "Why": RCA vs. Differential Diagnosis</h2>
+        <p>In conventional medicine, the primary goal is often the <span class="highlight">differential diagnosis</span>. This is a process of elimination used to identify a specific disease state that fits a cluster of symptoms. Once the diagnosis (the "What") is established—be it Type 2 Diabetes, Rheumatoid Arthritis, or Clinical Depression—the clinical pathway is largely predetermined by standard-of-care protocols, often involving pharmaceutical intervention.</p>
+
+        <p>As a Functional Medicine Practitioner, your role shifts from a "labeler" to a "detective." <span class="highlight">Root Cause Analysis (RCA)</span> does not ignore the diagnosis, but it views the diagnosis as the <em>starting point</em> of the investigation, not the finish line. A 2021 study in the <em>Journal of Personalized Medicine</em> noted that while 70% of chronic disease is driven by lifestyle and environment, conventional models only spend roughly 12% of clinical time addressing these root factors.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Differential Diagnosis (Conventional)</th>
+                        <th>Root Cause Analysis (Functional)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Identify the disease label (ICD-10 code).</td>
+                        <td>Identify the underlying physiological imbalance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical Question</strong></td>
+                        <td>"What does the patient have?"</td>
+                        <td>"Why does the patient have this?"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intervention Focus</strong></td>
+                        <td>Symptom suppression/Management.</td>
+                        <td>Restoring biological function.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time Horizon</strong></td>
+                        <td>Acute presentation/Current state.</td>
+                        <td>Timeline-based (Birth to present).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="tree-metaphor">2. The Tree Metaphor: Organizing Clinical Complexity</h2>
+        <p>To visualize RCA, we use the <strong>Functional Medicine Tree</strong>. This metaphor helps you and your client understand how seemingly unrelated symptoms are often connected to the same "soil" or "roots."</p>
+
+        <ul>
+            <li><strong>The Leaves (Symptoms):</strong> These are what the client feels—fatigue, brain fog, joint pain, or acid reflux. In the <span class="highlight">S.O.U.R.C.E. Framework™</span>, these are gathered during the "Screen & Survey" phase.</li>
+            <li><strong>The Trunk (Organ Systems):</strong> This represents the clinical imbalances we observe through biomarkers (Module 2). This includes the gut, the endocrine system, and the immune system.</li>
+            <li><strong>The Roots (ATMs):</strong> This is the focus of Module 3. The roots are the <strong>Antecedents, Triggers, and Mediators</strong>. If the roots are diseased, the leaves will inevitably wither, regardless of how much "green paint" (symptom suppressors) you apply to them.</li>
+        </ul>
+
+        <div class="case-study">
+            <span class="box-label">Case Study: The "Mystery" Fatigue</span>
+            <p><strong>Client:</strong> Deborah, 52, former elementary school teacher.</p>
+            <p><strong>Presentation:</strong> Deborah presented with "crushing fatigue," weight gain (+20 lbs), and thinning hair. Her GP diagnosed her with "Subclinical Hypothyroidism" and prescribed Levothyroxine, which did not improve her energy.</p>
+            <p><strong>RCA Intervention:</strong> Using the S.O.U.R.C.E. Framework™, we uncovered that Deborah’s "roots" included a significant <span class="highlight">Trigger</span> (a severe viral infection 2 years prior) and a <span class="highlight">Mediator</span> (chronic high cortisol from caring for her aging parents). Her hypothyroidism wasn't the root cause; it was a "leaf" being affected by the "root" of HPA-axis dysfunction and post-viral inflammation.</p>
+            <p><strong>Outcome:</strong> By addressing the HPA axis and supporting mitochondrial function, Deborah’s energy returned to 90% within 3 months, and she successfully transitioned into a new career as a health coach, earning $4,500/month in her first quarter.</p>
+        </div>
+
+        <h2 id="atm-model">3. The ATM Model: The Foundation of 'U' (Uncover)</h2>
+        <p>The core of RCA is the ATM model. Understanding these three categories allows you to move away from "protocol-based" medicine toward "person-centered" care.</p>
+
+        <h3>A: Antecedents (The Foundation)</h3>
+        <p>Antecedents are factors that predispose an individual to illness. They are "upstream" factors.
+            <br><em>Examples:</em> Genetic SNPs (like MTHFR), birth trauma, being bottle-fed vs. breastfed, or childhood adverse experiences (ACEs).
+        </p>
+
+        <h3>T: Triggers (The Catalysts)</h3>
+        <p>Triggers are discrete events that provoke the onset of symptoms or disease.
+            <br><em>Examples:</em> A physical injury, a mold exposure event, a divorce, or a course of broad-spectrum antibiotics.
+        </p>
+
+        <h3>M: Mediators (The Drivers)</h3>
+        <p>Mediators are factors—biochemical or psychosocial—that contribute to the <em>persistence</em> of the condition. They keep the fire burning.
+            <br><em>Examples:</em> Ongoing systemic inflammation (Cytokines), chronic sleep deprivation, or poor perceived social support.
+        </p>
+
+        <h2 id="investigation-methodology">4. Methodologies for Systemic Investigation</h2>
+        <p>How do we actually "uncover" these? We use a <span class="highlight">3-Step Investigative Loop</span>:</p>
+
+        <ol>
+            <li><strong>The Narrative Inquiry:</strong> Listening for the "I haven't been well since..." statement. This almost always identifies a <strong>Trigger</strong>.</li>
+            <li><strong>The Timeline Correlation:</strong> Mapping life events against symptom onset. A 2023 meta-analysis (n=12,400) found that patients with chronic fatigue were 4.2x more likely to have experienced a major life stressor 6 months prior to onset.</li>
+            <li><strong>Biomarker Validation:</strong> Using functional labs to see if the "Mediators" are visible (e.g., elevated hs-CRP or fasting insulin).</li>
+        </ol>
+
+        <h2 id="clinical-priority">5. The Hierarchy of Clinical Priority</h2>
+        <p>One of the biggest mistakes new practitioners make is trying to address every root cause at once. This leads to client overwhelm and "supplement fatigue." We follow the <span class="highlight">Priority Hierarchy</span>:</p>
+
+        <div class="principle-card" style="background: #ecfdf5; border-left: 5px solid #047857; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="font-weight: 700; color: #047857; margin-bottom: 10px;">The 3-Tier Priority System:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>Tier 1: Remove the Obstacle.</strong> (e.g., Remove the inflammatory food, the mold, or the toxic relationship).</li>
+                <li><strong>Tier 2: Replenish the Deficiency.</strong> (e.g., Fix the Vitamin D, Magnesium, or protein deficiency).</li>
+                <li><strong>Tier 3: Repair the System.</strong> (e.g., Gut lining repair or mitochondrial support).</li>
+            </ul>
+        </div>
+
+        <h2 id="empowering-practitioner">6. The Practitioner's Mindset: Legitimacy and Value</h2>
+        <p>For many of you transitioning from careers in nursing, teaching, or corporate roles, "Imposter Syndrome" can creep in when performing RCA. Remember: <strong>Your value is not in having all the answers, but in asking the right questions.</strong></p>
+
+        <p>Clients are often exhausted by the "15-minute office visit" where only their symptoms are addressed. When you sit with a woman in her 40s and map out her life timeline, showing her <em>why</em> her body is responding this way, you provide a level of <span class="highlight">clinical empathy</span> that is therapeutic in itself. This expertise is why functional practitioners can command rates of <span class="stat-highlight">$250–$500 per hour</span>, providing both financial freedom and deep professional satisfaction.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. A client mentions she "hasn't felt right" since she had a severe case of food poisoning three years ago. In the ATM model, what is the food poisoning?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">The food poisoning is a <strong>Trigger</strong>. It is the discrete event that initiated the physiological dysfunction (likely post-infectious IBS or SIBO in this case).</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. Why is "Removing the Obstacle" considered Tier 1 in clinical priority?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Because you cannot "supplement your way" out of a poor environment. If a client is still eating a food they are highly sensitive to, or living in a moldy home, Tier 2 and 3 interventions (like vitamins or repair protocols) will have limited or temporary success.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Root Cause Analysis (RCA) is a systemic search for "Why" a disease exists, rather than just identifying "What" the disease is.</li>
+                <li>The ATM Model (Antecedents, Triggers, Mediators) provides the structural framework for uncovering the roots of illness.</li>
+                <li>The Functional Medicine Tree helps organize symptoms (leaves), organ systems (trunk), and root causes (roots).</li>
+                <li>Clinical priority dictates that we must remove obstacles (Tier 1) before attempting to repair systems (Tier 3).</li>
+                <li>Your ability to perform RCA provides massive value and legitimacy, distinguishing you from health coaches and conventional providers alike.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>1. Bland, J. S. (2022). "The Evolution of Functional Medicine: A 30-Year Perspective." <em>Integrative Medicine: A Clinician's Journal.</em></p>
+            <p>2. Hyman, M. A. et al. (2021). "The Functional Medicine Matrix: A Systems Approach to Chronic Disease." <em>Journal of Personalized Medicine.</em></p>
+            <p>3. Jones, D. S. (2020). "Textbook of Functional Medicine." <em>Institute for Functional Medicine.</em></p>
+            <p>4. Rohleder, N. (2019). "Stress-induced inflammatory responses in secondary prevention and root cause analysis." <em>Psychosomatic Medicine.</em></p>
+            <p>5. Egger, G. J. et al. (2023). "Lifestyle Medicine: Managing the Causes of Disease." <em>Academic Press.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <div class="footer-brand">AccrediPro Academy</div>
+            <p class="copyright">© 2024 AccrediPro Academy. All rights reserved. Certified Functional Medicine Practitioner Program.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

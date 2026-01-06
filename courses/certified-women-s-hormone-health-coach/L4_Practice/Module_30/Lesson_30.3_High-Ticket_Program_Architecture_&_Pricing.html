@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3: High-Ticket Program Architecture & Pricing</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header - ROSE theme */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #9f1239;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #9f1239;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 14px 14px 0;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: #fff1f2;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #fecdd3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fafafa;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 16px 16px 0;
+            margin: 40px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+        }
+
+        .case-study-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            font-size: 24px;
+        }
+
+        .case-study h4 {
+            margin: 0;
+            color: #9f1239;
+            font-size: 18px;
+        }
+
+        /* Table Styles */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            border: 1px solid #880e2f;
+        }
+
+        td {
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        tr:nth-child(even) td {
+            background: #fff1f2;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-brand {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 30: Professional Practice & Business Mastery</p>
+            <h1 class="lesson-title">Lesson 3: High-Ticket Program Architecture & Pricing</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L4: Building Your Practice</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hourly-trap"><span class="section-num">1</span>Escaping the Hourly Session Trap</a></li>
+                <li><a href="#roi-psychology"><span class="section-num">2</span>The Psychology of High-Ticket ROI</a></li>
+                <li><a href="#tiered-models"><span class="section-num">3</span>The H.A.R.M.O.N.Y. Tiered Model</a></li>
+                <li><a href="#group-vs-one"><span class="section-num">4</span>Scaling: Group vs. 1:1 Intensives</a></li>
+                <li><a href="#automation"><span class="section-num">5</span>Systems for Financial Sustainability</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>Your First 90-Day Pricing Roadmap</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between "time-trading" and "outcome-based" coaching models.</li>
+                <li>Calculate the tangible financial and emotional ROI of hormonal health for your target niche.</li>
+                <li>Construct a three-tiered service model (Essential, Signature, VIP) using the H.A.R.M.O.N.Y. Method™.</li>
+                <li>Determine optimal pricing based on market data and practitioner experience levels.</li>
+                <li>Implement automated billing systems to reduce administrative overhead and client churn.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <p>One of the most significant hurdles for career changers—especially those coming from service-oriented backgrounds like nursing or teaching—is the shift from <strong>hourly wages</strong> to <strong>value-based pricing</strong>. In this lesson, we move beyond "coaching by the hour" and into the architecture of transformation. By the end of this session, you will view your services not as a cost per 60 minutes, but as an investment in a woman's future health, career, and vitality.</p>
+        </div>
+
+        <h2 id="hourly-trap">1. Escaping the Hourly Session Trap</h2>
+        <p>Most wellness practitioners start by charging $75 to $150 per hour. While this feels "safe," it creates a fundamental misalignment between you and your client. When you charge hourly, your income is capped by your physical energy, and the client views your support as a <span class="highlight">disposable commodity</span> rather than a committed journey.</p>
+        
+        <p>A <span class="stat-highlight">2023 industry survey</span> of 1,200 health coaches found that those utilizing package-based models earned 3.4x more annual revenue than those relying on individual sessions. More importantly, client success rates—defined as achieving primary health goals—were 62% higher in programs lasting 4 months or longer.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">👩‍⚕️</span>
+                <h4>Case Study: Sarah, 48 (Former ICU Nurse)</h4>
+            </div>
+            <p><strong>The Challenge:</strong> Sarah transitioned to hormone coaching but struggled with "imposter syndrome." She charged $100/hour. She was exhausted, seeing 15 clients a week, and making $6,000/month before taxes and expenses, with high client turnover.</p>
+            <p><strong>The Intervention:</strong> Sarah implemented the H.A.R.M.O.N.Y. Method™ as a 6-month "Perimenopause Power" program priced at $3,500.</p>
+            <p><strong>The Outcome:</strong> With just 4 new clients a month, Sarah's revenue jumped to $14,000/month. She reduced her "chair time" by 50% and saw deeper clinical results because her clients were financially and emotionally committed to the full 6-month protocol.</p>
+        </div>
+
+        <h2 id="roi-psychology">2. The Psychology of High-Ticket ROI</h2>
+        <p>To confidently charge high-ticket prices ($2,000 - $5,000+), you must understand the <span class="highlight">Return on Investment (ROI)</span> your clients receive. For a woman in her 40s or 50s, hormonal imbalance isn't just a health issue; it's a financial and professional liability.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Impact Category</th>
+                        <th>The Cost of Imbalance</th>
+                        <th>The ROI of Your Program</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Career/Productivity</strong></td>
+                        <td>Brain fog & fatigue lead to missed promotions or reduced hours.</td>
+                        <td>Increased cognitive clarity and energy = Career longevity and higher earnings.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Medical Expenses</strong></td>
+                        <td>Chronic prescriptions, ER visits for palpitations, failed IVF cycles ($15k+).</td>
+                        <td>Root-cause resolution reduces long-term medical dependency and surgical risks.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Personal Life</strong></td>
+                        <td>Libido loss, mood swings affecting marriage and parenting.</td>
+                        <td>Restored emotional resilience and intimacy; "getting her life back."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Future Health</strong></td>
+                        <td>High risk of osteoporosis, CVD, and Type 2 Diabetes.</td>
+                        <td>Preventative optimization saves hundreds of thousands in elder care.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="tiered-models">3. The H.A.R.M.O.N.Y. Tiered Model</h2>
+        <p>Structuring your practice using the H.A.R.M.O.N.Y. Method™ allows you to offer different levels of support while maintaining clinical integrity. We recommend a "Good-Better-Best" approach to capture different market segments.</p>
+
+        <h3>Tier 1: The Essential (4 Months)</h3>
+        <p>Focuses on the first three pillars: <strong>H</strong>ormone Assessment, <strong>A</strong>ddressing Root Causes, and <strong>R</strong>estoring Balance. This is ideal for clients with mild symptoms who are self-motivated. 
+        <br><span class="highlight">Suggested Price: $1,500 - $2,200</span></p>
+
+        <h3>Tier 2: The Signature (6 Months) - Recommended</h3>
+        <p>The full H.A.R.M.O.N.Y. experience including <strong>M</strong>etabolic Optimization, <strong>O</strong>ptimizing Lifestyle, and <strong>N</strong>ourishment. This provides enough time for the "Second Puberty" (perimenopause) to stabilize.
+        <br><span class="highlight">Suggested Price: $3,000 - $4,500</span></p>
+
+        <h3>Tier 3: The VIP/Concierge (12 Months)</h3>
+        <p>Adds the <strong>Y</strong>our Sustainable Plan pillar with monthly maintenance, advanced functional testing (DUTCH/GI Map) every 6 months, and unlimited messaging support.
+        <br><span class="highlight">Suggested Price: $6,000 - $10,000+</span></p>
+
+        <h2 id="group-vs-one">4. Scaling: Group vs. 1:1 Intensives</h2>
+        <p>As your practice grows, you will hit a "time ceiling." Transitioning from 1:1 to a <span class="highlight">Hybrid Group Model</span> is the key to financial freedom. A 2022 meta-analysis of health interventions (n=4,500) published in the <i>Journal of Medical Internet Research</i> noted that group-based coaching often outperforms 1:1 in terms of long-term habit adherence due to <strong>social contagion</strong> and peer accountability.</p>
+
+        <p><strong>The High-Ticket Group Architecture:</strong>
+        <ul>
+            <li><strong>Core Curriculum:</strong> Pre-recorded modules following the H.A.R.M.O.N.Y. Method™.</li>
+            <li><strong>Weekly Hot Seats:</strong> 90-minute group Zoom calls for Q&A.</li>
+            <li><strong>Community Hub:</strong> A private platform (Slack or Circle) for peer support.</li>
+            <li><strong>The "Hybrid" Edge:</strong> Include two 1:1 sessions (onboarding and mid-point) to maintain the high-ticket feel.</li>
+        </ul></p>
+
+        <h2 id="automation">5. Systems for Financial Sustainability</h2>
+        <p>Administrative fatigue is a leading cause of burnout for new coaches. High-ticket programs require professional financial systems. You should never be "chasing" a check or sending manual invoices every month.</p>
+
+        <p><strong>Mandatory Tools for Your Practice:</strong>
+        <ol>
+            <li><strong>Practice Management:</strong> (e.g., Practice Better, Healthie) Centralizes charting, protocols, and billing.</li>
+            <li><strong>Automated Billing:</strong> Use Stripe or PayPal to set up <i>recurring</i> monthly payments if the client isn't paying in full.</li>
+            <li><strong>Payment Plans:</strong> Always offer a "Pay in Full" discount (typically 10-15%) to improve your business's immediate cash flow.</li>
+        </ol></p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">🏫</span>
+                <h4>Case Study: Elena, 52 (Former School Administrator)</h4>
+            </div>
+            <p>Elena launched a group program called "The Resilient Matriarch" for women in leadership positions. She priced the 4-month experience at $1,997. By automating her billing and using a hybrid group model, she enrolled 20 women in her first launch.</p>
+            <p><strong>Revenue:</strong> $39,940 for 4 months of work, requiring only 4 hours of live coaching per week. This allowed her to leave her stressful school board position permanently.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why does a "Pay in Full" option benefit both the practitioner and the client?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">For the practitioner, it provides immediate cash flow and reduces administrative tracking of failed payments. For the client, it often includes a financial discount and creates a higher level of psychological "sunk cost" commitment, leading to better compliance with the H.A.R.M.O.N.Y. protocols.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What is the primary clinical benefit of a 6-month program over a 1-month program?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Hormonal transitions (like follicle recruitment or thyroid receptor up-regulation) take time—often 90 to 120 days. A 6-month program allows the coach to guide the client through at least two full hormonal cycles of adjustment and one phase of metabolic optimization, ensuring the results are sustainable and not just a "honeymoon phase."</div>
+            </div>
+        </div>
+
+        <h2 id="implementation">6. Your First 90-Day Pricing Roadmap</h2>
+        <p>If you are feeling imposter syndrome, follow this "Beta-to-Premium" ladder:</p>
+        <ul>
+            <li><strong>Phase 1 (Beta):</strong> Enroll 3 "Beta" clients at a discounted rate (e.g., $1,500 for 4 months) in exchange for deep feedback and a video testimonial.</li>
+            <li><strong>Phase 2 (Foundational):</strong> Move your price to $2,500 for the Signature 6-month program once you have your first 3 success stories.</li>
+            <li><strong>Phase 3 (Mastery):</strong> Once you are booked at 60% capacity, raise your price to $3,500 - $5,000 and introduce your Group Model to handle the overflow.</li>
+        </ul>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Stop selling hours; start selling the <strong>transformed version</strong> of your client's life.</li>
+                <li>The H.A.R.M.O.N.Y. Method™ provides the clinical backbone that justifies high-ticket pricing.</li>
+                <li>A Signature 6-month program is the "sweet spot" for hormonal health results and practitioner revenue.</li>
+                <li>ROI isn't just health; it's career longevity, relationship stability, and future medical cost avoidance.</li>
+                <li>Automation is not optional—use practice management software to handle billing from day one.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Beauchamp et al. (2022). "The ROI of Health Coaching in Corporate Settings: A Systematic Review." <i>Journal of Occupational Health.</i></li>
+                <li>Gruman et al. (2023). "Psychology of Pricing in the Wellness Industry: Value-Based vs. Cost-Plus Models." <i>International Journal of Coaching Science.</i></li>
+                <li>NAMS (2023). "The Economic Impact of Untreated Menopause Symptoms in the Workplace." <i>Menopause Journal.</i></li>
+                <li>Sforzo et al. (2021). "Compendium of Health and Wellness Coaching: 2021 Addendum." <i>American Journal of Lifestyle Medicine.</i></li>
+                <li>Williams et al. (2022). "Group vs. Individual Coaching for Metabolic Syndrome: A Randomized Controlled Trial." <i>Journal of Medical Internet Research.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="footer-brand">AccrediPro Academy</p>
+            <p class="footer-copyright">&copy; 2024 AccrediPro. All Rights Reserved. Certified Women's Hormone Health Coach Program.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

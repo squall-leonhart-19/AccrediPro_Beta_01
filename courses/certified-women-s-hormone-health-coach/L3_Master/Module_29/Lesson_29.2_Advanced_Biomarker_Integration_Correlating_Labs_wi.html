@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.2: Advanced Biomarker Integration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header - Theme Colors Applied */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #9f1239;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #9f1239;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fff1f2;
+            border: 2px solid #9f1239;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            color: #9f1239;
+            font-size: 20px;
+            margin-top: 30px;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: #fff1f2;
+            color: #9f1239;
+            padding: 2px 4px;
+            font-weight: 600;
+            border-radius: 4px;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fafafa;
+            border-left: 5px solid #9f1239;
+            border-radius: 0 16px 16px 0;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study h4 {
+            margin-top: 0;
+            color: #9f1239;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways Box */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h5 {
+            margin-top: 0;
+            color: #9f1239;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            .lesson-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 29: L3: Master Integration</p>
+            <h1 class="lesson-title">Advanced Biomarker Integration: Correlating Labs with Biofeedback</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Expert Level</span>
+                <span class="meta-item">H.A.R.M.O.N.Y. Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Synthesis Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Cross-Referencing Labs & BBT</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Identifying 'Silent' Shifts</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>CGM Data in Metabolic Optimization</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Receptor Sensitivity & Micronutrients</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Irregular Cycles: Advanced Assessment</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the art of triangulating DUTCH/GI-MAP data with subjective biofeedback and Basal Body Temperature (BBT) charts.</li>
+                <li>Identify subclinical hormonal "whispers" that precede pathological shifts in perimenopause.</li>
+                <li>Leverage Continuous Glucose Monitor (CGM) data to refine Phase M (Metabolic Optimization) protocols.</li>
+                <li>Explain the biochemical role of micronutrients in hormone signal transduction and receptor sensitivity.</li>
+                <li>Develop assessment strategies for clients with absent or irregular cycles using non-cyclical biomarkers.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Synthesis Paradigm: Moving Beyond Static Data</h2>
+        <p>As you reach this advanced stage of your certification, you are transitioning from a practitioner who *reads* labs to one who *synthesizes* biology. In the <span class="highlight">H.A.R.M.O.N.Y. Method™</span>, we recognize that a lab test is a single frame of a movie, while biofeedback—the daily temperature shifts, cervical mucus patterns, and energy fluctuations—is the movie itself.</p>
+
+        <p>A common pitfall for new practitioners is the "Imposter Trap": feeling that if the labs are "normal" but the client feels terrible, the practitioner must be missing something. In reality, <span class="stat-highlight">up to 30% of women in perimenopause</span> exhibit "normal" serum FSH and LH levels despite significant clinical symptoms of estrogen dominance or progesterone deficiency. By integrating biomarkers with biofeedback, you establish a level of legitimacy that allows you to command premium rates, often ranging from <span class="highlight">$350 to $600 per 90-minute integration session</span>.</p>
+
+        <h2 id="section2">Cross-Referencing Functional Labs with Basal Body Temperature (BBT)</h2>
+        <p>The DUTCH (Dried Urine Test for Comprehensive Hormones) provides unparalleled insight into hormone metabolites, but it cannot tell you the exact day of ovulation or the stability of the corpus luteum. This is where <span class="highlight">Basal Body Temperature (BBT)</span> integration becomes critical.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lab Marker (DUTCH)</th>
+                        <th>Biofeedback Correlation (BBT/Chart)</th>
+                        <th>Clinical Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Low Pregnanediol (Luteal Phase)</td>
+                        <td>Short Luteal Phase (&lt;10 days)</td>
+                        <td>Inadequate corpus luteum function; Progesterone support required.</td>
+                    </tr>
+                    <tr>
+                        <td>High 5a-Reductase Activity</td>
+                        <td>Mid-cycle acne / oily skin / high libido</td>
+                        <td>Androgen dominance; focus on insulin and DHT metabolism.</td>
+                    </tr>
+                    <tr>
+                        <td>Elevated 16-OH E1 (Estrogen)</td>
+                        <td>Heavy menses / Breast tenderness</td>
+                        <td>Proliferative estrogen pathway; focus on Phase I Liver Detox.</td>
+                    </tr>
+                    <tr>
+                        <td>Low Free Cortisol (Diurnal)</td>
+                        <td>Waking temp &lt; 97.2°F (36.2°C)</td>
+                        <td>HPA Axis down-regulation or subclinical thyroid involvement.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <h4>Case Study 1: The "Normal" Perimenopause Transition</h4>
+            <p><strong>Client:</strong> Sarah, 46, Nurse Practitioner. <br>
+            <strong>Presenting Symptoms:</strong> Insomnia, weight gain around the midsection, and "rage" 10 days before her period. <br>
+            <strong>The Labs:</strong> Serum labs showed "normal" Progesterone (12 ng/mL) on Day 21. <br>
+            <strong>The Integration:</strong> Sarah's BBT chart showed a "sawtooth" pattern in the luteal phase, with temperatures dropping below the cover line three times before her period. Her DUTCH test revealed high 4-OH-E1 (the "toxic" estrogen pathway) and low beta-pregnanediol. <br>
+            <strong>Outcome:</strong> By identifying that her *metabolism* of estrogen was the issue, not just the level of progesterone, we implemented Calcium D-Glucarate and DIM. Within two cycles, her BBT stabilized, and her "rage" subsided. Sarah now refers her own patients to this practice, creating a high-value referral loop.</p>
+        </div>
+
+        <h2 id="section3">Identifying 'Silent' Hormonal Shifts</h2>
+        <p>Pathology doesn't happen overnight. It is preceded by <span class="highlight">subclinical patterns</span>—the "whispers" of the endocrine system. A 2022 longitudinal study (n=1,450) found that changes in the <span class="stat-highlight">Late Luteal Phase Progesterone-to-Estrogen ratio</span> could predict the onset of severe vasomotor symptoms (hot flashes) up to 24 months before they appeared on standard clinical tests.</p>
+
+        <p>Key "Silent" indicators to monitor in the H (Assessment) phase:</p>
+        <ul>
+            <li><strong>The "Creeping" FSH:</strong> An FSH that fluctuates between 10-15 mIU/mL (even if "normal" is up to 25) often indicates declining ovarian reserve.</li>
+            <li><strong>The Cortisol-Progesterone Steal:</strong> When biofeedback shows high stress but labs show high Cortisone (inactive) vs. Cortisol (active), the body is attempting to protect itself from allostatic load.</li>
+            <li><strong>Cervical Mucus Dissonance:</strong> Presence of fertile-quality mucus (egg white) but no corresponding temp rise on BBT indicates a "failed" ovulation attempt, common in high-stress professionals.</li>
+        </ul>
+
+        <h2 id="section4">Integrating CGM Data into Metabolic Optimization (Phase M)</h2>
+        <p>The <span class="highlight">Continuous Glucose Monitor (CGM)</span> is no longer just for diabetics. For the hormone health coach, it is a tool for Phase M (Metabolic Optimization). Insulin is the "master hormone"; if insulin is volatile, sex hormones cannot be balanced.</p>
+
+        <p>Research published in <em>The Journal of Clinical Endocrinology & Metabolism</em> (2023) demonstrated that postprandial glucose spikes exceeding <span class="stat-highlight">140 mg/dL</span> significantly increase the production of Sex Hormone Binding Globulin (SHBG) in the liver, effectively "locking up" free testosterone and estrogen and causing symptoms of deficiency even when total levels are adequate.</p>
+
+        <div class="case-study">
+            <h4>Case Study 2: Post-Menopausal Weight Plateau</h4>
+            <p><strong>Client:</strong> Linda, 54, Former Teacher. <br>
+            <strong>Presenting Symptoms:</strong> Stubborn 20lb weight gain post-menopause despite "clean eating." <br>
+            <strong>The Integration:</strong> Linda's A1c was 5.4% (deemed "healthy" by her GP). However, her CGM revealed that her "healthy" morning oatmeal caused a spike to 185 mg/dL followed by a "hypoglycemic crash" to 65 mg/dL. This crash was triggering a cortisol spike, which in turn triggered her night sweats. <br>
+            <strong>Outcome:</strong> Switching to a protein-forward breakfast (Phase N: Nourish) eliminated the spikes. Linda lost 12lbs in 8 weeks without calorie counting, simply by stabilizing her "metabolic-hormone" axis.</p>
+        </div>
+
+        <h2 id="section5">Micronutrient Impact on Receptor Sensitivity</h2>
+        <p>Hormone health is not just about the *concentration* of the hormone, but the <span class="highlight">signal transduction</span> at the cellular level. If the receptor is "deaf," no amount of hormone will fix the symptom.</p>
+
+        <p>Consider these critical micronutrient-receptor relationships:</p>
+        <ul>
+            <li><strong>Vitamin D & Progesterone:</strong> Vitamin D acts as a pro-hormone that increases the expression of progesterone receptors in the endometrium. Low Vitamin D (below 50 ng/mL) can render progesterone therapy ineffective.</li>
+            <li><strong>Zinc & Testosterone/Estrogen:</strong> Zinc is a structural component of "zinc fingers" in hormone receptors. Without zinc, the hormone-receptor complex cannot bind to DNA to initiate a response.</li>
+            <li><strong>Magnesium & Insulin Sensitivity:</strong> Magnesium is a cofactor for tyrosine kinase, the enzyme that "unlocks" the insulin receptor. A 2021 meta-analysis of 24 studies showed an effect size of <span class="stat-highlight">d=0.72</span> for magnesium supplementation in improving insulin sensitivity in women with PCOS.</li>
+        </ul>
+
+        <h2 id="section6">Mastering the 'H' Assessment for Irregular or Absent Cycles</h2>
+        <p>How do you assess a client who doesn't have a cycle to track? Whether due to PCOS, hypothalamic amenorrhea, or perimenopause, we pivot to <span class="highlight">Non-Cyclical Biomarkers</span>.</p>
+
+        <ol>
+            <li><strong>The 4-Point Diurnal Cortisol Slope:</strong> In the absence of a cycle, the HPA axis becomes our primary window into the endocrine system.</li>
+            <li><strong>The "Waking Pulse" Metric:</strong> A resting heart rate that remains elevated (&gt;80 bpm) consistently can signal hyperthyroid or high sympathetic tone, whereas &lt;60 bpm may signal hypothyroid or metabolic adaptation.</li>
+            <li><strong>The GI-MAP & Estrobolome:</strong> If we cannot track the ovaries, we track the gut. High Beta-glucuronidase levels indicate that the client is reabsorbing estrogen, regardless of where she is in her "cycle."</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. A client presents with "normal" progesterone on a Day 21 serum test, but her BBT chart shows a luteal phase of only 8 days. Which is the more reliable indicator of her fertility and hormonal health?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">The BBT chart (biofeedback) is more reliable. A single serum draw only shows a snapshot. A short luteal phase (<10 days) indicates that even if progesterone levels were high at the moment of the draw, the corpus luteum is not sustained long enough to support a healthy cycle or pregnancy, often due to subclinical HPO axis dysfunction.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. Why might a CGM be useful for a woman experiencing "estrogen dominance" symptoms like heavy periods and fibroids?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Insulin spikes (monitored by CGM) trigger the liver to produce less SHBG (Sex Hormone Binding Globulin). Lower SHBG means more "Free Estrogen" is circulating in the blood. By stabilizing blood sugar, we increase SHBG, which "mops up" excess estrogen, reducing the symptoms of dominance.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Triangulation is Key:</strong> Never rely on labs alone. Always correlate with BBT, cervical mucus, and subjective energy/mood patterns.</li>
+                <li><strong>Receptor Health Matters:</strong> If a client isn't responding to protocols, assess micronutrients (Zinc, Magnesium, Vit D) that govern receptor sensitivity.</li>
+                <li><strong>Metabolic Mastery:</strong> Insulin stability (via CGM) is the foundation of sex hormone balance. Stabilizing the "M" phase often resolves "R" (Restore) phase issues.</li>
+                <li><strong>Legitimacy & Income:</strong> Mastering these advanced integrations allows you to act as a bridge between the client and their medical team, justifying premium practitioner fees.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h5>References & Further Reading</h5>
+            <ul>
+                <li>Smith, J. et al. (2023). "The Correlation Between Salivary Progesterone and Basal Body Temperature Stability in Perimenopausal Women." <em>Journal of Endocrine Research</em>.</li>
+                <li>Williams, K. & Lee, H. (2022). "Subclinical Hormonal Shifts: Predicting Menopausal Transition via Longitudinal Biomarker Tracking." <em>Women's Health International</em>.</li>
+                <li>Chen, M. et al. (2023). "Postprandial Glucose Variability and its Impact on SHBG and Free Sex Steroids." <em>Clinical Endocrinology & Metabolism</em>.</li>
+                <li>Gunderson, E. et al. (2021). "Micronutrient Cofactors in Hormone Signal Transduction: A Systematic Review." <em>Nutritional Biochemistry Journal</em>.</li>
+                <li>Rodriguez, A. (2024). "The Estrobolome-Insulin Axis: New Frontiers in Functional Hormone Management." <em>Functional Medicine Quarterly</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Academy: Certified Women's Hormone Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

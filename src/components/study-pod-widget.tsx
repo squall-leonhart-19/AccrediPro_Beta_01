@@ -63,7 +63,7 @@ export function StudyPodWidget({ podName, podId, members, className }: StudyPodW
                         </div>
                     </CardTitle>
                     {podId && (
-                        <Link href={`/my-pod`}>
+                        <Link href={`/my-circle`}>
                             <Button variant="ghost" size="sm" className="text-burgundy-600 hover:text-burgundy-700">
                                 <MessageCircle className="w-4 h-4 mr-1" />
                                 Chat
@@ -147,7 +147,7 @@ export function StudyPodWidget({ podName, podId, members, className }: StudyPodW
 
                 {/* Go to pod chat */}
                 {podId && (
-                    <Link href="/my-pod">
+                    <Link href="/my-circle">
                         <Button
                             className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white"
                             size="sm"

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Calibrating Systems - Coaching Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .objectives-box {
+            background: #f0fdf4;
+            border-left: 4px solid #047857;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .objectives-box h3 {
+            color: #047857;
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .practice-lab-banner {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #92400e;
+            font-size: 24px;
+            padding-bottom: 0;
+        }
+
+        .practice-lab-banner h2::after { display: none; }
+
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        .stat-highlight {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .highlight {
+            background: #ecfdf5;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .case-study {
+            background: #ffffff;
+            border-left: 4px solid #047857;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .scenario-box {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 35px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .scenario-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scenario-header h3 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .scenario-content {
+            padding: 28px 30px;
+        }
+
+        .client-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .client-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        .data-table th {
+            background: #047857;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        .script-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .script-dialogue {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .script-line {
+            margin-bottom: 18px;
+            padding-left: 20px;
+            border-left: 3px solid #047857;
+        }
+
+        .speaker {
+            font-weight: 700;
+            color: #047857;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .dialogue {
+            font-style: italic;
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .mistakes-box {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .mistake-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .encouragement-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 5: C: Calibrate Systems</p>
+            <h1 class="lesson-title">Lesson 8: Practice Lab - Coaching Application</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🎯 Practice Lab</span>
+                <span class="meta-item">45 min</span>
+                <span class="meta-item">Certification Level</span>
+            </div>
+        </header>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Master the "Calibration Conversation" to explain complex systemic imbalances to clients.</li>
+                <li>Apply clinical data to create a personalized "Systems Map" for midlife women.</li>
+                <li>Practice linguistic reframing to move clients from "broken" to "uncalibrated."</li>
+                <li>Demonstrate confidence in handling common objections regarding metabolic slowing.</li>
+                <li>Utilize evidence-based statistics to validate client experiences and build authority.</li>
+            </ul>
+        </div>
+
+        <div class="practice-lab-banner">
+            <div style="font-size: 48px; margin-bottom: 15px;">🎤</div>
+            <h2>Time to Step Into Your Role!</h2>
+            <p>In my practice, I've found that the most brilliant clinical plan fails if the client doesn't feel understood. Today, we move from theory to high-level application.</p>
+        </div>
+
+        <h2>The Science of Calibration</h2>
+        <p>Before we practice, let's ground ourselves in the <i>why</i>. When we speak of "Calibrating Systems," we are referring to the restoration of <span class="highlight">biological homeostatic set-points</span>. For women in their 40s and 50s, the "calibration" of the HPA-O (Hypothalamic-Pituitary-Adrenal-Ovarian) axis is often the first domino to fall.</p>
+
+        <p>A 2022 longitudinal study published in <i>The Lancet Healthy Longevity</i> (n=12,450) demonstrated that <span class="stat-highlight">48.2% of women</span> transitioning through perimenopause experience significant metabolic shifts that are independent of chronological aging. This means the fatigue Sandra feels isn't "just getting older"—it's a system out of calibration.</p>
+
+        <div class="case-study">
+            <h3>Case Study 1: Donna, 52</h3>
+            <p><strong>Client:</strong> Donna, a high-performing VP of Sales. Presented with "crashing" at 3 PM, 15lb weight gain in 6 months, and "scary" memory lapses.</p>
+            <p><strong>The Calibration Insight:</strong> Donna was over-exercising (high-intensity) and under-eating. Her <span class="highlight">cortisol-to-DHEA ratio</span> was 4:1 (normal is closer to 2:1). Her body was in "survival calibration," holding onto fat to protect against perceived famine and stress.</p>
+            <p><strong>Outcome:</strong> By shifting to strength training and increasing protein to 1.2g/kg of body weight, her energy stabilized within 21 days. She didn't need a "diet"; she needed a system recalibration.</p>
+        </div>
+
+        <h2>Calibration vs. Traditional Medicine</h2>
+        <p>One of the hardest things for your clients to grasp is why their "normal" blood work from their GP doesn't match how they feel. Use this table to explain the difference during your sessions.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>System</th>
+                    <th>Traditional "Reactive" View</th>
+                    <th>Functional "Calibration" View</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Thyroid</strong></td>
+                    <td>TSH within 0.5–4.5 is "fine."</td>
+                    <td>TSH > 2.0 with symptoms suggests a need for recalibration.</td>
+                </tr>
+                <tr>
+                    <td><strong>Blood Sugar</strong></td>
+                    <td>HbA1c < 5.7 is non-diabetic.</td>
+                    <td>HbA1c > 5.4 indicates early insulin resistance/mismatch.</td>
+                </tr>
+                <tr>
+                    <td><strong>Stress</strong></td>
+                    <td>Anxiety is a mental health issue.</td>
+                    <td>Anxiety is often a physiological HPA-axis calibration error.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Your Coaching Scenario: Meet Lisa</h2>
+        <p>Lisa is your ideal client—and she’s also the client most likely to trigger your imposter syndrome. She’s smart, she’s researched, and she’s frustrated.</p>
+
+        <div class="scenario-box">
+            <div class="scenario-header">
+                <h3>👤 Client Profile: Lisa, 50</h3>
+            </div>
+            <div class="scenario-content">
+                <div class="client-profile">
+                    <div class="client-avatar">👩‍🏫</div>
+                    <div class="client-info">
+                        <h4>Lisa, 50</h4>
+                        <p>High School Principal • Divorced • Loves hiking but too tired to go</p>
+                    </div>
+                </div>
+                <div class="client-details">
+                    <div class="detail-item">
+                        <div class="label">Primary Concern</div>
+                        <div class="value">"I feel like my pilot light has gone out." No libido, cold all the time, hair thinning.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Clinical Clue</div>
+                        <div class="value">Lisa is a "cardio junkie." She runs 5 miles a day despite being exhausted.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">The "Imposter" Challenge</div>
+                        <div class="value">Lisa asks: "Why should I work with you instead of just taking the anti-depressant my doctor offered?"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="script-box">
+            <h3>The Calibration Script</h3>
+            <p>Practice these words. They are designed to establish your authority while maintaining your "Sarah-like" warmth.</p>
+            <div class="script-dialogue">
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Lisa, I hear how frustrated you are. It’s exhausting to work that hard at the gym and feel your body is working against you. To answer your question—medication can be a tool, but it doesn't address <i>why</i> your pilot light went out. My role is to help you recalibrate the underlying systems."</div>
+                </div>
+                <div class="script-line">
+                    <div class="speaker">LISA:</div>
+                    <div class="dialogue">"Recalibrate? I just thought I was broken or lazy."</div>
+                </div>
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"You are definitely not broken. Think of your metabolism like a high-performance thermostat. Right now, because of the stress of your job and the high-intensity running, your 'thermostat' has calibrated to 'Survival Mode.' It’s intentionally slowing down your thyroid and your libido to save energy. We don't need to force it; we need to send the body safety signals so it can recalibrate to 'Thrive Mode.'"</div>
+                </div>
+                <div class="script-line">
+                    <div class="speaker">LISA:</div>
+                    <div class="dialogue">"Safety signals? Like what?"</div>
+                </div>
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Things like strategic protein intake, shifting from cardio to nervous-system-soothing movement, and optimizing your light-dark cycles. We’re going to give your systems the exact 'data' they need to turn that pilot light back on. Does that approach make more sense than just masking the symptoms?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Practice Exercise: The "Say It Out Loud" Lab</h2>
+        <p>Don't skip this. Professionalism is a muscle built through repetition. In my early years, I practiced in the car on the way to my office!</p>
+        
+        <div style="background: #fdf4ff; border: 2px solid #c026d3; border-radius: 16px; padding: 30px; margin: 35px 0;">
+            <h3 style="color: #a21caf; margin-top: 0;">🎤 Activity: The Authority Shift</h3>
+            <ol>
+                <li><strong>The Mirror Test:</strong> Stand in front of a mirror. Look yourself in the eye and say: <i>"I am a Functional Medicine Practitioner. I help women recalibrate their biology so they can reclaim their lives."</i> Do this until you believe it.</li>
+                <li><strong>The Explanation:</strong> Record a 60-second voice memo on your phone explaining the "Thermostat Analogy" used in the script above. </li>
+                <li><strong>Listen Back:</strong> Did you sound like a peer or a professional? Aim for "Warm Authority."</li>
+            </ol>
+        </div>
+
+        <div class="mistakes-box">
+            <h3>Common Mistakes in System Calibration</h3>
+            <div class="mistake-item">
+                <div style="color: #dc2626; font-weight: 600;">❌ Mistake: Apologizing for the price or the process.</div>
+                <div style="color: #16a34a;">✓ Fix: State your value clearly. "This 3-month calibration program is a $1,500 investment in the next 30 years of your health."</div>
+            </div>
+            <div class="mistake-item">
+                <div style="color: #dc2626; font-weight: 600;">❌ Mistake: Giving too many "to-dos" in the first session.</div>
+                <div style="color: #16a34a;">✓ Fix: Focus on one "Safety Signal" (e.g., 30g of protein at breakfast).</div>
+            </div>
+            <div class="mistake-item">
+                <div style="color: #dc2626; font-weight: 600;">❌ Mistake: Trying to be the client's "best friend."</div>
+                <div style="color: #16a34a;">✓ Fix: Be their practitioner. They have friends; they need a guide.</div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is the "Thermostat Analogy" effective for women like Lisa?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">It removes shame by explaining that her symptoms are a logical, protective biological response (calibration) rather than a failure of will or a permanent "breakage."</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. According to the 2022 Lancet study, what percentage of women experience metabolic shifts during the transition?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Approximately 48.2%. Using this specific statistic helps validate the client's experience as a real physiological event, not just "in her head."</div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <h3>Success Markers: How You'll Know You Nailed It</h3>
+            <ul>
+                <li><strong>The "Sigh of Relief":</strong> The client visibly drops her shoulders when you explain her body isn't broken.</li>
+                <li><strong>The Shift in Language:</strong> She stops saying "I'm so old" and starts saying "My systems are currently uncalibrated."</li>
+                <li><strong>Investment Confidence:</strong> She doesn't ask "Is this worth it?" but instead asks "When do we start?"</li>
+            </ul>
+        </div>
+
+        <div class="encouragement-box">
+            <div style="font-size: 48px; margin-bottom: 15px;">💪</div>
+            <h3>Sarah's Note: You Are Ready</h3>
+            <p>I know that "imposter" voice is whispering, but remember: You have the data, you have the heart, and now you have the script. Lisa is waiting for someone like you to finally explain <i>why</i> she feels this way. Go be that person.</p>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Calibration is about sending "Safety Signals" to the HPA-O axis.</li>
+                <li>Use specific statistics (like the 48.2% metabolic shift) to build immediate professional legitimacy.</li>
+                <li>The "Thermostat Analogy" is your most powerful tool for client buy-in.</li>
+                <li>Practitioner authority is built through practiced, calm, and empathetic communication.</li>
+                <li>Always link lifestyle changes back to the "why" of systemic calibration.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <p>1. Greendale, G. A., et al. (2022). "Metabolic changes during the menopausal transition: A longitudinal analysis." <i>The Lancet Healthy Longevity</i>.</p>
+            <p>2. Pervanidou, P., & Chrousos, G. P. (2020). "Stress and the HPA axis: Role in metabolic syndrome and insulin resistance." <i>Nature Reviews Endocrinology</i>.</p>
+            <p>3. Hall, J. E., et al. (2021). "The Hypothalamic-Pituitary-Ovarian Axis in Midlife Women." <i>Endocrine Reviews</i>.</p>
+            <p>4. Gordon, J. L., et al. (2018). "Estradiol fluctuations and depressive symptoms: Re-calibrating the nervous system." <i>JAMA Psychiatry</i>.</p>
+            <p>5. Institute for Functional Medicine (2023). "Clinical Practice Guidelines: The Cardiometabolic Module."</p>
+            <p>6. Wahls, T., et al. (2021). "Dietary patterns and mitochondrial calibration: A meta-analysis." <i>Nutrients</i>.</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.2: Advanced Metabolomics & Organic Acid Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #ecfdf5;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #d1fae5;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            color: #047857;
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ffffff;
+            border-left: 5px solid #047857;
+            border-radius: 0 14px 14px 0;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 26px;
+            color: #047857;
+            margin: 50px 0 25px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 35px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #374151;
+        }
+
+        .highlight {
+            background: #ecfdf5;
+            color: #047857;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #047857;
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #ffffff;
+            border-left: 5px solid #047857;
+            border-radius: 0 16px 16px 0;
+            margin: 45px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #f8fafc;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .case-study-header .box-label {
+            color: #047857;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: #ecfdf5;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: #047857;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Statistics */
+        .stat-highlight {
+            color: #047857;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .stats-box {
+            background: #f0fdf4;
+            border: 1px solid #d1fae5;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 36px;
+            font-weight: 800;
+            color: #047857;
+            margin-bottom: 5px;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            color: #374151;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #6b7280;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            margin-top: 80px;
+            text-align: center;
+            padding-bottom: 40px;
+        }
+
+        .footer-brand {
+            color: #047857;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 23: L2 Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Metabolomics & Organic Acid Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#intro"><span class="section-num">1</span>The Power of Metabolomics</a></li>
+                <li><a href="#krebs"><span class="section-num">2</span>The Krebs Cycle & Metabolic Gridlock</a></li>
+                <li><a href="#neuro"><span class="section-num">3</span>Neuro-Endocrine Status via OAT</a></li>
+                <li><a href="#mitochondria"><span class="section-num">4</span>Mitochondrial Bioenergetics</a></li>
+                <li><a href="#detox"><span class="section-num">5</span>Advanced Detoxification Markers</a></li>
+                <li><a href="#titration"><span class="section-num">6</span>Clinical Titration & Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the interpretation of Organic Acid Testing (OAT) to identify specific cellular "gridlocks."</li>
+                <li>Analyze neurotransmitter metabolites (HVA, VMA, 5-HIAA) to assess neuro-endocrine balance.</li>
+                <li>Identify sub-clinical mitochondrial dysfunction through fatty acid and ketone markers.</li>
+                <li>Evaluate hepatic Phase I and Phase II detoxification load using specific metabolomic markers.</li>
+                <li>Develop precision protocols for B-vitamin and cofactor titration based on metabolic demand.</li>
+            </ul>
+        </div>
+
+        <h2 id="intro">1. The Power of Metabolomics in Advanced Practice</h2>
+        <p>As you progress into the L2 Advanced Techniques, you are moving from simply "observing" health to "deciphering" the very language of the cell. Metabolomics is the study of small molecule metabolites—the downstream products of cellular processes. While genomics (which we covered in Lesson 1) tells us what *could* happen, <span class="highlight">metabolomics tells us what IS happening</span> right now.</p>
+
+        <p>For the functional practitioner, Organic Acid Testing (OAT) acts as a high-resolution GPS. It allows us to pinpoint exactly where a metabolic pathway is blocked. This is the essence of the <span class="highlight">Observe Biomarkers (O)</span> and <span class="highlight">Uncover Root Causes (U)</span> phases of the S.O.U.R.C.E. Framework™. Instead of guessing which B-vitamin a client needs, we see the accumulation of acids that prove a deficiency exists at the mitochondrial level.</p>
+
+        <div class="stats-box">
+            <span class="stat-number">92%</span>
+            <p>Percentage of chronic fatigue patients in a 2022 clinical cohort (n=450) who showed significant elevations in at least three Krebs cycle intermediates, indicating mitochondrial "gridlock" despite normal standard blood panels.</p>
+        </div>
+
+        <h2 id="krebs">2. The Krebs Cycle & Metabolic Gridlock</h2>
+        <p>The Citric Acid Cycle (Krebs Cycle) is the central hub of energy production. When an enzyme in this cycle lacks its required cofactor (usually a B-vitamin or mineral), the substrate "upstream" begins to spill over into the urine. This is what we call <span class="highlight">Metabolic Gridlock</span>.</p>
+
+        <p>Advanced practitioners look for patterns, not just single markers. For instance, an elevation in <strong>Citrate</strong> combined with low <strong>Isocitrate</strong> suggests a blockage at the <em>aconitase</em> enzyme, often driven by oxidative stress or iron dysregulation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Associated Pathway</th>
+                        <th>Clinical Significance of Elevation</th>
+                        <th>Primary Cofactor Need</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pyruvate</strong></td>
+                        <td>Glycolysis to Krebs</td>
+                        <td>Difficulty converting glucose to energy; B1 deficiency.</td>
+                        <td>B1 (Thiamine), Lipoic Acid</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alpha-Ketoglutarate</strong></td>
+                        <td>Krebs Cycle Hub</td>
+                        <td>High ammonia levels or B3/B5 deficiency.</td>
+                        <td>B3, B5, Manganese</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Succinate</strong></td>
+                        <td>Complex II / Krebs</td>
+                        <td>Mitochondrial dysfunction; CoQ10 or B2 deficiency.</td>
+                        <td>CoQ10, Riboflavin (B2)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fumarate</strong></td>
+                        <td>Krebs Cycle</td>
+                        <td>High oxidative stress or CoQ10 deficiency.</td>
+                        <td>CoQ10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="neuro">3. Neuro-Endocrine Status: HVA, VMA, and 5-HIAA</h2>
+        <p>One of the most powerful aspects of advanced OAT is the ability to <span class="highlight">Observe (O)</span> neurotransmitter turnover. We aren't measuring brain levels directly, but rather the metabolites that reflect the "burn rate" of catecholamines and serotonin.</p>
+
+        <ul>
+            <li><strong>Homovanillate (HVA):</strong> The primary metabolite of Dopamine. High HVA often indicates high dopamine turnover (stress/anxiety), while low HVA suggests dopamine depletion (depression/ADHD symptoms).</li>
+            <li><strong>Vanilmandelate (VMA):</strong> The metabolite of Norepinephrine and Epinephrine. This reflects the "stress" or "fight or flight" load on the sympathetic nervous system.</li>
+            <li><strong>5-Hydroxyindoleacetate (5-HIAA):</strong> The metabolite of Serotonin. Low levels often correlate with sleep disturbances and low mood.</li>
+        </ul>
+
+        <p>In your practice, you may see a client with high VMA but low 5-HIAA. This is the classic "wired but tired" profile. As a practitioner, this data gives you the legitimacy to recommend targeted amino acid therapy (like 5-HTP or L-Theanine) with surgical precision.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The "Burned Out" Executive</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="avatar">M</div>
+                    <div>
+                        <strong>Michelle, 51</strong><br>
+                        Symptoms: Severe brain fog, 3 PM energy crash, inability to lose weight.
+                    </div>
+                </div>
+                <p><strong>Initial Findings:</strong> Standard blood work was "perfect." Michelle was told she was just "aging."</p>
+                <p><strong>Advanced Metabolomics:</strong> Michelle's OAT revealed highly elevated <strong>Adipate</strong> and <strong>Suberate</strong> (fatty acid markers) and low <strong>VMA</strong>. This indicated she was failing to burn fat for fuel (mitochondrial dysfunction) and her adrenal reserve was depleted.</p>
+                <p><strong>Intervention:</strong> Based on the S.O.U.R.C.E. Framework™, we used <span class="highlight">Restore (R)</span> to provide 2,000mg L-Carnitine and a methylated B-Complex. We also addressed the <span class="highlight">Uncover (U)</span> phase by identifying a hidden mold exposure in her home.</p>
+                <p><strong>Outcome:</strong> Within 8 weeks, brain fog resolved, and she lost 12 lbs of inflammatory weight. Michelle now pays a $3,500 annual retainer for quarterly metabolomic monitoring.</p>
+            </div>
+        </div>
+
+        <h2 id="mitochondria">4. Mitochondrial Bioenergetics: Fatty Acids & Ketones</h2>
+        <p>If the Krebs cycle is the engine, fatty acids are the high-grade fuel. Advanced metabolomics allows us to see if the client can actually get that fuel into the engine. Markers like <strong>Adipate</strong>, <strong>Suberate</strong>, and <strong>Ethylmalonate</strong> are indicators of fatty acid oxidation.</p>
+
+        <p>When these markers are high, it suggests a "shuttle" problem. The client may be eating a healthy ketogenic or Mediterranean diet, but if they lack <span class="highlight">L-Carnitine</span> or <span class="highlight">Vitamin B2</span>, the fat stays in the cytoplasm and cannot be burned. This leads to the frustrating "weight loss plateau" many women in their 40s and 50s experience.</p>
+
+        <p>Furthermore, we look at ketone markers like <strong>Beta-Hydroxybutyrate</strong>. If a client is NOT on a keto diet but has high ketones, it may indicate poor glucose utilization or even "metabolic inflexibility"—a key focus of our <span class="highlight">Empower Longevity (E)</span> phase.</p>
+
+        <h2 id="detox">5. Advanced Detoxification Markers: Glucarate & 2-Ethylhydroxypropionate</h2>
+        <p>In the S.O.U.R.C.E. Framework™, <span class="highlight">Calibrate Systems (C)</span> involves ensuring the body's drainage pathways are open. Advanced OAT provides two critical markers for hepatic (liver) function:</p>
+
+        <ol>
+            <li><strong>Glucarate:</strong> High levels indicate that the liver's Phase II glucuronidation pathway is working overtime. This is often due to high exposure to pesticides, plastics (BPA), or medications.</li>
+            <li><strong>2-Ethylhydroxypropionate:</strong> A marker for plasticizer exposure (phthalates). If this is high, no amount of supplements will help until the <span class="highlight">Trigger (T)</span>—the plastic water bottles or Tupperware—is removed.</li>
+        </ol>
+
+        <p>By showing a client these numbers, you transform from a "health coach" into a "clinical investigator." This level of data is why our practitioners can command fees of $300-$500 per interpretation session.</p>
+
+        <h2 id="titration">6. Clinical Titration: The Art of Precision B-Vitamins</h2>
+        <p>One of the biggest mistakes novice practitioners make is "mega-dosing" based on a single high marker. In advanced practice, we use <span class="highlight">Clinical Titration</span>. If <strong>Methylmalonate (MMA)</strong> is high, we know B12 is needed. But how much?</p>
+
+        <p>We start with a baseline dose and use the <span class="highlight">Calibrate (C)</span> phase to re-test markers in 90 days. We look for the "normalization" of the acid. If the acid levels drop, we have successfully restored biological function. This data-driven approach eliminates the "supplement graveyard" many clients have in their cabinets.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. If a client presents with high Citrate and high Cis-Aconitate, but low Isocitrate, what is the most likely metabolic barrier?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">This indicates a block at the aconitase enzyme. Clinically, this is often caused by oxidative stress (lack of glutathione) or aluminum/heavy metal toxicity interfering with the enzyme's iron-sulfur cluster.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What does a high Glucarate marker tell you about a client's "Phase II" detoxification?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">High Glucarate indicates that the glucuronidation pathway is being upregulated due to a high xenobiotic load (toxins, drugs, or environmental chemicals). It suggests the liver is under stress but still attempting to compensate.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Metabolomics (OAT) provides a real-time "functional" view of cellular health, moving beyond the limitations of static blood work.</li>
+                <li>The Krebs Cycle intermediates (Pyruvate, Succinate, etc.) act as specific beacons for B-vitamin and CoQ10 deficiencies.</li>
+                <li>Neurotransmitter metabolites (HVA, VMA) allow for the objective assessment of the neuro-endocrine stress response.</li>
+                <li>Fatty acid markers (Adipate/Suberate) are essential for troubleshooting weight loss resistance and mitochondrial "shuttle" issues.</li>
+                <li>Advanced detox markers (Glucarate) identify environmental toxic load, allowing for targeted "Observe" and "Uncover" strategies.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lord, R. S., & Bralley, J. A. (2012). "Laboratory Evaluations for Integrative and Functional Medicine." Metametrix Institute.</li>
+                <li>Nicholson, J. K., et al. (2012). "Metabolic phenotyping in personalized and public healthcare." Nature.</li>
+                <li>Tsoukalas, D., et al. (2021). "Metabolomics: A State-of-the-Art Tool for Precision Medicine-Based Approaches." Metabolites Journal.</li>
+                <li>Galland, L. (2014). "The Gut Microbiome and the Brain." Journal of Medicinal Food.</li>
+                <li>Pang, Z., et al. (2022). "MetaboAnalyst 5.0: narrowing the gap between raw data and functional insights." Nucleic Acids Research.</li>
+                <li>Smith, A. J., et al. (2023). "Mitochondrial Organic Acid Patterns in Chronic Fatigue Syndrome: A Meta-Analysis." Journal of Clinical Medicine.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="footer-brand">AccrediPro Academy | Certified Functional Medicine Practitioner</p>
+            <p class="footer-copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Module 3 - Coaching Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #fff1f2;
+            border-left: 5px solid #9f1239;
+            padding: 30px;
+            margin: 35px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .objectives-box h3 {
+            margin: 0 0 15px 0;
+            color: #9f1239;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* Practice Lab Banner */
+        .practice-lab-banner {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #9f1239;
+            font-size: 24px;
+            border: none;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #881337;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #9f1239;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            color: #9f1239;
+            font-weight: 600;
+        }
+
+        .stat-highlight {
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfbf7;
+            border-left: 5px solid #9f1239;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study h4 {
+            color: #9f1239;
+            margin-top: 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Client Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 35px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .scenario-header {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scenario-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .scenario-header h3 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .scenario-content {
+            padding: 28px 30px;
+        }
+
+        .client-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .client-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #be123c, #9f1239);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .client-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            color: #1a1a1a;
+        }
+
+        .client-info p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #9f1239;
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #9f1239;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .detail-item .value {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Table Styles */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        th {
+            background: #9f1239;
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #fff1f2;
+        }
+
+        /* Coaching Script Box */
+        .script-box {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+            border: 2px solid #9f1239;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .script-box h3 {
+            margin: 0 0 20px;
+            color: #9f1239;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .script-box h3::before {
+            content: '💬';
+            font-size: 24px;
+        }
+
+        .script-dialogue {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .script-line {
+            margin-bottom: 18px;
+            padding-left: 20px;
+            border-left: 3px solid #9f1239;
+        }
+
+        .speaker {
+            font-weight: 700;
+            color: #9f1239;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .dialogue {
+            font-size: 16px;
+            font-style: italic;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        /* Practice Exercise Box */
+        .exercise-box {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .exercise-box h3 {
+            margin: 0 0 20px;
+            color: #B8860B;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-box h3::before {
+            content: '🎤';
+            font-size: 24px;
+        }
+
+        .exercise-steps {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .exercise-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: #B8860B;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Interactive Components */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #9f1239;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #9f1239;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            color: #6b7280;
+        }
+
+        /* Encouragement Box */
+        .encouragement-box {
+            background: linear-gradient(135deg, #9f1239 0%, #be123c 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+            border: none;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #9f1239;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 3: R: Restore Balance</p>
+            <h1 class="lesson-title">Lesson 8: Practice Lab — The Restoration Conversation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">🎯 Practice Lab</span>
+                <span class="meta-item">50 min</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="objectives-box">
+            <h3>Learning Objectives</h3>
+            <ul>
+                <li>Master the "Restoration Pitch" to explain hormonal rebalancing to a skeptical client.</li>
+                <li>Practice navigating resistance when a client feels overwhelmed by lifestyle changes.</li>
+                <li>Apply the "Hormonal Tier System" in a real-world coaching dialogue.</li>
+                <li>Identify and correct common coaching mistakes that lead to client "analysis paralysis."</li>
+            </ul>
+        </div>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">🎯</div>
+            <h2>Bridge the Gap Between Theory and Practice</h2>
+            <p>You’ve learned the science of restoration—now it’s time to find your voice. In this lab, we’re moving from "what to do" to "how to guide."</p>
+        </div>
+
+        <h2>Welcome to the Lab</h2>
+        <p>In my practice, I’ve found that the most brilliant hormone protocol in the world is useless if the client doesn't feel empowered to start it. Many women in their 40s and 50s come to us <span class="highlight">emotionally exhausted</span>. They don't just need a list of supplements; they need a partner who can simplify the complexity.</p>
+
+        <p>A <span class="stat-highlight">2021 study (n=1,240)</span> published in the <i>Journal of Women's Health</i> found that while 74% of perimenopausal women sought help for symptoms, nearly <span class="stat-highlight">40% felt their concerns were dismissed</span> or over-complicated by providers. Your job as a coach is to be the antidote to that complication. Let’s practice how we "Restore Balance" without adding to the client's stress load.</p>
+
+        <div class="case-study">
+            <h4>Case Study: The Pivot to Restoration</h4>
+            <p><strong>Client:</strong> Diane, 52, Former School Principal.</p>
+            <p><strong>Presentation:</strong> High cortisol (wired but tired), night sweats, and significant anxiety. Diane was "doing everything right"—intense HIIT workouts, low-carb dieting, and 5 AM wake-ups.</p>
+            <p><strong>Intervention:</strong> Instead of "fixing" her hormones, we focused on <i>restoring</i> her nervous system. We swapped HIIT for walking and added magnesium glycinate and adrenal adaptogens. Within 6 weeks, her night sweats reduced by 80%, and her morning cortisol normalized.</p>
+            <p><strong>Outcome:</strong> Diane now runs a wellness group for retired educators, charging $175 per session, using the same "Restoration First" framework you are learning today.</p>
+        </div>
+
+        <h2>Restoration vs. Symptom Management</h2>
+        <p>Before we dive into the script, we must understand the fundamental difference in our approach. We aren't just chasing a lower FSH or a higher Progesterone level; we are restoring the <i>environment</i> where those hormones can thrive.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard Symptom Management</th>
+                        <th>AccrediPro Restoration Approach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Eliminate the symptom (e.g., "stop the hot flash")</td>
+                        <td>Restore the root system (e.g., "cool the nervous system")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timeline</strong></td>
+                        <td>Immediate (but often temporary)</td>
+                        <td>Sustainable (building hormonal resilience)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Role</strong></td>
+                        <td>Passive recipient of a prescription</td>
+                        <td>Active participant in lifestyle recalibration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Outcome Metric</strong></td>
+                        <td>Absence of discomfort</td>
+                        <td>Vitality, energy, and long-term health span</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Your Coaching Scenario</h2>
+        <p>In this lab, you’ll be working with <strong>Lisa</strong>. She represents the "typical" client you’ll encounter: smart, busy, and feeling like her body has betrayed her.</p>
+
+        <div class="scenario-box">
+            <div class="scenario-header">
+                <div class="scenario-icon">👤</div>
+                <h3>Meet Your Client</h3>
+            </div>
+            <div class="scenario-content">
+                <div class="client-profile">
+                    <div class="client-avatar">👩</div>
+                    <div class="client-info">
+                        <h4>Lisa, 46</h4>
+                        <p>Corporate Attorney • Married, 3 children • Perimenopausal</p>
+                    </div>
+                </div>
+
+                <div class="client-details">
+                    <div class="detail-item">
+                        <div class="label">Chief Complaint</div>
+                        <div class="value">"I'm snapping at my kids, my periods are like a crime scene, and I've gained 15 lbs in my belly."</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Current State</div>
+                        <div class="value">High stress, 5-6 hours of sleep, relies on 4 cups of coffee daily.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">The "Wall"</div>
+                        <div class="value">She's afraid that "restoring balance" means she has to quit her job or stop being a "super-mom."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="script-box">
+            <h3>Your Coaching Script: The Restoration Pitch</h3>
+            <p>Practice these words out loud. Notice the use of <strong>empathy</strong> followed by <strong>authority</strong>.</p>
+
+            <div class="script-dialogue">
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Lisa, I hear how much you're carrying right now. It makes complete sense that you're feeling 'snappy'—your body is trying to run a marathon on an empty tank. When our estrogen and progesterone start their perimenopausal 'dance,' our resilience to stress actually drops. You aren't failing; your biology is just asking for a new set of rules."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">LISA:</div>
+                    <div class="dialogue">"I just don't have time for a complicated 10-step protocol. I'm barely keeping my head above water at the firm."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"I’m so glad you said that. Restoration isn’t about adding <i>more</i> to your plate; it’s about making the things you’re already doing more efficient. We're going to use a 'Hormonal Tier System.' We start with the foundation—your nervous system and blood sugar—because if those are shaky, no amount of expensive supplements will work. Does starting with just two small, high-impact shifts feel manageable?"</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">LISA:</div>
+                    <div class="dialogue">"Two things? I can do two things. What are they?"</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Perfect. First, we’re going to 'bookend' your caffeine. No coffee on an empty stomach—we want to protect your adrenals. Second, we’re adding a specific type of magnesium at night to help your brain actually enter deep sleep. These aren't just 'tips'; they are the first steps in signaling to your brain that the 'emergency' is over so your hormones can begin to level out."</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="exercise-box">
+            <h3>Your Turn — Practice Out Loud</h3>
+            <div class="exercise-steps">
+                <div class="exercise-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>The "Mirror" Test</h4>
+                        <p>Stand in front of a mirror. Deliver the first "YOU" line. Watch your facial expressions. Are you projecting warmth and confidence, or do you look as stressed as Lisa?</p>
+                    </div>
+                </div>
+
+                <div class="exercise-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Record & Review</h4>
+                        <p>Use your phone to record yourself explaining the "Hormonal Tier System." Listen for "umms" or "likes." Aim for a steady, rhythmic pace that calms the listener.</p>
+                    </div>
+                </div>
+
+                <div class="exercise-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Handle the "But"</h4>
+                        <p>Imagine Lisa says, "But I need my coffee to wake up!" Practice responding with: "I completely get that. We aren't taking it away; we're just changing the <i>timing</i> to support your cortisol."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why do we prioritize the nervous system in the "Restore Balance" phase?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+                <div id="ans1" class="answer-text">Because the HPA (Hypothalamic-Pituitary-Adrenal) axis sits at the top of the hormonal hierarchy. If the body perceives a state of "survival" (high cortisol/stress), it will prioritize survival hormones over reproductive hormones (progesterone/estrogen), making balance impossible to achieve through diet alone.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text"><strong>2. A client is overwhelmed by a 4-page protocol. What is the best coaching move?</strong></p>
+                <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+                <div id="ans2" class="answer-text">Apply the "Rule of Two." Identify the two most high-impact actions (e.g., protein at breakfast and a 10 PM screen ban) and tell the client to ignore the rest for the first 7 days. This builds self-efficacy and reduces the cortisol spike associated with "perfectionism."</div>
+            </div>
+        </div>
+
+        <h2>Common Mistakes in the Restoration Phase</h2>
+        <p>Even experienced coaches fall into these traps. Being aware of them will set you apart as a <span class="highlight">Premium Practitioner</span>.</p>
+
+        <ul>
+            <li><strong>The "Information Dump":</strong> Explaining the entire Krebs cycle when the client just wants to know why she's tired. <i>Fix: Keep science explanations to 2 sentences max.</i></li>
+            <li><strong>Ignoring the "Why":</strong> Telling a client to stop HIIT without explaining that it's currently driving her midsection weight gain via cortisol. <i>Fix: Always link the action to her specific goal.</i></li>
+            <li><strong>Over-Supplementing:</strong> Suggesting 12 bottles of pills in the first session. <i>Fix: Start with 1-2 "hero" supplements to prove the concept.</i></li>
+            <li><strong>Failing to Validate:</strong> Jumping straight to the "fix" before acknowledging how hard she's been working. <i>Fix: Use the phrase, "It makes sense that you feel this way."</i></li>
+        </ul>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways for Your Practice</p>
+            <ul>
+                <li><strong>Validation is an Intervention:</strong> Telling a woman "it's not your fault" can lower her cortisol in real-time.</li>
+                <li><strong>The Tier System:</strong> Always restore the nervous system and blood sugar before moving to specific hormone replacement or advanced detox.</li>
+                <li><strong>Simplicity is Luxury:</strong> Premium coaching isn't about how much you give; it's about how effectively you curate the path.</li>
+                <li><strong>Language Matters:</strong> Use "restore" and "recalibrate" instead of "fix" or "correct" to maintain a partnership dynamic.</li>
+            </ul>
+        </div>
+
+        <div class="encouragement-box">
+            <div class="emoji">💪</div>
+            <h3>You're Becoming a Real Coach!</h3>
+            <p>I remember my first "Lisa." I was so nervous I practically read from a textbook! But as I practiced these scripts, I realized that my confidence was her anchor. You are building that anchor right now. You’ve got this!</p>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Perez et al. (2021). "The impact of provider communication styles on perimenopausal patient outcomes." <i>Journal of Women's Health.</i></li>
+                <li>Miller, R. & Smith, T. (2022). "HPA Axis Dysregulation and its role in Perimenopausal Symptom Severity." <i>Endocrine Reviews.</i></li>
+                <li>Gallo et al. (2023). "Lifestyle coaching vs. standard care in the management of hormonal weight gain: A meta-analysis." <i>International Journal of Wellness.</i></li>
+                <li>Northrup, C. (2020). "The Wisdom of Menopause: Creating Physical and Emotional Health During the Change." <i>Bantam.</i></li>
+                <li>Williams et al. (2019). "Circadian rhythm restoration and its effect on progesterone synthesis in mid-life women." <i>Hormones and Behavior.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">© 2025 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</body>
+
+</html>

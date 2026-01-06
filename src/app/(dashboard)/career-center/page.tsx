@@ -32,6 +32,7 @@ import {
     Droplets,
 } from "lucide-react";
 import { FM_SPECIALIZATIONS } from "@/lib/specializations-data";
+import { detectUserCategory, CategoryConfig } from "@/lib/category-configs";
 
 // The 4-Step Career Ladder (removed Step 0 - Free Mini Diploma)
 const careerSteps = [
@@ -283,24 +284,242 @@ const successStories = [
     },
 ];
 
-// Get user's enrollment status for personalization
-async function getUserProgress(userId: string) {
-    const enrollments = await prisma.enrollment.findMany({
-        where: { userId },
-        include: {
-            course: {
-                select: { slug: true, title: true },
-            },
-        },
-    });
+// Background to success story mapping
+const BACKGROUND_TO_STORIES: Record<string, number[]> = {
+    healthcare: [14, 4, 7], // Abigail (nurse), Teresa, Luna
+    teacher: [0, 4, 12], // Tiffany (corporate->coach), Teresa, Katherine
+    corporate: [0, 3, 6], // Tiffany, Teresa, Ashley
+    stay_at_home: [12, 4, 9], // Katherine (stay-at-home mom), Teresa, Caroline
+    entrepreneur: [5, 13, 2], // Janet (business owner), Grace, Martha
+    fitness: [1, 10, 6], // Addison, Samantha, Ashley
+    wellness: [2, 8, 11], // Martha, Jade, Sandra
+    student: [4, 0, 9], // Emilia, Tiffany, Caroline
+    transition: [0, 3, 4], // Tiffany, Teresa, Emilia
+    health_professional: [14, 7, 2], // Abigail, Luna, Martha
+    other: [0, 1, 2], // Default: first 3
+};
 
-    // Simple logic to determine user's current step
+// Niche to specialization mapping (from onboarding interests)
+const NICHE_TO_SPEC: Record<string, string[]> = {
+    "Gut Health & Digestion": ["gut-health"],
+    "Hormone Balance": ["hormone-health", "womens-health"],
+    "Women's Health": ["womens-health", "hormone-health"],
+    "Weight Management": ["metabolic-health", "functional-nutrition"],
+    "Functional Nutrition": ["functional-nutrition", "gut-health"],
+    "Mental Wellness & Anxiety": ["brain-health", "stress-hpa"],
+    "Stress & Burnout": ["stress-hpa", "sleep-circadian"],
+    "Sleep Optimization": ["sleep-circadian"],
+    "Autoimmune Conditions": ["autoimmune", "gut-health"],
+    "Sports & Fitness Nutrition": ["metabolic-health", "functional-nutrition"],
+    "Anti-Aging & Longevity": ["detox-biotransformation", "metabolic-health"],
+    "Holistic Wellness": ["functional-nutrition", "stress-hpa"],
+};
+
+// Course slug to specialization mapping (from ACTUAL enrollment)
+// Uses actual slugs from database
+const COURSE_TO_SPECS: Record<string, string[]> = {
+    // FM Main Certification - all specializations
+    "functional-medicine-complete-certification": ["gut-health", "functional-nutrition", "hormone-health", "metabolic-health", "stress-hpa", "brain-health", "womens-health", "autoimmune", "sleep-circadian", "detox-biotransformation"],
+    "fm-preview": ["gut-health", "functional-nutrition", "hormone-health", "metabolic-health", "stress-hpa", "brain-health", "womens-health", "autoimmune", "sleep-circadian", "detox-biotransformation"],
+
+    // FM Pro Tracks
+    "fm-pro-practice-path": ["gut-health", "functional-nutrition", "hormone-health", "metabolic-health", "stress-hpa"],
+    "fm-pro-advanced-clinical": ["autoimmune", "brain-health", "detox-biotransformation"],
+    "fm-pro-master-depth": ["gut-health", "hormone-health", "autoimmune", "brain-health", "detox-biotransformation"],
+    "fm-client-guarantee": ["gut-health", "functional-nutrition"],
+
+    // Specialized Certifications
+    "womens-hormone-health-coach": ["hormone-health", "womens-health"],
+    "womens-hormone-health-coach-certification": ["hormone-health", "womens-health"],
+    "gut-health-digestive-wellness-coach": ["gut-health", "functional-nutrition"],
+    "gut-health-practitioner-certification": ["gut-health"],
+    "gut-health-microbiome-coach-certification": ["gut-health", "functional-nutrition"],
+    "holistic-nutrition-coach-certification": ["functional-nutrition", "metabolic-health"],
+    "womens-health-mini-diploma": ["womens-health", "hormone-health"],
+
+    // NARC Recovery (not FM but still show something)
+    "narc-recovery-coach-certification": ["stress-hpa", "brain-health"],
+    "narc-pro-practice-path": ["stress-hpa", "brain-health"],
+    "narc-pro-advanced-clinical": ["brain-health"],
+    "narc-pro-master-depth": ["brain-health", "stress-hpa"],
+};
+
+// Income goal to target step mapping
+const INCOME_TO_STEP: Record<string, number> = {
+    "3k_5k": 1,
+    "5k_10k": 2,
+    "10k_30k": 3,
+    "30k_50k": 4,
+    "50k_plus": 4,
+};
+
+// Get user's full personalization data
+async function getUserPersonalization(userId: string) {
+    const [user, enrollments, userTags] = await Promise.all([
+        prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                firstName: true,
+                hasCompletedOnboarding: true,
+                learningGoal: true,
+                focusAreas: true,
+            },
+        }),
+        prisma.enrollment.findMany({
+            where: { userId },
+            include: {
+                course: {
+                    select: { slug: true, title: true },
+                },
+            },
+        }),
+        prisma.userTag.findMany({
+            where: { userId },
+            select: { tag: true, value: true },
+        }),
+    ]);
+
+    // Extract onboarding data from tags
+    const incomeGoalTag = userTags.find(t => t.tag.startsWith('income_goal:'));
+    const timelineTag = userTags.find(t => t.tag.startsWith('timeline:'));
+    const situationTag = userTags.find(t => t.tag.startsWith('situation:'));
+    const currentFieldTag = userTags.find(t => t.tag.startsWith('current_field:'));
+    const obstaclesTags = userTags.filter(t => t.tag.startsWith('obstacle:'));
+    const interestsTags = userTags.filter(t => t.tag.startsWith('interest:'));
+
+    // Parse values
+    const incomeGoal = incomeGoalTag?.tag.replace('income_goal:', '') || null;
+    const timeline = timelineTag?.tag.replace('timeline:', '') || null;
+    const situation = situationTag?.tag.replace('situation:', '') || null;
+    const currentField = currentFieldTag?.tag.replace('current_field:', '') || null;
+    const obstacles = obstaclesTags.map(t => t.tag.replace('obstacle:', ''));
+    const interests = interestsTags.map(t => t.tag.replace('interest:', ''));
+
+    // Determine user's current step
     const hasAnyEnrollment = enrollments.length > 0;
     const hasCompletedCourse = enrollments.some((e) => e.status === "COMPLETED");
 
-    if (!hasAnyEnrollment) return { currentStep: 0, nextAction: "start" };
-    if (!hasCompletedCourse) return { currentStep: 1, nextAction: "continue" };
-    return { currentStep: 2, nextAction: "advance" };
+    let currentStep = 0;
+    let nextAction = "start";
+    if (!hasAnyEnrollment) {
+        currentStep = 0;
+        nextAction = "start";
+    } else if (!hasCompletedCourse) {
+        currentStep = 1;
+        nextAction = "continue";
+    } else {
+        currentStep = 2;
+        nextAction = "advance";
+    }
+
+    // Determine target step from income goal
+    const targetStep = incomeGoal ? INCOME_TO_STEP[incomeGoal] || 2 : null;
+
+    // Get recommended story indices based on background
+    const background = situation || currentField || 'other';
+    const recommendedStoryIndices = BACKGROUND_TO_STORIES[background] || BACKGROUND_TO_STORIES['other'];
+
+    // PRIORITY 1: Get specialization IDs from ACTUAL course enrollment
+    // This takes precedence over onboarding interests
+    const enrolledSpecIds: string[] = [];
+    const enrolledCourseNames: string[] = [];
+    for (const enrollment of enrollments) {
+        const courseSlug = enrollment.course.slug;
+        const specs = COURSE_TO_SPECS[courseSlug];
+        if (specs) {
+            enrolledSpecIds.push(...specs);
+            enrolledCourseNames.push(enrollment.course.title);
+        }
+    }
+
+    // PRIORITY 2: Get recommended specialization IDs from onboarding interests (fallback)
+    // Only used if user hasn't enrolled in anything yet
+    const focusAreas = user?.focusAreas || [];
+    const onboardingSpecIds: string[] = [];
+    for (const niche of focusAreas) {
+        const specs = NICHE_TO_SPEC[niche];
+        if (specs) {
+            onboardingSpecIds.push(...specs);
+        }
+    }
+
+    // Final logic: If enrolled, use enrolled specs. Otherwise use onboarding interests.
+    const hasEnrolledSpecs = enrolledSpecIds.length > 0;
+    const recommendedSpecIds = hasEnrolledSpecs ? enrolledSpecIds : onboardingSpecIds;
+
+    // Check if user is enrolled in comprehensive FM certification (covers all 10 specs)
+    const comprehensiveCourses = ["functional-medicine-complete-certification", "fm-preview"];
+    const isComprehensiveEnrollment = enrollments.some(e => comprehensiveCourses.includes(e.course.slug));
+
+    // Detect user's category based on enrollments and tags
+    const { config: categoryConfig, detection: categoryDetection } = detectUserCategory(
+        enrollments.map(e => ({ course: { slug: e.course.slug } })),
+        userTags.map(t => ({ tag: t.tag, value: t.value }))
+    );
+
+    return {
+        firstName: user?.firstName || null,
+        hasCompletedOnboarding: user?.hasCompletedOnboarding || false,
+        currentStep,
+        nextAction,
+        targetStep,
+        incomeGoal,
+        timeline,
+        situation,
+        currentField,
+        obstacles,
+        focusAreas,
+        recommendedStoryIndices: [...new Set(recommendedStoryIndices)],
+        recommendedSpecIds: [...new Set(recommendedSpecIds)],
+        // New: Track whether recommendations come from enrollment or onboarding
+        isFromEnrollment: hasEnrolledSpecs,
+        enrolledCourseNames,
+        enrolledSpecIds: [...new Set(enrolledSpecIds)],
+        // Flag for comprehensive FM enrollment (all 10 specs included)
+        isComprehensiveEnrollment,
+        // Category config for dynamic content
+        categoryConfig,
+        categoryDetection,
+    };
+}
+
+// Helper to format income goal for display
+function formatIncomeGoal(goal: string | null): string {
+    const labels: Record<string, string> = {
+        "3k_5k": "$3K-$5K/month",
+        "5k_10k": "$5K-$10K/month",
+        "10k_30k": "$10K-$30K/month",
+        "30k_50k": "$30K-$50K/month",
+        "50k_plus": "$50K+/month",
+        // Old format compatibility
+        "10k_plus": "$10K+/month",
+        "2k_5k": "$2K-$5K/month",
+    };
+    return goal ? labels[goal] || goal : "";
+}
+
+// Helper to format timeline for display
+function formatTimeline(timeline: string | null): string {
+    const labels: Record<string, string> = {
+        "asap": "as soon as possible",
+        "1_3_months": "within 1-3 months",
+        "3_6_months": "within 3-6 months",
+        "exploring": "exploring options",
+    };
+    return timeline ? labels[timeline] || timeline : "";
+}
+
+// Helper to format situation for display
+function formatSituation(situation: string | null): string {
+    const labels: Record<string, string> = {
+        "employed_unhappy": "career changer",
+        "employed_stable": "side income builder",
+        "stay_at_home": "stay-at-home parent",
+        "already_coach": "existing practitioner",
+        "health_professional": "healthcare professional",
+        "other": "wellness enthusiast",
+    };
+    return situation ? labels[situation] || "wellness enthusiast" : "";
 }
 
 export default async function CareerCenterPage() {
@@ -309,11 +528,11 @@ export default async function CareerCenterPage() {
         redirect("/login");
     }
 
-    const userProgress = await getUserProgress(session.user.id);
+    const personalization = await getUserPersonalization(session.user.id);
 
     // Determine personalized CTA
     const getPersonalizedCTA = () => {
-        switch (userProgress.nextAction) {
+        switch (personalization.nextAction) {
             case "start":
                 return {
                     text: "Start Your Certification",
@@ -343,58 +562,166 @@ export default async function CareerCenterPage() {
 
     const personalizedCTA = getPersonalizedCTA();
 
+    // Get personalized success stories from category config
+    const getPersonalizedStories = () => {
+        const categoryStories = personalization.categoryConfig.successStories;
+        // Mark first 3 as recommended for this category
+        return categoryStories.map((story, i) => ({
+            ...story,
+            isRecommended: i < 3
+        }));
+    };
+
+    const personalizedStories = getPersonalizedStories();
+
     return (
         <div className="space-y-8 animate-fade-in">
-            {/* Compact Header - Matching Catalog Style */}
-            <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden">
-                <CardContent className="px-5 py-4">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        {/* Left: Icon + Title + Subtitle */}
-                        <div className="flex items-start gap-4">
-                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
-                                <Briefcase className="w-5 h-5 text-gold-400" />
-                            </div>
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
-                                        AccrediPro Career Center
-                                    </Badge>
-                                </div>
-                                <h1 className="text-xl font-bold text-white">
-                                    Your <span className="text-gold-400">Career Roadmap</span>
+            {/* PERSONALIZED HERO - Only shows if user has completed onboarding */}
+            {personalization.hasCompletedOnboarding && personalization.incomeGoal && (
+                <Card className={`${personalization.categoryConfig.colorClasses.bg} border-0 overflow-hidden relative`}>
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    </div>
+                    <CardContent className="p-6 relative z-10">
+                        <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+                            {/* Left: Personalized greeting */}
+                            <div className="flex-1">
+                                <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 mb-3">
+                                    <Sparkles className="w-3 h-3 mr-1" />
+                                    Your Personalized Career Path
+                                </Badge>
+                                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                                    {personalization.firstName ? `${personalization.firstName}, ` : ""}Your Path to{" "}
+                                    <span className="text-gold-400">{formatIncomeGoal(personalization.incomeGoal)}</span>
                                 </h1>
-                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
-                                    Discover income paths, specializations, and your next steps.
+                                <p className="text-burgundy-100 text-sm md:text-base max-w-xl">
+                                    As a <strong className="text-gold-300">{formatSituation(personalization.situation)}</strong>
+                                    {personalization.timeline && (
+                                        <> looking to start <strong className="text-gold-300">{formatTimeline(personalization.timeline)}</strong></>
+                                    )}
+                                    {personalization.isFromEnrollment && personalization.enrolledCourseNames.length > 0 ? (
+                                        <>, you're currently enrolled in{" "}
+                                            <strong className="text-gold-300">{personalization.enrolledCourseNames[0]}</strong>
+                                        </>
+                                    ) : personalization.focusAreas.length > 0 ? (
+                                        <>, we've tailored your journey based on your interest in{" "}
+                                            <strong className="text-gold-300">{personalization.focusAreas.slice(0, 2).join(" & ")}</strong>
+                                        </>
+                                    ) : null}.
                                 </p>
+
+                                {/* Target step indicator */}
+                                {personalization.targetStep && (
+                                    <div className="mt-4 flex items-center gap-3">
+                                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 rounded-full">
+                                            <Target className="w-4 h-4 text-gold-400" />
+                                            <span className="text-white text-sm font-medium">
+                                                Your target: <strong>Step {personalization.targetStep}</strong>
+                                            </span>
+                                        </div>
+                                        {personalization.obstacles.includes("time") && (
+                                            <Badge className="bg-green-500/20 text-green-300 border-0">
+                                                <CheckCircle className="w-3 h-3 mr-1" />
+                                                Flexible self-paced learning
+                                            </Badge>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Right: Quick stats */}
+                            <div className="flex flex-wrap lg:flex-col gap-2">
+                                <div className="bg-white/10 rounded-xl p-3 text-center min-w-[120px]">
+                                    <p className="text-2xl font-bold text-gold-400">{personalization.targetStep || 2}</p>
+                                    <p className="text-xs text-burgundy-200">Target Step</p>
+                                </div>
+                                <div className="bg-white/10 rounded-xl p-3 text-center min-w-[120px]">
+                                    <p className="text-2xl font-bold text-green-400">{formatIncomeGoal(personalization.incomeGoal).split("/")[0]}</p>
+                                    <p className="text-xs text-burgundy-200">Income Goal</p>
+                                </div>
                             </div>
                         </div>
+                    </CardContent>
+                </Card>
+            )}
 
-                        {/* Right: Stats + CTA */}
-                        <div className="flex flex-wrap items-center gap-3">
-                            <div className="hidden md:flex items-center gap-2">
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Users className="w-3 h-3 mr-1.5 text-gold-400" />
-                                    1,447 Certified
-                                </Badge>
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <DollarSign className="w-3 h-3 mr-1.5 text-green-400" />
-                                    $8K Avg/mo
-                                </Badge>
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Star className="w-3 h-3 mr-1.5 text-gold-400" />
-                                    4.9 Rating
-                                </Badge>
+            {/* ONBOARDING PROMPT - Only shows if user hasn't completed onboarding */}
+            {!personalization.hasCompletedOnboarding && (
+                <Card className="bg-gradient-to-r from-amber-50 to-gold-50 border-2 border-gold-200">
+                    <CardContent className="p-5">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-gold-100 flex items-center justify-center flex-shrink-0">
+                                <Sparkles className="w-6 h-6 text-gold-600" />
                             </div>
-                            <Link href="/my-personal-roadmap-by-coach-sarah">
-                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
-                                    <Map className="w-4 h-4 mr-1.5" />
-                                    My Roadmap
+                            <div className="flex-1 text-center sm:text-left">
+                                <h3 className="font-bold text-gray-900 mb-1">Personalize Your Career Path</h3>
+                                <p className="text-sm text-gray-600">
+                                    Take our 2-minute quiz to see career paths, success stories, and specializations tailored just for you.
+                                </p>
+                            </div>
+                            <Link href="/start-here">
+                                <Button className="bg-gold-500 hover:bg-gold-600 text-white">
+                                    <Target className="w-4 h-4 mr-2" />
+                                    Take the Quiz
                                 </Button>
                             </Link>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Compact Header - Only show when personalized hero is NOT shown */}
+            {!(personalization.hasCompletedOnboarding && personalization.incomeGoal) && (
+                <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden">
+                    <CardContent className="px-5 py-4">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                            {/* Left: Icon + Title + Subtitle */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                                    <Briefcase className="w-5 h-5 text-gold-400" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                            AccrediPro Career Center
+                                        </Badge>
+                                    </div>
+                                    <h1 className="text-xl font-bold text-white">
+                                        Your <span className="text-gold-400">Career Roadmap</span>
+                                    </h1>
+                                    <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                        Discover income paths, specializations, and your next steps.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Right: Stats + CTA */}
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="hidden md:flex items-center gap-2">
+                                    <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                        <Users className="w-3 h-3 mr-1.5 text-gold-400" />
+                                        1,447 Certified
+                                    </Badge>
+                                    <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                        <DollarSign className="w-3 h-3 mr-1.5 text-green-400" />
+                                        $8K Avg/mo
+                                    </Badge>
+                                    <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                        <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                                        4.9 Rating
+                                    </Badge>
+                                </div>
+                                <Link href="/my-personal-roadmap-by-coach-sarah">
+                                    <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                        <Map className="w-4 h-4 mr-1.5" />
+                                        My Roadmap
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* SECTION 1 - HOW ACCREDIPRO WORKS (IMPROVED) */}
             <Card className="border-2 border-burgundy-100 shadow-lg overflow-hidden">
@@ -423,11 +750,12 @@ export default async function CareerCenterPage() {
                             const incomeLabels = ["$3K-5K/mo", "$5K-10K/mo", "$10K-30K/mo", "$30K-50K+/mo"];
 
                             // Determine step status based on user progress
-                            const isCompleted = userProgress.currentStep > step.step;
-                            const isCurrent = userProgress.currentStep === step.step ||
-                                (userProgress.currentStep === 0 && step.step === 1) ||
-                                (userProgress.currentStep === 1 && step.step === 1);
-                            const isUpcoming = userProgress.currentStep < step.step && !isCurrent;
+                            const isCompleted = personalization.currentStep > step.step;
+                            const isCurrent = personalization.currentStep === step.step ||
+                                (personalization.currentStep === 0 && step.step === 1) ||
+                                (personalization.currentStep === 1 && step.step === 1);
+                            const isUpcoming = personalization.currentStep < step.step && !isCurrent;
+                            const isTarget = personalization.targetStep === step.step;
 
                             return (
                                 <div key={step.step} className="relative">
@@ -439,13 +767,13 @@ export default async function CareerCenterPage() {
                                     )}
 
                                     <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md relative ${isCurrent
-                                            ? "ring-4 ring-gold-300/50 border-gold-400 bg-gradient-to-br from-gold-50 to-amber-50 shadow-lg shadow-gold-100"
-                                            : isCompleted
-                                                ? "border-green-300 bg-gradient-to-br from-green-50 to-emerald-50"
-                                                : step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 opacity-75" :
-                                                    step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 opacity-75" :
-                                                        step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-75" :
-                                                            "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50 opacity-75"
+                                        ? "ring-4 ring-gold-300/50 border-gold-400 bg-gradient-to-br from-gold-50 to-amber-50 shadow-lg shadow-gold-100"
+                                        : isCompleted
+                                            ? "border-green-300 bg-gradient-to-br from-green-50 to-emerald-50"
+                                            : step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 opacity-75" :
+                                                step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 opacity-75" :
+                                                    step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-75" :
+                                                        "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50 opacity-75"
                                         }`}>
                                         {/* YOU ARE HERE Badge */}
                                         {isCurrent && (
@@ -453,6 +781,16 @@ export default async function CareerCenterPage() {
                                                 <Badge className="bg-gold-500 text-white border-0 shadow-md animate-pulse whitespace-nowrap">
                                                     <Sparkles className="w-3 h-3 mr-1" />
                                                     YOU ARE HERE
+                                                </Badge>
+                                            </div>
+                                        )}
+
+                                        {/* YOUR TARGET Badge */}
+                                        {isTarget && !isCurrent && (
+                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                                                <Badge className="bg-purple-500 text-white border-0 shadow-md whitespace-nowrap">
+                                                    <Target className="w-3 h-3 mr-1" />
+                                                    YOUR TARGET
                                                 </Badge>
                                             </div>
                                         )}
@@ -469,11 +807,11 @@ export default async function CareerCenterPage() {
                                         {/* Step Badge */}
                                         <div className="flex items-center justify-between mb-3 mt-2">
                                             <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${isCurrent ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
-                                                    isCompleted ? "bg-green-500 text-white" :
-                                                        step.color === "emerald" ? "bg-emerald-500 text-white" :
-                                                            step.color === "amber" ? "bg-amber-500 text-white" :
-                                                                step.color === "blue" ? "bg-blue-500 text-white" :
-                                                                    "bg-burgundy-600 text-white"
+                                                isCompleted ? "bg-green-500 text-white" :
+                                                    step.color === "emerald" ? "bg-emerald-500 text-white" :
+                                                        step.color === "amber" ? "bg-amber-500 text-white" :
+                                                            step.color === "blue" ? "bg-blue-500 text-white" :
+                                                                "bg-burgundy-600 text-white"
                                                 }`}>
                                                 {isCompleted && <CheckCircle className="w-3 h-3 mr-1" />}
                                                 STEP {step.step}
@@ -483,11 +821,11 @@ export default async function CareerCenterPage() {
                                         {/* Title & Subtitle */}
                                         <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
                                         <p className={`text-xs font-semibold mb-2 ${isCurrent ? "text-gold-700" :
-                                                isCompleted ? "text-green-700" :
-                                                    step.color === "emerald" ? "text-emerald-700" :
-                                                        step.color === "amber" ? "text-amber-700" :
-                                                            step.color === "blue" ? "text-blue-700" :
-                                                                "text-burgundy-700"
+                                            isCompleted ? "text-green-700" :
+                                                step.color === "emerald" ? "text-emerald-700" :
+                                                    step.color === "amber" ? "text-amber-700" :
+                                                        step.color === "blue" ? "text-blue-700" :
+                                                            "text-burgundy-700"
                                             }`}>{step.subtitle}</p>
 
                                         {/* Description */}
@@ -495,11 +833,11 @@ export default async function CareerCenterPage() {
 
                                         {/* Income Potential */}
                                         <div className={`mt-auto pt-2 border-t ${isCurrent ? "border-gold-200" :
-                                                isCompleted ? "border-green-200" :
-                                                    step.color === "emerald" ? "border-emerald-200" :
-                                                        step.color === "amber" ? "border-amber-200" :
-                                                            step.color === "blue" ? "border-blue-200" :
-                                                                "border-burgundy-200"
+                                            isCompleted ? "border-green-200" :
+                                                step.color === "emerald" ? "border-emerald-200" :
+                                                    step.color === "amber" ? "border-amber-200" :
+                                                        step.color === "blue" ? "border-blue-200" :
+                                                            "border-burgundy-200"
                                             }`}>
                                             <p className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">Earning Potential</p>
                                             <p className="text-sm font-bold text-green-600">
@@ -603,7 +941,7 @@ export default async function CareerCenterPage() {
                 </div>
             </div>
 
-            {/* SECTION 3 - FM SPECIALIZATIONS - IMPROVED */}
+            {/* SECTION 3 - FM SPECIALIZATIONS - PERSONALIZED */}
             <Card className="border-2 border-gold-200 shadow-lg overflow-hidden">
                 <div className="bg-gradient-to-r from-gold-400 via-amber-400 to-gold-500 p-6">
                     <div className="flex items-center gap-3 mb-2">
@@ -611,8 +949,24 @@ export default async function CareerCenterPage() {
                             <Sparkles className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-burgundy-900">AccrediPro FM Specializations</h2>
-                            <p className="text-burgundy-800 text-sm">Master Your Niche, Transform Your Career, Build Authority</p>
+                            <h2 className="text-xl font-bold text-burgundy-900">
+                                {personalization.isComprehensiveEnrollment
+                                    ? "Specializations in Your FM Certification"
+                                    : personalization.isFromEnrollment
+                                        ? "Specializations You're Learning"
+                                        : personalization.hasCompletedOnboarding && personalization.recommendedSpecIds.length > 0
+                                            ? "Recommended Specializations for You"
+                                            : "AccrediPro FM Specializations"}
+                            </h2>
+                            <p className="text-burgundy-800 text-sm">
+                                {personalization.isComprehensiveEnrollment
+                                    ? "Your certification covers all 10 FM specializations"
+                                    : personalization.isFromEnrollment && personalization.enrolledCourseNames.length > 0
+                                        ? `Part of your ${personalization.enrolledCourseNames[0]}`
+                                        : personalization.hasCompletedOnboarding && personalization.focusAreas.length > 0
+                                            ? `Based on your interest in ${personalization.focusAreas.slice(0, 2).join(" & ")}`
+                                            : "Master Your Niche, Transform Your Career, Build Authority"}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -637,8 +991,33 @@ export default async function CareerCenterPage() {
                                                         spec.icon === "Moon" ? Moon :
                                                             spec.icon === "Droplets" ? Droplets : Target;
 
+                            const isRecommended = personalization.recommendedSpecIds.includes(spec.id);
+                            const isFromEnrollment = personalization.isFromEnrollment && personalization.enrolledSpecIds.includes(spec.id);
+
+                            // Don't show individual badges for comprehensive FM enrollment (all specs are included)
+                            const showBadge = !personalization.isComprehensiveEnrollment && isRecommended && personalization.hasCompletedOnboarding;
+
+                            // Don't show ring highlight for comprehensive enrollment either
+                            const showRing = !personalization.isComprehensiveEnrollment && isRecommended && personalization.hasCompletedOnboarding;
+
                             return (
-                                <Card key={spec.id} className={`overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 ${spec.borderColor} border-2`}>
+                                <Card key={spec.id} className={`overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 border-2 relative ${showRing ? (isFromEnrollment ? "ring-2 ring-emerald-400 ring-offset-2 " : "ring-2 ring-gold-400 ring-offset-2 ") + spec.borderColor : spec.borderColor}`}>
+                                    {/* Badge: Only show for non-comprehensive enrollment */}
+                                    {showBadge && (
+                                        <div className="absolute -top-2 -right-2 z-10">
+                                            {isFromEnrollment ? (
+                                                <Badge className="bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 shadow-md">
+                                                    <GraduationCap className="w-2.5 h-2.5 mr-0.5" />
+                                                    Learning
+                                                </Badge>
+                                            ) : (
+                                                <Badge className="bg-gold-500 text-white text-[9px] px-1.5 py-0.5 shadow-md">
+                                                    <Star className="w-2.5 h-2.5 mr-0.5 fill-white" />
+                                                    For You
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    )}
                                     <div className={`bg-gradient-to-r ${spec.gradient} p-3 text-white`}>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
@@ -681,47 +1060,7 @@ export default async function CareerCenterPage() {
                 </CardContent>
             </Card>
 
-            {/* SECTION 4 - INCOME PATHS (Tied to Steps) */}
-            <Card className="border-2 border-gray-100">
-                <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-6">
-                        <DollarSign className="w-6 h-6 text-green-600" />
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900">AccrediPro Income Paths</h2>
-                            <p className="text-sm text-gray-500">Each income level maps to a step in your AccrediPro journey</p>
-                        </div>
-                    </div>
-                    <div className="grid md:grid-cols-4 gap-4">
-                        {incomePaths.map((path, index) => (
-                            <div key={path.level} className="relative">
-                                {index < incomePaths.length - 1 && (
-                                    <div className="hidden md:block absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 z-10">
-                                        <ArrowRight className="w-5 h-5 text-gray-300" />
-                                    </div>
-                                )}
-                                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 h-full flex flex-col">
-                                    <Badge className={`mb-2 w-fit ${path.stepColor === "emerald" ? "bg-emerald-100 text-emerald-700" :
-                                        path.stepColor === "amber" ? "bg-amber-100 text-amber-700" :
-                                            path.stepColor === "blue" ? "bg-blue-100 text-blue-700" :
-                                                "bg-burgundy-100 text-burgundy-700"
-                                        }`}>
-                                        {path.step}
-                                    </Badge>
-                                    <Badge className="mb-2 bg-green-100 text-green-700 w-fit">{path.range}</Badge>
-                                    <h4 className="font-semibold text-gray-900">{path.level}</h4>
-                                    <p className="text-sm text-gray-500 mt-1">{path.description}</p>
-                                    <div className="mt-3 pt-3 border-t border-gray-100 flex-1">
-                                        <p className="text-[10px] uppercase tracking-wide text-gray-400 font-medium mb-1">Perfect for:</p>
-                                        <p className="text-xs text-gray-600 leading-relaxed">{path.perfectFor}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* SECTION 5 - SUCCESS STORIES - IMPROVED with zombie profiles */}
+            {/* SUCCESS STORIES - PERSONALIZED */}
             <Card className="border-2 border-green-200 shadow-lg overflow-hidden">
                 <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-6">
                     <div className="flex items-center gap-3 mb-2">
@@ -729,15 +1068,32 @@ export default async function CareerCenterPage() {
                             <Star className="w-6 h-6 text-white fill-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">AccrediPro Graduate Success Stories</h2>
-                            <p className="text-green-100 text-sm">Real transformations from our certified practitioners</p>
+                            <h2 className="text-xl font-bold text-white">
+                                {personalization.hasCompletedOnboarding
+                                    ? "Success Stories from Women Like You"
+                                    : "AccrediPro Graduate Success Stories"}
+                            </h2>
+                            <p className="text-green-100 text-sm">
+                                {personalization.hasCompletedOnboarding && personalization.situation
+                                    ? `Real transformations from ${formatSituation(personalization.situation)}s`
+                                    : "Real transformations from our certified practitioners"}
+                            </p>
                         </div>
                     </div>
                 </div>
                 <CardContent className="p-6">
                     <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {successStories.map((story, index) => (
-                            <Card key={story.name} className="border hover:shadow-lg transition-all hover:-translate-y-1 overflow-hidden">
+                        {personalizedStories.slice(0, 15).map((story) => (
+                            <Card key={story.name} className={`border hover:shadow-lg transition-all hover:-translate-y-1 overflow-hidden relative ${story.isRecommended ? "ring-2 ring-gold-400 ring-offset-2" : ""}`}>
+                                {/* Recommended Badge */}
+                                {story.isRecommended && personalization.hasCompletedOnboarding && (
+                                    <div className="absolute -top-2 -right-2 z-10">
+                                        <Badge className="bg-gold-500 text-white text-[9px] px-1.5 py-0.5 shadow-md">
+                                            <Heart className="w-2.5 h-2.5 mr-0.5 fill-white" />
+                                            For You
+                                        </Badge>
+                                    </div>
+                                )}
                                 <CardContent className="p-4">
                                     {/* Star Rating */}
                                     <div className="flex mb-2">
@@ -782,12 +1138,26 @@ export default async function CareerCenterPage() {
                                 <Rocket className="w-3 h-3 mr-1" />
                                 Your Next Step
                             </Badge>
-                            <h3 className="text-2xl md:text-3xl font-bold mb-2">Ready to Begin?</h3>
+                            <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                                {personalization.hasCompletedOnboarding && personalization.firstName
+                                    ? `${personalization.firstName}, Ready to Begin?`
+                                    : "Ready to Begin?"}
+                            </h3>
                             <p className="text-burgundy-100 max-w-lg">
-                                Start your <strong className="text-gold-300">certification journey</strong> and transform your career in wellness.
-                                {userProgress.currentStep === 0 && " Choose your specialization and get started today!"}
-                                {userProgress.currentStep === 1 && " You're already on your way. Keep going!"}
-                                {userProgress.currentStep >= 2 && " Great progress! Consider advancing to the next level."}
+                                {personalization.hasCompletedOnboarding && personalization.incomeGoal ? (
+                                    <>
+                                        Your path to <strong className="text-gold-300">{formatIncomeGoal(personalization.incomeGoal)}</strong> starts with Step {personalization.targetStep || 1}.
+                                        {personalization.timeline === "asap" && " You said you want to start ASAP - let's go!"}
+                                        {personalization.obstacles.includes("time") && " Don't worry - our flexible schedule fits your life."}
+                                    </>
+                                ) : (
+                                    <>
+                                        Start your <strong className="text-gold-300">certification journey</strong> and transform your career in wellness.
+                                        {personalization.currentStep === 0 && " Choose your specialization and get started today!"}
+                                        {personalization.currentStep === 1 && " You're already on your way. Keep going!"}
+                                        {personalization.currentStep >= 2 && " Great progress! Consider advancing to the next level."}
+                                    </>
+                                )}
                             </p>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-3">
