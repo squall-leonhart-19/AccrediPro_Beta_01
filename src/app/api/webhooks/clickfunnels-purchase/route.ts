@@ -339,6 +339,14 @@ export async function POST(request: NextRequest) {
         // 1. CREATE OR FIND USER
         // =====================================================
 
+        // Get IP from request headers (fallback if CF doesn't send it)
+        const purchaseIp = clientIp ||
+            request.headers.get("x-forwarded-for")?.split(",")[0] ||
+            request.headers.get("x-real-ip") ||
+            request.headers.get("cf-connecting-ip") ||
+            null;
+        const purchaseUserAgent = userAgent || request.headers.get("user-agent") || null;
+
         let user = await prisma.user.findUnique({
             where: { email: normalizedEmail },
         });
@@ -360,17 +368,36 @@ export async function POST(request: NextRequest) {
                     phone: phone || null,
                     role: "STUDENT",
                     emailVerified: new Date(),
+                    // DISPUTE EVIDENCE: Capture at purchase time
+                    registrationIp: purchaseIp,
+                    registrationUserAgent: purchaseUserAgent,
+                    tosAcceptedAt: new Date(), // TOS accepted at checkout
+                    tosVersion: "1.0",
+                    refundPolicyAcceptedAt: new Date(), // Refund policy accepted at checkout
+                    refundPolicyVersion: "1.0",
                 },
             });
 
             isNewUser = true;
-            console.log(`[CF Purchase] ✅ Created new user: ${normalizedEmail}`);
+            console.log(`[CF Purchase] ✅ Created new user: ${normalizedEmail} (IP: ${purchaseIp})`);
         } else {
             // Update existing user if needed
-            const updates: Record<string, string> = {};
+            const updates: Record<string, unknown> = {};
             if (!user.firstName && firstName) updates.firstName = firstName;
             if (!user.lastName && lastName) updates.lastName = lastName;
             if (!user.phone && phone) updates.phone = phone;
+            // Update TOS if not set
+            if (!(user as any).tosAcceptedAt) {
+                updates.tosAcceptedAt = new Date();
+                updates.tosVersion = "1.0";
+                updates.refundPolicyAcceptedAt = new Date();
+                updates.refundPolicyVersion = "1.0";
+            }
+            // Update registration IP if not set
+            if (!(user as any).registrationIp && purchaseIp) {
+                updates.registrationIp = purchaseIp;
+                updates.registrationUserAgent = purchaseUserAgent;
+            }
 
             if (Object.keys(updates).length > 0) {
                 user = await prisma.user.update({
