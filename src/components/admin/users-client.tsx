@@ -34,6 +34,7 @@ import {
   Tag,
   Lock,
   Phone,
+  Shield,
   UserCog,
   RotateCcw,
   Copy,
@@ -1948,8 +1949,8 @@ export function UsersClient({ courses }: UsersClientProps) {
                             <p className="text-gray-500 text-xs">Lessons Completed</p>
                           </div>
                           <div>
-                            <p className="text-blue-600 font-bold text-lg">{Math.round(activityData.stats.totalWatchTime / 60)}m</p>
-                            <p className="text-gray-500 text-xs">Watch Time</p>
+                            <p className="text-blue-600 font-bold text-lg">{Math.round((activityData.stats.totalTimeSpent || 0) / 60)}m</p>
+                            <p className="text-gray-500 text-xs">Time Spent on Platform</p>
                           </div>
                           <div>
                             <p className="text-blue-600 font-bold text-lg">{activityData.stats.certificatesEarned}</p>
@@ -1958,92 +1959,97 @@ export function UsersClient({ courses }: UsersClientProps) {
                         </div>
                       </div>
 
-                      {/* Key Dates */}
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <p className="text-sm font-semibold text-gray-900 mb-3">📅 Key Dates (Dispute Evidence)</p>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                      {/* Dispute Defense & Chargeback Protection */}
+                      <div className="p-5 bg-blue-50 rounded-lg border border-blue-200 shadow-sm mt-6 mb-8">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Shield className="w-5 h-5 text-blue-700" />
                           <div>
-                            <p className="text-gray-500">Account Created</p>
-                            <p className="font-mono text-xs">{new Date(activityData.stats.accountCreated).toLocaleString()}</p>
+                            <h3 className="text-sm font-bold text-blue-900">🛡️ Dispute Defense & Chargeback Protection</h3>
+                            <p className="text-xs text-blue-700">Official audit log for payment dispute evidence.</p>
                           </div>
-                          <div>
-                            <p className="text-gray-500">First Login</p>
-                            <p className="font-mono text-xs">{activityData.stats.firstLogin ? new Date(activityData.stats.firstLogin).toLocaleString() : "Never"}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-500">Last Login</p>
-                            <p className="font-mono text-xs">{activityData.stats.lastLogin ? new Date(activityData.stats.lastLogin).toLocaleString() : "Never"}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-500">Total Login Count</p>
-                            <p className="font-mono text-xs">{activityData.stats.totalLogins} times</p>
-                          </div>
-                          <div className="pt-2 border-t mt-2 col-span-2 grid grid-cols-2 gap-4">
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                          {/* Left Col: Evidence Data */}
+                          <div className="space-y-4">
                             <div>
-                              <p className="text-gray-500">TOS Accepted</p>
-                              <p className="font-mono text-xs text-blue-600 font-bold">
-                                {activityData.legalAcceptance?.tosAcceptedAt
-                                  ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString()
-                                  : "Not Recorded"}
-                              </p>
+                              <p className="text-gray-500 text-xs uppercase tracking-wide font-semibold">Legal Acceptance</p>
+                              <div className="mt-1 p-3 bg-white rounded border border-blue-100">
+                                <div className="flex justify-between items-center mb-2">
+                                  <span className="text-gray-600 text-xs">TOS Status:</span>
+                                  <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${activityData.legalAcceptance?.tosAcceptedAt ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                    {activityData.legalAcceptance?.tosAcceptedAt ? "ACCEPTED" : "MISSING"}
+                                  </span>
+                                </div>
+                                <p className="font-mono text-sm font-bold text-blue-800 break-all">
+                                  {activityData.legalAcceptance?.tosAcceptedAt
+                                    ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString()
+                                    : "No Record Found"}
+                                </p>
+                                {activityData.legalAcceptance?.tosVersion && (
+                                  <p className="text-xs text-gray-400 mt-1">Version: {activityData.legalAcceptance.tosVersion}</p>
+                                )}
+                              </div>
                             </div>
                             <div>
-                              <p className="text-gray-500">Registration IP</p>
-                              <p className="font-mono text-xs text-blue-600 font-bold">
-                                {activityData.registrationEvidence?.ip || "Not Captured"}
-                              </p>
+                              <p className="text-gray-500 text-xs uppercase tracking-wide font-semibold">Registration Evidence</p>
+                              <div className="mt-1 p-3 bg-white rounded border border-blue-100 space-y-2">
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <p className="text-gray-600 text-xs">IP Address:</p>
+                                    <p className="font-mono text-xs font-bold text-blue-800">
+                                      {activityData.registrationEvidence?.ip || "Not Captured"}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-gray-600 text-xs">Device:</p>
+                                    <p className="font-mono text-xs text-gray-800 truncate" title={activityData.registrationEvidence?.userAgent}>
+                                      {activityData.registrationEvidence?.device || "Unknown"}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div>
+                                  <p className="text-gray-600 text-xs">User Agent:</p>
+                                  <p className="font-mono text-[10px] text-gray-500 break-all leading-tight">
+                                    {activityData.registrationEvidence?.userAgent || "Not Captured"}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right Col: Timeline */}
+                          <div className="space-y-2">
+                            <p className="text-gray-500 text-xs uppercase tracking-wide font-semibold">Chronological Audit</p>
+                            <div className="bg-white rounded border border-gray-200 divide-y">
+                              <div className="p-3 flex justify-between items-center bg-gray-50">
+                                <span className="text-gray-600 text-xs font-semibold">Account Created</span>
+                                <span className="font-mono text-xs">{new Date(activityData.stats.accountCreated).toLocaleString()}</span>
+                              </div>
+                              <div className="p-3 flex justify-between items-center">
+                                <span className="text-gray-600 text-xs">First Login</span>
+                                <span className="font-mono text-xs text-green-700 font-medium">
+                                  {activityData.stats.firstLogin ? new Date(activityData.stats.firstLogin).toLocaleString() : "Never"}
+                                </span>
+                              </div>
+                              <div className="p-3 flex justify-between items-center">
+                                <span className="text-gray-600 text-xs">Last Access</span>
+                                <span className="font-mono text-xs">
+                                  {activityData.stats.lastLogin ? new Date(activityData.stats.lastLogin).toLocaleString() : "Never"}
+                                </span>
+                              </div>
+                              <div className="p-3 flex justify-between items-center">
+                                <span className="text-gray-600 text-xs">Total Login Sessions</span>
+                                <span className="font-mono text-xs">{activityData.stats.totalLogins} times</span>
+                              </div>
+                              <div className="p-3 flex justify-between items-center">
+                                <span className="text-gray-600 text-xs">Time Spent on Platform</span>
+                                <span className="font-mono text-xs text-blue-600 font-bold">{Math.round((activityData.stats.totalTimeSpent || 0) / 60)} minutes</span>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-
-                      {/* NEW: Registration Evidence */}
-                      {activityData.registrationEvidence && (
-                        <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-                          <p className="text-sm font-semibold text-amber-800 mb-3">🔍 Registration Evidence</p>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <p className="text-gray-500">Registration IP</p>
-                              <p className="font-mono text-xs">{activityData.registrationEvidence.ip || "Not captured"}</p>
-                            </div>
-                            <div>
-                              <p className="text-gray-500">Device</p>
-                              <p className="font-mono text-xs">{activityData.registrationEvidence.device || "Unknown"}</p>
-                            </div>
-                            <div>
-                              <p className="text-gray-500">Browser</p>
-                              <p className="font-mono text-xs">{activityData.registrationEvidence.browser || "Unknown"}</p>
-                            </div>
-                            <div>
-                              <p className="text-gray-500">User Agent</p>
-                              <p className="font-mono text-xs truncate" title={activityData.registrationEvidence.userAgent}>{activityData.registrationEvidence.userAgent || "Not captured"}</p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* NEW: Legal Acceptance */}
-                      {activityData.legalAcceptance && (
-                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                          <p className="text-sm font-semibold text-green-800 mb-3">📜 Legal Policy Acceptance</p>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <p className="text-gray-500">Terms of Service Accepted</p>
-                              <p className="font-mono text-xs">{activityData.legalAcceptance.tosAcceptedAt ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString() : "Not recorded"}</p>
-                              {activityData.legalAcceptance.tosVersion && (
-                                <p className="text-xs text-gray-400">Version: {activityData.legalAcceptance.tosVersion}</p>
-                              )}
-                            </div>
-                            <div>
-                              <p className="text-gray-500">Refund Policy Accepted</p>
-                              <p className="font-mono text-xs">{activityData.legalAcceptance.refundPolicyAcceptedAt ? new Date(activityData.legalAcceptance.refundPolicyAcceptedAt).toLocaleString() : "Not recorded"}</p>
-                              {activityData.legalAcceptance.refundPolicyVersion && (
-                                <p className="text-xs text-gray-400">Version: {activityData.legalAcceptance.refundPolicyVersion}</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
 
                       {/* NEW: Payment History */}
                       {activityData.payments && activityData.payments.length > 0 && (
