@@ -368,13 +368,6 @@ export async function POST(request: NextRequest) {
                     phone: phone || null,
                     role: "STUDENT",
                     emailVerified: new Date(),
-                    // DISPUTE EVIDENCE: Capture at purchase time
-                    registrationIp: purchaseIp,
-                    registrationUserAgent: purchaseUserAgent,
-                    tosAcceptedAt: new Date(), // TOS accepted at checkout
-                    tosVersion: "1.0",
-                    refundPolicyAcceptedAt: new Date(), // Refund policy accepted at checkout
-                    refundPolicyVersion: "1.0",
                 },
             });
 
@@ -386,18 +379,6 @@ export async function POST(request: NextRequest) {
             if (!user.firstName && firstName) updates.firstName = firstName;
             if (!user.lastName && lastName) updates.lastName = lastName;
             if (!user.phone && phone) updates.phone = phone;
-            // Update TOS if not set
-            if (!(user as any).tosAcceptedAt) {
-                updates.tosAcceptedAt = new Date();
-                updates.tosVersion = "1.0";
-                updates.refundPolicyAcceptedAt = new Date();
-                updates.refundPolicyVersion = "1.0";
-            }
-            // Update registration IP if not set
-            if (!(user as any).registrationIp && purchaseIp) {
-                updates.registrationIp = purchaseIp;
-                updates.registrationUserAgent = purchaseUserAgent;
-            }
 
             if (Object.keys(updates).length > 0) {
                 user = await prisma.user.update({
