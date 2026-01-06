@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
             privateMessageCount,
             communityMessageCount,
             podMembership,
+            activityTimestamps, // NEW: For session time calculation
         ] = await Promise.all([
             // User info - includes NEW dispute evidence fields
             prisma.user.findUnique({
@@ -314,7 +315,14 @@ export async function GET(request: NextRequest) {
                 }
             })
             */
-            null // Fallback to null
+            null, // Fallback to null
+
+            // NEW: Activity timestamps for session time calculation
+            prisma.userActivity.findMany({
+                where: { userId },
+                select: { createdAt: true },
+                orderBy: { createdAt: "asc" }
+            })
         ]);
 
         if (!user) {
@@ -326,6 +334,33 @@ export async function GET(request: NextRequest) {
         const totalTimeSpent = recentLessonProgress.reduce((acc, lp) => acc + (lp.timeSpent || 0), 0);
         const totalPayments = payments.reduce((acc, p) => acc + Number(p.amount), 0);
 
+        // NEW: Calculate session-based platform time
+        // Group activities into sessions (gap > 30 min = new session)
+        let totalPlatformTime = 0;
+        const SESSION_GAP_MS = 30 * 60 * 1000; // 30 minutes
+        const timestamps = [
+            ...(loginHistory || []).map(l => new Date(l.createdAt).getTime()),
+            ...(activityTimestamps || []).map((a: { createdAt: Date }) => new Date(a.createdAt).getTime())
+        ].sort((a, b) => a - b);
+
+        if (timestamps.length > 0) {
+            let sessionStart = timestamps[0];
+            let lastActivity = timestamps[0];
+
+            for (let i = 1; i < timestamps.length; i++) {
+                const gap = timestamps[i] - lastActivity;
+                if (gap > SESSION_GAP_MS) {
+                    // End current session, start new one
+                    totalPlatformTime += lastActivity - sessionStart;
+                    sessionStart = timestamps[i];
+                }
+                lastActivity = timestamps[i];
+            }
+            // Add final session (assume 5 min minimum if only 1 activity)
+            const finalSessionDuration = lastActivity - sessionStart;
+            totalPlatformTime += finalSessionDuration > 0 ? finalSessionDuration : 5 * 60 * 1000;
+        }
+
         const stats = {
             totalLogins: user.loginCount,
             firstLogin: user.firstLoginAt,
@@ -336,7 +371,7 @@ export async function GET(request: NextRequest) {
             completedCourses: enrollments.filter(e => e.status === "COMPLETED").length,
             lessonsCompleted: lessonProgressCount,
             totalWatchTime,
-            totalTimeSpent,
+            totalTimeSpent: Math.round(totalPlatformTime / 1000), // Session-based platform time in seconds
             certificatesEarned: certificates.length,
             totalActivityLogs: activityLogsCount,
             // NEW stats
