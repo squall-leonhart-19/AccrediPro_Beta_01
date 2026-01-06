@@ -135,6 +135,17 @@ export const authOptions: NextAuthOptions = {
             lastLoginAt: now,
             firstLoginAt: isFirstLogin ? now : undefined,
             loginCount: { increment: 1 },
+            // On first login: capture registration data and TOS acceptance
+            ...(isFirstLogin && {
+              registrationIp: ipAddress,
+              registrationUserAgent: userAgent,
+              registrationDevice: device,
+              registrationBrowser: browser,
+              tosAcceptedAt: now,
+              tosVersion: "1.0",
+              refundPolicyAcceptedAt: now,
+              refundPolicyVersion: "1.0",
+            }),
           },
           select: { id: true },
         }).then(() => {

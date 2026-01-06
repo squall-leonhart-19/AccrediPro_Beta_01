@@ -2,16 +2,14 @@ import prisma from "../src/lib/prisma";
 import bcrypt from "bcryptjs";
 
 const FAILED_USERS = [
-    { email: "sharonlknight@outlook.com", firstName: "Sharon", lastName: "Knight" },
-    { email: "smk52588@gmail.com", firstName: "Student", lastName: "" },
-    { email: "theresakinney549@gmail.com", firstName: "Theresa", lastName: "Kinney" },
-    { email: "kimboggess@mac.com", firstName: "Kim", lastName: "Boggess" },
-    { email: "withinyogaandwellness@gmail.com", firstName: "Ryann", lastName: "Donahoe" },
+    { email: "examsbykamnp@gmail.com", firstName: "Kamera", lastName: "Taylor-Johns" },
 ];
 
 const FM_PRO_PACK_TAGS = [
     "functional_medicine_complete_certification_purchased",
     "clickfunnels_purchase",
+    "COACH_BUS_TOOLKIT_BUMP",
+    "Integrative_Toolkit_Bump"
 ];
 
 async function main() {

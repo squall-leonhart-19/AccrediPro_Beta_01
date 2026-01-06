@@ -483,6 +483,13 @@ export async function POST(request: NextRequest) {
             ? "functional-medicine"
             : null,
           miniDiplomaOptinAt: new Date(),
+          // DISPUTE EVIDENCE: Capture at purchase time
+          registrationIp: purchaseIp,
+          registrationUserAgent: purchaseUserAgent,
+          tosAcceptedAt: new Date(), // TOS accepted at checkout
+          tosVersion: "1.0",
+          refundPolicyAcceptedAt: new Date(), // Refund policy accepted at checkout
+          refundPolicyVersion: "1.0",
         },
       });
 
@@ -497,6 +504,18 @@ export async function POST(request: NextRequest) {
       if (!user.leadSource) {
         updates.leadSource = "ClickFunnels";
         updates.leadSourceDetail = productName || productId || "Purchase";
+      }
+      // Update TOS if not set (for users who existed before we added this)
+      if (!(user as any).tosAcceptedAt) {
+        updates.tosAcceptedAt = new Date();
+        updates.tosVersion = "1.0";
+        updates.refundPolicyAcceptedAt = new Date();
+        updates.refundPolicyVersion = "1.0";
+      }
+      // Update registration IP if not set
+      if (!(user as any).registrationIp && purchaseIp) {
+        updates.registrationIp = purchaseIp;
+        updates.registrationUserAgent = purchaseUserAgent;
       }
 
       if (Object.keys(updates).length > 0) {
