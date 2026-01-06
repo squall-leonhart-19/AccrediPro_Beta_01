@@ -376,7 +376,10 @@ export function UsersClient({ courses }: UsersClientProps) {
     console.log('Fetching activity for user:', userId);
     setLoadingActivity(true);
     try {
-      const res = await fetch(`/api/admin/user-activity?userId=${userId}`);
+      const res = await fetch(`/api/admin/user-activity?userId=${userId}`, {
+        cache: "no-store",
+        headers: { "Pragma": "no-cache" }
+      });
       console.log('Activity API response status:', res.status);
       if (res.ok) {
         const data = await res.json();

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 // GET - Fetch complete user activity for dispute resolution
+export const dynamic = "force-dynamic";
 // OPTIMIZED: Reduced query complexity for faster loading
 export async function GET(request: NextRequest) {
     try {
