@@ -148,6 +148,10 @@ const PRODUCT_COURSE_MAP: Record<string, string | string[]> = {
   // NARC Pro Accelerator ($397)
   "narc-pro-accelerator": ["narc-pro-advanced-clinical", "narc-pro-master-depth", "narc-pro-practice-path"],
   "narc_pro_accelerator": ["narc-pro-advanced-clinical", "narc-pro-master-depth", "narc-pro-practice-path"],
+
+  // Coach Business Toolkit ($67 Bump)
+  "the-coach-business-toolkit": "functional-medicine-complete-certification",
+  "coach-business-toolkit": "functional-medicine-complete-certification",
 };
 
 // Product prices for Meta CAPI (fallback if not in payload)
@@ -158,6 +162,8 @@ const PRODUCT_PRICES: Record<string, number> = {
   "fm-client-guarantee": 297,
   "narc-certification": 97,
   "narc-pro-accelerator": 397,
+  "the-coach-business-toolkit": 67,
+  "coach-business-toolkit": 67,
 };
 
 // Product display names for Meta CAPI
@@ -168,6 +174,8 @@ const PRODUCT_NAMES: Record<string, string> = {
   "fm-client-guarantee": "FM 10-Client Guarantee",
   "narc-certification": "NARC Recovery Coach Certification",
   "narc-pro-accelerator": "NARC Pro Accelerator",
+  "the-coach-business-toolkit": "The Coach Business Toolkit",
+  "coach-business-toolkit": "The Coach Business Toolkit",
 };
 
 // Verify ClickFunnels webhook signature (if they provide one)
@@ -216,10 +224,33 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
     const data = body.data as Record<string, unknown>;
     const contact = data.contact as Record<string, unknown> | undefined;
     const lineItems = data.line_items as Array<Record<string, unknown>> | undefined;
-    const firstLineItem = lineItems?.[0];
-    const productsVariant = firstLineItem?.products_variant as Record<string, unknown> | undefined;
-    const productsPrice = firstLineItem?.products_price as Record<string, unknown> | undefined; // Look for price object
-    const originalProduct = firstLineItem?.original_product as Record<string, unknown> | undefined;
+
+    // Improved Line Item Processing
+    let calculatedTotal = 0;
+    let allProductNames: string[] = [];
+    let primaryProductId: string | undefined;
+
+    if (lineItems && Array.isArray(lineItems)) {
+      lineItems.forEach((item) => {
+        const priceObj = item.products_price as Record<string, unknown> | undefined;
+        const variantObj = item.products_variant as Record<string, unknown> | undefined;
+        const originalObj = item.original_product as Record<string, unknown> | undefined;
+
+        // Sum amount
+        if (priceObj && priceObj.amount) {
+          calculatedTotal += Number(priceObj.amount);
+        }
+
+        // Collect names
+        const name = variantObj?.name || originalObj?.name || item.description as string;
+        if (name) allProductNames.push(name);
+
+        // Capture first ID as primary
+        if (!primaryProductId) {
+          primaryProductId = (variantObj?.sku || variantObj?.id || priceObj?.id || originalObj?.id || item.id) as string;
+        }
+      });
+    }
 
     // Get contact info - CF uses email_address, not email
     const contactEmail = contact?.email_address || contact?.email || data.email_address;
@@ -227,13 +258,18 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
     const contactLastName = contact?.last_name || data.last_name;
     const contactPhone = contact?.phone_number || data.phone_number;
 
-    // Get product info from products_variant (has SKU) or original_product
-    const productSku = productsVariant?.sku;
-    const productId = productsVariant?.id || productsPrice?.id || originalProduct?.id || firstLineItem?.id;
-    const productName = productsVariant?.name || originalProduct?.name;
+    // Use calculated total if top-level is missing or suspiciously low/different
+    // Or just default to calculatedTotal if available
+    const finalAmount = calculatedTotal > 0 ? calculatedTotal : (data.total_amount ? Number(data.total_amount) : undefined);
+    const finalProductName = allProductNames.length > 0 ? allProductNames.join(" + ") : undefined;
 
     console.log("Parsed contact:", { contactEmail, contactFirstName, contactLastName });
-    console.log("Parsed product:", { productSku, productId, productName });
+    console.log("Parsed product calculation:", {
+      calculatedTotal,
+      originalTotal: data.total_amount,
+      count: lineItems?.length,
+      names: allProductNames
+    });
 
     if (contactEmail) {
       return {
@@ -241,11 +277,10 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
         firstName: String(contactFirstName || ""),
         lastName: String(contactLastName || ""),
         phone: contactPhone ? String(contactPhone) : undefined,
-        productId: String(productSku || productId || ""),
-        productName: productName ? String(productName) : undefined,
+        productId: String(primaryProductId || ""),
+        productName: finalProductName,
         transactionId: String(data.id || data.public_id || ""),
-        amount: data.total_amount ? Number(data.total_amount) :
-          (productsPrice?.amount ? Number(productsPrice.amount) : undefined),
+        amount: finalAmount,
         eventType: String(body.event_type || "purchase"),
       };
     }
