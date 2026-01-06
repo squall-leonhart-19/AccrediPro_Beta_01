@@ -1,362 +1,243 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useTickets, Ticket, useUpdateTicket, useReplyTicket } from "@/hooks/use-tickets";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import {
-  Search, RefreshCcw, CheckCircle2, XCircle,
-  MessageSquare, User, Clock, Zap, Send,
-  MoreVertical, Mail, LifeBuoy, ChevronDown,
-  Sparkles, Trash2, UserPlus, DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus,
-  Inbox, AlertTriangle, CheckCheck, Archive
+  Search, RefreshCcw, CheckCircle2, XCircle, AlertTriangle,
+  MessageSquare, User, Clock, Zap, Send, ChevronDown, ChevronRight,
+  MoreHorizontal, Mail, LifeBuoy, Sparkles, Trash2, UserPlus,
+  DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
+  Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
+  AlertCircle, Circle, Phone, Globe, Calendar, Hash
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel
+} from "@/components/ui/dropdown-menu";
+import {
+  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-// Status config
-const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-  NEW: { label: "New", color: "text-blue-700", bg: "bg-blue-50 border-blue-200", icon: Inbox },
-  OPEN: { label: "Open", color: "text-emerald-700", bg: "bg-emerald-50 border-emerald-200", icon: MessageSquare },
-  PENDING: { label: "Pending", color: "text-amber-700", bg: "bg-amber-50 border-amber-200", icon: Clock },
-  RESOLVED: { label: "Resolved", color: "text-purple-700", bg: "bg-purple-50 border-purple-200", icon: CheckCheck },
-  CLOSED: { label: "Closed", color: "text-slate-500", bg: "bg-slate-100 border-slate-200", icon: Archive },
+// Brand colors
+const BRAND = {
+  burgundy: "#722F37",
+  burgundyLight: "#8B3D47",
+  burgundyDark: "#5A252C",
+  gold: "#D4AF37",
+  goldLight: "#E8C656",
 };
 
-const PRIORITY_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
-  LOW: { label: "Low", color: "text-slate-400", icon: CheckCircle2 },
-  MEDIUM: { label: "Medium", color: "text-blue-500", icon: LifeBuoy },
-  HIGH: { label: "High", color: "text-orange-500", icon: AlertTriangle },
-  URGENT: { label: "Urgent", color: "text-red-600", icon: XCircle },
+// Category colors for visual identification
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  "Refund": { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
+  "Technical": { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+  "Billing": { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+  "Access": { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200" },
+  "Certificate": { bg: "bg-green-50", text: "text-green-700", border: "border-green-200" },
+  "Course Content": { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
+  "General": { bg: "bg-slate-50", text: "text-slate-700", border: "border-slate-200" },
 };
 
-const SAVED_REPLIES = [
-  { label: "Greeting", text: "Hello,\n\nThank you for reaching out to AccrediPro Support. My name is Sarah and I'll be helping you today." },
-  { label: "Investigating", text: "I'm looking into this issue for you right now. Please allow me a few moments to investigate." },
-  { label: "Refund Policy", text: "Regarding our refund policy: We offer a 30-day money-back guarantee for all our certification programs if you are not satisfied." },
-  { label: "Closing", text: "I'm glad we could resolve this for you. I'll go ahead and close this ticket now. Please feel free to reach out if you need anything else!" },
+const STATUS_CONFIG = {
+  NEW: { label: "New", color: "bg-blue-500", textColor: "text-blue-700", bgLight: "bg-blue-50", icon: Circle },
+  OPEN: { label: "Open", color: "bg-emerald-500", textColor: "text-emerald-700", bgLight: "bg-emerald-50", icon: MessageSquare },
+  PENDING: { label: "Pending", color: "bg-amber-500", textColor: "text-amber-700", bgLight: "bg-amber-50", icon: Clock },
+  RESOLVED: { label: "Resolved", color: "bg-purple-500", textColor: "text-purple-700", bgLight: "bg-purple-50", icon: CheckCheck },
+  CLOSED: { label: "Closed", color: "bg-slate-400", textColor: "text-slate-600", bgLight: "bg-slate-100", icon: Archive },
+};
+
+const PRIORITY_CONFIG = {
+  LOW: { label: "Low", color: "text-slate-500", bg: "bg-slate-100", icon: CheckCircle2 },
+  MEDIUM: { label: "Medium", color: "text-blue-600", bg: "bg-blue-100", icon: LifeBuoy },
+  HIGH: { label: "High", color: "text-orange-600", bg: "bg-orange-100", icon: AlertTriangle },
+  URGENT: { label: "Urgent", color: "text-red-600", bg: "bg-red-100", icon: XCircle },
+};
+
+const QUICK_REPLIES = [
+  { label: "Greeting", text: "Hello!\n\nThank you for reaching out to AccrediPro Support. I'm Sarah, and I'll be happy to help you today." },
+  { label: "Investigating", text: "I'm looking into this for you right now. Please give me a moment to investigate." },
+  { label: "Refund Info", text: "Regarding refunds: We offer a 30-day money-back guarantee. I'll process this for you right away." },
+  { label: "Access Help", text: "I can see your account. Let me help you get access sorted out - I'll send you a direct login link." },
+  { label: "Closing", text: "I'm glad I could help! I'll close this ticket now. Feel free to open a new one if you need anything else." },
 ];
 
-// Status Badge Component
-const StatusBadge = ({ status, size = "sm" }: { status: string; size?: "sm" | "md" }) => {
-  const config = STATUS_CONFIG[status] || STATUS_CONFIG.NEW;
-  const Icon = config.icon;
-  return (
-    <span className={cn(
-      "inline-flex items-center gap-1 rounded-full border font-medium",
-      config.bg, config.color,
-      size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-1 text-xs"
-    )}>
-      <Icon className={size === "sm" ? "w-3 h-3" : "w-3.5 h-3.5"} />
-      {config.label}
-    </span>
-  );
+// Get category from subject/content
+const detectCategory = (subject: string): string => {
+  const s = subject.toLowerCase();
+  if (s.includes("refund") || s.includes("cancel") || s.includes("money back")) return "Refund";
+  if (s.includes("access") || s.includes("login") || s.includes("password")) return "Access";
+  if (s.includes("certificate") || s.includes("completion")) return "Certificate";
+  if (s.includes("billing") || s.includes("payment") || s.includes("charge")) return "Billing";
+  if (s.includes("module") || s.includes("lesson") || s.includes("course") || s.includes("video")) return "Course Content";
+  if (s.includes("error") || s.includes("bug") || s.includes("broken") || s.includes("issue")) return "Technical";
+  return "General";
 };
 
-// Priority Indicator
-const PriorityIndicator = ({ priority }: { priority: string }) => {
-  const config = PRIORITY_CONFIG[priority] || PRIORITY_CONFIG.MEDIUM;
-  const Icon = config.icon;
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>
-          <Icon className={cn("w-4 h-4", config.color)} />
-        </TooltipTrigger>
-        <TooltipContent><p>{config.label} Priority</p></TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+// Tag Autocomplete Component
+function TagAutocomplete({
+  userId,
+  existingTags,
+  onTagAdded
+}: {
+  userId: string;
+  existingTags: Array<{ id: string; tag: { name: string; slug: string; color: string } }>;
+  onTagAdded: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [allTags, setAllTags] = useState<Array<{ id: string; name: string; slug: string; color: string }>>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await fetch("/api/admin/marketing-tags");
+        const data = await res.json();
+        if (data.tags) setAllTags(data.tags);
+      } catch (e) {
+        console.error("Failed to fetch tags:", e);
+      }
+    };
+    if (open) fetchTags();
+  }, [open]);
+
+  const existingTagIds = new Set(existingTags.map(t => t.tag?.slug || ""));
+  const filteredTags = allTags.filter(
+    t => !existingTagIds.has(t.slug) &&
+      (t.name.toLowerCase().includes(search.toLowerCase()) ||
+        t.slug.toLowerCase().includes(search.toLowerCase()))
   );
-};
 
-// Ticket Card Component
-const TicketCard = ({ ticket, isSelected, onClick }: { ticket: Ticket; isSelected: boolean; onClick: () => void }) => {
-  const lastMessage = ticket.messages?.[ticket.messages.length - 1];
-  const isUrgent = ticket.priority === "URGENT" || ticket.priority === "HIGH";
-
-  return (
-    <div
-      onClick={onClick}
-      className={cn(
-        "group relative p-4 cursor-pointer transition-all border-b hover:bg-slate-50",
-        isSelected && "bg-gradient-to-r from-blue-50 to-transparent border-l-[3px] border-l-blue-500",
-        isUrgent && !isSelected && "bg-red-50/30"
-      )}
-    >
-      {/* Unread indicator */}
-      {ticket.status === "NEW" && (
-        <span className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full" />
-      )}
-
-      <div className="flex items-start gap-3">
-        <Avatar className="w-9 h-9 shrink-0">
-          <AvatarFallback className={cn(
-            "text-xs font-medium",
-            isUrgent ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-600"
-          )}>
-            {ticket.customerName.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="font-semibold text-sm text-slate-900 truncate">
-              {ticket.customerName}
-            </span>
-            <span className="text-[10px] text-slate-400 whitespace-nowrap">
-              {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: false })}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 mb-1.5">
-            <PriorityIndicator priority={ticket.priority} />
-            <span className="text-xs font-medium text-slate-700 truncate flex-1">
-              #{ticket.ticketNumber} {ticket.subject}
-            </span>
-          </div>
-
-          <p className="text-xs text-slate-500 line-clamp-1 mb-2">
-            {lastMessage?.content || "No messages yet..."}
-          </p>
-
-          <div className="flex items-center justify-between">
-            <StatusBadge status={ticket.status} />
-            {ticket.assignedTo && (
-              <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                <User className="w-3 h-3" />
-                {ticket.assignedTo.name?.split(' ')[0]}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Customer Sidebar
-const CustomerSidebar = ({ ticket }: { ticket: Ticket }) => {
-  const user = ticket.user;
-  const [newTag, setNewTag] = useState("");
-  const [isAddingTag, setIsAddingTag] = useState(false);
-  const queryClient = useQueryClient();
-
-  const handleAddTag = async () => {
-    if (!newTag.trim() || !user?.id) return;
+  const handleAddTag = async (tagSlug: string) => {
+    setLoading(true);
     try {
-      const res = await fetch(`/api/admin/users/${user.id}/tags`, {
+      const res = await fetch(`/api/admin/users/${userId}/tags`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tag: newTag })
+        body: JSON.stringify({ tag: tagSlug })
       });
-      if (!res.ok) throw new Error("Failed");
-      toast.success("Tag added");
-      setNewTag("");
-      setIsAddingTag(false);
-      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      if (res.ok) {
+        toast.success("Tag added");
+        onTagAdded();
+        setOpen(false);
+        setSearch("");
+      } else {
+        toast.error("Failed to add tag");
+      }
     } catch {
       toast.error("Failed to add tag");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!user) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-slate-50">
-        <div className="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center mb-4">
-          <User className="w-8 h-8 text-slate-400" />
-        </div>
-        <h3 className="font-semibold text-slate-600 mb-1">Guest User</h3>
-        <p className="text-xs text-slate-400 mb-4">No account found</p>
-        <div className="w-full p-3 bg-white rounded-lg border text-left">
-          <div className="text-[10px] font-medium text-slate-400 uppercase mb-1">Contact Info</div>
-          <div className="text-sm font-medium text-slate-800">{ticket.customerName}</div>
-          <div className="text-xs text-blue-600">{ticket.customerEmail}</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <ScrollArea className="h-full">
-      <div className="p-4">
-        {/* User Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Avatar className="w-14 h-14 border-2 border-white shadow">
-            <AvatarImage src={user.avatar || ""} />
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg font-medium">
-              {user.firstName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            <h3 className="font-bold text-slate-800 truncate">{user.firstName} {user.lastName}</h3>
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <Mail className="w-3 h-3" />
-              <span className="truncate">{user.email}</span>
-              <button
-                onClick={() => { navigator.clipboard.writeText(user.email || ""); toast.success("Copied!"); }}
-                className="text-blue-500 hover:text-blue-700"
-              >
-                <Copy className="w-3 h-3" />
-              </button>
-            </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">
-              Member since {new Date(user.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        </div>
-
-        {/* Purchases */}
-        <div className="mb-6">
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <DollarSign className="w-3.5 h-3.5 text-green-600" /> Purchases
-          </h4>
-          {!user.payments?.length ? (
-            <p className="text-xs text-slate-400 italic">No purchases</p>
-          ) : (
-            <div className="space-y-2">
-              {user.payments.slice(0, 3).map((p) => (
-                <div key={p.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-green-600" />
-                    <div>
-                      <div className="text-xs font-medium text-slate-700 line-clamp-1">{p.productName}</div>
-                      <div className="text-[10px] text-slate-400">{new Date(p.createdAt).toLocaleDateString()}</div>
-                    </div>
-                  </div>
-                  <span className="text-sm font-bold text-slate-800">
-                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: p.currency }).format(p.amount)}
-                  </span>
-                </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="h-7 text-xs border-dashed gap-1">
+          <Plus className="w-3 h-3" /> Add Tag
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 p-0" align="start">
+        <Command>
+          <CommandInput
+            placeholder="Search tags..."
+            value={search}
+            onValueChange={setSearch}
+          />
+          <CommandList>
+            <CommandEmpty>
+              {search ? "No tags found" : "Type to search tags"}
+            </CommandEmpty>
+            <CommandGroup>
+              {filteredTags.slice(0, 10).map((tag) => (
+                <CommandItem
+                  key={tag.id}
+                  value={tag.slug}
+                  onSelect={() => handleAddTag(tag.slug)}
+                  disabled={loading}
+                >
+                  <div
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: tag.color || "#6B7280" }}
+                  />
+                  <span className="flex-1">{tag.name}</span>
+                  <span className="text-[10px] text-slate-400">{tag.slug}</span>
+                </CommandItem>
               ))}
-              <a href={`/admin/users?userId=${user.id}`} target="_blank" className="block text-center text-xs text-blue-600 hover:underline py-1">
-                View all <ExternalLink className="w-3 h-3 inline" />
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Other Tickets */}
-        <div className="mb-6">
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <LifeBuoy className="w-3.5 h-3.5 text-blue-600" /> Other Tickets
-          </h4>
-          {!user.submittedTickets?.filter(t => t.id !== ticket.id).length ? (
-            <p className="text-xs text-slate-400 italic">No other tickets</p>
-          ) : (
-            <div className="space-y-2">
-              {user.submittedTickets.filter(t => t.id !== ticket.id).slice(0, 3).map((t) => (
-                <div key={t.id} className="p-2 bg-slate-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-slate-700">#{t.ticketNumber}</span>
-                    <StatusBadge status={t.status} />
-                  </div>
-                  <p className="text-xs text-slate-500 line-clamp-1">{t.subject}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Tags */}
-        <div>
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <TagIcon className="w-3.5 h-3.5 text-purple-600" /> Tags
-          </h4>
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {user.marketingTags?.length ? (
-              user.marketingTags.map((mt: any) => (
-                <Badge key={mt.id} variant="secondary" className="text-[10px] bg-purple-50 text-purple-700 border-purple-200">
-                  {mt.tag?.name || mt.tag?.slug}
-                </Badge>
-              ))
-            ) : (
-              <span className="text-xs text-slate-400 italic">No tags</span>
-            )}
-          </div>
-          {isAddingTag ? (
-            <div className="flex gap-1.5">
-              <Input
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                placeholder="Tag..."
-                className="h-7 text-xs"
-                onKeyDown={(e) => e.key === 'Enter' && handleAddTag()}
-                autoFocus
-              />
-              <Button size="sm" className="h-7 px-2" onClick={handleAddTag}><Plus className="w-3 h-3" /></Button>
-              <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setIsAddingTag(false)}>×</Button>
-            </div>
-          ) : (
-            <Button variant="outline" size="sm" className="w-full h-7 text-xs border-dashed" onClick={() => setIsAddingTag(true)}>
-              <Plus className="w-3 h-3 mr-1" /> Add Tag
-            </Button>
-          )}
-        </div>
-      </div>
-    </ScrollArea>
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
-};
+}
 
 // Main Page
 export default function TicketsPage() {
   const { data: session } = useSession();
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterPriority, setFilterPriority] = useState("all");
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState<"unresolved" | "all" | "mine">("unresolved");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
   const [isInternalNote, setIsInternalNote] = useState(false);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, refetch } = useTickets(filterStatus, filterPriority, searchTerm);
-  const mutationUpdate = useUpdateTicket();
-  const mutationReply = useReplyTicket();
+  const { data, isLoading, refetch } = useTickets(statusFilter, priorityFilter, searchTerm);
+  const updateTicket = useUpdateTicket();
+  const replyTicket = useReplyTicket();
 
   const tickets = data?.tickets || [];
-
-  const filteredTickets = useMemo(() => {
-    let list = tickets;
-    if (activeTab === "unresolved") {
-      list = list.filter(t => !["RESOLVED", "CLOSED"].includes(t.status));
-    } else if (activeTab === "mine" && session?.user?.id) {
-      list = list.filter(t => t.assignedTo?.id === session.user.id);
-    }
-    return list;
-  }, [tickets, activeTab, session?.user?.id]);
-
   const selectedTicket = useMemo(() => tickets.find(t => t.id === selectedTicketId), [tickets, selectedTicketId]);
 
   // Stats
   const stats = useMemo(() => ({
-    unresolved: tickets.filter(t => !["RESOLVED", "CLOSED"].includes(t.status)).length,
+    new: tickets.filter(t => t.status === "NEW").length,
+    open: tickets.filter(t => t.status === "OPEN" || t.status === "PENDING").length,
     urgent: tickets.filter(t => t.priority === "URGENT" || t.priority === "HIGH").length,
-    mine: session?.user?.id ? tickets.filter(t => t.assignedTo?.id === session.user.id).length : 0,
-  }), [tickets, session?.user?.id]);
+    total: tickets.length,
+  }), [tickets]);
 
+  // Auto-select first ticket
   useEffect(() => {
-    if (!selectedTicketId && filteredTickets.length > 0) {
-      setSelectedTicketId(filteredTickets[0].id);
+    if (!selectedTicketId && tickets.length > 0) {
+      setSelectedTicketId(tickets[0].id);
     }
-  }, [filteredTickets, selectedTicketId]);
+  }, [tickets, selectedTicketId]);
 
-  const handleSendReply = () => {
+  // Scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedTicket?.messages]);
+
+  const handleSendReply = async () => {
     if (!selectedTicketId || !replyText.trim()) return;
-    mutationReply.mutate({ ticketId: selectedTicketId, message: replyText, isInternal: isInternalNote }, {
-      onSuccess: () => { setReplyText(""); setIsInternalNote(false); }
+    await replyTicket.mutateAsync({
+      ticketId: selectedTicketId,
+      message: replyText,
+      isInternal: isInternalNote
     });
+    setReplyText("");
+    setIsInternalNote(false);
   };
 
-  const handleGenAI = async () => {
+  const handleAIReply = async () => {
     if (!selectedTicketId) return;
     setIsGeneratingAI(true);
     try {
@@ -366,148 +247,306 @@ export default function TicketsPage() {
         body: JSON.stringify({ ticketId: selectedTicketId }),
       });
       const data = await res.json();
-      if (data.reply) setReplyText(prev => prev ? prev + "\n\n" + data.reply : data.reply);
-      else toast.error("Failed to generate reply");
-    } catch { toast.error("Error generating AI reply"); }
-    finally { setIsGeneratingAI(false); }
-  };
-
-  const handleStatusChange = (newStatus: string) => {
-    if (!selectedTicketId) return;
-    mutationUpdate.mutate({ ticketId: selectedTicketId, updates: { status: newStatus as any } });
-  };
-
-  const handleAssignToMe = () => {
-    if (!selectedTicketId || !session?.user?.id) return;
-    mutationUpdate.mutate({ ticketId: selectedTicketId, updates: { assignedToId: session.user.id } });
+      if (data.reply) {
+        setReplyText(prev => prev ? prev + "\n\n" + data.reply : data.reply);
+      }
+    } catch {
+      toast.error("Failed to generate AI reply");
+    } finally {
+      setIsGeneratingAI(false);
+    }
   };
 
   const handleDeleteTicket = async () => {
-    if (!selectedTicketId || !confirm("Delete this ticket?")) return;
+    if (!selectedTicketId || !confirm("Delete this ticket permanently?")) return;
     try {
       await fetch(`/api/admin/tickets/${selectedTicketId}`, { method: "DELETE" });
-      toast.success("Deleted");
+      toast.success("Ticket deleted");
       refetch();
-      const next = filteredTickets.find(t => t.id !== selectedTicketId);
-      setSelectedTicketId(next?.id || null);
-    } catch { toast.error("Failed to delete"); }
+      const remaining = tickets.filter(t => t.id !== selectedTicketId);
+      setSelectedTicketId(remaining[0]?.id || null);
+    } catch {
+      toast.error("Failed to delete");
+    }
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-slate-100">
+    <div className="flex h-[calc(100vh-64px)] bg-slate-50">
       {/* Left Panel - Ticket List */}
-      <div className="w-[380px] bg-white border-r flex flex-col">
+      <div className="w-[400px] bg-white border-r flex flex-col">
         {/* Header */}
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-slate-800">Support</h1>
-            <Button variant="ghost" size="icon" onClick={() => refetch()} className="text-slate-400">
+        <div className="p-4 border-b bg-gradient-to-r from-[#722F37] to-[#8B3D47]">
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-lg font-bold text-white flex items-center gap-2">
+              <LifeBuoy className="w-5 h-5" />
+              Support Tickets
+            </h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => refetch()}
+              className="text-white/80 hover:text-white hover:bg-white/10"
+            >
               <RefreshCcw className={cn("w-4 h-4", isLoading && "animate-spin")} />
             </Button>
           </div>
 
-          {/* Stats Row */}
-          <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => setActiveTab("unresolved")}
-              className={cn(
-                "flex-1 p-2 rounded-lg text-center transition-all",
-                activeTab === "unresolved" ? "bg-blue-50 border border-blue-200" : "bg-slate-50 hover:bg-slate-100"
-              )}
+          {/* Stats */}
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: "New", value: stats.new, color: "bg-blue-500" },
+              { label: "Open", value: stats.open, color: "bg-emerald-500" },
+              { label: "Urgent", value: stats.urgent, color: "bg-red-500" },
+              { label: "Total", value: stats.total, color: "bg-slate-500" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className={cn("text-xl font-bold text-white")}>{stat.value}</div>
+                <div className="text-[10px] text-white/70 uppercase">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Search & Filters */}
+        <div className="p-3 border-b bg-slate-50">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Search tickets..."
+                className="pl-9 h-9 bg-white"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Button
+              variant={showFilters ? "secondary" : "outline"}
+              size="icon"
+              className="h-9 w-9"
+              onClick={() => setShowFilters(!showFilters)}
             >
-              <div className="text-lg font-bold text-blue-600">{stats.unresolved}</div>
-              <div className="text-[10px] text-slate-500 uppercase">Open</div>
-            </button>
-            <button
-              onClick={() => setActiveTab("all")}
-              className={cn(
-                "flex-1 p-2 rounded-lg text-center transition-all",
-                activeTab === "all" ? "bg-slate-200" : "bg-slate-50 hover:bg-slate-100"
-              )}
-            >
-              <div className="text-lg font-bold text-slate-700">{tickets.length}</div>
-              <div className="text-[10px] text-slate-500 uppercase">Total</div>
-            </button>
-            <button
-              onClick={() => setActiveTab("mine")}
-              className={cn(
-                "flex-1 p-2 rounded-lg text-center transition-all",
-                activeTab === "mine" ? "bg-purple-50 border border-purple-200" : "bg-slate-50 hover:bg-slate-100"
-              )}
-            >
-              <div className="text-lg font-bold text-purple-600">{stats.mine}</div>
-              <div className="text-[10px] text-slate-500 uppercase">Mine</div>
-            </button>
+              <SlidersHorizontal className="w-4 h-4" />
+            </Button>
           </div>
 
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input
-              placeholder="Search tickets..."
-              className="pl-9 bg-slate-50 border-0"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          {showFilters && (
+            <div className="flex gap-2 mt-2">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="flex-1 h-8 text-xs border rounded-md px-2 bg-white"
+              >
+                <option value="all">All Status</option>
+                <option value="NEW">New</option>
+                <option value="OPEN">Open</option>
+                <option value="PENDING">Pending</option>
+                <option value="RESOLVED">Resolved</option>
+              </select>
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+                className="flex-1 h-8 text-xs border rounded-md px-2 bg-white"
+              >
+                <option value="all">All Priority</option>
+                <option value="URGENT">Urgent</option>
+                <option value="HIGH">High</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="LOW">Low</option>
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Ticket List */}
         <ScrollArea className="flex-1">
           {isLoading ? (
-            <div className="p-8 text-center text-slate-400">Loading...</div>
-          ) : filteredTickets.length === 0 ? (
+            <div className="p-8 text-center text-slate-400">
+              <RefreshCcw className="w-6 h-6 animate-spin mx-auto mb-2" />
+              Loading tickets...
+            </div>
+          ) : tickets.length === 0 ? (
             <div className="p-8 text-center">
               <Inbox className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-400 text-sm">No tickets found</p>
+              <p className="text-slate-500">No tickets found</p>
             </div>
           ) : (
-            filteredTickets.map(ticket => (
-              <TicketCard
-                key={ticket.id}
-                ticket={ticket}
-                isSelected={selectedTicketId === ticket.id}
-                onClick={() => setSelectedTicketId(ticket.id)}
-              />
-            ))
+            tickets.map((ticket) => {
+              const category = detectCategory(ticket.subject);
+              const categoryStyle = CATEGORY_COLORS[category] || CATEGORY_COLORS.General;
+              const statusConfig = STATUS_CONFIG[ticket.status];
+              const priorityConfig = PRIORITY_CONFIG[ticket.priority];
+              const isSelected = selectedTicketId === ticket.id;
+              const isUrgent = ticket.priority === "URGENT" || ticket.priority === "HIGH";
+
+              return (
+                <div
+                  key={ticket.id}
+                  onClick={() => setSelectedTicketId(ticket.id)}
+                  className={cn(
+                    "p-4 border-b cursor-pointer transition-all hover:bg-slate-50",
+                    isSelected && "bg-gradient-to-r from-[#722F37]/5 to-transparent border-l-4 border-l-[#722F37]",
+                    isUrgent && !isSelected && "bg-red-50/50"
+                  )}
+                >
+                  {/* Top Row */}
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Avatar className="w-8 h-8 flex-shrink-0">
+                        <AvatarImage src={ticket.user?.avatar || undefined} />
+                        <AvatarFallback className={cn(
+                          "text-xs font-semibold",
+                          isUrgent ? "bg-red-100 text-red-700" : "bg-[#722F37]/10 text-[#722F37]"
+                        )}>
+                          {ticket.customerName.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <div className="font-semibold text-sm text-slate-900 truncate">
+                          {ticket.customerName}
+                        </div>
+                        <div className="text-[10px] text-slate-500 truncate">
+                          {ticket.customerEmail}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-[10px] text-slate-400">
+                        {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: false })}
+                      </div>
+                      <div className={cn(
+                        "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold mt-1",
+                        statusConfig.bgLight, statusConfig.textColor
+                      )}>
+                        <span className={cn("w-1.5 h-1.5 rounded-full", statusConfig.color)} />
+                        {statusConfig.label}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Subject & Preview */}
+                  <div className="mb-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-mono text-slate-400">#{ticket.ticketNumber}</span>
+                      <span className={cn(
+                        "text-[9px] px-1.5 py-0.5 rounded-full font-medium border",
+                        categoryStyle.bg, categoryStyle.text, categoryStyle.border
+                      )}>
+                        {category}
+                      </span>
+                      {isUrgent && (
+                        <priorityConfig.icon className={cn("w-3.5 h-3.5", priorityConfig.color)} />
+                      )}
+                    </div>
+                    <p className="text-sm font-medium text-slate-800 line-clamp-1">
+                      {ticket.subject}
+                    </p>
+                    <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                      {ticket.messages[ticket.messages.length - 1]?.content || "No messages"}
+                    </p>
+                  </div>
+
+                  {/* Tags */}
+                  {ticket.user?.marketingTags && ticket.user.marketingTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {ticket.user.marketingTags.slice(0, 3).map((mt: any, i: number) => (
+                        <span
+                          key={i}
+                          className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200"
+                        >
+                          <TagIcon className="w-2.5 h-2.5" />
+                          {mt.tag?.name || mt.tag?.slug || "Tag"}
+                        </span>
+                      ))}
+                      {ticket.user.marketingTags.length > 3 && (
+                        <span className="text-[9px] text-slate-400">
+                          +{ticket.user.marketingTags.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })
           )}
         </ScrollArea>
       </div>
 
       {/* Center Panel - Conversation */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-white">
         {selectedTicket ? (
           <>
-            {/* Ticket Header */}
-            <header className="h-16 bg-white border-b px-6 flex items-center justify-between shrink-0">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <PriorityIndicator priority={selectedTicket.priority} />
-                  <h2 className="font-semibold text-slate-800 truncate">
-                    #{selectedTicket.ticketNumber} - {selectedTicket.subject}
-                  </h2>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
-                  <span>{selectedTicket.customerEmail}</span>
-                  {selectedTicket.assignedTo && (
+            {/* Header */}
+            <div className="h-16 border-b px-6 flex items-center justify-between bg-white flex-shrink-0">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-slate-400">#{selectedTicket.ticketNumber}</span>
+                    <h2 className="font-semibold text-slate-900 truncate">
+                      {selectedTicket.subject}
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-slate-500">
                     <span className="flex items-center gap-1">
-                      <User className="w-3 h-3" /> {selectedTicket.assignedTo.name}
+                      <Mail className="w-3 h-3" />
+                      {selectedTicket.customerEmail}
                     </span>
-                  )}
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {format(new Date(selectedTicket.createdAt), "MMM d, yyyy")}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
+                {/* Status Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1">
-                      <StatusBadge status={selectedTicket.status} size="md" />
-                      <ChevronDown className="w-3 h-3 text-slate-400" />
+                    <Button variant="outline" size="sm" className="h-8 gap-2">
+                      <span className={cn(
+                        "w-2 h-2 rounded-full",
+                        STATUS_CONFIG[selectedTicket.status].color
+                      )} />
+                      {STATUS_CONFIG[selectedTicket.status].label}
+                      <ChevronDown className="w-3 h-3" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     {Object.entries(STATUS_CONFIG).map(([key, config]) => (
-                      <DropdownMenuItem key={key} onClick={() => handleStatusChange(key)}>
+                      <DropdownMenuItem
+                        key={key}
+                        onClick={() => updateTicket.mutate({
+                          ticketId: selectedTicket.id,
+                          updates: { status: key as any }
+                        })}
+                      >
+                        <span className={cn("w-2 h-2 rounded-full mr-2", config.color)} />
+                        {config.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Priority Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 gap-2">
+                      {(() => {
+                        const P = PRIORITY_CONFIG[selectedTicket.priority];
+                        return <P.icon className={cn("w-4 h-4", P.color)} />;
+                      })()}
+                      <ChevronDown className="w-3 h-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {Object.entries(PRIORITY_CONFIG).map(([key, config]) => (
+                      <DropdownMenuItem
+                        key={key}
+                        onClick={() => updateTicket.mutate({
+                          ticketId: selectedTicket.id,
+                          updates: { priority: key as any }
+                        })}
+                      >
                         <config.icon className={cn("w-4 h-4 mr-2", config.color)} />
                         {config.label}
                       </DropdownMenuItem>
@@ -515,115 +554,180 @@ export default function TicketsPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
+                {/* More Actions */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon"><MoreVertical className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handleAssignToMe}>
-                      <UserPlus className="w-4 h-4 mr-2" /> Assign to Me
+                    <DropdownMenuItem onClick={() => {
+                      if (session?.user?.id) {
+                        updateTicket.mutate({
+                          ticketId: selectedTicket.id,
+                          updates: { assignedToId: session.user.id }
+                        });
+                      }
+                    }}>
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Assign to Me
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-600" onClick={handleDeleteTicket}>
-                      <Trash2 className="w-4 h-4 mr-2" /> Delete
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Ticket
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </header>
+            </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-6">
-              <div className="max-w-2xl mx-auto space-y-4">
-                {selectedTicket.messages.map((msg) => (
-                  <div key={msg.id} className={cn("flex gap-3", !msg.isFromCustomer && "flex-row-reverse")}>
-                    <Avatar className="w-8 h-8 shrink-0">
-                      <AvatarFallback className={cn(
-                        "text-xs",
-                        msg.isFromCustomer ? "bg-slate-200 text-slate-600" : "bg-blue-600 text-white"
-                      )}>
-                        {msg.isFromCustomer ? selectedTicket.customerName.charAt(0) : "S"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className={cn("max-w-[75%]", !msg.isFromCustomer && "text-right")}>
-                      <div className={cn(
-                        "inline-block px-4 py-2.5 rounded-2xl text-sm",
-                        msg.isFromCustomer
-                          ? "bg-white border text-slate-800 rounded-tl-sm"
-                          : msg.isInternal
-                            ? "bg-amber-50 border border-amber-200 text-slate-800 rounded-tr-sm text-left"
-                            : "bg-blue-600 text-white rounded-tr-sm text-left"
-                      )}>
-                        {msg.isInternal && (
-                          <div className="text-[10px] font-bold text-amber-600 mb-1 flex items-center gap-1">
-                            <Zap className="w-3 h-3" /> Internal Note
+            <ScrollArea className="flex-1 p-6 bg-slate-50">
+              <div className="max-w-3xl mx-auto space-y-4">
+                {selectedTicket.messages.map((msg, idx) => {
+                  const isCustomer = msg.isFromCustomer;
+                  const showDateSeparator = idx === 0 ||
+                    format(new Date(msg.createdAt), "yyyy-MM-dd") !==
+                    format(new Date(selectedTicket.messages[idx - 1].createdAt), "yyyy-MM-dd");
+
+                  return (
+                    <div key={msg.id}>
+                      {showDateSeparator && (
+                        <div className="flex items-center justify-center my-6">
+                          <div className="text-[10px] text-slate-400 bg-white px-3 py-1 rounded-full border">
+                            {format(new Date(msg.createdAt), "MMMM d, yyyy")}
                           </div>
-                        )}
-                        <p className="whitespace-pre-wrap">{msg.content}</p>
-                      </div>
-                      <div className="text-[10px] text-slate-400 mt-1 px-1">
-                        {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
+                        </div>
+                      )}
+                      <div className={cn("flex gap-3", !isCustomer && "flex-row-reverse")}>
+                        <Avatar className="w-8 h-8 flex-shrink-0">
+                          <AvatarFallback className={cn(
+                            "text-xs font-semibold",
+                            isCustomer
+                              ? "bg-slate-100 text-slate-600"
+                              : "bg-[#722F37] text-white"
+                          )}>
+                            {isCustomer ? selectedTicket.customerName.charAt(0) : "S"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className={cn("max-w-[75%]", !isCustomer && "text-right")}>
+                          <div className={cn(
+                            "inline-block px-4 py-3 rounded-2xl text-sm",
+                            isCustomer
+                              ? "bg-white border text-slate-800 rounded-tl-sm shadow-sm"
+                              : msg.isInternal
+                                ? "bg-amber-50 border-2 border-amber-200 text-slate-800 rounded-tr-sm"
+                                : "bg-[#722F37] text-white rounded-tr-sm shadow-sm"
+                          )}>
+                            {msg.isInternal && (
+                              <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 mb-1">
+                                <Zap className="w-3 h-3" />
+                                INTERNAL NOTE
+                              </div>
+                            )}
+                            <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                          </div>
+                          <div className={cn(
+                            "text-[10px] text-slate-400 mt-1 px-1",
+                            !isCustomer && "text-right"
+                          )}>
+                            {format(new Date(msg.createdAt), "h:mm a")}
+                            {!isCustomer && msg.sentBy?.name && (
+                              <span className="ml-2">• {msg.sentBy.name}</span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+                <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
 
             {/* Reply Box */}
-            <div className="p-4 bg-white border-t">
-              <div className="max-w-2xl mx-auto">
-                <div className="flex items-center gap-2 mb-2">
+            <div className="p-4 border-t bg-white flex-shrink-0">
+              <div className="max-w-3xl mx-auto">
+                {/* Quick Actions */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant={isInternalNote ? "default" : "outline"}
+                      className={cn(
+                        "h-7 text-xs",
+                        isInternalNote && "bg-amber-500 hover:bg-amber-600"
+                      )}
+                      onClick={() => setIsInternalNote(!isInternalNote)}
+                    >
+                      <Zap className="w-3 h-3 mr-1" />
+                      Internal
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm" variant="outline" className="h-7 text-xs">
+                          Quick Reply
+                          <ChevronDown className="w-3 h-3 ml-1" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-48">
+                        {QUICK_REPLIES.map((qr) => (
+                          <DropdownMenuItem
+                            key={qr.label}
+                            onClick={() => setReplyText(prev => prev ? prev + "\n\n" + qr.text : qr.text)}
+                          >
+                            {qr.label}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                   <Button
                     size="sm"
-                    variant={isInternalNote ? "default" : "ghost"}
-                    className={cn("h-7 text-xs", isInternalNote && "bg-amber-100 text-amber-700 hover:bg-amber-200")}
-                    onClick={() => setIsInternalNote(!isInternalNote)}
-                  >
-                    Internal Note
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" variant="ghost" className="h-7 text-xs text-slate-500">Templates</Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {SAVED_REPLIES.map((r) => (
-                        <DropdownMenuItem key={r.label} onClick={() => setReplyText(prev => prev + r.text)}>
-                          {r.label}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-7 text-xs text-purple-600 ml-auto"
-                    onClick={handleGenAI}
+                    variant="outline"
+                    className="h-7 text-xs text-purple-600 border-purple-200 hover:bg-purple-50"
+                    onClick={handleAIReply}
                     disabled={isGeneratingAI}
                   >
                     <Sparkles className={cn("w-3 h-3 mr-1", isGeneratingAI && "animate-spin")} />
-                    {isGeneratingAI ? "..." : "AI"}
+                    {isGeneratingAI ? "Generating..." : "AI Suggest"}
                   </Button>
                 </div>
 
+                {/* Textarea */}
                 <div className={cn(
-                  "rounded-xl border overflow-hidden",
-                  isInternalNote && "border-amber-300 bg-amber-50/50"
+                  "rounded-xl border-2 overflow-hidden transition-colors",
+                  isInternalNote ? "border-amber-300 bg-amber-50/50" : "border-slate-200"
                 )}>
                   <Textarea
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
-                    placeholder={isInternalNote ? "Add internal note..." : "Type your reply..."}
-                    className="min-h-[80px] border-0 focus-visible:ring-0 resize-none bg-transparent"
+                    placeholder={isInternalNote ? "Add internal note (not visible to customer)..." : "Type your reply..."}
+                    className="min-h-[100px] border-0 focus-visible:ring-0 resize-none bg-transparent"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && e.metaKey) {
+                        handleSendReply();
+                      }
+                    }}
                   />
-                  <div className="flex justify-end p-2 bg-slate-50 border-t">
+                  <div className="flex items-center justify-between px-3 py-2 bg-slate-50 border-t">
+                    <span className="text-[10px] text-slate-400">
+                      Press <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">⌘</kbd> + <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">Enter</kbd> to send
+                    </span>
                     <Button
                       size="sm"
-                      className={cn(isInternalNote ? "bg-amber-600 hover:bg-amber-700" : "bg-blue-600 hover:bg-blue-700")}
                       onClick={handleSendReply}
-                      disabled={mutationReply.isPending || !replyText.trim()}
+                      disabled={replyTicket.isPending || !replyText.trim()}
+                      className={cn(
+                        "h-8",
+                        isInternalNote
+                          ? "bg-amber-500 hover:bg-amber-600"
+                          : "bg-[#722F37] hover:bg-[#5A252C]"
+                      )}
                     >
-                      {mutationReply.isPending ? "..." : "Send"}
+                      {replyTicket.isPending ? "Sending..." : "Send"}
                       <Send className="w-3 h-3 ml-2" />
                     </Button>
                   </div>
@@ -632,17 +736,169 @@ export default function TicketsPage() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-slate-400">
-            <MessageSquare className="w-16 h-16 mb-4 opacity-20" />
-            <p>Select a ticket</p>
+          <div className="flex-1 flex items-center justify-center text-slate-400">
+            <div className="text-center">
+              <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-20" />
+              <p className="text-lg font-medium">Select a ticket</p>
+              <p className="text-sm">Choose a ticket from the list to view the conversation</p>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Right Panel - Customer Info */}
+      {/* Right Panel - Customer Details */}
       {selectedTicket && (
-        <div className="w-[300px] bg-white border-l hidden xl:block">
-          <CustomerSidebar ticket={selectedTicket} />
+        <div className="w-[320px] bg-white border-l flex-shrink-0 flex flex-col overflow-hidden">
+          <ScrollArea className="flex-1">
+            <div className="p-4">
+              {/* Customer Header */}
+              <div className="text-center pb-4 border-b mb-4">
+                <Avatar className="w-16 h-16 mx-auto mb-3 border-2 border-[#722F37]/20">
+                  <AvatarImage src={selectedTicket.user?.avatar || undefined} />
+                  <AvatarFallback className="bg-[#722F37] text-white text-xl font-semibold">
+                    {selectedTicket.customerName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="font-bold text-slate-900">{selectedTicket.customerName}</h3>
+                <div className="flex items-center justify-center gap-1 text-xs text-slate-500 mt-1">
+                  <Mail className="w-3 h-3" />
+                  {selectedTicket.customerEmail}
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedTicket.customerEmail);
+                      toast.success("Email copied!");
+                    }}
+                    className="text-[#722F37] hover:text-[#5A252C] ml-1"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
+                </div>
+                {selectedTicket.user && (
+                  <div className="text-[10px] text-slate-400 mt-1">
+                    Customer since {format(new Date(selectedTicket.user.createdAt), "MMM yyyy")}
+                  </div>
+                )}
+              </div>
+
+              {/* Tags Section */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <TagIcon className="w-3.5 h-3.5" /> Tags
+                  </h4>
+                  {selectedTicket.user && (
+                    <TagAutocomplete
+                      userId={selectedTicket.user.id}
+                      existingTags={selectedTicket.user.marketingTags || []}
+                      onTagAdded={() => queryClient.invalidateQueries({ queryKey: ["tickets"] })}
+                    />
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedTicket.user?.marketingTags && selectedTicket.user.marketingTags.length > 0 ? (
+                    selectedTicket.user.marketingTags.map((mt: any, i: number) => (
+                      <Badge
+                        key={i}
+                        variant="secondary"
+                        className="text-[10px] gap-1"
+                        style={{
+                          backgroundColor: `${mt.tag?.color || "#6B7280"}20`,
+                          color: mt.tag?.color || "#6B7280",
+                          borderColor: `${mt.tag?.color || "#6B7280"}40`,
+                        }}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: mt.tag?.color || "#6B7280" }}
+                        />
+                        {mt.tag?.name || mt.tag?.slug || "Tag"}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400 italic">No tags assigned</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Purchases */}
+              <div className="mb-4">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
+                  <DollarSign className="w-3.5 h-3.5 text-green-600" /> Purchases
+                </h4>
+                {!selectedTicket.user?.payments?.length ? (
+                  <p className="text-xs text-slate-400 italic">No purchases found</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedTicket.user.payments.slice(0, 4).map((p) => (
+                      <div key={p.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <CreditCard className="w-3.5 h-3.5 text-green-600" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-xs font-medium text-slate-700 truncate">
+                              {p.productName || "Product"}
+                            </div>
+                            <div className="text-[10px] text-slate-400">
+                              {format(new Date(p.createdAt), "MMM d, yyyy")}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-sm font-bold text-slate-900">
+                          {new Intl.NumberFormat("en-US", { style: "currency", currency: p.currency }).format(p.amount)}
+                        </div>
+                      </div>
+                    ))}
+                    {selectedTicket.user.payments.length > 4 && (
+                      <a
+                        href={`/admin/users?userId=${selectedTicket.user.id}`}
+                        target="_blank"
+                        className="block text-center text-xs text-[#722F37] hover:underline py-1"
+                      >
+                        View all {selectedTicket.user.payments.length} purchases
+                        <ExternalLink className="w-3 h-3 inline ml-1" />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Other Tickets */}
+              <div>
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
+                  <LifeBuoy className="w-3.5 h-3.5 text-blue-600" /> Other Tickets
+                </h4>
+                {!selectedTicket.user?.submittedTickets?.filter(t => t.id !== selectedTicket.id).length ? (
+                  <p className="text-xs text-slate-400 italic">No other tickets</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedTicket.user.submittedTickets
+                      .filter(t => t.id !== selectedTicket.id)
+                      .slice(0, 4)
+                      .map((t) => (
+                        <div
+                          key={t.id}
+                          onClick={() => setSelectedTicketId(t.id)}
+                          className="p-2 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors"
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-mono text-slate-400">#{t.ticketNumber}</span>
+                            <span className={cn(
+                              "text-[9px] px-1.5 py-0.5 rounded-full font-medium",
+                              STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.bgLight,
+                              STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.textColor
+                            )}>
+                              {STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.label || t.status}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-700 line-clamp-1">{t.subject}</p>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </ScrollArea>
         </div>
       )}
     </div>
