@@ -9,7 +9,7 @@ import {
   MoreHorizontal, Mail, LifeBuoy, Sparkles, Trash2, UserPlus,
   DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
   Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
-  AlertCircle, Circle, Phone, Globe, Calendar, Hash
+  AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,7 +102,7 @@ function TagAutocomplete({
     const fetchTags = async () => {
       setTagsLoading(true);
       try {
-        const res = await fetch("/api/admin/marketing-tags");
+        const res = await fetch("/api/admin/marketing/tags");
         const data = await res.json();
         if (data.tags) setAllTags(data.tags);
       } catch (e) {
@@ -938,19 +938,94 @@ export default function TicketsPage() {
                 )}
               </div>
 
+              {/* Enrollments & Progress */}
+              <div className="mb-4">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
+                  <GraduationCap className="w-3.5 h-3.5 text-purple-600" /> Enrollments
+                </h4>
+                {!selectedTicket.user?.enrollments?.length ? (
+                  <p className="text-xs text-slate-400 italic">No enrollments found</p>
+                ) : (
+                  <div className="space-y-2">
+                    {selectedTicket.user.enrollments.slice(0, 4).map((enrollment: any) => {
+                      const completedModules = enrollment.moduleProgresses?.filter((mp: any) => mp.status === "COMPLETED")?.length || 0;
+                      const totalModules = enrollment.moduleProgresses?.length || 0;
+                      const progressPercent = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
+                      const currentModule = enrollment.moduleProgresses?.find((mp: any) => mp.status === "IN_PROGRESS");
+
+                      return (
+                        <div key={enrollment.id} className="p-2 bg-slate-50 rounded-lg">
+                          <div className="flex items-start gap-2">
+                            <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                              <BookOpen className="w-3.5 h-3.5 text-purple-600" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs font-medium text-slate-700 truncate">
+                                {enrollment.course?.title || "Course"}
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className={cn(
+                                  "text-[10px] px-1.5 py-0.5 rounded-full font-medium",
+                                  enrollment.status === "COMPLETED"
+                                    ? "bg-green-100 text-green-700"
+                                    : enrollment.status === "ACTIVE"
+                                      ? "bg-blue-100 text-blue-700"
+                                      : "bg-slate-100 text-slate-600"
+                                )}>
+                                  {enrollment.status}
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-medium">
+                                  {progressPercent}%
+                                </span>
+                              </div>
+                              {/* Progress bar */}
+                              <div className="mt-1.5 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                <div
+                                  className={cn(
+                                    "h-full rounded-full transition-all",
+                                    progressPercent === 100 ? "bg-green-500" : "bg-purple-500"
+                                  )}
+                                  style={{ width: `${progressPercent}%` }}
+                                />
+                              </div>
+                              {/* Current module */}
+                              {currentModule && (
+                                <div className="text-[10px] text-slate-400 mt-1 truncate">
+                                  📍 {currentModule.module?.title}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {selectedTicket.user.enrollments.length > 4 && (
+                      <a
+                        href={`/admin/users?userId=${selectedTicket.user.id}`}
+                        target="_blank"
+                        className="block text-center text-xs text-[#722F37] hover:underline py-1"
+                      >
+                        View all {selectedTicket.user.enrollments.length} enrollments
+                        <ExternalLink className="w-3 h-3 inline ml-1" />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* Other Tickets */}
               <div>
                 <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
                   <LifeBuoy className="w-3.5 h-3.5 text-blue-600" /> Other Tickets
                 </h4>
-                {!selectedTicket.user?.submittedTickets?.filter(t => t.id !== selectedTicket.id).length ? (
+                {!selectedTicket.user?.submittedTickets?.filter((t: any) => t.id !== selectedTicket.id).length ? (
                   <p className="text-xs text-slate-400 italic">No other tickets</p>
                 ) : (
                   <div className="space-y-2">
                     {selectedTicket.user.submittedTickets
-                      .filter(t => t.id !== selectedTicket.id)
+                      .filter((t: any) => t.id !== selectedTicket.id)
                       .slice(0, 4)
-                      .map((t) => (
+                      .map((t: any) => (
                         <div
                           key={t.id}
                           onClick={() => setSelectedTicketId(t.id)}

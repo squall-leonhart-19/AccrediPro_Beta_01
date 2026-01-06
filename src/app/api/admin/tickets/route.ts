@@ -112,6 +112,45 @@ export async function GET(request: NextRequest) {
                 status: true,
                 createdAt: true,
               }
+            },
+            // Marketing tags for quick context
+            marketingTags: {
+              include: {
+                tag: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    color: true,
+                    category: true,
+                  }
+                }
+              }
+            },
+            // Enrollments with progress for context
+            enrollments: {
+              include: {
+                course: {
+                  select: {
+                    id: true,
+                    title: true,
+                    slug: true,
+                  }
+                },
+                moduleProgresses: {
+                  select: {
+                    status: true,
+                    module: {
+                      select: {
+                        title: true,
+                        orderIndex: true,
+                      }
+                    }
+                  },
+                  orderBy: { module: { orderIndex: "asc" } }
+                }
+              },
+              orderBy: { createdAt: "desc" }
             }
           }
         },
@@ -225,6 +264,57 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Auto-detect category from subject/message
+function detectCategory(subject: string, message: string): string {
+  const text = `${subject} ${message}`.toLowerCase();
+
+  if (text.includes("refund") || text.includes("cancel") || text.includes("money back") || text.includes("chargeback")) {
+    return "REFUND";
+  }
+  if (text.includes("access") || text.includes("login") || text.includes("password") || text.includes("can't get in") || text.includes("locked out")) {
+    return "ACCESS";
+  }
+  if (text.includes("certificate") || text.includes("completion") || text.includes("credential") || text.includes("diploma")) {
+    return "CERTIFICATES";
+  }
+  if (text.includes("billing") || text.includes("payment") || text.includes("charge") || text.includes("invoice") || text.includes("receipt")) {
+    return "BILLING";
+  }
+  if (text.includes("module") || text.includes("lesson") || text.includes("course") || text.includes("video") || text.includes("content")) {
+    return "COURSE_CONTENT";
+  }
+  if (text.includes("error") || text.includes("bug") || text.includes("broken") || text.includes("not working") || text.includes("crash")) {
+    return "TECHNICAL";
+  }
+  return "GENERAL";
+}
+
+// Auto-detect priority from subject/message
+function detectPriority(subject: string, message: string): string {
+  const text = `${subject} ${message}`.toLowerCase();
+
+  // URGENT: Financial issues, broken access, time-sensitive
+  if (text.includes("urgent") || text.includes("asap") || text.includes("immediately") ||
+      text.includes("refund") || text.includes("chargeback") || text.includes("can't access") ||
+      text.includes("exam tomorrow") || text.includes("deadline")) {
+    return "URGENT";
+  }
+
+  // HIGH: Access issues, payment problems
+  if (text.includes("can't login") || text.includes("locked out") || text.includes("payment failed") ||
+      text.includes("not working") || text.includes("certificate not") || text.includes("stuck")) {
+    return "HIGH";
+  }
+
+  // LOW: General questions, feedback
+  if (text.includes("question") || text.includes("curious") || text.includes("wondering") ||
+      text.includes("suggestion") || text.includes("feedback") || text.includes("just wanted")) {
+    return "LOW";
+  }
+
+  return "MEDIUM";
+}
+
 // POST - Create a new ticket (from admin or customer form)
 export async function POST(request: NextRequest) {
   try {
@@ -238,14 +328,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Auto-detect category and priority if not provided
+    const detectedCategory = category || detectCategory(subject, message);
+    const detectedPriority = priority || detectPriority(subject, message);
+
     // Create ticket with initial message
     const ticket = await prisma.supportTicket.create({
       data: {
         subject,
         customerName,
         customerEmail,
-        category: category || "GENERAL",
-        priority: priority || "MEDIUM",
+        category: detectedCategory,
+        priority: detectedPriority,
         userId: userId || null,
         messages: {
           create: {
