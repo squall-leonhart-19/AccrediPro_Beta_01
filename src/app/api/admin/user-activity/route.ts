@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { assessCountryMismatch } from "@/lib/ip-geolocation";
 
 // GET - Fetch complete user activity for dispute resolution
 export const dynamic = "force-dynamic";
@@ -79,6 +80,8 @@ export async function GET(request: NextRequest) {
                     device: true,
                     browser: true,
                     location: true,
+                    country: true,
+                    countryCode: true,
                     loginMethod: true,
                     isFirstLogin: true,
                 },
@@ -403,11 +406,20 @@ export async function GET(request: NextRequest) {
             refundPolicyVersion: user.refundPolicyVersion,
         };
 
+        // NEW: Fraud risk assessment - compare login country with billing country
+        const latestPayment = payments[0];
+        const latestLogin = loginHistory[0];
+        const fraudRisk = assessCountryMismatch(
+            latestLogin?.countryCode || null,
+            latestPayment?.billingCountry || null
+        );
+
         return NextResponse.json({
             user,
             stats,
             registrationEvidence,
             legalAcceptance,
+            fraudRisk, // NEW: Include fraud risk assessment
             loginHistory,
             firstLoginRecord,
             enrollments,

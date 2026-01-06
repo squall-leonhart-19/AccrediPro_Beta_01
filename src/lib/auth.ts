@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import prisma from "./prisma";
 import { headers } from "next/headers";
 import { triggerAutoMessage } from "./auto-messages";
+import { lookupIpLocation } from "./ip-geolocation";
 
 // Helper to parse user agent
 function parseUserAgent(ua: string | null) {
@@ -154,19 +155,24 @@ export const authOptions: NextAuthOptions = {
           console.error("[AUTH] Failed to update login stats:", err);
         });
 
-        // Create login history record - fire and forget (don't await to prevent timeout)
-        prisma.loginHistory.create({
-          data: {
-            userId: user.id,
-            ipAddress,
-            userAgent,
-            device,
-            browser,
-            isFirstLogin,
-            loginMethod: "credentials",
-          },
+        // Create login history record with geolocation - fire and forget
+        lookupIpLocation(ipAddress).then((geo) => {
+          return prisma.loginHistory.create({
+            data: {
+              userId: user.id,
+              ipAddress,
+              userAgent,
+              device,
+              browser,
+              isFirstLogin,
+              loginMethod: "credentials",
+              location: geo.city && geo.country ? `${geo.city}, ${geo.country}` : null,
+              country: geo.country,
+              countryCode: geo.countryCode,
+            },
+          });
         }).then(() => {
-          console.log("[AUTH] Login history created for:", user.id);
+          console.log("[AUTH] Login history created with geo for:", user.id);
         }).catch((err) => {
           console.error("[AUTH] Failed to create login history:", err);
         });

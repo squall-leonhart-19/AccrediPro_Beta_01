@@ -397,6 +397,7 @@ export function UsersClient({ courses }: UsersClientProps) {
           },
           legalAcceptance: data.legalAcceptance || null,
           registrationEvidence: data.registrationEvidence || null,
+          fraudRisk: data.fraudRisk || null,
           loginHistory: data.loginHistory || [],
           enrollments: data.enrollments || [],
           lessonProgress: data.lessonProgress || [],
@@ -1991,13 +1992,100 @@ export function UsersClient({ courses }: UsersClientProps) {
 
                       {/* Dispute Defense & Chargeback Protection */}
                       <div className="p-5 bg-blue-50 rounded-lg border border-blue-200 shadow-sm mt-6 mb-8">
-                        <div className="flex items-center gap-2 mb-4">
-                          <Shield className="w-5 h-5 text-blue-700" />
-                          <div>
-                            <h3 className="text-sm font-bold text-blue-900">🛡️ Dispute Defense & Chargeback Protection</h3>
-                            <p className="text-xs text-blue-700">Official audit log for payment dispute evidence.</p>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-2">
+                            <Shield className="w-5 h-5 text-blue-700" />
+                            <div>
+                              <h3 className="text-sm font-bold text-blue-900">🛡️ Dispute Defense & Chargeback Protection</h3>
+                              <p className="text-xs text-blue-700">Official audit log for payment dispute evidence.</p>
+                            </div>
                           </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              // Generate and download evidence PDF
+                              const evidenceText = `
+DISPUTE EVIDENCE REPORT
+=======================
+Generated: ${new Date().toISOString()}
+
+USER INFORMATION
+----------------
+Name: ${selectedUser?.firstName} ${selectedUser?.lastName}
+Email: ${selectedUser?.email}
+Account Created: ${activityData.stats.accountCreated ? new Date(activityData.stats.accountCreated).toLocaleString() : 'N/A'}
+
+LEGAL ACCEPTANCE
+----------------
+TOS Accepted: ${activityData.legalAcceptance?.tosAcceptedAt ? new Date(activityData.legalAcceptance.tosAcceptedAt).toLocaleString() : 'MISSING'}
+TOS Version: ${activityData.legalAcceptance?.tosVersion || 'N/A'}
+Refund Policy Accepted: ${activityData.legalAcceptance?.refundPolicyAcceptedAt ? new Date(activityData.legalAcceptance.refundPolicyAcceptedAt).toLocaleString() : 'MISSING'}
+
+REGISTRATION EVIDENCE
+---------------------
+IP Address: ${activityData.registrationEvidence?.ip || 'Not Captured'}
+Device: ${activityData.registrationEvidence?.device || 'Unknown'}
+User Agent: ${activityData.registrationEvidence?.userAgent || 'Not Captured'}
+
+PLATFORM ACTIVITY
+-----------------
+Total Logins: ${activityData.stats.totalLogins || 0}
+First Login: ${activityData.stats.firstLogin ? new Date(activityData.stats.firstLogin).toLocaleString() : 'Never'}
+Last Access: ${activityData.stats.lastLogin ? new Date(activityData.stats.lastLogin).toLocaleString() : 'Never'}
+Time Spent on Platform: ${Math.round((activityData.stats.totalTimeSpent || 0) / 60)} minutes
+Lessons Completed: ${activityData.stats.lessonsCompleted || 0}
+Certificates Earned: ${activityData.stats.certificatesEarned || 0}
+
+PAYMENT HISTORY
+---------------
+${activityData.payments?.map((p: any) => `- $${p.amount} ${p.currency} on ${new Date(p.createdAt).toLocaleString()} (${p.productName || 'N/A'})`).join('\n') || 'No payments'}
+
+LOGIN HISTORY (Last 10)
+-----------------------
+${activityData.loginHistory?.slice(0, 10).map((l: any) => `- ${new Date(l.createdAt).toLocaleString()} from ${l.ipAddress || 'N/A'} (${l.device || 'Unknown'}) - ${l.country || 'Unknown location'}`).join('\n') || 'No login history'}
+
+SUPPORT TICKETS
+---------------
+${activityData.supportTickets?.length === 0 ? '✅ No support tickets or complaints filed.' : activityData.supportTickets?.map((t: any) => `- #${t.ticketNumber}: ${t.subject} (${t.status})`).join('\n')}
+
+---
+This document was automatically generated and serves as official evidence for payment dispute resolution.
+                              `.trim();
+
+                              const blob = new Blob([evidenceText], { type: 'text/plain' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `dispute-evidence-${selectedUser?.email}-${new Date().toISOString().split('T')[0]}.txt`;
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              URL.revokeObjectURL(url);
+                            }}
+                            className="bg-blue-600 text-white hover:bg-blue-700"
+                          >
+                            <Download className="w-4 h-4 mr-2" />
+                            Export Evidence
+                          </Button>
                         </div>
+
+                        {/* Fraud Risk Warning */}
+                        {activityData.fraudRisk?.isMismatch && (
+                          <div className={`p-3 rounded-lg mb-4 ${activityData.fraudRisk.riskLevel === 'high'
+                            ? 'bg-red-100 border border-red-300'
+                            : 'bg-yellow-100 border border-yellow-300'
+                            }`}>
+                            <div className="flex items-center gap-2">
+                              <AlertTriangle className={`w-5 h-5 ${activityData.fraudRisk.riskLevel === 'high' ? 'text-red-600' : 'text-yellow-600'
+                                }`} />
+                              <span className={`text-sm font-semibold ${activityData.fraudRisk.riskLevel === 'high' ? 'text-red-800' : 'text-yellow-800'
+                                }`}>
+                                {activityData.fraudRisk.message}
+                              </span>
+                            </div>
+                          </div>
+                        )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                           {/* Left Col: Evidence Data */}
