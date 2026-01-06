@@ -699,6 +699,35 @@ export async function POST(request: NextRequest) {
       console.error("Failed to send Meta CAPI event:", metaError);
     }
 
+    // 5. Create Payment record for dispute evidence and revenue tracking
+    let paymentId: string | null = null;
+    try {
+      const purchaseValue = amount || (productId ? PRODUCT_PRICES[productId] : undefined) || 27;
+      const course = courseSlugs.length > 0 ? await prisma.course.findFirst({ where: { slug: courseSlugs[0] } }) : null;
+
+      const payment = await prisma.payment.create({
+        data: {
+          userId: user.id,
+          amount: purchaseValue,
+          currency: "USD",
+          transactionId: transactionId || `cf_${Date.now()}`,
+          paymentMethod: "clickfunnels",
+          productName: productName || productId || "ClickFunnels Purchase",
+          productSku: productId || undefined,
+          courseId: course?.id,
+          ipAddress: purchaseIp,
+          userAgent: purchaseUserAgent,
+          billingEmail: normalizedEmail,
+          billingName: `${firstName || ""} ${lastName || ""}`.trim() || undefined,
+          status: "COMPLETED",
+        },
+      });
+      paymentId = payment.id;
+      console.log(`[CF] ✅ Created Payment record: $${purchaseValue} - ${payment.id}`);
+    } catch (paymentError) {
+      console.error("[CF] Failed to create Payment record:", paymentError);
+    }
+
     // 5. Log webhook event
     await prisma.webhookEvent.create({
       data: {

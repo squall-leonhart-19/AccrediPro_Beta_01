@@ -638,7 +638,38 @@ export async function POST(request: NextRequest) {
         }
 
         // =====================================================
-        // 6. LOG WEBHOOK EVENT
+        // 7. CREATE PAYMENT RECORD (for dispute evidence & revenue)
+        // =====================================================
+
+        let paymentId: string | null = null;
+        try {
+            const course = await prisma.course.findFirst({ where: { slug: courseSlug } });
+
+            const payment = await prisma.payment.create({
+                data: {
+                    userId: user.id,
+                    amount: purchaseValue,
+                    currency: "USD",
+                    transactionId: `cf_${Date.now()}`,
+                    paymentMethod: "clickfunnels",
+                    productName: contentName,
+                    productSku: courseSlug,
+                    courseId: course?.id,
+                    ipAddress: purchaseIp,
+                    userAgent: purchaseUserAgent,
+                    billingEmail: normalizedEmail,
+                    billingName: `${firstName || ""} ${lastName || ""}`.trim() || undefined,
+                    status: "COMPLETED",
+                },
+            });
+            paymentId = payment.id;
+            console.log(`[CF Purchase] ✅ Created Payment record: $${purchaseValue} - ${payment.id}`);
+        } catch (paymentError) {
+            console.error("[CF Purchase] Failed to create Payment record:", paymentError);
+        }
+
+        // =====================================================
+        // 8. LOG WEBHOOK EVENT
         // =====================================================
 
         await prisma.webhookEvent.create({
