@@ -299,109 +299,133 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in">
-            {/* Compact Header - Matching Catalog Style */}
-            <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden">
-                <CardContent className="px-5 py-4">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        {/* Left: Avatar + Name + Level */}
-                        <div className="flex items-center gap-4">
-                            <div className="flex flex-col items-center">
-                                <ProfileEditor
-                                    userId={user.id}
-                                    avatar={user.avatar}
-                                    bio={user.bio}
-                                    firstName={user.firstName}
-                                    lastName={user.lastName}
-                                    initials={initials}
-                                />
+        <div className="space-y-6 animate-fade-in">
+            {/* Enhanced Profile Header */}
+            <Card className="bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 overflow-hidden relative">
+                {/* Background decoration */}
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+                </div>
+                <CardContent className="px-6 py-6 relative">
+                    <div className="flex flex-col md:flex-row md:items-center gap-6">
+                        {/* Avatar Section */}
+                        <div className="flex-shrink-0">
+                            <ProfileEditor
+                                userId={user.id}
+                                avatar={user.avatar}
+                                bio={user.bio}
+                                firstName={user.firstName}
+                                lastName={user.lastName}
+                                initials={initials}
+                            />
+                        </div>
+
+                        {/* User Info */}
+                        <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <h1 className="text-2xl md:text-3xl font-bold text-white">
+                                    {user.firstName} {user.lastName}
+                                </h1>
+                                <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs font-semibold">
+                                    {user.role}
+                                </Badge>
                             </div>
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
-                                        {user.role}
-                                    </Badge>
-                                    <Badge className="bg-white/10 text-white/80 border-0 text-[10px]">
-                                        {currentLevel.icon} Level {currentLevel.level}
-                                    </Badge>
+                            <p className="text-burgundy-200 text-sm mb-3">{user.email}</p>
+
+                            {/* Level Progress */}
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full border border-white/20">
+                                    <span className="text-lg">{currentLevel.icon}</span>
+                                    <span className="text-white font-semibold text-sm">Level {currentLevel.level}</span>
+                                    <span className="text-burgundy-200 text-sm">• {currentLevel.name}</span>
                                 </div>
-                                <p className="text-xs text-burgundy-200 mt-0.5 hidden sm:block">
-                                    {user.email}
-                                </p>
+                                {nextLevel && (
+                                    <span className="text-burgundy-300 text-xs">{xpToNextLevel.toLocaleString()} XP to Level {nextLevel.level}</span>
+                                )}
+                            </div>
+
+                            {/* Level Progress Bar */}
+                            <div className="max-w-md">
+                                <div className="h-2 bg-burgundy-900/50 rounded-full overflow-hidden border border-white/10">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 rounded-full transition-all duration-500"
+                                        style={{ width: `${levelProgress}%` }}
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Right: Stats + Settings */}
-                        <div className="flex flex-wrap items-center gap-3">
-                            <div className="hidden md:flex items-center gap-2">
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Star className="w-3 h-3 mr-1.5 text-gold-400" />
-                                    {totalPoints.toLocaleString()} XP
-                                </Badge>
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Flame className="w-3 h-3 mr-1.5 text-orange-400" />
-                                    {currentStreak} day streak
-                                </Badge>
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Trophy className="w-3 h-3 mr-1.5 text-purple-400" />
-                                    {user.badges.length} badges
-                                </Badge>
+                        {/* Stats */}
+                        <div className="flex flex-wrap md:flex-col gap-3">
+                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                                <Star className="w-4 h-4 text-gold-400" />
+                                <div>
+                                    <p className="text-white font-bold text-lg leading-none">{totalPoints.toLocaleString()}</p>
+                                    <p className="text-burgundy-200 text-[10px]">Total XP</p>
+                                </div>
                             </div>
-                            <Button
-                                size="sm"
-                                className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9"
-                                onClick={() => setActiveTab("settings")}
-                            >
-                                <Settings className="w-4 h-4 mr-1.5" />
-                                Settings
-                            </Button>
+                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                                <Flame className="w-4 h-4 text-orange-400" />
+                                <div>
+                                    <p className="text-white font-bold text-lg leading-none">{currentStreak}</p>
+                                    <p className="text-burgundy-200 text-[10px]">Day Streak</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                                <Trophy className="w-4 h-4 text-purple-400" />
+                                <div>
+                                    <p className="text-white font-bold text-lg leading-none">{user.badges.length}</p>
+                                    <p className="text-burgundy-200 text-[10px]">Badges</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Tabs */}
-            <div className="flex gap-2 border-b border-gray-200 pb-2">
+            {/* Improved Tabs */}
+            <div className="flex flex-wrap gap-2 bg-white p-1.5 rounded-xl border shadow-sm">
                 <button
                     onClick={() => setActiveTab("overview")}
-                    className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "overview"
-                        ? "bg-burgundy-600 text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "overview"
+                        ? "bg-burgundy-600 text-white shadow-md"
+                        : "text-gray-600 hover:bg-gray-100"
                         }`}
                 >
-                    <User className="w-4 h-4 inline mr-2" />
+                    <User className="w-4 h-4" />
                     Overview
                 </button>
                 <button
                     onClick={() => setActiveTab("progress")}
-                    className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "progress"
-                        ? "bg-burgundy-600 text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "progress"
+                        ? "bg-burgundy-600 text-white shadow-md"
+                        : "text-gray-600 hover:bg-gray-100"
                         }`}
                 >
-                    <Trophy className="w-4 h-4 inline mr-2" />
+                    <Trophy className="w-4 h-4" />
                     Progress & XP
                 </button>
                 <button
                     onClick={() => setActiveTab("settings")}
-                    className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "settings"
-                        ? "bg-burgundy-600 text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "settings"
+                        ? "bg-burgundy-600 text-white shadow-md"
+                        : "text-gray-600 hover:bg-gray-100"
                         }`}
                 >
-                    <Settings className="w-4 h-4 inline mr-2" />
+                    <Settings className="w-4 h-4" />
                     Settings
                 </button>
                 {/* AI Knowledge tab - only for MENTOR/ADMIN users */}
                 {(user.role === "MENTOR" || user.role === "ADMIN") && (
                     <button
                         onClick={() => setActiveTab("knowledge")}
-                        className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "knowledge"
-                            ? "bg-burgundy-600 text-white"
-                            : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${activeTab === "knowledge"
+                            ? "bg-burgundy-600 text-white shadow-md"
+                            : "text-gray-600 hover:bg-gray-100"
                             }`}
                     >
-                        <Bot className="w-4 h-4 inline mr-2" />
+                        <Bot className="w-4 h-4" />
                         AI Knowledge
                     </button>
                 )}
