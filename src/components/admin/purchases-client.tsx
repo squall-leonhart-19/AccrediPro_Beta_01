@@ -325,7 +325,7 @@ export default function PurchasesClient({ stats, purchases }: PurchasesClientPro
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 {purchase.user?.id ? (
-                                                    <Link href={`/admin/users/${purchase.user.id}`}>
+                                                    <Link href={`/admin/users?userId=${purchase.user.id}`}>
                                                         <Button variant="ghost" size="sm" className="hover:bg-blue-100 hover:text-blue-700 transition-colors">
                                                             <Eye className="w-4 h-4 mr-2" />
                                                             View Evidence

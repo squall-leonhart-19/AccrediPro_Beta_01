@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -136,12 +136,14 @@ interface UsersClientProps {
 
 export function UsersClient({ courses }: UsersClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
+  const [globalStats, setGlobalStats] = useState<any>({ total: 0, student: 0, instructor: 0, admin: 0 });
 
   // Pagination state
   const [users, setUsers] = useState<User[]>([]);
@@ -279,7 +281,15 @@ export function UsersClient({ courses }: UsersClientProps) {
       if (roleFilter !== "ALL") params.set("role", roleFilter);
       if (statusFilter === "ACTIVE") params.set("status", "active");
       if (statusFilter === "INACTIVE") params.set("status", "inactive");
+      if (statusFilter === "ACTIVE") params.set("status", "active");
+      if (statusFilter === "INACTIVE") params.set("status", "inactive");
 
+      // Check query params for direct ID link
+      const userIdParam = searchParams.get("userId");
+      if (userIdParam && !resetList && page === 1 && !search && roleFilter === "ALL" && statusFilter === "ALL") {
+        // Only apply if looking for specific user on initial load
+        params.set("userId", userIdParam);
+      }
       const res = await fetch(`/api/admin/users/list?${params}`);
       if (res.ok) {
         const data = await res.json();
@@ -289,6 +299,7 @@ export function UsersClient({ courses }: UsersClientProps) {
           setUsers((prev) => [...prev, ...data.users]);
         }
         setPagination(data.pagination);
+        if (data.stats) setGlobalStats(data.stats);
       }
     } catch (error) {
       console.error("Failed to fetch users:", error);
@@ -296,7 +307,7 @@ export function UsersClient({ courses }: UsersClientProps) {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [debouncedSearch, roleFilter, statusFilter]);
+  }, [debouncedSearch, roleFilter, statusFilter, searchParams]);
 
   // Debounce search input
   useEffect(() => {
@@ -310,6 +321,14 @@ export function UsersClient({ courses }: UsersClientProps) {
   useEffect(() => {
     fetchUsers(1, true);
   }, [debouncedSearch, roleFilter, statusFilter, fetchUsers]);
+
+  // Auto-open user if linked via ID
+  useEffect(() => {
+    const userId = searchParams.get("userId");
+    if (userId && users.length === 1 && users[0].id === userId && !selectedUser) {
+      setSelectedUser(users[0]);
+    }
+  }, [users, searchParams, selectedUser]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -1002,43 +1021,17 @@ export function UsersClient({ courses }: UsersClientProps) {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Updated with Role Breakdown */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-burgundy-50 to-white border-burgundy-100">
+        <Card className="bg-gradient-to-br from-gray-50 to-white border-gray-200">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{pagination?.totalCount ?? users.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{globalStats.total}</p>
               </div>
-              <div className="w-10 h-10 bg-burgundy-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-burgundy-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-green-50 to-white border-green-100">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Active Learners</p>
-                <p className="text-2xl font-bold text-gray-900">{activeStudents}</p>
-              </div>
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <Activity className="w-5 h-5 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-gold-50 to-white border-gold-100">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">Certificates Issued</p>
-                <p className="text-2xl font-bold text-gray-900">{completedCertificates}</p>
-              </div>
-              <div className="w-10 h-10 bg-gold-100 rounded-lg flex items-center justify-center">
-                <Award className="w-5 h-5 text-gold-600" />
+              <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-gray-600" />
               </div>
             </div>
           </CardContent>
@@ -1047,21 +1040,46 @@ export function UsersClient({ courses }: UsersClientProps) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Enrollment Rate</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {totalStudents > 0 ? Math.round((activeStudents / totalStudents) * 100) : 0}%
-                </p>
+                <p className="text-sm text-blue-600 font-semibold">Active Students</p>
+                <p className="text-2xl font-bold text-gray-900">{globalStats.student}</p>
               </div>
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
+                <GraduationCap className="w-5 h-5 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-green-50 to-white border-green-100">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-green-600 font-semibold">Instructors</p>
+                <p className="text-2xl font-bold text-gray-900">{globalStats.instructor}</p>
+              </div>
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <Award className="w-5 h-5 text-green-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-red-50 to-white border-red-100">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-red-600 font-semibold">Admins</p>
+                <p className="text-2xl font-bold text-gray-900">{globalStats.admin}</p>
+              </div>
+              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-red-600" />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
+
       {/* Filters & Search */}
-      <Card>
+      < Card >
         <CardContent className="p-4">
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="relative flex-1">
@@ -1100,48 +1118,50 @@ export function UsersClient({ courses }: UsersClientProps) {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card >
 
       {/* Bulk Actions Bar */}
-      {selectedUsers.length > 0 && (
-        <Card className="bg-burgundy-50 border-burgundy-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-burgundy-700 font-medium">
-                {selectedUsers.length} user(s) selected
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleBulkDM}
-                  className="gap-2 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  Send Bulk DM
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => openDeleteDialog(selectedUsers)}
-                  className="gap-2 border-red-200 text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Delete Selected
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedUsers([])}
-                  className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100"
-                >
-                  Clear Selection
-                </Button>
+      {
+        selectedUsers.length > 0 && (
+          <Card className="bg-burgundy-50 border-burgundy-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-burgundy-700 font-medium">
+                  {selectedUsers.length} user(s) selected
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBulkDM}
+                    className="gap-2 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Send Bulk DM
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openDeleteDialog(selectedUsers)}
+                    className="gap-2 border-red-200 text-red-600 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete Selected
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedUsers([])}
+                    className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100"
+                  >
+                    Clear Selection
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )
+      }
 
       {/* Results count */}
       <div className="flex items-center justify-between">
@@ -2047,6 +2067,37 @@ export function UsersClient({ courses }: UsersClientProps) {
                                 <span className="font-mono text-xs text-blue-600 font-bold">{Math.round((activityData.stats.totalTimeSpent || 0) / 60)} minutes</span>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* NEW: Community & Mentorship Evidence (Usufruct) */}
+                      <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Users className="w-4 h-4 text-purple-600" />
+                          <p className="text-sm font-semibold text-purple-900">Community & Mentorship Evidence (Usufruct)</p>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="bg-white p-3 rounded border border-purple-100 shadow-sm">
+                            <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Mentorship Access</p>
+                            <p className="text-lg font-bold text-purple-700 mt-1">
+                              {activityData.stats.mentorshipMessages || 0}
+                            </p>
+                            <p className="text-xs text-gray-500">Private messages exchanged</p>
+                          </div>
+                          <div className="bg-white p-3 rounded border border-purple-100 shadow-sm">
+                            <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Community Participation</p>
+                            <p className="text-lg font-bold text-purple-700 mt-1">
+                              {activityData.stats.communityMessages || 0}
+                            </p>
+                            <p className="text-xs text-gray-500">Pod interactions & posts</p>
+                          </div>
+                          <div className="bg-white p-3 rounded border border-purple-100 shadow-sm">
+                            <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Assigned Circle</p>
+                            <p className="text-sm font-bold text-purple-700 mt-1 truncate" title={activityData.stats.podName || "No Pod Assigned"}>
+                              {activityData.stats.podName || "No Pod Assigned"}
+                            </p>
+                            <p className="text-xs text-gray-500">Current Cohort/Pod Membership</p>
                           </div>
                         </div>
                       </div>
@@ -3350,6 +3401,6 @@ export function UsersClient({ courses }: UsersClientProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 }

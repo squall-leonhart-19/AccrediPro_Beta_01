@@ -63,7 +63,7 @@ function detectPersona(page: string | null): keyof typeof COACH_PERSONAS {
 // Check for conversations that need auto-reply
 export async function GET() {
     try {
-        const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+        const oneMinuteAgo = new Date(Date.now() - 1 * 60 * 1000);
 
         // Get all conversations
         const messages = await prisma.salesChat.findMany({
@@ -98,11 +98,11 @@ export async function GET() {
 
             // Only process if:
             // 1. Last message is from visitor
-            // 2. Last message was >2 minutes ago
+            // 2. Last message was >1 minute ago
             // 3. No admin reply exists yet
             if (
                 lastMsg.isFromVisitor &&
-                lastMsg.createdAt < twoMinutesAgo &&
+                lastMsg.createdAt < oneMinuteAgo &&
                 !sortedMsgs.some((m) => !m.isFromVisitor && m.createdAt > lastMsg.createdAt)
             ) {
                 // Generate and send auto-reply

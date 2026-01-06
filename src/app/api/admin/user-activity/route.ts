@@ -34,6 +34,9 @@ export async function GET(request: NextRequest) {
             quizAttempts,
             emailSends,
             supportTickets,
+            privateMessageCount,
+            communityMessageCount,
+            podMembership,
         ] = await Promise.all([
             // User info - includes NEW dispute evidence fields
             prisma.user.findUnique({
@@ -282,6 +285,29 @@ export async function GET(request: NextRequest) {
                 },
                 orderBy: { createdAt: "desc" },
             }),
+
+            // NEW: Mentorship Messages (Private)
+            prisma.message.count({
+                where: {
+                    OR: [
+                        { senderId: userId },
+                        { receiverId: userId }
+                    ]
+                }
+            }),
+
+            // NEW: Community Messages (Pod)
+            prisma.podMessage.count({
+                where: { senderId: userId }
+            }),
+
+            // NEW: Pod Membership
+            prisma.podMember.findFirst({
+                where: { userId },
+                include: {
+                    pod: { select: { name: true } }
+                }
+            })
         ]);
 
         if (!user) {
@@ -306,6 +332,10 @@ export async function GET(request: NextRequest) {
             totalTimeSpent,
             certificatesEarned: certificates.length,
             totalActivityLogs: activityLogsCount,
+            // NEW stats
+            mentorshipMessages: privateMessageCount,
+            communityMessages: communityMessageCount,
+            podName: podMembership?.pod?.name || null,
             // NEW stats
             totalPayments,
             paymentCount: payments.length,

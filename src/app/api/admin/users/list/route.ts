@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") || "";
     const role = searchParams.get("role") || "";
     const status = searchParams.get("status") || "";
+    const userId = searchParams.get("userId") || "";
 
     const skip = (page - 1) * limit;
 
@@ -57,75 +58,93 @@ export async function GET(request: NextRequest) {
       where.isActive = false;
     }
 
-    // Get total count for pagination info
-    const totalCount = await prisma.user.count({ where });
+    // ID filter (for direct links)
+    if (userId) {
+      where.id = userId;
+    }
 
-    // Get paginated users
-    const users = await prisma.user.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: limit,
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        avatar: true,
-        phone: true,
-        role: true,
-        isActive: true,
-        createdAt: true,
-        lastLoginAt: true,
-        leadSource: true,
-        leadSourceDetail: true,
-        hasCompletedOnboarding: true,
-        learningGoal: true,
-        experienceLevel: true,
-        focusAreas: true,
-        bio: true,
-        tags: {
-          select: {
-            id: true,
-            tag: true,
-            value: true,
-            createdAt: true,
+    // Get total count and role stats in parallel with users
+    const [totalCount, users, roleStats] = await Promise.all([
+      prisma.user.count({ where }),
+      prisma.user.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+          phone: true,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          lastLoginAt: true,
+          leadSource: true,
+          leadSourceDetail: true,
+          hasCompletedOnboarding: true,
+          learningGoal: true,
+          experienceLevel: true,
+          focusAreas: true,
+          bio: true,
+          tags: {
+            select: {
+              id: true,
+              tag: true,
+              value: true,
+              createdAt: true,
+            },
+            orderBy: { createdAt: "desc" },
           },
-          orderBy: { createdAt: "desc" },
-        },
-        enrollments: {
-          include: {
-            course: {
-              select: {
-                id: true,
-                title: true,
-                slug: true,
+          enrollments: {
+            include: {
+              course: {
+                select: {
+                  id: true,
+                  title: true,
+                  slug: true,
+                },
+              },
+            },
+          },
+          streak: true,
+          _count: {
+            select: {
+              certificates: true,
+              progress: true,
+              receivedMessages: true,
+              sentMessages: true,
+            },
+          },
+          marketingTags: {
+            select: {
+              id: true,
+              tag: {
+                select: {
+                  slug: true,
+                  name: true,
+                },
               },
             },
           },
         },
-        streak: true,
-        _count: {
-          select: {
-            certificates: true,
-            progress: true,
-            receivedMessages: true,
-            sentMessages: true,
-          },
-        },
-        marketingTags: {
-          select: {
-            id: true,
-            tag: {
-              select: {
-                slug: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
+      }),
+      prisma.user.groupBy({
+        by: ['role'],
+        _count: { id: true },
+      })
+    ]);
+
+    // Format stats
+    const stats = {
+      total: totalCount,
+      student: roleStats.find(r => r.role === "STUDENT")?._count.id || 0,
+      instructor: roleStats.find(r => r.role === "INSTRUCTOR")?._count.id || 0,
+      admin: roleStats.find(r => r.role === "ADMIN")?._count.id || 0,
+      mentor: roleStats.find(r => r.role === "MENTOR")?._count.id || 0,
+    };
 
     // Merge legacy tags with marketing tags for UI display
     const formattedUsers = users.map((user) => ({
@@ -143,6 +162,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       users: formattedUsers,
+      stats,
       pagination: {
         page,
         limit,

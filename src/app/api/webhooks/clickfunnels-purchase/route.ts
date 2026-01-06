@@ -305,8 +305,15 @@ export async function POST(request: NextRequest) {
         const phone = contact.phone_number || data.phone_number || body.phone || "";
 
         // Extract product info
+        // Helper to combine product names
+        const allProductNames = lineItems
+            .map((item: any) => item.products_variant?.name || item.original_product?.name || item.name)
+            .filter((name: any) => name && typeof name === 'string')
+            .join(" + ");
+
         const productSku = productsVariant.sku || productsPrice.sku || originalProduct.sku || "";
-        const productName = productsVariant.name || originalProduct.name || firstLineItem.name || body.product_name || "FM Mini Diploma";
+        // Use combined name if available, fallback to single logic
+        const productName = allProductNames || body.product_name || "FM Mini Diploma";
         const productAmount = parseFloat(firstLineItem.amount || firstLineItem.price || productsVariant.amount || productsPrice.amount || body.amount) || 27;
 
         // Extract Address Info (Try to find in contact addresses)
