@@ -113,22 +113,7 @@ export const authOptions: NextAuthOptions = {
         const isFirstLogin = !user.firstLoginAt;
         const now = new Date();
 
-        // Update user login stats - fire and forget (don't await to prevent timeout)
-        prisma.user.update({
-          where: { id: user.id },
-          data: {
-            lastLoginAt: now,
-            firstLoginAt: isFirstLogin ? now : undefined,
-            loginCount: { increment: 1 },
-          },
-          select: { id: true },
-        }).then(() => {
-          console.log("[AUTH] Login stats updated for:", user.id);
-        }).catch((err) => {
-          console.error("[AUTH] Failed to update login stats:", err);
-        });
-
-        // Get request headers for login tracking
+        // Get request headers for login tracking (moved before user update for registration evidence)
         let ipAddress: string | null = null;
         let userAgent: string | null = null;
         try {
@@ -142,6 +127,32 @@ export const authOptions: NextAuthOptions = {
         }
 
         const { device, browser } = parseUserAgent(userAgent);
+
+        // Update user login stats - fire and forget (don't await to prevent timeout)
+        prisma.user.update({
+          where: { id: user.id },
+          data: {
+            lastLoginAt: now,
+            firstLoginAt: isFirstLogin ? now : undefined,
+            loginCount: { increment: 1 },
+            // On first login: capture registration data and TOS acceptance
+            ...(isFirstLogin && {
+              registrationIp: ipAddress,
+              registrationUserAgent: userAgent,
+              registrationDevice: device,
+              registrationBrowser: browser,
+              tosAcceptedAt: now,
+              tosVersion: "1.0",
+              refundPolicyAcceptedAt: now,
+              refundPolicyVersion: "1.0",
+            }),
+          },
+          select: { id: true },
+        }).then(() => {
+          console.log("[AUTH] Login stats updated for:", user.id);
+        }).catch((err) => {
+          console.error("[AUTH] Failed to update login stats:", err);
+        });
 
         // Create login history record - fire and forget (don't await to prevent timeout)
         prisma.loginHistory.create({
