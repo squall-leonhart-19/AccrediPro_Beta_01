@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // Sales page images in order
 const salesImages = [
@@ -40,6 +40,48 @@ export default function FMCourseCertificationPage() {
     const [isVerifying, setIsVerifying] = useState(false);
     const [emailError, setEmailError] = useState("");
     const [showProactivePopup, setShowProactivePopup] = useState(false);
+    const [visitorId, setVisitorId] = useState("");
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    // POLLING: Fetch messages from server every 3s to sync admin replies
+    useEffect(() => {
+        if (!visitorId || showOptin || !chatOpen) return;
+
+        const fetchMessages = async () => {
+            try {
+                const res = await fetch(`/api/chat/messages?visitorId=${visitorId}`);
+                const data = await res.json();
+
+                if (data.messages && data.messages.length > 0) {
+                    // Only update if we have new messages (compare counts)
+                    setMessages((prev) => {
+                        // If server has more messages, use server data
+                        if (data.messages.length > prev.length) {
+                            return data.messages.map((m: any) => ({
+                                role: m.role === "user" ? "user" : "bot",
+                                content: m.text
+                            }));
+                        }
+                        return prev;
+                    });
+                }
+            } catch (err) {
+                // Silent fail for polling
+            }
+        };
+
+        // Initial fetch
+        fetchMessages();
+
+        // Poll every 3 seconds
+        const interval = setInterval(fetchMessages, 3000);
+
+        return () => clearInterval(interval);
+    }, [visitorId, showOptin, chatOpen]);
 
     useEffect(() => {
         // Show floating CTA after scrolling 200px
@@ -48,6 +90,14 @@ export default function FMCourseCertificationPage() {
         };
 
         window.addEventListener("scroll", handleScroll);
+
+        // Initialize Visitor ID
+        let vid = localStorage.getItem("chatVisitorId");
+        if (!vid) {
+            vid = "visitor_" + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem("chatVisitorId", vid);
+        }
+        setVisitorId(vid);
 
         // Check localStorage for existing user
         const savedName = localStorage.getItem("chatUserName");
@@ -107,7 +157,7 @@ export default function FMCourseCertificationPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    visitorId: localStorage.getItem("chatVisitorId") || `visitor_${Math.random().toString(36).substr(2, 9)}`,
+                    visitorId: visitorId,
                     name: userName,
                     email: userEmail,
                     page: "fm-course-certification"
@@ -142,7 +192,7 @@ export default function FMCourseCertificationPage() {
                 body: JSON.stringify({
                     message: userMessage,
                     page: "fm-course-certification",
-                    visitorId: localStorage.getItem("chatVisitorId"),
+                    visitorId: visitorId,
                     userName,
                     userEmail
                 })
@@ -323,6 +373,7 @@ export default function FMCourseCertificationPage() {
                                             </div>
                                         </div>
                                     )}
+                                    <div ref={messagesEndRef} />
                                 </div>
 
                                 {/* Input */}
