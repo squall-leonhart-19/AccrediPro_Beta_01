@@ -21,9 +21,6 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
-import {
-  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList
-} from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -99,19 +96,23 @@ function TagAutocomplete({
   const [search, setSearch] = useState("");
   const [allTags, setAllTags] = useState<Array<{ id: string; name: string; slug: string; color: string }>>([]);
   const [loading, setLoading] = useState(false);
+  const [tagsLoading, setTagsLoading] = useState(false);
 
   useEffect(() => {
     const fetchTags = async () => {
+      setTagsLoading(true);
       try {
         const res = await fetch("/api/admin/marketing-tags");
         const data = await res.json();
         if (data.tags) setAllTags(data.tags);
       } catch (e) {
         console.error("Failed to fetch tags:", e);
+      } finally {
+        setTagsLoading(false);
       }
     };
-    if (open) fetchTags();
-  }, [open]);
+    if (open && allTags.length === 0) fetchTags();
+  }, [open, allTags.length]);
 
   const existingTagIds = new Set(existingTags.map(t => t.tag?.slug || ""));
   const filteredTags = allTags.filter(
@@ -146,40 +147,47 @@ function TagAutocomplete({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-7 text-xs border-dashed gap-1">
+        <Button variant="outline" size="sm" className="h-7 text-xs gap-1">
           <Plus className="w-3 h-3" /> Add Tag
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-0" align="start">
-        <Command>
-          <CommandInput
+      <PopoverContent className="w-72 p-2" align="end" sideOffset={5}>
+        <div className="space-y-2">
+          <Input
             placeholder="Search tags..."
             value={search}
-            onValueChange={setSearch}
+            onChange={(e) => setSearch(e.target.value)}
+            className="h-8"
+            autoFocus
           />
-          <CommandList>
-            <CommandEmpty>
-              {search ? "No tags found" : "Type to search tags"}
-            </CommandEmpty>
-            <CommandGroup>
-              {filteredTags.slice(0, 10).map((tag) => (
-                <CommandItem
-                  key={tag.id}
-                  value={tag.slug}
-                  onSelect={() => handleAddTag(tag.slug)}
-                  disabled={loading}
-                >
-                  <div
-                    className="w-3 h-3 rounded-full mr-2"
-                    style={{ backgroundColor: tag.color || "#6B7280" }}
-                  />
-                  <span className="flex-1">{tag.name}</span>
-                  <span className="text-[10px] text-slate-400">{tag.slug}</span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+          <div className="max-h-[200px] overflow-y-auto">
+            {tagsLoading ? (
+              <div className="py-4 text-center text-sm text-slate-400">Loading tags...</div>
+            ) : filteredTags.length === 0 ? (
+              <div className="py-4 text-center text-sm text-slate-400">
+                {search ? "No tags found" : "No tags available"}
+              </div>
+            ) : (
+              <div className="space-y-1">
+                {filteredTags.slice(0, 10).map((tag) => (
+                  <button
+                    key={tag.id}
+                    onClick={() => handleAddTag(tag.slug)}
+                    disabled={loading}
+                    className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-100 text-left text-sm disabled:opacity-50"
+                  >
+                    <div
+                      className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: tag.color || "#6B7280" }}
+                    />
+                    <span className="flex-1 truncate">{tag.name}</span>
+                    <span className="text-[10px] text-slate-400 flex-shrink-0">{tag.slug}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );
@@ -624,51 +632,9 @@ export default function TicketsPage() {
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 bg-gradient-to-b from-slate-50 to-slate-100">
+            <ScrollArea className="flex-1 bg-white">
               <div className="p-6">
-                <div className="max-w-3xl mx-auto space-y-4">
-                  {/* Ticket Info Card */}
-                  <div className="bg-white rounded-xl border p-4 mb-6 shadow-sm">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Mail className="w-4 h-4 text-slate-400" />
-                          <span className="text-sm text-slate-600">{selectedTicket.customerEmail}</span>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(selectedTicket.customerEmail);
-                              toast.success("Email copied!");
-                            }}
-                            className="text-[#722F37] hover:text-[#5A252C]"
-                          >
-                            <Copy className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-slate-400" />
-                          <span className="text-sm text-slate-600">
-                            Created {format(new Date(selectedTicket.createdAt), "MMMM d, yyyy 'at' h:mm a")}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {selectedTicket.user?.marketingTags?.slice(0, 2).map((mt: any, i: number) => (
-                          <Badge
-                            key={i}
-                            variant="secondary"
-                            className="text-[10px]"
-                            style={{
-                              backgroundColor: `${mt.tag?.color || "#6B7280"}15`,
-                              color: mt.tag?.color || "#6B7280",
-                            }}
-                          >
-                            {mt.tag?.name || "Tag"}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
+                <div className="space-y-4">
                   {selectedTicket.messages.map((msg, idx) => {
                     const isCustomer = msg.isFromCustomer;
                     const showDateSeparator = idx === 0 ||
@@ -678,21 +644,22 @@ export default function TicketsPage() {
                     return (
                       <div key={msg.id}>
                         {showDateSeparator && (
-                          <div className="flex items-center justify-center my-8">
+                          <div className="flex items-center justify-center my-6">
                             <div className="h-px flex-1 bg-slate-200" />
-                            <div className="text-[11px] font-medium text-slate-400 bg-slate-50 px-4 py-1.5 rounded-full border mx-4">
+                            <div className="text-[11px] font-medium text-slate-400 px-4 py-1 rounded-full border bg-white mx-4">
                               {format(new Date(msg.createdAt), "EEEE, MMMM d, yyyy")}
                             </div>
                             <div className="h-px flex-1 bg-slate-200" />
                           </div>
                         )}
-                        <div className={cn("flex gap-3", !isCustomer && "flex-row-reverse")}>
+                        {/* All messages left aligned */}
+                        <div className="flex gap-3">
                           <Avatar className={cn(
-                            "w-9 h-9 flex-shrink-0 border-2",
-                            isCustomer ? "border-slate-200" : "border-[#722F37]/20"
+                            "w-8 h-8 flex-shrink-0",
+                            isCustomer ? "border border-slate-200" : "border border-[#722F37]/20"
                           )}>
                             <AvatarFallback className={cn(
-                              "text-xs font-bold",
+                              "text-xs font-semibold",
                               isCustomer
                                 ? "bg-slate-100 text-slate-600"
                                 : "bg-[#722F37] text-white"
@@ -700,37 +667,31 @@ export default function TicketsPage() {
                               {isCustomer ? selectedTicket.customerName.charAt(0).toUpperCase() : "S"}
                             </AvatarFallback>
                           </Avatar>
-                          <div className={cn("max-w-[75%]", !isCustomer && "text-right")}>
-                            <div className={cn(
-                              "text-[11px] font-medium mb-1 px-1",
-                              isCustomer ? "text-slate-500" : "text-[#722F37]"
-                            )}>
-                              {isCustomer ? selectedTicket.customerName : "Support Team"}
-                            </div>
-                            <div className={cn(
-                              "inline-block px-4 py-3 rounded-2xl text-sm shadow-sm",
-                              isCustomer
-                                ? "bg-white border border-slate-200 text-slate-800 rounded-tl-sm"
-                                : msg.isInternal
-                                  ? "bg-amber-50 border-2 border-amber-300 text-slate-800 rounded-tr-sm"
-                                  : "bg-gradient-to-br from-[#722F37] to-[#5A252C] text-white rounded-tr-sm"
-                            )}>
-                              {msg.isInternal && (
-                                <div className="flex items-center gap-1 text-[10px] font-bold text-amber-600 mb-2 pb-2 border-b border-amber-200">
-                                  <Zap className="w-3 h-3" />
-                                  INTERNAL NOTE - Not visible to customer
-                                </div>
-                              )}
-                              <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                            </div>
-                            <div className={cn(
-                              "text-[10px] text-slate-400 mt-1.5 px-1",
-                              !isCustomer && "text-right"
-                            )}>
-                              {format(new Date(msg.createdAt), "h:mm a")}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={cn(
+                                "text-sm font-semibold",
+                                isCustomer ? "text-slate-700" : "text-[#722F37]"
+                              )}>
+                                {isCustomer ? selectedTicket.customerName : "Support Team"}
+                              </span>
+                              <span className="text-xs text-slate-400">
+                                {format(new Date(msg.createdAt), "h:mm a")}
+                              </span>
                               {!isCustomer && msg.sentBy?.name && (
-                                <span className="ml-2 text-slate-500">• {msg.sentBy.name}</span>
+                                <span className="text-xs text-slate-400">• {msg.sentBy.name}</span>
                               )}
+                              {msg.isInternal && (
+                                <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700 border-amber-300">
+                                  Internal Note
+                                </Badge>
+                              )}
+                            </div>
+                            <div className={cn(
+                              "text-sm text-slate-700 leading-relaxed",
+                              msg.isInternal && "bg-amber-50 border border-amber-200 rounded-lg p-3"
+                            )}>
+                              <p className="whitespace-pre-wrap">{msg.content}</p>
                             </div>
                           </div>
                         </div>

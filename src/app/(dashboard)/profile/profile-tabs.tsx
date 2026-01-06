@@ -801,29 +801,48 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                                 Account Information
                             </h3>
                             <div className="grid md:grid-cols-2 gap-4">
+                                {/* First Name */}
                                 <div className="p-4 bg-gray-50 rounded-xl">
                                     <div className="flex items-center justify-between">
                                         <div className="flex-1">
-                                            <p className="text-sm text-gray-500 mb-1 flex items-center gap-1">
-                                                <User className="w-3 h-3" />
-                                                Full Name
-                                            </p>
+                                            <p className="text-sm text-gray-500 mb-1">First Name</p>
                                             {isEditingNameSettings ? (
-                                                <div className="space-y-2 mt-2">
-                                                    <div className="flex gap-2">
-                                                        <Input
-                                                            value={firstNameValue}
-                                                            onChange={(e) => setFirstNameValue(e.target.value)}
-                                                            placeholder="First name"
-                                                            className="h-9"
-                                                        />
-                                                        <Input
-                                                            value={lastNameValue}
-                                                            onChange={(e) => setLastNameValue(e.target.value)}
-                                                            placeholder="Last name"
-                                                            className="h-9"
-                                                        />
-                                                    </div>
+                                                <Input
+                                                    value={firstNameValue}
+                                                    onChange={(e) => setFirstNameValue(e.target.value)}
+                                                    placeholder="First name"
+                                                    className="h-9"
+                                                />
+                                            ) : (
+                                                <p className="font-medium text-gray-900">{user.firstName || <span className="text-gray-400 italic">Not set</span>}</p>
+                                            )}
+                                        </div>
+                                        {!isEditingNameSettings && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setIsEditingNameSettings(true)}
+                                                className="text-burgundy-600 hover:text-burgundy-700"
+                                            >
+                                                <Pencil className="w-4 h-4" />
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Last Name */}
+                                <div className="p-4 bg-gray-50 rounded-xl">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm text-gray-500 mb-1">Last Name</p>
+                                            {isEditingNameSettings ? (
+                                                <div className="space-y-2">
+                                                    <Input
+                                                        value={lastNameValue}
+                                                        onChange={(e) => setLastNameValue(e.target.value)}
+                                                        placeholder="Last name"
+                                                        className="h-9"
+                                                    />
                                                     <div className="flex items-center gap-2">
                                                         <Button
                                                             size="sm"
@@ -848,7 +867,7 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+                                                <p className="font-medium text-gray-900">{user.lastName || <span className="text-gray-400 italic">Not set</span>}</p>
                                             )}
                                         </div>
                                         {!isEditingNameSettings && (
@@ -863,6 +882,8 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                                         )}
                                     </div>
                                 </div>
+
+                                {/* Email Address */}
                                 <div className="p-4 bg-gray-50 rounded-xl">
                                     <p className="text-sm text-gray-500 mb-1">Email Address</p>
                                     <p className="font-medium text-gray-900">{user.email}</p>
