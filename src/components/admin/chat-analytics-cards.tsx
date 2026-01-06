@@ -1,17 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
     Users,
     TrendingUp,
     Clock,
-    MessageSquare,
     Calendar,
-    AlertCircle
+    AlertCircle,
+    Mail,
+    Trash2,
 } from "lucide-react";
 
 interface AnalyticsData {
     totalLeads: number;
+    leadsWithEmail: number;
+    leadsWithoutEmail: number;
     converted: number;
     conversionRate: number;
     pendingReplies: number;
@@ -19,7 +23,12 @@ interface AnalyticsData {
     todayChats: number;
 }
 
-export function ChatAnalyticsCards() {
+interface Props {
+    onCleanup?: () => Promise<void>;
+    cleaningLeads?: boolean;
+}
+
+export function ChatAnalyticsCards({ onCleanup, cleaningLeads }: Props) {
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -44,11 +53,11 @@ export function ChatAnalyticsCards() {
 
     if (loading) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-                {[...Array(6)].map((_, i) => (
-                    <div key={i} className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
+                {[...Array(7)].map((_, i) => (
+                    <div key={i} className="bg-white rounded-lg border border-gray-200 p-3 animate-pulse">
+                        <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                        <div className="h-7 bg-gray-200 rounded w-3/4"></div>
                     </div>
                 ))}
             </div>
@@ -59,9 +68,10 @@ export function ChatAnalyticsCards() {
 
     const cards = [
         {
-            title: "Total Leads",
-            value: analytics.totalLeads,
-            icon: Users,
+            title: "Chat Leads",
+            value: analytics.leadsWithEmail,
+            subtitle: `${analytics.totalLeads} total`,
+            icon: Mail,
             color: "text-blue-600",
             bgColor: "bg-blue-50",
         },
@@ -73,17 +83,18 @@ export function ChatAnalyticsCards() {
             bgColor: "bg-green-50",
         },
         {
-            title: "Conversion Rate",
+            title: "Conversion",
             value: `${analytics.conversionRate}%`,
+            subtitle: "of leads w/ email",
             icon: TrendingUp,
-            color: analytics.conversionRate >= 15 ? "text-green-600" : "text-yellow-600",
-            bgColor: analytics.conversionRate >= 15 ? "bg-green-50" : "bg-yellow-50",
+            color: analytics.conversionRate >= 10 ? "text-green-600" : "text-yellow-600",
+            bgColor: analytics.conversionRate >= 10 ? "bg-green-50" : "bg-yellow-50",
         },
         {
-            title: "Pending Replies",
+            title: "Pending",
             value: analytics.pendingReplies,
             icon: AlertCircle,
-            color: analytics.pendingReplies > 0 ? "text-red-600" : "text-gray-600",
+            color: analytics.pendingReplies > 0 ? "text-red-600" : "text-gray-500",
             bgColor: analytics.pendingReplies > 0 ? "bg-red-50" : "bg-gray-50",
             highlight: analytics.pendingReplies > 0,
         },
@@ -97,7 +108,7 @@ export function ChatAnalyticsCards() {
             bgColor: "bg-purple-50",
         },
         {
-            title: "Today's Chats",
+            title: "Today",
             value: analytics.todayChats,
             icon: Calendar,
             color: "text-indigo-600",
@@ -106,29 +117,61 @@ export function ChatAnalyticsCards() {
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
             {cards.map((card, idx) => {
                 const Icon = card.icon;
                 return (
                     <div
                         key={idx}
                         className={`bg-white rounded-lg border ${card.highlight ? "border-red-300 shadow-sm" : "border-gray-200"
-                            } p-4 hover:shadow-md transition-shadow`}
+                            } p-3 hover:shadow-md transition-shadow`}
                     >
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">
                                 {card.title}
                             </span>
-                            <div className={`${card.bgColor} p-1.5 rounded-md`}>
-                                <Icon className={`w-4 h-4 ${card.color}`} />
+                            <div className={`${card.bgColor} p-1 rounded`}>
+                                <Icon className={`w-3.5 h-3.5 ${card.color}`} />
                             </div>
                         </div>
-                        <div className={`text-2xl font-bold ${card.color}`}>
+                        <div className={`text-xl font-bold ${card.color}`}>
                             {card.value}
                         </div>
+                        {card.subtitle && (
+                            <div className="text-[10px] text-gray-400 mt-0.5">
+                                {card.subtitle}
+                            </div>
+                        )}
                     </div>
                 );
             })}
+
+            {/* Cleanup Card */}
+            {analytics.leadsWithoutEmail > 0 && onCleanup && (
+                <div className="bg-amber-50 rounded-lg border border-amber-200 p-3 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-medium text-amber-700 uppercase tracking-wide">
+                            No Email
+                        </span>
+                        <div className="bg-amber-100 p-1 rounded">
+                            <Users className="w-3.5 h-3.5 text-amber-600" />
+                        </div>
+                    </div>
+                    <div className="text-xl font-bold text-amber-600">
+                        {analytics.leadsWithoutEmail}
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onCleanup}
+                        disabled={cleaningLeads}
+                        className="text-[10px] h-5 px-1.5 mt-1 text-red-600 hover:text-red-700 hover:bg-red-50 p-0"
+                    >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        {cleaningLeads ? "..." : "Remove"}
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

@@ -110,12 +110,21 @@ export async function GET() {
 
         const todayChats = chatOptins.filter((o) => o.createdAt >= today).length;
 
-        const totalLeads = chatEmailsMap.size;
+        // Total optins (unique visitors)
+        const totalLeads = chatOptins.length;
+        // Leads with email
+        const leadsWithEmail = chatEmailsMap.size;
+        // Leads without email
+        const leadsWithoutEmail = totalLeads - leadsWithEmail;
+        // Converted (from those with email)
         const converted = convertedEmails.length;
-        const conversionRate = totalLeads > 0 ? (converted / totalLeads) * 100 : 0;
+        // Conversion rate = converted / leads with email (only count trackable leads)
+        const conversionRate = leadsWithEmail > 0 ? (converted / leadsWithEmail) * 100 : 0;
 
         return NextResponse.json({
             totalLeads,
+            leadsWithEmail,
+            leadsWithoutEmail,
             converted,
             conversionRate: parseFloat(conversionRate.toFixed(1)),
             pendingReplies,

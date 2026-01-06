@@ -22,12 +22,7 @@ import {
   StickyNote,
   Zap,
   Mail,
-  Phone,
-  UserCheck,
   Trash2,
-  Star,
-  Users,
-  CheckCircle,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -85,7 +80,6 @@ export default function LiveChatAdminPage() {
   const [savingNotes, setSavingNotes] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [triggeringAutoReply, setTriggeringAutoReply] = useState(false);
-  const [leadsStats, setLeadsStats] = useState<{ total: number; withEmail: number; withoutEmail: number; converted: number; conversionRate: number } | null>(null);
   const [cleaningLeads, setCleaningLeads] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -115,20 +109,9 @@ export default function LiveChatAdminPage() {
 
   useEffect(() => {
     fetchConversations();
-    fetchLeadsStats();
     const interval = setInterval(fetchConversations, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const fetchLeadsStats = async () => {
-    try {
-      const res = await fetch("/api/admin/live-chat/leads");
-      const data = await res.json();
-      if (data.stats) setLeadsStats(data.stats);
-    } catch (err) {
-      console.error("Failed to fetch leads stats:", err);
-    }
-  };
 
   const cleanupLeadsWithoutEmail = async () => {
     if (!confirm("This will delete all leads without email. Continue?")) return;
@@ -138,7 +121,7 @@ export default function LiveChatAdminPage() {
       const data = await res.json();
       if (data.success) {
         alert(`Removed ${data.deleted} leads without email`);
-        fetchLeadsStats();
+        window.location.reload();
       }
     } catch (err) {
       console.error("Cleanup failed:", err);
@@ -307,49 +290,10 @@ export default function LiveChatAdminPage() {
       </div>
 
       {/* Analytics Dashboard */}
-      <ChatAnalyticsCards />
-
-      {/* Leads Stats Card */}
-      {leadsStats && (
-        <Card className="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-          <CardContent className="py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-blue-600" />
-                  <span className="font-semibold text-blue-900">Chat Leads</span>
-                </div>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="text-gray-600">Total: <strong className="text-blue-700">{leadsStats.total}</strong></span>
-                  <span className="text-gray-600">With Email: <strong className="text-blue-700">{leadsStats.withEmail}</strong></span>
-                  <span className="text-gray-600">
-                    <CheckCircle className="w-4 h-4 inline text-green-600 mr-1" />
-                    Converted: <strong className="text-green-700">{leadsStats.converted}</strong>
-                    <span className="text-green-600 ml-1">({leadsStats.conversionRate}%)</span>
-                  </span>
-                  {leadsStats.withoutEmail > 0 && (
-                    <span className="text-amber-600">
-                      ⚠️ No Email: <strong>{leadsStats.withoutEmail}</strong>
-                    </span>
-                  )}
-                </div>
-              </div>
-              {leadsStats.withoutEmail > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={cleanupLeadsWithoutEmail}
-                  disabled={cleaningLeads}
-                  className="text-red-600 hover:bg-red-50"
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  {cleaningLeads ? "Cleaning..." : `Remove ${leadsStats.withoutEmail} No-Email`}
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <ChatAnalyticsCards
+        onCleanup={cleanupLeadsWithoutEmail}
+        cleaningLeads={cleaningLeads}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
         {/* Conversations List */}
