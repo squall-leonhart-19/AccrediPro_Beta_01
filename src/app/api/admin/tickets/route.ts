@@ -127,30 +127,23 @@ export async function GET(request: NextRequest) {
                 }
               }
             },
-            // Enrollments with progress for context
+            // Enrollments for context (progress is already on enrollment)
             enrollments: {
-              include: {
+              select: {
+                id: true,
+                status: true,
+                progress: true,
+                enrolledAt: true,
+                completedAt: true,
                 course: {
                   select: {
                     id: true,
                     title: true,
                     slug: true,
                   }
-                },
-                moduleProgresses: {
-                  select: {
-                    status: true,
-                    module: {
-                      select: {
-                        title: true,
-                        orderIndex: true,
-                      }
-                    }
-                  },
-                  orderBy: { module: { orderIndex: "asc" } }
                 }
               },
-              orderBy: { createdAt: "desc" }
+              orderBy: { enrolledAt: "desc" }
             }
           }
         },

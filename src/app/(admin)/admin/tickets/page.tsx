@@ -948,10 +948,7 @@ export default function TicketsPage() {
                 ) : (
                   <div className="space-y-2">
                     {selectedTicket.user.enrollments.slice(0, 4).map((enrollment: any) => {
-                      const completedModules = enrollment.moduleProgresses?.filter((mp: any) => mp.status === "COMPLETED")?.length || 0;
-                      const totalModules = enrollment.moduleProgresses?.length || 0;
-                      const progressPercent = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
-                      const currentModule = enrollment.moduleProgresses?.find((mp: any) => mp.status === "IN_PROGRESS");
+                      const progressPercent = Math.round(enrollment.progress || 0);
 
                       return (
                         <div key={enrollment.id} className="p-2 bg-slate-50 rounded-lg">
@@ -988,12 +985,6 @@ export default function TicketsPage() {
                                   style={{ width: `${progressPercent}%` }}
                                 />
                               </div>
-                              {/* Current module */}
-                              {currentModule && (
-                                <div className="text-[10px] text-slate-400 mt-1 truncate">
-                                  📍 {currentModule.module?.title}
-                                </div>
-                              )}
                             </div>
                           </div>
                         </div>
