@@ -33,7 +33,7 @@ export default function FMCourseCertificationPage() {
     const [showOptin, setShowOptin] = useState(true);
     const [userName, setUserName] = useState("");
     const [userEmail, setUserEmail] = useState("");
-    const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
+    const [messages, setMessages] = useState<{ role: string; content: string; fromServer?: boolean }[]>([]);
     const [inputValue, setInputValue] = useState("");
 
     const [isTyping, setIsTyping] = useState(false);
@@ -48,6 +48,7 @@ export default function FMCourseCertificationPage() {
     }, [messages]);
 
     // POLLING: Fetch messages from server every 3s to sync admin replies
+    // We track server messages separately and merge with welcome message
     useEffect(() => {
         if (!visitorId || showOptin || !chatOpen) return;
 
@@ -56,17 +57,31 @@ export default function FMCourseCertificationPage() {
                 const res = await fetch(`/api/chat/messages?visitorId=${visitorId}`);
                 const data = await res.json();
 
-                if (data.messages && data.messages.length > 0) {
-                    // Only update if we have new messages (compare counts)
+                if (data.messages) {
+                    // Convert server messages to our format
+                    const serverMessages = data.messages.map((m: any) => ({
+                        role: m.role === "user" ? "user" : "bot",
+                        content: m.text,
+                        fromServer: true
+                    }));
+
                     setMessages((prev) => {
-                        // If server has more messages, use server data
-                        if (data.messages.length > prev.length) {
-                            return data.messages.map((m: any) => ({
-                                role: m.role === "user" ? "user" : "bot",
-                                content: m.text
-                            }));
-                        }
-                        return prev;
+                        // Keep the welcome message (first message, not from server)
+                        const welcomeMsg = prev.length > 0 && !prev[0].fromServer ? prev[0] : null;
+
+                        // Filter out any pending/typing indicators from local state
+                        const pendingUserMsgs = prev.filter(m =>
+                            m.role === "user" && !m.fromServer &&
+                            !serverMessages.some((s: any) => s.content === m.content)
+                        );
+
+                        // Build final messages: welcome + server messages + pending user messages
+                        const result = [];
+                        if (welcomeMsg) result.push(welcomeMsg);
+                        result.push(...serverMessages);
+                        result.push(...pendingUserMsgs);
+
+                        return result;
                     });
                 }
             } catch (err) {
@@ -182,11 +197,12 @@ export default function FMCourseCertificationPage() {
 
         const userMessage = inputValue;
         setInputValue("");
+        // Add user message locally (will be synced from server on next poll)
         setMessages(prev => [...prev, { role: "user", content: userMessage }]);
         setIsTyping(true);
 
         try {
-            const res = await fetch("/api/chat/sales", {
+            await fetch("/api/chat/sales", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -197,11 +213,10 @@ export default function FMCourseCertificationPage() {
                     userEmail
                 })
             });
-            const data = await res.json();
-            setMessages(prev => [...prev, { role: "bot", content: data.reply || "Thanks for your question! The FM Certification gives you 9 international certifications, personal mentorship, and lifetime access for just $97 today. What else would you like to know?" }]);
+            // Don't add fake acknowledgment - let polling sync real admin replies
+            // Show typing for 2 seconds to indicate message was received
+            setTimeout(() => setIsTyping(false), 2000);
         } catch {
-            setMessages(prev => [...prev, { role: "bot", content: "Thanks for reaching out! The FM Certification gives you everything you need to become a certified functional medicine coach in 30 days. It includes 9 international certifications, daily mentorship with me, and lifetime access to our community. Today's special is just $97! What questions can I answer for you?" }]);
-        } finally {
             setIsTyping(false);
         }
     };
