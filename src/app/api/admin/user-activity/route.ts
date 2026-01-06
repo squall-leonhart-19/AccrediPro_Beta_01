@@ -298,17 +298,23 @@ export async function GET(request: NextRequest) {
             }),
 
             // NEW: Community Messages (Pod)
+            /*
             prisma.podMessage.count({
                 where: { senderId: userId }
             }),
+            */
+            0, // Fallback to 0
 
             // NEW: Pod Membership
+            /*
             prisma.podMember.findFirst({
                 where: { userId },
                 include: {
                     pod: { select: { name: true } }
                 }
             })
+            */
+            null // Fallback to null
         ]);
 
         if (!user) {
