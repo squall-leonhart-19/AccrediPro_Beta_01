@@ -23,6 +23,30 @@ export interface Ticket {
         email: string;
         image: string;
     } | null;
+    user?: {
+        id: string;
+        firstName?: string | null;
+        lastName?: string | null;
+        avatar?: string | null;
+        email?: string | null;
+        createdAt: string;
+        payments: Array<{
+            id: string;
+            amount: number; // Decimal comes as number/string from JSON
+            currency: string;
+            status: string;
+            productName?: string | null;
+            createdAt: string;
+        }>;
+        submittedTickets: Array<{
+            id: string;
+            ticketNumber: number;
+            subject: string;
+            status: string;
+            createdAt: string;
+        }>;
+        marketingTags: Array<{ tag: string }>;
+    } | null;
     messages: TicketMessage[];
 }
 

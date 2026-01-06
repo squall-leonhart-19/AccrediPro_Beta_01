@@ -653,12 +653,26 @@ export async function POST(request: NextRequest) {
         try {
             const course = await prisma.course.findFirst({ where: { slug: courseSlug } });
 
-            const payment = await prisma.payment.create({
-                data: {
+            // Use CF Order ID if available, otherwise fallback to timestamp
+            // This prevents duplicate payments if the webhook fires multiple times
+            const cfOrderId = data.id || data.order_id;
+            const transactionId = cfOrderId ? `cf_${cfOrderId}` : `cf_${Date.now()}`;
+
+            // Upsert to handle retries/duplicates idempotently
+            const payment = await prisma.payment.upsert({
+                where: { transactionId },
+                update: {
+                    // Update fields that might change or fix previous data
+                    userId: user.id,
+                    amount: purchaseValue,
+                    status: "COMPLETED",
+                    productName: contentName,
+                },
+                create: {
                     userId: user.id,
                     amount: purchaseValue,
                     currency: "USD",
-                    transactionId: `cf_${Date.now()}`,
+                    transactionId,
                     paymentMethod: "clickfunnels",
                     productName: contentName,
                     productSku: courseSlug,
@@ -671,13 +685,13 @@ export async function POST(request: NextRequest) {
                 },
             });
             paymentId = payment.id;
-            console.log(`[CF Purchase] ✅ Created Payment record: $${purchaseValue} - ${payment.id}`);
+            console.log(`[CF Purchase] ✅ Processed Payment record: $${purchaseValue} - ${payment.id} (TxID: ${transactionId})`);
         } catch (paymentError) {
             console.error("[CF Purchase] Failed to create Payment record:", paymentError);
         }
 
         // =====================================================
-        // 8. LOG WEBHOOK EVENT
+        // 8. LOG WEBHOOK EVENT (Upsert or Create new only if distinct)
         // =====================================================
 
         await prisma.webhookEvent.create({

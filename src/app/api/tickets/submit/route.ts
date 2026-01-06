@@ -6,16 +6,48 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Helper to classify ticket
-const classifyTicket = (subject: string, message: string) => {
-  const text = (subject + " " + message).toLowerCase();
-  if (text.includes("refund")) return "REFUND";
-  if (text.match(/money|charge|bill|invoice|payment|card|bank/)) return "BILLING";
-  if (text.match(/login|password|access|cant log|can't log|error|bug|broken|crash/)) return "TECHNICAL";
-  if (text.match(/unlocked|locked|permission|module/)) return "ACCESS";
-  if (text.match(/certificate|diploma|exam|quiz|test|pass|fail/)) return "CERTIFICATES";
-  if (text.match(/content|video|lesson|material/)) return "COURSE_CONTENT";
-  return "GENERAL";
+import Anthropic from "@anthropic-ai/sdk";
+
+// Helper to classify ticket using AI
+const classifyTicketWithAI = async (subject: string, message: string): Promise<string> => {
+  try {
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+
+    const completion = await anthropic.messages.create({
+      model: "claude-3-haiku-20240307",
+      max_tokens: 10,
+      messages: [
+        {
+          role: "user",
+          content: `Classify this support ticket into exactly one of these categories: BILLING, TECHNICAL, ACCESS, CERTIFICATES, COURSE_CONTENT, REFUND, GENERAL.
+          
+          Subject: ${subject}
+          Message: ${message}
+          
+          Reply ONLY with the category name.`
+        }
+      ]
+    });
+
+    const textBlock = completion.content[0];
+    const category = textBlock.type === 'text' ? textBlock.text.trim().toUpperCase() : "GENERAL";
+
+    const validCategories = ["BILLING", "TECHNICAL", "ACCESS", "CERTIFICATES", "COURSE_CONTENT", "REFUND", "GENERAL"];
+    return validCategories.includes(category) ? category : "GENERAL";
+  } catch (error) {
+    console.error("AI Classification failed:", error);
+    // Fallback to regex
+    const text = (subject + " " + message).toLowerCase();
+    if (text.includes("refund")) return "REFUND";
+    if (text.match(/money|charge|bill|invoice|payment|card|bank/)) return "BILLING";
+    if (text.match(/login|password|access|cant log|can't log|error|bug|broken|crash/)) return "TECHNICAL";
+    if (text.match(/unlocked|locked|permission|module/)) return "ACCESS";
+    if (text.match(/certificate|diploma|exam|quiz|test|pass|fail/)) return "CERTIFICATES";
+    if (text.match(/content|video|lesson|material/)) return "COURSE_CONTENT";
+    return "GENERAL";
+  }
 };
 
 // POST - Customer submits a new ticket
@@ -24,7 +56,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
     const body = await request.json();
 
-    const { subject, message, category, name, email } = body;
+    const { subject, message, category, name, email, userId } = body;
 
     // Get customer info from session or form
     const customerName = session?.user?.name || name;
@@ -37,14 +69,75 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create ticket with initial message
+    // AUTO-MERGE: Check for existing OPEN or NEW ticket
+    const existingTicket = await prisma.supportTicket.findFirst({
+      where: {
+        OR: [
+          { userId: session?.user?.id || userId || undefined },
+          { customerEmail: customerEmail }
+        ],
+        status: { in: ["NEW", "OPEN", "PENDING"] }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    if (existingTicket) {
+      // Append message to existing ticket
+      await prisma.ticketMessage.create({
+        data: {
+          ticketId: existingTicket.id,
+          content: message,
+          isFromCustomer: true
+        }
+      });
+
+      // Update ticket timestamp and status if needed
+      await prisma.supportTicket.update({
+        where: { id: existingTicket.id },
+        data: {
+          updatedAt: new Date(),
+          // If pending (waiting for user), move back to OPEN so admin sees reply
+          status: existingTicket.status === "PENDING" ? "OPEN" : existingTicket.status
+        }
+      });
+
+      // Notify customer of merge
+      try {
+        await resend.emails.send({
+          from: "AccrediPro Support <support@accredipro-certificate.com>",
+          to: customerEmail,
+          subject: `[Ticket #${existingTicket.ticketNumber}] New message added to your open request`,
+          html: `
+                  <div style="font-family: Arial, sans-serif; color: #333;">
+                    <p>Hi ${customerName.split(" ")[0]},</p>
+                    <p>We've added your new message to your existing open ticket <strong>#${existingTicket.ticketNumber}</strong>.</p>
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                       "${message}"
+                    </div>
+                    <p>You don't need to do anything else. Our team will review this along with your previous messages.</p>
+                  </div>
+                `
+        });
+      } catch (e) {
+        console.error("Failed to send merge notification:", e);
+      }
+
+      return NextResponse.json({
+        success: true,
+        ticketNumber: existingTicket.ticketNumber,
+        message: `Message added to existing ticket #${existingTicket.ticketNumber}`,
+        merged: true
+      });
+    }
+
+    // Create NEW ticket (if no open one exists)
     const ticket = await prisma.supportTicket.create({
       data: {
         subject,
         customerName,
         customerEmail,
-        category: category || classifyTicket(subject, message),
-        userId: session?.user?.id || null,
+        category: category || await classifyTicketWithAI(subject, message),
+        userId: session?.user?.id || userId || null,
         messages: {
           create: {
             content: message,

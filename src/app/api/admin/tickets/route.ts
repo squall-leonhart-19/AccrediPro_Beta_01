@@ -82,7 +82,39 @@ export async function GET(request: NextRequest) {
         { createdAt: "desc" },
       ],
       include: {
-        user: { select: { firstName: true, lastName: true, avatar: true } },
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+            email: true,
+            createdAt: true,
+            payments: {
+              take: 5,
+              orderBy: { createdAt: "desc" },
+              select: {
+                id: true,
+                amount: true,
+                currency: true,
+                status: true,
+                productName: true,
+                createdAt: true,
+              }
+            },
+            submittedTickets: {
+              where: { status: { not: "CLOSED" } },
+              orderBy: { createdAt: "desc" },
+              select: {
+                id: true,
+                ticketNumber: true,
+                subject: true,
+                status: true,
+                createdAt: true,
+              }
+            }
+          }
+        },
         assignedTo: { select: { firstName: true, lastName: true } },
         messages: {
           orderBy: { createdAt: "asc" },

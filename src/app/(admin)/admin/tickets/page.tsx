@@ -7,7 +7,7 @@ import {
   Search, Filter, RefreshCcw, CheckCircle2, XCircle,
   MessageSquare, User, Clock, Star, Paperclip, Send,
   MoreVertical, Mail, Layout, LifeBuoy, Zap, ChevronRight,
-  Sparkles, Trash2, UserPlus, Reply
+  Sparkles, Trash2, UserPlus, Reply, DollarSign, CreditCard, Copy, ExternalLink, Merge, Tag as TagIcon, Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,6 +122,154 @@ const SAVED_REPLIES = [
   { label: "Refund Policy", text: "Regarding our refund policy: We offer a 30-day money-back guarantee for all our certification programs if you are not satisfied." },
   { label: "Closing Ticket", text: "I'm glad we could resolve this for you. I'll go ahead and close this ticket now. Please feel free to reach out if you need anything else!" },
 ];
+
+// 4. Customer Details Sidebar
+const CustomerDetailsSidebar = ({ ticket, onClose }: { ticket: Ticket; onClose?: () => void }) => {
+  const user = ticket.user;
+  const [newTag, setNewTag] = useState("");
+  const [isAddingTag, setIsAddingTag] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleAddTag = async () => {
+    if (!newTag.trim() || !user?.id) return;
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}/tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tag: newTag })
+      });
+      if (!res.ok) throw new Error("Failed");
+      toast.success("Tag added");
+      setNewTag("");
+      setIsAddingTag(false);
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    } catch (e) {
+      toast.error("Failed to add tag");
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="flex flex-col h-full bg-slate-50 border-l p-4 text-center">
+        <div className="mt-10 opacity-30">
+          <User className="w-16 h-16 mx-auto mb-2 text-slate-400" />
+        </div>
+        <h3 className="font-semibold text-slate-500">Guest User</h3>
+        <p className="text-xs text-slate-400 mt-1">
+          This ticket was submitted by a non-registered email address.
+        </p>
+        <div className="mt-6 p-3 bg-white border rounded-lg text-left shadow-sm">
+          <div className="text-xs font-bold text-slate-400 uppercase mb-1">Pass-through Data</div>
+          <div className="text-sm font-medium">{ticket.customerName}</div>
+          <div className="text-xs text-blue-600">{ticket.customerEmail}</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-full bg-white border-l overflow-y-auto">
+      {/* Header */}
+      <div className="p-6 border-b bg-slate-50/50">
+        <div className="flex items-center gap-4">
+          <Avatar className="w-16 h-16 border-2 border-white shadow-sm">
+            <AvatarImage src={user.avatar || ""} />
+            <AvatarFallback className="bg-blue-600 text-white text-xl">
+              {user.firstName?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <h2 className="font-bold text-lg text-slate-800 truncate">
+              {user.firstName} {user.lastName}
+            </h2>
+            <div className="flex items-center gap-1 text-xs text-slate-500">
+              <Mail className="w-3 h-3" />
+              <span className="truncate max-w-[150px]">{user.email}</span>
+              <button className="text-blue-500 hover:text-blue-700" onClick={() => navigator.clipboard.writeText(user.email || "")}>
+                <Copy className="w-3 h-3" />
+              </button>
+            </div>
+            <div className="text-[10px] text-slate-400 mt-1">
+              Joined {new Date(user.createdAt).toLocaleDateString()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Purchase History */}
+      <div className="p-4 border-b">
+        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <DollarSign className="w-4 h-4 text-green-600" /> Recent Purchases
+        </h3>
+
+        {!user.payments || user.payments.length === 0 ? (
+          <p className="text-sm text-slate-400 italic">No purchase history found.</p>
+        ) : (
+          <div className="space-y-3">
+            {user.payments.map((payment) => (
+              <div key={payment.id} className="flex items-start gap-3 p-2 rounded hover:bg-slate-50 transition-colors border-l-2 border-transparent hover:border-green-500">
+                <div className="bg-green-100 p-1.5 rounded text-green-700 mt-0.5">
+                  <CreditCard className="w-3 h-3" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <p className="text-sm font-medium text-slate-800 line-clamp-1">{payment.productName || "Product"}</p>
+                    <p className="text-sm font-bold text-slate-900 ml-2">
+                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payment.currency }).format(payment.amount)}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center mt-1">
+                    <span className="text-[10px] text-slate-500">{new Date(payment.createdAt).toLocaleDateString()}</span>
+                    <Badge variant="outline" className={cn("text-[9px] h-4 px-1 font-normal uppercase",
+                      payment.status === 'COMPLETED' ? "text-green-600 border-green-200 bg-green-50" :
+                        payment.status === 'REFUNDED' ? "text-red-600 border-red-200 bg-red-50" : "text-slate-500"
+                    )}>
+                      {payment.status}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="pt-2 text-center">
+              <a href={`/admin/users?userId=${user.id}`} target="_blank" className="text-xs text-blue-600 hover:underline flex items-center justify-center gap-1">
+                View Full Profile <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Ticket History */}
+      <div className="p-4">
+        <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+          <LifeBuoy className="w-4 h-4 text-blue-600" /> Other Tickets
+        </h3>
+
+        {!user.submittedTickets || user.submittedTickets.filter(t => t.id !== ticket.id).length === 0 ? (
+          <p className="text-sm text-slate-400 italic">No other open tickets.</p>
+        ) : (
+          <div className="space-y-2">
+            {user.submittedTickets.filter(t => t.id !== ticket.id).map((otherTicket) => (
+              <div key={otherTicket.id} className="p-3 border rounded-lg bg-slate-50 hover:bg-white hover:shadow-sm transition-all group">
+                <div className="flex justify-between items-start mb-1">
+                  <span className="text-xs font-bold text-slate-700">#{otherTicket.ticketNumber}</span>
+                  <StatusBadge status={otherTicket.status} />
+                </div>
+                <p className="text-xs text-slate-600 font-medium line-clamp-1 mb-2">{otherTicket.subject}</p>
+                <div className="flex justify-between items-center border-t pt-2 mt-1">
+                  <span className="text-[10px] text-slate-400">{new Date(otherTicket.createdAt).toLocaleDateString()}</span>
+                  <Button variant="ghost" size="sm" className="h-6 text-[10px] px-2 text-blue-600 hover:bg-blue-50">
+                    Merge <Merge className="w-3 h-3 ml-1" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 // --- Main Page Component ---
 
@@ -523,6 +671,14 @@ export default function SupportTicketsPage() {
           </div>
         )}
       </div>
+
+      {/* 4. Customer Context Sidebar (Right) - Fixed Width */}
+      {selectedTicket && (
+        <div className="w-80 hidden xl:block border-l shrink-0">
+          <CustomerDetailsSidebar ticket={selectedTicket} />
+        </div>
+      )}
+
     </div>
   );
 }
