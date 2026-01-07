@@ -10,7 +10,7 @@ import {
   DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
   Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
   AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap,
-  Pencil, Save, Loader2
+  Pencil, Save, Loader2, Wrench
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,13 +130,24 @@ const DEPARTMENT_CONFIG: Record<string, {
     border: "border-amber-200",
     icon: Star
   },
+  TECHNICAL: {
+    label: "Technical",
+    teamName: "Technical Support Division",
+    responder: "Alex Chen, Senior Tech Specialist",
+    initials: "AC",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    color: "text-cyan-700",
+    bgLight: "bg-cyan-50",
+    border: "border-cyan-200",
+    icon: Wrench
+  },
 };
 
 // Auto-routing rules: category -> default department
 const CATEGORY_TO_DEPARTMENT: Record<string, string> = {
   REFUND: "LEGAL",
   BILLING: "BILLING",
-  TECHNICAL: "SUPPORT",
+  TECHNICAL: "TECHNICAL",
   ACCESS: "SUPPORT",
   CERTIFICATES: "CREDENTIALING",
   COURSE_CONTENT: "ACADEMIC",
@@ -625,52 +636,48 @@ export default function TicketsPage() {
       <div className="flex-1 flex flex-col min-w-0 bg-white shadow-sm">
         {selectedTicket ? (
           <>
-            {/* Ticket Detail Header - Two Row Layout */}
-            <div className="border-b bg-gradient-to-r from-white to-slate-50 flex-shrink-0">
-              {/* Row 1: Ticket Info */}
-              <div className="px-4 py-3 flex items-start gap-3">
+            {/* Ticket Detail Header - Compact Two Row Layout */}
+            <div className="border-b bg-white flex-shrink-0">
+              {/* Row 1: Ticket Info - Compact */}
+              <div className="px-3 py-2 flex items-center gap-2">
                 {/* Toggle sidebar button - Mobile */}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden h-8 w-8 flex-shrink-0 mt-1"
+                  className="lg:hidden h-7 w-7 flex-shrink-0"
                   onClick={() => setShowSidebar(!showSidebar)}
                 >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
 
-                <Avatar className="w-10 h-10 border-2 border-[#722F37]/20 flex-shrink-0">
+                <Avatar className="w-8 h-8 border border-[#722F37]/20 flex-shrink-0">
                   <AvatarImage src={selectedTicket.user?.avatar || undefined} />
-                  <AvatarFallback className="bg-[#722F37] text-white font-semibold">
+                  <AvatarFallback className="bg-[#722F37] text-white text-xs font-semibold">
                     {selectedTicket.customerName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1 min-w-0">
-                  {/* Ticket # + Category on one line */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
-                      #{selectedTicket.ticketNumber}
-                    </span>
+                  {/* First line: Subject */}
+                  <h2 className="font-semibold text-slate-900 text-sm leading-tight truncate">
+                    {selectedTicket.subject}
+                  </h2>
+                  {/* Second line: Ticket # + Name + Category */}
+                  <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                    <span className="font-mono text-slate-400">#{selectedTicket.ticketNumber}</span>
+                    <span>by <span className="font-medium text-slate-700">{selectedTicket.customerName}</span></span>
                     {(() => {
                       const category = detectCategory(selectedTicket.subject);
                       const categoryStyle = CATEGORY_COLORS[category] || CATEGORY_COLORS.General;
                       return (
                         <span className={cn(
-                          "text-xs px-2 py-0.5 rounded-full font-medium border",
-                          categoryStyle.bg, categoryStyle.text, categoryStyle.border
+                          "px-1.5 py-0.5 rounded text-[10px] font-medium",
+                          categoryStyle.bg, categoryStyle.text
                         )}>
                           {category}
                         </span>
                       );
                     })()}
-                  </div>
-                  {/* Subject - Full text, wraps naturally */}
-                  <h2 className="font-bold text-slate-900 text-sm leading-snug mt-1">
-                    {selectedTicket.subject}
-                  </h2>
-                  <div className="text-xs text-slate-500 mt-0.5">
-                    by <span className="font-medium text-slate-700">{selectedTicket.customerName}</span>
                   </div>
                 </div>
 
@@ -678,7 +685,7 @@ export default function TicketsPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 flex-shrink-0"
+                  className="h-7 w-7 flex-shrink-0"
                   onClick={() => setShowCustomerPanel(!showCustomerPanel)}
                   title="Toggle customer details"
                 >
@@ -686,8 +693,8 @@ export default function TicketsPage() {
                 </Button>
               </div>
 
-              {/* Row 2: Action Buttons - Horizontal scroll on mobile */}
-              <div className="px-4 pb-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              {/* Row 2: Action Buttons - Compact inline */}
+              <div className="px-3 pb-2 flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
                 {/* Status Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -822,7 +829,7 @@ export default function TicketsPage() {
 
             {/* Messages */}
             <ScrollArea className="flex-1 bg-white">
-              <div className="p-6">
+              <div className="px-4 py-3">
                 <div className="space-y-4">
                   {selectedTicket.messages.map((msg, idx) => {
                     const isCustomer = msg.isFromCustomer;
@@ -1153,7 +1160,7 @@ export default function TicketsPage() {
                         <Badge
                           key={i}
                           variant="secondary"
-                          className="text-[10px] gap-1"
+                          className="text-[10px] gap-1 pr-1 group"
                           style={{
                             backgroundColor: `${mt.tag?.color || "#6B7280"}20`,
                             color: mt.tag?.color || "#6B7280",
@@ -1165,6 +1172,30 @@ export default function TicketsPage() {
                             style={{ backgroundColor: mt.tag?.color || "#6B7280" }}
                           />
                           {mt.tag?.name || mt.tag?.slug || "Tag"}
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const res = await fetch(`/api/admin/users/${selectedTicket.user?.id}/tags`, {
+                                  method: "DELETE",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ tag: mt.tag?.slug || mt.tag?.name })
+                                });
+                                if (res.ok) {
+                                  toast.success("Tag removed");
+                                  queryClient.invalidateQueries({ queryKey: ["tickets"] });
+                                } else {
+                                  toast.error("Failed to remove tag");
+                                }
+                              } catch {
+                                toast.error("Failed to remove tag");
+                              }
+                            }}
+                            className="ml-1 p-0.5 rounded hover:bg-black/10 opacity-50 group-hover:opacity-100 transition-opacity"
+                            title="Remove tag"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
                         </Badge>
                       ))
                     ) : (
