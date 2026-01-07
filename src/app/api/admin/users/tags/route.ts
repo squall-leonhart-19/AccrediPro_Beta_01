@@ -14,10 +14,14 @@ const addTagSchema = z.object({
 
 // Tag to Course mapping for automatic enrollment
 // Supports single course OR array of courses (for Pro Accelerator bundles)
+// NOTE: Tag names are case-insensitive, we normalize them in the mapping check
 const TAG_TO_COURSE_SLUG: Record<string, string | string[]> = {
-  // FM Main Certification
-  functional_medicine_complete_certification_purchased: "functional-medicine-complete-certification",
-  fm_certification_purchased: "functional-medicine-complete-certification",
+  // FM Main Certification - all variants
+  "functional_medicine_complete_certification_purchased": "functional-medicine-complete-certification",
+  "fm_certification_purchased": "functional-medicine-complete-certification",
+  "fm certification purchased": "functional-medicine-complete-certification",
+  "certified functional medicine practitioner purchased": "functional-medicine-complete-certification",
+  "clickfunnels_purchase": "functional-medicine-complete-certification", // ClickFunnels webhook tag
 
   // FM Pro Accelerator Bundle (all 3 courses at once)
   fm_pro_accelerator_purchased: [
@@ -296,7 +300,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Auto-enrollment for purchase tags (supports single course or bundle)
-    const courseMapping = TAG_TO_COURSE_SLUG[data.tag];
+    // Normalize tag to lowercase for case-insensitive matching
+    const normalizedTag = data.tag.toLowerCase().trim();
+    const courseMapping = TAG_TO_COURSE_SLUG[normalizedTag] || TAG_TO_COURSE_SLUG[data.tag];
     if (courseMapping) {
       const courseSlugs = Array.isArray(courseMapping) ? courseMapping : [courseMapping];
       const enrolledCourses: string[] = [];

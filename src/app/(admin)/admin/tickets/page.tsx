@@ -9,7 +9,8 @@ import {
   MoreHorizontal, Mail, LifeBuoy, Sparkles, Trash2, UserPlus,
   DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
   Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
-  AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap
+  AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap,
+  Pencil, Save, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -287,6 +288,11 @@ export default function TicketsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Email editing state
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [editEmailValue, setEditEmailValue] = useState("");
+  const [isSavingEmail, setIsSavingEmail] = useState(false);
+
   const { data, isLoading, refetch } = useTickets(statusFilter, priorityFilter, searchTerm);
   const updateTicket = useUpdateTicket();
   const replyTicket = useReplyTicket();
@@ -355,6 +361,45 @@ export default function TicketsPage() {
       setSelectedTicketId(remaining[0]?.id || null);
     } catch {
       toast.error("Failed to delete");
+    }
+  };
+
+  // Handle saving email change
+  const handleSaveEmail = async () => {
+    if (!selectedTicket?.user?.id || !editEmailValue.trim()) return;
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(editEmailValue)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setIsSavingEmail(true);
+    try {
+      const res = await fetch("/api/admin/users/email", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedTicket.user.id,
+          newEmail: editEmailValue.trim().toLowerCase(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(`Email updated: ${data.oldEmail} → ${data.newEmail}`);
+        setIsEditingEmail(false);
+        // Refresh tickets to get updated data
+        queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      } else {
+        toast.error(data.error || "Failed to update email");
+      }
+    } catch {
+      toast.error("Failed to update email");
+    } finally {
+      setIsSavingEmail(false);
     }
   };
 
@@ -985,19 +1030,76 @@ export default function TicketsPage() {
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="font-bold text-slate-900">{selectedTicket.customerName}</h3>
-                <div className="flex items-center justify-center gap-1 text-xs text-slate-500 mt-1">
-                  <Mail className="w-3 h-3" />
-                  {selectedTicket.customerEmail}
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(selectedTicket.customerEmail);
-                      toast.success("Email copied!");
-                    }}
-                    className="text-[#722F37] hover:text-[#5A252C] ml-1"
-                  >
-                    <Copy className="w-3 h-3" />
-                  </button>
-                </div>
+
+                {/* Editable Email Section */}
+                {isEditingEmail ? (
+                  <div className="mt-2 space-y-2">
+                    <Input
+                      type="email"
+                      value={editEmailValue}
+                      onChange={(e) => setEditEmailValue(e.target.value)}
+                      placeholder="Enter new email"
+                      className="h-8 text-xs text-center"
+                      autoFocus
+                    />
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={handleSaveEmail}
+                        disabled={isSavingEmail}
+                        className="h-7 text-xs bg-[#722F37] hover:bg-[#5A252C]"
+                      >
+                        {isSavingEmail ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <>
+                            <Save className="w-3 h-3 mr-1" />
+                            Save
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditingEmail(false);
+                          setEditEmailValue("");
+                        }}
+                        className="h-7 text-xs"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-1 text-xs text-slate-500 mt-1">
+                    <Mail className="w-3 h-3" />
+                    {selectedTicket.customerEmail}
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedTicket.customerEmail);
+                        toast.success("Email copied!");
+                      }}
+                      className="text-[#722F37] hover:text-[#5A252C] ml-1"
+                      title="Copy email"
+                    >
+                      <Copy className="w-3 h-3" />
+                    </button>
+                    {selectedTicket.user && (
+                      <button
+                        onClick={() => {
+                          setEditEmailValue(selectedTicket.customerEmail);
+                          setIsEditingEmail(true);
+                        }}
+                        className="text-[#722F37] hover:text-[#5A252C] ml-1"
+                        title="Edit email"
+                      >
+                        <Pencil className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 {selectedTicket.user && (
                   <div className="text-[10px] text-slate-400 mt-1">
                     Customer since {format(new Date(selectedTicket.user.createdAt), "MMM yyyy")}
