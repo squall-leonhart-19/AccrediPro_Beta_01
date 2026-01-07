@@ -162,44 +162,115 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Department-specific info for email
+    const DEPARTMENT_EMAIL_INFO: Record<string, { name: string; response: string; color: string }> = {
+      SUPPORT: { name: "Student Success Team", response: "24 hours", color: "#10B981" },
+      BILLING: { name: "Accounts & Billing Team", response: "24-48 hours", color: "#3B82F6" },
+      LEGAL: { name: "Consumer Affairs Division", response: "1-3 business days", color: "#EF4444" },
+      ACADEMIC: { name: "Academic Affairs Office", response: "24-48 hours", color: "#8B5CF6" },
+      CREDENTIALING: { name: "Credentialing Board", response: "2-3 business days", color: "#F59E0B" },
+      TECHNICAL: { name: "Technical Support Team", response: "24 hours", color: "#06B6D4" },
+    };
+    const deptInfo = DEPARTMENT_EMAIL_INFO[ticketDepartment] || DEPARTMENT_EMAIL_INFO.SUPPORT;
+
     // Send confirmation email to customer
     try {
       await resend.emails.send({
-        from: "AccrediPro Support <support@accredipro-certificate.com>",
+        from: "AccrediPro Academy <support@accredipro-certificate.com>",
         to: customerEmail,
         replyTo: `ticket-${ticket.ticketNumber}@tickets.accredipro-certificate.com`,
-        subject: `[Ticket #${ticket.ticketNumber}] ${subject} - We've received your request`,
+        subject: `✅ Ticket #${ticket.ticketNumber} Received - ${subject}`,
         html: `
           <!DOCTYPE html>
           <html>
             <head>
               <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Ticket Confirmation</title>
             </head>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5;">
               <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <div style="background: linear-gradient(135deg, #6B2C40 0%, #8B3A42 100%); padding: 30px; border-radius: 12px 12px 0 0;">
-                  <h1 style="color: #D4AF37; margin: 0; font-size: 24px;">AccrediPro Support</h1>
+                
+                <!-- Header with Logo -->
+                <div style="background: linear-gradient(135deg, #722F37 0%, #8B3D47 100%); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
+                  <img src="https://learn.accredipro.academy/logo-gold.png" alt="AccrediPro Academy" style="height: 50px; margin-bottom: 15px;" onerror="this.style.display='none'">
+                  <h1 style="color: #D4AF37; margin: 0; font-size: 24px; font-weight: 700;">We've Got You!</h1>
+                  <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Your support request has been received</p>
                 </div>
 
-                <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-top: none; border-radius: 0 0 12px 12px;">
-                  <p>Hi ${customerName.split(" ")[0]},</p>
+                <!-- Main Content -->
+                <div style="background: #ffffff; padding: 35px 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                  
+                  <!-- Greeting -->
+                  <p style="font-size: 17px; margin: 0 0 20px 0;">Hi <strong>${customerName.split(" ")[0]}</strong>,</p>
+                  
+                  <p style="margin: 0 0 25px 0; color: #555;">Thank you for reaching out! We've created ticket <strong style="color: #722F37;">#${ticket.ticketNumber}</strong> for your request.</p>
 
-                  <p>Thank you for contacting AccrediPro Support. We've received your request and created ticket <strong>#${ticket.ticketNumber}</strong>.</p>
-
-                  <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <p style="margin: 0 0 10px 0; font-weight: bold;">Your message:</p>
-                    <p style="margin: 0; color: #555;">${message.replace(/\n/g, "<br>")}</p>
+                  <!-- Ticket Details Card -->
+                  <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; padding: 20px; margin-bottom: 25px; border-left: 4px solid ${deptInfo.color};">
+                    <table style="width: 100%;">
+                      <tr>
+                        <td style="padding: 6px 0; color: #666; font-size: 13px; width: 100px;">Ticket #</td>
+                        <td style="padding: 6px 0; font-weight: 600; color: #333;">${ticket.ticketNumber}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #666; font-size: 13px;">Subject</td>
+                        <td style="padding: 6px 0; font-weight: 600; color: #333;">${subject}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #666; font-size: 13px;">Assigned To</td>
+                        <td style="padding: 6px 0;">
+                          <span style="display: inline-block; background: ${deptInfo.color}15; color: ${deptInfo.color}; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">${deptInfo.name}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 6px 0; color: #666; font-size: 13px;">Response Time</td>
+                        <td style="padding: 6px 0; font-weight: 600; color: #333;">Within ${deptInfo.response}</td>
+                      </tr>
+                    </table>
                   </div>
 
-                  <p>Our team will review your request and respond within <strong>24 hours</strong>.</p>
+                  <!-- Your Message -->
+                  <div style="background: #fafafa; border-radius: 10px; padding: 18px; margin-bottom: 25px; border: 1px solid #eee;">
+                    <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Your Message</p>
+                    <p style="margin: 0; color: #444; font-size: 14px; line-height: 1.7;">${message.replace(/\n/g, "<br>")}</p>
+                  </div>
 
-                  <p>You can reply directly to this email to add more information to your ticket.</p>
+                  <!-- CTA Button -->
+                  ${session ? `
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://learn.accredipro.academy/dashboard/support" style="display: inline-block; background: linear-gradient(135deg, #722F37 0%, #8B3D47 100%); color: #ffffff; padding: 14px 35px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(114,47,55,0.3);">
+                      📬 View Your Tickets
+                    </a>
+                  </div>
+                  ` : ""}
 
-                  <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+                  <!-- Quick Tips -->
+                  <div style="background: #FEF3C7; border-radius: 10px; padding: 16px; margin-bottom: 25px; border: 1px solid #FCD34D;">
+                    <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #92400E;">💡 Quick Tip</p>
+                    <p style="margin: 0; color: #78350F; font-size: 13px;">You can reply directly to this email to add more information to your ticket. Just hit reply!</p>
+                  </div>
 
-                  <p style="color: #888; font-size: 12px; margin: 0;">
-                    Ticket #${ticket.ticketNumber}<br>
-                    ${session ? `<a href="https://learn.accredipro.academy/dashboard/support">View your tickets</a>` : ""}
+                  <!-- Social Proof -->
+                  <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee;">
+                    <p style="margin: 0 0 5px 0; color: #888; font-size: 12px;">Trusted by <strong style="color: #722F37;">15,000+</strong> healthcare professionals worldwide</p>
+                    <p style="margin: 0; color: #D4AF37; font-size: 20px; letter-spacing: 2px;">★★★★★</p>
+                    <p style="margin: 5px 0 0 0; color: #888; font-size: 11px;">4.9/5 Average Rating</p>
+                  </div>
+                </div>
+
+                <!-- Footer -->
+                <div style="text-align: center; padding: 25px 20px; color: #888;">
+                  <p style="margin: 0 0 10px 0; font-size: 13px;">
+                    <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
+                    &nbsp;|&nbsp;
+                    <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
+                    &nbsp;|&nbsp;
+                    <a href="mailto:support@accredipro.academy" style="color: #722F37; text-decoration: none;">Contact Us</a>
+                  </p>
+                  <p style="margin: 0; font-size: 11px; color: #aaa;">
+                    © ${new Date().getFullYear()} AccrediPro Academy™. All rights reserved.<br>
+                    Accredited by 9 leading healthcare certification bodies.
                   </p>
                 </div>
               </div>
