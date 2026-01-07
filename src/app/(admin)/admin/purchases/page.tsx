@@ -10,79 +10,113 @@ interface SearchParams {
 }
 
 // Alaska timezone (AKST = UTC-9) to match ClickFunnels
-const ALASKA_TIMEZONE_OFFSET_HOURS = -9;
+// All timestamps stored in DB are UTC. We need to convert Alaska time ranges to UTC for queries.
 
-function getAlaskaNow(): Date {
-    const now = new Date();
-    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-    return new Date(utcTime + (3600000 * ALASKA_TIMEZONE_OFFSET_HOURS));
+/**
+ * Get current time in Alaska (as UTC timestamp)
+ * Alaska is UTC-9, so when it's 3:00 AM in Alaska, it's 12:00 PM UTC
+ */
+function getAlaskaToUTC(alaskaDate: Date): Date {
+    // Add 9 hours to convert Alaska time to UTC
+    return new Date(alaskaDate.getTime() + (9 * 60 * 60 * 1000));
 }
 
-function getAlaskaStartOfDay(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+/**
+ * Get start of today in Alaska time (as UTC timestamp for DB query)
+ * Example: If it's Jan 7, 3:00 AM Alaska (= Jan 7, 12:00 PM UTC)
+ * Start of today in Alaska = Jan 7, 00:00 Alaska = Jan 7, 09:00 UTC
+ */
+function getAlaskaStartOfTodayUTC(): Date {
+    const now = new Date(); // Current UTC time
+    // Get current hour in Alaska: UTC hour - 9
+    const alaskaOffsetMs = -9 * 60 * 60 * 1000;
+    const alaskaTime = new Date(now.getTime() + alaskaOffsetMs);
+
+    // Get start of day in Alaska (midnight Alaska time)
+    const alaskaMidnight = new Date(
+        Date.UTC(
+            alaskaTime.getUTCFullYear(),
+            alaskaTime.getUTCMonth(),
+            alaskaTime.getUTCDate(),
+            0, 0, 0, 0
+        )
+    );
+
+    // Convert Alaska midnight to UTC: add 9 hours
+    return new Date(alaskaMidnight.getTime() + (9 * 60 * 60 * 1000));
 }
 
-// Helper to determine filter date range in Alaska time
+/**
+ * Get end of today in Alaska time (as UTC timestamp for DB query)
+ */
+function getAlaskaEndOfTodayUTC(): Date {
+    const startOfToday = getAlaskaStartOfTodayUTC();
+    return new Date(startOfToday.getTime() + (24 * 60 * 60 * 1000));
+}
+
+// Helper to determine filter date range (returns UTC timestamps)
 function getFilterDateRange(range: string): { start: Date; end: Date; label: string } {
-    const alaskaNow = getAlaskaNow();
-    const startOfToday = getAlaskaStartOfDay(alaskaNow);
+    const now = new Date(); // UTC now
+    const startOfTodayUTC = getAlaskaStartOfTodayUTC();
+    const endOfTodayUTC = getAlaskaEndOfTodayUTC();
 
     switch (range) {
         case "today":
             return {
-                start: startOfToday,
-                end: new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000),
+                start: startOfTodayUTC,
+                end: endOfTodayUTC,
                 label: "Today"
             };
         case "yesterday": {
-            const startOfYesterday = new Date(startOfToday.getTime() - 24 * 60 * 60 * 1000);
+            const startOfYesterdayUTC = new Date(startOfTodayUTC.getTime() - 24 * 60 * 60 * 1000);
             return {
-                start: startOfYesterday,
-                end: startOfToday,
+                start: startOfYesterdayUTC,
+                end: startOfTodayUTC,
                 label: "Yesterday"
             };
         }
         case "7days":
             return {
-                start: new Date(alaskaNow.getTime() - 7 * 24 * 60 * 60 * 1000),
-                end: alaskaNow,
+                start: new Date(startOfTodayUTC.getTime() - 7 * 24 * 60 * 60 * 1000),
+                end: now,
                 label: "Last 7 Days"
             };
         case "30days":
             return {
-                start: new Date(alaskaNow.getTime() - 30 * 24 * 60 * 60 * 1000),
-                end: alaskaNow,
+                start: new Date(startOfTodayUTC.getTime() - 30 * 24 * 60 * 60 * 1000),
+                end: now,
                 label: "Last 30 Days"
             };
         case "month": {
-            const startOfMonth = new Date(alaskaNow.getFullYear(), alaskaNow.getMonth(), 1);
+            // Get start of month in Alaska time, converted to UTC
+            const alaskaOffsetMs = -9 * 60 * 60 * 1000;
+            const alaskaTime = new Date(now.getTime() + alaskaOffsetMs);
+            const alaskaStartOfMonth = new Date(
+                Date.UTC(alaskaTime.getUTCFullYear(), alaskaTime.getUTCMonth(), 1, 0, 0, 0, 0)
+            );
             return {
-                start: startOfMonth,
-                end: alaskaNow,
+                start: new Date(alaskaStartOfMonth.getTime() + (9 * 60 * 60 * 1000)),
+                end: now,
                 label: "This Month"
             };
         }
         case "all":
             return {
-                start: new Date(2020, 0, 1), // Far past
-                end: alaskaNow,
+                start: new Date(2020, 0, 1),
+                end: now,
                 label: "All Time"
             };
         default:
             return {
-                start: new Date(alaskaNow.getTime() - 30 * 24 * 60 * 60 * 1000),
-                end: alaskaNow,
+                start: new Date(startOfTodayUTC.getTime() - 30 * 24 * 60 * 60 * 1000),
+                end: now,
                 label: "Last 30 Days"
             };
     }
 }
 
 async function getPurchasesData(searchParams: SearchParams) {
-    const alaskaNow = getAlaskaNow();
-    const startOfToday = getAlaskaStartOfDay(alaskaNow);
-    const startOfWeek = new Date(startOfToday);
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-    const startOfMonth = new Date(alaskaNow.getFullYear(), alaskaNow.getMonth(), 1);
+    const startOfTodayUTC = getAlaskaStartOfTodayUTC();
 
     // Get filter range
     const range = searchParams.range || "30days";
@@ -98,7 +132,7 @@ async function getPurchasesData(searchParams: SearchParams) {
         }),
         // Today (always show for quick reference)
         prisma.payment.aggregate({
-            where: { createdAt: { gte: startOfToday }, status: "COMPLETED" },
+            where: { createdAt: { gte: startOfTodayUTC }, status: "COMPLETED" },
             _sum: { amount: true },
             _count: true,
         }),
