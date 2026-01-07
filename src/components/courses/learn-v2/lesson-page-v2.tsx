@@ -273,10 +273,10 @@ export function LessonPageV2({
 
       {/* Main Layout */}
       <div className="flex min-h-screen">
-        {/* Main Content Area */}
+        {/* Main Content Area - Only apply right margin on desktop (lg+) when sidebar is open */}
         <main className={cn(
-          "flex-1 transition-all duration-500",
-          sidebarOpen ? "lg:mr-96" : "mr-0"
+          "flex-1 transition-all duration-500 w-full",
+          sidebarOpen ? "lg:mr-96" : ""
         )}>
           {/* Hero Section with Course Info */}
           <div className={cn(
@@ -659,9 +659,18 @@ export function LessonPageV2({
           </div>
         </main>
 
+        {/* Mobile Sidebar Backdrop */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* Floating Sidebar */}
         <aside className={cn(
-          "fixed top-0 right-0 h-full w-96 bg-white/95 backdrop-blur-xl border-l border-gray-200/50 shadow-2xl shadow-black/10 z-40 transition-all duration-500",
+          "fixed top-0 right-0 h-full bg-white/95 backdrop-blur-xl border-l border-gray-200/50 shadow-2xl shadow-black/10 z-40 transition-all duration-500",
+          "w-full sm:w-96", // Full width on mobile, 96 (384px) on sm+
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         )}>
           {/* Sidebar Header */}

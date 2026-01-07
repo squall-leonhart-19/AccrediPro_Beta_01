@@ -396,10 +396,10 @@ export function LearningClient({
 
       {/* Main Layout */}
       <div className="flex">
-        {/* Main Content Area */}
+        {/* Main Content Area - Only apply right margin on desktop (lg+) when sidebar is open */}
         <main className={cn(
-          "flex-1 transition-all duration-500 min-h-[calc(100vh-64px)]",
-          sidebarOpen ? "lg:mr-96" : "mr-0"
+          "flex-1 transition-all duration-500 min-h-[calc(100vh-64px)] w-full",
+          sidebarOpen ? "lg:mr-96" : ""
         )}>
           {/* Video Section */}
           {lesson.lessonType === "VIDEO" && lesson.videoId && (
@@ -658,9 +658,18 @@ export function LearningClient({
           </div>
         </main>
 
+        {/* Mobile Sidebar Backdrop */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
         <aside className={cn(
-          "fixed top-16 right-0 h-[calc(100vh-64px)] w-96 bg-white border-l border-gray-200 shadow-xl z-40 transition-all duration-500 overflow-hidden",
+          "fixed top-16 right-0 h-[calc(100vh-64px)] bg-white border-l border-gray-200 shadow-xl z-40 transition-all duration-500 overflow-hidden",
+          "w-full sm:w-96", // Full width on mobile, 96 (384px) on sm+
           sidebarOpen ? "translate-x-0" : "translate-x-full"
         )}>
           {/* Sidebar Header */}
