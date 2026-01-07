@@ -330,15 +330,15 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              {/* Right: Quick Career Info */}
-              <div className="flex items-center gap-4 text-sm">
-                <div className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+              {/* Right: Quick Career Info - hidden on mobile to prevent overflow */}
+              <div className="hidden sm:flex items-center gap-2 md:gap-4 text-sm flex-wrap">
+                <div className="px-3 py-1.5 md:px-4 md:py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
                   <p className="text-burgundy-200 text-xs">Career Stage</p>
-                  <p className="text-white font-semibold">{currentCareer.title}</p>
+                  <p className="text-white font-semibold text-sm">{currentCareer.title}</p>
                 </div>
-                <div className="px-4 py-2 bg-gold-400/20 backdrop-blur-sm rounded-lg border border-gold-400/30">
+                <div className="px-3 py-1.5 md:px-4 md:py-2 bg-gold-400/20 backdrop-blur-sm rounded-lg border border-gold-400/30">
                   <p className="text-gold-200 text-xs">Income Potential</p>
-                  <p className="text-gold-100 font-semibold">{CAREER_STAGES[currentCareer.stage]?.income || "$3K-$5K/mo"}</p>
+                  <p className="text-gold-100 font-semibold text-sm">{CAREER_STAGES[currentCareer.stage]?.income || "$3K-$5K/mo"}</p>
                 </div>
               </div>
             </div>

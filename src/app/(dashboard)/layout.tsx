@@ -69,22 +69,22 @@ export default async function DashboardLayout({
       <SWRProvider>
         <NotificationProvider>
           <AchievementProvider>
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gray-50 overflow-x-hidden">
               <DashboardNav />
 
-          {/* Main content */}
-          <main className="lg:pl-72 pt-16 lg:pt-0">
-            <div className="p-4 lg:p-8">
-              <OnboardingWrapper
-                hasCompletedOnboarding={hasCompletedOnboarding}
-                userName={userName}
-                coachName={coachName}
-                userId={session.user.id}
-              >
-                {children}
-              </OnboardingWrapper>
-            </div>
-          </main>
+              {/* Main content */}
+              <main className="lg:pl-72 pt-16 lg:pt-0 overflow-x-hidden">
+                <div className="p-4 lg:p-8 max-w-full overflow-x-hidden">
+                  <OnboardingWrapper
+                    hasCompletedOnboarding={hasCompletedOnboarding}
+                    userName={userName}
+                    coachName={coachName}
+                    userId={session.user.id}
+                  >
+                    {children}
+                  </OnboardingWrapper>
+                </div>
+              </main>
 
             </div>
           </AchievementProvider>
