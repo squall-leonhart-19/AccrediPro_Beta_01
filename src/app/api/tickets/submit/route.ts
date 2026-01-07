@@ -240,7 +240,7 @@ export async function POST(request: NextRequest) {
                   ${session ? `
                   <div style="text-align: center; margin: 30px 0;">
                     <a href="https://learn.accredipro.academy/dashboard/support" style="display: inline-block; background: linear-gradient(135deg, #722F37 0%, #8B3D47 100%); color: #ffffff; padding: 14px 35px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; box-shadow: 0 4px 12px rgba(114,47,55,0.3);">
-                      📬 View Your Tickets
+                      View Your Tickets
                     </a>
                   </div>
                   ` : ""}
