@@ -164,12 +164,12 @@ export async function POST(request: NextRequest) {
 
     // Department-specific info for email
     const DEPARTMENT_EMAIL_INFO: Record<string, { name: string; response: string; color: string }> = {
-      SUPPORT: { name: "Student Success Team", response: "24 hours", color: "#10B981" },
-      BILLING: { name: "Accounts & Billing Team", response: "24-48 hours", color: "#3B82F6" },
-      LEGAL: { name: "Consumer Affairs Division", response: "1-3 business days", color: "#EF4444" },
-      ACADEMIC: { name: "Academic Affairs Office", response: "24-48 hours", color: "#8B5CF6" },
-      CREDENTIALING: { name: "Credentialing Board", response: "2-3 business days", color: "#F59E0B" },
-      TECHNICAL: { name: "Technical Support Team", response: "24 hours", color: "#06B6D4" },
+      SUPPORT: { name: "Student Success Team", response: "24-48 Working Hours", color: "#10B981" },
+      BILLING: { name: "Accounts & Billing Team", response: "24-48 Working Hours", color: "#3B82F6" },
+      LEGAL: { name: "Consumer Affairs Division", response: "24-48 Working Hours", color: "#EF4444" },
+      ACADEMIC: { name: "Academic Affairs Office", response: "24-48 Working Hours", color: "#8B5CF6" },
+      CREDENTIALING: { name: "Credentialing Board", response: "24-48 Working Hours", color: "#F59E0B" },
+      TECHNICAL: { name: "Technical Support Team", response: "24-48 Working Hours", color: "#06B6D4" },
     };
     const deptInfo = DEPARTMENT_EMAIL_INFO[ticketDepartment] || DEPARTMENT_EMAIL_INFO.SUPPORT;
 
@@ -251,11 +251,10 @@ export async function POST(request: NextRequest) {
                     <p style="margin: 0; color: #78350F; font-size: 13px;">You can reply directly to this email to add more information to your ticket. Just hit reply!</p>
                   </div>
 
-                  <!-- Social Proof - Premium Design -->
-                  <div style="background: linear-gradient(135deg, #722F37 0%, #8B3D47 100%); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 20px;">
-                    <p style="margin: 0; color: #D4AF37; font-size: 26px; letter-spacing: 3px;">★★★★★</p>
-                    <p style="margin: 10px 0 5px 0; color: #ffffff; font-size: 15px; font-weight: 600;">Join 15,000+ Certified Professionals</p>
-                    <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 12px;">Who trust AccrediPro Academy for their healthcare certifications</p>
+                  <!-- Social Proof - Minimal -->
+                  <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee;">
+                    <p style="margin: 0 0 3px 0; color: #D4AF37; font-size: 16px; letter-spacing: 2px;">★★★★★</p>
+                    <p style="margin: 0; color: #333; font-size: 12px;">Trusted by <strong>9,376</strong> certified professionals</p>
                   </div>
                 </div>
 
