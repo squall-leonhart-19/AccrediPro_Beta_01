@@ -211,7 +211,13 @@ function TagAutocomplete({
         body: JSON.stringify({ tag: tagSlug })
       });
       if (res.ok) {
-        toast.success("Tag added");
+        const data = await res.json();
+        // Show enrollment message if courses were enrolled
+        if (data.coursesEnrolled && data.coursesEnrolled.length > 0) {
+          toast.success(`✅ Tag added + Enrolled in: ${data.coursesEnrolled.join(", ")}`);
+        } else {
+          toast.success(data.message || "Tag added");
+        }
         onTagAdded();
         setOpen(false);
         setSearch("");
@@ -448,54 +454,57 @@ export default function TicketsPage() {
           </div>
         </div>
 
-        {/* Search & Filters */}
-        <div className="p-3 border-b bg-slate-50">
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Search tickets..."
-                className="pl-9 h-9 bg-white"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <Button
-              variant={showFilters ? "secondary" : "outline"}
-              size="icon"
-              className="h-9 w-9"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-            </Button>
+        {/* Status Tabs - Gmail/Zendesk Style */}
+        <div className="border-b bg-white">
+          <div className="flex overflow-x-auto scrollbar-hide">
+            {[
+              { id: "all", label: "All", count: stats.total, icon: Inbox },
+              { id: "NEW", label: "New", count: stats.new, icon: Circle, color: "text-blue-600" },
+              { id: "OPEN", label: "Open", count: tickets.filter(t => t.status === "OPEN").length, icon: MessageSquare, color: "text-emerald-600" },
+              { id: "PENDING", label: "Pending", count: tickets.filter(t => t.status === "PENDING").length, icon: Clock, color: "text-amber-600" },
+              { id: "RESOLVED", label: "Resolved", count: tickets.filter(t => t.status === "RESOLVED").length, icon: CheckCheck, color: "text-purple-600" },
+              { id: "CLOSED", label: "Closed", count: tickets.filter(t => t.status === "CLOSED").length, icon: Archive, color: "text-slate-500" },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = statusFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setStatusFilter(tab.id)}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap",
+                    isActive
+                      ? "border-[#722F37] text-[#722F37] bg-[#722F37]/5"
+                      : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                  )}
+                >
+                  <Icon className={cn("w-3.5 h-3.5", isActive ? "text-[#722F37]" : tab.color)} />
+                  {tab.label}
+                  {tab.count > 0 && (
+                    <span className={cn(
+                      "ml-1 px-1.5 py-0.5 text-[10px] rounded-full font-bold",
+                      isActive ? "bg-[#722F37] text-white" : "bg-slate-100 text-slate-600"
+                    )}>
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
+        </div>
 
-          {showFilters && (
-            <div className="flex gap-2 mt-2">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="flex-1 h-8 text-xs border rounded-md px-2 bg-white"
-              >
-                <option value="all">All Status</option>
-                <option value="NEW">New</option>
-                <option value="OPEN">Open</option>
-                <option value="PENDING">Pending</option>
-                <option value="RESOLVED">Resolved</option>
-              </select>
-              <select
-                value={priorityFilter}
-                onChange={(e) => setPriorityFilter(e.target.value)}
-                className="flex-1 h-8 text-xs border rounded-md px-2 bg-white"
-              >
-                <option value="all">All Priority</option>
-                <option value="URGENT">Urgent</option>
-                <option value="HIGH">High</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LOW">Low</option>
-              </select>
-            </div>
-          )}
+        {/* Search */}
+        <div className="p-2 border-b bg-slate-50">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="Search tickets..."
+              className="pl-9 h-8 bg-white text-sm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Ticket List */}
