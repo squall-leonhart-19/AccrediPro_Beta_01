@@ -2067,6 +2067,36 @@ ${activityData.supportTickets?.length === 0 ? '✅ No support tickets or complai
 
 ---
 This document was automatically generated and serves as official evidence for payment dispute resolution.
+
+================================================================================
+                         SUMMARY OF EVIDENCE
+================================================================================
+
+${activityData.legalAcceptance?.tosAcceptedAt ? '✅ CUSTOMER ACCEPTED TERMS OF SERVICE' : '⚠️ TOS not recorded'}
+${activityData.stats.totalLogins > 0 ? '✅ CUSTOMER ACCESSED THE PRODUCT (' + Math.round((activityData.stats.totalTimeSpent || 0) / 60) + ' min)' : '⚠️ No login'}
+${activityData.supportTickets?.length === 0 ? '❌ CUSTOMER NEVER CONTACTED SUPPORT BEFORE DISPUTING' : '✅ Support contacted'}
+
+================================================================================
+                            CONCLUSION
+================================================================================
+
+This dispute should be DENIED because:
+- Product was delivered as promised
+- Customer accessed and used the product
+- Customer agreed to "All Sales Final" policy at checkout
+- Customer bypassed merchant dispute resolution process
+- No evidence of fraud or non-delivery
+
+================================================================================
+                         COMPANY INFORMATION
+================================================================================
+
+AccrediPro LLC - A Wyoming Limited Liability Company
+1309 Coffeen Avenue STE 1200, Sheridan, Wyoming 82801, United States
+Email: info@accredipro.academy | Web: https://learn.accredipro.academy
+Terms: https://learn.accredipro.academy/terms-of-service
+
+================================================================================
                               `.trim();
 
                               const blob = new Blob([evidenceText], { type: 'text/plain' });
