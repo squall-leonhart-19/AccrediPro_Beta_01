@@ -76,8 +76,8 @@ const DEPARTMENT_CONFIG: Record<string, {
 }> = {
   SUPPORT: {
     label: "Support",
-    teamName: "Customer Success Team",
-    responder: "Sarah M.",
+    teamName: "Student Success Department",
+    responder: "Sarah Mitchell, Success Manager",
     initials: "SM",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
     color: "text-emerald-700",
@@ -87,8 +87,8 @@ const DEPARTMENT_CONFIG: Record<string, {
   },
   BILLING: {
     label: "Billing",
-    teamName: "Billing Department",
-    responder: "Emma R.",
+    teamName: "Accounts & Billing Department",
+    responder: "Emma Richardson, Billing Specialist",
     initials: "ER",
     avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
     color: "text-blue-700",
@@ -98,8 +98,8 @@ const DEPARTMENT_CONFIG: Record<string, {
   },
   LEGAL: {
     label: "Legal",
-    teamName: "Legal & Compliance",
-    responder: "Jennifer K.",
+    teamName: "Legal & Consumer Affairs Division",
+    responder: "Jennifer Klein, Esq., Compliance Officer",
     initials: "JK",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
     color: "text-red-700",
@@ -109,8 +109,8 @@ const DEPARTMENT_CONFIG: Record<string, {
   },
   ACADEMIC: {
     label: "Academic",
-    teamName: "Academic Affairs",
-    responder: "Dr. Michelle T.",
+    teamName: "Office of Academic Affairs",
+    responder: "Dr. Michelle Torres, Academic Director",
     initials: "MT",
     avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=100&h=100&fit=crop&crop=face",
     color: "text-purple-700",
@@ -120,8 +120,8 @@ const DEPARTMENT_CONFIG: Record<string, {
   },
   CREDENTIALING: {
     label: "Credentialing",
-    teamName: "Credentialing Authority",
-    responder: "David L.",
+    teamName: "Credentialing & Accreditation Board",
+    responder: "David Lawrence, Chief Registrar",
     initials: "DL",
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     color: "text-amber-700",
