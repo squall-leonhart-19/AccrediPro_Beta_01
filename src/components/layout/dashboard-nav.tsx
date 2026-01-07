@@ -377,6 +377,17 @@ export function DashboardNav() {
       {/* Mobile Header - Burgundy Theme */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-burgundy-800/95 backdrop-blur-md border-b border-burgundy-700">
         <div className="flex items-center justify-between px-4 py-3">
+          {/* Left: Hamburger Menu */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white/80 hover:text-white hover:bg-burgundy-700"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
+
+          {/* Center: Logo */}
           <Link href="/dashboard" className="flex items-center gap-2">
             <div className="p-1 bg-white rounded-lg shadow-md">
               <Image
@@ -391,17 +402,8 @@ export function DashboardNav() {
             <span className="font-bold text-white">AccrediPro</span>
           </Link>
 
-          <div className="flex items-center gap-2">
-            <NotificationBell variant="dark" />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white/80 hover:text-white hover:bg-burgundy-700"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
-          </div>
+          {/* Right: Notification Bell */}
+          <NotificationBell variant="dark" />
         </div>
       </header>
 
