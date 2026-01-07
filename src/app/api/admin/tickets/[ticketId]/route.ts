@@ -68,7 +68,7 @@ export async function PATCH(
 
     const { ticketId } = await params;
     const body = await request.json();
-    const { status, priority, category, assignedToId } = body;
+    const { status, priority, category, department, assignedToId } = body;
 
     const updateData: Record<string, unknown> = {};
 
@@ -83,6 +83,7 @@ export async function PATCH(
     }
     if (priority) updateData.priority = priority;
     if (category) updateData.category = category;
+    if (department) updateData.department = department;
     if (assignedToId !== undefined) updateData.assignedToId = assignedToId || null;
 
     const ticket = await prisma.supportTicket.update({

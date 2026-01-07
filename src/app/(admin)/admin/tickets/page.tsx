@@ -67,6 +67,8 @@ const DEPARTMENT_CONFIG: Record<string, {
   label: string;
   teamName: string;
   responder: string;
+  initials: string;
+  avatar: string;
   color: string;
   bgLight: string;
   border: string;
@@ -76,6 +78,8 @@ const DEPARTMENT_CONFIG: Record<string, {
     label: "Support",
     teamName: "Customer Success Team",
     responder: "Sarah M.",
+    initials: "SM",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
     color: "text-emerald-700",
     bgLight: "bg-emerald-50",
     border: "border-emerald-200",
@@ -85,6 +89,8 @@ const DEPARTMENT_CONFIG: Record<string, {
     label: "Billing",
     teamName: "Billing Department",
     responder: "Emma R.",
+    initials: "ER",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face",
     color: "text-blue-700",
     bgLight: "bg-blue-50",
     border: "border-blue-200",
@@ -94,6 +100,8 @@ const DEPARTMENT_CONFIG: Record<string, {
     label: "Legal",
     teamName: "Legal & Compliance",
     responder: "Jennifer K.",
+    initials: "JK",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&crop=face",
     color: "text-red-700",
     bgLight: "bg-red-50",
     border: "border-red-200",
@@ -103,6 +111,8 @@ const DEPARTMENT_CONFIG: Record<string, {
     label: "Academic",
     teamName: "Academic Affairs",
     responder: "Dr. Michelle T.",
+    initials: "MT",
+    avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=100&h=100&fit=crop&crop=face",
     color: "text-purple-700",
     bgLight: "bg-purple-50",
     border: "border-purple-200",
@@ -112,6 +122,8 @@ const DEPARTMENT_CONFIG: Record<string, {
     label: "Credentialing",
     teamName: "Credentialing Authority",
     responder: "David L.",
+    initials: "DL",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     color: "text-amber-700",
     bgLight: "bg-amber-50",
     border: "border-amber-200",
@@ -772,15 +784,23 @@ export default function TicketsPage() {
                         <div className="flex gap-3">
                           <Avatar className={cn(
                             "w-8 h-8 flex-shrink-0",
-                            isCustomer ? "border border-slate-200" : "border border-[#722F37]/20"
+                            isCustomer ? "border border-slate-200" : "border-2 border-[#722F37]/30"
                           )}>
+                            {!isCustomer && (
+                              <AvatarImage
+                                src={DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.avatar}
+                                alt={DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.responder}
+                              />
+                            )}
                             <AvatarFallback className={cn(
                               "text-xs font-semibold",
                               isCustomer
                                 ? "bg-slate-100 text-slate-600"
                                 : "bg-[#722F37] text-white"
                             )}>
-                              {isCustomer ? selectedTicket.customerName.charAt(0).toUpperCase() : (DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.responder?.charAt(0) || "S")}
+                              {isCustomer
+                                ? selectedTicket.customerName.charAt(0).toUpperCase()
+                                : (DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.initials || "SM")}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
