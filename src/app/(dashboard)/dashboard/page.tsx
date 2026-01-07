@@ -400,7 +400,7 @@ export default async function DashboardPage() {
             courseTitle={enrollments[0]?.course?.title || "Your Course"}
             progress={totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0}
             estimatedMinutes={12}
-            lessonUrl={`/courses/${nextLesson.courseSlug}/lessons/${nextLesson.lessonId}`}
+            lessonUrl={`/courses/${nextLesson.courseSlug}/learn-v2/${nextLesson.lessonId}`}
           />
         )}
 
