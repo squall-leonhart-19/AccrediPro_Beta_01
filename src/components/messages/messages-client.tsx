@@ -350,8 +350,18 @@ export function MessagesClient({
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (force = false) => {
+    const container = messagesContainerRef.current;
+    if (!container) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    // Only auto-scroll if user is near bottom (within 150px) or force is true
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+    if (force || isNearBottom) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const fetchMessages = useCallback(async (userId: string, isRefresh = false) => {
@@ -363,7 +373,7 @@ export function MessagesClient({
         setHasMoreMessages(data.hasMore || false);
         setNextCursor(data.nextCursor || null);
         if (!isRefresh) {
-          scrollToBottom();
+          scrollToBottom(true); // Force scroll on initial load
         }
       }
     } catch (error) {
