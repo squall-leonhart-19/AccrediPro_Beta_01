@@ -58,7 +58,8 @@ async function getDashboardData(userId: string) {
               include: {
                 lessons: {
                   where: { isPublished: true },
-                  select: { id: true, title: true },
+                  select: { id: true, title: true, order: true },
+                  orderBy: { order: "asc" },
                 },
               },
               orderBy: { order: "asc" },
