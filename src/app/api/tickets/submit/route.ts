@@ -69,14 +69,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // AUTO-MERGE: Check for existing OPEN or NEW ticket
+    // Classify the category first (needed for merge check)
+    const ticketCategory = category || await classifyTicketWithAI(subject, message);
+
+    // AUTO-MERGE: Only merge if SAME CATEGORY and user has open ticket
     const existingTicket = await prisma.supportTicket.findFirst({
       where: {
         OR: [
           { userId: session?.user?.id || userId || undefined },
           { customerEmail: customerEmail }
         ],
-        status: { in: ["NEW", "OPEN", "PENDING"] }
+        status: { in: ["NEW", "OPEN", "PENDING"] },
+        category: ticketCategory // Only merge same category!
       },
       orderBy: { createdAt: "desc" }
     });
@@ -179,8 +183,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create NEW ticket (if no open one exists)
-    const ticketCategory = category || await classifyTicketWithAI(subject, message);
+    // Create NEW ticket (if no matching open one exists for same category)
 
     // Auto-route to department based on category
     const CATEGORY_TO_DEPARTMENT: Record<string, string> = {
