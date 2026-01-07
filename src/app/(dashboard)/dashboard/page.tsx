@@ -155,24 +155,49 @@ async function getDashboardData(userId: string) {
   const tagStrings = userTags.map((t) => t.tag);
   const specialization = getSpecializationTrack(tagStrings);
 
-  // Find next incomplete lesson
+  // Calculate progress for each enrollment
+  const enrollmentsWithProgress = enrollments.map(enrollment => {
+    const courseLessonIds = enrollment.course.modules.flatMap(m => m.lessons.map(l => l.id));
+    const completedInCourse = courseLessonIds.filter(id => completedSet.has(id)).length;
+    const progress = courseLessonIds.length > 0 ? completedInCourse / courseLessonIds.length : 0;
+    return { enrollment, progress, completedInCourse };
+  });
+
+  // Sort enrollments: prioritize in-progress courses (0 < progress < 1), then by most progress
+  const sortedEnrollments = enrollmentsWithProgress
+    .filter(e => e.enrollment.status !== "COMPLETED")
+    .sort((a, b) => {
+      // First priority: courses with some progress (started but not complete)
+      const aStarted = a.progress > 0 && a.progress < 1;
+      const bStarted = b.progress > 0 && b.progress < 1;
+      if (aStarted && !bStarted) return -1;
+      if (!aStarted && bStarted) return 1;
+
+      // Second priority: most progress within started courses
+      if (aStarted && bStarted) return b.progress - a.progress;
+
+      // Third priority: recently accessed
+      const aAccess = a.enrollment.lastAccessedAt?.getTime() || 0;
+      const bAccess = b.enrollment.lastAccessedAt?.getTime() || 0;
+      return bAccess - aAccess;
+    });
+
+  // Find next incomplete lesson from prioritized enrollment
   let nextLesson: { title: string; courseSlug: string; lessonId: string; moduleName: string } | null = null;
-  for (const enrollment of enrollments) {
-    if (enrollment.status !== "COMPLETED") {
-      for (const module of enrollment.course.modules) {
-        for (const lesson of module.lessons) {
-          if (!completedSet.has(lesson.id)) {
-            nextLesson = {
-              title: lesson.title,
-              courseSlug: enrollment.course.slug,
-              lessonId: lesson.id,
-              moduleName: module.title,
-            };
-            break;
-          }
+  for (const { enrollment } of sortedEnrollments) {
+    for (const module of enrollment.course.modules) {
+      for (const lesson of module.lessons) {
+        if (!completedSet.has(lesson.id)) {
+          nextLesson = {
+            title: lesson.title,
+            courseSlug: enrollment.course.slug,
+            lessonId: lesson.id,
+            moduleName: module.title,
+          };
+          break;
         }
-        if (nextLesson) break;
       }
+      if (nextLesson) break;
     }
     if (nextLesson) break;
   }
