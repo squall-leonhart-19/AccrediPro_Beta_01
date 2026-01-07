@@ -62,6 +62,74 @@ const PRIORITY_CONFIG = {
   URGENT: { label: "Urgent", color: "text-red-600", bg: "bg-red-100", icon: XCircle },
 };
 
+// Department configuration with professional names and branding
+const DEPARTMENT_CONFIG: Record<string, {
+  label: string;
+  teamName: string;
+  responder: string;
+  color: string;
+  bgLight: string;
+  border: string;
+  icon: any;
+}> = {
+  SUPPORT: {
+    label: "Support",
+    teamName: "Customer Success Team",
+    responder: "Sarah M.",
+    color: "text-emerald-700",
+    bgLight: "bg-emerald-50",
+    border: "border-emerald-200",
+    icon: LifeBuoy
+  },
+  BILLING: {
+    label: "Billing",
+    teamName: "Billing Department",
+    responder: "Emma R.",
+    color: "text-blue-700",
+    bgLight: "bg-blue-50",
+    border: "border-blue-200",
+    icon: CreditCard
+  },
+  LEGAL: {
+    label: "Legal",
+    teamName: "Legal & Compliance",
+    responder: "Jennifer K.",
+    color: "text-red-700",
+    bgLight: "bg-red-50",
+    border: "border-red-200",
+    icon: AlertCircle
+  },
+  ACADEMIC: {
+    label: "Academic",
+    teamName: "Academic Affairs",
+    responder: "Dr. Michelle T.",
+    color: "text-purple-700",
+    bgLight: "bg-purple-50",
+    border: "border-purple-200",
+    icon: GraduationCap
+  },
+  CREDENTIALING: {
+    label: "Credentialing",
+    teamName: "Credentialing Authority",
+    responder: "David L.",
+    color: "text-amber-700",
+    bgLight: "bg-amber-50",
+    border: "border-amber-200",
+    icon: Star
+  },
+};
+
+// Auto-routing rules: category -> default department
+const CATEGORY_TO_DEPARTMENT: Record<string, string> = {
+  REFUND: "LEGAL",
+  BILLING: "BILLING",
+  TECHNICAL: "SUPPORT",
+  ACCESS: "SUPPORT",
+  CERTIFICATES: "CREDENTIALING",
+  COURSE_CONTENT: "ACADEMIC",
+  GENERAL: "SUPPORT",
+};
+
 const QUICK_REPLIES = [
   { label: "Greeting", text: "Hello!\n\nThank you for reaching out to AccrediPro Support. I'm Sarah, and I'll be happy to help you today." },
   { label: "Investigating", text: "I'm looking into this for you right now. Please give me a moment to investigate." },
@@ -592,6 +660,54 @@ export default function TicketsPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
+                {/* Department Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className={cn(
+                      "h-8 gap-2 border",
+                      DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.border
+                    )}>
+                      {(() => {
+                        const deptConfig = DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"] || DEPARTMENT_CONFIG.SUPPORT;
+                        const DeptIcon = deptConfig.icon;
+                        return (
+                          <>
+                            <DeptIcon className={cn("w-4 h-4", deptConfig.color)} />
+                            <span className={cn("text-xs font-medium", deptConfig.color)}>
+                              {deptConfig.label}
+                            </span>
+                          </>
+                        );
+                      })()}
+                      <ChevronDown className="w-3 h-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel className="text-xs text-slate-500">Route to Department</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {Object.entries(DEPARTMENT_CONFIG).map(([key, config]) => {
+                      const Icon = config.icon;
+                      return (
+                        <DropdownMenuItem
+                          key={key}
+                          onClick={() => updateTicket.mutate({
+                            ticketId: selectedTicket.id,
+                            updates: { department: key as any }
+                          })}
+                          className={cn(
+                            selectedTicket.department === key && config.bgLight
+                          )}
+                        >
+                          <Icon className={cn("w-4 h-4 mr-2", config.color)} />
+                          <div className="flex-1">
+                            <div className="font-medium">{config.teamName}</div>
+                            <div className="text-[10px] text-slate-400">{config.responder}</div>
+                          </div>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 {/* More Actions */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -664,22 +780,36 @@ export default function TicketsPage() {
                                 ? "bg-slate-100 text-slate-600"
                                 : "bg-[#722F37] text-white"
                             )}>
-                              {isCustomer ? selectedTicket.customerName.charAt(0).toUpperCase() : "S"}
+                              {isCustomer ? selectedTicket.customerName.charAt(0).toUpperCase() : (DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.responder?.charAt(0) || "S")}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className={cn(
-                                "text-sm font-semibold",
-                                isCustomer ? "text-slate-700" : "text-[#722F37]"
-                              )}>
-                                {isCustomer ? selectedTicket.customerName : "Support Team"}
-                              </span>
+                              {!isCustomer && (() => {
+                                const dept = DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"] || DEPARTMENT_CONFIG.SUPPORT;
+                                const DeptIcon = dept.icon;
+                                return (
+                                  <>
+                                    <span className={cn("text-sm font-semibold", dept.color)}>
+                                      {dept.teamName}
+                                    </span>
+                                    <span className={cn("text-[10px] px-1.5 py-0.5 rounded-full border font-medium", dept.bgLight, dept.color, dept.border)}>
+                                      <DeptIcon className="w-3 h-3 inline mr-0.5" />
+                                      {dept.responder}
+                                    </span>
+                                  </>
+                                );
+                              })()}
+                              {isCustomer && (
+                                <span className="text-sm font-semibold text-slate-700">
+                                  {selectedTicket.customerName}
+                                </span>
+                              )}
                               <span className="text-xs text-slate-400">
                                 {format(new Date(msg.createdAt), "h:mm a")}
                               </span>
                               {!isCustomer && msg.sentBy?.name && (
-                                <span className="text-xs text-slate-400">• {msg.sentBy.name}</span>
+                                <span className="text-xs text-slate-400">• via {msg.sentBy.name}</span>
                               )}
                               {msg.isInternal && (
                                 <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700 border-amber-300">

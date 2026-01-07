@@ -2261,13 +2261,23 @@ enum TicketCategory {
   GENERAL
 }
 
+// Ticket departments for professional routing
+enum TicketDepartment {
+  SUPPORT         // General support & technical issues
+  BILLING         // Payments, invoices, account issues
+  LEGAL           // Refunds, disputes, chargebacks, compliance
+  ACADEMIC        // Course content, certificates, exams
+  CREDENTIALING   // Credential verification, accreditation
+}
+
 model SupportTicket {
   id           String         @id @default(cuid())
   ticketNumber Int            @unique @default(autoincrement())
   subject      String
-  status       TicketStatus   @default(NEW)
-  priority     TicketPriority @default(MEDIUM)
-  category     TicketCategory @default(GENERAL)
+  status       TicketStatus     @default(NEW)
+  priority     TicketPriority   @default(MEDIUM)
+  category     TicketCategory   @default(GENERAL)
+  department   TicketDepartment @default(SUPPORT)
 
   // Customer info
   customerName  String
@@ -2297,6 +2307,7 @@ model SupportTicket {
   @@index([status])
   @@index([priority])
   @@index([category])
+  @@index([department])
   @@index([customerEmail])
   @@index([userId])
   @@index([assignedToId])

@@ -10,6 +10,7 @@ export interface Ticket {
     status: "NEW" | "OPEN" | "PENDING" | "RESOLVED" | "CLOSED";
     priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
     category: string;
+    department: "SUPPORT" | "BILLING" | "LEGAL" | "ACADEMIC" | "CREDENTIALING";
     customerName: string;
     customerEmail: string;
     createdAt: string;

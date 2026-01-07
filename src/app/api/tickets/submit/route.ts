@@ -131,12 +131,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Create NEW ticket (if no open one exists)
+    const ticketCategory = category || await classifyTicketWithAI(subject, message);
+
+    // Auto-route to department based on category
+    const CATEGORY_TO_DEPARTMENT: Record<string, string> = {
+      REFUND: "LEGAL",
+      BILLING: "BILLING",
+      TECHNICAL: "SUPPORT",
+      ACCESS: "SUPPORT",
+      CERTIFICATES: "CREDENTIALING",
+      COURSE_CONTENT: "ACADEMIC",
+      GENERAL: "SUPPORT",
+    };
+    const ticketDepartment = CATEGORY_TO_DEPARTMENT[ticketCategory] || "SUPPORT";
+
     const ticket = await prisma.supportTicket.create({
       data: {
         subject,
         customerName,
         customerEmail,
-        category: category || await classifyTicketWithAI(subject, message),
+        category: ticketCategory,
+        department: ticketDepartment as any,
         userId: session?.user?.id || userId || null,
         messages: {
           create: {
