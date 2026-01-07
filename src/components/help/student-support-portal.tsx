@@ -58,6 +58,8 @@ export default function StudentSupportPortal() {
     // Create flow state
     const [createStep, setCreateStep] = useState<"CATEGORY" | "DETAILS">("CATEGORY");
     const [selectedCategory, setSelectedCategory] = useState<string>("");
+    // Ticket filter state
+    const [ticketFilter, setTicketFilter] = useState<"ALL" | "OPEN" | "SOLVED">("ALL");
 
     // File upload state
     const [attachments, setAttachments] = useState<File[]>([]);
@@ -578,9 +580,34 @@ export default function StudentSupportPortal() {
 
                 <div className="lg:col-span-2">
                     <Card className="card-premium min-h-[400px]">
-                        <CardHeader className="pb-3 border-b flex flex-row justify-between items-center">
-                            <CardTitle className="text-lg">Your Tickets</CardTitle>
-                            <Badge variant="outline" className="bg-slate-50">{tickets.length} Total</Badge>
+                        <CardHeader className="pb-0 border-b">
+                            <div className="flex justify-between items-center mb-3">
+                                <CardTitle className="text-lg">Your Tickets</CardTitle>
+                                <Badge variant="outline" className="bg-slate-50">{tickets.length} Total</Badge>
+                            </div>
+                            {/* Filter Tabs */}
+                            <div className="flex gap-1 -mb-px">
+                                {[
+                                    { id: "ALL" as const, label: "All", count: tickets.length },
+                                    { id: "OPEN" as const, label: "Open", count: tickets.filter(t => t.status !== "RESOLVED" && t.status !== "CLOSED").length },
+                                    { id: "SOLVED" as const, label: "Solved", count: tickets.filter(t => t.status === "RESOLVED" || t.status === "CLOSED").length },
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setTicketFilter(tab.id)}
+                                        className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${ticketFilter === tab.id
+                                            ? "border-burgundy-600 text-burgundy-700 bg-burgundy-50/50"
+                                            : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                                            }`}
+                                    >
+                                        {tab.label}
+                                        <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${ticketFilter === tab.id ? "bg-burgundy-100 text-burgundy-700" : "bg-slate-100 text-slate-500"
+                                            }`}>
+                                            {tab.count}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
                         </CardHeader>
                         <CardContent className="p-0">
                             {isLoading ? (
@@ -599,45 +626,52 @@ export default function StudentSupportPortal() {
                                 </div>
                             ) : (
                                 <div className="divide-y divide-slate-100">
-                                    {tickets.map((ticket) => (
-                                        <div
-                                            key={ticket.id}
-                                            className="p-4 hover:bg-slate-50 cursor-pointer transition-colors flex justify-between items-center group"
-                                            onClick={() => { setSelectedTicketId(ticket.id); setView("DETAIL"); }}
-                                        >
-                                            <div className="flex items-start gap-4">
-                                                <div className={`p-2 rounded-full mt-1 ${ticket.status === 'RESOLVED' ? 'bg-purple-100 text-purple-600' :
-                                                    ticket.status === 'NEW' ? 'bg-blue-100 text-blue-600' :
-                                                        'bg-green-100 text-green-600'
-                                                    }`}>
-                                                    {ticket.status === 'RESOLVED' ? <CheckCircle2 className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
-                                                </div>
-                                                <div>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-mono text-xs text-slate-400">#{ticket.ticketNumber}</span>
-                                                        <h4 className="font-semibold text-slate-800 group-hover:text-burgundy-700 transition-colors">
-                                                            {ticket.subject}
-                                                        </h4>
+                                    {tickets
+                                        .filter(ticket => {
+                                            if (ticketFilter === "ALL") return true;
+                                            if (ticketFilter === "OPEN") return ticket.status !== "RESOLVED" && ticket.status !== "CLOSED";
+                                            if (ticketFilter === "SOLVED") return ticket.status === "RESOLVED" || ticket.status === "CLOSED";
+                                            return true;
+                                        })
+                                        .map((ticket) => (
+                                            <div
+                                                key={ticket.id}
+                                                className="p-4 hover:bg-slate-50 cursor-pointer transition-colors flex justify-between items-center group"
+                                                onClick={() => { setSelectedTicketId(ticket.id); setView("DETAIL"); }}
+                                            >
+                                                <div className="flex items-start gap-4">
+                                                    <div className={`p-2 rounded-full mt-1 ${ticket.status === 'RESOLVED' ? 'bg-purple-100 text-purple-600' :
+                                                        ticket.status === 'NEW' ? 'bg-blue-100 text-blue-600' :
+                                                            'bg-green-100 text-green-600'
+                                                        }`}>
+                                                        {ticket.status === 'RESOLVED' ? <CheckCircle2 className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
                                                     </div>
-                                                    <p className="text-sm text-slate-500 line-clamp-1 mt-0.5">
-                                                        <span className="font-medium text-slate-600">{CATEGORIES.find(c => c.id === ticket.category)?.label || ticket.category}</span>
-                                                        <span className="mx-1">•</span>
-                                                        <span>Updated {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}</span>
-                                                    </p>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="font-mono text-xs text-slate-400">#{ticket.ticketNumber}</span>
+                                                            <h4 className="font-semibold text-slate-800 group-hover:text-burgundy-700 transition-colors">
+                                                                {ticket.subject}
+                                                            </h4>
+                                                        </div>
+                                                        <p className="text-sm text-slate-500 line-clamp-1 mt-0.5">
+                                                            <span className="font-medium text-slate-600">{CATEGORIES.find(c => c.id === ticket.category)?.label || ticket.category}</span>
+                                                            <span className="mx-1">•</span>
+                                                            <span>Updated {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <Badge variant="secondary" className={
+                                                        ticket.status === "OPEN" ? "bg-green-100 text-green-700 border-green-200" :
+                                                            ticket.status === "RESOLVED" ? "bg-purple-100 text-purple-700 border-purple-200" :
+                                                                "bg-slate-100 text-slate-600 border-slate-200"
+                                                    }>
+                                                        {ticket.status}
+                                                    </Badge>
+                                                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-4">
-                                                <Badge variant="secondary" className={
-                                                    ticket.status === "OPEN" ? "bg-green-100 text-green-700 border-green-200" :
-                                                        ticket.status === "RESOLVED" ? "bg-purple-100 text-purple-700 border-purple-200" :
-                                                            "bg-slate-100 text-slate-600 border-slate-200"
-                                                }>
-                                                    {ticket.status}
-                                                </Badge>
-                                                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
-                                            </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             )}
                         </CardContent>
