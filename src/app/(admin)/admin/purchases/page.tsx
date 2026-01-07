@@ -171,13 +171,14 @@ async function getPurchasesData(searchParams: SearchParams) {
     };
 }
 
-export default async function AdminPurchasesPage({ searchParams }: { searchParams: SearchParams }) {
+export default async function AdminPurchasesPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
     const session = await getServerSession(authOptions);
     if (!session || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
         redirect("/login");
     }
 
-    const data = await getPurchasesData(searchParams);
+    const params = await searchParams;
+    const data = await getPurchasesData(params);
 
     return <PurchasesClient stats={data.stats} purchases={data.recentPurchases} timezone={data.timezone} currentRange={data.currentRange} />;
 }
