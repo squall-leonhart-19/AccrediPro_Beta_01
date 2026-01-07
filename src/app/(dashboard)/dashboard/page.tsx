@@ -144,10 +144,43 @@ async function getDashboardData(userId: string) {
   });
   const completedSet = new Set(completedLessonIds.map((l) => l.lessonId));
 
-  const totalWatchTime = await prisma.lessonProgress.aggregate({
+  // Calculate session-based platform time (same as dispute section)
+  const activityTimestamps = await prisma.userActivity.findMany({
     where: { userId },
-    _sum: { watchTime: true },
+    select: { createdAt: true },
+    orderBy: { createdAt: "asc" }
   });
+
+  const loginHistory = await prisma.loginHistory.findMany({
+    where: { userId },
+    select: { createdAt: true },
+    orderBy: { createdAt: "desc" },
+    take: 50
+  });
+
+  let totalPlatformTime = 0;
+  const SESSION_GAP_MS = 30 * 60 * 1000; // 30 minutes
+  const timestamps = [
+    ...loginHistory.map(l => new Date(l.createdAt).getTime()),
+    ...activityTimestamps.map(a => new Date(a.createdAt).getTime())
+  ].sort((a, b) => a - b);
+
+  if (timestamps.length > 0) {
+    let sessionStart = timestamps[0];
+    let lastActivity = timestamps[0];
+    for (let i = 1; i < timestamps.length; i++) {
+      const gap = timestamps[i] - lastActivity;
+      if (gap > SESSION_GAP_MS) {
+        totalPlatformTime += lastActivity - sessionStart;
+        sessionStart = timestamps[i];
+      }
+      lastActivity = timestamps[i];
+    }
+    const finalSessionDuration = lastActivity - sessionStart;
+    totalPlatformTime += finalSessionDuration > 0 ? finalSessionDuration : 5 * 60 * 1000;
+  }
+
+  const totalWatchTime = Math.round(totalPlatformTime / 1000); // Convert to seconds
 
   const completedLessons = completedLessonIds.length;
 
@@ -206,7 +239,7 @@ async function getDashboardData(userId: string) {
     enrollments,
     certificates,
     recentActivity,
-    totalWatchTime: totalWatchTime._sum.watchTime || 0,
+    totalWatchTime,
     coach: coach?.course?.coach || null,
     userStreak,
     badges,
