@@ -52,21 +52,6 @@ const CATEGORIES = [
     { id: "GENERAL", label: "General Inquiry", icon: HelpCircle, desc: "Everything else", color: "bg-slate-100 text-slate-700" },
 ];
 
-const QUICK_ANSWERS: Record<string, { q: string, a: string }[]> = {
-    TECHNICAL: [
-        { q: "I can't login to my account", a: "Try resetting your password using the 'Forgot Password' link. If that fails, check your email for a confirmation link." },
-        { q: "Video playback is choppy", a: "Please check your internet connection and try clearing your browser cache. We recommend Chrome for the best experience." },
-    ],
-    BILLING: [
-        { q: "Where can I find my invoice?", a: "Invoices are emailed to you automatically after purchase. You can also view them in your Profile > Billing section." },
-        { q: "How do I update my card?", a: "Go to your Profile settings and navigate to the 'Billing' tab to update your payment method." },
-    ],
-    CERTIFICATES: [
-        { q: "When will I get my certificate?", a: "Certificates are automatically generated upon 100% course completion. Check your dashboard 'Certificates' tab." },
-        { q: "My name is spelled wrong", a: "Please update your profile name in Settings before generating the certificate. If already generated, submit a ticket." },
-    ]
-};
-
 export default function StudentSupportPortal() {
     const [view, setView] = useState<"LIST" | "CREATE" | "DETAIL">("LIST");
     const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
@@ -376,31 +361,13 @@ export default function StudentSupportPortal() {
                         </div>
 
                         <div className="space-y-4">
-                            <Card className="card-premium bg-slate-50 shadow-none border-slate-200">
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                                        <Loader2 className="w-4 h-4 text-burgundy-600" />
-                                        Quick Answers
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4 text-sm">
-                                    {(QUICK_ANSWERS[selectedCategory] || QUICK_ANSWERS["TECHNICAL"]).map((qa, i) => (
-                                        <div key={i}>
-                                            <p className="font-medium text-slate-800 mb-1">{qa.q}</p>
-                                            <p className="text-slate-600 leading-relaxed">{qa.a}</p>
-                                            {i < (QUICK_ANSWERS[selectedCategory] || QUICK_ANSWERS["TECHNICAL"]).length - 1 && <Separator className="my-3" />}
-                                        </div>
-                                    ))}
-                                </CardContent>
-                            </Card>
-
                             <Card className="bg-blue-50 border-blue-100">
                                 <CardContent className="p-4 flex gap-3">
                                     <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                                     <div>
                                         <h4 className="font-medium text-blue-900 text-sm">Response Time</h4>
                                         <p className="text-xs text-blue-700 mt-1">
-                                            We typically respond within 24 hours. Check your email for updates.
+                                            We typically respond within 24-48 working hours. Check your email for updates.
                                         </p>
                                     </div>
                                 </CardContent>
