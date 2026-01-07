@@ -10,7 +10,7 @@ import {
   DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
   Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
   AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap,
-  Pencil, Save, Loader2, Wrench
+  Pencil, Save, Loader2, Wrench, Paperclip, Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -310,6 +310,10 @@ export default function TicketsPage() {
   const [editEmailValue, setEditEmailValue] = useState("");
   const [isSavingEmail, setIsSavingEmail] = useState(false);
 
+  // Attachment state
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { data, isLoading, refetch } = useTickets(statusFilter, priorityFilter, searchTerm);
   const updateTicket = useUpdateTicket();
   const replyTicket = useReplyTicket();
@@ -338,14 +342,48 @@ export default function TicketsPage() {
   }, [selectedTicket?.messages]);
 
   const handleSendReply = async () => {
-    if (!selectedTicketId || !replyText.trim()) return;
-    await replyTicket.mutateAsync({
-      ticketId: selectedTicketId,
-      message: replyText,
-      isInternal: isInternalNote
-    });
-    setReplyText("");
-    setIsInternalNote(false);
+    if (!selectedTicketId || (!replyText.trim() && attachments.length === 0)) return;
+
+    try {
+      // Upload attachments first if any
+      let attachmentUrls: string[] = [];
+      if (attachments.length > 0) {
+        const formData = new FormData();
+        attachments.forEach(file => formData.append("files", file));
+
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          attachmentUrls = uploadData.urls || [];
+        } else {
+          toast.error("Failed to upload attachments");
+          return;
+        }
+      }
+
+      // Build message with attachments
+      let messageContent = replyText.trim();
+      if (attachmentUrls.length > 0) {
+        const attachmentTags = attachmentUrls.map(url => `[Attachment: ${url}]`).join("\n");
+        messageContent = messageContent ? `${messageContent}\n\n${attachmentTags}` : attachmentTags;
+      }
+
+      await replyTicket.mutateAsync({
+        ticketId: selectedTicketId,
+        message: messageContent,
+        isInternal: isInternalNote
+      });
+
+      setReplyText("");
+      setIsInternalNote(false);
+      setAttachments([]);
+    } catch {
+      toast.error("Failed to send reply");
+    }
   };
 
   const handleAIReply = async () => {
@@ -422,13 +460,13 @@ export default function TicketsPage() {
 
   // Mobile sidebar state
   const [showSidebar, setShowSidebar] = useState(true);
-  const [showCustomerPanel, setShowCustomerPanel] = useState(true);
+  const [showCustomerPanel, setShowCustomerPanel] = useState(false); // Start closed for more space
 
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-slate-100 overflow-hidden">
-      {/* Left Panel - Ticket List (Narrower for more chat space) */}
+    <div className="flex h-screen bg-slate-50 overflow-hidden">
+      {/* Left Panel - Ticket List (Compact) */}
       <div className={cn(
-        "w-[320px] min-w-[320px] bg-white border-r flex flex-col shadow-sm",
+        "w-[300px] min-w-[300px] bg-white border-r flex flex-col",
         "lg:flex",
         !showSidebar && "hidden"
       )}>
@@ -986,10 +1024,64 @@ export default function TicketsPage() {
                       }
                     }}
                   />
+
+                  {/* Attachment Preview */}
+                  {attachments.length > 0 && (
+                    <div className="px-3 py-2 border-t bg-slate-50/50 flex flex-wrap gap-2">
+                      {attachments.map((file, idx) => (
+                        <div key={idx} className="relative group">
+                          {file.type.startsWith("image/") ? (
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="h-16 w-16 object-cover rounded border"
+                            />
+                          ) : (
+                            <div className="h-16 w-16 bg-slate-100 rounded border flex items-center justify-center">
+                              <Paperclip className="w-5 h-5 text-slate-400" />
+                            </div>
+                          )}
+                          <button
+                            onClick={() => setAttachments(prev => prev.filter((_, i) => i !== idx))}
+                            className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                          <span className="text-[9px] text-slate-500 truncate block w-16">{file.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between px-3 py-2 bg-slate-50 border-t">
-                    <span className="text-[10px] text-slate-400">
-                      Press <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">⌘</kbd> + <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">Enter</kbd> to send
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {/* Hidden file input */}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*,.pdf,.doc,.docx"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files) {
+                            setAttachments(prev => [...prev, ...Array.from(e.target.files!)]);
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-slate-500 hover:text-slate-700"
+                        onClick={() => fileInputRef.current?.click()}
+                        title="Attach file"
+                      >
+                        <Paperclip className="w-4 h-4" />
+                      </Button>
+                      <span className="text-[10px] text-slate-400">
+                        <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">⌘</kbd> + <kbd className="px-1 py-0.5 bg-white border rounded text-[9px]">Enter</kbd> to send
+                      </span>
+                    </div>
                     <Button
                       size="sm"
                       onClick={handleSendReply}
