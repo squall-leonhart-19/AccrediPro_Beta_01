@@ -251,11 +251,11 @@ export async function POST(request: NextRequest) {
                     <p style="margin: 0; color: #78350F; font-size: 13px;">You can reply directly to this email to add more information to your ticket. Just hit reply!</p>
                   </div>
 
-                  <!-- Social Proof -->
-                  <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee;">
-                    <p style="margin: 0 0 5px 0; color: #888; font-size: 12px;">Trusted by <strong style="color: #722F37;">15,000+</strong> healthcare professionals worldwide</p>
-                    <p style="margin: 0; color: #D4AF37; font-size: 20px; letter-spacing: 2px;">★★★★★</p>
-                    <p style="margin: 5px 0 0 0; color: #888; font-size: 11px;">4.9/5 Average Rating</p>
+                  <!-- Social Proof - Premium Design -->
+                  <div style="background: linear-gradient(135deg, #722F37 0%, #8B3D47 100%); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #D4AF37; font-size: 26px; letter-spacing: 3px;">★★★★★</p>
+                    <p style="margin: 10px 0 5px 0; color: #ffffff; font-size: 15px; font-weight: 600;">Join 15,000+ Certified Professionals</p>
+                    <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 12px;">Who trust AccrediPro Academy for their healthcare certifications</p>
                   </div>
                 </div>
 
@@ -265,8 +265,6 @@ export async function POST(request: NextRequest) {
                     <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
                     &nbsp;|&nbsp;
                     <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
-                    &nbsp;|&nbsp;
-                    <a href="mailto:support@accredipro.academy" style="color: #722F37; text-decoration: none;">Contact Us</a>
                   </p>
                   <p style="margin: 0; font-size: 11px; color: #aaa;">
                     © ${new Date().getFullYear()} AccrediPro Academy™. All rights reserved.<br>
