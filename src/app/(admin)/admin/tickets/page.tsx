@@ -409,9 +409,9 @@ export default function TicketsPage() {
 
   return (
     <div className="flex h-[calc(100vh-64px)] bg-slate-100 overflow-hidden">
-      {/* Left Panel - Ticket List */}
+      {/* Left Panel - Ticket List (Narrower for more chat space) */}
       <div className={cn(
-        "w-[380px] min-w-[380px] bg-white border-r flex flex-col shadow-sm",
+        "w-[320px] min-w-[320px] bg-white border-r flex flex-col shadow-sm",
         "lg:flex",
         !showSidebar && "hidden"
       )}>
@@ -1004,302 +1004,313 @@ export default function TicketsPage() {
         )}
       </div>
 
-      {/* Right Panel - Customer Details */}
+      {/* Right Panel - Customer Details (Slide-over Overlay) */}
       {selectedTicket && (
-        <div className={cn(
-          "w-[320px] min-w-[320px] bg-white border-l flex-shrink-0 flex flex-col overflow-hidden shadow-sm",
-          "lg:flex",
-          !showCustomerPanel && "hidden"
-        )}>
-          {/* Panel Header */}
-          <div className="h-[72px] border-b px-4 flex items-center justify-between bg-gradient-to-r from-slate-50 to-white flex-shrink-0">
-            <h3 className="font-bold text-slate-900 flex items-center gap-2">
-              <User className="w-4 h-4 text-[#722F37]" />
-              Customer Details
-            </h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 lg:hidden"
+        <>
+          {/* Backdrop - Click to close */}
+          {showCustomerPanel && (
+            <div
+              className="fixed inset-0 bg-black/30 z-40 transition-opacity"
               onClick={() => setShowCustomerPanel(false)}
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-          <ScrollArea className="flex-1">
-            <div className="p-4">
-              {/* Customer Header */}
-              <div className="text-center pb-4 border-b mb-4">
-                <Avatar className="w-16 h-16 mx-auto mb-3 border-2 border-[#722F37]/20">
-                  <AvatarImage src={selectedTicket.user?.avatar || undefined} />
-                  <AvatarFallback className="bg-[#722F37] text-white text-xl font-semibold">
-                    {selectedTicket.customerName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <h3 className="font-bold text-slate-900">{selectedTicket.customerName}</h3>
+            />
+          )}
 
-                {/* Editable Email Section */}
-                {isEditingEmail ? (
-                  <div className="mt-2 space-y-2">
-                    <Input
-                      type="email"
-                      value={editEmailValue}
-                      onChange={(e) => setEditEmailValue(e.target.value)}
-                      placeholder="Enter new email"
-                      className="h-8 text-xs text-center"
-                      autoFocus
-                    />
-                    <div className="flex items-center justify-center gap-2">
-                      <Button
-                        size="sm"
-                        onClick={handleSaveEmail}
-                        disabled={isSavingEmail}
-                        className="h-7 text-xs bg-[#722F37] hover:bg-[#5A252C]"
-                      >
-                        {isSavingEmail ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <>
-                            <Save className="w-3 h-3 mr-1" />
-                            Save
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setIsEditingEmail(false);
-                          setEditEmailValue("");
-                        }}
-                        className="h-7 text-xs"
-                      >
-                        Cancel
-                      </Button>
+          {/* Slide-over Panel */}
+          <div className={cn(
+            "fixed top-0 right-0 h-full w-[380px] bg-white shadow-2xl z-50 flex flex-col overflow-hidden transition-transform duration-300 ease-in-out",
+            showCustomerPanel ? "translate-x-0" : "translate-x-full"
+          )}>
+            {/* Panel Header */}
+            <div className="h-16 border-b px-4 flex items-center justify-between bg-gradient-to-r from-[#722F37] to-[#8B3D47] flex-shrink-0">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Customer Details
+              </h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/10"
+                onClick={() => setShowCustomerPanel(false)}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            <ScrollArea className="flex-1">
+              <div className="p-4">
+                {/* Customer Header */}
+                <div className="text-center pb-4 border-b mb-4">
+                  <Avatar className="w-16 h-16 mx-auto mb-3 border-2 border-[#722F37]/20">
+                    <AvatarImage src={selectedTicket.user?.avatar || undefined} />
+                    <AvatarFallback className="bg-[#722F37] text-white text-xl font-semibold">
+                      {selectedTicket.customerName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h3 className="font-bold text-slate-900">{selectedTicket.customerName}</h3>
+
+                  {/* Editable Email Section */}
+                  {isEditingEmail ? (
+                    <div className="mt-2 space-y-2">
+                      <Input
+                        type="email"
+                        value={editEmailValue}
+                        onChange={(e) => setEditEmailValue(e.target.value)}
+                        placeholder="Enter new email"
+                        className="h-8 text-xs text-center"
+                        autoFocus
+                      />
+                      <div className="flex items-center justify-center gap-2">
+                        <Button
+                          size="sm"
+                          onClick={handleSaveEmail}
+                          disabled={isSavingEmail}
+                          className="h-7 text-xs bg-[#722F37] hover:bg-[#5A252C]"
+                        >
+                          {isSavingEmail ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <>
+                              <Save className="w-3 h-3 mr-1" />
+                              Save
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setIsEditingEmail(false);
+                            setEditEmailValue("");
+                          }}
+                          className="h-7 text-xs"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-1 text-xs text-slate-500 mt-1">
-                    <Mail className="w-3 h-3" />
-                    {selectedTicket.customerEmail}
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(selectedTicket.customerEmail);
-                        toast.success("Email copied!");
-                      }}
-                      className="text-[#722F37] hover:text-[#5A252C] ml-1"
-                      title="Copy email"
-                    >
-                      <Copy className="w-3 h-3" />
-                    </button>
-                    {selectedTicket.user && (
+                  ) : (
+                    <div className="flex items-center justify-center gap-1 text-xs text-slate-500 mt-1">
+                      <Mail className="w-3 h-3" />
+                      {selectedTicket.customerEmail}
                       <button
                         onClick={() => {
-                          setEditEmailValue(selectedTicket.customerEmail);
-                          setIsEditingEmail(true);
+                          navigator.clipboard.writeText(selectedTicket.customerEmail);
+                          toast.success("Email copied!");
                         }}
                         className="text-[#722F37] hover:text-[#5A252C] ml-1"
-                        title="Edit email"
+                        title="Copy email"
                       >
-                        <Pencil className="w-3 h-3" />
+                        <Copy className="w-3 h-3" />
                       </button>
-                    )}
-                  </div>
-                )}
-
-                {selectedTicket.user && (
-                  <div className="text-[10px] text-slate-400 mt-1">
-                    Customer since {format(new Date(selectedTicket.user.createdAt), "MMM yyyy")}
-                  </div>
-                )}
-              </div>
-
-              {/* Tags Section */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                    <TagIcon className="w-3.5 h-3.5" /> Tags
-                  </h4>
-                  {selectedTicket.user && (
-                    <TagAutocomplete
-                      userId={selectedTicket.user.id}
-                      existingTags={selectedTicket.user.marketingTags || []}
-                      onTagAdded={() => queryClient.invalidateQueries({ queryKey: ["tickets"] })}
-                    />
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedTicket.user?.marketingTags && selectedTicket.user.marketingTags.length > 0 ? (
-                    selectedTicket.user.marketingTags.map((mt: any, i: number) => (
-                      <Badge
-                        key={i}
-                        variant="secondary"
-                        className="text-[10px] gap-1"
-                        style={{
-                          backgroundColor: `${mt.tag?.color || "#6B7280"}20`,
-                          color: mt.tag?.color || "#6B7280",
-                          borderColor: `${mt.tag?.color || "#6B7280"}40`,
-                        }}
-                      >
-                        <span
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: mt.tag?.color || "#6B7280" }}
-                        />
-                        {mt.tag?.name || mt.tag?.slug || "Tag"}
-                      </Badge>
-                    ))
-                  ) : (
-                    <span className="text-xs text-slate-400 italic">No tags assigned</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Purchases */}
-              <div className="mb-4">
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
-                  <DollarSign className="w-3.5 h-3.5 text-green-600" /> Purchases
-                </h4>
-                {!selectedTicket.user?.payments?.length ? (
-                  <p className="text-xs text-slate-400 italic">No purchases found</p>
-                ) : (
-                  <div className="space-y-2">
-                    {selectedTicket.user.payments.slice(0, 4).map((p) => (
-                      <div key={p.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <CreditCard className="w-3.5 h-3.5 text-green-600" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-xs font-medium text-slate-700 truncate">
-                              {p.productName || "Product"}
-                            </div>
-                            <div className="text-[10px] text-slate-400">
-                              {format(new Date(p.createdAt), "MMM d, yyyy")}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-sm font-bold text-slate-900">
-                          {new Intl.NumberFormat("en-US", { style: "currency", currency: p.currency }).format(p.amount)}
-                        </div>
-                      </div>
-                    ))}
-                    {selectedTicket.user.payments.length > 4 && (
-                      <a
-                        href={`/admin/users?userId=${selectedTicket.user.id}`}
-                        target="_blank"
-                        className="block text-center text-xs text-[#722F37] hover:underline py-1"
-                      >
-                        View all {selectedTicket.user.payments.length} purchases
-                        <ExternalLink className="w-3 h-3 inline ml-1" />
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Enrollments & Progress */}
-              <div className="mb-4">
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
-                  <GraduationCap className="w-3.5 h-3.5 text-purple-600" /> Enrollments
-                </h4>
-                {!selectedTicket.user?.enrollments?.length ? (
-                  <p className="text-xs text-slate-400 italic">No enrollments found</p>
-                ) : (
-                  <div className="space-y-2">
-                    {selectedTicket.user.enrollments.slice(0, 4).map((enrollment: any) => {
-                      const progressPercent = Math.round(enrollment.progress || 0);
-
-                      return (
-                        <div key={enrollment.id} className="p-2 bg-slate-50 rounded-lg">
-                          <div className="flex items-start gap-2">
-                            <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                              <BookOpen className="w-3.5 h-3.5 text-purple-600" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="text-xs font-medium text-slate-700 truncate">
-                                {enrollment.course?.title || "Course"}
-                              </div>
-                              <div className="flex items-center justify-between mt-1">
-                                <span className={cn(
-                                  "text-[10px] px-1.5 py-0.5 rounded-full font-medium",
-                                  enrollment.status === "COMPLETED"
-                                    ? "bg-green-100 text-green-700"
-                                    : enrollment.status === "ACTIVE"
-                                      ? "bg-blue-100 text-blue-700"
-                                      : "bg-slate-100 text-slate-600"
-                                )}>
-                                  {enrollment.status}
-                                </span>
-                                <span className="text-[10px] text-slate-500 font-medium">
-                                  {progressPercent}%
-                                </span>
-                              </div>
-                              {/* Progress bar */}
-                              <div className="mt-1.5 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                                <div
-                                  className={cn(
-                                    "h-full rounded-full transition-all",
-                                    progressPercent === 100 ? "bg-green-500" : "bg-purple-500"
-                                  )}
-                                  style={{ width: `${progressPercent}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {selectedTicket.user.enrollments.length > 4 && (
-                      <a
-                        href={`/admin/users?userId=${selectedTicket.user.id}`}
-                        target="_blank"
-                        className="block text-center text-xs text-[#722F37] hover:underline py-1"
-                      >
-                        View all {selectedTicket.user.enrollments.length} enrollments
-                        <ExternalLink className="w-3 h-3 inline ml-1" />
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Other Tickets */}
-              <div>
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
-                  <LifeBuoy className="w-3.5 h-3.5 text-blue-600" /> Other Tickets
-                </h4>
-                {!selectedTicket.user?.submittedTickets?.filter((t: any) => t.id !== selectedTicket.id).length ? (
-                  <p className="text-xs text-slate-400 italic">No other tickets</p>
-                ) : (
-                  <div className="space-y-2">
-                    {selectedTicket.user.submittedTickets
-                      .filter((t: any) => t.id !== selectedTicket.id)
-                      .slice(0, 4)
-                      .map((t: any) => (
-                        <div
-                          key={t.id}
-                          onClick={() => setSelectedTicketId(t.id)}
-                          className="p-2 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors"
+                      {selectedTicket.user && (
+                        <button
+                          onClick={() => {
+                            setEditEmailValue(selectedTicket.customerEmail);
+                            setIsEditingEmail(true);
+                          }}
+                          className="text-[#722F37] hover:text-[#5A252C] ml-1"
+                          title="Edit email"
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-mono text-slate-400">#{t.ticketNumber}</span>
-                            <span className={cn(
-                              "text-[9px] px-1.5 py-0.5 rounded-full font-medium",
-                              STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.bgLight,
-                              STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.textColor
-                            )}>
-                              {STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.label || t.status}
-                            </span>
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {selectedTicket.user && (
+                    <div className="text-[10px] text-slate-400 mt-1">
+                      Customer since {format(new Date(selectedTicket.user.createdAt), "MMM yyyy")}
+                    </div>
+                  )}
+                </div>
+
+                {/* Tags Section */}
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                      <TagIcon className="w-3.5 h-3.5" /> Tags
+                    </h4>
+                    {selectedTicket.user && (
+                      <TagAutocomplete
+                        userId={selectedTicket.user.id}
+                        existingTags={selectedTicket.user.marketingTags || []}
+                        onTagAdded={() => queryClient.invalidateQueries({ queryKey: ["tickets"] })}
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedTicket.user?.marketingTags && selectedTicket.user.marketingTags.length > 0 ? (
+                      selectedTicket.user.marketingTags.map((mt: any, i: number) => (
+                        <Badge
+                          key={i}
+                          variant="secondary"
+                          className="text-[10px] gap-1"
+                          style={{
+                            backgroundColor: `${mt.tag?.color || "#6B7280"}20`,
+                            color: mt.tag?.color || "#6B7280",
+                            borderColor: `${mt.tag?.color || "#6B7280"}40`,
+                          }}
+                        >
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: mt.tag?.color || "#6B7280" }}
+                          />
+                          {mt.tag?.name || mt.tag?.slug || "Tag"}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-xs text-slate-400 italic">No tags assigned</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Purchases */}
+                <div className="mb-4">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
+                    <DollarSign className="w-3.5 h-3.5 text-green-600" /> Purchases
+                  </h4>
+                  {!selectedTicket.user?.payments?.length ? (
+                    <p className="text-xs text-slate-400 italic">No purchases found</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {selectedTicket.user.payments.slice(0, 4).map((p) => (
+                        <div key={p.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                              <CreditCard className="w-3.5 h-3.5 text-green-600" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-medium text-slate-700 truncate">
+                                {p.productName || "Product"}
+                              </div>
+                              <div className="text-[10px] text-slate-400">
+                                {format(new Date(p.createdAt), "MMM d, yyyy")}
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-xs text-slate-700 line-clamp-1">{t.subject}</p>
+                          <div className="text-sm font-bold text-slate-900">
+                            {new Intl.NumberFormat("en-US", { style: "currency", currency: p.currency }).format(p.amount)}
+                          </div>
                         </div>
                       ))}
-                  </div>
-                )}
+                      {selectedTicket.user.payments.length > 4 && (
+                        <a
+                          href={`/admin/users?userId=${selectedTicket.user.id}`}
+                          target="_blank"
+                          className="block text-center text-xs text-[#722F37] hover:underline py-1"
+                        >
+                          View all {selectedTicket.user.payments.length} purchases
+                          <ExternalLink className="w-3 h-3 inline ml-1" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Enrollments & Progress */}
+                <div className="mb-4">
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
+                    <GraduationCap className="w-3.5 h-3.5 text-purple-600" /> Enrollments
+                  </h4>
+                  {!selectedTicket.user?.enrollments?.length ? (
+                    <p className="text-xs text-slate-400 italic">No enrollments found</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {selectedTicket.user.enrollments.slice(0, 4).map((enrollment: any) => {
+                        const progressPercent = Math.round(enrollment.progress || 0);
+
+                        return (
+                          <div key={enrollment.id} className="p-2 bg-slate-50 rounded-lg">
+                            <div className="flex items-start gap-2">
+                              <div className="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                                <BookOpen className="w-3.5 h-3.5 text-purple-600" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-xs font-medium text-slate-700 truncate">
+                                  {enrollment.course?.title || "Course"}
+                                </div>
+                                <div className="flex items-center justify-between mt-1">
+                                  <span className={cn(
+                                    "text-[10px] px-1.5 py-0.5 rounded-full font-medium",
+                                    enrollment.status === "COMPLETED"
+                                      ? "bg-green-100 text-green-700"
+                                      : enrollment.status === "ACTIVE"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-slate-100 text-slate-600"
+                                  )}>
+                                    {enrollment.status}
+                                  </span>
+                                  <span className="text-[10px] text-slate-500 font-medium">
+                                    {progressPercent}%
+                                  </span>
+                                </div>
+                                {/* Progress bar */}
+                                <div className="mt-1.5 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                  <div
+                                    className={cn(
+                                      "h-full rounded-full transition-all",
+                                      progressPercent === 100 ? "bg-green-500" : "bg-purple-500"
+                                    )}
+                                    style={{ width: `${progressPercent}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {selectedTicket.user.enrollments.length > 4 && (
+                        <a
+                          href={`/admin/users?userId=${selectedTicket.user.id}`}
+                          target="_blank"
+                          className="block text-center text-xs text-[#722F37] hover:underline py-1"
+                        >
+                          View all {selectedTicket.user.enrollments.length} enrollments
+                          <ExternalLink className="w-3 h-3 inline ml-1" />
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Other Tickets */}
+                <div>
+                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1 mb-2">
+                    <LifeBuoy className="w-3.5 h-3.5 text-blue-600" /> Other Tickets
+                  </h4>
+                  {!selectedTicket.user?.submittedTickets?.filter((t: any) => t.id !== selectedTicket.id).length ? (
+                    <p className="text-xs text-slate-400 italic">No other tickets</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {selectedTicket.user.submittedTickets
+                        .filter((t: any) => t.id !== selectedTicket.id)
+                        .slice(0, 4)
+                        .map((t: any) => (
+                          <div
+                            key={t.id}
+                            onClick={() => setSelectedTicketId(t.id)}
+                            className="p-2 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors"
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[10px] font-mono text-slate-400">#{t.ticketNumber}</span>
+                              <span className={cn(
+                                "text-[9px] px-1.5 py-0.5 rounded-full font-medium",
+                                STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.bgLight,
+                                STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.textColor
+                              )}>
+                                {STATUS_CONFIG[t.status as keyof typeof STATUS_CONFIG]?.label || t.status}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-700 line-clamp-1">{t.subject}</p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </ScrollArea>
-        </div>
+            </ScrollArea>
+          </div>
+        </>
       )}
     </div>
   );
