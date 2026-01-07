@@ -1301,7 +1301,7 @@ export function MessagesClient({
   };
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-200/50">
+    <div className="h-[calc(100vh-8rem)] flex bg-white rounded-2xl overflow-hidden overflow-x-hidden shadow-2xl border border-gray-200/50">
       {/* Hidden file inputs */}
       <input
         type="file"
@@ -1320,7 +1320,7 @@ export function MessagesClient({
 
       {/* Conversations Sidebar */}
       <div className={cn(
-        "w-[340px] flex-shrink-0 flex flex-col bg-gradient-to-b from-gray-50 to-white border-r border-gray-100",
+        "w-full sm:w-[320px] md:w-[340px] flex-shrink-0 flex flex-col bg-gradient-to-b from-gray-50 to-white border-r border-gray-100",
         selectedUser ? "hidden lg:flex" : "flex"
       )}>
         {/* Sidebar Header */}
