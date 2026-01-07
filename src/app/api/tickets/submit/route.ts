@@ -254,7 +254,8 @@ export async function POST(request: NextRequest) {
                   <!-- Social Proof - Minimal -->
                   <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee;">
                     <p style="margin: 0 0 3px 0; color: #D4AF37; font-size: 16px; letter-spacing: 2px;">★★★★★</p>
-                    <p style="margin: 0; color: #333; font-size: 12px;">Trusted by <strong>9,376</strong> certified professionals</p>
+                    <p style="margin: 0 0 2px 0; color: #333; font-size: 12px;">Trusted by <strong>9,376</strong> certified professionals</p>
+                    <p style="margin: 0; color: #888; font-size: 11px;">who trust AccrediPro Academy for their healthcare certifications</p>
                   </div>
                 </div>
 
