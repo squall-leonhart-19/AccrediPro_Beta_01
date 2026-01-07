@@ -101,22 +101,71 @@ export async function POST(request: NextRequest) {
         }
       });
 
-      // Notify customer of merge
+      // Notify customer of merge - Premium Template
       try {
         await resend.emails.send({
-          from: "AccrediPro Support <support@accredipro-certificate.com>",
+          from: "AccrediPro Academy <support@accredipro-certificate.com>",
           to: customerEmail,
-          subject: `[Ticket #${existingTicket.ticketNumber}] New message added to your open request`,
+          replyTo: `ticket-${existingTicket.ticketNumber}@tickets.accredipro-certificate.com`,
+          subject: `✅ Message Added to Ticket #${existingTicket.ticketNumber}`,
           html: `
-                  <div style="font-family: Arial, sans-serif; color: #333;">
-                    <p>Hi ${customerName.split(" ")[0]},</p>
-                    <p>We've added your new message to your existing open ticket <strong>#${existingTicket.ticketNumber}</strong>.</p>
-                    <div style="background: #f9f9f9; padding: 15px; border-radius: 6px; margin: 15px 0;">
-                       "${message}"
-                    </div>
-                    <p>You don't need to do anything else. Our team will review this along with your previous messages.</p>
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              </head>
+              <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                  
+                  <!-- Header -->
+                  <div style="background: linear-gradient(135deg, #722F37 0%, #8B3D47 100%); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
+                    <h1 style="color: #D4AF37; margin: 0; font-size: 22px; font-weight: 700;">Message Received!</h1>
+                    <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">We've added it to your open ticket</p>
                   </div>
-                `
+
+                  <!-- Main Content -->
+                  <div style="background: #ffffff; padding: 35px 30px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                    
+                    <p style="font-size: 17px; margin: 0 0 20px 0;">Hi <strong>${customerName.split(" ")[0]}</strong>,</p>
+                    
+                    <p style="margin: 0 0 25px 0; color: #555;">Your new message has been added to your existing ticket <strong style="color: #722F37;">#${existingTicket.ticketNumber}</strong>.</p>
+
+                    <!-- Message Preview -->
+                    <div style="background: #fafafa; border-radius: 10px; padding: 18px; margin-bottom: 25px; border: 1px solid #eee;">
+                      <p style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Your Message</p>
+                      <p style="margin: 0; color: #444; font-size: 14px; line-height: 1.7;">${message.replace(/\n/g, "<br>")}</p>
+                    </div>
+
+                    <!-- Info Box -->
+                    <div style="background: #E0F2FE; border-radius: 10px; padding: 16px; margin-bottom: 25px; border: 1px solid #7DD3FC;">
+                      <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: 600; color: #0369A1;">✓ What happens next?</p>
+                      <p style="margin: 0; color: #0C4A6E; font-size: 13px;">Our team will review this along with your previous messages and respond within 24-48 working hours.</p>
+                    </div>
+
+                    <!-- Social Proof - Minimal -->
+                    <div style="text-align: center; padding: 20px 0; border-top: 1px solid #eee;">
+                      <p style="margin: 0 0 3px 0; color: #D4AF37; font-size: 16px; letter-spacing: 2px;">★★★★★</p>
+                      <p style="margin: 0 0 2px 0; color: #333; font-size: 12px;">Trusted by <strong>9,376</strong> certified professionals</p>
+                      <p style="margin: 0; color: #888; font-size: 11px;">who trust AccrediPro Academy for their healthcare certifications</p>
+                    </div>
+                  </div>
+
+                  <!-- Footer -->
+                  <div style="text-align: center; padding: 25px 20px; color: #888;">
+                    <p style="margin: 0 0 10px 0; font-size: 13px;">
+                      <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
+                      &nbsp;|&nbsp;
+                      <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
+                    </p>
+                    <p style="margin: 0; font-size: 11px; color: #aaa;">
+                      © ${new Date().getFullYear()} AccrediPro Academy™. All rights reserved.
+                    </p>
+                  </div>
+                </div>
+              </body>
+            </html>
+          `
         });
       } catch (e) {
         console.error("Failed to send merge notification:", e);
