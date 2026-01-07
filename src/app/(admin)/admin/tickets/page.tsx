@@ -616,30 +616,31 @@ export default function TicketsPage() {
       <div className="flex-1 flex flex-col min-w-0 bg-white shadow-sm">
         {selectedTicket ? (
           <>
-            {/* Header */}
-            <div className="h-[72px] border-b px-6 flex items-center justify-between bg-gradient-to-r from-white to-slate-50 flex-shrink-0">
-              <div className="flex items-center gap-4 min-w-0">
-                {/* Toggle sidebar button */}
+            {/* Ticket Detail Header - Two Row Layout */}
+            <div className="border-b bg-gradient-to-r from-white to-slate-50 flex-shrink-0">
+              {/* Row 1: Ticket Info */}
+              <div className="px-4 py-3 flex items-start gap-3">
+                {/* Toggle sidebar button - Mobile */}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden h-8 w-8"
+                  className="lg:hidden h-8 w-8 flex-shrink-0 mt-1"
                   onClick={() => setShowSidebar(!showSidebar)}
                 >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
-                <Avatar className="w-10 h-10 border-2 border-[#722F37]/20">
+
+                <Avatar className="w-10 h-10 border-2 border-[#722F37]/20 flex-shrink-0">
                   <AvatarImage src={selectedTicket.user?.avatar || undefined} />
                   <AvatarFallback className="bg-[#722F37] text-white font-semibold">
                     {selectedTicket.customerName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-bold text-slate-900 truncate">
-                      {selectedTicket.customerName}
-                    </h2>
-                    <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+
+                <div className="flex-1 min-w-0">
+                  {/* Ticket # + Category on one line */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
                       #{selectedTicket.ticketNumber}
                     </span>
                     {(() => {
@@ -647,7 +648,7 @@ export default function TicketsPage() {
                       const categoryStyle = CATEGORY_COLORS[category] || CATEGORY_COLORS.General;
                       return (
                         <span className={cn(
-                          "text-[10px] px-2 py-0.5 rounded-full font-semibold border",
+                          "text-xs px-2 py-0.5 rounded-full font-medium border",
                           categoryStyle.bg, categoryStyle.text, categoryStyle.border
                         )}>
                           {category}
@@ -655,13 +656,29 @@ export default function TicketsPage() {
                       );
                     })()}
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
-                    <span className="font-medium text-slate-700">{selectedTicket.subject}</span>
+                  {/* Subject - Full text, wraps naturally */}
+                  <h2 className="font-bold text-slate-900 text-sm leading-snug mt-1">
+                    {selectedTicket.subject}
+                  </h2>
+                  <div className="text-xs text-slate-500 mt-0.5">
+                    by <span className="font-medium text-slate-700">{selectedTicket.customerName}</span>
                   </div>
                 </div>
+
+                {/* Customer Panel Toggle */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 flex-shrink-0"
+                  onClick={() => setShowCustomerPanel(!showCustomerPanel)}
+                  title="Toggle customer details"
+                >
+                  <User className="w-4 h-4" />
+                </Button>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Row 2: Action Buttons - Horizontal scroll on mobile */}
+              <div className="px-4 pb-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
                 {/* Status Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -791,16 +808,6 @@ export default function TicketsPage() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                {/* Toggle Customer Panel */}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setShowCustomerPanel(!showCustomerPanel)}
-                >
-                  <User className={cn("w-4 h-4", showCustomerPanel && "text-[#722F37]")} />
-                </Button>
               </div>
             </div>
 
