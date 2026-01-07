@@ -9,49 +9,100 @@ interface SearchParams {
     search?: string;
 }
 
-// Helper to determine filter date
-function getFilterDate(range: string): Date | undefined {
+// Alaska timezone (AKST = UTC-9) to match ClickFunnels
+const ALASKA_TIMEZONE_OFFSET_HOURS = -9;
+
+function getAlaskaNow(): Date {
     const now = new Date();
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utcTime + (3600000 * ALASKA_TIMEZONE_OFFSET_HOURS));
+}
+
+function getAlaskaStartOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+// Helper to determine filter date range in Alaska time
+function getFilterDateRange(range: string): { start: Date; end: Date; label: string } {
+    const alaskaNow = getAlaskaNow();
+    const startOfToday = getAlaskaStartOfDay(alaskaNow);
+
     switch (range) {
         case "today":
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            return {
+                start: startOfToday,
+                end: new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000),
+                label: "Today"
+            };
+        case "yesterday": {
+            const startOfYesterday = new Date(startOfToday.getTime() - 24 * 60 * 60 * 1000);
+            return {
+                start: startOfYesterday,
+                end: startOfToday,
+                label: "Yesterday"
+            };
+        }
         case "7days":
-            return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return {
+                start: new Date(alaskaNow.getTime() - 7 * 24 * 60 * 60 * 1000),
+                end: alaskaNow,
+                label: "Last 7 Days"
+            };
         case "30days":
-            return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        case "month":
-            return new Date(now.getFullYear(), now.getMonth(), 1);
+            return {
+                start: new Date(alaskaNow.getTime() - 30 * 24 * 60 * 60 * 1000),
+                end: alaskaNow,
+                label: "Last 30 Days"
+            };
+        case "month": {
+            const startOfMonth = new Date(alaskaNow.getFullYear(), alaskaNow.getMonth(), 1);
+            return {
+                start: startOfMonth,
+                end: alaskaNow,
+                label: "This Month"
+            };
+        }
         case "all":
-            return undefined;
+            return {
+                start: new Date(2020, 0, 1), // Far past
+                end: alaskaNow,
+                label: "All Time"
+            };
         default:
-            return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // Default 30 days
+            return {
+                start: new Date(alaskaNow.getTime() - 30 * 24 * 60 * 60 * 1000),
+                end: alaskaNow,
+                label: "Last 30 Days"
+            };
     }
 }
 
 async function getPurchasesData(searchParams: SearchParams) {
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const alaskaNow = getAlaskaNow();
+    const startOfToday = getAlaskaStartOfDay(alaskaNow);
     const startOfWeek = new Date(startOfToday);
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfMonth = new Date(alaskaNow.getFullYear(), alaskaNow.getMonth(), 1);
 
-    // 1. Get Revenue Stats (Always Fixed ranges)
-    const [todayRevenue, weekRevenue, monthRevenue, totalRevenue] = await Promise.all([
+    // Get filter range
+    const range = searchParams.range || "30days";
+    const filterRange = getFilterDateRange(range);
+
+    // 1. Get Revenue Stats - Dynamic based on filter
+    const [periodRevenue, todayRevenue, allTimeRevenue] = await Promise.all([
+        // Current period (matches filter)
+        prisma.payment.aggregate({
+            where: { createdAt: { gte: filterRange.start, lte: filterRange.end }, status: "COMPLETED" },
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Today (always show for quick reference)
         prisma.payment.aggregate({
             where: { createdAt: { gte: startOfToday }, status: "COMPLETED" },
             _sum: { amount: true },
             _count: true,
         }),
-        prisma.payment.aggregate({
-            where: { createdAt: { gte: startOfWeek }, status: "COMPLETED" },
-            _sum: { amount: true },
-            _count: true,
-        }),
-        prisma.payment.aggregate({
-            where: { createdAt: { gte: startOfMonth }, status: "COMPLETED" },
-            _sum: { amount: true },
-            _count: true,
-        }),
+        // All time
         prisma.payment.aggregate({
             where: { status: "COMPLETED" },
             _sum: { amount: true },
@@ -60,8 +111,6 @@ async function getPurchasesData(searchParams: SearchParams) {
     ]);
 
     // 2. Get Filtered Purchases (For Table)
-    const filterDate = getFilterDate(searchParams.range || "30days");
-
     const searchFilter = searchParams.search ? {
         OR: [
             { user: { email: { contains: searchParams.search, mode: "insensitive" as const } } },
@@ -74,12 +123,12 @@ async function getPurchasesData(searchParams: SearchParams) {
 
     const whereClause: any = {
         ...searchFilter,
-        ...(filterDate ? { createdAt: { gte: filterDate } } : {}),
+        createdAt: { gte: filterRange.start, lte: filterRange.end },
     };
 
     const recentPurchases = await prisma.payment.findMany({
         where: whereClause,
-        take: 100, // Limit table to 100 most recent matching
+        take: 100,
         orderBy: { createdAt: "desc" },
         include: {
             user: {
@@ -98,21 +147,18 @@ async function getPurchasesData(searchParams: SearchParams) {
 
     return {
         stats: {
+            period: {
+                revenue: Number(periodRevenue._sum.amount || 0),
+                orders: periodRevenue._count,
+                label: filterRange.label,
+            },
             today: {
                 revenue: Number(todayRevenue._sum.amount || 0),
                 orders: todayRevenue._count,
             },
-            week: {
-                revenue: Number(weekRevenue._sum.amount || 0),
-                orders: weekRevenue._count,
-            },
-            month: {
-                revenue: Number(monthRevenue._sum.amount || 0),
-                orders: monthRevenue._count,
-            },
             total: {
-                revenue: Number(totalRevenue._sum.amount || 0),
-                orders: totalRevenue._count,
+                revenue: Number(allTimeRevenue._sum.amount || 0),
+                orders: allTimeRevenue._count,
             },
             disputes: disputeCount,
         },
@@ -120,6 +166,8 @@ async function getPurchasesData(searchParams: SearchParams) {
             ...p,
             amount: Number(p.amount)
         })),
+        currentRange: range,
+        timezone: "Alaska (AKST)",
     };
 }
 
@@ -131,5 +179,5 @@ export default async function AdminPurchasesPage({ searchParams }: { searchParam
 
     const data = await getPurchasesData(searchParams);
 
-    return <PurchasesClient stats={data.stats} purchases={data.recentPurchases} />;
+    return <PurchasesClient stats={data.stats} purchases={data.recentPurchases} timezone={data.timezone} currentRange={data.currentRange} />;
 }

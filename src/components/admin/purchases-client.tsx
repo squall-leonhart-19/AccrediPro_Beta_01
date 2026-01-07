@@ -42,9 +42,8 @@ interface Purchase {
 }
 
 interface Stats {
+    period: { revenue: number; orders: number; label: string };
     today: { revenue: number; orders: number };
-    week: { revenue: number; orders: number };
-    month: { revenue: number; orders: number };
     total: { revenue: number; orders: number };
     disputes: number;
 }
@@ -52,9 +51,11 @@ interface Stats {
 interface PurchasesClientProps {
     stats: Stats;
     purchases: Purchase[];
+    timezone: string;
+    currentRange: string;
 }
 
-export default function PurchasesClient({ stats, purchases }: PurchasesClientProps) {
+export default function PurchasesClient({ stats, purchases, timezone, currentRange }: PurchasesClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
@@ -110,6 +111,19 @@ export default function PurchasesClient({ stats, purchases }: PurchasesClientPro
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
+            {/* Back Button & Breadcrumb */}
+            <div className="flex items-center gap-4 text-sm">
+                <Link href="/admin" className="flex items-center gap-1 text-gray-500 hover:text-gray-900 transition-colors">
+                    <ArrowUpRight className="w-4 h-4 rotate-[225deg]" />
+                    Back to Dashboard
+                </Link>
+                <span className="text-gray-300">|</span>
+                <span className="text-gray-400">Admin &gt; Purchases</span>
+                <span className="ml-auto text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full border border-blue-100">
+                    🕐 {timezone}
+                </span>
+            </div>
+
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -139,68 +153,72 @@ export default function PurchasesClient({ stats, purchases }: PurchasesClientPro
                 </div>
             </div>
 
-            {/* Stats Cards - Hyper Brand Style */}
+            {/* Stats Cards - Dynamic based on filter */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-white/50 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-500/5 hover:shadow-emerald-500/10 transition-all duration-300">
+                {/* Card 1: Current Period (Dynamic) */}
+                <Card className="bg-white/50 backdrop-blur-sm border-blue-100 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-emerald-600">Today's Revenue</p>
+                                <p className="text-sm font-medium text-blue-600">{stats.period.label} Revenue</p>
                                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {formatCurrency(stats.today.revenue)}
+                                    {formatCurrency(stats.period.revenue)}
                                 </p>
-                                <div className="flex items-center mt-1 text-emerald-600/80 text-xs">
-                                    <Clock className="w-3 h-3 mr-1" />
-                                    {stats.today.orders} orders processed
+                                <div className="flex items-center mt-1 text-blue-600/80 text-xs">
+                                    <ShoppingCart className="w-3 h-3 mr-1" />
+                                    {stats.period.orders} orders
                                 </div>
                             </div>
-                            <div className="p-3 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl shadow-lg shadow-emerald-500/20">
+                            <div className="p-3 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg shadow-blue-500/20">
                                 <DollarSign className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="bg-white/50 backdrop-blur-sm border-blue-100 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300">
+                {/* Card 2: Today's Revenue (Always shown) */}
+                <Card className="bg-white/50 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-500/5 hover:shadow-emerald-500/10 transition-all duration-300">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-blue-600">Weekly Performance</p>
+                                <p className="text-sm font-medium text-emerald-600">Today&apos;s Revenue</p>
                                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {formatCurrency(stats.week.revenue)}
+                                    {formatCurrency(stats.today.revenue)}
                                 </p>
-                                <div className="flex items-center mt-1 text-blue-600/80 text-xs">
-                                    <TrendingUp className="w-3 h-3 mr-1" />
-                                    {stats.week.orders} orders this week
+                                <div className="flex items-center mt-1 text-emerald-600/80 text-xs">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    {stats.today.orders} orders today
                                 </div>
                             </div>
-                            <div className="p-3 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg shadow-blue-500/20">
-                                <ShoppingCart className="w-6 h-6 text-white" />
+                            <div className="p-3 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl shadow-lg shadow-emerald-500/20">
+                                <TrendingUp className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
+                {/* Card 3: All Time Total */}
                 <Card className="bg-white/50 backdrop-blur-sm border-purple-100 shadow-lg shadow-purple-500/5 hover:shadow-purple-500/10 transition-all duration-300">
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-purple-600">Monthly Growth</p>
+                                <p className="text-sm font-medium text-purple-600">All Time</p>
                                 <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {formatCurrency(stats.month.revenue)}
+                                    {formatCurrency(stats.total.revenue)}
                                 </p>
                                 <div className="flex items-center mt-1 text-purple-600/80 text-xs">
-                                    <Calendar className="w-3 h-3 mr-1" />
-                                    {stats.month.orders} orders this month
+                                    <CreditCard className="w-3 h-3 mr-1" />
+                                    {stats.total.orders} total orders
                                 </div>
                             </div>
                             <div className="p-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl shadow-lg shadow-purple-500/20">
-                                <CreditCard className="w-6 h-6 text-white" />
+                                <Calendar className="w-6 h-6 text-white" />
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
+                {/* Card 4: Disputes */}
                 <Card className={`backdrop-blur-sm transition-all duration-300 ${stats.disputes > 0 ? 'bg-red-50/50 border-red-100 shadow-lg shadow-red-500/5 hover:shadow-red-500/10' : 'bg-white/50 border-gray-100 shadow-sm'}`}>
                     <CardContent className="pt-6">
                         <div className="flex items-center justify-between">
