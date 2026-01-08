@@ -154,7 +154,13 @@ Now respond to the student's latest message. Keep it short and natural like a re
             system: systemPrompt,
         });
 
-        let finalText = response.content[0].text;
+        let finalText = "";
+        const firstBlock = response.content[0];
+        if (firstBlock.type === "text") {
+            finalText = firstBlock.text;
+        } else {
+            finalText = "Welcome! So glad you're here! 💕";
+        }
 
         // Append attachment tag if resource was injected
         if (resourceInjection) {
@@ -181,7 +187,7 @@ export async function POST(req: NextRequest) {
         }
         console.log("[pod-chat] Session OK, user:", session.user.id);
 
-        const { message, conversationHistory, zombies, daysSinceEnrollment } = await req.json();
+        const { message, conversationHistory, zombies, daysSinceEnrollment, trigger } = await req.json();
 
         if (!message || typeof message !== "string") {
             return NextResponse.json({ error: "Message required" }, { status: 400 });
@@ -245,6 +251,72 @@ export async function POST(req: NextRequest) {
 
         // Check for resource match - Only active for Coach Sarah responses
         const resourceMatch = !isFirst ? checkForResourceMatch(message) : null;
+
+        // HANDLE DAILY STANDUP TRIGGER
+        if (trigger === "daily_standup") {
+            console.log("[pod-chat] Triggering Daily Standup sequence");
+            const standupPrompt = `You are Coach Sarah M. It is a new day for ${studentFirstName || "the student"}.
+            ACTION: proactively ask them what their ONE BIG GOAL is for today.
+            Be short, inspiring, and direct.
+            Example: "Good morning ${studentFirstName || ""}! ☀️ Ready to crush it? What is your main focus for today?"
+            Do NOT mention "standup" or "trigger". Just ask.`;
+
+            const response = await generateResponse(
+                "Coach Sarah M.",
+                standupPrompt,
+                studentName,
+                "What is my goal today?", // Simulate user asking themselves
+                recentHistory,
+                "",
+                daysSinceEnrollment,
+                null
+            );
+
+            return NextResponse.json({
+                success: true,
+                response: {
+                    id: `standup-${Date.now()}`,
+                    senderName: "Coach Sarah M.",
+                    senderAvatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp",
+                    senderType: "coach",
+                    content: response,
+                    createdAt: new Date().toISOString(),
+                    isCoach: true,
+                }
+            });
+        }
+
+        // HANDLE RE-ENGAGEMENT TRIGGER (Student absent > 3 days)
+        if (trigger === "re_engagement") {
+            const prompt = `You are Coach Sarah M. The student ${studentFirstName} hasn't been active for a few days.
+            ACTION: Welcome them back warmly. Acknowledge that life gets busy (no guilt).
+            Suggest a small "15 minute win" to get back on track.
+            Example: "Hey ${studentFirstName}! Missed you in the pod! 👋 I know life gets crazy. Want to spend just 15 mins on the next video today?"`;
+
+            const response = await generateResponse(
+                "Coach Sarah M.",
+                prompt,
+                studentName,
+                "I'm back.",
+                recentHistory,
+                "",
+                daysSinceEnrollment,
+                null
+            );
+
+            return NextResponse.json({
+                success: true,
+                response: {
+                    id: `reengage-${Date.now()}`,
+                    senderName: "Coach Sarah M.",
+                    senderAvatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp",
+                    senderType: "coach",
+                    content: response,
+                    createdAt: new Date().toISOString(),
+                    isCoach: true,
+                }
+            });
+        }
 
         // If this is the student's FIRST message, trigger welcome sequence
         if (isFirst) {

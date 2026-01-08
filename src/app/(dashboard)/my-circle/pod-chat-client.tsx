@@ -358,6 +358,89 @@ export function PodChatClient({
         loadMessages();
     }, [initialMessages, currentUser?.id, currentUser?.name, currentUser?.avatar]);
 
+    // DAILY ACCOUNTABILITY STANDUP
+    // Checks if we've asked for the goal today. If not, trigger Sarah.
+    useEffect(() => {
+        const checkDailyStandup = async () => {
+            // Only run if we have messages loaded (to avoid dupes or race conditions)
+            if (chatMessages.length === 0) return;
+
+            const todayDate = new Date();
+            const todayStr = todayDate.toDateString();
+            const lastStandupStr = localStorage.getItem("pod_last_standup");
+
+            // If we haven't done a standup today, trigger it
+            if (lastStandupStr !== todayStr) {
+                // Calculate days missed
+                let daysMissed = 0;
+                if (lastStandupStr) {
+                    const lastDate = new Date(lastStandupStr);
+                    const diffTime = Math.abs(todayDate.getTime() - lastDate.getTime());
+                    daysMissed = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1; // -1 because current day doesn't count as missed
+                }
+
+                const triggerType = (daysMissed > 3) ? "re_engagement" : "daily_standup";
+                console.log(`[Pod] Triggering ${triggerType} (Missed: ${daysMissed} days)...`);
+
+                localStorage.setItem("pod_last_standup", todayStr);
+
+                try {
+                    // Trigger API with appropriate flag
+                    const res = await fetch("/api/pod-chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            message: `TRIGGER_${triggerType.toUpperCase()}`,
+                            trigger: triggerType,
+                            conversationHistory: chatMessages.slice(-5).map(m => ({
+                                senderName: m.senderName,
+                                content: m.content
+                            })),
+                            zombies,
+                            daysSinceEnrollment,
+                        }),
+                    });
+
+                    const data = await res.json();
+                    if (data.success && (data.response || data.responses?.[0])) {
+                        const response = data.response || data.responses[0];
+
+                        // Add Sarah's question to chat
+                        const newMessage: PodMessage = {
+                            id: response.id,
+                            senderName: response.senderName,
+                            senderAvatar: response.senderAvatar,
+                            senderType: response.senderType,
+                            content: response.content,
+                            createdAt: new Date(),
+                            isCoach: true,
+                        };
+                        setChatMessages(prev => [...prev, newMessage]);
+
+                        // Save to DB (as a system message)
+                        // Note: Using a special endpoint or just standard patch with system flag? 
+                        // For now using standard PATCH but we should ideally mark it.
+                        await fetch("/api/pod/message", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                messageId: `standup-${Date.now()}`,
+                                aiResponderName: response.senderName,
+                                aiResponse: response.content,
+                            }),
+                        });
+                    }
+                } catch (err) {
+                    console.error("Standup trigger failed:", err);
+                }
+            }
+        };
+
+        // Delay 5s to let initial load finish & user settle in
+        const timer = setTimeout(checkDailyStandup, 5000);
+        return () => clearTimeout(timer);
+    }, [chatMessages.length, daysSinceEnrollment, zombies]);
+
     // RECOVERY FUNCTION: Trigger AI for interrupted messages
     const recoverResponse = async (messageId: string, content: string, currentHistory: PodMessage[]) => {
         // Show typing immediately to indicate resumption
