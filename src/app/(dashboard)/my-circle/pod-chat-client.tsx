@@ -137,12 +137,6 @@ function getZombieProgress(
     return Math.min(Math.max(Math.round(calculatedProgress), baseProgress), 100);
 }
 
-// LocalStorage key for persisting user messages - USER-SPECIFIC
-// Each user gets their own storage key so messages don't bleed between accounts
-function getStorageKey(userId: string): string {
-    return `pod-chat-messages-${userId}`;
-}
-
 export function PodChatClient({
     podName,
     messages: initialMessages,
@@ -288,39 +282,64 @@ export function PodChatClient({
         }
     }, [currentUser?.id, currentUser?.progress, trackEngagement]);
 
-    // Load messages from localStorage + initial scripted messages
+    // Load messages from DATABASE + initial scripted messages
     useEffect(() => {
         if (!currentUser?.id) {
             setChatMessages(initialMessages);
             return;
         }
 
-        const storageKey = getStorageKey(currentUser.id);
-        const stored = localStorage.getItem(storageKey);
-        const userMessages: PodMessage[] = stored ? JSON.parse(stored) : [];
+        // Fetch user messages from database
+        const loadMessages = async () => {
+            try {
+                const res = await fetch("/api/pod/message");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.messages && data.messages.length > 0) {
+                        // Convert DB messages to PodMessage format
+                        const dbMessages: PodMessage[] = [];
+                        for (const msg of data.messages) {
+                            // Add user message
+                            dbMessages.push({
+                                id: `user-${msg.id}`,
+                                senderName: currentUser.name,
+                                senderAvatar: currentUser.avatar,
+                                senderType: "user",
+                                content: msg.content,
+                                createdAt: new Date(msg.createdAt),
+                                isCoach: false,
+                            });
+                            // Add AI response if exists
+                            if (msg.aiResponse && msg.aiResponderName) {
+                                dbMessages.push({
+                                    id: `response-${msg.id}`,
+                                    senderName: msg.aiResponderName,
+                                    senderAvatar: msg.aiResponderName.includes("Sarah")
+                                        ? "https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                        : undefined,
+                                    senderType: msg.aiResponderName.includes("Sarah") ? "coach" : "zombie",
+                                    content: msg.aiResponse,
+                                    createdAt: new Date(new Date(msg.createdAt).getTime() + 1000), // 1 sec after
+                                    isCoach: msg.aiResponderName.includes("Sarah"),
+                                });
+                            }
+                        }
+                        // Merge with initial scripted messages
+                        const allMessages = [...initialMessages, ...dbMessages];
+                        allMessages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+                        setChatMessages(allMessages);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to load pod messages from DB:", error);
+            }
+            // Fallback to just initial messages
+            setChatMessages(initialMessages);
+        };
 
-        // Merge initial scripted messages with user's stored messages
-        const allMessages = [...initialMessages, ...userMessages.map((m: PodMessage) => ({
-            ...m,
-            createdAt: new Date(m.createdAt),
-        }))];
-
-        // Sort by date
-        allMessages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        setChatMessages(allMessages);
-    }, [initialMessages, currentUser?.id]);
-
-    // Save user messages to localStorage - USER-SPECIFIC
-    const saveUserMessages = useCallback((messages: PodMessage[]) => {
-        if (!currentUser?.id) return;
-
-        const storageKey = getStorageKey(currentUser.id);
-        // Only save messages from user or AI responses (not scripted)
-        const userMessages = messages.filter(m =>
-            m.id.startsWith("user-") || m.id.startsWith("response-") || m.id.startsWith("fallback-")
-        );
-        localStorage.setItem(storageKey, JSON.stringify(userMessages));
-    }, [currentUser?.id]);
+        loadMessages();
+    }, [initialMessages, currentUser?.id, currentUser?.name, currentUser?.avatar]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -345,7 +364,6 @@ export function PodChatClient({
 
         const updatedMessages = [...chatMessages, userMessage];
         setChatMessages(updatedMessages);
-        saveUserMessages(updatedMessages);
 
         // Track message engagement
         trackEngagement("message", { contentLength: inputValue.length });
@@ -410,7 +428,6 @@ export function PodChatClient({
 
                     currentMessages = [...currentMessages, newMessage];
                     setChatMessages(currentMessages);
-                    saveUserMessages(currentMessages);
 
                     // Hide typing for a moment between responses
                     setIsTyping(false);
@@ -465,7 +482,6 @@ export function PodChatClient({
                     isCoach: data.response.isCoach,
                 }];
                 setChatMessages(newMessages);
-                saveUserMessages(newMessages);
 
                 // Save to database for admin viewing
                 fetch("/api/pod/message", {
@@ -493,7 +509,6 @@ export function PodChatClient({
                 isCoach: true,
             }];
             setChatMessages(fallbackMessages);
-            saveUserMessages(fallbackMessages);
         } finally {
             setIsTyping(false);
             setTypingResponder(null);
