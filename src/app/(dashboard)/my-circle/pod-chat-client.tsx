@@ -386,9 +386,13 @@ export function PodChatClient({
             });
             const saveData = await saveRes.json();
             savedMessageId = saveData.id || null;
+            console.log("[Pod] Message saved with ID:", savedMessageId);
         } catch (err) {
             console.error("Failed to save message:", err);
         }
+
+        // Allow sending another message while AI is still responding
+        setIsSending(false);
 
         try {
             // Call API to get response(s)
@@ -460,6 +464,7 @@ export function PodChatClient({
 
                 // Update database with first AI response
                 if (savedMessageId && data.responses[0]) {
+                    console.log("[Pod] Saving AI response for message:", savedMessageId);
                     fetch("/api/pod/message", {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
@@ -468,7 +473,10 @@ export function PodChatClient({
                             aiResponderName: data.responses[0].senderName,
                             aiResponse: data.responses[0].content,
                         }),
-                    }).catch(() => { });
+                    })
+                        .then(res => res.json())
+                        .then(data => console.log("[Pod] PATCH result:", data))
+                        .catch(err => console.error("[Pod] PATCH failed:", err));
                 }
             }
             // Handle NORMAL single response
@@ -503,6 +511,7 @@ export function PodChatClient({
 
                 // Update database with AI response
                 if (savedMessageId) {
+                    console.log("[Pod] Saving normal AI response for message:", savedMessageId);
                     fetch("/api/pod/message", {
                         method: "PATCH",
                         headers: { "Content-Type": "application/json" },
@@ -511,7 +520,10 @@ export function PodChatClient({
                             aiResponderName: data.response.senderName,
                             aiResponse: data.response.content,
                         }),
-                    }).catch(() => { });
+                    })
+                        .then(res => res.json())
+                        .then(patchData => console.log("[Pod] Normal PATCH result:", patchData))
+                        .catch(err => console.error("[Pod] Normal PATCH failed:", err));
                 }
             }
         } catch (error) {
