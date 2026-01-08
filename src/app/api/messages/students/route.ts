@@ -23,8 +23,7 @@ export async function GET(request: NextRequest) {
     try {
         // Build the where clause properly
         const whereClause: any = {
-            isActive: true,
-            // Exclude coaches/admins - only get regular users
+            // Exclude coaches/admins - only get regular users (students)
             role: { notIn: ["ADMIN", "INSTRUCTOR", "MENTOR"] },
         };
 
