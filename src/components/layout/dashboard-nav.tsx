@@ -126,13 +126,13 @@ export function DashboardNav() {
   const getFullNavItems = () => {
     const items = [...fullNavItems];
     // Add My Circle after Messages if user has FM certification
-    /* TEMPORARILY DISABLED FOR UPGRADE
+    /* TEMPORARILY DISABLED (HIDDEN)
     if (hasFMCertification) {
       const messagesIndex = items.findIndex(item => item.href === "/messages");
       if (messagesIndex !== -1) {
         items.splice(messagesIndex + 1, 0, {
           href: "/my-circle",
-          label: "My Circle",
+          label: "Mastermind Circle", // Renamed to add value perceptions
           icon: Users2,
           tourId: "my-circle",
         });
