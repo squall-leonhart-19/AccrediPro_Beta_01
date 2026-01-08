@@ -27,9 +27,11 @@ export async function GET(request: NextRequest) {
         }
 
         // Search for students by name or email
+        // We search ALL roles except ADMIN to ensure we find everyone (Leads, Students, etc.)
         const students = await prisma.user.findMany({
             where: {
-                role: "STUDENT", // Only students
+                role: { not: "ADMIN" },
+                email: { not: null },
                 OR: [
                     { firstName: { contains: query, mode: "insensitive" } },
                     { lastName: { contains: query, mode: "insensitive" } },
