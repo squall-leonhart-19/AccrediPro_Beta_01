@@ -17,20 +17,28 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get("q") || "";
+    const query = searchParams.get("q")?.trim() || "";
     const limit = parseInt(searchParams.get("limit") || "20");
 
     try {
+        // Build the where clause properly
+        const whereClause: any = {
+            isActive: true,
+            // Exclude coaches/admins - only get regular users
+            role: { notIn: ["ADMIN", "INSTRUCTOR", "MENTOR"] },
+        };
+
+        // Add search conditions if query provided
+        if (query.length >= 2) {
+            whereClause.OR = [
+                { firstName: { contains: query, mode: "insensitive" } },
+                { lastName: { contains: query, mode: "insensitive" } },
+                { email: { contains: query, mode: "insensitive" } },
+            ];
+        }
+
         const students = await prisma.user.findMany({
-            where: {
-                role: "USER", // Only students
-                isActive: true,
-                OR: query ? [
-                    { firstName: { contains: query, mode: "insensitive" } },
-                    { lastName: { contains: query, mode: "insensitive" } },
-                    { email: { contains: query, mode: "insensitive" } },
-                ] : undefined,
-            },
+            where: whereClause,
             select: {
                 id: true,
                 firstName: true,
@@ -38,6 +46,7 @@ export async function GET(request: NextRequest) {
                 email: true,
                 avatar: true,
                 role: true,
+                createdAt: true,
                 enrollments: {
                     select: {
                         id: true,
@@ -58,6 +67,8 @@ export async function GET(request: NextRequest) {
             take: limit,
             orderBy: { createdAt: "desc" },
         });
+
+        console.log(`[Students API] Query: "${query}", Found: ${students.length} students`);
 
         return NextResponse.json({ students });
     } catch (error) {
