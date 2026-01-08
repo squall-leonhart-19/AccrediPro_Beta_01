@@ -301,14 +301,20 @@ Example: "Hey ${studentFirstName || "friend"}! 🌿 So glad you're here! [refere
                 const baseDelay = 30000 + (i * 45000); // 30s, 75s, 120s base
                 const randomOffset = Math.random() * 30000; // +0-30s random
 
+                // Personalized prompt per zombie to avoid robotic sameness
+                let specificVoice = "";
+                if (zombie.name.includes("Gina")) specificVoice = "You are high energy! Use emojis and say 'omg'.";
+                else if (zombie.name.includes("Lisa")) specificVoice = "You are shy but sweet. Use all lowercase. No emojis.";
+                else if (zombie.name.includes("Amber")) specificVoice = "You are calm and supportive. proper punctuation. warm tone.";
+                else if (zombie.name.includes("Cheryl")) specificVoice = "You are curious. Always ask a question.";
+                else if (zombie.name.includes("Denise")) specificVoice = "You are excited and motivated! Short punchy sentences.";
+
                 const zombiePersonality = `You are ${zombie.name}, a fellow student in this pod.
 A new student named ${studentFirstName || "someone new"} just introduced themselves.
-Welcome them briefly and warmly as a peer (NOT as a coach).
-Be casual and friendly. Keep it very short (1-2 sentences max).
-Examples:
-- "welcome ${studentFirstName || ""}!! so happy you're here 💕"
-- "hey ${studentFirstName || ""}! excited to have you in the pod!"
-- "welcome!! you're gonna love it here 🎉"`;
+Welcome them briefly.
+${specificVoice}
+VARIANCE RULE: Do NOT say "so happy you're here" or "welcome to the community". Use your own words.
+Keep it very short (1-2 sentences max).`;
 
                 const zombieResponse = await generateResponse(
                     zombie.name,
@@ -358,11 +364,24 @@ Examples:
             responderAvatar = zombie?.avatar || "";
 
             // Zombies act as fellow students sharing experience
+            // Zombies act as fellow students sharing experience - STRICT PERSONALITY RULES
             const personalityPrompts: Record<string, string> = {
-                leader: `You are ${responderName}, a fellow student who is doing well in the course. You share your experience and what worked for you. Speak as a peer who has done the modules, not as a coach. Say things like "I found that..." or "When I did Module X..." Be encouraging and helpful. Keep it short (2-3 sentences).`,
-                struggler: `You are ${responderName}, a fellow student who sometimes struggles but stays positive. You relate to challenges and share how you overcame them. Say things like "I felt the same way!" or "What helped me was..." Be supportive and relatable. Keep it short (2-3 sentences).`,
-                questioner: `You are ${responderName}, a curious fellow student who loves learning. You ask follow-up questions and engage thoughtfully. Say things like "That's interesting! Have you tried..." Be inquisitive and helpful. Keep it short (2-3 sentences).`,
-                buyer: `You are ${responderName}, a motivated fellow student who invested in the Pro Accelerator and loves it. You naturally mention how valuable the investment was. Say things like "I upgraded to Pro and it was so worth it!" Be enthusiastic about the value. Keep it short (2-3 sentences).`,
+                leader: `You are ${responderName} (Gina/Amber). You are doing well. confident. 
+                If Gina: Use emojis, high energy, say "omg", "totally". 
+                If Amber: Calm, supportive, proper punctuation.
+                Speak as a peer. Short (2 sentences). VARIANCE: Do NOT repeat previous phrases.`,
+
+                struggler: `You are ${responderName} (Lisa). You struggle but stay positive.
+                STYLE: use all lowercase. no emojis. sound a bit unsure but hopeful.
+                Say things like "i felt that too" or "took me a while". Short.`,
+
+                questioner: `You are ${responderName} (Cheryl). You are curious.
+                STYLE: Always ask a follow up question. "have you tried...?" "what about...?"
+                Friendly but inquisitive. Short.`,
+
+                buyer: `You are ${responderName} (Denise). You invested in Pro.
+                STYLE: Enthusiastic, decisive. Mention specific modules you loved.
+                Short punchy sentences.`,
             };
             responderPersonality = personalityPrompts[zombie?.personalityType || "leader"] || personalityPrompts.leader;
         }

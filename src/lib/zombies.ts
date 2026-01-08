@@ -38,14 +38,14 @@ export const ZOMBIE_PROFILES = [
         location: "California",
         personalityType: "leader" as ZombiePersonality,
         backstory: "Started 6 weeks ago, crushing it, very encouraging",
-        avatar: STUDENT_AVATARS[0],
+        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Gina-T.webp",
     },
     {
         name: "Amber L.",
         location: "Texas",
         personalityType: "leader" as ZombiePersonality,
         backstory: "Supportive, gives great advice about pacing",
-        avatar: STUDENT_AVATARS[1],
+        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Amber-L.webp",
     },
 
     // QUESTIONER - Cheryl W. from scripts
@@ -54,7 +54,7 @@ export const ZOMBIE_PROFILES = [
         location: "Florida",
         personalityType: "questioner" as ZombiePersonality,
         backstory: "Was nervous at first, loves gut health, asks great questions",
-        avatar: STUDENT_AVATARS[7],
+        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Cheryl-W.webp",
     },
 
     // STRUGGLER - Lisa K. from scripts
@@ -63,7 +63,7 @@ export const ZOMBIE_PROFILES = [
         location: "Oregon",
         personalityType: "struggler" as ZombiePersonality,
         backstory: "Working full-time, slower pace but persistent",
-        avatar: STUDENT_AVATARS[4],
+        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Lisa-K.webp",
     },
 
     // BUYER - Denise P. from scripts
@@ -72,7 +72,7 @@ export const ZOMBIE_PROFILES = [
         location: "Colorado",
         personalityType: "buyer" as ZombiePersonality,
         backstory: "Invested in Pro early, gets certified Day 14, first client Day 25",
-        avatar: STUDENT_AVATARS[10],
+        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Denise-P.webp",
     },
 ];
 
