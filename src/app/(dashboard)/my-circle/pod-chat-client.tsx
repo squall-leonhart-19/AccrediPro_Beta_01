@@ -371,6 +371,18 @@ export function PodChatClient({
         const sentMessage = inputValue;
         setInputValue("");
 
+        // IMMEDIATELY save user message to database (don't wait for AI response)
+        fetch("/api/pod/message", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                content: sentMessage,
+                daysSinceEnrollment,
+                aiResponderName: null, // Will be updated when AI responds
+                aiResponse: null,
+            }),
+        }).catch(err => console.error("Failed to save message:", err));
+
         try {
             // Call API to get response(s)
             const res = await fetch("/api/pod-chat", {
@@ -438,20 +450,6 @@ export function PodChatClient({
                         await new Promise(resolve => setTimeout(resolve, 2000));
                     }
                 }
-
-                // Save first response to database for admin viewing
-                if (data.responses[0]) {
-                    fetch("/api/pod/message", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            content: sentMessage,
-                            daysSinceEnrollment,
-                            aiResponderName: data.responses[0].senderName,
-                            aiResponse: data.responses[0].content,
-                        }),
-                    }).catch(() => { }); // Fire and forget
-                }
             }
             // Handle NORMAL single response
             else if (data.success && data.response) {
@@ -482,18 +480,6 @@ export function PodChatClient({
                     isCoach: data.response.isCoach,
                 }];
                 setChatMessages(newMessages);
-
-                // Save to database for admin viewing
-                fetch("/api/pod/message", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        content: sentMessage,
-                        daysSinceEnrollment,
-                        aiResponderName: data.response.senderName,
-                        aiResponse: data.response.content,
-                    }),
-                }).catch(() => { }); // Fire and forget
             }
         } catch (error) {
             console.error("Failed to send message:", error);
