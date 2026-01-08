@@ -570,8 +570,8 @@ export function PodChatClient({
             }
             // Handle NORMAL single response
             else if (data.success && data.response) {
-                // Wait a bit before showing typing (simulates reading)
-                const preTypingDelay = 5000 + Math.random() * 5000;
+                // Wait a bit before showing typing (simulates reading) - FASTER NOW
+                const preTypingDelay = 1000 + Math.random() * 2000;
                 await new Promise(resolve => setTimeout(resolve, preTypingDelay));
 
                 // Show typing indicator with the responder's info
@@ -582,9 +582,11 @@ export function PodChatClient({
                 });
                 setIsTyping(true);
 
-                // Wait for typing delay
-                const typingDelay = 8000 + Math.random() * 7000;
-                await new Promise(resolve => setTimeout(resolve, typingDelay));
+                // calculate natural typing speed based on length (but much faster now)
+                // Approx 50ms per character, capped at 6 seconds max
+                const typingDuration = Math.min(1500 + (data.response.content.length * 30), 6000);
+
+                await new Promise(resolve => setTimeout(resolve, typingDuration));
 
                 // Add AI response
                 const newMessages = [...updatedMessages, {

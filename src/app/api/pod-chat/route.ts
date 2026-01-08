@@ -36,14 +36,14 @@ function shouldCoachRespond(message: string, isFirstMessage: boolean): boolean {
     return Math.random() < 0.3;
 }
 
-// Calculate realistic delay based on response length
+// Calculate realistic delay based on response length - OPTIMIZED FOR LIVE FEEL
 function calculateDelay(responseLength: number): number {
     if (responseLength < 30) {
-        return 3000 + Math.random() * 2000; // 3-5 sec
+        return 1500 + Math.random() * 1000; // 1.5-2.5 sec
     } else if (responseLength < 80) {
-        return 8000 + Math.random() * 7000; // 8-15 sec
+        return 2500 + Math.random() * 1500; // 2.5-4 sec
     } else {
-        return 15000 + Math.random() * 10000; // 15-25 sec
+        return 4000 + Math.random() * 2000; // 4-6 sec
     }
 }
 
