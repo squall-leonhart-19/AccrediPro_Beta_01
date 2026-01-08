@@ -143,6 +143,7 @@ interface Conversation {
 interface MessagesClientProps {
   conversations: Conversation[];
   mentors: User[];
+  students?: User[];
   currentUserId: string;
   currentUserRole?: string;
   initialSelectedUser?: User | null;
@@ -241,6 +242,7 @@ const formatRelativeTime = (date: Date): string => {
 export function MessagesClient({
   conversations: initialConversations,
   mentors,
+  students = [],
   currentUserId,
   currentUserRole,
   initialSelectedUser,
@@ -1392,43 +1394,45 @@ export function MessagesClient({
               <div className="flex items-center gap-2 px-3 py-2 mb-2">
                 <GraduationCap className="w-4 h-4 text-gold-500" />
                 <span className="text-sm font-semibold text-gray-700">
-                  Your Students
+                  Your Students ({students.length})
                 </span>
               </div>
-              {mentors.length > 0 ? (
+              {students.length > 0 ? (
                 <div className="space-y-1">
-                  {mentors.map((mentor) => (
+                  {students.map((student) => (
                     <button
-                      key={mentor.id}
-                      onClick={() => startConversation(mentor)}
+                      key={student.id}
+                      onClick={() => startConversation(student)}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-burgundy-50 transition-all text-left group"
                     >
                       <div className="relative">
-                        <Avatar className="h-11 w-11 ring-2 ring-gold-400/30 ring-offset-1">
-                          <AvatarImage src={mentor.avatar || undefined} />
-                          <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 font-bold text-sm">
-                            {getInitials(mentor)}
+                        <Avatar className="h-11 w-11 ring-2 ring-gray-200 ring-offset-1">
+                          <AvatarImage src={student.avatar || undefined} />
+                          <AvatarFallback className="bg-gradient-to-br from-burgundy-400 to-burgundy-600 text-white font-bold text-sm">
+                            {getInitials(student)}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-900 group-hover:text-burgundy-700 transition-colors text-sm">
-                          {mentor.firstName} {mentor.lastName}
+                          {student.firstName || "Student"} {student.lastName || ""}
                         </p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <Badge className={cn("text-[10px] border gap-0.5 py-0", roleConfig[mentor.role]?.bg, roleConfig[mentor.role]?.color)}>
-                            {roleConfig[mentor.role]?.icon}
-                            {roleConfig[mentor.role]?.label}
-                          </Badge>
-                        </div>
+                        <p className="text-xs text-gray-500 truncate">{student.email}</p>
+                        {student.enrollments && student.enrollments.length > 0 && (
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <Badge className="text-[10px] bg-burgundy-100 text-burgundy-700 border-0 gap-0.5 py-0">
+                              <BookOpen className="w-2.5 h-2.5" />
+                              {student.enrollments.length} course{student.enrollments.length > 1 ? "s" : ""}
+                            </Badge>
+                          </div>
+                        )}
                       </div>
                       <ChevronRight className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 text-center py-8">No coaches available</p>
+                <p className="text-sm text-gray-500 text-center py-8">No students found</p>
               )}
             </div>
           ) : filteredConversations.length > 0 ? (

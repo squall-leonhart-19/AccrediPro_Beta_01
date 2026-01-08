@@ -22,9 +22,10 @@ interface Conversation {
         id: string;
         content: string;
         senderId: string;
+        receiverId: string;
         createdAt: Date;
         isRead: boolean;
-    };
+    } | null;
     unreadCount: number;
 }
 
@@ -38,6 +39,16 @@ interface Mentor {
     bio: string | null;
 }
 
+interface Student {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+    avatar: string | null;
+    role: string;
+    enrollments?: any[];
+}
+
 export function MessagesClientWrapper() {
     const { data: session, status } = useSession();
     const searchParams = useSearchParams();
@@ -45,26 +56,38 @@ export function MessagesClientWrapper() {
 
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [mentors, setMentors] = useState<Mentor[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
     const [initialSelectedUser, setInitialSelectedUser] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const isCoach = session?.user?.role && ["ADMIN", "INSTRUCTOR", "MENTOR"].includes(session.user.role as string);
 
     const fetchData = useCallback(async () => {
         if (status !== "authenticated" || !session?.user?.id) return;
 
         try {
             // Fetch conversations and mentors in parallel
-            const [convRes, mentorsRes] = await Promise.all([
+            const fetches: Promise<Response>[] = [
                 fetch("/api/messages/conversations"),
                 fetch("/api/messages/mentors"),
-            ]);
+            ];
 
-            const [convData, mentorsData] = await Promise.all([
-                convRes.json(),
-                mentorsRes.json(),
-            ]);
+            // For coaches, also fetch students
+            if (isCoach) {
+                fetches.push(fetch("/api/messages/students?limit=50"));
+            }
+
+            const responses = await Promise.all(fetches);
+            const [convData, mentorsData, studentsData] = await Promise.all(
+                responses.map(r => r.json())
+            );
 
             setConversations(convData.conversations || []);
             setMentors(mentorsData.mentors || []);
+
+            if (isCoach && studentsData) {
+                setStudents(studentsData.students || []);
+            }
 
             // If initial chat user specified, fetch their info
             if (initialChatUserId) {
@@ -79,7 +102,7 @@ export function MessagesClientWrapper() {
         } finally {
             setIsLoading(false);
         }
-    }, [session?.user?.id, status, initialChatUserId]);
+    }, [session?.user?.id, status, initialChatUserId, isCoach]);
 
     useEffect(() => {
         fetchData();
@@ -104,6 +127,7 @@ export function MessagesClientWrapper() {
         <MessagesClient
             conversations={conversations}
             mentors={mentors}
+            students={students}
             currentUserId={session.user.id}
             currentUserRole={session.user.role as string}
             initialSelectedUser={initialSelectedUser}
@@ -139,3 +163,4 @@ function LoadingState() {
         </div>
     );
 }
+
