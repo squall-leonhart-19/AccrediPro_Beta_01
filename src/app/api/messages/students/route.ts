@@ -21,23 +21,21 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
 
     try {
-        // Build the where clause properly
-        const whereClause: any = {
-            // Exclude coaches/admins - only get regular users (students)
-            role: { notIn: ["ADMIN", "INSTRUCTOR", "MENTOR"] },
-        };
-
-        // Add search conditions if query provided
-        if (query.length >= 2) {
-            whereClause.OR = [
-                { firstName: { contains: query, mode: "insensitive" } },
-                { lastName: { contains: query, mode: "insensitive" } },
-                { email: { contains: query, mode: "insensitive" } },
-            ];
+        // If query is empty or too short, return empty
+        if (query.length < 2) {
+            return NextResponse.json({ students: [] });
         }
 
+        // Search for students by name or email
         const students = await prisma.user.findMany({
-            where: whereClause,
+            where: {
+                role: "STUDENT", // Only students
+                OR: [
+                    { firstName: { contains: query, mode: "insensitive" } },
+                    { lastName: { contains: query, mode: "insensitive" } },
+                    { email: { contains: query, mode: "insensitive" } },
+                ],
+            },
             select: {
                 id: true,
                 firstName: true,
@@ -75,3 +73,4 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Failed to search", students: [] }, { status: 500 });
     }
 }
+
