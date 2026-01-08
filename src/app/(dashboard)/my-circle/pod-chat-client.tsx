@@ -298,6 +298,8 @@ export function PodChatClient({
                     if (data.messages && data.messages.length > 0) {
                         // Convert DB messages to PodMessage format
                         const dbMessages: PodMessage[] = [];
+                        let lastPendingMessage: { id: string, content: string } | null = null;
+
                         for (const msg of data.messages) {
                             // Add user message
                             dbMessages.push({
@@ -309,7 +311,8 @@ export function PodChatClient({
                                 createdAt: new Date(msg.createdAt),
                                 isCoach: false,
                             });
-                            // Add AI response if exists
+
+                            // Check if this message has a response
                             if (msg.aiResponse && msg.aiResponderName) {
                                 dbMessages.push({
                                     id: `response-${msg.id}`,
@@ -322,12 +325,23 @@ export function PodChatClient({
                                     createdAt: new Date(new Date(msg.createdAt).getTime() + 1000), // 1 sec after
                                     isCoach: msg.aiResponderName.includes("Sarah"),
                                 });
+                            } else {
+                                // NO response - this is a pending message that was interrupted!
+                                lastPendingMessage = { id: msg.id, content: msg.content };
                             }
                         }
+
                         // Merge with initial scripted messages
                         const allMessages = [...initialMessages, ...dbMessages];
                         allMessages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
                         setChatMessages(allMessages);
+
+                        // RECOVERY: If we found a pending message (last one), trigger response generation
+                        if (lastPendingMessage) {
+                            console.log("[Pod] Found pending message, recovering flow for:", lastPendingMessage.id);
+                            recoverResponse(lastPendingMessage.id, lastPendingMessage.content, allMessages);
+                        }
+
                         return;
                     }
                 }
@@ -340,6 +354,81 @@ export function PodChatClient({
 
         loadMessages();
     }, [initialMessages, currentUser?.id, currentUser?.name, currentUser?.avatar]);
+
+    // RECOVERY FUNCTION: Trigger AI for interrupted messages
+    const recoverResponse = async (messageId: string, content: string, currentHistory: PodMessage[]) => {
+        // Show typing immediately to indicate resumption
+        setTypingResponder({
+            name: "Coach Sarah M.",
+            avatar: COACH_SARAH.avatar,
+            isCoach: true,
+        });
+        setIsTyping(true);
+
+        try {
+            const res = await fetch("/api/pod-chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: content,
+                    conversationHistory: currentHistory.slice(-10).map(m => ({
+                        senderName: m.senderName,
+                        senderType: m.senderType,
+                        content: m.content,
+                    })),
+                    zombies,
+                    daysSinceEnrollment,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.success && (data.response || (data.responses && data.responses[0]))) {
+                // Determine response (single or first of sequence)
+                const response = data.response || data.responses[0];
+
+                // Update typing indicator with actual responder
+                setTypingResponder({
+                    name: response.senderName,
+                    avatar: response.senderAvatar,
+                    isCoach: response.isCoach,
+                });
+
+                // Simulate thinking time (shorter since we're recovering)
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                // Add the recovered message
+                const newMessage: PodMessage = {
+                    id: response.id,
+                    senderName: response.senderName,
+                    senderAvatar: response.senderAvatar,
+                    senderType: response.senderType,
+                    content: response.content,
+                    createdAt: new Date(),
+                    isCoach: response.isCoach,
+                };
+
+                setChatMessages(prev => [...prev, newMessage]);
+                setIsTyping(false);
+                setTypingResponder(null);
+
+                // Save to DB via PATCH
+                console.log("[Pod] Recovered response, saving to DB:", messageId);
+                fetch("/api/pod/message", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        messageId: messageId,
+                        aiResponderName: response.senderName,
+                        aiResponse: response.content,
+                    }),
+                });
+            }
+        } catch (err) {
+            console.error("[Pod] Recovery failed:", err);
+            setIsTyping(false);
+        }
+    };
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
