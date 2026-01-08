@@ -285,6 +285,12 @@ export function MessagesClient({
   const [scheduleTime, setScheduleTime] = useState("");
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // New DM modal state (for coaches)
+  const [showNewDmModal, setShowNewDmModal] = useState(false);
+  const [studentSearchQuery, setStudentSearchQuery] = useState("");
+  const [studentSearchResults, setStudentSearchResults] = useState<User[]>([]);
+  const [searchingStudents, setSearchingStudents] = useState(false);
+
   // Reply All Waiting state (for coaches)
   const [replyingAllWaiting, setReplyingAllWaiting] = useState(false);
   const [waitingCount, setWaitingCount] = useState(0);
@@ -823,9 +829,34 @@ export function MessagesClient({
     setShowEmojiPicker(false);
   };
 
+  // Search students for new DM (coaches only)
+  const searchStudentsForDm = async (query: string) => {
+    setStudentSearchQuery(query);
+    if (query.length < 2) {
+      setStudentSearchResults([]);
+      return;
+    }
+
+    setSearchingStudents(true);
+    try {
+      const res = await fetch(`/api/messages/students?q=${encodeURIComponent(query)}&limit=10`);
+      const data = await res.json();
+      if (data.students) {
+        setStudentSearchResults(data.students);
+      }
+    } catch (e) {
+      console.error("Student search error:", e);
+    } finally {
+      setSearchingStudents(false);
+    }
+  };
+
   const startConversation = (user: User) => {
     setSelectedUser(user);
     setShowMentors(false);
+    setShowNewDmModal(false);
+    setStudentSearchQuery("");
+    setStudentSearchResults([]);
     setAiSuggestion(null);
     setReplyingTo(null);
     setAiError(null);
@@ -1339,6 +1370,16 @@ export function MessagesClient({
             {/* Only show toggle button for coaches - students don't need to browse coaches */}
             {isCoach && (
               <div className="flex items-center gap-1 flex-shrink-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowNewDmModal(true)}
+                  className="text-white hover:bg-white/20 gap-1 px-2 h-8 bg-gold-500/40"
+                  title="Compose new DM to a student"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span className="text-xs">New DM</span>
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -2540,6 +2581,95 @@ export function MessagesClient({
             setShowReactionPicker(null);
           }}
         />
+      )}
+
+      {/* New DM Modal for Coaches */}
+      {showNewDmModal && isCoach && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <Send className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-lg">New Message</h3>
+                    <p className="text-burgundy-200 text-sm">Search for a student to message</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setShowNewDmModal(false);
+                    setStudentSearchQuery("");
+                    setStudentSearchResults([]);
+                  }}
+                  className="text-white hover:bg-white/20 rounded-xl"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Search Input */}
+            <div className="p-4 border-b">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Type student name or email..."
+                  className="pl-9 h-11"
+                  value={studentSearchQuery}
+                  onChange={(e) => searchStudentsForDm(e.target.value)}
+                  autoFocus
+                />
+                {searchingStudents && (
+                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-burgundy-500" />
+                )}
+              </div>
+            </div>
+
+            {/* Search Results */}
+            <div className="max-h-80 overflow-y-auto p-2">
+              {studentSearchQuery.length < 2 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm">Type at least 2 characters to search</p>
+                </div>
+              ) : studentSearchResults.length === 0 && !searchingStudents ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="text-sm">No students found for "{studentSearchQuery}"</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {studentSearchResults.map((student) => (
+                    <button
+                      key={student.id}
+                      onClick={() => startConversation(student)}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-burgundy-50 transition-all text-left group"
+                    >
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={student.avatar || undefined} />
+                        <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-semibold text-sm">
+                          {getInitials(student)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-gray-900 text-sm">
+                          {student.firstName || "Student"} {student.lastName || ""}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">{student.email}</p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-500 transition-colors" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
