@@ -3,6 +3,9 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { CommunityClient } from "@/components/community/community-client";
 
+// Force dynamic rendering - never cache community posts
+export const dynamic = "force-dynamic";
+
 // Get user's enrolled communities based on their course enrollments
 async function getUserCommunities(userId: string) {
   // Get user's enrollments with course categories
