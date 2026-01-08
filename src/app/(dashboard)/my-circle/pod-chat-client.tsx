@@ -371,17 +371,24 @@ export function PodChatClient({
         const sentMessage = inputValue;
         setInputValue("");
 
-        // IMMEDIATELY save user message to database (don't wait for AI response)
-        fetch("/api/pod/message", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                content: sentMessage,
-                daysSinceEnrollment,
-                aiResponderName: null, // Will be updated when AI responds
-                aiResponse: null,
-            }),
-        }).catch(err => console.error("Failed to save message:", err));
+        // IMMEDIATELY save user message to database (get message ID for later update)
+        let savedMessageId: string | null = null;
+        try {
+            const saveRes = await fetch("/api/pod/message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    content: sentMessage,
+                    daysSinceEnrollment,
+                    aiResponderName: null,
+                    aiResponse: null,
+                }),
+            });
+            const saveData = await saveRes.json();
+            savedMessageId = saveData.id || null;
+        } catch (err) {
+            console.error("Failed to save message:", err);
+        }
 
         try {
             // Call API to get response(s)
@@ -450,6 +457,19 @@ export function PodChatClient({
                         await new Promise(resolve => setTimeout(resolve, 2000));
                     }
                 }
+
+                // Update database with first AI response
+                if (savedMessageId && data.responses[0]) {
+                    fetch("/api/pod/message", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            messageId: savedMessageId,
+                            aiResponderName: data.responses[0].senderName,
+                            aiResponse: data.responses[0].content,
+                        }),
+                    }).catch(() => { });
+                }
             }
             // Handle NORMAL single response
             else if (data.success && data.response) {
@@ -480,6 +500,19 @@ export function PodChatClient({
                     isCoach: data.response.isCoach,
                 }];
                 setChatMessages(newMessages);
+
+                // Update database with AI response
+                if (savedMessageId) {
+                    fetch("/api/pod/message", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            messageId: savedMessageId,
+                            aiResponderName: data.response.senderName,
+                            aiResponse: data.response.content,
+                        }),
+                    }).catch(() => { });
+                }
             }
         } catch (error) {
             console.error("Failed to send message:", error);

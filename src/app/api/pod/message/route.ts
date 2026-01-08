@@ -63,3 +63,43 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
+
+// PATCH /api/pod/message - Update message with AI response
+export async function PATCH(request: NextRequest) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const body = await request.json();
+        const { messageId, aiResponderName, aiResponse } = body;
+
+        if (!messageId || !aiResponderName || !aiResponse) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
+
+        // Verify the message belongs to this user
+        const existing = await prisma.podUserMessage.findFirst({
+            where: { id: messageId, userId: session.user.id },
+        });
+
+        if (!existing) {
+            return NextResponse.json({ error: "Message not found" }, { status: 404 });
+        }
+
+        // Update with AI response
+        await prisma.podUserMessage.update({
+            where: { id: messageId },
+            data: {
+                aiResponderName,
+                aiResponse: aiResponse.substring(0, 5000),
+            },
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("[Pod Message PATCH] Error:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+}
