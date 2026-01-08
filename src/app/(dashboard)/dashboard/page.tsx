@@ -376,7 +376,8 @@ export default async function DashboardPage() {
     if (completedLessonsCount >= 40) return "$10K-$30K/mo";
     if (completedLessonsCount >= 25) return "$5K-$10K/mo";
     if (completedLessonsCount >= 15) return "$3K-$5K/mo";
-    return "$0 (in training)";
+    // Show aspirational message instead of $0
+    return "Up to $3K/mo";
   };
 
   return (
