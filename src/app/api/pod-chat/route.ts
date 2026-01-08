@@ -60,6 +60,25 @@ function isFirstMessage(conversationHistory: { senderType: string }[]): boolean 
     return userMessages.length === 0;
 }
 
+// Import Mastermind Resources
+import resourceData from "@/data/mastermind-resources.json";
+
+// Check if message matches any high-value resource
+function checkForResourceMatch(message: string): { resource: typeof resourceData.resources[0], context: string } | null {
+    const lowerMsg = message.toLowerCase();
+
+    for (const res of resourceData.resources) {
+        // specific trigger keywords for this resource
+        if (res.trigger_keywords.some(kw => lowerMsg.includes(kw))) {
+            return {
+                resource: res,
+                context: `\n\n[CRITICAL OPPORTUNITY]: The student asked about "${res.trigger_keywords.find(k => lowerMsg.includes(k))}".\nYOU HAVE A HIGH-VALUE ASSET FOR THIS: "${res.title}".\nValue Prop: ${res.value_proposition}\n\nINSTRUCTION: Briefly mention you have a specific tool/guide that helped you with exactly this. Do not ask if they want it. Just say you are attaching it below. Be confident. It's a gift.`
+            };
+        }
+    }
+    return null;
+}
+
 // Load knowledge base from JSON file and search for relevant entries
 async function loadKnowledgeBase(studentMessage: string): Promise<string> {
     try {
@@ -101,7 +120,8 @@ async function generateResponse(
     message: string,
     recentHistory: string,
     knowledgeContext: string,
-    daysSinceEnrollment: number
+    daysSinceEnrollment: number,
+    resourceInjection: { resource: typeof resourceData.resources[0], context: string } | null
 ): Promise<string> {
     const systemPrompt = `${responderPersonality}
 
@@ -117,11 +137,12 @@ CONTEXT:
 - Never give medical advice
 - If they mention Pro Accelerator or upgrading, be encouraging about it
 ${knowledgeContext}
+${resourceInjection ? resourceInjection.context : ""}
 
 RECENT CHAT:
 ${recentHistory}
 
-Now respond to the student's latest message. Keep it short and natural like a real chat message.`;
+Now respond to the student's latest message. Keep it short and natural like a real chat message.${resourceInjection ? " Mention the " + resourceInjection.resource.type + " you are sharing." : ""}`;
 
     try {
         const response = await anthropic.messages.create({
@@ -133,8 +154,15 @@ Now respond to the student's latest message. Keep it short and natural like a re
             system: systemPrompt,
         });
 
+        let finalText = response.content[0].text;
+
+        // Append attachment tag if resource was injected
+        if (resourceInjection) {
+            finalText += `\n\n<<<ATTACHMENT:${resourceInjection.resource.id}>>>`;
+        }
+
         return response.content[0].type === "text"
-            ? response.content[0].text
+            ? finalText
             : "Welcome! So glad you're here! 💕";
     } catch (error) {
         console.error(`[pod-chat] Error generating response for ${responderName}:`, error);
@@ -215,6 +243,9 @@ export async function POST(req: NextRequest) {
             `${msg.senderName}: ${msg.content}`
         ).join("\n");
 
+        // Check for resource match - Only active for Coach Sarah responses
+        const resourceMatch = !isFirst ? checkForResourceMatch(message) : null;
+
         // If this is the student's FIRST message, trigger welcome sequence
         if (isFirst) {
             console.log("[pod-chat] First message detected - triggering welcome sequence");
@@ -244,7 +275,8 @@ Example: "Hey ${studentFirstName || "friend"}! 🌿 So glad you're here! [refere
                 message,
                 recentHistory,
                 knowledgeContext,
-                daysSinceEnrollment
+                daysSinceEnrollment,
+                null // No resource injection for welcome message
             );
 
             responses.push({
@@ -285,7 +317,8 @@ Examples:
                     message,
                     recentHistory + `\nCoach Sarah M.: ${sarahResponse}`,
                     "",
-                    daysSinceEnrollment
+                    daysSinceEnrollment,
+                    null // No resource injection for zombie welcome
                 );
 
                 responses.push({
@@ -314,7 +347,8 @@ Examples:
         let responderPersonality: string;
         let responderAvatar: string;
 
-        if (isCoachResponse) {
+        // Force Coach Sarah if resource match found
+        if (isCoachResponse || resourceMatch) {
             responderName = "Coach Sarah M.";
             responderPersonality = "You are Coach Sarah M., a warm and encouraging functional medicine mentor. You're supportive, knowledgeable, and genuinely care about student success. You use emojis sparingly but naturally. Keep responses conversational and short (2-4 sentences).";
             responderAvatar = "https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp";
@@ -342,7 +376,8 @@ Examples:
             message,
             recentHistory,
             knowledgeContext,
-            daysSinceEnrollment
+            daysSinceEnrollment,
+            isCoachResponse || resourceMatch ? resourceMatch : null // Only Sarah shares resources
         );
 
         const delay = calculateDelay(aiResponse.length);

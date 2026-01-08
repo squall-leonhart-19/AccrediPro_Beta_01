@@ -19,6 +19,8 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { COACH_SARAH } from "@/lib/zombies";
+import { ChatAttachment } from "@/components/pod/chat-attachment";
+import resourceData from "@/data/mastermind-resources.json";
 
 interface PodMessage {
     id: string;
@@ -28,6 +30,7 @@ interface PodMessage {
     content: string;
     createdAt: Date;
     isCoach: boolean;
+    attachmentId?: string; // New field for resources
 }
 
 interface ZombieProfile {
@@ -887,6 +890,22 @@ export function PodChatClient({
 
                                 {chatMessages.map((msg) => {
                                     const isCurrentUser = msg.senderType === "user";
+
+                                    // Detect attachment tag in content (e.g. <<<ATTACHMENT:res_id>>>)
+                                    // If found, separate it from content to render nicely
+                                    let cleanContent = msg.content;
+                                    let attachmentId = msg.attachmentId;
+
+                                    const attachmentMatch = cleanContent.match(/<<<ATTACHMENT:(.+?)>>>/);
+                                    if (attachmentMatch) {
+                                        attachmentId = attachmentMatch[1];
+                                        cleanContent = cleanContent.replace(attachmentMatch[0], "").trim();
+                                    }
+
+                                    const attachedResource = attachmentId
+                                        ? resourceData.resources.find(r => r.id === attachmentId)
+                                        : null;
+
                                     return (
                                         <div key={msg.id} className={cn("flex gap-3", isCurrentUser && "flex-row-reverse")}>
                                             <Avatar className="w-9 h-9 shrink-0 border border-white shadow-sm">
@@ -920,8 +939,21 @@ export function PodChatClient({
                                                             ? "bg-gold-50 text-gray-800 border border-gold-200 rounded-bl-sm"
                                                             : "bg-white text-gray-800 border border-gray-200 rounded-bl-sm"
                                                 )}>
-                                                    {msg.content}
+                                                    {cleanContent}
                                                 </div>
+
+                                                {/* Render Attachment if exists */}
+                                                {attachedResource && (
+                                                    <ChatAttachment
+                                                        type={attachedResource.type as any}
+                                                        title={attachedResource.title}
+                                                        description={attachedResource.description}
+                                                        valuePrice={attachedResource.value_price}
+                                                        downloadUrl={attachedResource.url}
+                                                        isUnlocked={true}
+                                                    />
+                                                )}
+
                                                 {/* Quick reactions */}
                                                 {!isCurrentUser && (
                                                     <div className="flex items-center gap-1 mt-1">
