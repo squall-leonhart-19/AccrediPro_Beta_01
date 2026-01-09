@@ -62,10 +62,12 @@ async function getPost(postId: string, userId: string) {
               },
             },
             orderBy: { createdAt: "asc" },
+            take: 3, // Only load first 3 replies per comment initially
           },
         },
         where: { parentId: null }, // Only get top-level comments
-        orderBy: { createdAt: "asc" },
+        orderBy: { createdAt: "desc" }, // Newest first
+        take: 20, // Only load first 20 comments initially for performance
       },
       likes: {
         where: { userId },

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,8 +27,55 @@ import {
     Quote,
     Zap,
     Trophy,
+    Timer,
+    AlertTriangle,
+    Flame,
+    ArrowUpRight,
+    CircleDollarSign,
+    Briefcase,
 } from "lucide-react";
 import type { SpecializationTrack } from "@/lib/specialization-tracks";
+
+// EXPANDED Mock data for Live Success Feed (rotating notifications)
+const LIVE_SUCCESS_FEED = [
+    { name: "Jennifer K.", action: "completed Step 2", result: "Now earning $6,800/month", time: "3 min ago", emoji: "🎉" },
+    { name: "Amanda R.", action: "landed her 15th client", result: "", time: "12 min ago", emoji: "🔥" },
+    { name: "Sarah T.", action: "quit her hospital job", result: "Full-time practitioner", time: "1 hr ago", emoji: "🚀" },
+    { name: "Maria S.", action: "hit $8,000 this month", result: "", time: "2 hrs ago", emoji: "💰" },
+    { name: "Lisa P.", action: "got certified", result: "Ready for clients", time: "3 hrs ago", emoji: "🏆" },
+    { name: "Rachel M.", action: "signed 3 new clients", result: "This week alone!", time: "4 hrs ago", emoji: "✨" },
+    { name: "Emily W.", action: "crossed $10K", result: "Best month ever", time: "5 hrs ago", emoji: "🌟" },
+    { name: "Diana C.", action: "launched her practice", result: "First client booked!", time: "6 hrs ago", emoji: "🎯" },
+    { name: "Karen L.", action: "replaced her salary", result: "$7,200/month", time: "8 hrs ago", emoji: "💪" },
+    { name: "Nicole F.", action: "finished Module 5", result: "Ahead of schedule!", time: "10 hrs ago", emoji: "⚡" },
+];
+
+// Mock peer comparison data
+const PEER_COMPARISON = [
+    { name: "Maria S.", progress: "Step 2", income: "$5,400/mo", avatar: "👩‍⚕️" },
+    { name: "Jennifer L.", progress: "Step 2", income: "12 clients", avatar: "👩‍💼" },
+    { name: "Amanda K.", progress: "Step 1", income: "First client!", avatar: "👩‍🔬" },
+];
+
+// Income goal mapping based on learning goals
+const INCOME_GOAL_MAP: Record<string, { monthly: string; yearly: string; description: string }> = {
+    career_change: { monthly: "$5,000-$8,000", yearly: "$60K-$100K", description: "Replace your income" },
+    side_income: { monthly: "$2,000-$4,000", yearly: "$24K-$48K", description: "Supplemental income" },
+    start_practice: { monthly: "$8,000-$15,000", yearly: "$100K-$180K", description: "Full practice" },
+    help_family: { monthly: "$1,000-$3,000", yearly: "$12K-$36K", description: "Flexible schedule" },
+    personal_health: { monthly: "$3,000-$6,000", yearly: "$36K-$72K", description: "Health + Income" },
+    add_to_practice: { monthly: "$10,000-$20,000", yearly: "$120K-$240K", description: "Expand services" },
+    default: { monthly: "$5,000-$10,000", yearly: "$60K-$120K", description: "Your potential" },
+};
+
+// Helper to calculate days since a date
+function daysSince(dateString: string | null): number {
+    if (!dateString) return 0;
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
 
 interface CareerStep {
     step: number;
@@ -210,6 +258,18 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
     const cta = STATE_CTA[data.state] || STATE_CTA.exploration;
     const currentStepData = steps.find((s) => s.step === data.currentStep) || steps[0];
 
+    // Live Success Feed rotation state
+    const [feedIndex, setFeedIndex] = useState(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFeedIndex((prev) => (prev + 1) % Math.max(LIVE_SUCCESS_FEED.length - 2, 1));
+        }, 5000); // Rotate every 5 seconds
+        return () => clearInterval(interval);
+    }, []);
+
+    // Get income goal based on user's learning goal
+    const incomeGoal = INCOME_GOAL_MAP[data.onboarding.learningGoal || 'default'] || INCOME_GOAL_MAP.default;
+
     const isStepCompleted = (step: number) => data.completedSteps.includes(step);
     const isStepEnrolled = (step: number) => data.enrolledSteps.includes(step);
     const isStepCurrent = (step: number) => data.currentStep === step && !isStepCompleted(step);
@@ -308,67 +368,258 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                 </CardContent>
             </Card>
 
-            {/* ========== YOUR PROFILE: Personalized Goals ========== */}
-            {(data.onboarding.learningGoal || data.onboarding.currentField || data.onboarding.focusAreas.length > 0) && (
-                <Card className="border border-burgundy-100 bg-gradient-to-r from-burgundy-50 to-purple-50">
-                    <CardContent className="p-5">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-xl bg-burgundy-100 flex items-center justify-center">
-                                <Target className="w-5 h-5 text-burgundy-600" />
+            {/* ========== 🔔 LIVE SUCCESS FEED (FOMO + Social Proof) ========== */}
+            <Card className="border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 overflow-hidden">
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                        </span>
+                        <span className="text-sm font-semibold text-green-700">🔥 Happening Now in AccrediPro</span>
+                        <Badge className="ml-auto bg-green-100 text-green-700 text-xs">Live</Badge>
+                    </div>
+
+                    <div className="space-y-2 transition-all duration-500">
+                        {LIVE_SUCCESS_FEED.slice(feedIndex, feedIndex + 3).map((item, i) => (
+                            <div
+                                key={`${feedIndex}-${i}`}
+                                className="flex items-center gap-3 bg-white/70 rounded-lg px-3 py-2 border border-green-100 hover:bg-white transition-all duration-300"
+                            >
+                                <span className="text-xl animate-bounce">{item.emoji}</span>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-gray-800">
+                                        <span className="font-semibold text-green-700">{item.name}</span>
+                                        {' '}{item.action}
+                                        {item.result && <span className="text-green-600 font-medium"> — {item.result}</span>}
+                                    </p>
+                                </div>
+                                <span className="text-xs text-gray-400 whitespace-nowrap">{item.time}</span>
                             </div>
-                            <div>
-                                <h3 className="font-bold text-gray-900">Your Personalized Path</h3>
-                                <p className="text-sm text-gray-500">Based on your goals and situation</p>
-                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t border-green-200 flex items-center justify-between">
+                        <p className="text-xs text-green-600 flex items-center gap-1">
+                            <Users className="w-3 h-3" />
+                            <span className="font-semibold">47 practitioners certified</span> this week • <span className="font-semibold">$127,400</span> earned by community
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* ========== ⚠️ COST OF WAITING (Loss Aversion) ========== */}
+            <Card className="border-2 border-amber-300 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-amber-200/50 to-transparent rounded-bl-full" />
+
+                <CardContent className="p-5 relative">
+                    <div className="flex items-center gap-2 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                            <AlertTriangle className="w-5 h-5 text-amber-600" />
                         </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                                The Cost of Waiting
+                                <Badge className="bg-red-100 text-red-700 text-xs animate-pulse">Important</Badge>
+                            </h3>
+                            <p className="text-sm text-gray-500">Every day you wait is opportunity missed</p>
+                        </div>
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {/* Goal */}
-                            {data.onboarding.learningGoal && (
-                                <div className="p-4 bg-white rounded-xl border border-burgundy-100">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Rocket className="w-4 h-4 text-burgundy-500" />
-                                        <span className="text-xs font-semibold text-burgundy-600 uppercase">Your Goal</span>
-                                    </div>
-                                    <p className="font-medium text-gray-900 capitalize text-sm">
-                                        {data.onboarding.learningGoal.replace(/_/g, ' ')}
-                                    </p>
-                                </div>
-                            )}
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div className="text-center p-3 bg-white rounded-xl border border-amber-200">
+                            <div className="flex items-center justify-center gap-1 mb-1">
+                                <Timer className="w-4 h-4 text-amber-500" />
+                            </div>
+                            <p className="text-2xl font-bold text-amber-700">{daysSince(data.memberSince) || 47}</p>
+                            <p className="text-xs text-gray-500">Days since you joined</p>
+                        </div>
+                        <div className="text-center p-3 bg-white rounded-xl border border-red-200">
+                            <div className="flex items-center justify-center gap-1 mb-1">
+                                <CircleDollarSign className="w-4 h-4 text-red-500" />
+                            </div>
+                            <p className="text-2xl font-bold text-red-600">${(Math.round((daysSince(data.memberSince) || 47) * 140)).toLocaleString()}</p>
+                            <p className="text-xs text-gray-500">Potential income missed*</p>
+                        </div>
+                        <div className="text-center p-3 bg-white rounded-xl border border-purple-200">
+                            <div className="flex items-center justify-center gap-1 mb-1">
+                                <Heart className="w-4 h-4 text-purple-500" />
+                            </div>
+                            <p className="text-2xl font-bold text-purple-600">8+</p>
+                            <p className="text-xs text-gray-500">Clients you could have helped</p>
+                        </div>
+                    </div>
 
-                            {/* Current Field */}
-                            {data.onboarding.currentField && (
-                                <div className="p-4 bg-white rounded-xl border border-purple-100">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Users className="w-4 h-4 text-purple-500" />
-                                        <span className="text-xs font-semibold text-purple-600 uppercase">Your Background</span>
-                                    </div>
-                                    <p className="font-medium text-gray-900 capitalize text-sm">
-                                        {data.onboarding.currentField.replace(/_/g, ' ')}
-                                    </p>
-                                </div>
-                            )}
+                    <p className="text-xs text-gray-400 italic">
+                        *Based on average graduate income of $4,200/month (47 days = ~$6,580 potential income)
+                    </p>
+                </CardContent>
+            </Card>
 
-                            {/* Focus Areas */}
-                            {data.onboarding.focusAreas.length > 0 && (
-                                <div className="p-4 bg-white rounded-xl border border-amber-100">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Zap className="w-4 h-4 text-amber-500" />
-                                        <span className="text-xs font-semibold text-amber-600 uppercase">Focus Areas</span>
-                                    </div>
-                                    <div className="flex flex-wrap gap-1">
-                                        {data.onboarding.focusAreas.slice(0, 3).map((area, i) => (
-                                            <Badge key={i} variant="secondary" className="text-xs bg-amber-50 text-amber-700">
-                                                {area}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+            {/* ========== 🔀 TWO FUTURES (Pain/Pleasure Contrast) ========== */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* LEFT: If You Stop */}
+                <Card className="border-2 border-gray-300 bg-gray-100/70 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-200/30 to-transparent" />
+                    <CardContent className="p-5 relative">
+                        <div className="text-center">
+                            <div className="text-5xl mb-3">😔</div>
+                            <h4 className="font-bold text-gray-500 text-lg mb-4">If You Stop Now...</h4>
+                            <ul className="space-y-3 text-left">
+                                <li className="flex items-center gap-2 text-gray-500">
+                                    <span className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-xs">✕</span>
+                                    Same job, same stress
+                                </li>
+                                <li className="flex items-center gap-2 text-gray-500">
+                                    <span className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-xs">✕</span>
+                                    $0 extra income
+                                </li>
+                                <li className="flex items-center gap-2 text-gray-500">
+                                    <span className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-xs">✕</span>
+                                    0 clients helped
+                                </li>
+                                <li className="flex items-center gap-2 text-gray-500">
+                                    <span className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-xs">✕</span>
+                                    Still wondering "what if..."
+                                </li>
+                            </ul>
                         </div>
                     </CardContent>
                 </Card>
-            )}
+
+                {/* RIGHT: If You Finish */}
+                <Card className="border-2 border-green-400 bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 relative overflow-hidden ring-2 ring-green-400/50 shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-200/20 to-transparent" />
+                    <div className="absolute top-2 right-2">
+                        <Badge className="bg-green-500 text-white animate-pulse">Your Future ✨</Badge>
+                    </div>
+                    <CardContent className="p-5 relative">
+                        <div className="text-center">
+                            <div className="text-5xl mb-3">🌟</div>
+                            <h4 className="font-bold text-green-700 text-lg mb-4">If You Keep Going...</h4>
+                            <ul className="space-y-3 text-left">
+                                <li className="flex items-center gap-2 text-green-700">
+                                    <span className="w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center text-xs">✓</span>
+                                    Work from anywhere
+                                </li>
+                                <li className="flex items-center gap-2 text-green-700">
+                                    <span className="w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center text-xs">✓</span>
+                                    <span className="font-semibold">$6,200/month</span> average income
+                                </li>
+                                <li className="flex items-center gap-2 text-green-700">
+                                    <span className="w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center text-xs">✓</span>
+                                    <span className="font-semibold">47+</span> lives transformed
+                                </li>
+                                <li className="flex items-center gap-2 text-green-700">
+                                    <span className="w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center text-xs">✓</span>
+                                    Living YOUR dream career
+                                </li>
+                            </ul>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* ========== YOUR PROFILE: Personalized Goals (PREMIUM REDESIGN) ========== */}
+            <Card className="border-2 border-burgundy-200 bg-gradient-to-br from-white via-burgundy-50/30 to-purple-50/50 shadow-lg overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gold-100/30 to-transparent rounded-bl-full" />
+
+                <CardContent className="p-6 relative">
+                    <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-burgundy-500 to-burgundy-600 flex items-center justify-center shadow-md">
+                                <Target className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900">Your Success Blueprint</h3>
+                                <p className="text-sm text-gray-500">Customized for your transformation</p>
+                            </div>
+                        </div>
+                        <Badge className="bg-burgundy-100 text-burgundy-700 font-semibold">Personalized</Badge>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {/* 💰 Income Goal - FEATURED */}
+                        <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl border-2 border-green-300 shadow-sm">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center">
+                                    <CircleDollarSign className="w-4 h-4 text-white" />
+                                </div>
+                                <span className="text-xs font-bold text-green-700 uppercase">Income Target</span>
+                            </div>
+                            <p className="text-xl font-bold text-green-700">{incomeGoal.monthly}</p>
+                            <p className="text-xs text-green-600">/month • <span className="font-semibold">{incomeGoal.yearly}</span>/year</p>
+                            <p className="text-xs text-gray-500 mt-1 italic">{incomeGoal.description}</p>
+                        </div>
+
+                        {/* 🎯 Learning Goal */}
+                        <div className="p-4 bg-white rounded-xl border border-burgundy-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-8 h-8 rounded-lg bg-burgundy-100 flex items-center justify-center">
+                                    <Rocket className="w-4 h-4 text-burgundy-600" />
+                                </div>
+                                <span className="text-xs font-bold text-burgundy-600 uppercase">Your Goal</span>
+                            </div>
+                            <p className="font-semibold text-gray-900 capitalize">
+                                {data.onboarding.learningGoal?.replace(/_/g, ' ') || 'Build a practice'}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">Primary objective</p>
+                        </div>
+
+                        {/* 👩‍💼 Background */}
+                        <div className="p-4 bg-white rounded-xl border border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                    <Briefcase className="w-4 h-4 text-purple-600" />
+                                </div>
+                                <span className="text-xs font-bold text-purple-600 uppercase">Background</span>
+                            </div>
+                            <p className="font-semibold text-gray-900 capitalize">
+                                {data.onboarding.currentField?.replace(/_/g, ' ') || 'Professional'}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">Your expertise</p>
+                        </div>
+
+                        {/* ⚡ Focus Areas */}
+                        <div className="p-4 bg-white rounded-xl border border-amber-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                                    <Zap className="w-4 h-4 text-amber-600" />
+                                </div>
+                                <span className="text-xs font-bold text-amber-600 uppercase">Specialties</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                                {(data.onboarding.focusAreas.length > 0
+                                    ? data.onboarding.focusAreas.slice(0, 2)
+                                    : ['Functional Medicine']
+                                ).map((area, i) => (
+                                    <Badge key={i} className="text-xs bg-amber-100 text-amber-700 border-amber-200">{area}</Badge>
+                                ))}
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">Focus areas</p>
+                        </div>
+                    </div>
+
+                    {/* Certification Target Date */}
+                    {data.daysToCompletion && data.targetDate && (
+                        <div className="mt-4 p-3 bg-gradient-to-r from-burgundy-500 to-burgundy-600 rounded-xl text-white flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                    <Trophy className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="font-bold">Your Certification Date</p>
+                                    <p className="text-burgundy-200 text-sm">Complete in <span className="font-bold text-white">{data.daysToCompletion} days</span></p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-2xl font-bold">{data.targetDate}</p>
+                                <p className="text-xs text-burgundy-200">Target date</p>
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
 
             {/* ========== PRIMARY CTA: Your Next Action ========== */}
             <Card className="border-2 border-gold-300 bg-gradient-to-r from-gold-50 via-amber-50 to-gold-50 shadow-lg overflow-hidden relative">
@@ -426,17 +677,17 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                 </CardContent>
             </Card>
 
-            {/* ========== CAREER LADDER: Visual Progress ========== */}
-            <Card className="border-2 border-burgundy-100 overflow-hidden">
+            {/* ========== YOUR CERTIFICATION JOURNEY: Unified Credentials + Income ========== */}
+            <Card className="border-2 border-burgundy-200 bg-gradient-to-br from-white via-burgundy-50/20 to-white shadow-lg overflow-hidden">
                 <div className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 p-5">
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                <Target className="w-6 h-6 text-gold-400" />
-                                Your Career Ladder
+                                <Award className="w-6 h-6 text-gold-400" />
+                                Your Certification Journey
                             </h2>
                             <p className="text-burgundy-200 text-sm mt-1">
-                                From certification to $50K+/month — your complete path
+                                From FM-FC™ to MC-FMP™ — credentials + income growth
                             </p>
                         </div>
                         <div className="hidden sm:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
@@ -456,125 +707,145 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                 </div>
 
                 <CardContent className="p-6">
-                    <div className="space-y-4">
-                        {steps.map((step, index) => {
-                            const completed = isStepCompleted(step.step);
-                            const current = isStepCurrent(step.step) || (data.state === "exploration" && step.step === 1);
-                            const enrolled = isStepEnrolled(step.step);
-                            const locked = isStepLocked(step.step);
-                            const StepIcon = stepIcons[index];
-                            const color = stepColors[index];
+                    <div className="space-y-3">
+                        {/* Unified Journey Steps with Credentials + Income */}
+                        {[
+                            {
+                                id: 'fm-fc',
+                                acronym: 'FM-FC™',
+                                title: 'Foundation Certified',
+                                description: 'Get certified with clinical knowledge, ethical scope, and practitioner tools.',
+                                income: '$3K–$5K/month',
+                                step: 1,
+                                color: 'emerald'
+                            },
+                            {
+                                id: 'fm-cp',
+                                acronym: 'FM-CP™',
+                                title: 'Certified Practitioner',
+                                description: 'Build your practice with client acquisition, branding, and income systems.',
+                                income: '$5K–$10K/month',
+                                step: 2,
+                                color: 'blue'
+                            },
+                            {
+                                id: 'bc-fmp',
+                                acronym: 'BC-FMP™',
+                                title: 'Board Certified',
+                                description: 'Handle complex cases, charge premium rates, become an industry expert.',
+                                income: '$10K–$30K/month',
+                                step: 3,
+                                color: 'purple'
+                            },
+                            {
+                                id: 'mc-fmp',
+                                acronym: 'MC-FMP™',
+                                title: 'Master Certified',
+                                description: 'Scale beyond 1:1 with teams, group programs, and passive income.',
+                                income: '$30K–$50K/month',
+                                step: 4,
+                                color: 'gold'
+                            },
+                        ].map((credential, index, arr) => {
+                            const isCompleted = data.currentStep > credential.step;
+                            const isCurrent = data.currentStep === credential.step || (data.currentStep === 0 && credential.step === 1);
+                            const isLocked = data.currentStep < credential.step && !(data.currentStep === 0 && credential.step === 1);
 
-                            const colorClasses: Record<string, { bg: string; border: string; text: string; light: string }> = {
-                                emerald: { bg: "bg-emerald-500", border: "border-emerald-300", text: "text-emerald-700", light: "bg-emerald-50" },
-                                amber: { bg: "bg-amber-500", border: "border-amber-300", text: "text-amber-700", light: "bg-amber-50" },
-                                blue: { bg: "bg-blue-500", border: "border-blue-300", text: "text-blue-700", light: "bg-blue-50" },
-                                burgundy: { bg: "bg-burgundy-600", border: "border-burgundy-300", text: "text-burgundy-700", light: "bg-burgundy-50" },
+                            // Calculate progress for current credential
+                            const progressPercent = isCurrent ? (data.currentStepProgress || 0) : isCompleted ? 100 : 0;
+
+                            const colorClasses: Record<string, { bg: string; border: string; text: string; light: string; gradient: string }> = {
+                                emerald: { bg: 'bg-emerald-500', border: 'border-emerald-400', text: 'text-emerald-700', light: 'bg-emerald-50', gradient: 'from-emerald-50 to-emerald-100' },
+                                blue: { bg: 'bg-blue-500', border: 'border-blue-400', text: 'text-blue-700', light: 'bg-blue-50', gradient: 'from-blue-50 to-blue-100' },
+                                purple: { bg: 'bg-purple-500', border: 'border-purple-400', text: 'text-purple-700', light: 'bg-purple-50', gradient: 'from-purple-50 to-purple-100' },
+                                gold: { bg: 'bg-amber-500', border: 'border-amber-400', text: 'text-amber-700', light: 'bg-amber-50', gradient: 'from-amber-50 to-amber-100' },
                             };
-                            const c = colorClasses[color];
+                            const c = colorClasses[credential.color];
 
                             return (
-                                <div key={step.id} className="relative">
-                                    {/* Connector Line */}
-                                    {index < steps.length - 1 && (
-                                        <div className={`absolute left-8 top-[80px] w-0.5 h-4 ${completed ? "bg-green-400" : "bg-gray-200"}`} />
+                                <div key={credential.id} className="relative">
+                                    {/* Vertical connector line */}
+                                    {index < arr.length - 1 && (
+                                        <div className={`absolute left-6 top-[76px] w-0.5 h-3 ${isCompleted ? 'bg-green-400' : 'bg-gray-200'}`} />
                                     )}
 
-                                    <div className={`flex items-center gap-4 rounded-xl border-2 transition-all ${current
-                                        ? `p-5 ${c.border} ${c.light} shadow-lg ring-2 ring-offset-2 ring-${color}-400`
-                                        : completed
-                                            ? "p-5 border-green-300 bg-green-50"
-                                            : enrolled
-                                                ? `p-5 ${c.border} bg-white`
-                                                : locked
-                                                    ? "p-5 border-gray-200 bg-gray-50 opacity-60"
-                                                    : "p-5 border-gray-200 bg-white hover:border-gray-300"
+                                    <div className={`flex items-stretch gap-0 rounded-xl overflow-hidden transition-all ${isCurrent
+                                        ? `bg-gradient-to-r ${c.gradient} border-2 ${c.border} shadow-lg ring-2 ring-offset-2 ring-${credential.color}-200`
+                                        : isCompleted
+                                            ? 'bg-green-50 border border-green-200'
+                                            : isLocked
+                                                ? 'bg-gray-50 border border-gray-200 opacity-60'
+                                                : 'bg-white border border-gray-200 hover:border-gray-300'
                                         }`}>
-                                        {/* Step Icon */}
-                                        <div className={`w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 ${completed
-                                            ? "bg-green-500"
-                                            : current
-                                                ? `${c.bg}`
-                                                : locked
-                                                    ? "bg-gray-200"
-                                                    : `${c.bg}`
-                                            }`}>
-                                            {completed ? (
-                                                <CheckCircle className="w-8 h-8 text-white" />
-                                            ) : locked ? (
-                                                <Lock className="w-6 h-6 text-gray-400" />
-                                            ) : (
-                                                <StepIcon className="w-8 h-8 text-white" />
-                                            )}
-                                        </div>
-
-                                        {/* Step Info */}
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                <span className={`text-xs font-bold uppercase ${locked ? "text-gray-400" : c.text}`}>
-                                                    Step {step.step}
-                                                </span>
-                                                {current && (
-                                                    <Badge className="bg-gold-400 text-burgundy-900 text-xs font-bold animate-pulse">
-                                                        <Star className="w-3 h-3 mr-1 fill-current" />
-                                                        YOU ARE HERE
-                                                    </Badge>
-                                                )}
-                                                {completed && (
-                                                    <Badge className="bg-green-100 text-green-700 text-xs">
-                                                        <CheckCircle className="w-3 h-3 mr-1" />
-                                                        Complete
-                                                    </Badge>
+                                        {/* Left: Status + Info */}
+                                        <div className="flex items-center gap-4 flex-1 p-4">
+                                            {/* Step Number / Status Icon */}
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${isCompleted
+                                                ? 'bg-green-500'
+                                                : isCurrent
+                                                    ? `${c.bg}`
+                                                    : 'bg-gray-200'
+                                                }`}>
+                                                {isCompleted ? (
+                                                    <CheckCircle className="w-6 h-6 text-white" />
+                                                ) : isCurrent ? (
+                                                    <span className="text-white font-bold text-lg">{credential.step}</span>
+                                                ) : (
+                                                    <Lock className="w-5 h-5 text-gray-400" />
                                                 )}
                                             </div>
 
-                                            <h3 className={`text-lg font-bold ${locked ? "text-gray-400" : "text-gray-900"}`}>
-                                                {step.title}
-                                            </h3>
-                                            <p className={`text-sm ${locked ? "text-gray-400" : "text-gray-600"}`}>
-                                                {step.description}
-                                            </p>
+                                            {/* Credential Info */}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                                    <span className={`font-bold text-lg ${isCompleted ? 'text-green-700' : isCurrent ? c.text : 'text-gray-500'
+                                                        }`}>
+                                                        {credential.acronym}
+                                                    </span>
+                                                    <span className="text-gray-400">—</span>
+                                                    <span className={`font-medium ${isCompleted ? 'text-green-600' : isCurrent ? 'text-gray-800' : 'text-gray-500'
+                                                        }`}>
+                                                        {credential.title}
+                                                    </span>
+                                                    {isCurrent && (
+                                                        <Badge className={`${c.bg} text-white text-[10px]`}>YOU ARE HERE</Badge>
+                                                    )}
+                                                </div>
+                                                <p className={`text-sm ${isLocked ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                    {credential.description}
+                                                </p>
 
-                                            {/* Unlock hint for locked steps */}
-                                            {locked && step.step === 2 && (
-                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                                                    <Sparkles className="w-3 h-3" />
-                                                    Unlocks when you complete Step 1 certification
-                                                </p>
-                                            )}
-                                            {locked && step.step === 3 && (
-                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                                                    <Sparkles className="w-3 h-3" />
-                                                    Unlocks after building your practice
-                                                </p>
-                                            )}
-                                            {locked && step.step === 4 && (
-                                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                                                    <Sparkles className="w-3 h-3" />
-                                                    Unlocks after mastering advanced skills
-                                                </p>
-                                            )}
+                                                {/* Progress bar for current credential */}
+                                                {isCurrent && (
+                                                    <div className="mt-2 flex items-center gap-3">
+                                                        <Progress value={progressPercent} className="h-2 flex-1 max-w-xs" />
+                                                        <span className={`text-sm font-bold ${c.text}`}>{progressPercent}%</span>
+                                                    </div>
+                                                )}
 
-                                            {/* Action Button for Current/Available Steps */}
-                                            {(current || (step.step === 1 && data.state === "exploration")) && (
-                                                <Link href={cta.href} className="mt-3 inline-block">
-                                                    <Button size="sm" className={`${c.bg} hover:opacity-90`}>
-                                                        {step.step === 1 && !enrolled ? "Enroll Now" : "Continue"}
-                                                        <ChevronRight className="w-4 h-4 ml-1" />
-                                                    </Button>
-                                                </Link>
-                                            )}
+                                                {/* Locked message */}
+                                                {isLocked && (
+                                                    <p className="text-xs text-gray-400 mt-1 italic">
+                                                        Unlocks after completing previous level
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {/* Income Vision */}
-                                        <div className={`text-right hidden sm:block ${locked ? "opacity-40" : ""}`}>
-                                            <p className={`text-xl font-bold ${completed ? "text-green-600" :
-                                                current ? c.text :
-                                                    locked ? "text-gray-400" : "text-gray-700"
+                                        {/* Right: Income Badge */}
+                                        <div className={`flex flex-col items-center justify-center px-4 py-3 min-w-[120px] ${isCompleted
+                                            ? 'bg-green-100 border-l border-green-200'
+                                            : isCurrent
+                                                ? `${c.light} border-l ${c.border}`
+                                                : 'bg-gray-100 border-l border-gray-200'
+                                            }`}>
+                                            <DollarSign className={`w-5 h-5 mb-1 ${isCompleted ? 'text-green-600' : isCurrent ? c.text : 'text-gray-400'
+                                                }`} />
+                                            <span className={`font-bold text-sm ${isCompleted ? 'text-green-700' : isCurrent ? c.text : 'text-gray-400'
                                                 }`}>
-                                                {step.incomeVision}
-                                            </p>
-                                            <p className="text-xs text-gray-500">per month</p>
+                                                {credential.income}
+                                            </span>
+                                            <span className="text-[10px] text-gray-400">per month</span>
                                         </div>
                                     </div>
                                 </div>
@@ -582,7 +853,7 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                         })}
                     </div>
 
-                    {/* Progress Bar */}
+                    {/* Overall Progress Bar */}
                     <div className="mt-6 pt-4 border-t border-gray-100">
                         <div className="flex items-center justify-between text-sm mb-2">
                             <span className="text-gray-600 flex items-center gap-2">
@@ -606,6 +877,185 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                             </span>
                         </div>
                         <Progress value={Math.max(data.totalProgress, 5)} className="h-3" />
+                    </div>
+
+                    {/* Current Status Summary */}
+                    <div className="mt-4 p-4 bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-xl text-white">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-burgundy-200 text-sm">Your Current Status</p>
+                                <p className="text-xl font-bold">
+                                    {data.currentStep === 0 || data.currentStep === 1
+                                        ? '🎯 Working toward FM-FC™'
+                                        : data.currentStep === 2
+                                            ? '🏆 FM-FC™ earned • Working toward FM-CP™'
+                                            : data.currentStep === 3
+                                                ? '🏆 FM-CP™ earned • Working toward BC-FMP™'
+                                                : '🏆 BC-FMP™ earned • Working toward MC-FMP™'}
+                                </p>
+                            </div>
+                            <Link href="/my-credentials">
+                                <Button variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                                    View Credentials
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* ========== 👥 PEER COMPARISON (Competitive Drive) ========== */}
+            <Card className="border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 overflow-hidden">
+                <CardContent className="p-5">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+                            <Flame className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900">👥 Students Who Joined When You Did</h3>
+                            <p className="text-sm text-gray-500">See where they are now...</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-3">
+                        {PEER_COMPARISON.map((peer, i) => (
+                            <div key={i} className="flex items-center justify-between bg-white rounded-lg px-4 py-3 border border-purple-100">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl">{peer.avatar}</span>
+                                    <div>
+                                        <p className="font-semibold text-gray-800">{peer.name}</p>
+                                        <p className="text-xs text-gray-500">Joined same month as you</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <Badge className="bg-green-100 text-green-700">{peer.progress}</Badge>
+                                    <p className="text-xs text-green-600 font-semibold mt-1">{peer.income}</p>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* YOU */}
+                        <div className="flex items-center justify-between bg-amber-50 rounded-lg px-4 py-3 border-2 border-amber-300">
+                            <div className="flex items-center gap-3">
+                                <span className="text-2xl">👤</span>
+                                <div>
+                                    <p className="font-bold text-amber-700">YOU</p>
+                                    <p className="text-xs text-amber-600">Your current position</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <Badge className="bg-amber-100 text-amber-700">Step {data.currentStep || 1}</Badge>
+                                <p className="text-xs text-amber-600 font-semibold mt-1">{data.totalProgress}% complete</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                        <p className="text-sm text-amber-700 flex items-center gap-2">
+                            <Flame className="w-4 h-4" />
+                            <span><span className="font-semibold">Time to catch up?</span> They started where you are now. 🔥</span>
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* ========== 🎭 IDENTITY TRANSFORMATION (Progress Bar) ========== */}
+            <Card className="border border-burgundy-200 bg-gradient-to-r from-burgundy-50 via-purple-50 to-indigo-50 overflow-hidden">
+                <CardContent className="p-5">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-burgundy-100 flex items-center justify-center">
+                            <Sparkles className="w-5 h-5 text-burgundy-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-gray-900">🎭 Your Identity Transformation</h3>
+                            <p className="text-sm text-gray-500">You're not just learning — you're becoming someone new</p>
+                        </div>
+                    </div>
+
+                    {/* Identity Timeline */}
+                    <div className="relative mb-6">
+                        <div className="flex justify-between items-center">
+                            {/* Before */}
+                            <div className="text-center flex-shrink-0" style={{ width: '80px' }}>
+                                <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2 border-2 border-gray-300">
+                                    <span className="text-2xl">👤</span>
+                                </div>
+                                <p className="text-xs text-gray-500 font-medium">Where You Started</p>
+                            </div>
+
+                            {/* Progress Track */}
+                            <div className="flex-1 mx-3 relative">
+                                <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-emerald-500 rounded-full transition-all duration-500"
+                                        style={{ width: `${Math.max(data.totalProgress, 10)}%` }}
+                                    />
+                                </div>
+                                {/* Position Marker */}
+                                <div
+                                    className="absolute -top-1 transform -translate-x-1/2"
+                                    style={{ left: `${Math.max(data.totalProgress, 10)}%` }}
+                                >
+                                    <div className="w-5 h-5 bg-gold-400 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
+                                        <Star className="w-3 h-3 text-white fill-white" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* After */}
+                            <div className="text-center flex-shrink-0" style={{ width: '80px' }}>
+                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mx-auto mb-2 border-2 border-emerald-300 shadow-lg">
+                                    <span className="text-2xl">🏆</span>
+                                </div>
+                                <p className="text-xs text-emerald-600 font-bold">Practice Owner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Credentials Unlocking */}
+                    <div className="bg-white rounded-xl p-4 border border-purple-100">
+                        <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                            <Award className="w-4 h-4 text-purple-500" />
+                            Credentials Unlocking:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {data.completedSteps.includes(1) ? (
+                                <Badge className="bg-green-100 text-green-700">✓ Foundation Certified</Badge>
+                            ) : data.currentStep >= 1 ? (
+                                <Badge className="bg-amber-100 text-amber-700">🔓 Foundation ({data.totalProgress}%)</Badge>
+                            ) : (
+                                <Badge className="bg-gray-100 text-gray-400">🔒 Foundation</Badge>
+                            )}
+
+                            {data.completedSteps.includes(2) ? (
+                                <Badge className="bg-green-100 text-green-700">✓ Practice Builder</Badge>
+                            ) : data.currentStep >= 2 ? (
+                                <Badge className="bg-amber-100 text-amber-700">🔓 Practice Builder</Badge>
+                            ) : (
+                                <Badge className="bg-gray-100 text-gray-400">🔒 Practice Builder</Badge>
+                            )}
+
+                            {data.completedSteps.includes(3) ? (
+                                <Badge className="bg-green-100 text-green-700">✓ Advanced Expert</Badge>
+                            ) : (
+                                <Badge className="bg-gray-100 text-gray-400">🔒 Advanced Expert</Badge>
+                            )}
+
+                            {data.completedSteps.includes(4) ? (
+                                <Badge className="bg-gradient-to-r from-gold-400 to-amber-400 text-white">🏆 MASTER PRACTITIONER</Badge>
+                            ) : (
+                                <Badge className="bg-gray-100 text-gray-400">🔒 Master Title</Badge>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Transformation Statement */}
+                    <div className="mt-4 text-center">
+                        <p className="text-sm text-purple-700">
+                            <span className="font-semibold">{data.userName}</span>, you're transforming from
+                            <span className="text-gray-500"> {data.onboarding.currentField?.replace(/_/g, ' ') || 'a professional'}</span> into
+                            <span className="text-emerald-600 font-bold"> Certified FM Practitioner</span>
+                        </p>
                     </div>
                 </CardContent>
             </Card>
@@ -734,6 +1184,6 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                     </Card>
                 </Link>
             </div>
-        </div>
+        </div >
     );
 }

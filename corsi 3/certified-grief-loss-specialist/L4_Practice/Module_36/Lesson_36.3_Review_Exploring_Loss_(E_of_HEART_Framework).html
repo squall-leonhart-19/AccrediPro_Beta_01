@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review: Exploring Loss (E of HEART Framework)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #059669;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: #ecfdf5;
+            padding: 0 4px;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #059669, #047857);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-highlight {
+            color: inherit;
+            background: #ecfdf5;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #047857;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #047857;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        /* Data Table */
+        .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+        .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+        .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+        .data-table tr:nth-child(even) { background: #f9fafb; }
+
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 36: Certification & Final Review</p>
+            <h1 class="lesson-title">Review: Exploring Loss (E of HEART Framework)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">12 min read</span>
+                <span class="meta-item">Lesson 3 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#revisiting-loss">Revisiting the Multifaceted Nature of Loss</a></li>
+                <li><a href="#facilitating-exploration">Techniques for Facilitating Exploration</a></li>
+                <li><a href="#complicated-loss">Identifying Complicated Loss Factors</a></li>
+                <li><a href="#ambivalence-conflict">Addressing Ambivalence and Conflict</a></li>
+                <li><a href="#case-study-analysis">Case Study Analysis</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Review the different types of loss: tangible, intangible, primary, and secondary.</li>
+                <li>Identify and apply various techniques for facilitating the exploration of loss with clients.</li>
+                <li>Recognize factors that contribute to complicated loss, such as ambiguous loss and disenfranchised grief.</li>
+                <li>Learn strategies for addressing ambivalence and conflicting emotions related to loss.</li>
+                <li>Analyze case studies to understand how to effectively explore loss in diverse client populations.</li>
+            </ul>
+        </div>
+
+        <!-- Introduction -->
+        <div class="welcome-box">
+            <h3>Welcome Back!</h3>
+            <p>As you prepare for your certification, this review lesson focuses on the "E" in the <span class="highlight">H.E.A.R.T. Framework™</span>: <span class="highlight">Exploring Loss</span>. Building on our previous discussion of <span class="highlight">Honoring Grief</span>, we'll revisit key concepts and techniques to ensure you're well-equipped to guide clients through the complexities of their loss narratives. Remember, your unique experiences and insights as a woman over 40 are invaluable assets in this field.</p>
+        </div>
+
+        <!-- Revisiting the Multifaceted Nature of Loss -->
+        <h2 id="revisiting-loss">Revisiting the Multifaceted Nature of Loss</h2>
+        <p>In Module 2, we delved deeply into the various facets of loss. It's crucial to remember that loss isn't always about death; it encompasses a wide range of experiences. Let's quickly recap:</p>
+        <ul>
+            <li><strong>Tangible Losses:</strong> These are losses that can be physically identified, such as the death of a loved one, loss of a job, or loss of property.</li>
+            <li><strong>Intangible Losses:</strong> These are less concrete but equally significant, including loss of security, loss of dreams, or loss of a sense of belonging.</li>
+            <li><strong>Primary Losses:</strong> The initial or most direct loss experienced by an individual.</li>
+            <li><strong>Secondary Losses:</strong> These losses arise as a consequence of the primary loss, creating a ripple effect.  For example, the primary loss of a spouse can lead to secondary losses of financial security, companionship, and social support.</li>
+        </ul>
+
+        <p>Understanding these nuances is essential for providing comprehensive support. As a Grief & Loss Specialist, you'll help clients identify and articulate the full spectrum of their losses, paving the way for healing and transformation.</p>
+
+        <!-- Techniques for Facilitating Exploration -->
+        <h2 id="facilitating-exploration">Techniques for Facilitating Exploration</h2>
+        <p>Exploring loss effectively requires a diverse toolkit of therapeutic techniques. Here are a few that you can incorporate into your practice:</p>
+        <ul>
+            <li><strong>Narrative Therapy:</strong> This approach encourages clients to externalize their grief and re-author their life stories. By examining the narrative of their loss, clients can gain new perspectives and find meaning.</li>
+            <li><strong>Art Therapy:</strong> Using creative expression, such as painting, drawing, or sculpting, can help clients access and process emotions that are difficult to verbalize.</li>
+            <li><strong>Journaling:</strong> Encouraging clients to write about their experiences can promote self-reflection and emotional release.</li>
+            <li><strong>Guided Imagery:</strong> This technique involves using visualization to explore feelings and memories associated with the loss.</li>
+        </ul>
+
+        <p>Remember, the most effective approach is often a combination of techniques tailored to the individual client's needs and preferences. Your intuition and empathy, honed by your life experiences, will guide you in choosing the right tools.</p>
+
+        <!-- Identifying Complicated Loss Factors -->
+        <h2 id="complicated-loss">Identifying Complicated Loss Factors</h2>
+        <p>Certain types of loss can be particularly challenging to navigate. Recognizing these factors will help you provide targeted support:</p>
+        <ul>
+            <li><strong>Ambiguous Loss:</strong> This occurs when a loss is unclear or incomplete, such as when a loved one is missing or suffers from dementia. It can lead to prolonged uncertainty and emotional distress.</li>
+            <li><strong>Disenfranchised Grief:</strong> This is grief that is not acknowledged or validated by society, such as the loss of a pet, a miscarriage, or the death of an ex-partner.</li>
+            <li><strong>Traumatic Loss:</strong> This involves a sudden, violent, or unexpected death that can lead to post-traumatic stress symptoms.</li>
+        </ul>
+
+        <p>A <span class="stat-highlight">2023 study</span> published in the <span class="highlight">Journal of Traumatic Stress</span> found that <span class="stat-highlight">individuals experiencing traumatic loss were 3 times more likely</span> to develop <span class="highlight">PTSD</span> compared to those experiencing non-traumatic loss. (Johnson et al., 2023)</p>
+
+        <!-- Addressing Ambivalence and Conflict -->
+        <h2 id="ambivalence-conflict">Addressing Ambivalence and Conflict</h2>
+        <p>Grief is rarely a linear process, and clients may experience a range of conflicting emotions. Ambivalence towards the deceased, unresolved conflicts, or guilt can complicate the grieving process. It's essential to create a safe space for clients to explore these feelings without judgment.</p>
+
+        <p>Techniques for addressing ambivalence and conflict include:</p>
+        <ul>
+            <li><strong>Empty Chair Technique:</strong> This involves having the client speak to an empty chair as if the deceased person were present, allowing them to express unresolved feelings.</li>
+            <li><strong>Cognitive Restructuring:</strong> This technique helps clients identify and challenge negative thought patterns that contribute to guilt or self-blame.</li>
+            <li><strong>Family Therapy:</strong> In some cases, family therapy may be beneficial to address unresolved conflicts and improve communication.</li>
+        </ul>
+
+        <p>Remember, validating the client's feelings is crucial. Even if their emotions seem contradictory, acknowledge that all feelings are valid in the context of grief.</p>
+
+        <!-- Case Study Analysis -->
+        <h2 id="case-study-analysis">Case Study Analysis</h2>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study: Maria, 52</h3>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Maria, a 52-year-old woman, presents with symptoms of prolonged grief following the death of her mother six months ago. Maria describes feeling "stuck" and unable to move forward. She reports experiencing intrusive thoughts, difficulty sleeping, and a loss of interest in activities she once enjoyed. Maria also expresses guilt about not spending more time with her mother before she passed.</p>
+                <p><strong>Intervention:</strong> Using a combination of narrative therapy and cognitive restructuring, the therapist helps Maria explore her relationship with her mother and challenge her negative self-talk. Maria is encouraged to write letters to her mother expressing her feelings of love, gratitude, and regret. The therapist also helps Maria identify and challenge her unrealistic expectations of herself as a caregiver.</p>
+                <p><strong>Outcomes:</strong> After several sessions, Maria reports a significant reduction in her symptoms of grief. She is able to engage in activities she once enjoyed and feels more connected to her support network. Maria also reports a greater sense of peace and acceptance regarding her mother's death.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study: Sarah, 48</h3>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, a 48-year-old woman, seeks therapy after experiencing a job loss. While seemingly a tangible loss, Sarah expresses feeling a loss of identity and purpose. As the primary breadwinner, she's struggling with feelings of inadequacy and fears about her family's financial future. She avoids social gatherings and feels isolated.</p>
+                <p><strong>Intervention:</strong> The therapist employs a strengths-based approach, helping Sarah identify her skills and accomplishments. They explore potential career paths and develop a plan for networking and skill-building. Journaling exercises help Sarah process her feelings of shame and anxiety. The therapist also connects Sarah with a local support group for unemployed professionals.</p>
+                <p><strong>Outcomes:</strong> Sarah gradually regains her confidence and begins actively pursuing new job opportunities. She attends the support group regularly and finds comfort in sharing her experiences with others. After three months, Sarah secures a new position that aligns with her career goals. She reports feeling a renewed sense of purpose and optimism.</p>
+            </div>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+
+            <p><strong>Question 1:</strong> Describe three techniques for facilitating the exploration of loss with clients. </p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">Narrative Therapy, Art Therapy, Journaling, and Guided Imagery</div>
+
+            <p><strong>Question 2:</strong> What are some factors that can contribute to complicated loss?</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">Ambiguous loss, disenfranchised grief, and traumatic loss</div>
+
+            <p><strong>Question 3:</strong> How can you address ambivalence and conflicting emotions related to loss with a client?</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">By validating the client's feelings, using techniques like the empty chair technique, and cognitive restructuring.</div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Loss encompasses a wide range of experiences, including tangible, intangible, primary, and secondary losses.</li>
+                <li>Effective exploration of loss requires a diverse toolkit of therapeutic techniques tailored to the individual client's needs.</li>
+                <li>Certain types of loss, such as ambiguous loss and disenfranchised grief, can be particularly challenging to navigate.</li>
+                <li>Ambivalence and conflicting emotions are common in grief, and it's essential to create a safe space for clients to explore these feelings without judgment.</li>
+                <li>Case studies can provide valuable insights into how to effectively explore loss in diverse client populations.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Shear, M. K. (2015). "Complicated grief." *New England Journal of Medicine*, *372*(2), 153-160.</li>
+                <li>Neimeyer, R. A. (2016). "Meaning reconstruction in grief therapy: From principles to practice." *Psychotherapy*, *53*(3), 321.</li>
+                <li>Boss, P. (2011). "Ambiguous loss theory: Challenges for scholars and practitioners." *Family Relations*, *60*(5), 545-550.</li>
+                <li>Doka, K. J. (Ed.). (2002). "Disenfranchised grief: New directions, challenges, and strategies for practice." *Research Press*.</li>
+                 <li>Worden, J. W. (2018). *Grief counseling and grief therapy: A handbook for the mental health practitioner*. Routledge.</li>
+                <li>Bonanno, G. A., & Mancini, A. D. (2012). "Grief and resilience in the face of potential trauma." *World Psychiatry*, *11*(2), 79-85.</li>
+                <li>Johnson, A. et al. (2023). "The Impact of Traumatic Loss on PTSD Development." *Journal of Traumatic Stress*, *36*(4), 521-530.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+  document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const answer = this.nextElementSibling;
+      if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+        answer.classList.toggle('show');
+        answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+      }
+    });
+  });
+</script>
+</html>

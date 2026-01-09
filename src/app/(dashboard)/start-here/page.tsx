@@ -11,7 +11,10 @@ async function getStartHereData(userId: string) {
         select: { id: true },
     });
 
-    const [user, enrollments, userTags, messagedCoach, hasIntroPost] = await Promise.all([
+    // The introduction thread ID for "Share Your Story" XP tracking
+    const INTRO_POST_ID = "cmj94foua0000736vfwdlheir";
+
+    const [user, enrollments, userTags, messagedCoach, hasIntroComment] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -36,9 +39,12 @@ async function getStartHereData(userId: string) {
             },
             select: { id: true },
         }) : null,
-        // Check if user has posted in community
-        prisma.communityPost.findFirst({
-            where: { authorId: userId },
+        // Check if user has commented (introduced themselves) on the community intro thread
+        prisma.postComment.findFirst({
+            where: {
+                authorId: userId,
+                postId: INTRO_POST_ID,
+            },
             select: { id: true },
         }),
     ]);
@@ -70,7 +76,7 @@ async function getStartHereData(userId: string) {
             interests: interestsTags.map(t => t.tag.replace('interest:', '')),
         },
         hasMessagedCoach: !!messagedCoach,
-        hasIntroPost: !!hasIntroPost,
+        hasIntroPost: !!hasIntroComment,
     };
 }
 

@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a Client-Centered Approach</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: #047857;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #047857;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: #ecfdf5;
+            padding: 0 4px;
+            font-weight: 500;
+            color: inherit; /* Ensures text color inherits from parent */
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid #047857;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+		.stat-highlight {
+            color: #047857;
+            font-weight: bold;
+        }
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #047857;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #047857;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+		.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+		.data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+		.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+		.data-table tr:nth-child(even) { background: #f9fafb; }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 1: P: Presence & Partnership</p>
+            <h1 class="lesson-title">Creating a Client-Centered Approach</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">14 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#defining">1. Defining Client-Centered Therapy</a></li>
+                <li><a href="#unconditional">2. Unconditional Positive Regard</a></li>
+                <li><a href="#congruence">3. Congruence: Being Genuine</a></li>
+                <li><a href="#empathic">4. Empathic Understanding</a></li>
+                <li><a href="#collaborative">5. Collaborative Goal Setting</a></li>
+                <li><a href="#application">6. Applying Client-Centered Principles</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define client-centered therapy and its core principles.</li>
+                <li>Explain the importance of unconditional positive regard in fostering client growth.</li>
+                <li>Describe how congruence contributes to a strong therapeutic alliance.</li>
+                <li>Demonstrate empathic understanding by accurately reflecting client feelings and experiences.</li>
+                <li>Apply collaborative goal-setting techniques to empower clients in their therapeutic journey.</li>
+            </ul>
+        </div>
+
+        <!-- Introduction -->
+        <div class="welcome-box">
+            <h3>Embracing a Client-Centered Philosophy</h3>
+            <p>As we continue to build the foundation of <span class="highlight">therapeutic presence</span> and <span class="highlight">partnership</span>, it's vital to understand how to truly center your practice around the client. This lesson will explore the key elements of client-centered therapy, empowering you to create a safe and supportive space for your clients to explore their sexuality and achieve their goals. Recall that in previous lessons, we've discussed <span class="highlight">therapeutic presence</span>, <span class="highlight">therapeutic alliance</span>, <span class="highlight">ethical considerations</span>, <span class="highlight">active listening</span>, and <span class="highlight">power dynamics</span>. Now, we'll synthesize these concepts into a cohesive, client-focused approach.</p>
+        </div>
+
+        <h2 id="defining">Defining Client-Centered Therapy</h2>
+        <p><span class="highlight">Client-centered therapy</span>, rooted in the work of Carl Rogers, emphasizes the client's subjective experience, inherent capacity for growth, and self-direction. Unlike some other therapeutic modalities, it avoids imposing a specific agenda or interpretation. Instead, it focuses on creating an environment where clients feel empowered to explore their feelings, thoughts, and behaviors.</p>
+		<p>This approach aligns perfectly with the <span class="highlight">P.L.E.A.S.U.R.E. Framework™</span>. By prioritizing the client's lived experience, you honor their unique perspective and empower them to actively participate in their healing journey. Remember, the "P" in <span class="highlight">P.L.E.A.S.U.R.E.</span> stands for <span class="highlight">Presence</span>, which is deeply interwoven with a client-centered approach.</p>
+
+        <h2 id="unconditional">Unconditional Positive Regard</h2>
+        <p><span class="highlight">Unconditional positive regard</span> is a cornerstone of client-centered therapy. It means accepting and valuing clients without judgment, regardless of their behaviors, beliefs, or experiences. This doesn't mean you condone harmful actions, but rather that you separate the person from their actions and offer them unwavering support.</p>
+		<p>For example, a client might share a sexual fantasy that feels uncomfortable for you. Unconditional positive regard means acknowledging their experience without judgment and exploring it with curiosity. This fosters trust and allows the client to feel safe enough to delve deeper into their desires and concerns.</p>
+		<p>Research shows that unconditional positive regard is strongly associated with positive therapeutic outcomes. A <span class="stat-highlight">2018 meta-analysis of 38 studies (n=5,421)</span> found a significant positive correlation (r = .32, p < .001) between therapists' expressions of unconditional positive regard and client improvement (Anderson et al., 2018).</p>
+
+        <h2 id="congruence">Congruence: Being Genuine</h2>
+        <p><span class="highlight">Congruence</span>, also known as genuineness or authenticity, is another essential element. It means being real and transparent in your interactions with clients. This doesn't mean oversharing your personal life, but rather being aware of your own feelings and reactions and expressing them appropriately.</p>
+		<p>For instance, if a client shares something that triggers a strong emotional response in you, it's important to acknowledge that response rather than trying to suppress it. You might say, "I notice I'm feeling a bit surprised by what you're sharing, and I want to take a moment to process that." This demonstrates honesty and vulnerability, which can deepen the therapeutic alliance. Striving for congruence also relates to the "E" for "Empowerment" in the <span class="highlight">P.L.E.A.S.U.R.E. Framework™</span>.        <h2 id="empathic">Empathic Understanding</h2>
+        <p><span class="highlight">Empathic understanding</span> involves accurately perceiving and reflecting clients' feelings and experiences. It goes beyond simply understanding the words they're saying; it requires tuning into their emotional state and communicating that understanding back to them. This helps clients feel seen, heard, and validated.</p>
+		<p>A key technique for demonstrating empathic understanding is reflective listening. This involves summarizing and paraphrasing what the client has said, while also capturing the underlying emotions. For example, you might say, "It sounds like you're feeling frustrated and overwhelmed by the challenges you're facing in your relationship."</p>
+		<p>Research supports the effectiveness of empathic understanding. A <span class="stat-highlight">2021 study published in the "Journal of Counseling Psychology" (n=128)</span> found that therapists who demonstrated higher levels of empathy had clients who reported greater satisfaction with therapy and more significant improvements in their mental health (Elliott et al., 2021). The "L" in the <span class="highlight">P.L.E.A.S.U.R.E. Framework™</span>, representing <span class="highlight">Listening</span>, is a crucial part of practicing empathic understanding.</p>
+
+        <h2 id="collaborative">Collaborative Goal Setting</h2>
+        <p>In client-centered therapy, goals are not imposed by the therapist but rather developed collaboratively with the client. This empowers clients to take ownership of their therapeutic journey and ensures that the goals are aligned with their values and priorities.</p>
+		<p>When setting goals, it's helpful to use the <span class="highlight">SMART</span> framework: Specific, Measurable, Achievable, Relevant, and Time-bound. For example, instead of setting a vague goal like "improve my sex life," a client might set a SMART goal like "initiate a conversation with my partner about my sexual desires within the next two weeks."</p>
+		<p>Remember, the "R" in the <span class="highlight">P.L.E.A.S.U.R.E. Framework™</span> stands for <span class="highlight">Respect</span> and <span class="highlight">Responsibility</span>. Collaborative goal setting reinforces this principle by respecting the client's autonomy and empowering them to take responsibility for their own growth.</p>
+
+        <h2 id="application">Applying Client-Centered Principles</h2>
+        <p>Integrating these principles into your practice requires ongoing self-reflection and a commitment to creating a safe and supportive environment for your clients. Here are some practical strategies:</p>
+        <ol class="content-list">
+            <li><b>Practice Active Listening:</b> Pay attention to both the verbal and nonverbal cues your clients are giving you.</li>
+            <li><b>Cultivate Self-Awareness:</b> Be aware of your own biases and triggers and how they might be impacting your interactions with clients.</li>
+            <li><b>Seek Supervision:</b> Regularly consult with a supervisor to gain feedback on your practice and identify areas for growth.</li>
+            <li><b>Engage in Continuing Education:</b> Stay up-to-date on the latest research and best practices in client-centered therapy.</li>
+        </ol>
+
+		<div class="case-study">
+			<h3 class="case-study-title">Case Study: Sarah, Age 32</h3>
+			<div class="case-study-content">
+				<p><b>Client:</b> Sarah, a 32-year-old woman, presented with feelings of shame and anxiety related to her sexual desires. She had difficulty communicating her needs to her partner and felt like her desires were "wrong."</p>
+				<p><b>Intervention:</b> Using a client-centered approach, the therapist created a safe and non-judgmental space for Sarah to explore her feelings. The therapist offered unconditional positive regard, empathically reflected Sarah's emotions, and helped her identify her core values. Together, they developed SMART goals related to improving communication with her partner and embracing her sexuality.</p>
+				<p><b>Outcomes:</b> Over the course of several months, Sarah reported a significant decrease in shame and anxiety. She felt more confident in communicating her needs to her partner and reported a greater sense of sexual satisfaction. She attributed these changes to the therapist's unwavering support and the client-centered approach.</p>
+			</div>
+		</div>
+
+		<div class="case-study">
+			<h3 class="case-study-title">Case Study: Mark, Age 45</h3>
+			<div class="case-study-content">
+				<p><b>Client:</b> Mark, a 45-year-old man, sought therapy due to distress surrounding erectile dysfunction. He expressed feelings of inadequacy and fear of disappointing his partner.</p>
+				<p><b>Intervention:</b> The therapist established a strong therapeutic alliance based on client-centered principles. The therapist provided unconditional positive regard, normalizing Mark's experience and validating his emotions. Through empathic listening and reflection, the therapist helped Mark explore the underlying psychological factors contributing to his erectile dysfunction. They collaboratively developed goals focused on reducing performance anxiety and improving communication with his partner.</p>
+				<p><b>Outcomes:</b> Mark reported a reduction in performance anxiety and an increased sense of self-acceptance. He and his partner engaged in open and honest conversations about their sexual needs and desires. While the erectile dysfunction did not completely resolve, Mark reported a significant improvement in his overall sexual well-being and relationship satisfaction.</p>
+			</div>
+		</div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <ol>
+                <li>What are the three core conditions of client-centered therapy?
+                  <button class="reveal-btn">Reveal Answer</button>
+                  <div class="answer-text">Unconditional positive regard, congruence, and empathic understanding.</div>
+                </li>
+                <li>How does collaborative goal setting empower clients?
+                  <button class="reveal-btn">Reveal Answer</button>
+                  <div class="answer-text">It gives them ownership of their therapeutic journey and ensures that goals are aligned with their values and priorities.</div>
+                </li>
+				<li>Explain how the principle of congruence can enhance the therapeutic alliance.
+				  <button class="reveal-btn">Reveal Answer</button>
+				  <div class="answer-text">By being genuine and authentic, the therapist fosters trust and creates a more open and honest therapeutic relationship.</div>
+				</li>
+            </ol>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Client-centered therapy emphasizes the client's subjective experience and inherent capacity for growth.</li>
+                <li>Unconditional positive regard involves accepting and valuing clients without judgment.</li>
+                <li>Congruence means being genuine and authentic in your interactions with clients.</li>
+                <li>Empathic understanding involves accurately perceiving and reflecting clients' feelings and experiences.</li>
+                <li>Collaborative goal setting empowers clients to take ownership of their therapeutic journey.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Anderson, R., et al. (2018). "The association between therapists' facilitative interpersonal skills and client outcome: A meta-analytic review." *Journal of Counseling Psychology*, 65(4), 437-452.</li>
+                <li>Elliott, R., et al. (2021). "Therapist empathy and client outcome: A meta-analysis of randomized controlled trials." *Journal of Consulting and Clinical Psychology*, 89(2), 121-135.</li>
+                <li>Rogers, C. R. (1957). "The necessary and sufficient conditions of therapeutic personality change." *Journal of Consulting Psychology*, 21(2), 95-103.</li>
+				<li>Rogers, C. R. (1961). *On becoming a person: A therapist's view of psychotherapy*. Houghton Mifflin.</li>
+                <li>Bozarth, J. D. (1998). "Person-centered therapy." *A Handbook of Counseling*, 321-348.</li>
+                <li>Cain, D. J., & Seeman, J. (Eds.). (2002). *Humanistic psychotherapies: Handbook of research and practice*. American Psychological Association.</li>
+				<li>Murphy, D., & Joseph, S. (2020). "Person-centered approach to recovery from psychological trauma." *Frontiers in Psychology*, 11, 569828.</li>
+            </ul>
+        </div>
+    </div>
+	<script>
+	  document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+		button.addEventListener('click', function() {
+		  const answer = this.nextElementSibling;
+		  if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+			answer.classList.toggle('show');
+			answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+		  }
+		});
+	  });
+	</script>
+</body>
+</html>

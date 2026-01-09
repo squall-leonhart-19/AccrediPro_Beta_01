@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Module 10 - Coaching Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Practice Lab Banner */
+        .practice-lab-banner {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #92400e;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #a16207;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Client Scenario Box */
+        .scenario-box {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 35px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .scenario-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .scenario-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .scenario-header h3 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .scenario-content {
+            padding: 28px 30px;
+        }
+
+        .client-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .client-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .client-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            color: #1a1a1a;
+        }
+
+        .client-info p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #059669;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .detail-item .value {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Coaching Script Box */
+        .script-box {
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .script-box h3 {
+            margin: 0 0 20px;
+            color: #059669;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .script-box h3::before {
+            content: '💬';
+            font-size: 24px;
+        }
+
+        .script-dialogue {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .script-line {
+            margin-bottom: 18px;
+            padding-left: 20px;
+            border-left: 3px solid #10B981;
+        }
+
+        .script-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .speaker {
+            font-weight: 700;
+            color: #059669;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .dialogue {
+            font-size: 16px;
+            font-style: italic;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        /* Practice Exercise Box */
+        .exercise-box {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border: 2px solid #c026d3;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .exercise-box h3 {
+            margin: 0 0 20px;
+            color: #a21caf;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exercise-box h3::before {
+            content: '🎤';
+            font-size: 24px;
+        }
+
+        .exercise-steps {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .exercise-step {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .exercise-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: #c026d3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            margin: 0 0 8px;
+            font-size: 17px;
+            color: #333;
+        }
+
+        .step-content p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        /* Mistakes Box */
+        .mistakes-box {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .mistakes-box h3 {
+            margin: 0 0 20px;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mistakes-box h3::before {
+            content: '⚠️';
+            font-size: 24px;
+        }
+
+        .mistake-item {
+            background: white;
+            border-radius: 10px;
+            padding: 18px 22px;
+            margin-bottom: 14px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .mistake-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .mistake-item .wrong {
+            color: #dc2626;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .mistake-item .right {
+            color: #16a34a;
+            font-size: 15px;
+        }
+
+        /* Success Markers Box */
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #22c55e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .success-box h3 {
+            margin: 0 0 20px;
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-box h3::before {
+            content: '✅';
+            font-size: 24px;
+        }
+
+        .success-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .success-list li {
+            background: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 16px;
+        }
+
+        .success-list li::before {
+            content: '✓';
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        /* Encouragement Box */
+        .encouragement-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .highlight {
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 10: L1 Deep Dive Module 10</p>
+            <h1 class="lesson-title">Practice Lab: Coaching Application</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">12 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <!-- Practice Lab Banner -->
+        <div class="practice-lab-banner">
+            <div class="emoji">🎯</div>
+            <h2>Time to Practice What You've Learned!</h2>
+            <p>This Practice Lab gives you a real client scenario to apply your new skills. Practice out loud — that's
+                where the magic happens.</p>
+        </div>
+
+        <h2>Your Coaching Scenario</h2>
+
+        <p>In this Practice Lab, you'll work through a realistic client scenario. Read the client profile, review the
+            coaching script, then practice speaking the dialogue out loud.</p>
+
+        <!-- Client Scenario -->
+        <div class="scenario-box">
+            <div class="scenario-header">
+                <div class="scenario-icon">👤</div>
+                <h3>Meet Your Client</h3>
+            </div>
+            <div class="scenario-content">
+                <div class="client-profile">
+                    <div class="client-avatar">👩</div>
+                    <div class="client-info">
+                        <h4>Maria, 52</h4>
+                        <p>Elementary School Teacher, Austin, TX • Divorced, one grown child</p>
+                    </div>
+                </div>
+
+                <div class="client-details">
+                    <div class="detail-item">
+                        <div class="label">Chief Complaint</div>
+                        <div class="value">Feeling "stuck" and uninspired, both personally and professionally. Difficulty
+                            making decisions.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Duration</div>
+                        <div class="value">About 6 months, since her child moved out of state.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">What She's Tried</div>
+                        <div class="value">Started a new hobby (painting), but lost interest quickly. Talked to friends,
+                            but still feels lost.</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Her Goal</div>
+                        <div class="value">"I want to rediscover my passion and feel excited about life again."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coaching Script -->
+        <div class="script-box">
+            <h3>Your Coaching Script</h3>
+            <p>Here's exactly how to open this conversation. Practice saying these words out loud:</p>
+
+            <div class="script-dialogue">
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Maria, thank you for being so open. It takes courage to admit feeling lost, and
+                        I want you to know you're not alone. Many women experience similar feelings during this phase of
+                        life."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">MARIA:</div>
+                    <div class="dialogue">"It's just… everything feels so different now. I used to be so clear about what I
+                        wanted."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"I understand. It sounds like you're experiencing a significant shift in your
+                        energy field, a re-calibration of sorts. We can explore this shift together, understand what it's
+                        telling you, and use it to guide you toward your next chapter."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Based on what you've shared, I'd like to focus on three key areas: your sense of
+                        purpose, your connection to your inner guidance, and your ability to embrace change. Does that
+                        resonate with you?"</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">MARIA:</div>
+                    <div class="dialogue">"Yes, definitely. Those all feel important."</div>
+                </div>
+
+                <div class="script-line">
+                    <div class="speaker">YOU:</div>
+                    <div class="dialogue">"Great. Let's start with a few questions to help us understand your current energy
+                        state and identify any blocks that might be holding you back. How does that sound?"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Exercise -->
+        <div class="exercise-box">
+            <h3>Your Turn — Practice Out Loud</h3>
+
+            <div class="exercise-steps">
+                <div class="exercise-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Read the script silently first</h4>
+                        <p>Understand the flow and the intention behind each statement.</p>
+                    </div>
+                </div>
+
+                <div class="exercise-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Now speak it out loud</h4>
+                        <p>Pretend Maria is sitting across from you. Use a warm, calm tone. Make eye contact with an
+                            imaginary client.</p>
+                    </div>
+                </div>
+
+                <div class="exercise-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Record yourself (optional but powerful)</h4>
+                        <p>Use your phone to record, then listen back. Notice your pacing, tone, and confidence.</p>
+                    </div>
+                </div>
+
+                <div class="exercise-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Adapt it to your voice</h4>
+                        <p>Once you've practiced the script, modify it to sound like YOU. Keep the structure, but use
+                            your own words.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Mistakes -->
+        <div class="mistakes-box">
+            <h3>Common Mistakes to Avoid</h3>
+
+            <div class="mistake-item">
+                <div class="wrong">❌ Dismissing her feelings as "just a midlife crisis"</div>
+                <div class="right">✓ Validate her experience as a significant energetic shift.</div>
+            </div>
+
+            <div class="mistake-item">
+                <div class="wrong">❌ Focusing solely on external solutions (new job, new relationship)</div>
+                <div class="right">✓ Emphasize inner exploration and reconnection with her intuition.</div>
+            </div>
+
+            <div class="mistake-item">
+                <div class="wrong">❌ Using generic advice without understanding her unique energy field</div>
+                <div class="right">✓ Tailor your approach based on her specific energetic signature.</div>
+            </div>
+
+            <div class="mistake-item">
+                <div class="wrong">❌ Overpromising a quick fix or instant transformation</div>
+                <div class="right">✓ Frame the process as a journey of self-discovery and energetic alignment.</div>
+            </div>
+        </div>
+
+        <!-- Success Markers -->
+        <div class="success-box">
+            <h3>You'll Know It Worked When...</h3>
+
+            <ul class="success-list">
+                <li>Maria expresses a sense of relief and validation.</li>
+                <li>She begins to explore her limiting beliefs and self-doubt.</li>
+                <li>Her energy shifts from feeling heavy to feeling lighter and more open.</li>
+                <li>She identifies small, actionable steps she can take to reconnect with her passion.</li>
+                <li>She expresses gratitude for your guidance and support.</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. Why is it important to validate Maria's feelings of being "stuck" instead of dismissing them?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Validating her feelings builds trust and creates a safe space for her to explore her emotions. Dismissing them can shut down the conversation and prevent her from opening up.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What are some energetic blocks that might be contributing to Maria's feeling of being "stuck?"</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Energetic blocks could include fear of change, limiting beliefs about her capabilities, unresolved grief, or a disconnect from her intuition.</div>
+            </div>
+        </div>
+
+        <!-- Encouragement -->
+        <div class="encouragement-box">
+            <div class="emoji">💪</div>
+            <h3>You're Becoming a Real Coach!</h3>
+            <p>Every time you practice this dialogue, you're building the muscle memory of a confident, skilled
+                practitioner. Maria is counting on coaches like you. You've got this!</p>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Validate the client's feelings and create a safe space for exploration.</li>
+                <li>Frame the client's experience as an energetic shift rather than a personal failing.</li>
+                <li>Focus on inner exploration and reconnection with intuition.</li>
+                <li>Tailor your approach based on the client's unique energetic signature.</li>
+                <li>Emphasize the journey of self-discovery and energetic alignment.</li>
+            </ul>
+        </div>
+
+    </div>
+    <script>
+        document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const answer = this.nextElementSibling;
+                if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                    answer.classList.toggle('show');
+                    answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

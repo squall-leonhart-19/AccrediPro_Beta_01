@@ -139,9 +139,8 @@ export function CompletionCelebration({
       </div>
 
       <div
-        className={`relative bg-white rounded-3xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden transform transition-all duration-500 ${
-          showContent ? "scale-100 opacity-100" : "scale-90 opacity-0"
-        }`}
+        className={`relative bg-white rounded-3xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden transform transition-all duration-500 ${showContent ? "scale-100 opacity-100" : "scale-90 opacity-0"
+          }`}
       >
         {/* Close button */}
         <button
@@ -207,7 +206,7 @@ export function CompletionCelebration({
               </div>
               <Button
                 className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white shadow-lg"
-                onClick={() => window.location.href = "/certificates"}
+                onClick={() => window.location.href = "/my-credentials"}
               >
                 <Download className="w-4 h-4 mr-2" />
                 View
@@ -270,7 +269,7 @@ export function CompletionCelebration({
             </Button>
             <Button
               className="flex-1 bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800"
-              onClick={() => window.location.href = "/certificates"}
+              onClick={() => window.location.href = "/my-credentials"}
             >
               <Award className="w-4 h-4 mr-2" />
               View Certificate

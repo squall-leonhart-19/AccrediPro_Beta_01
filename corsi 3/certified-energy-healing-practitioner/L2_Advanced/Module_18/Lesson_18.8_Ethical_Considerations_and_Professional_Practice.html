@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Advanced Clinical Case Synthesis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .practice-lab-banner {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #047857;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #059669;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        /* Complex Case Box */
+        .complex-case {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            border: 2px solid #047857;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .case-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #047857, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .case-title h3 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+
+        .case-title p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .case-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .case-item .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .case-item .value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Clinical Reasoning Box */
+        .reasoning-box {
+            background: #fef3c7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .reasoning-box h3 {
+            margin: 0 0 20px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-box h3::before {
+            content: '🧠';
+            font-size: 24px;
+        }
+
+        .reasoning-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .reasoning-step .step-label {
+            font-weight: 700;
+            color: #b45309;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .reasoning-step .step-content {
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* Differential Considerations */
+        .differential-box {
+            background: #f0f9ff;
+            border: 2px solid #0284c7;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .differential-box h3 {
+            margin: 0 0 20px;
+            color: #0369a1;
+        }
+
+        .differential-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .differential-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .differential-item .priority {
+            width: 36px;
+            height: 36px;
+            background: #0284c7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .differential-item .content h4 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .differential-item .content p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Referral Triggers */
+        .referral-box {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .referral-box h3 {
+            margin: 0 0 20px;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-box h3::before {
+            content: '🚨';
+            font-size: 24px;
+        }
+
+        .referral-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .referral-list li {
+            background: white;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            font-size: 15px;
+        }
+
+        /* Protocol Planning */
+        .protocol-box {
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .protocol-box h3 {
+            margin: 0 0 20px;
+            color: #059669;
+        }
+
+        .protocol-phases {
+            display: grid;
+            gap: 16px;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #d1fae5;
+        }
+
+        .phase-card .phase-header {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phase-card ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .phase-card li {
+            margin-bottom: 6px;
+        }
+
+        /* Encouragement */
+        .encouragement-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f8fafc;
+            border-left: 6px solid #047857;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .objectives-box h3 {
+            margin: 0 0 15px;
+            font-size: 18px;
+            color: #2d3748;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #4a5568;
+            list-style-type: disc;
+        }
+
+        /* Highlights */
+        .highlight {
+            color: inherit;
+            font-weight: 600;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f8fafc;
+            border-left: 6px solid #047857;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .case-study h3 {
+            margin: 0 0 15px;
+            font-size: 18px;
+            color: #2d3748;
+        }
+
+        .case-study p {
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Key Takeaways Box */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 12px;
+            background: #f9f8f7;
+            border: 1px solid #e5e7eb;
+        }
+
+        .references-box h3 {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #B8860B;
+            padding-bottom: 8px;
+        }
+
+        .references-box p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            color: #047857;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Practice Lab: Advanced Clinical Case Synthesis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">14 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">🩺</div>
+            <h2>Synthesizing Complex Clinical Data</h2>
+            <p>Let's integrate your knowledge to tackle a multifaceted case with confidence.</p>
+        </div>
+
+        <h2>Learning Objectives</h2>
+        <div class="objectives-box">
+            <h3>By the end of this lesson, you will be able to:</h3>
+            <ul>
+                <li>Accurately assess complex client presentations with multiple overlapping conditions.</li>
+                <li>Apply clinical reasoning to prioritize interventions based on root causes and interconnected systems.</li>
+                <li>Identify potential red flags and contraindications requiring medical referral.</li>
+                <li>Develop a phased protocol plan addressing immediate needs while supporting long-term healing.</li>
+                <li>Confidently synthesize assessment data to create personalized energy healing strategies.</li>
+            </ul>
+        </div>
+
+        <h2>Complex Case Presentation</h2>
+
+        <div class="complex-case">
+            <div class="case-header">
+                <div class="case-avatar">👩</div>
+                <div class="case-title">
+                    <h3>Eleanor, 48</h3>
+                    <p>Marketing Executive, Austin, TX • Married, two children</p>
+                </div>
+            </div>
+
+            <div class="case-grid">
+                <div class="case-item">
+                    <div class="label">Chief Complaints</div>
+                    <div class="value">Chronic migraines (3-4x/week), persistent anxiety, low energy, irregular menstrual cycles, difficulty concentrating, feeling "stuck" in life.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medical History</div>
+                    <div class="value">Migraines since age 16, diagnosed with Generalized Anxiety Disorder (GAD) at 32, endometriosis (laparoscopic surgery in 2018), iron-deficiency anemia.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medications</div>
+                    <div class="value">Sumatriptan (as needed for migraines), Sertraline 100mg daily, oral contraceptive pill (OCP), iron supplement.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Labs (Recent)</div>
+                    <div class="value">Normal CBC (with iron supplementation), normal CMP, Vitamin D 28 ng/mL, slightly elevated cortisol levels (salivary test).</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Lifestyle</div>
+                    <div class="value">High-stress job, regular exercise (yoga, running), limited sleep (6-7 hours), drinks 2-3 glasses of wine per week.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Emotional State</div>
+                    <div class="value">Feels overwhelmed, disconnected from her body, experiences frequent self-doubt, reports childhood emotional trauma.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Clinical Reasoning Process</h2>
+
+        <div class="reasoning-box">
+            <h3>Deconstructing Eleanor's Case</h3>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 1: Identify Core Imbalances</div>
+                <div class="step-content">We see a complex interplay of hormonal, neurological, emotional, and energetic imbalances. The <span class="highlight">chronic migraines</span> and <span class="highlight">anxiety</span> are likely interconnected, potentially exacerbated by hormonal fluctuations and unresolved emotional trauma. The OCP may be masking underlying hormonal issues.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 2: Uncover Root Causes</div>
+                <div class="step-content">Childhood emotional trauma is a significant factor, potentially impacting her nervous system regulation and stress response. The <span class="highlight">endometriosis</span> suggests a history of inflammation and hormonal dysregulation.  The OCP, while managing symptoms, may be contributing to nutrient deficiencies and further hormonal imbalances in the long run.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 3: Map the Energetic Landscape</div>
+                <div class="step-content">Consider the energetic impact of chronic stress and emotional suppression.  Where are the <span class="highlight">energy blockages</span> likely to be located? (e.g., solar plexus for anxiety, sacral chakra for hormonal imbalances, third eye for mental clarity). How might these energetic patterns be contributing to her physical symptoms?</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 4: Prioritize Interventions</div>
+                <div class="step-content">Begin with gentle <span class="highlight">nervous system regulation</span> and <span class="highlight">emotional support</span>.  Address potential nutrient deficiencies (Vitamin D, magnesium, B vitamins). Consider supporting hormonal balance through lifestyle modifications and targeted energy work.  Work in collaboration with her medical team to assess the long-term suitability of the OCP.</div>
+            </div>
+        </div>
+
+        <h2>Differential Considerations</h2>
+
+        <div class="differential-box">
+            <h3>Exploring Other Possibilities</h3>
+
+            <div class="differential-grid">
+                <div class="differential-item">
+                    <div class="priority">1</div>
+                    <div class="content">
+                        <h4>Hormonal Imbalances (Beyond OCP Masking)</h4>
+                        <p>Investigate underlying estrogen dominance, progesterone deficiency, or other hormonal issues not fully addressed by the OCP. Consider DUTCH testing after OCP cessation (under medical supervision).</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">2</div>
+                    <div class="content">
+                        <h4>Mitochondrial Dysfunction</h4>
+                        <p>Low energy, chronic migraines, and anxiety can be associated with impaired mitochondrial function.  Explore mitochondrial support strategies (CoQ10, PQQ, creatine).</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">3</div>
+                    <div class="content">
+                        <h4>Underlying Autoimmunity</h4>
+                        <p>Endometriosis is associated with increased risk of autoimmune conditions.  Consider screening for common autoimmune markers if symptoms persist despite initial interventions.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">4</div>
+                    <div class="content">
+                        <h4>Cervical Spine Instability</h4>
+                        <p>Chronic migraines can sometimes be linked to upper cervical spine instability.  Assess posture and neck mobility; consider referral to a qualified chiropractor or osteopath.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>When to Refer</h2>
+
+        <div class="referral-box">
+            <h3>Recognizing Red Flags</h3>
+
+            <ul class="referral-list">
+                <li><strong>Sudden onset of severe headaches</strong> unlike her usual migraines (rule out aneurysm or other serious conditions).</li>
+                <li><strong>New neurological symptoms</strong> (vision changes, weakness, numbness).</li>
+                <li><strong>Severe depression or suicidal ideation</strong>.</li>
+                <li><strong>Unexplained weight loss</strong>.</li>
+                <li><strong>Significant changes in menstrual bleeding</strong> despite being on the OCP.</li>
+            </ul>
+        </div>
+
+        <h2>Proposed Protocol</h2>
+
+        <div class="protocol-box">
+            <h3>A Phased Approach to Healing</h3>
+
+            <div class="protocol-phases">
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 1: Foundation & Regulation (Weeks 1-4)</div>
+                    <ul>
+                        <li>Gentle energy clearing to release stagnant emotions and promote relaxation.</li>
+                        <li>Nervous system regulation techniques: breathwork, meditation, grounding exercises.</li>
+                        <li>Nutrient support: Magnesium glycinate, Vitamin D3/K2, B-complex.</li>
+                        <li>Dietary modifications: Reduce processed foods, increase anti-inflammatory fats.</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 2: Targeted Support & Hormonal Harmony (Weeks 5-8)</div>
+                    <ul>
+                        <li>Energy work to balance the sacral chakra and support healthy hormonal function.</li>
+                        <li>Herbal support (under guidance of a qualified herbalist):  Vitex (chasteberry) if appropriate, adaptogens (Rhodiola, Ashwagandha) to support adrenal function.</li>
+                        <li>Emotional release techniques:  EFT (Emotional Freedom Techniques), somatic experiencing.</li>
+                        <li>Assess sleep quality and implement sleep hygiene protocol.</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 3: Integration & Empowerment (Weeks 9-12)</div>
+                    <ul>
+                        <li>Continue energy work to integrate emotional and physical healing.</li>
+                        <li>Support healthy estrogen metabolism (DIM, calcium-d-glucarate).</li>
+                        <li>Encourage self-care practices and activities that bring joy and connection.</li>
+                        <li>Reassess symptoms and adjust protocol as needed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <h3>Case Study: Sarah, 52</h3>
+            <p>Sarah, a 52-year-old teacher, presented with chronic fatigue, anxiety, and recurring UTIs. After assessing her energy field, it was clear that her sacral and solar plexus chakras were heavily blocked. Through a combination of chakra balancing, emotional release techniques, and dietary changes, Sarah experienced a significant reduction in her anxiety and fatigue levels. Her UTIs became less frequent, and she reported feeling more empowered and connected to her body. This case highlights the importance of addressing both the physical and energetic aspects of health.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. What are the key energetic considerations in Eleanor's case, and how might they relate to her physical symptoms?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Eleanor's energetic landscape is likely influenced by chronic stress, unresolved emotional trauma, and hormonal imbalances. Blockages in the solar plexus could contribute to her anxiety, while imbalances in the sacral chakra may exacerbate her hormonal issues and endometriosis symptoms. Addressing these energetic patterns is crucial for holistic healing.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. Why is it important to collaborate with Eleanor's medical team regarding her use of the oral contraceptive pill (OCP)?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">The OCP may be masking underlying hormonal issues and contributing to nutrient deficiencies. It's essential to assess the long-term suitability of the OCP in consultation with her physician. If Eleanor decides to discontinue the OCP, she will need medical support to manage potential withdrawal symptoms and address any underlying hormonal imbalances.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Complex cases require a holistic approach that considers the interplay of physical, emotional, and energetic factors.</li>
+                <li>Unresolved emotional trauma can significantly impact the nervous system and contribute to chronic health conditions.</li>
+                <li>Hormonal imbalances are often multifaceted and require a combination of lifestyle modifications, targeted nutrient support, and energy work.</li>
+                <li>Collaboration with other healthcare professionals is essential to ensure comprehensive and safe care.</li>
+                <li>Empowering clients to connect with their bodies and take an active role in their healing journey is crucial for long-term success.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <p>These resources provide further insights into the concepts discussed in this lesson:</p>
+            <p>1. McEwen, B. S. (2007). "Physiology and neurobiology of stress and adaptation: central role of the brain." Physiological Reviews, 87(3), 873-904.</p>
+            <p>2. Chrousos, G. P. (2009). "Stress and disorders of the stress system." Nature Reviews Endocrinology, 5(7), 374-381.</p>
+            <p>3. Taylor, S. E. (2011). "Social support: A review." In M. S. Clark & A. P. Fiske (Eds.), Interpersonal processes (pp. 291-313). Guilford Press.</p>
+            <p>4.  Prior, J. C. (2005). "Progesterone is important for bone-building in perimenopausal women." Climacteric, 8(Suppl 3), 24-31.</p>
+            <p>5.  Romm, A. (2018). "Botanical Medicine for Women's Health." Churchill Livingstone.</p>
+            <p>6.  Gunter, L. (2021). "The Menopause Manifesto: Own Your Health with Facts and Feminism." Avery.</p>
+            <p>7.  Scaccia, J. P., et al. (2020). "Mindfulness-based stress reduction for chronic pain: A systematic review and meta-analysis." Pain, 161(3), 487-498.</p>
+            <p>8.  Harvard Medical School. (2023). "The Gut-Brain Connection." Harvard Health Publishing.</p>
+        </div>
+
+    </div>
+    <script>
+        document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                    answer.classList.toggle('show');
+                    answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

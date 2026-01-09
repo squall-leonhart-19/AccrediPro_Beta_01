@@ -34,26 +34,105 @@ import {
   Unlock,
   Sparkles,
   Users2,
+  ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
 
-// Full nav items - for users with paid courses
-const fullNavItems = [
+// GROUPED NAV: 7 sections with expandable sub-items
+// See: Institute_ASI/11_PORTAL_NAVIGATION_OPTIMIZED.md
+// All pages remain accessible, just visually organized
+
+// Nav item type with optional children for grouping
+interface NavItem {
+  href: string;
+  label: string;
+  icon: any;
+  tourId?: string;
+  notificationKey?: "messages" | "certificates" | "announcements";
+  locked?: boolean;
+  external?: boolean;
+  unlocked?: boolean;
+  children?: NavItem[];
+}
+
+const fullNavItems: NavItem[] = [
+  // 1. Dashboard - standalone
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
-  { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
-  { href: "/my-courses", label: "My Courses", icon: BookOpen, tourId: "my-courses" },
-  { href: "/catalog", label: "Catalog", icon: Library, tourId: "catalog" },
-  { href: "/my-personal-roadmap-by-coach-sarah", label: "Your Roadmap", icon: Map, tourId: "roadmap" },
-  { href: "/career-center", label: "Career Center", icon: Briefcase, tourId: "career-center" },
-  { href: "/programs", label: "Client Program Library", icon: Package, tourId: "programs" },
-  { href: "/community", label: "Community", icon: Users, tourId: "community" },
-  { href: "/messages", label: "Private Mentor Chat", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  { href: "/certificates", label: "My Certificates", icon: Award, notificationKey: "certificates" as const, tourId: "certificates" },
-  { href: "/my-library", label: "My Library", icon: Library, tourId: "my-library" },
-  { href: "/ebooks", label: "Professional Library", icon: ShoppingBag, tourId: "ebooks" },
-  // { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
-  { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
-  { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
+
+  // 2. Start Here - for onboarding (conditionally shown - filtered in getFullNavItems)
+  // { href: "/start-here", label: "Start Here", icon: Sparkles, tourId: "start-here" },
+
+  // 3. My Learning - EXPANDABLE GROUP with sub-items
+  {
+    href: "/my-learning",
+    label: "My Learning",
+    icon: BookOpen,
+    tourId: "my-learning",
+    children: [
+      { href: "/my-courses", label: "📚 My Courses", icon: BookOpen, tourId: "my-courses" },
+      { href: "/my-personal-roadmap-by-coach-sarah", label: "🗺️ My Roadmap", icon: Map, tourId: "my-roadmap" },
+      { href: "/my-learning/this-week", label: "📅 This Week", icon: BookOpen, tourId: "this-week" },
+      { href: "/my-learning/notes", label: "📝 Notes", icon: BookOpen, tourId: "notes" },
+    ]
+  },
+
+  // 4. Course Catalog - standalone (browse & purchase)
+  { href: "/catalog", label: "Course Catalog", icon: ShoppingBag, tourId: "catalog" },
+
+
+  // 4. My Library - EXPANDABLE GROUP with sub-items
+  {
+    href: "/my-library",
+    label: "My Library",
+    icon: Library,
+    tourId: "my-library",
+    children: [
+      { href: "/my-library/course-materials", label: "📁 Course Materials", icon: Library, tourId: "course-materials" },
+      { href: "/ebooks", label: "📖 Browse Guides", icon: Library, tourId: "browse-guides" },
+    ]
+  },
+
+  // 5. Coach Sarah - standalone (the differentiator)
+  { href: "/messages", label: "Coach Sarah", icon: MessageSquare, notificationKey: "messages", tourId: "coach-sarah" },
+
+  // 6. My Pod - points to /my-circle (mastermind pod chat)
+  { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
+
+  // 7. Community - EXPANDABLE GROUP with sub-items
+  {
+    href: "/community",
+    label: "Community",
+    icon: Users,
+    tourId: "community",
+    children: [
+      { href: "/community", label: "🏠 Community Hub", icon: Users, tourId: "community-hub" },
+      { href: "/community/cmj94foua0000736vfwdlheir", label: "👋 Introduce Yourself", icon: Users, tourId: "intro" },
+      { href: "/community/announcements", label: "📢 Announcements", icon: MessageSquare, tourId: "announcements" },
+    ]
+  },
+
+  // 8. My Credentials - standalone (certificates, achievements, verify)
+  { href: "/my-credentials", label: "My Credentials", icon: Award, notificationKey: "certificates", tourId: "credentials" },
+
+  // 9. Career Center - MEGA-PAGE (career, programs, tools, directory)
+  {
+    href: "/practice",
+    label: "Career Center",
+    icon: Briefcase,
+    tourId: "practice-earn",
+  },
+
+  // 10. Settings - GROUP  
+  {
+    href: "/profile",
+    label: "Settings",
+    icon: Settings,
+    tourId: "settings",
+    children: [
+      { href: "/profile", label: "My Profile", icon: User, tourId: "profile" },
+      { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
+    ]
+  },
 ];
 
 // Minimal nav for Mini Diploma users - maximum focus for completion
@@ -98,7 +177,16 @@ export function DashboardNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(["my-learning"]); // Start with My Learning expanded
   const { counts } = useNotifications();
+
+  const toggleGroup = (groupId: string) => {
+    setExpandedGroups(prev =>
+      prev.includes(groupId)
+        ? prev.filter(id => id !== groupId)
+        : [...prev, groupId]
+    );
+  };
 
   const user = session?.user;
   const initials = `${user?.firstName?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
@@ -122,9 +210,24 @@ export function DashboardNav() {
   // Check if user has FM Certification for My Circle access
   const hasFMCertification = user?.hasFMCertification === true || isAdmin;
 
-  // Build full nav items with conditional My Circle
+  // Build full nav items with conditional Start Here and My Circle
   const getFullNavItems = () => {
     const items = [...fullNavItems];
+
+    // Add Start Here after Dashboard if user hasn't completed onboarding
+    // Uses hasCompletedOnboarding from session (checks all 6 Start Here items)
+    if (!user?.hasCompletedOnboarding) {
+      const dashboardIndex = items.findIndex(item => item.href === "/dashboard");
+      if (dashboardIndex !== -1) {
+        items.splice(dashboardIndex + 1, 0, {
+          href: "/start-here",
+          label: "Start Here",
+          icon: Sparkles,
+          tourId: "start-here",
+        });
+      }
+    }
+
     // Add My Circle after Messages if user has FM certification
     /* TEMPORARILY DISABLED (HIDDEN)
     if (hasFMCertification) {
@@ -183,14 +286,18 @@ export function DashboardNav() {
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => {
+            const hasChildren = item.children && item.children.length > 0;
+            const isGroupExpanded = expandedGroups.includes(item.tourId || item.href);
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            const isChildActive = hasChildren && item.children?.some(child =>
+              pathname === child.href || pathname.startsWith(child.href + "/")
+            );
             const notificationCount = getNotificationCount(item.notificationKey);
             const isLocked = 'locked' in item && item.locked === true;
             const isUnlocked = 'unlocked' in item && item.unlocked === true;
-
-            // Locked items render differently - not clickable, show lock icon
-            // External locked items (like Full Certification CTA) link to external page
             const isExternal = 'external' in item && item.external === true;
+
+            // Locked items render differently
             if (isLocked) {
               if (isExternal) {
                 return (
@@ -223,15 +330,11 @@ export function DashboardNav() {
                   <div className="flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5 text-amber-400/80" />
                   </div>
-                  {/* Tooltip on hover */}
-                  <div className="absolute left-full ml-2 px-3 py-2 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-xl border border-white/10">
-                    Complete Mini Diploma to unlock
-                  </div>
                 </div>
               );
             }
 
-            // Unlocked items - show with green highlight to celebrate the unlock!
+            // Unlocked items with celebration highlight
             if (isUnlocked) {
               return (
                 <Link
@@ -257,6 +360,66 @@ export function DashboardNav() {
               );
             }
 
+            // GROUP with children - expandable
+            if (hasChildren) {
+              return (
+                <div key={item.href} className="space-y-0.5">
+                  {/* Group header - clickable to expand/collapse */}
+                  <button
+                    onClick={() => toggleGroup(item.tourId || item.href)}
+                    data-tour={item.tourId}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 relative",
+                      isActive || isChildActive
+                        ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 shadow-lg shadow-gold-500/10 border border-gold-400/20"
+                        : "text-white/90 hover:bg-burgundy-600/50 hover:text-white"
+                    )}
+                  >
+                    <item.icon className={cn("w-5 h-5", isActive || isChildActive ? "text-gold-400" : "text-white/60")} />
+                    <span className="flex-1 text-left">{item.label}</span>
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform duration-200",
+                      isGroupExpanded ? "rotate-180" : "",
+                      isActive || isChildActive ? "text-gold-400" : "text-white/40"
+                    )} />
+                  </button>
+
+                  {/* Expanded children */}
+                  {isGroupExpanded && (
+                    <div className="ml-4 pl-3 border-l border-burgundy-600/30 space-y-0.5">
+                      {item.children?.map((child) => {
+                        const isChildActive = pathname === child.href || pathname.startsWith(child.href + "/");
+                        const childNotificationCount = getNotificationCount(child.notificationKey);
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            prefetch={true}
+                            data-tour={child.tourId}
+                            className={cn(
+                              "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 relative",
+                              isChildActive
+                                ? "bg-gold-400/10 text-gold-300 font-medium"
+                                : "text-white/70 hover:bg-burgundy-600/30 hover:text-white"
+                            )}
+                          >
+                            <child.icon className={cn("w-4 h-4", isChildActive ? "text-gold-400" : "text-white/40")} />
+                            <span className="flex-1 text-left text-sm">{child.label}</span>
+                            {childNotificationCount > 0 && (
+                              <span className="min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                                {childNotificationCount > 99 ? "99+" : childNotificationCount}
+                              </span>
+                            )}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // STANDALONE item (no children)
             return (
               <Link
                 key={item.href}
@@ -287,12 +450,12 @@ export function DashboardNav() {
           })}
 
 
-          {/* Coach Section - only for ADMIN, INSTRUCTOR, MENTOR */}
+          {/* Coach Panel - only for ADMIN, INSTRUCTOR, MENTOR */}
           {user && ["ADMIN", "INSTRUCTOR", "MENTOR"].includes(user.role) && (
             <>
               <div className="pt-3 mt-3 border-t border-burgundy-600/30">
                 <p className="px-3 py-1 text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                  🩺 Coach Practice
+                  🩺 Coach Panel
                 </p>
               </div>
               {coachNavItems.map((item) => {
@@ -414,7 +577,12 @@ export function DashboardNav() {
         <div className="lg:hidden fixed inset-0 z-40 bg-burgundy-900 pt-16 overflow-y-auto">
           <nav className="p-4 space-y-2">
             {navItems.map((item) => {
+              const hasChildren = item.children && item.children.length > 0;
+              const isGroupExpanded = expandedGroups.includes(item.tourId || item.href);
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+              const isChildActive = hasChildren && item.children?.some(child =>
+                pathname === child.href || pathname.startsWith(child.href + "/")
+              );
               const notificationCount = getNotificationCount(item.notificationKey);
               const isLocked = 'locked' in item && item.locked === true;
               const isUnlocked = 'unlocked' in item && item.unlocked === true;
@@ -474,6 +642,60 @@ export function DashboardNav() {
                 );
               }
 
+              // GROUP with children - expandable on mobile
+              if (hasChildren) {
+                return (
+                  <div key={item.href} className="space-y-1">
+                    {/* Group header - tap to expand */}
+                    <button
+                      onClick={() => toggleGroup(item.tourId || item.href)}
+                      data-tour={`mobile-${item.tourId}`}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium transition-all",
+                        isActive || isChildActive
+                          ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 border border-gold-400/20"
+                          : "text-white/90 hover:bg-burgundy-800"
+                      )}
+                    >
+                      <item.icon className={cn("w-5 h-5", isActive || isChildActive ? "text-gold-400" : "text-white/60")} />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      <ChevronDown className={cn(
+                        "w-4 h-4 transition-transform duration-200",
+                        isGroupExpanded ? "rotate-180" : "",
+                        isActive || isChildActive ? "text-gold-400" : "text-white/40"
+                      )} />
+                    </button>
+
+                    {/* Expanded children on mobile */}
+                    {isGroupExpanded && (
+                      <div className="ml-4 pl-3 border-l border-burgundy-700 space-y-1">
+                        {item.children?.map((child) => {
+                          const isChildActive = pathname === child.href || pathname.startsWith(child.href + "/");
+                          return (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              prefetch={true}
+                              onClick={() => setMobileMenuOpen(false)}
+                              data-tour={`mobile-${child.tourId}`}
+                              className={cn(
+                                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all",
+                                isChildActive
+                                  ? "bg-gold-400/10 text-gold-300 font-medium"
+                                  : "text-white/70 hover:bg-burgundy-800"
+                              )}
+                            >
+                              <span className="flex-1 text-left">{child.label}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // Regular item
               return (
                 <Link
                   key={item.href}

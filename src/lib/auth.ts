@@ -56,6 +56,7 @@ export const authOptions: NextAuthOptions = {
             role: true,
             isActive: true,
             firstLoginAt: true,
+            hasCompletedOnboarding: true, // For Start Here visibility
             miniDiplomaCategory: true,
             accessExpiresAt: true,
             marketingTags: {
@@ -221,6 +222,7 @@ export const authOptions: NextAuthOptions = {
           firstName: user.firstName,
           lastName: user.lastName,
           isFirstLogin,
+          hasCompletedOnboarding: user.hasCompletedOnboarding || false, // For Start Here visibility
           miniDiplomaCategory: user.miniDiplomaCategory || null,
           miniDiplomaCourseSlug,
           accessExpiresAt: (user as any).accessExpiresAt?.toISOString() || null,
@@ -243,6 +245,7 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.isFirstLogin = user.isFirstLogin;
+        token.hasCompletedOnboarding = user.hasCompletedOnboarding;
         token.miniDiplomaCategory = user.miniDiplomaCategory;
         token.miniDiplomaCourseSlug = user.miniDiplomaCourseSlug;
         token.accessExpiresAt = user.accessExpiresAt;
@@ -258,6 +261,7 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
+        session.user.hasCompletedOnboarding = token.hasCompletedOnboarding as boolean;
         session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
         session.user.miniDiplomaCourseSlug = token.miniDiplomaCourseSlug as string | null;
         session.user.accessExpiresAt = token.accessExpiresAt as string | null;

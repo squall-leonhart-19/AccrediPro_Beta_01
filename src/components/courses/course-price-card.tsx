@@ -135,7 +135,7 @@ export function CoursePriceCard({
             </Link>
           )}
           {enrollmentStatus === "COMPLETED" && (
-            <Link href="/certificates">
+            <Link href="/my-credentials">
               <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white h-12 text-base" size="lg">
                 <Award className="w-5 h-5 mr-2" />
                 View Certificate

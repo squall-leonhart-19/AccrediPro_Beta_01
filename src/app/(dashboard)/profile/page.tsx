@@ -18,6 +18,10 @@ async function getUserProfile(userId: string) {
       role: true,
       emailVerified: true,
       createdAt: true,
+      hasCompletedOnboarding: true,
+      learningGoal: true,
+      focusAreas: true,
+      location: true,
 
       // Relations
       tags: true,
@@ -62,6 +66,30 @@ async function getUserProfile(userId: string) {
   });
 }
 
+async function getUserGoals(userId: string) {
+  const userTags = await prisma.userTag.findMany({
+    where: { userId },
+    select: { tag: true, value: true },
+  });
+
+  // Extract goals from tags
+  const incomeGoalTag = userTags.find(t => t.tag.startsWith('income_goal:'));
+  const timelineTag = userTags.find(t => t.tag.startsWith('timeline:'));
+  const situationTag = userTags.find(t => t.tag.startsWith('situation:'));
+  const investmentTag = userTags.find(t => t.tag.startsWith('investment:'));
+  const obstaclesTags = userTags.filter(t => t.tag.startsWith('obstacle:'));
+  const interestsTags = userTags.filter(t => t.tag.startsWith('interest:'));
+
+  return {
+    incomeGoal: incomeGoalTag?.tag.replace('income_goal:', '') || null,
+    timeline: timelineTag?.tag.replace('timeline:', '') || null,
+    situation: situationTag?.tag.replace('situation:', '') || null,
+    investmentReadiness: investmentTag?.tag.replace('investment:', '') || null,
+    obstacles: obstaclesTags.map(t => t.tag.replace('obstacle:', '')),
+    interests: interestsTags.map(t => t.tag.replace('interest:', '')),
+  };
+}
+
 async function getAllBadges() {
   return prisma.badge.findMany({
     orderBy: { points: "desc" },
@@ -74,14 +102,15 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const [user, allBadges] = await Promise.all([
+  const [user, allBadges, goals] = await Promise.all([
     getUserProfile(session.user.id),
     getAllBadges(),
+    getUserGoals(session.user.id),
   ]);
 
   if (!user) {
     redirect("/login");
   }
 
-  return <ProfileTabs user={user as any} allBadges={allBadges} />;
+  return <ProfileTabs user={user as any} allBadges={allBadges} goals={goals} />;
 }

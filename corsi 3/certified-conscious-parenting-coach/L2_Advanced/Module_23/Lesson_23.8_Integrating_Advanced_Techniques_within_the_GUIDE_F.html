@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Advanced Clinical Case Application</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .practice-lab-banner {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #047857;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #059669;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .complex-case {
+            background: #fafafa;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            border: 2px solid #047857;
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .case-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #047857, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .case-title h3 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+
+        .case-title p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .case-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .case-item .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .case-item .value {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .reasoning-box {
+            background: #fef3c7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .reasoning-box h3 {
+            margin: 0 0 20px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reasoning-box h3::before {
+            content: '🧠';
+            font-size: 24px;
+        }
+
+        .reasoning-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 14px;
+        }
+
+        .reasoning-step .step-label {
+            font-weight: 700;
+            color: #B8860B;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .reasoning-step .step-content {
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .differential-box {
+            background: #f0f9ff;
+            border: 2px solid #0284c7;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .differential-box h3 {
+            margin: 0 0 20px;
+            color: #0369a1;
+        }
+
+        .differential-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .differential-item {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .differential-item .priority {
+            width: 36px;
+            height: 36px;
+            background: #0284c7;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .differential-item .content h4 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .differential-item .content p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .referral-box {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .referral-box h3 {
+            margin: 0 0 20px;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-box h3::before {
+            content: '🚨';
+            font-size: 24px;
+        }
+
+        .referral-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .referral-list li {
+            background: white;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            font-size: 15px;
+        }
+
+        .protocol-box {
+            background: #ecfdf5;
+            border: 2px solid #10B981;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .protocol-box h3 {
+            margin: 0 0 20px;
+            color: #059669;
+        }
+
+        .protocol-phases {
+            display: grid;
+            gap: 16px;
+        }
+
+        .phase-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #d1fae5;
+        }
+
+        .phase-card .phase-header {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phase-card ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .phase-card li {
+            margin-bottom: 6px;
+        }
+
+        .encouragement-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .highlight {
+            color: inherit;
+        }
+
+        .stat-highlight {
+            color: #047857;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Practice Lab: Advanced Clinical Case Application</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">14 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">🔬</div>
+            <h2>Advanced Clinical Case Study</h2>
+            <p>Let's dive into a complex case requiring advanced clinical reasoning and integrated strategies.</p>
+        </div>
+
+        <h2>Complex Case Presentation</h2>
+
+        <div class="complex-case">
+            <div class="case-header">
+                <div class="case-avatar">👩</div>
+                <div class="case-title">
+                    <h3>Eleanor, 48</h3>
+                    <p>Marketing Executive, Austin, TX • Married, two children (10 & 13)</p>
+                </div>
+            </div>
+
+            <div class="case-grid">
+                <div class="case-item">
+                    <div class="label">Chief Complaints</div>
+                    <div class="value">Persistent brain fog, anxiety (panic attacks 2x/week), cyclical acne, irregular
+                        periods, bloating, and fatigue.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medical History</div>
+                    <div class="value">Endometriosis (diagnosed at 32, laparoscopic surgery), migraines, seasonal
+                        allergies.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Medications</div>
+                    <div class="value">Oral contraceptive pill (OCP) for endometriosis management, sumatriptan for
+                        migraines, loratadine for allergies.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Labs (Recent)</div>
+                    <div class="value">Normal CBC & CMP. Hormones: Low progesterone, elevated estradiol, low-normal
+                        testosterone. Elevated hs-CRP (3.5 mg/L). Vitamin D 28 ng/mL.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Diet</div>
+                    <div class="value">"Mostly healthy" - salads, chicken, some processed snacks due to time constraints.
+                        Coffee (3 cups/day), occasional alcohol.</div>
+                </div>
+                <div class="case-item">
+                    <div class="label">Stress Level</div>
+                    <div class="value">Very high - demanding job, juggling family responsibilities, feels overwhelmed.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Clinical Reasoning Process</h2>
+
+        <div class="reasoning-box">
+            <h3>Deconstructing Eleanor's Case</h3>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 1: Identify Interconnected Systems</div>
+                <div class="step-content">This case involves the endocrine system (hormone imbalances, endometriosis),
+                    immune system (elevated hs-CRP, allergies), digestive system (bloating), neurological system (brain
+                    fog, anxiety), and detoxification pathways (cyclical acne). The OCP is masking underlying issues.
+                </div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 2: Uncover Root Contributors</div>
+                <div class="step-content">Likely contributors: Estrogen dominance (endometriosis, cyclical acne), chronic
+                    inflammation (elevated hs-CRP), gut dysbiosis (bloating, potentially worsened by OCP), nutrient
+                    deficiencies (Vitamin D), and HPA axis dysregulation (stress, anxiety).</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 3: Map the Cascade of Effects</div>
+                <div class="step-content">Chronic stress → HPA axis dysregulation → hormone imbalances → increased
+                    inflammation → gut dysbiosis → nutrient deficiencies → brain fog, anxiety, and fatigue. The OCP
+                    further disrupts the gut microbiome and nutrient absorption.</div>
+            </div>
+
+            <div class="reasoning-step">
+                <div class="step-label">Step 4: Prioritize Personalized Interventions</div>
+                <div class="step-content">Focus on reducing inflammation, balancing hormones, supporting gut health,
+                    replenishing nutrients, and managing stress. Weaning off the OCP will require careful planning and
+                    support.</div>
+            </div>
+        </div>
+
+        <h2>Differential Considerations</h2>
+
+        <div class="differential-box">
+            <h3>Exploring Alternative Explanations</h3>
+
+            <div class="differential-grid">
+                <div class="differential-item">
+                    <div class="priority">1</div>
+                    <div class="content">
+                        <h4>Mast Cell Activation Syndrome (MCAS)</h4>
+                        <p>Consider MCAS given the history of endometriosis, migraines, allergies, and elevated hs-CRP.
+                            MCAS can contribute to hormone imbalances and gut issues.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">2</div>
+                    <div class="content">
+                        <h4>Small Intestinal Bacterial Overgrowth (SIBO)</h4>
+                        <p>Bloating, brain fog, and OCP use are suggestive of SIBO. A breath test can confirm this.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">3</div>
+                    <div class="content">
+                        <h4>Thyroid Dysfunction</h4>
+                        <p>Even with normal TSH, suboptimal thyroid function can contribute to fatigue and brain fog.
+                            Assess full thyroid panel including antibodies.</p>
+                    </div>
+                </div>
+                <div class="differential-item">
+                    <div class="priority">4</div>
+                    <div class="content">
+                        <h4>Adrenal Insufficiency</h4>
+                        <p>Prolonged stress can lead to adrenal fatigue. Consider an adrenal stress index to assess cortisol
+                            levels throughout the day.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>When to Refer</h2>
+
+        <div class="referral-box">
+            <h3>Recognizing Red Flags</h3>
+
+            <ul class="referral-list">
+                <li><strong>Severe, debilitating abdominal pain</strong> that is unresponsive to treatment – needs
+                    immediate gynecological evaluation.</li>
+                <li><strong>Sudden vision changes or severe headaches</strong> could indicate a neurological issue requiring
+                    urgent medical attention.</li>
+                <li><strong>Unexplained weight loss or fever</strong> – warrants investigation for underlying infection or
+                    malignancy.</li>
+                <li><strong>Suicidal thoughts or severe depression</strong> – requires immediate mental health referral.</li>
+                <li><strong>Significant cardiovascular symptoms</strong> such as chest pain, palpitations, or shortness of
+                    breath.</li>
+            </ul>
+        </div>
+
+        <h2>Your Proposed Protocol</h2>
+
+        <div class="protocol-box">
+            <h3>A Phased Approach to Eleanor's Wellness</h3>
+
+            <div class="protocol-phases">
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 1: Foundation (Weeks 1-4)</div>
+                    <ul>
+                        <li><strong>Anti-Inflammatory Diet:</strong> Focus on whole foods, eliminate processed foods, sugar,
+                            and potential allergens (gluten, dairy).</li>
+                        <li><strong>Stress Management:</strong> Implement daily mindfulness practices (meditation, deep
+                            breathing), gentle exercise (yoga, walking).</li>
+                        <li><strong>Gut Support:</strong> Start with digestive enzymes and consider a low-FODMAP approach to
+                            reduce bloating.</li>
+                        <li><strong>Recommended Testing:</strong> Comprehensive stool analysis, SIBO breath test, full thyroid
+                            panel with antibodies, adrenal stress index, and MCAS markers.</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 2: Targeted Support (Weeks 5-8)</div>
+                    <ul>
+                        <li><strong>Hormone Balancing:</strong> Depending on test results, consider phytoestrogens, herbs
+                            (e.g., vitex), or bioidentical hormone therapy (in coordination with physician).</li>
+                        <li><strong>Nutrient Repletion:</strong> Address deficiencies identified in testing (Vitamin D,
+                            magnesium, B vitamins).</li>
+                        <li><strong>Gut Healing:</strong> Based on stool analysis, address dysbiosis with targeted probiotics,
+                            antimicrobials, or prebiotics.</li>
+                        <li><strong>Detoxification Support:</strong> Encourage liver detoxification with specific nutrients and
+                            herbs.</li>
+                    </ul>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-header">📅 Phase 3: Optimization (Weeks 9-12)</div>
+                    <ul>
+                        <li><strong>OCP Weaning:</strong> If Eleanor desires, create a gradual weaning plan in coordination
+                            with her physician. Monitor hormone levels and symptoms closely.</li>
+                        <li><strong>Advanced Stress Reduction:</strong> Explore therapies like acupuncture, massage, or
+                            cognitive behavioral therapy (CBT).</li>
+                        <li><strong>Lifestyle Integration:</strong> Focus on building social connections, pursuing hobbies, and
+                            finding purpose.</li>
+                        <li><strong>Retest and Reassess:</strong> Monitor progress and adjust the protocol as needed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. What are the key systems involved in Eleanor's case, and how are they
+                        interconnected?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">The key systems are endocrine, immune, digestive, neurological, and detoxification.
+                    They are interconnected through pathways like the HPA axis, inflammation, and gut-hormone axis.
+                </div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. What are some potential root causes contributing to Eleanor's
+                        symptoms?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Potential root causes include estrogen dominance, chronic inflammation, gut
+                    dysbiosis, nutrient deficiencies, and HPA axis dysregulation.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>3. What are some "red flags" that would necessitate a referral to a medical
+                        doctor?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Red flags include severe abdominal pain, sudden vision changes, unexplained weight
+                    loss, suicidal thoughts, and significant cardiovascular symptoms.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Complex cases require a <span class="highlight">systems-thinking approach</span> to identify
+                    interconnected imbalances.</li>
+                <li>Uncovering <span class="highlight">root causes</span> is crucial for addressing the underlying drivers of
+                    symptoms.</li>
+                <li><span class="highlight">Personalized interventions</span> should be prioritized based on individual test
+                    results and needs.</li>
+                <li><span class="highlight">Phased protocols</span> allow for gradual implementation and adjustments as needed.
+                </li>
+                <li>Always be aware of <span class="highlight">red flags</span> that necessitate a referral to a medical
+                    doctor.</li>
+            </ul>
+        </div>
+
+        <h2>References & Further Reading</h2>
+        <ul>
+            <li> Yarandi, S. S., Srinivasan, S., & Sanders, F. W. (2014). "The Gut Microbiome and the Brain." Journal of
+                Neurogastroenterology and Motility, 20(4), 430–448.</li>
+            <li> Vighi, G., Marcucci, M., Alessandri, C., Fantesini, V., Pasqualetti, P., Pianacci, M., & Gasbarrini, G.
+                (2008). "Allergy and the gastrointestinal system." Clinical & Experimental Immunology, 153 Suppl 1(Suppl
+                1), 3–6.</li>
+            <li> Chaudhari, C. P., Lobo, R. A., Engler, M. M., & Gyamfi-Bannerman, C. (2023). "Endometriosis: Pathogenesis,
+                Diagnosis, and Management." Obstetrics & Gynecology, 141(4), 787-802.</li>
+            <li> Lupattelli, G., Spigset, O., Twigg, M. J., Zagorodnikova, K., Hameen-Anttila, K., Mardby, A. C., ... &
+                Moretti, A. (2014). "Medication use during breastfeeding: a cross-sectional, multinational study." BMJ
+                Open, 4(2), e004398.</li>
+            <li> Groeger, D., O'Mahony, L., Murphy, E. F., Bourke, J. F., Dinan, T. G., Quigley, E. M., & Shanahan, F.
+                (2013). "Bifidobacterium infantis 35624 modulates host inflammatory processes beyond the gut." Gut
+                Microbes, 4(4), 325-339.</li>
+            <li> Slattery, J., Kumar, N., Delhey, L., Habibzadeh, N., & Maes, M. (2021). "The potential of probiotics to
+                prevent and treat depression." Nutrition, 82, 111044.</li>
+            <li> Redondo, P. D., Villarino, A., Dumitrascu, L., & Aznar, E. (2023). "Mast cell activation syndrome: state
+                of the art." Archives of Allergy and Immunology, 184(1), 1-14.</li>
+        </ul>
+    </div>
+</body>
+
+<script>
+    document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const answer = this.nextElementSibling;
+            if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                answer.classList.toggle('show');
+                answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+            }
+        });
+    });
+</script>
+
+</html>

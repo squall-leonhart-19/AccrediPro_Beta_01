@@ -8,6 +8,7 @@ import { NotificationProvider } from "@/components/providers/notification-provid
 import { SWRProvider } from "@/components/providers/swr-provider";
 import { OnboardingWrapper } from "@/components/onboarding/onboarding-wrapper";
 import { AchievementProvider } from "@/components/gamification/achievement-toast";
+import { FloatingCoachWidget } from "@/components/dashboard/floating-coach-widget";
 
 async function getUserOnboardingData(userId: string) {
   const user = await prisma.user.findUnique({
@@ -28,6 +29,11 @@ async function getUserOnboardingData(userId: string) {
     },
   });
 
+  // Get lesson progress for milestone calculation
+  const lessonCount = await prisma.lessonProgress.count({
+    where: { userId, isCompleted: true },
+  });
+
   // Check if user is mini-diploma-only (single mini-diploma enrollment, not completed)
   const isMiniDiplomaOnly =
     enrollments.length === 1 &&
@@ -46,6 +52,7 @@ async function getUserOnboardingData(userId: string) {
     userName: user?.firstName || "Learner",
     coachName,
     isMiniDiplomaOnly,
+    lessonCount,
   };
 }
 
@@ -60,9 +67,13 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const { hasCompletedOnboarding, userName, coachName } = await getUserOnboardingData(
+  const { hasCompletedOnboarding, userName, coachName, lessonCount } = await getUserOnboardingData(
     session.user.id
   );
+
+  // Calculate next milestone for coach widget
+  const MILESTONE_INTERVALS = [5, 10, 15, 25, 50, 75, 100];
+  const nextMilestone = MILESTONE_INTERVALS.find(m => m > lessonCount) || 100;
 
   return (
     <SessionProvider>
@@ -86,6 +97,13 @@ export default async function DashboardLayout({
                 </div>
               </main>
 
+              {/* Floating Coach Sarah Widget - Always visible */}
+              <FloatingCoachWidget
+                userName={userName}
+                userId={session.user.id}
+                currentLessonCount={lessonCount}
+                nextMilestone={nextMilestone}
+              />
             </div>
           </AchievementProvider>
         </NotificationProvider>
@@ -93,3 +111,4 @@ export default async function DashboardLayout({
     </SessionProvider>
   );
 }
+

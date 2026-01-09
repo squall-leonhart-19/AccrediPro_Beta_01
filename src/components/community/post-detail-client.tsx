@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-  ArrowLeft, MessageCircle, MoreHorizontal, Users, Flame, CheckCircle2,
-  ThumbsUp, Heart, Trash2, AlertTriangle
+  ArrowLeft, MessageCircle, MoreHorizontal, CheckCircle2,
+  ThumbsUp, Trash2, AlertTriangle
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -106,18 +106,6 @@ export default function PostDetailClient({
   const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
   const [isDeletingComment, setIsDeletingComment] = useState(false);
 
-  // Dynamic Live Activity
-  const [activeUsers, setActiveUsers] = useState(142);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveUsers(prev => {
-        const change = Math.floor(Math.random() * 15) - 7; // Larger fluctuation
-        return Math.max(142, Math.min(497, prev + change));
-      });
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   // Post State - use stored reactions from database
   const [postReactions, setPostReactions] = useState<Record<string, number>>(
     (post.reactions as Record<string, number>) || {}
@@ -131,10 +119,44 @@ export default function PostDetailClient({
   );
   const [newComment, setNewComment] = useState("");
 
+  // Load more comments pagination
+  const [hasMoreComments, setHasMoreComments] = useState(post.totalComments > 20);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [loadedCommentIds] = useState(() => new Set((post.comments || []).map((c: any) => c.id)));
+
   // Reply state
   const [replyingTo, setReplyingTo] = useState<{ id: string; authorName: string } | null>(null);
   const [replyContent, setReplyContent] = useState("");
   const [isPostingReply, setIsPostingReply] = useState(false);
+
+  // Load more comments function
+  const loadMoreComments = async () => {
+    if (isLoadingMore || !hasMoreComments) return;
+
+    setIsLoadingMore(true);
+    try {
+      const lastComment = comments[comments.length - 1];
+      const cursor = lastComment?.createdAt ? new Date(lastComment.createdAt).toISOString() : "";
+
+      const response = await fetch(`/api/community/comments?postId=${post.id}&cursor=${cursor}&limit=20`);
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        // Filter out any comments we already have
+        const newComments = data.data.filter((c: any) => !loadedCommentIds.has(c.id));
+        newComments.forEach((c: any) => loadedCommentIds.add(c.id));
+
+        // Initialize with reactions and append
+        const commentsWithReactions = initializeCommentsWithReactions(newComments);
+        setComments(prev => [...prev, ...commentsWithReactions]);
+        setHasMoreComments(data.hasMore);
+      }
+    } catch (error) {
+      console.error("Failed to load more comments:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   const handlePostReaction = (emoji: string) => {
     setPostReactions(prev => {
@@ -320,68 +342,30 @@ export default function PostDetailClient({
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] font-sans pb-20">
+    <div className="min-h-screen bg-white font-sans pb-20">
 
-      {/* Top Navbar */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-40 px-4 h-16 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/community')} className="hover:bg-gray-100 rounded-full">
-            <ArrowLeft className="w-5 h-5 text-gray-700" />
-          </Button>
-          <div className="flex items-center gap-3">
-            <img src="/accredipro-logo-full.png" alt="AccrediPro" className="h-8 w-auto object-contain" />
-            <div className="h-4 w-px bg-gray-300 hidden md:block"></div>
-            <h1 className="font-bold text-lg text-gray-900 truncate max-w-[150px] md:max-w-xs hidden md:block">
-              {post.title}
-            </h1>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button size="sm" className="bg-[#8B2332] hover:bg-[#721c28] text-white font-bold rounded-lg px-4 shadow-sm transition-all hover:scale-105 border border-[#721c28]">
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Join Discussion
-          </Button>
-        </div>
+      {/* Minimal Top Navbar */}
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-40 px-4 h-14 flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => router.push('/community')} className="hover:bg-gray-100 rounded-full shrink-0">
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
+        </Button>
+        <h1 className="font-bold text-sm sm:text-lg text-gray-900 truncate flex-1">
+          {post.title}
+        </h1>
       </div>
 
-      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 lg:p-8">
+      {/* TRUE Full-Width Layout */}
+      <div className="px-4 sm:px-6 lg:px-12 xl:px-20 py-4 space-y-4">
 
-        {/* Left Sidebar (Desktop Only) */}
-        <aside className="hidden lg:block lg:col-span-3 space-y-6">
-          {/* Dynamic Live Activity */}
-          <Card className="p-5 border-0 shadow-sm bg-white rounded-2xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 p-3 opacity-10">
-              <Users className="w-24 h-24 text-burgundy-600" />
-            </div>
-            <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-lg relative z-10">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-              Live Activity
-            </h3>
-            <p className="text-sm text-gray-500 mb-4 relative z-10 transition-all duration-500">
-              <span className="font-bold text-burgundy-700">You</span> and <span className="font-bold text-gray-900">{activeUsers}</span> others active on the community right now!
-            </p>
-
-          </Card>
-
-
-
-
-          {/* Dynamic Trending Sidebar */}
-          <TrendingWidget />
-        </aside>
-
-        {/* Main Feed Content */}
-        <main className="col-span-1 lg:col-span-6 space-y-6">
-          <Card className="bg-white border-0 shadow-sm rounded-2xl overflow-hidden animate-fade-in relative">
+        {/* Main Post Content */}
+        <main className="max-w-5xl mx-auto space-y-4">
+          <div className="bg-white">
 
             {/* Author Header */}
-            <div className="p-5 flex items-center justify-between border-b border-gray-50">
+            <div className="py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Avatar className="w-12 h-12 ring-2 ring-burgundy-50">
+                <div className="relative shrink-0">
+                  <Avatar className="w-10 h-10">
                     <AvatarImage src={post.author.avatar} />
                     <AvatarFallback>SM</AvatarFallback>
                   </Avatar>
@@ -431,23 +415,19 @@ export default function PostDetailClient({
               )}
             </div>
 
-            {/* Title & Body */}
-            <div className="px-6 py-5">
-              <h2 className="text-2xl font-black text-gray-900 mb-6 leading-tight tracking-tight">{post.title}</h2>
+            {/* Title & Body - Clean, no boxes */}
+            <div className="px-4 sm:px-6 py-4 sm:py-5">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 leading-tight">{post.title}</h2>
 
-              {/* Rich Text Content */}
-              <div className="bg-[#FCFBF8] rounded-xl p-6 border border-stone-100 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-burgundy-500/20 to-transparent"></div>
-                <div
-                  className="prose prose-lg max-w-none text-gray-800 prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-burgundy-600 prose-strong:text-burgundy-900 prose-p:leading-relaxed prose-p:mb-4 prose-ul:mb-4 prose-ol:mb-4 prose-li:mb-1 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-              </div>
+              {/* Clean prose - no wrapper box */}
+              <div
+                className="prose prose-gray max-w-none text-gray-700 prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-burgundy-600 prose-strong:text-gray-900 prose-p:leading-relaxed prose-p:mb-3 prose-ul:mb-3 prose-li:mb-1 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
             </div>
 
-            {/* Reaction Counts Display - Heart first, slightly larger */}
-            <div className="px-6 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
-              {/* Sort reactions with heart first */}
+            {/* Reaction Counts - Minimal */}
+            <div className="px-4 sm:px-6 py-2 flex items-center gap-2 flex-wrap">
               {Object.entries(postReactions)
                 .sort(([a], [b]) => {
                   if (a === "❤️") return -1;
@@ -455,16 +435,13 @@ export default function PostDetailClient({
                   return 0;
                 })
                 .map(([emoji, count]) => count > 0 && (
-                <span
-                  key={emoji}
-                  className={`inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-full font-bold text-gray-700 border border-gray-100 shadow-sm ${
-                    emoji === "❤️" ? "text-base" : "text-sm"
-                  }`}
-                >
-                  <span className={emoji === "❤️" ? "text-lg" : ""}>{emoji}</span> {count}
-                </span>
-              ))}
-            </div>
+                  <span
+                    key={emoji}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-medium text-gray-600 bg-gray-100"
+                  >
+                    <span>{emoji}</span> {count}
+                  </span>
+                ))}            </div>
 
             {/* Interaction Bar */}
             <div className="px-4 py-3 border-t border-gray-100 grid grid-cols-2 gap-2 relative">
@@ -513,18 +490,18 @@ export default function PostDetailClient({
                 <span>{comments.length} Comments</span>
               </button>
             </div>
-          </Card>
+          </div>
 
-          {/* Comment Input */}
-          <Card className="p-4 border-0 shadow-sm rounded-2xl bg-white flex gap-4 items-start">
-            <Avatar className="w-10 h-10 mt-1">
+          {/* Comment Input - Clean */}
+          <div className="p-4 bg-white rounded-lg flex gap-3 items-start">
+            <Avatar className="w-9 h-9">
               <AvatarImage src={currentUserImage || undefined} />
               <AvatarFallback>{currentUserFirstName?.[0]}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 relative">
+            <div className="flex-1">
               <textarea
-                className="w-full bg-gray-50 rounded-xl border-none resize-none p-3 text-sm focus:ring-2 focus:ring-burgundy-100 focus:bg-white transition-all min-h-[50px]"
-                placeholder="Write a thoughtful comment..."
+                className="w-full bg-gray-50 rounded-lg border border-gray-200 resize-none p-3 text-sm focus:ring-1 focus:ring-burgundy-200 focus:border-burgundy-300 focus:bg-white transition-all min-h-[44px]"
+                placeholder="Write a comment..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 onKeyDown={(e) => {
@@ -534,32 +511,31 @@ export default function PostDetailClient({
                   }
                 }}
               />
-              <div className="flex justify-between items-center mt-2">
-                <p className="text-[10px] text-gray-400 font-medium">Press <span className="bg-gray-100 px-1 py-0.5 rounded text-gray-500">Enter</span> to post</p>
+              <div className="flex justify-end mt-2">
                 <Button
                   size="sm"
                   onClick={handlePostComment}
                   disabled={!newComment.trim() || isPostingComment}
-                  className="rounded-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold h-8 px-4"
+                  className="bg-burgundy-600 hover:bg-burgundy-700 text-white text-sm font-medium h-8 px-4 rounded-lg"
                 >
-                  {isPostingComment ? "Posting..." : "Post"}
+                  {isPostingComment ? "..." : "Post"}
                 </Button>
               </div>
             </div>
-          </Card>
+          </div>
 
-          {/* Comments List */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between px-2">
-              <h3 className="font-bold text-gray-900 text-lg">Comments ({comments.length})</h3>
+          {/* Comments List - Flat */}
+          <div className="space-y-0 divide-y divide-gray-100">
+            <div className="py-2">
+              <h3 className="font-semibold text-gray-900">Comments ({comments.length})</h3>
             </div>
 
             {comments.map((comment: any) => (
-              <Card key={comment.id} className="p-5 border-0 shadow-sm rounded-2xl bg-white hover:shadow-md transition-shadow duration-300">
-                <div className="flex gap-4">
-                  <Avatar className="w-10 h-10 ring-2 ring-gray-50">
+              <div key={comment.id} className="py-4">
+                <div className="flex gap-3">
+                  <Avatar className="w-9 h-9 shrink-0">
                     <AvatarImage src={comment.author.avatar} />
-                    <AvatarFallback className="bg-gradient-to-br from-gray-100 to-gray-200 text-gray-600 font-bold">
+                    <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
                       {(comment.author.firstName || comment.author.name || "S")[0]}
                     </AvatarFallback>
                   </Avatar>
@@ -587,31 +563,28 @@ export default function PostDetailClient({
                       {comment.content}
                     </p>
 
-                    {/* Reaction Pills - Combined display with counts and add button */}
-                    <div className="flex items-center gap-2 pt-3 flex-wrap">
-                      {/* Display existing reactions with counts */}
+                    {/* Reaction Pills - No borders */}
+                    <div className="flex items-center gap-1.5 pt-2 flex-wrap">
                       {comment.reactions && Object.entries(comment.reactions).map(([emoji, count]: [string, any]) => count > 0 && (
                         <button
                           key={emoji}
                           onClick={() => handleCommentReaction(comment.id, emoji)}
                           className={cn(
-                            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border transition-all hover:scale-105 shadow-sm",
+                            "inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm transition-colors",
                             comment.userReaction === emoji
-                              ? "bg-burgundy-100 text-burgundy-700 border-burgundy-300 ring-2 ring-burgundy-200"
-                              : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-gray-300"
+                              ? "bg-burgundy-100 text-burgundy-700"
+                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                           )}
                         >
-                          <span className="text-base">{emoji}</span>
+                          <span>{emoji}</span>
                           <span>{count}</span>
                         </button>
                       ))}
 
-                      {/* Add Reaction Button - Dropdown style */}
+                      {/* Add Reaction Button */}
                       <div className="relative group">
-                        <button
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold bg-white border-2 border-dashed border-gray-200 text-gray-400 hover:border-burgundy-300 hover:text-burgundy-600 transition-all"
-                        >
-                          <span className="text-base">+</span>
+                        <button className="inline-flex items-center px-2 py-1 rounded-full text-sm text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+                          <span>+</span>
                         </button>
                         {/* Reaction picker on hover */}
                         <div className="absolute left-0 bottom-full mb-2 bg-white rounded-full shadow-xl border border-gray-200 p-1.5 hidden group-hover:flex gap-1 z-50">
@@ -703,26 +676,30 @@ export default function PostDetailClient({
                     )}
                   </div>
                 </div>
-              </Card>
+              </div>
             ))}
+
+            {/* Load More Comments Button */}
+            {hasMoreComments && (
+              <div className="flex justify-center pt-4">
+                <Button
+                  onClick={loadMoreComments}
+                  disabled={isLoadingMore}
+                  variant="outline"
+                  className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold px-8 py-2 rounded-xl shadow-sm"
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <span className="animate-pulse">Loading...</span>
+                    </>
+                  ) : (
+                    <>Load More Comments ({post.totalComments - comments.length} more)</>
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </main>
-
-        <aside className="hidden lg:block lg:col-span-3 space-y-6">
-
-          {/* Quick Actions */}
-          <Card className="p-5 border-0 shadow-sm bg-white rounded-2xl space-y-3">
-            <Button onClick={() => router.push('/courses')} className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold h-12 rounded-xl shadow-sm transition-all hover:scale-[1.02] flex items-center justify-between px-5 group">
-              <span>Go to My Courses</span>
-              <ArrowLeft className="w-4 h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="outline" onClick={() => router.push('/messages')} className="w-full border-2 border-gray-100 hover:bg-gray-50 text-gray-700 font-bold h-12 rounded-xl transition-all hover:scale-[1.02] flex items-center justify-between px-5 group">
-              <span>Talk to your Coach</span>
-              <MessageCircle className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600 transition-colors" />
-            </Button>
-          </Card>
-        </aside>
-
       </div>
 
       {/* Delete Confirmation Dialog */}
@@ -776,56 +753,5 @@ export default function PostDetailClient({
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
-}
-
-function TrendingWidget() {
-  // Static for "Trending Today" (Daily update concept)
-  const currentGroup = {
-    label: "Trending Today",
-    icon: Flame,
-    color: "text-orange-500",
-    bg: "bg-orange-50",
-    items: [
-      { title: "I finally treated my first patient!", comments: 45, time: "2h ago" },
-      { title: "Best insurance for new practitioners?", comments: 32, time: "5h ago" },
-      { title: "Alumni Meetup: London 🇬🇧", comments: 128, time: "1d ago" }
-    ]
-  };
-
-  const router = useRouter();
-
-  const Icon = currentGroup.icon;
-
-  return (
-    <Card className="p-5 border-0 shadow-sm bg-white rounded-2xl relative overflow-hidden">
-      <div className="flex items-center gap-2 mb-5">
-        <div className={cn("p-2 rounded-lg", currentGroup.bg)}>
-          <Icon className={cn("w-5 h-5", currentGroup.color)} />
-        </div>
-        <h3 className="font-bold text-gray-900 leading-tight">
-          {currentGroup.label}
-        </h3>
-      </div>
-
-      <ul className="space-y-5">
-        {currentGroup.items.map((item, i) => (
-          <li key={i} className="group cursor-pointer" onClick={() => router.push("/community")}>
-            <p className="text-sm font-bold text-gray-800 group-hover:text-burgundy-600 transition-colors line-clamp-2 mb-1">
-              "{item.title}"
-            </p>
-            <p className="text-xs text-gray-400 font-medium flex items-center gap-2">
-              <span>{item.time}</span>
-              <span className="w-1 h-1 rounded-full bg-gray-300" />
-              <span>{item.comments} comments</span>
-            </p>
-          </li>
-        ))}
-      </ul>
-
-      <Button variant="ghost" className="w-full mt-4 text-xs font-bold text-gray-500 hover:text-burgundy-600">
-        View All Trending
-      </Button>
-    </Card>
   );
 }

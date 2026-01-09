@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Supervision & Mentoring</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .practice-lab-banner {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #047857;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #047857;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #059669;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #047857;
+        }
+
+        .highlight {
+            color: inherit;
+        }
+
+        .stat-highlight {
+            color: inherit;
+        }
+
+        /* Mentee Profile */
+        .mentee-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .mentee-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mentee-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #047857, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+
+        .mentee-info h3 {
+            margin: 0 0 5px;
+            font-size: 20px;
+        }
+
+        .mentee-info p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .mentee-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .detail-card .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-card .value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Case Review Section */
+        .case-review {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .case-review h3 {
+            margin: 0 0 20px;
+            color: #B8860B;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-review h3::before {
+            content: '📋';
+            font-size: 24px;
+        }
+
+        .presented-case {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .presented-case h4 {
+            margin: 0 0 15px;
+            color: #333;
+        }
+
+        /* Teaching Points */
+        .teaching-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .teaching-box h3 {
+            margin: 0 0 20px;
+            color: #047857;
+        }
+
+        .teaching-point {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .teaching-point:last-child {
+            margin-bottom: 0;
+        }
+
+        .point-icon {
+            width: 44px;
+            height: 44px;
+            background: #047857;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .point-content h4 {
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .point-content p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        /* Feedback Framework */
+        .feedback-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .feedback-box h3 {
+            margin: 0 0 20px;
+            color: #16a34a;
+        }
+
+        .feedback-script {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .script-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .script-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .script-section .section-label {
+            font-weight: 700;
+            color: #16a34a;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .script-section .dialogue {
+            font-size: 16px;
+            font-style: italic;
+            color: #333;
+            padding-left: 16px;
+            border-left: 3px solid #16a34a;
+        }
+
+        /* Supervision Tips */
+        .tips-box {
+            background: #fff7ed;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .tips-box h3 {
+            margin: 0 0 20px;
+            color: #B8860B;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .tip-card .tip-do {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .tip-card .tip-dont {
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        /* Encouragement */
+        .encouragement-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+
+            .mentee-details,
+            .tip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 27: L3: Specialty Applications</p>
+            <h1 class="lesson-title">Practice Lab: Supervision & Mentoring</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">12 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <h2>Supervision & Mentoring Practice</h2>
+            <p>This lab helps you develop your supervision skills by guiding a new practitioner.</p>
+        </div>
+
+        <h2>Hello Future Leader! - Sarah Here</h2>
+        <p>Welcome! As you progress in your journey as a Certified Sex Practitioner™, you'll find yourself in a
+            position to guide and mentor others. This is an incredibly rewarding part of the process. Many of us,
+            myself included, have found that mentoring is a great way to solidify your own understanding and give back
+            to the community. This practice lab is designed to give you a taste of what that experience might be like.
+        </p>
+
+        <h2>Your Mentee</h2>
+
+        <div class="mentee-box">
+            <div class="mentee-header">
+                <div class="mentee-avatar">👩‍🎓</div>
+                <div class="mentee-info">
+                    <h3>Priya, New L1 Graduate</h3>
+                    <p>Eager to apply her knowledge, but feeling overwhelmed with client expectations.</p>
+                </div>
+            </div>
+
+            <div class="mentee-details">
+                <div class="detail-card">
+                    <div class="label">Background</div>
+                    <div class="value">Former social worker, specializing in trauma-informed care, now transitioning
+                        to sex therapy.</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Strengths</div>
+                    <div class="value">Excellent listening skills, empathetic, strong understanding of trauma.</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Growth Areas</div>
+                    <div class="value">Needs help setting boundaries, struggles with feeling responsible for client
+                        outcomes, unsure how to integrate somatic practices.</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Her Question</div>
+                    <div class="value">"I'm feeling burnt out already. Am I doing too much for my clients?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>The Case She Presents</h2>
+
+        <div class="case-review">
+            <h3>Priya's Client Concern</h3>
+
+            <div class="presented-case">
+                <h4>What Priya Tells You:</h4>
+                <p>"I have a client, Sarah, 52, who is dealing with a lifelong history of sexual trauma and now
+                    experiences anorgasmia. I’m trying so hard to help her, but after our sessions, I feel exhausted. I
+                    find myself thinking about her case all the time. I feel like if I don't solve this for her, I'm
+                    failing her."</p>
+
+                <h4 style="margin-top: 20px;">What You Need to Explore:</h4>
+                <ul>
+                    <li>Is Priya setting appropriate boundaries with her clients?</li>
+                    <li>Is she taking on too much responsibility for her client's outcomes?</li>
+                    <li>Is she engaging in self-care practices to prevent burnout?</li>
+                    <li>Does she understand the importance of the client's own agency in their healing process?</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Your Teaching Approach</h2>
+
+        <div class="teaching-box">
+            <h3>Key Points to Cover with Priya</h3>
+
+            <div class="teaching-point">
+                <div class="point-icon">1</div>
+                <div class="point-content">
+                    <h4>Emphasize Self-Care as a Non-Negotiable</h4>
+                    <p>Explain that self-care isn't selfish; it's essential for sustainable practice. Discuss specific
+                        self-care strategies, like mindfulness, exercise, and setting work-life boundaries.</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">2</div>
+                <div class="point-content">
+                    <h4>Reframe Responsibility</h4>
+                    <p>Help Priya understand that her role is to guide and support, not to "fix" her clients. The
+                        client's healing journey is ultimately their own responsibility. <span class="highlight">Practitioner
+                            burnout is often caused by taking on too much responsibility for the client's
+                            outcomes.</span></p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">3</div>
+                <div class="point-content">
+                    <h4>Teach Boundary-Setting Skills</h4>
+                    <p>Discuss practical strategies for setting boundaries, such as limiting contact outside of sessions
+                        and being clear about availability. Role-play difficult client scenarios to build her
+                        confidence.</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">4</div>
+                <div class="point-content">
+                    <h4>Integrate Somatic Practices Gradually</h4>
+                    <p>Advise Priya to start with simple somatic exercises that she is comfortable with, such as
+                        breathwork or grounding techniques. Encourage her to explore further training in somatic
+                        therapy.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Your Feedback Dialogue</h2>
+
+        <div class="feedback-box">
+            <h3>How to Deliver Encouraging Feedback</h3>
+
+            <div class="feedback-script">
+                <div class="script-section">
+                    <div class="section-label">Start with Affirmation</div>
+                    <div class="dialogue">"Priya, it's clear how much you care about your clients, and that's a
+                        wonderful quality. The fact that you're reflecting on your boundaries shows a great deal of
+                        self-awareness."</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Ask About Her Experience</div>
+                    <div class="dialogue">"What have you noticed about your energy levels after working with clients
+                        with trauma histories? What self-care practices have you found helpful in the past?"</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Offer Insight</div>
+                    <div class="dialogue">"It’s common for practitioners who work with trauma to experience secondary
+                        trauma or compassion fatigue. Setting boundaries is not about being uncaring; it's about ensuring
+                        you can continue to provide effective support without burning out."</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Collaborate on Solutions</div>
+                    <div class="dialogue">"What small steps can you take this week to prioritize your self-care? How
+                        can you gently reframe your role with Sarah to empower her own healing process?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Supervision Best Practices</h2>
+
+        <div class="tips-box">
+            <h3>Do's and Don'ts of Mentoring</h3>
+
+            <div class="tip-grid">
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Validate their feelings and experiences</div>
+                    <div class="tip-dont">✗ DON'T: Dismiss their concerns or tell them to "toughen up"</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Offer practical tools and strategies</div>
+                    <div class="tip-dont">✗ DON'T: Simply tell them what to do without explaining why</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Encourage self-reflection and self-compassion</div>
+                    <div class="tip-dont">✗ DON'T: Create dependency on you for answers</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Share your own experiences with vulnerability</div>
+                    <div class="tip-dont">✗ DON'T: Focus solely on their shortcomings</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. What is the MOST important aspect of setting boundaries as a new
+                        practitioner?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Setting boundaries protects both the practitioner and the client. It ensures
+                    the practitioner can provide sustainable, effective care without burning out, while also empowering
+                    the client to take ownership of their healing journey.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. Why is it essential to encourage a new practitioner to engage in
+                        self-care?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Self-care is crucial for preventing burnout and maintaining the practitioner's
+                    well-being. It enables them to provide consistent, high-quality care to their clients while
+                    avoiding compassion fatigue and secondary trauma.</div>
+            </div>
+        </div>
+
+        <div class="encouragement-box">
+            <div class="emoji">🌟</div>
+            <h3>You're Becoming a Leader!</h3>
+            <p>As Sarah, I know that the best practitioners don't just help clients – they multiply their impact by
+                training others. Your wisdom and experience are valuable gifts to share. Mentoring others will not only
+                help them grow but will also deepen your own understanding and expertise.</p>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Prioritize open communication and active listening in your mentoring relationships.</li>
+                <li>Emphasize the importance of self-care and boundary-setting for sustainable practice.</li>
+                <li>Guide new practitioners to reframe their role as facilitators of healing, not "fixers."</li>
+                <li>Encourage the integration of somatic practices gradually and with appropriate training.</li>
+                <li>By mentoring others, you solidify your own understanding and contribute to the growth of the
+                    field.</li>
+            </ul>
+        </div>
+
+        <h2>References & Further Reading</h2>
+        <ul>
+            <li>Barnett, J. E., et al. (2007). "Self-care for psychotherapists: Assessment and pathways." Professional
+                Psychology: Research and Practice, 38(5), 522-529.</li>
+            <li> Stamm, B. H. (2010). "The Concise ProQOL Manual." ProQOL.org.</li>
+            <li> Shapiro, S. L., et al. (2007). "Mindfulness-based stress reduction in medical settings." Journal of
+                Psychosomatic Research, 63(6), 555-566.</li>
+            <li>Wise, E. H., et al. (2012). "Avoiding burnout: Strategies for managing work-related stress."
+                Psychotherapy: Theory, Research, Practice, Training, 49(2), 157-167.</li>
+            <li>Rupert, P. A., & Kent, J. S. (2007). "Postlicensure supervision: A review of the literature." Professional
+                Psychology: Research and Practice, 38(6), 581-589.</li>
+            <li>Lusterman, D. D., & Brownlee, K. (2015). "The practice of supervision: A guide for trainees and supervisors."
+                American Psychological Association.</li>
+            <li>Watkins Jr, C. E. (2011). "Essentials of psychotherapy supervision." John Wiley & Sons.</li>
+        </ul>
+    </div>
+</body>
+<script>
+    document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const answer = this.nextElementSibling;
+            if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                answer.classList.toggle('show');
+                answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+            }
+        });
+    });
+</script>
+
+</html>

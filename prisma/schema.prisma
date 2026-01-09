@@ -142,6 +142,9 @@ model User {
   podEngagements    PodEngagement[] // My Circle analytics
   podUserMessages   PodUserMessage[] // User messages for admin view
 
+  // Lead Onboarding
+  leadOnboarding LeadOnboarding?
+
   // Dispute Evidence
   payments          Payment[] // All payment transactions
   resourceDownloads ResourceDownload[] // File download tracking
@@ -216,6 +219,46 @@ model PasswordReset {
   @@index([userId])
 }
 
+// ==================== LEAD ONBOARDING ====================
+
+model LeadOnboarding {
+  id     String @id @default(cuid())
+  userId String @unique
+  
+  // Step 1: Welcome Video
+  watchedVideo   Boolean   @default(false)
+  watchedVideoAt DateTime?
+  
+  // Step 2: Onboarding Questions
+  completedQuestions Boolean   @default(false)
+  completedQuestionsAt DateTime?
+  
+  // Question Answers
+  bringReason      String? // what_brought_you: help_self, career_change, add_to_practice, curious
+  currentSituation String? // stay_at_home_mom, corporate, healthcare, retiree, practitioner
+  incomeGoal       String? // 2-4k, 5-8k, 10k+
+  lifeChangeGoal   String? @db.Text // open text: what would change
+  doingItFor       String? // myself, family, others
+  
+  // Profile Photo (Step 2 optional)
+  uploadedPhoto   Boolean   @default(false)
+  uploadedPhotoAt DateTime?
+  
+  // Step 12: Certificate & Review
+  claimedCertificate   Boolean   @default(false)
+  claimedCertificateAt DateTime?
+  leftReview           Boolean   @default(false)
+  leftReviewAt         DateTime?
+  reviewPlatform       String?   // trustpilot, google
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+}
+
 // ==================== COURSES & CONTENT ====================
 
 model Course {
@@ -234,6 +277,7 @@ model Course {
   difficulty       Difficulty      @default(BEGINNER)
   duration         Int? // Total duration in minutes
   certificateType  CertificateType @default(COMPLETION)
+  certificateImage String? // Certificate preview image for this course
 
   // SEO fields
   metaTitle       String?

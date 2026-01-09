@@ -70,8 +70,25 @@ async function getCourses() {
       // Hide specific courses that are not ready
       slug: { notIn: HIDDEN_COURSE_SLUGS },
     },
-    include: {
-      category: true,
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      description: true,
+      shortDescription: true,
+      thumbnail: true,
+      difficulty: true,
+      duration: true,
+      isFeatured: true,
+      isFree: true,
+      price: true,
+      certificateType: true,
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       coach: {
         select: {
           id: true,
@@ -83,14 +100,23 @@ async function getCourses() {
       },
       modules: {
         where: { isPublished: true },
-        include: {
-          lessons: { where: { isPublished: true }, select: { id: true } },
+        select: {
+          id: true,
+          lessons: {
+            where: { isPublished: true },
+            select: { id: true }
+          },
         },
       },
       _count: {
         select: { enrollments: true, reviews: true },
       },
-      analytics: true,
+      analytics: {
+        select: {
+          totalEnrolled: true,
+          avgRating: true,
+        },
+      },
     },
     orderBy: [{ isFeatured: 'desc' }, { createdAt: 'asc' }],
   });

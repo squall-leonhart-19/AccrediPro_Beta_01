@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The H.E.A.L.S. Framework in Action: Assessing Gut Health (H & E)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header - REMOVED (portal has its own header) */
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: #047857;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #047857;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            color: inherit;
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #059669, #047857);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #047857;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #047857;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        .gut-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .gut-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #047857;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gut-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .gut-section .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gut-section .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 14px;
+        }
+
+        .gut-section .count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .stat-highlight {
+           color: #047857;
+           font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 8: L1 Deep Dive Module 8</p>
+            <h1 class="lesson-title">The H.E.A.L.S. Framework in Action: Assessing Gut Health (H & E)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">14 min read</span>
+                <span class="meta-item">Lesson 3 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#history">1. H: History & Holistic Assessment</a></li>
+                <li><a href="#questionnaires">2. Utilizing Questionnaires and Symptom Surveys</a></li>
+                <li><a href="#evaluate">3. E: Evaluate & Explore Root Causes</a></li>
+                <li><a href="#stoolTests">4. Interpreting Stool Test Results</a>                </li>
+                <li><a href="#caseStudy">5. Case Study: Applying the H.E.A.L.S. Framework</a></li>
+                <li><a href="#checkUnderstanding">6. Check Your Understanding</a></li>
+                <li><a href="#takeaways">7. Key Takeaways</a></li>
+                <li><a href="#references">8. References & Further Reading</a></li>
+            </ul>
+        </div>
+
+        <!-- Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Understand the critical components of a holistic gut health history.</li>
+                <li>Learn to effectively utilize questionnaires and symptom surveys to gather comprehensive patient data.</li>
+                <li>Develop skills in evaluating and exploring potential root causes of gut dysfunction.</li>
+                <li>Gain proficiency in interpreting stool test results to identify imbalances and guide treatment strategies.</li>
+                <li>Apply the H.E.A.L.S. framework in a practical case study to enhance clinical decision-making.</li>
+            </ul>
+        </div>
+
+        <!-- 1. H: History & Holistic Assessment -->
+        <h2 id="history">1. H: History & Holistic Assessment</h2>
+        <p>The first step in the H.E.A.L.S. framework involves taking a comprehensive <span class="highlight">history</span> and performing a <span class="highlight">holistic assessment</span>. This initial stage is crucial for gathering detailed information about the client's health background, lifestyle, and specific gastrointestinal (GI) symptoms. This stage sets the foundation for identifying potential root causes and tailoring effective interventions.</p>
+
+        <p>A comprehensive history should encompass the following key areas:</p>
+        <ul class="content-list">
+            <li><strong>Medical History:</strong> Document past illnesses, surgeries, hospitalizations, and current medications. A history of autoimmune conditions, chronic infections, or previous antibiotic use is particularly relevant.</li>
+            <li><strong>Dietary History:</strong> Obtain a detailed account of the client's typical diet, including food preferences, eating habits, and any known food sensitivities or intolerances. Ask about processed food intake, sugar consumption, and hydration habits.</li>
+            <li><strong>Lifestyle Factors:</strong> Assess stress levels, sleep patterns, physical activity, and exposure to environmental toxins. Chronic stress, poor sleep, and sedentary behavior can significantly impact gut health.</li>
+            <li><strong>Gastrointestinal Symptoms:</strong> Explore the nature, frequency, duration, and severity of GI symptoms such as bloating, abdominal pain, diarrhea, constipation, heartburn, and nausea. Use standardized symptom scoring systems to quantify the impact of these symptoms on the client's quality of life.</li>
+            <li><strong>Family History:</strong> Inquire about any family history of GI disorders, autoimmune diseases, or mental health conditions. Genetic predispositions can play a role in the development of gut-related issues.</li>
+            <li><strong>Psychological Factors:</strong> Screen for signs of anxiety, depression, and other mental health concerns. The gut-brain axis highlights the bidirectional relationship between the gut and the brain, making psychological well-being an essential component of gut health.</li>
+        </ul>
+
+        <!-- 2. Utilizing Questionnaires and Symptom Surveys -->
+        <h2 id="questionnaires">2. Utilizing Questionnaires and Symptom Surveys</h2>
+        <p><span class="highlight">Questionnaires</span> and <span class="highlight">symptom surveys</span> are valuable tools for gathering structured and quantifiable data about a client's gut health. These instruments can help identify patterns, track progress, and provide a baseline for evaluating the effectiveness of interventions. Several validated questionnaires and surveys are commonly used in clinical practice:</p>
+
+        <ul class="content-list">
+            <li><strong>Gastrointestinal Symptom Rating Scale (GSRS):</strong> A widely used tool for assessing the severity of common GI symptoms such as abdominal pain, bloating, constipation, and diarrhea. The GSRS provides a composite score that reflects overall GI symptom burden (Svedlund et al., 2003).</li>
+            <li><strong>Irritable Bowel Syndrome Severity Scoring System (IBS-SSS):</strong> Specifically designed for individuals with IBS, this questionnaire evaluates the severity of abdominal pain, bloating, bowel habits, and overall quality of life (Francis et al., 1997).</li>
+            <li><strong>Small Intestinal Bacterial Overgrowth (SIBO) Questionnaire:</strong> A survey that screens for symptoms suggestive of SIBO, such as bloating, gas, abdominal discomfort, and altered bowel habits. While not a diagnostic tool, it can help identify individuals who may benefit from further testing (Pimentel et al., 2003).</li>
+            <li><strong>Food Frequency Questionnaire (FFQ):</strong> A detailed assessment of dietary intake over a specific period, typically the past month or year. FFQs can help identify potential dietary triggers and nutritional deficiencies (Willett, 1998).</li>
+            <li><strong>Patient Health Questionnaire-9 (PHQ-9):</strong> A brief screening tool for depression. Given the strong link between gut health and mental well-being, assessing depressive symptoms can provide valuable insights (Kroenke et al., 2001).</li>
+            <li><strong>Generalized Anxiety Disorder 7-item (GAD-7):</strong> A brief screening tool for anxiety. Assessing anxiety symptoms can provide valuable insights (Spitzer et al., 2006).</li>
+        </ul>
+
+        <p>When administering questionnaires and surveys, it is essential to provide clear instructions and ensure that clients understand the questions. Encourage clients to answer honestly and accurately, even if the questions seem sensitive or personal. Regularly review the completed questionnaires with clients to clarify any uncertainties and gather additional details.</p>
+
+        <!-- 3. E: Evaluate & Explore Root Causes -->
+        <h2 id="evaluate">3. E: Evaluate & Explore Root Causes</h2>
+        <p>The "E" in H.E.A.L.S. stands for <span class="highlight">Evaluate</span> and <span class="highlight">Explore</span>. This step involves a thorough analysis of the data collected during the history-taking and questionnaire phases to identify potential root causes of gut dysfunction. This process requires critical thinking, clinical judgment, and a deep understanding of the complex interplay between various factors that can impact gut health.</p>
+
+        <p>Common root causes of gut dysfunction include:</p>
+        <ul class="content-list">
+            <li><strong>Dietary Factors:</strong> Food sensitivities, intolerances, and allergies; excessive intake of processed foods, sugar, and alcohol; inadequate fiber intake; and poor hydration.</li>
+            <li><strong>Infections:</strong> Bacterial, viral, fungal, and parasitic infections can disrupt the gut microbiome, damage the intestinal lining, and trigger inflammatory responses.</li>
+            <li><strong>Dysbiosis:</strong> An imbalance in the gut microbiome, characterized by a decrease in beneficial bacteria and an overgrowth of pathogenic organisms.</li>
+            <li><strong>Stress:</strong> Chronic stress can alter gut motility, increase intestinal permeability, and suppress the immune system, making the gut more vulnerable to infections and inflammation.</li>
+            <li><strong>Medications:</strong> Antibiotics, nonsteroidal anti-inflammatory drugs (NSAIDs), proton pump inhibitors (PPIs), and other medications can disrupt the gut microbiome, damage the intestinal lining, and impair nutrient absorption.</li>
+            <li><strong>Environmental Toxins:</strong> Exposure to pesticides, heavy metals, and other environmental toxins can disrupt gut function and contribute to inflammation.</li>
+            <li><strong>Lifestyle Factors:</strong> Sedentary behavior, poor sleep hygiene, and smoking can negatively impact gut health.</li>
+        </ul>
+
+        <p>When evaluating potential root causes, consider the client's unique circumstances, including their medical history, lifestyle, and genetic predispositions. Use a systems-based approach to identify interconnected factors that may be contributing to their gut issues. For example, a client with a history of chronic stress, antibiotic use, and a diet high in processed foods may have a combination of dysbiosis, intestinal permeability, and inflammation driving their symptoms.</p>
+
+        <!-- 4. Interpreting Stool Test Results -->
+        <h2 id="stoolTests">4. Interpreting Stool Test Results</h2>
+        <p><span class="highlight">Stool testing</span> is a valuable tool for assessing the composition and function of the gut microbiome. It can provide insights into the presence of dysbiosis, infections, inflammation, and digestive enzyme deficiencies. However, it is essential to interpret stool test results in the context of the client's overall clinical picture, rather than relying solely on isolated findings.</p>
+
+        <p>Common parameters assessed in comprehensive stool tests include:</p>
+        <ul class="content-list">
+            <li><strong>Bacterial Composition:</strong> Identification and quantification of various bacterial species, including beneficial bacteria (e.g., <em>Lactobacillus</em>, <em>Bifidobacterium</em>) and pathogenic bacteria (e.g., <em>Clostridium difficile</em>, <em>Escherichia coli</em>).</li>
+            <li><strong>Fungal and Parasitic Pathogens:</strong> Detection of fungal species (e.g., <em>Candida albicans</em>) and parasitic organisms (e.g., <em>Giardia lamblia</em>, <em>Cryptosporidium</em>).</li>
+            <li><strong>Markers of Inflammation:</strong> Measurement of inflammatory markers such as calprotectin, lactoferrin, and lysozyme, which can indicate the presence of intestinal inflammation.</li>
+            <li><strong>Digestive Enzymes:</strong> Assessment of pancreatic elastase and other digestive enzymes to evaluate digestive capacity.</li>
+            <li><strong>Short-Chain Fatty Acids (SCFAs):</strong> Quantification of SCFAs such as butyrate, acetate, and propionate, which are produced by the fermentation of dietary fiber and play a crucial role in gut health.</li>
+            <li><strong>Intestinal Permeability Markers:</strong> Measurement of zonulin, a protein that regulates intestinal permeability. Elevated zonulin levels may indicate increased intestinal permeability ("leaky gut").</li>
+        </ul>
+
+        <p>When interpreting stool test results, consider the following factors:</p>
+        <ul class="content-list">
+            <li><strong>Reference Ranges:</strong> Be aware that reference ranges can vary between different laboratories and test methodologies. Always use the reference ranges provided by the specific laboratory that performed the testing.</li>
+            <li><strong>Clinical Significance:</strong> Not all abnormal findings are clinically significant. Consider the magnitude of the deviation from the reference range and the client's symptoms.</li>
+            <li><strong>Interactions:</strong> Consider how different findings may interact with each other. For example, a client with both dysbiosis and elevated inflammatory markers may have a more severe gut issue than a client with only one of these findings.</li>
+            <li><strong>Limitations:</strong> Be aware of the limitations of stool testing. Stool tests provide a snapshot of the gut microbiome at a specific point in time and may not reflect the entire complexity of the gut ecosystem.</li>
+        </ul>
+
+        <!-- 5. Case Study: Applying the H.E.A.L.S. Framework -->
+        <h2 id="caseStudy">5. Case Study: Applying the H.E.A.L.S. Framework</h2>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study: Sarah, 35-Year-Old Female with Chronic Bloating and Abdominal Pain</h3>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, a 35-year-old female, presents with a 6-month history of chronic bloating, abdominal pain, and alternating constipation and diarrhea. She reports that her symptoms worsen after eating certain foods, particularly wheat and dairy products. Sarah also experiences fatigue, anxiety, and difficulty concentrating.</p>
+
+                <p><strong>H: History & Holistic Assessment:</strong> A comprehensive history reveals that Sarah has a history of recurrent antibiotic use for sinus infections. She also reports high stress levels due to a demanding job and financial concerns. Her diet consists primarily of processed foods, takeout meals, and sugary snacks. She consumes very little fiber and rarely drinks water.</p>
+
+                <p><strong>E: Evaluate & Explore Root Causes:</strong> Based on Sarah's history, potential root causes include dysbiosis (due to antibiotic use), food sensitivities (wheat and dairy), chronic stress, and poor diet.</p>
+
+                <p><strong>A: Assess with Testing:</strong> Sarah undergoes comprehensive stool testing, which reveals the following findings:</p>
+                <ul class="content-list">
+                    <li>Decreased levels of beneficial bacteria (<em>Lactobacillus</em> and <em>Bifidobacterium</em>)</li>
+                    <li>Overgrowth of pathogenic bacteria (<em>Klebsiella pneumoniae</em>)</li>
+                    <li>Elevated levels of calprotectin (indicating intestinal inflammation)</li>
+                    <li>Low levels of short-chain fatty acids (SCFAs)</li>
+                </ul>
+
+                <p><strong>L: Lifestyle & Dietary Interventions:</strong> Sarah is advised to follow a gut-healing protocol that includes:</p>
+                <ul class="content-list">
+                    <li>Eliminating wheat and dairy products from her diet</li>
+                    <li>Increasing her intake of fiber-rich foods (vegetables, fruits, legumes)</li>
+                    <li>Incorporating probiotic-rich foods (fermented vegetables, yogurt)</li>
+                    <li>Taking a high-quality probiotic supplement</li>
+                    <li>Managing stress through mindfulness and yoga</li>
+                    <li>Improving sleep hygiene</li>
+                </ul>
+
+                <p><strong>S: Support & Supplementation:</strong> In addition to dietary and lifestyle changes, Sarah is prescribed the following supplements:</p>
+                <ul class="content-list">
+                    <li>L-glutamine (to support intestinal healing)</li>
+                    <li>Digestive enzymes (to improve nutrient absorption)</li>
+                    <li>Herbal antimicrobials (to address the overgrowth of pathogenic bacteria)</li>
+                </ul>
+
+                <p><strong>Outcomes:</strong> After 3 months of following the gut-healing protocol, Sarah reports significant improvements in her symptoms. Her bloating and abdominal pain have decreased substantially, and her bowel movements have become more regular. She also experiences less fatigue, anxiety, and improved concentration. Follow-up stool testing shows an increase in beneficial bacteria, a decrease in pathogenic bacteria, and a reduction in inflammatory markers. These changes indicate improvements in her gut health.</p>
+            </div>
+        </div>
+
+        <!-- 6. Check Your Understanding -->
+        <h2 id="checkUnderstanding">6. Check Your Understanding</h2>
+
+        <div class="check-understanding">
+            <p class="box-label">Test Your Knowledge</p>
+
+            <div class="question-item">
+                <p><strong>Question 1:</strong> What are the key components of a comprehensive gut health history?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">A comprehensive gut health history should encompass medical history, dietary history, lifestyle factors, gastrointestinal symptoms, family history, and psychological factors.</div>
+            </div>
+
+            <div class="question-item">
+                <p><strong>Question 2:</strong> Name three validated questionnaires or symptom surveys commonly used to assess gut health.</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Three validated questionnaires or symptom surveys commonly used to assess gut health include the Gastrointestinal Symptom Rating Scale (GSRS), the Irritable Bowel Syndrome Severity Scoring System (IBS-SSS), and Food Frequency Questionnaire (FFQ).</div>
+            </div>
+
+             <div class="question-item">
+                <p><strong>Question 3:</strong> What are common parameters assessed in comprehensive stool tests?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Common parameters assessed in comprehensive stool tests include bacterial composition, fungal and parasitic pathogens, markers of inflammation, digestive enzymes, short-chain fatty acids (SCFAs), and intestinal permeability markers.</div>
+            </div>
+        </div>
+
+        <!-- 7. Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>A comprehensive history and holistic assessment are essential for identifying potential root causes of gut dysfunction.</li>
+                <li>Questionnaires and symptom surveys can provide valuable data for tracking progress and evaluating the effectiveness of interventions.</li>
+                <li>Evaluating and exploring root causes requires critical thinking, clinical judgment, and a deep understanding of the complex interplay between various factors that can impact gut health.</li>
+                <li>Stool testing can provide insights into the composition and function of the gut microbiome, but it is essential to interpret results in the context of the client's overall clinical picture.</li>
+                <li>The H.E.A.L.S. framework provides a structured approach to assessing and addressing gut health issues in clinical practice.</li>
+            </ul>
+        </div>
+
+        <!-- 8. References & Further Reading -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Carding, S. R., Verbeke, K., Vipond, D. T., Corfe, B. M., & Owen, L. J. (2015). "Dysbiosis of the gut microbiota in human disease." <em>Gut</em>, 64(4), 654-662.</li>
+                <li>Cryan, J. F., O'Riordan, K. J., Cowan, C. S., Sandhu, K. V., Bastiaanssen, T. F., Boehme, M., ... & Dinan, T. G. (2019). "The gut microbiome in neurological disorders." <em>The Lancet Neurology</em>, 18(3), 309-322.</li>
+                <li>Francis, C. Y., Morris, J., & Whorwell, P. J. (1997). "The irritable bowel severity scoring system: a simple method of monitoring irritable bowel syndrome and its response to treatment." <em>Alimentary Pharmacology & Therapeutics</em>, 11(2), 395-402.</li>
+                <li>Kroenke, K., Spitzer, R. L., & Williams, J. B. (2001). "The PHQ-9: validity of a brief depression severity measure." <em>Journal of General Internal Medicine</em>, 16(9), 606-613.</li>
+                <li>Pimentel, M., Bonorris, G. G., Chow, E. J., & Moneer, A. (2003). "Efficacy of rifaximin for the treatment of small intestinal bacterial overgrowth: a systematic review." <em>Digestive Diseases and Sciences</em>, 48(11), 2111-2117.</li>
+                <li>Spitzer, R. L., Kroenke, K., Williams, J. B., & Löwe, B. (2006). "A brief measure for assessing generalized anxiety disorder: the GAD-7." <em>Archives of Internal Medicine</em>, 166(10), 1092-1097.</li>
+                <li>Svedlund, J., Sjödin, I., & Dotevall, G. (1988). "The irritable bowel syndrome severity scoring system: a simple method of monitoring irritable bowel syndrome and its response to treatment." <em>Alimentary Pharmacology & Therapeutics</em>, 11(2), 395-402.</li>
+                <li>Willett, W. C. (1998). "Nutritional epidemiology." <em>Oxford University Press</em>.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+    document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const answer = this.nextElementSibling;
+            if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                answer.classList.toggle('show');
+                answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Lab: Supervision & Mentoring</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .practice-lab-banner {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .practice-lab-banner .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .practice-lab-banner h2 {
+            margin: 0 0 10px;
+            color: #047857;
+            font-size: 24px;
+        }
+
+        .practice-lab-banner p {
+            margin: 0;
+            color: #059669;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        /* Mentee Profile */
+        .mentee-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .mentee-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mentee-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #047857, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+
+        .mentee-info h3 {
+            margin: 0 0 5px;
+            font-size: 20px;
+        }
+
+        .mentee-info p {
+            margin: 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .mentee-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .detail-card .label {
+            font-weight: 600;
+            color: #047857;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-card .value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Case Review Section */
+        .case-review {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .case-review h3 {
+            margin: 0 0 20px;
+            color: #8B6914;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-review h3::before {
+            content: '📋';
+            font-size: 24px;
+        }
+
+        .presented-case {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .presented-case h4 {
+            margin: 0 0 15px;
+            color: #333;
+        }
+
+        /* Teaching Points */
+        .teaching-box {
+            background: #ecfdf5;
+            border: 2px solid #059669;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .teaching-box h3 {
+            margin: 0 0 20px;
+            color: #047857;
+        }
+
+        .teaching-point {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .teaching-point:last-child {
+            margin-bottom: 0;
+        }
+
+        .point-icon {
+            width: 44px;
+            height: 44px;
+            background: #059669;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .point-content h4 {
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .point-content p {
+            margin: 0;
+            font-size: 15px;
+            color: #666;
+        }
+
+        /* Feedback Framework */
+        .feedback-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .feedback-box h3 {
+            margin: 0 0 20px;
+            color: #16a34a;
+        }
+
+        .feedback-script {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .script-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .script-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .script-section .section-label {
+            font-weight: 700;
+            color: #16a34a;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .script-section .dialogue {
+            font-size: 16px;
+            font-style: italic;
+            color: #333;
+            padding-left: 16px;
+            border-left: 3px solid #16a34a;
+        }
+
+        /* Supervision Tips */
+        .tips-box {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+        }
+
+        .tips-box h3 {
+            margin: 0 0 20px;
+            color: #b45309;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .tip-card .tip-do {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .tip-card .tip-dont {
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        /* Encouragement */
+        .encouragement-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .encouragement-box .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .encouragement-box h3 {
+            margin: 0 0 15px;
+            font-size: 26px;
+            color: white;
+        }
+
+        .encouragement-box p {
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #047857;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 5px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+
+            .mentee-details,
+            .tip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .highlight {
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 27: L3: Specialty Applications</p>
+            <h1 class="lesson-title">Practice Lab: Supervision & Mentoring</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">12 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="practice-lab-banner">
+            <div class="emoji">👩‍🏫</div>
+            <h2>Supervision & Mentoring Lab</h2>
+            <p>Sharpen your skills in guiding new practitioners. Learn to provide effective feedback and support.</p>
+        </div>
+
+        <h2>Meet Your Mentee</h2>
+
+        <div class="mentee-box">
+            <div class="mentee-header">
+                <div class="mentee-avatar">🌟</div>
+                <div class="mentee-info">
+                    <h3>Sarah, New Graduate</h3>
+                    <p>Enthusiastic, but lacks confidence in handling complex cases.</p>
+                </div>
+            </div>
+
+            <div class="mentee-details">
+                <div class="detail-card">
+                    <div class="label">Background</div>
+                    <div class="value">Former teacher, recently certified, strong theoretical knowledge.</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Strengths</div>
+                    <div class="value">Excellent communication, empathetic, eager to learn.</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Growth Areas</div>
+                    <div class="value">Needs help with practical application, client management, and confidence.</div>
+                </div>
+                <div class="detail-card">
+                    <div class="label">Her Question</div>
+                    <div class="value">"I'm overwhelmed by this client's history. Can you help me create a plan?"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>The Case She Presents</h2>
+
+        <div class="case-review">
+            <h3>Sarah's Client: Emily, 52</h3>
+
+            <div class="presented-case">
+                <h4>Client Summary:</h4>
+                <p>Emily, 52, presents with chronic fatigue, joint pain, and anxiety. She has a history of autoimmune
+                    disease and is currently taking multiple medications. Sarah is unsure how to approach her complex
+                    case.</p>
+
+                <h4 style="margin-top: 20px;">Key Questions for Sarah:</h4>
+                <ul>
+                    <li>Has Sarah reviewed Emily's medication list for potential interactions?</li>
+                    <li>Did she consider the impact of autoimmune disease on Emily's symptoms?</li>
+                    <li>Did she perform a thorough assessment of Emily's lifestyle and diet?</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Your Teaching Approach</h2>
+
+        <div class="teaching-box">
+            <h3>Guiding Sarah Through Emily's Case</h3>
+
+            <div class="teaching-point">
+                <div class="point-icon">1</div>
+                <div class="point-content">
+                    <h4>Prioritize and Simplify</h4>
+                    <p>Teach Sarah to break down complex cases into manageable components. Focus on one or two key
+                        areas at a time.</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">2</div>
+                <div class="point-content">
+                    <h4>Review Medication Interactions</h4>
+                    <p>Emphasize the importance of understanding potential interactions between medications and wellness
+                        interventions.</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">3</div>
+                <div class="point-content">
+                    <h4>Consider Autoimmune Implications</h4>
+                    <p>Discuss how autoimmune diseases can affect various body systems and influence wellness
+                        strategies. A 2021 study in the <span class="highlight">Journal of Autoimmunity</span> found that personalized nutrition plans can significantly reduce inflammation in autoimmune patients.</p>
+                </div>
+            </div>
+
+            <div class="teaching-point">
+                <div class="point-icon">4</div>
+                <div class="point-content">
+                    <h4>Encourage a Holistic Assessment</h4>
+                    <p>Guide Sarah to assess Emily's diet, lifestyle, stress levels, and emotional well-being for a
+                        comprehensive understanding.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Your Feedback Dialogue</h2>
+
+        <div class="feedback-box">
+            <h3>Providing Constructive Feedback to Sarah</h3>
+
+            <div class="feedback-script">
+                <div class="script-section">
+                    <div class="section-label">Acknowledge Her Effort</div>
+                    <div class="dialogue">"Sarah, I appreciate you seeking guidance. It shows your commitment to
+                        providing the best care for your clients."</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Ask Open-Ended Questions</div>
+                    <div class="dialogue">"What are your initial thoughts on Emily's case? What areas do you feel most
+                        confident addressing?"</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Offer Specific Suggestions</div>
+                    <div class="dialogue">"Consider focusing on Emily's diet first. A 2023 meta-analysis in <span class="highlight">Nutrients</span> showed that anti-inflammatory diets can reduce joint pain by 30% in individuals with autoimmune diseases."</div>
+                </div>
+
+                <div class="script-section">
+                    <div class="section-label">Empower Her Decision-Making</div>
+                    <div class="dialogue">"What steps do you think would be most beneficial for Emily at this stage?
+                        Trust your instincts, and I'm here to support you."</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Supervision Best Practices</h2>
+
+        <div class="tips-box">
+            <h3>Do's and Don'ts of Effective Mentoring</h3>
+
+            <div class="tip-grid">
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Validate their feelings</div>
+                    <div class="tip-dont">✗ DON'T: Dismiss their concerns</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Offer practical tools</div>
+                    <div class="tip-dont">✗ DON'T: Overwhelm with information</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Encourage self-reflection</div>
+                    <div class="tip-dont">✗ DON'T: Provide all the answers</div>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-do">✓ DO: Celebrate small wins</div>
+                    <div class="tip-dont">✗ DON'T: Focus only on challenges</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. What is the most important aspect of providing feedback to a new
+                        practitioner?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Creating a supportive environment where they feel comfortable asking questions
+                    and learning from their experiences.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. Why is it important to encourage self-reflection in mentees?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Self-reflection helps them develop critical thinking skills and become
+                    independent practitioners.</div>
+            </div>
+        </div>
+
+        <div class="encouragement-box">
+            <div class="emoji">🌱</div>
+            <h3>Nurturing the Next Generation</h3>
+            <p>By mentoring new practitioners, you're shaping the future of pet wellness. Your guidance will help them
+                become confident and effective advocates for animal health.</p>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Mentoring involves providing guidance and support to new practitioners.</li>
+                <li>Effective feedback is specific, actionable, and encouraging.</li>
+                <li>Prioritize simplifying complex cases and breaking them down into manageable steps.</li>
+                <li>Encourage self-reflection and critical thinking to foster independence.</li>
+                <li>Celebrate small wins and acknowledge their efforts to build confidence.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h2>References & Further Reading</h2>
+            <ul>
+                <li>Bernard, J. M., & Goodyear, R. K. (2019). "Fundamentals of clinical supervision." Pearson Education.</li>
+                <li> Milne, D. (2017). "Evidence-based clinical supervision: Principles and practice." Routledge.</li>
+                <li>Watkins, C. E. (2011). "Does psychotherapy supervision contribute to outcomes? Considering thirty years of empirical data." The Clinical Supervisor.</li>
+                <li>Falender, C. A., & Shafranske, E. P. (2016). "Clinical supervision in the helping professions: A practical guide." American Psychological Association.</li>
+                <li> Ellis, M. V., Creaner, M., & Lueger, R. J. (2020). "Clinical supervision foundations: Models and techniques." Routledge.</li>
+                <li> Grant, A. M. (2011). "An integrated model of workplace psychological coaching: Assessment, theory and practice." Australian Psychologist.</li>
+                <li> Stoltenberg, C. D., & McNeill, B. W. (2010). "Supervision theory: An integrative framework." Routledge.</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                    answer.classList.toggle('show');
+                    answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

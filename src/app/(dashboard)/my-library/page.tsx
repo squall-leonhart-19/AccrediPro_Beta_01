@@ -27,6 +27,8 @@ import {
   Library,
   Sparkles,
   ShoppingBag,
+  FileDown,
+  FolderOpen,
 } from "lucide-react";
 
 // Categories for filtering
@@ -4577,6 +4579,21 @@ export default function MyLibraryPage() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [completedEbook, setCompletedEbook] = useState<typeof MY_EBOOKS[0] | null>(null);
 
+  // Course Materials state
+  const [courseResources, setCourseResources] = useState<Array<{
+    id: string;
+    title: string;
+    type: string;
+    url: string;
+    size: number | null;
+    courseName: string;
+    courseSlug: string;
+    courseThumbnail: string | null;
+    moduleName: string;
+    lessonName: string;
+  }>>([]);
+  const [loadingCourseResources, setLoadingCourseResources] = useState(false);
+
   // Load progress from localStorage and fetch unlocked resources/progress from API
   useEffect(() => {
     const saved = localStorage.getItem("library-saved");
@@ -4629,6 +4646,27 @@ export default function MyLibraryPage() {
   useEffect(() => {
     localStorage.setItem("library-progress", JSON.stringify(readingProgress));
   }, [readingProgress]);
+
+  // Fetch course resources when category is selected
+  useEffect(() => {
+    if (selectedCategory === "course-materials" && courseResources.length === 0) {
+      const fetchCourseResources = async () => {
+        setLoadingCourseResources(true);
+        try {
+          const res = await fetch("/api/user/library/course-resources");
+          if (res.ok) {
+            const data = await res.json();
+            setCourseResources(data.resources || []);
+          }
+        } catch (error) {
+          console.error("Error fetching course resources:", error);
+        } finally {
+          setLoadingCourseResources(false);
+        }
+      };
+      fetchCourseResources();
+    }
+  }, [selectedCategory, courseResources.length]);
 
   const saveProgressToDb = async (ebookId: string, progress: any) => {
     try {
@@ -5236,6 +5274,7 @@ export default function MyLibraryPage() {
           className="pl-12 py-5 rounded-xl border-gray-200"
         />
       </div>
+
 
       {/* E-Books Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

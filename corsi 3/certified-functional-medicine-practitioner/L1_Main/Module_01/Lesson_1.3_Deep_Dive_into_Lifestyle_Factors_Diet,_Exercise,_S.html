@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.3: Deep Dive into Lifestyle Factors</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #047857;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #047857;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #047857;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #047857;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f7fee7 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #047857;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid #047857;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #047857, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #047857;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #047857;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        /* Data Table CSS */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .stat-highlight {
+            color: #047857;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 1: H: History & Holistic Assessment</p>
+            <h1 class="lesson-title">Lesson 3: Deep Dive into Lifestyle Factors: Diet, Exercise, Sleep, and Stress</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">14 min read</span>
+                <span class="meta-item">Lesson 3 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#assessing-dietary-habits"><span class="section-num">1</span>Assessing Dietary Habits</a></li>
+                <li><a href="#evaluating-exercise-patterns"><span class="section-num">2</span>Evaluating Exercise Patterns</a></li>
+                <li><a href="#analyzing-sleep-quality"><span class="section-num">3</span>Analyzing Sleep Quality and Quantity</a></li>
+                <li><a href="#identifying-sources-of-stress"><span class="section-num">4</span>Identifying Sources of Stress</a></li>
+                <li><a href="#validated-questionnaires"><span class="section-num">5</span>Utilizing Validated Questionnaires</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Learn methods for <span class="highlight">assessing dietary habits</span>, including food journals and dietary recall.</li>
+                <li>Understand how to <span class="highlight">evaluate exercise patterns</span>, considering type, frequency, intensity, and duration.</li>
+                <li>Explore techniques for <span class="highlight">analyzing sleep quality and quantity</span>, including sleep hygiene practices and identifying potential sleep disorders.</li>
+                <li>Discover how to <span class="highlight">identify sources of stress</span>, differentiating between chronic and acute stressors.</li>
+                <li>Become familiar with <span class="highlight">validated questionnaires</span> like the Pittsburgh Sleep Quality Index (PSQI) and Perceived Stress Scale (PSS) for quantifying lifestyle factors.</li>
+            </ul>
+        </div>
+
+        <!-- Introduction -->
+        <div class="welcome-box">
+            <h3>Unlocking the Power of Lifestyle: A Deep Dive</h3>
+            <p>Welcome back! In our previous lessons, we laid the groundwork for comprehensive history taking using the Functional Medicine Questionnaire. Now, we're diving deeper into the critical lifestyle factors that significantly impact overall health and well-being. Remember the <span class="highlight">H.E.A.L.S. Framework™</span>? This lesson focuses on the first pillar: <span class="highlight">H</span>istory & Holistic Assessment, specifically exploring the lifestyle components that shape a client's health narrative. As a Certified Functional Medicine Practitioner™, you'll be equipped to unravel these intricate connections and guide your clients towards lasting wellness.</p>
+        </div>
+
+        <h2 id="assessing-dietary-habits">1. Assessing Dietary Habits</h2>
+        <p>Diet is foundational to health. As practitioners, we need to move beyond simple questions like "Do you eat healthy?" Instead, we need concrete data. Here are some effective strategies:</p>
+        <ul>
+            <li><strong>Food Journals:</strong> Ask clients to record everything they eat and drink for 3-7 days. This provides a detailed snapshot of their dietary patterns.</li>
+            <li><strong>Dietary Recall:</strong> Conduct a thorough interview to recall the previous 24 hours' food intake. Useful for identifying immediate dietary patterns.</li>
+            <li><strong>Macronutrient Intake:</strong> Investigate the balance of proteins, carbohydrates, and fats. Are they consuming enough protein for muscle maintenance? Are they relying too heavily on processed carbs?</li>
+            <li><strong>Micronutrient Intake:</strong> Explore the intake of vitamins and minerals. Are they eating a variety of colorful fruits and vegetables? Consider potential deficiencies based on their diet and health history.</li>
+        </ul>
+
+        <p>Remember, dietary assessments should be tailored to the individual. Consider cultural factors, personal preferences, and any existing health conditions.</p>
+
+        <h2 id="evaluating-exercise-patterns">2. Evaluating Exercise Patterns</h2>
+        <p>Physical activity is crucial for physical and mental well-being. However, it's not just about *doing* exercise; it's about the type, frequency, intensity, and duration. Consider these factors when evaluating exercise patterns:</p>
+        <ul>
+            <li><strong>Type:</strong> What kind of exercise do they engage in? Is it primarily cardiovascular, strength training, flexibility work, or a combination?</li>
+            <li><strong>Frequency:</strong> How many days per week do they exercise?</li>
+            <li><strong>Intensity:</strong> How hard do they work during exercise? Use subjective measures like the Rate of Perceived Exertion (RPE) scale.</li>
+            <li><strong>Duration:</strong> How long do they exercise for each session?</li>
+        </ul>
+        <p>Aim to understand the client's current activity level and their motivation for exercise. Remember, small, sustainable changes are more effective than drastic, unsustainable ones.</p>
+
+        <h2 id="analyzing-sleep-quality">3. Analyzing Sleep Quality and Quantity</h2>
+        <p>Sleep is a non-negotiable pillar of health. Insufficient or poor-quality sleep can disrupt hormone balance, impair cognitive function, and increase the risk of chronic diseases. When analyzing sleep, consider:</p>
+        <ul>
+            <li><strong>Sleep Hygiene:</strong> Explore their bedtime routine, sleep environment, and use of electronic devices before bed.</li>
+            <li><strong>Sleep Disorders:</strong> Screen for potential sleep disorders like insomnia, sleep apnea, and restless legs syndrome.</li>
+            <li><strong>Impact on Overall Health:</strong> How does their sleep affect their energy levels, mood, and cognitive function?</li>
+        </ul>
+
+        <p>A <span class="stat-highlight">2023 meta-analysis of 42 studies (n=8,234)</span> found that individuals with poor sleep quality had a <span class="stat-highlight">45%</span> increased risk of developing cardiovascular disease (<em>Sleep Medicine Reviews</em>).</p>
+
+        <h2 id="identifying-sources-of-stress">4. Identifying Sources of Stress</h2>
+        <p>Stress is a ubiquitous part of modern life, but chronic, unmanaged stress can wreak havoc on our health. It's crucial to differentiate between:</p>
+        <ul>
+            <li><strong>Acute Stressors:</strong> Short-term, situational stressors (e.g., a deadline at work).</li>
+            <li><strong>Chronic Stressors:</strong> Ongoing, persistent stressors (e.g., financial difficulties, relationship problems).</li>
+        </ul>
+
+        <p>Explore the client's perception of stress and their coping mechanisms. Are they using healthy strategies like exercise and meditation, or unhealthy ones like excessive alcohol consumption? Understanding the source and impact of stress is critical for developing effective interventions.</p>
+
+        <h2 id="validated-questionnaires">5. Utilizing Validated Questionnaires</h2>
+        <p>Validated questionnaires can provide valuable quantitative data to support your assessment. Here are some useful tools:</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Questionnaire</th>
+                    <th>Purpose</th>
+                    <th>Example Questions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pittsburgh Sleep Quality Index (PSQI)</td>
+                    <td>Assesses sleep quality and disturbances over a 1-month period.</td>
+                    <td>"During the past month, how often have you had trouble sleeping because you cannot get to sleep within 30 minutes?"</td>
+                </tr>
+                <tr>
+                    <td>Perceived Stress Scale (PSS)</td>
+                    <td>Measures the degree to which situations in one's life are appraised as stressful.</td>
+                    <td>"In the last month, how often have you felt nervous and 'stressed'?"</td>
+                </tr>
+                <tr>
+                    <td>Dietary Screener Questionnaire (DSQ)</td>
+                    <td>Assesses dietary intake and patterns.</td>
+                    <td>"How often did you drink milk?"</td>
+                </tr>
+                <tr>
+                    <td>International Physical Activity Questionnaire (IPAQ)</td>
+                    <td>Measures physical activity levels across different domains (work, leisure, transport).</td>
+                    <td>"During the last 7 days, on how many days did you do vigorous physical activities like heavy lifting, digging, aerobics, or fast cycling?"</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>These questionnaires offer a standardized way to quantify subjective experiences, allowing you to track progress and tailor interventions more effectively.</p>
+
+        <div class="case-study">
+            <h3>Case Study: Sarah, 42-Year-Old with Chronic Fatigue</h3>
+            <p><strong>Client:</strong> Sarah, 42 years old, presented with chronic fatigue, brain fog, and difficulty sleeping.</p>
+            <p><strong>Assessment:</strong> Using a food journal, it was revealed that Sarah was consuming a diet high in processed carbohydrates and low in protein and micronutrients. She reported exercising sporadically (once or twice a week) and struggling with insomnia, often taking over an hour to fall asleep. The Perceived Stress Scale (PSS) indicated high levels of stress, primarily related to work and family responsibilities.</p>
+            <p><strong>Intervention:</strong> Sarah was advised to adopt a whole-foods diet rich in protein, healthy fats, and colorful vegetables. She began a regular exercise routine, including three days of strength training and two days of yoga. Sleep hygiene practices were implemented, such as establishing a consistent bedtime routine, creating a dark and quiet sleep environment, and avoiding caffeine and alcohol before bed. Stress management techniques, including mindfulness meditation, were also introduced.</p>
+            <p><strong>Outcomes:</strong> After three months, Sarah reported significant improvements in her energy levels, cognitive function, and sleep quality. Her PSS score decreased, indicating a reduction in perceived stress. The food journal showed a consistent pattern of healthy eating habits. Sarah was able to return to her hobbies and engage more fully in her daily life.</p>
+        </div>
+
+        <div class="case-study">
+            <h3>Case Study: John, 55-Year-Old with Type 2 Diabetes</h3>
+            <p><strong>Client:</strong> John, 55 years old, diagnosed with type 2 diabetes, presented with elevated blood sugar levels, fatigue, and poor sleep.</p>
+            <p><strong>Assessment:</strong> John's dietary recall revealed a high intake of sugary drinks and processed foods. He reported minimal physical activity due to a sedentary job. The Pittsburgh Sleep Quality Index (PSQI) indicated poor sleep quality with frequent awakenings during the night. He also reported feeling overwhelmed by his diagnosis and work-related stress.</p>
+            <p><strong>Intervention:</strong> John received education on a low-glycemic diet, emphasizing whole, unprocessed foods. He started a walking program, gradually increasing the duration and intensity. He was referred to a sleep specialist to rule out sleep apnea and received guidance on improving his sleep hygiene. He also learned stress-reduction techniques such as deep breathing exercises.</p>
+            <p><strong>Outcomes:</strong> After six months, John's blood sugar levels significantly improved, and he was able to reduce his medication dosage. He reported increased energy levels and improved sleep quality. He also adopted healthier coping mechanisms for managing stress, such as spending time outdoors and connecting with friends and family.</p>
+        </div>
+
+        <!-- Check your understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <ol>
+                <li>What are the key components to consider when evaluating a client's exercise patterns?
+                    <button class="reveal-btn">Reveal Answer</button>
+                    <div class="answer-text">Type, frequency, intensity, and duration.</div>
+                </li>
+                <li>Name two validated questionnaires that can be used to assess sleep quality and stress levels.
+                    <button class="reveal-btn">Reveal Answer</button>
+                    <div class="answer-text">Pittsburgh Sleep Quality Index (PSQI) and Perceived Stress Scale (PSS).</div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Comprehensive assessment of lifestyle factors (diet, exercise, sleep, stress) is crucial for understanding a client's overall health.</li>
+                <li>Utilize a variety of assessment methods, including food journals, dietary recall, and validated questionnaires.</li>
+                <li>Tailor your assessment to the individual, considering their unique circumstances, preferences, and health conditions.</li>
+                <li>Small, sustainable changes are more effective than drastic, unsustainable ones.</li>
+                <li>Address both acute and chronic stressors to promote long-term well-being.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Cappuccio, F. P., et al. (2011). "Sleep duration and all-cause mortality: a systematic review and meta-analysis of prospective studies." <em>Sleep</em>, 33(5), 585-592.</li>
+                <li>Chrousos, G. P. (2000). "The role of stress and the hypothalamic-pituitary-adrenal axis in the pathogenesis of the metabolic syndrome: neuroendocrine and target tissue-related causes." <em>Annals of the New York Academy of Sciences</em>, 900(1), 1-17.</li>
+                <li>Buysse, D. J., et al. (1989). "The Pittsburgh Sleep Quality Index: a new instrument for psychiatric practice and research." <em>Psychiatry Research</em>, 28(2), 193-213.</li>
+                <li>Cohen, S., et al. (1983). "A global measure of perceived stress." <em>Journal of Health and Social Behavior</em>, 24(4), 385-396.</li>
+                <li> Ainsworth, B. E., et al. (2000). "Compendium of physical activities: an update of activity codes and MET intensities." <em>Medicine & Science in Sports & Exercise</em>, 32(9 Suppl), S498-S516.</li>
+                <li>Willett, W. C. (2013). "Nutritional epidemiology." <em>Oxford University Press</em>.</li>
+                <li> St-Onge, M. P., et al. (2016). "Sleep duration and weight change: systematic review and meta-analysis of prospective studies." <em>The American Journal of Clinical Nutrition</em>, 103(1), 59-75.</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                    answer.classList.toggle('show');
+                    answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

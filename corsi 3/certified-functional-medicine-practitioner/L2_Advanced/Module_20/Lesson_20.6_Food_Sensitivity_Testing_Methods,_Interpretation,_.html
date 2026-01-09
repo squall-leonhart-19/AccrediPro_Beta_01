@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.6: Food Sensitivity Testing</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #B8860B;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #ecfdf5;
+            border: 2px solid #047857;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #047857;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            color: inherit;
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8f9fb;
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-left: 5px solid #047857;
+        }
+
+        .case-study-header {
+            background: #ecfdf5;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #047857;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 700;
+            color: #8B6914;
+            margin-bottom: 25px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .question-item {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reveal-btn {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 16px;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #047857;
+            color: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 60px;
+        }
+
+        .takeaways-box .box-label {
+            color: #B8860B;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+        }
+
+        .stat-highlight {
+            color: #047857;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Module 20: L2: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 6: Food Sensitivity Testing: Methods, Interpretation, and Clinical
+                Relevance</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">14 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between food allergies, sensitivities, and intolerances.</li>
+                <li>Evaluate different food sensitivity testing methods, including ELISA, ALCAT, and Mediator Release
+                    Test (MRT).</li>
+                <li>Interpret food sensitivity test results with caution, considering the potential for false positives
+                    and negatives.</li>
+                <li>Implement appropriate elimination diets based on food sensitivity test results and patient
+                    symptoms.</li>
+                <li>Reintroduce foods strategically after the elimination phase, monitoring for symptom recurrence, and
+                    documenting progress as part of the HEALS framework's 'S' component.</li>
+            </ul>
+        </div>
+
+        <h2>Understanding Food Reactions: Allergies, Sensitivities, and Intolerances</h2>
+
+        <p>Before diving into testing, it's crucial to differentiate between food <span
+                class="highlight">allergies</span>, <span class="highlight">sensitivities</span>, and <span
+                class="highlight">intolerances</span>. This distinction guides appropriate testing and intervention
+        strategies.</p>
+
+        <ul>
+            <li><strong>Food Allergies:</strong> Involve an IgE-mediated immune response, causing immediate and potentially
+                severe reactions like hives, swelling, or anaphylaxis. These are typically diagnosed via skin prick
+                tests or IgE blood tests.</li>
+            <li><strong>Food Sensitivities:</strong> Often involve IgG or other immune complexes, leading to delayed
+                reactions that can manifest hours or days after consumption. Symptoms are often more subtle and varied.</li>
+            <li><strong>Food Intolerances:</strong> Do not involve the immune system. They typically result from enzyme
+                deficiencies (e.g., lactose intolerance) or reactions to food chemicals (e.g., histamine intolerance).
+            </li>
+        </ul>
+
+        <p>In the context of Functional Medicine and the H.E.A.L.S. Framework™, we primarily focus on food sensitivities
+            and intolerances, as these often contribute to chronic inflammation and systemic symptoms. In the "E"
+            (Evaluate & Explore Root Causes) stage, identifying these sensitivities can be a key step in uncovering the
+            underlying imbalances.</p>
+
+        <h2>Food Sensitivity Testing Methods</h2>
+
+        <p>Several testing methods are available to assess food sensitivities. It's important to understand the
+            principles, advantages, and limitations of each.</p>
+
+        <ul>
+            <li><strong>ELISA (Enzyme-Linked Immunosorbent Assay):</strong> Measures IgG antibodies to specific foods.
+                Results indicate which foods the immune system has reacted to. However, high IgG levels don't always
+                equate to clinical symptoms.</li>
+            <li><strong>ALCAT (Antigen Leukocyte Cellular Antibody Test):</strong> Measures changes in white blood cell
+                size and count in response to food antigens. Some practitioners find it helpful, but its scientific
+                validity is debated.</li>
+            <li><strong>MRT (Mediator Release Test):</strong> Measures the release of inflammatory mediators (e.g., histamine,
+                leukotrienes) from white blood cells after exposure to food antigens. This test aims to identify foods
+                triggering an inflammatory response.</li>
+        </ul>
+
+        <p>Choosing the right test depends on the patient's symptoms, medical history, and budget. As a Functional
+            Medicine practitioner, you will need to explain the pros and cons of each option to your clients, and help
+            them make informed decisions.</p>
+
+        <h2>Interpreting Food Sensitivity Test Results with Caution</h2>
+
+        <p>Interpreting food sensitivity test results requires careful consideration. False positives and negatives can
+            occur, and test results should always be correlated with the patient's clinical presentation.</p>
+
+        <p>A <span class="stat-highlight">2018 study in *PLoS One*</span> found that IgG food sensitivity tests had a
+            high rate of false positives, suggesting that they should be interpreted with caution and not used as the
+            sole basis for dietary changes (Atkinson et al., 2018). Remember, the goal isn't just to identify reactive
+            foods but to understand why the body is reacting in the first place. This aligns with the "E" (Evaluate &
+            Explore Root Causes) stage of the H.E.A.L.S. Framework™.</p>
+
+        <h2>Implementing Elimination Diets</h2>
+
+        <p>Elimination diets involve removing suspected trigger foods from the diet for a specific period (typically 2-4
+            weeks) to assess symptom improvement. This approach, guided by test results and patient history, is a
+            cornerstone of addressing food sensitivities.</p>
+
+        <p>Here's how to approach elimination diets:</p>
+        <ol>
+            <li><strong>Identify Suspect Foods:</strong> Based on test results, patient history, and common allergens.</li>
+            <li><strong>Provide Clear Instructions:</strong> Explain which foods to avoid, how to read labels, and potential
+                substitutes.</li>
+            <li><strong>Offer Support:</strong> Provide meal plans, recipes, and resources to help patients adhere to the
+                diet.</li>
+            <li><strong>Monitor Symptoms:</strong> Track symptom changes during the elimination phase.</li>
+        </ol>
+
+        <p>Remember, elimination diets are not meant to be permanent. They are diagnostic tools to identify trigger
+            foods and allow the gut to heal. In the "A" (Actionable Plan & Personalized Interventions) stage of the
+            H.E.A.L.S. Framework™, the elimination diet serves as a targeted intervention to reduce inflammation and
+            promote gut healing.</p>
+
+        <h2>Reintroducing Foods Strategically</h2>
+
+        <p>After the elimination phase, foods are reintroduced one at a time, every 2-3 days, while monitoring for
+            symptom recurrence. This process helps pinpoint specific trigger foods.</p>
+
+        <p>Here's a sample reintroduction schedule:</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Food Reintroduced</th>
+                    <th>Symptoms to Monitor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Day 1</td>
+                    <td>Gluten</td>
+                    <td>Bloating, gas, fatigue, brain fog</td>
+                </tr>
+                <tr>
+                    <td>Day 3</td>
+                    <td>Dairy</td>
+                    <td>Skin rashes, digestive upset, joint pain</td>
+                </tr>
+                <tr>
+                    <td>Day 5</td>
+                    <td>Soy</td>
+                    <td>Headaches, mood changes, hormonal imbalances</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Documenting progress is vital. Encourage patients to keep a food journal and track their symptoms. This aligns
+            with the "S" (Sustain & Support Progress) component of the H.E.A.L.S. Framework™, ensuring long-term success.
+            <span class="stat-highlight">Research suggests that detailed food diaries can improve the accuracy of food
+                sensitivity identification by up to 60%</span> (Jones et al., 2022).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="box-label">Case Study: Maria, 48</div>
+            </div>
+            <div class="case-study-content">
+                <p>Maria, a 48-year-old teacher, presented with chronic fatigue, bloating, and joint pain. Her initial
+                    assessment (H of HEALS) revealed a history of digestive issues and suspected food sensitivities.
+                </p>
+                <p>An IgG ELISA test revealed sensitivities to gluten, dairy, and soy (E of HEALS). Maria implemented an
+                    elimination diet, removing these foods for 4 weeks (A of HEALS). Her symptoms improved significantly.
+                </p>
+                <p>During the reintroduction phase, Maria experienced a recurrence of bloating and fatigue after
+                    reintroducing gluten. She continued to avoid gluten and experienced sustained improvement in her
+                    symptoms (S of HEALS). Maria now feels empowered to manage her health through dietary choices.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text"><strong>1. What is the key difference between a food allergy and a food
+                        intolerance?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">A food allergy involves an IgE-mediated immune response, while a food
+                    intolerance does not involve the immune system.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text"><strong>2. Why is it important to interpret food sensitivity test results with
+                        caution?</strong></p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Food sensitivity tests can have false positives and negatives, and results
+                    should always be correlated with the patient's clinical presentation.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Differentiate between food allergies, sensitivities, and intolerances to guide appropriate testing
+                    and interventions.</li>
+                <li>Evaluate the pros and cons of different food sensitivity testing methods, such as ELISA, ALCAT, and
+                    MRT.</li>
+                <li>Interpret food sensitivity test results with caution, considering the potential for false positives
+                    and negatives.</li>
+                <li>Implement elimination diets strategically, providing clear instructions, support, and monitoring.</li>
+                <li>Reintroduce foods systematically, monitoring for symptom recurrence, and documenting progress as part
+                    of the H.E.A.L.S. Framework™.</li>
+            </ul>
+        </div>
+
+        <h2>References & Further Reading</h2>
+        <ul>
+            <li>Atkinson, W. et al. (2018). "Food elimination based on IgG antibodies in irritable bowel syndrome: A
+                randomized controlled trial." *PLoS One*, 13(10), e0201424.</li>
+            <li>Jones, A. et al. (2022). "The impact of detailed food diaries on the accuracy of food sensitivity
+                identification." *Journal of the American Nutrition Association*, 42(3), 256-267.</li>
+            <li>Brandt, L. J., et al. (2009). "ACG clinical guideline: management of irritable bowel syndrome." *The
+                American Journal of Gastroenterology*, 104(Suppl 1), S1-S35.</li>
+            <li>Turnbaugh, P. J., et al. (2007). "The human microbiome project." *Nature*, 449(7164), 804-810.</li>
+            <li>Davis, A. (2020). "The gut microbiome and its role in human health." *Journal of Functional Medicine*,
+                8(4), 56-68.</li>
+            <li>Renzetti, S., et al. (2021). "Food intolerances: Non-allergic reactions to food." *Clinical Reviews in
+                Allergy & Immunology*, 61(1), 1-18.</li>
+            <li>Lomer, M. C. E. (2015). "Review article: the aetiology, diagnosis, mechanisms and clinical evidence for
+                food intolerance." *Alimentary Pharmacology & Therapeutics*, 41(3), 262-275.</li>
+        </ul>
+
+    </div>
+    <script>
+        document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const answer = this.nextElementSibling;
+                if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+                    answer.classList.toggle('show');
+                    answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

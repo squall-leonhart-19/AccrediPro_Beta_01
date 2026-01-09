@@ -10,6 +10,7 @@ declare module "next-auth" {
       firstName: string | null;
       lastName: string | null;
       isFirstLogin?: boolean;
+      hasCompletedOnboarding?: boolean;
       miniDiplomaCategory?: string | null;
       miniDiplomaCourseSlug?: string | null;
       isMiniDiplomaOnly?: boolean;
@@ -25,6 +26,7 @@ declare module "next-auth" {
     firstName: string | null;
     lastName: string | null;
     isFirstLogin?: boolean;
+    hasCompletedOnboarding?: boolean;
     miniDiplomaCategory?: string | null;
     miniDiplomaCourseSlug?: string | null;
     isMiniDiplomaOnly?: boolean;
@@ -42,6 +44,7 @@ declare module "next-auth/jwt" {
     firstName: string | null;
     lastName: string | null;
     isFirstLogin?: boolean;
+    hasCompletedOnboarding?: boolean;
     miniDiplomaCategory?: string | null;
     miniDiplomaCourseSlug?: string | null;
     isMiniDiplomaOnly?: boolean;

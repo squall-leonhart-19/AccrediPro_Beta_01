@@ -652,7 +652,7 @@ export function QuizClient({
             <div className="space-y-3">
               {passed ? (
                 <>
-                  <Link href="/certificates">
+                  <Link href="/my-credentials">
                     <Button className="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white py-6 text-lg font-semibold">
                       <Eye className="w-5 h-5 mr-2" />
                       View All My Certificates

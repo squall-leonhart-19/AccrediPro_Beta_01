@@ -261,21 +261,22 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
 
         if (pace > 0) {
             daysToCompletion = Math.ceil(remainingLessons / pace);
-            const target = new Date();
-            target.setDate(target.getDate() + daysToCompletion);
-            targetDate = target.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
     } else if (totalLessons > 0) {
-        // Default: assume 5 lessons/day for realistic estimate (not 1)
-        daysToCompletion = Math.min(90, Math.ceil(totalLessons / 5));
+        // Default: assume 3 lessons/day for aggressive but achievable target
+        daysToCompletion = Math.ceil(totalLessons / 3);
+    }
+
+    // Cap daysToCompletion at 45 for maximum commitment (about 6 weeks from NOW)
+    if (daysToCompletion && daysToCompletion > 45) {
+        daysToCompletion = 45;
+    }
+
+    // CRITICAL: Calculate targetDate AFTER applying the cap
+    if (daysToCompletion && daysToCompletion > 0) {
         const target = new Date();
         target.setDate(target.getDate() + daysToCompletion);
         targetDate = target.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-
-    // Cap daysToCompletion at 90 for display
-    if (daysToCompletion && daysToCompletion > 90) {
-        daysToCompletion = 90;
     }
 
     const hoursPerWeek = 5; // Default 5 hours/week

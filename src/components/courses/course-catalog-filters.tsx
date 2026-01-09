@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Select,
@@ -23,27 +22,22 @@ import {
     Search,
     Star,
     GraduationCap,
-    Play,
-    CheckCircle,
     Users,
-    ArrowRight,
-    Lock,
     TrendingUp,
     Heart,
-    Leaf,
     Target,
     Tag,
     Loader2,
     Sparkles,
     Shield,
     Zap,
-    MessageSquare,
-    Trophy,
     BarChart3,
     ChevronRight,
     Flame,
     DollarSign,
     Briefcase,
+    Lock,
+    MessageCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -136,6 +130,24 @@ const ACCREDITATIONS = [
     { code: "IHTC", name: "International Holistic Therapists Council" },
 ];
 
+// Course Tier/Level definitions (no "All" - user picks specific tier)
+const COURSE_TIERS = [
+    { id: "main", label: "🎯 Certification", keywords: ["certified", "certification"] },
+    { id: "advanced", label: "📈 Advanced", keywords: ["advanced", "- advanced"] },
+    { id: "master", label: "🏆 Master", keywords: ["master", "- master"] },
+    { id: "practice", label: "💼 Practice Path", keywords: ["practice path", "practice"] },
+];
+
+// Helper to determine course tier from title
+const getCourseLevel = (title: string): string => {
+    const t = title.toLowerCase();
+    if (t.includes("practice path")) return "practice";
+    if (t.includes(" - master") || t.includes("master depth")) return "master";
+    if (t.includes(" - advanced") || t.includes("advanced clinical")) return "advanced";
+    // Main certification - default for "Certified X" titles
+    return "main";
+};
+
 // Graduate pricing constants
 const FULL_PRICE = 1997;
 const GRADUATE_PRICE = 1597; // 20% graduate discount
@@ -205,6 +217,101 @@ const COURSE_CAREER_DATA: Record<string, { careerPath: string; earningPotential:
     },
 };
 
+// Super Categories for Tab Navigation
+const SUPER_CATEGORIES = [
+    {
+        id: "all",
+        label: "All Courses",
+        icon: "📚",
+        rawCategories: [] as string[], // Empty means show all
+    },
+    {
+        id: "health",
+        label: "Health & Wellness",
+        icon: "🌿",
+        rawCategories: [
+            "FUNCTIONAL MEDICINE", "INTEGRATIVE MEDICINE", "CLINICAL CONDITIONS",
+            "CLINICAL & CONDITION-SPECIFIC", "GUT HEALTH", "AUTOIMMUNE & INFLAMMATION",
+            "BIOHACKING & LONGEVITY", "ENVIRONMENTAL & LIFESTYLE WELLNESS",
+            "SPECIALIZED BODY SYSTEMS", "GENETICS & ADVANCED TESTING",
+            "HEALTHCARE PROFESSIONAL TRACKS", "ADVANCED FUNCTIONAL MEDICINE",
+            "FunctionalMedicine", "IntegrativeMedicine"
+        ],
+    },
+    {
+        id: "womens",
+        label: "Women's Health",
+        icon: "👩",
+        rawCategories: [
+            "WOMEN'S HORMONES", "WOMEN'S HEALTH & HORMONES",
+            "FERTILITY, BIRTH & POSTPARTUM", "HORMONES & METABOLISM",
+            "WomensHormones", "FertilityBirth"
+        ],
+    },
+    {
+        id: "nutrition",
+        label: "Nutrition & Diet",
+        icon: "🥗",
+        rawCategories: [
+            "NUTRITION & LIFESTYLE", "DIET & NUTRITION APPROACHES",
+            "HERBALISM & PLANT MEDICINE", "AYURVEDA & TRADITIONAL MEDICINE",
+            "Herbalism"
+        ],
+    },
+    {
+        id: "family",
+        label: "Family & Parenting",
+        icon: "👨‍👩‍👧",
+        rawCategories: [
+            "PARENTING", "FAMILY, PARENTING & SPECIAL POPULATIONS",
+            "SPECIALIZED POPULATIONS", "Parenting"
+        ],
+    },
+    {
+        id: "pet",
+        label: "Pet & Animal",
+        icon: "🐾",
+        rawCategories: [
+            "PET WELLNESS", "PET WELLNESS & ANIMAL CARE",
+            "EQUINE, ANIMAL-ASSISTED & NATURE THERAPY", "PetWellness"
+        ],
+    },
+    {
+        id: "spiritual",
+        label: "Spiritual & Energy",
+        icon: "✨",
+        rawCategories: [
+            "SPIRITUAL HEALING", "SPIRITUAL HEALING & ENERGY WORK",
+            "SPIRITUAL & ENERGY", "ART, MUSIC, SOUND & EXPRESSIVE THERAPIES"
+        ],
+    },
+    {
+        id: "mental",
+        label: "Mental Health",
+        icon: "🧠",
+        rawCategories: [
+            "MENTAL HEALTH", "MENTAL HEALTH & NERVOUS SYSTEM", "TRAUMA RECOVERY",
+            "NARCISSISTIC ABUSE & RELATIONSHIP TRAUMA", "GRIEF & BEREAVEMENT",
+            "ADDICTION & RECOVERY", "ADDICTION RECOVERY", "NEURODIVERSITY",
+            "EMOTIONAL & HOLISTIC WELLNESS", "SENIOR & END-OF-LIFE",
+            "VETERANS & MILITARY", "DISABILITY WELLNESS",
+            "NarcTrauma", "Neurodiversity", "Mindfulness", "GriefEndoflife"
+        ],
+    },
+    {
+        id: "therapy",
+        label: "Therapy & Bodywork",
+        icon: "💆",
+        rawCategories: [
+            "THERAPY MODALITIES", "BODYWORK & MASSAGE THERAPY", "YOGA & MOVEMENT",
+            "MIND-BODY MODALITIES", "FITNESS & ATHLETIC PERFORMANCE",
+            "ALTERNATIVE & TRADITIONAL THERAPIES", "SEXUAL WELLNESS & INTIMACY",
+            "SEXUALITY & INTIMACY", "MEN'S HEALTH", "FAITH-BASED COACHING",
+            "BUSINESS & PRACTICE BUILDING", "TherapyModalities", "FaithBased", "SexIntimacy"
+        ],
+    },
+];
+
 // Get career data based on course title/category
 const getCourseCareerData = (course: Course) => {
     const title = course.title.toLowerCase();
@@ -231,214 +338,6 @@ const getCourseCareerData = (course: Course) => {
     return COURSE_CAREER_DATA["default"];
 };
 
-// FM Specializations - Coming Soon with Unsplash images
-const FM_SPECIALIZATIONS_CATALOG = [
-    {
-        id: "functional-nutrition",
-        title: "Functional Nutrition",
-        shortTitle: "Nutrition",
-        badge: "CORE",
-        description: "The foundation of all functional medicine. Every practitioner needs nutrition expertise.",
-        marketDemand: "Very High",
-        income: "$60K - $150K",
-        image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=400&fit=crop",
-        color: "emerald",
-    },
-    {
-        id: "gut-health",
-        title: "Gut Health & Microbiome",
-        shortTitle: "Gut Health",
-        badge: "HIGH DEMAND",
-        description: "The root of 80% of chronic conditions. Massive client demand.",
-        marketDemand: "Very High",
-        income: "$70K - $180K",
-        image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=600&h=400&fit=crop",
-        color: "green",
-    },
-    {
-        id: "womens-hormones",
-        title: "Women's Hormones",
-        shortTitle: "Hormones",
-        badge: "TRENDING",
-        description: "Massive market with underserved women. PMS, PCOS, fertility, perimenopause.",
-        marketDemand: "Very High",
-        income: "$80K - $200K",
-        image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
-        color: "pink",
-    },
-    {
-        id: "stress-nervous-system",
-        title: "Stress & Nervous System",
-        shortTitle: "Stress/HPA",
-        badge: "GROWING",
-        description: "Burnout epidemic driving massive demand. HPA axis, cortisol, adrenal support.",
-        marketDemand: "High",
-        income: "$60K - $140K",
-        image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop",
-        color: "purple",
-    },
-    {
-        id: "thyroid-metabolism",
-        title: "Thyroid & Metabolism",
-        shortTitle: "Thyroid",
-        badge: "EVERGREEN",
-        description: "Millions with undiagnosed thyroid issues. Hashimoto's, weight resistance.",
-        marketDemand: "High",
-        income: "$65K - $160K",
-        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
-        color: "amber",
-    },
-    {
-        id: "blood-sugar-weight",
-        title: "Blood Sugar & Weight",
-        shortTitle: "Metabolic",
-        badge: "HIGH VOLUME",
-        description: "Obesity epidemic = endless clients. Insulin resistance, metabolic syndrome.",
-        marketDemand: "Very High",
-        income: "$55K - $130K",
-        image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop",
-        color: "orange",
-    },
-    {
-        id: "autoimmune",
-        title: "Autoimmune & Inflammation",
-        shortTitle: "Autoimmune",
-        badge: "SPECIALIST",
-        description: "Complex cases, premium rates. Growing autoimmune epidemic needs specialists.",
-        marketDemand: "Medium-High",
-        income: "$80K - $200K",
-        image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop",
-        color: "red",
-    },
-    {
-        id: "mental-health-brain",
-        title: "Mental Health & Brain",
-        shortTitle: "Brain Health",
-        badge: "EMERGING",
-        description: "Gut-brain axis, depression, anxiety, cognitive decline. Underserved market.",
-        marketDemand: "Growing",
-        income: "$70K - $170K",
-        image: "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=400&fit=crop",
-        color: "indigo",
-    },
-    {
-        id: "sleep-circadian",
-        title: "Sleep & Circadian Health",
-        shortTitle: "Sleep",
-        badge: "NICHE",
-        description: "Sleep epidemic affecting millions. Circadian rhythm, insomnia, energy.",
-        marketDemand: "Medium",
-        income: "$50K - $120K",
-        image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&h=400&fit=crop",
-        color: "blue",
-    },
-    {
-        id: "detox-environmental",
-        title: "Detoxification & Environmental",
-        shortTitle: "Detox",
-        badge: "ADVANCED",
-        description: "Toxin exposure increasing. Mold, heavy metals, environmental toxins.",
-        marketDemand: "Growing",
-        income: "$75K - $180K",
-        image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop",
-        color: "teal",
-    },
-];
-
-// Career Tracks - Enhanced with income potential
-const CAREER_TRACKS = [
-    {
-        slug: "functional-medicine",
-        name: "Functional Medicine",
-        icon: Leaf,
-        color: "from-emerald-500 to-teal-600",
-        bgColor: "bg-gradient-to-br from-emerald-50 to-teal-50",
-        borderColor: "border-emerald-200",
-        textColor: "text-emerald-700",
-        description: "Become a certified Functional Medicine Health Coach with clinical knowledge and client-ready skills.",
-        duration: "6-12 months",
-        incomeRange: "$5K - $15K/mo",
-        studentsCount: 1250,
-        steps: [
-            { name: "Free Mini Diploma", type: "exploration", status: "available" },
-            { name: "Health Coach Certification", type: "certification", status: "available" },
-            { name: "Advanced Practitioner", type: "mastery", status: "coming" },
-            { name: "Business Builder", type: "scaling", status: "coming" },
-        ],
-    },
-    {
-        slug: "womens-health",
-        name: "Women's Health",
-        icon: Heart,
-        color: "from-pink-500 to-rose-600",
-        bgColor: "bg-gradient-to-br from-pink-50 to-rose-50",
-        borderColor: "border-pink-200",
-        textColor: "text-pink-700",
-        description: "Specialize in hormones, menopause, and women's wellness. High-demand niche with loyal clients.",
-        duration: "4-8 months",
-        incomeRange: "$4K - $12K/mo",
-        studentsCount: 890,
-        steps: [
-            { name: "Hormone Foundations", type: "exploration", status: "coming" },
-            { name: "Women's Health Certification", type: "certification", status: "coming" },
-            { name: "Specialty Mastery", type: "mastery", status: "coming" },
-        ],
-    },
-    {
-        slug: "coaching-business",
-        name: "Coaching Business",
-        icon: Briefcase,
-        color: "from-blue-500 to-indigo-600",
-        bgColor: "bg-gradient-to-br from-blue-50 to-indigo-50",
-        borderColor: "border-blue-200",
-        textColor: "text-blue-700",
-        description: "Build a profitable coaching practice with client acquisition, branding, and scaling systems.",
-        duration: "3-6 months",
-        incomeRange: "$10K - $30K/mo",
-        studentsCount: 650,
-        steps: [
-            { name: "Business Foundations", type: "exploration", status: "coming" },
-            { name: "Client Attraction", type: "certification", status: "coming" },
-            { name: "Scale & Leverage", type: "scaling", status: "coming" },
-        ],
-    },
-];
-
-// Social proof testimonials - Using real AccrediPro fake profile avatars
-const TESTIMONIALS = [
-    {
-        name: "Tiffany R.",
-        role: "Functional Medicine Coach",
-        quote: "Went from corporate burnout to $8K/month in 6 months. The certification gave me instant credibility.",
-        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000009537.jpg",
-        income: "$8K/mo",
-        rating: 5,
-    },
-    {
-        name: "Addison T.",
-        role: "Health Practitioner",
-        quote: "The step-by-step approach made everything clear. Now I have 12 regular clients and growing.",
-        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/linkedin-2024.jpg",
-        income: "$6K/mo",
-        rating: 5,
-    },
-    {
-        name: "Martha W.",
-        role: "Wellness Business Owner",
-        quote: "Started solo, now running a team of 5 coaches. AccrediPro gave me the foundation to scale.",
-        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg",
-        income: "$25K/mo",
-        rating: 5,
-    },
-    {
-        name: "Teresa L.",
-        role: "Women's Health Specialist",
-        quote: "My clients trust me because I'm certified. That credibility changed everything for my practice.",
-        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1335.jpeg",
-        income: "$10K/mo",
-        rating: 5,
-    },
-];
 
 export function CourseCatalogFilters({
     courses,
@@ -454,10 +353,12 @@ export function CourseCatalogFilters({
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [selectedSuperCategory, setSelectedSuperCategory] = useState<string>("all");
     const [sortBy, setSortBy] = useState<string>("featured");
     const [localWishlist, setLocalWishlist] = useState<Set<string>>(new Set(wishlistIds));
     const [wishlistLoading, setWishlistLoading] = useState<string | null>(null);
     const [graduateCountdown, setGraduateCountdown] = useState(getGraduateTimeRemaining(graduateAccessExpiresAt));
+    const [selectedTier, setSelectedTier] = useState<string | null>(null); // null = show all tiers
 
     // Update countdown every minute (for days/hours display)
     useEffect(() => {
@@ -515,14 +416,31 @@ export function CourseCatalogFilters({
         }
     };
 
-    // Filter courses
+    // Filter courses - also hide already enrolled courses from catalog
     const filteredCourses = useMemo(() => {
         let filtered = courses.filter((course) => {
+            // Hide courses the user is already enrolled in
+            const isEnrolled = enrollmentMap.has(course.id);
+            if (isEnrolled) return false;
+
             const matchesSearch = searchQuery === "" ||
                 course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 course.description?.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory === null || course.category?.id === selectedCategory;
-            return matchesSearch && matchesCategory;
+
+            // Super-category filter
+            const superCat = SUPER_CATEGORIES.find(sc => sc.id === selectedSuperCategory);
+            const matchesSuperCategory = selectedSuperCategory === "all" ||
+                (superCat && superCat.rawCategories.some(raw =>
+                    course.category?.name?.toUpperCase().includes(raw.toUpperCase()) ||
+                    raw.toUpperCase().includes(course.category?.name?.toUpperCase() || "")
+                ));
+
+            // Tier/Level filter
+            const courseTier = getCourseLevel(course.title);
+            const matchesTier = selectedTier === null || courseTier === selectedTier;
+
+            return matchesSearch && matchesCategory && matchesSuperCategory && matchesTier;
         });
 
         switch (sortBy) {
@@ -533,7 +451,7 @@ export function CourseCatalogFilters({
             case "price-high": filtered = [...filtered].sort((a, b) => (b.price || 0) - (a.price || 0)); break;
         }
         return filtered;
-    }, [courses, searchQuery, selectedCategory, sortBy]);
+    }, [courses, searchQuery, selectedCategory, selectedSuperCategory, selectedTier, sortBy, enrollmentMap]);
 
     const totalEnrolled = courses.reduce((acc, c) => acc + (c.analytics?.totalEnrolled || c._count.enrollments), 0);
     const totalReviews = courses.reduce((acc, c) => acc + c._count.reviews, 0);
@@ -559,16 +477,6 @@ export function CourseCatalogFilters({
 
     const getCoachInitials = (name: string) => {
         return name.split(' ').map(n => n[0]).join('').toUpperCase();
-    };
-
-    const getStepIcon = (type: string) => {
-        switch (type) {
-            case "exploration": return "🎯";
-            case "certification": return "🏆";
-            case "mastery": return "⭐";
-            case "scaling": return "🚀";
-            default: return "📚";
-        }
     };
 
     return (
@@ -652,14 +560,68 @@ export function CourseCatalogFilters({
                 </Select>
             </div>
 
-            {/* Category Pills - Only show All for now */}
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
-                <button
-                    onClick={() => setSelectedCategory(null)}
-                    className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap bg-burgundy-600 text-white shadow-md"
-                >
-                    All Courses
-                </button>
+            {/* Super-Category Tabs */}
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+                {SUPER_CATEGORIES.map((category) => {
+                    const isSelected = selectedSuperCategory === category.id;
+                    // Count courses in this super-category
+                    const categoryCount = category.id === "all"
+                        ? courses.filter(c => !enrollmentMap.has(c.id)).length
+                        : courses.filter(c => {
+                            if (enrollmentMap.has(c.id)) return false;
+                            return category.rawCategories.some(raw =>
+                                c.category?.name?.toUpperCase().includes(raw.toUpperCase()) ||
+                                raw.toUpperCase().includes(c.category?.name?.toUpperCase() || "")
+                            );
+                        }).length;
+
+                    return (
+                        <button
+                            key={category.id}
+                            onClick={() => setSelectedSuperCategory(category.id)}
+                            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2 ${isSelected
+                                ? "bg-burgundy-600 text-white shadow-md"
+                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                }`}
+                        >
+                            <span>{category.icon}</span>
+                            <span>{category.label}</span>
+                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${isSelected ? "bg-white/20 text-white" : "bg-gray-200 text-gray-500"
+                                }`}>
+                                {categoryCount}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Tier/Level Filter Row */}
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+                {COURSE_TIERS.map((tier) => {
+                    const isSelected = selectedTier === tier.id;
+                    // Count courses at this tier
+                    const tierCount = courses.filter(c => {
+                        if (enrollmentMap.has(c.id)) return false;
+                        return getCourseLevel(c.title) === tier.id;
+                    }).length;
+
+                    return (
+                        <button
+                            key={tier.id}
+                            onClick={() => setSelectedTier(selectedTier === tier.id ? null : tier.id)}
+                            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-1.5 border ${isSelected
+                                ? "bg-gold-400 text-burgundy-900 border-gold-500 shadow-sm"
+                                : "bg-white text-gray-600 hover:bg-gray-50 border-gray-200"
+                                }`}
+                        >
+                            <span>{tier.label}</span>
+                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${isSelected ? "bg-burgundy-900/20 text-burgundy-900" : "bg-gray-100 text-gray-500"
+                                }`}>
+                                {tierCount}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Course Grid - Enhanced Cards */}
@@ -693,18 +655,21 @@ export function CourseCatalogFilters({
                         return (
                             <Link key={course.id} href={`/courses/${course.slug}`}>
                                 <Card className="h-full overflow-hidden border-2 border-gray-100 hover:border-burgundy-200 hover:shadow-xl transition-all group">
-                                    {/* Thumbnail - 2:1 aspect ratio (slightly shorter than 16:9) */}
-                                    <div className="aspect-[2/1] relative overflow-hidden bg-gradient-to-br from-burgundy-500 to-burgundy-700">
-                                        {course.thumbnail && (
+                                    {/* Thumbnail - Auto-fit with natural aspect ratio */}
+                                    <div className="relative overflow-hidden bg-gradient-to-br from-burgundy-500 to-burgundy-700 w-full">
+                                        {course.thumbnail ? (
                                             <Image
                                                 src={course.thumbnail}
                                                 alt={course.title}
-                                                fill
-                                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                width={400}
+                                                height={250}
+                                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                                className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                                             />
+                                        ) : (
+                                            <div className="aspect-[16/10] w-full" />
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                                         {/* Top Badges Row */}
                                         <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
@@ -713,12 +678,6 @@ export function CourseCatalogFilters({
                                                     <Badge className="bg-green-500 text-white shadow-lg">
                                                         <Zap className="w-3 h-3 mr-1" />
                                                         FREE
-                                                    </Badge>
-                                                )}
-                                                {!course.isFree && discountPercent > 0 && (
-                                                    <Badge className="bg-red-500 text-white shadow-lg">
-                                                        <Tag className="w-3 h-3 mr-1" />
-                                                        {discountPercent}% OFF
                                                     </Badge>
                                                 )}
                                                 {course.isFeatured && (
@@ -744,14 +703,6 @@ export function CourseCatalogFilters({
                                                     <Heart className={`w-4 h-4 ${isWishlisted ? "fill-current" : ""}`} />
                                                 )}
                                             </button>
-                                        </div>
-
-                                        {/* Bottom - Certificate Type */}
-                                        <div className="absolute bottom-3 left-3">
-                                            <Badge className={`${getCertBadgeStyle(course.certificateType)} shadow-lg`}>
-                                                <Award className="w-3 h-3 mr-1" />
-                                                {course.certificateType === "CERTIFICATION" ? "Certification" : "Mini Diploma"}
-                                            </Badge>
                                         </div>
                                     </div>
 
@@ -853,90 +804,29 @@ export function CourseCatalogFilters({
                                             </div>
                                         </div>
 
-                                        {/* Price Section - With Graduate Access Discount */}
-                                        <div className="mb-2 sm:mb-4">
-                                            {course.isFree ? (
-                                                <div className="flex items-center gap-1 sm:gap-2">
-                                                    <span className="text-lg sm:text-2xl font-bold text-green-600">Free</span>
-                                                    <Badge variant="outline" className="hidden sm:inline-flex text-green-600 border-green-200 text-xs">No Credit Card</Badge>
-                                                </div>
-                                            ) : hasGraduateDiscount ? (
-                                                <div className="space-y-2">
-                                                    {/* Graduate Access Banner */}
-                                                    <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg p-2 text-center">
-                                                        <div className="flex items-center justify-center gap-2 text-xs font-bold">
-                                                            <GraduationCap className="w-4 h-4" />
-                                                            <span>GRADUATE EXCLUSIVE</span>
-                                                        </div>
-                                                        <div className="text-[10px] opacity-90 mt-0.5">
-                                                            20% off for Mini Diploma graduates
-                                                        </div>
-                                                    </div>
-                                                    {/* Days Remaining */}
-                                                    <div className="flex items-center justify-center gap-1 text-xs">
-                                                        <span className="text-gray-500">Access expires in:</span>
-                                                        <span className="font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
-                                                            {graduateCountdown?.days || 0} days
-                                                        </span>
-                                                    </div>
-                                                    {/* Price Display */}
-                                                    <div className="flex items-center justify-center gap-2">
-                                                        <span className="text-lg text-gray-400 line-through">${FULL_PRICE}</span>
-                                                        <span className="text-2xl font-bold text-emerald-600">${GRADUATE_PRICE}</span>
-                                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">Save $400!</Badge>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-1 sm:gap-2">
-                                                    <span className="text-lg sm:text-2xl font-bold text-burgundy-600">${FULL_PRICE}</span>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* CTA Button or Progress */}
+                                        {/* CTA Button - Chat with Coach */}
                                         {enrollment ? (
                                             <div className="space-y-1 sm:space-y-2">
                                                 <div className="flex items-center justify-between text-xs sm:text-sm">
                                                     <span className="text-gray-500">Progress</span>
                                                     <span className="font-bold text-burgundy-600">{Math.round(enrollment.progress)}%</span>
                                                 </div>
-                                                <Progress value={enrollment.progress} className="h-1.5 sm:h-2" />
+                                                <div className="w-full h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-burgundy-600 rounded-full" style={{ width: `${enrollment.progress}%` }} />
+                                                </div>
                                                 <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold text-xs sm:text-sm h-8 sm:h-10">
-                                                    <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                                     <span className="hidden sm:inline">Continue Learning</span>
                                                     <span className="sm:hidden">Continue</span>
                                                 </Button>
                                             </div>
-                                        ) : isCohortClosed ? (
-                                            <Button size="sm" className="w-full bg-gray-400 cursor-not-allowed font-semibold text-xs sm:text-sm h-8 sm:h-10" disabled>
-                                                <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                                <span className="hidden sm:inline">Cohort Closed - Spots Filled</span>
-                                                <span className="sm:hidden">Sold Out</span>
-                                            </Button>
                                         ) : (
-                                            <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold group-hover:bg-burgundy-700 text-xs sm:text-sm h-8 sm:h-10">
-                                                {course.isFree ? (
-                                                    <>
-                                                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                                        <span className="hidden sm:inline">Start Learning</span>
-                                                        <span className="sm:hidden">Start</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                                                        <span className="hidden sm:inline">Enroll Now</span>
-                                                        <span className="sm:hidden">Enroll</span>
-                                                    </>
-                                                )}
-                                            </Button>
-                                        )}
-
-                                        {/* Money Back Guarantee - hidden on mobile */}
-                                        {!course.isFree && (
-                                            <p className="hidden sm:flex text-xs text-center text-gray-500 mt-3 items-center justify-center gap-1">
-                                                <Shield className="w-3 h-3" />
-                                                30-Day Money-Back Guarantee
-                                            </p>
+                                            <Link href="/coach-sarah" onClick={(e) => e.stopPropagation()}>
+                                                <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-700 font-semibold text-xs sm:text-sm h-8 sm:h-10">
+                                                    <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                                    <span className="hidden sm:inline">Apply Now</span>
+                                                    <span className="sm:hidden">Apply</span>
+                                                </Button>
+                                            </Link>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -946,273 +836,7 @@ export function CourseCatalogFilters({
                 </div>
             </section>
 
-            {/* FM Specializations - Coming Soon */}
-            {!searchQuery && !selectedCategory && (
-                <section className="pt-6">
-                    <div className="text-center mb-8">
-                        <Badge className="bg-gold-100 text-gold-700 mb-3">
-                            <Sparkles className="w-3 h-3 mr-1" />
-                            Specialization Tracks
-                        </Badge>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">FM Specializations</h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto">
-                            Master a specific niche within functional medicine. Each specialization unlocks premium client opportunities.
-                        </p>
-                    </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {FM_SPECIALIZATIONS_CATALOG.map((spec, index) => (
-                            <Card key={spec.id} className="overflow-hidden hover:shadow-xl transition-all cursor-pointer group relative">
-                                {/* Coming Soon Overlay */}
-                                <div className="absolute inset-0 bg-black/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Badge className="bg-white text-gray-900 shadow-lg">Coming Soon</Badge>
-                                </div>
-
-                                {/* Image */}
-                                <div className="aspect-[3/2] relative overflow-hidden">
-                                    <img
-                                        src={spec.image}
-                                        alt={spec.title}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                                    {/* Rank Badge */}
-                                    <div className="absolute top-2 left-2 w-6 h-6 bg-burgundy-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg">
-                                        {index + 1}
-                                    </div>
-
-                                    {/* Status Badge */}
-                                    <Badge className={`absolute top-2 right-2 text-[10px] shadow-lg ${spec.badge === "CORE" ? "bg-emerald-500 text-white" :
-                                        spec.badge === "HIGH DEMAND" ? "bg-green-500 text-white" :
-                                            spec.badge === "TRENDING" ? "bg-pink-500 text-white" :
-                                                spec.badge === "GROWING" ? "bg-purple-500 text-white" :
-                                                    spec.badge === "EVERGREEN" ? "bg-amber-500 text-white" :
-                                                        spec.badge === "HIGH VOLUME" ? "bg-orange-500 text-white" :
-                                                            spec.badge === "SPECIALIST" ? "bg-red-500 text-white" :
-                                                                spec.badge === "EMERGING" ? "bg-indigo-500 text-white" :
-                                                                    spec.badge === "NICHE" ? "bg-blue-500 text-white" :
-                                                                        "bg-teal-500 text-white"
-                                        }`}>
-                                        {spec.badge}
-                                    </Badge>
-
-                                    {/* Title on image */}
-                                    <div className="absolute bottom-2 left-2 right-2">
-                                        <h3 className="font-bold text-white text-sm line-clamp-1">{spec.shortTitle}</h3>
-                                    </div>
-                                </div>
-
-                                <CardContent className="p-3">
-                                    <p className="text-xs text-gray-500 line-clamp-2 mb-2">{spec.description}</p>
-                                    <div className="space-y-1.5">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-[10px] text-gray-400 uppercase tracking-wide">Market Demand</span>
-                                            <Badge className={`text-[9px] px-1.5 py-0 ${spec.marketDemand === "Very High" ? "bg-red-100 text-red-700" :
-                                                spec.marketDemand === "High" ? "bg-orange-100 text-orange-700" :
-                                                    spec.marketDemand === "Growing" ? "bg-blue-100 text-blue-700" :
-                                                        "bg-gray-100 text-gray-700"
-                                                }`}>
-                                                {spec.marketDemand}
-                                            </Badge>
-                                        </div>
-                                        <div className="flex items-center justify-between bg-green-50 rounded-md px-2 py-1">
-                                            <span className="text-[10px] text-green-600 font-medium">Earning Potential</span>
-                                            <span className="text-xs font-bold text-green-700">{spec.income}</span>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-
-                    <div className="text-center mt-6">
-                        <p className="text-sm text-gray-500 mb-3">All specializations are included in the full certification. Choose your focus area.</p>
-                        <Link href="/tracks/functional-medicine">
-                            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
-                                Explore Specialization Tracks
-                                <ArrowRight className="w-4 h-4 ml-2" />
-                            </Button>
-                        </Link>
-                    </div>
-                </section>
-            )}
-
-            {/* Career Tracks - Completely Redesigned */}
-            {!searchQuery && !selectedCategory && (
-                <section className="pt-6">
-                    <div className="text-center mb-8">
-                        <Badge className="bg-burgundy-100 text-burgundy-700 mb-3">
-                            <Target className="w-3 h-3 mr-1" />
-                            Choose Your Path
-                        </Badge>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Career Tracks</h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto">
-                            Complete career pathways from exploration to scaling. Each track builds on the previous step.
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {CAREER_TRACKS.map((track) => (
-                            <Card key={track.slug} className={`overflow-hidden border-2 ${track.borderColor} hover:shadow-2xl transition-all`}>
-                                {/* Track Header */}
-                                <div className={`bg-gradient-to-r ${track.color} p-6 text-white relative overflow-hidden`}>
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-                                    <div className="relative z-10">
-                                        <div className="flex items-center gap-4 mb-3">
-                                            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                                <track.icon className="w-7 h-7" />
-                                            </div>
-                                            <div>
-                                                <h3 className="font-bold text-xl">{track.name}</h3>
-                                                <p className="text-sm text-white/80">{track.duration}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4 text-sm">
-                                            <div className="flex items-center gap-1">
-                                                <DollarSign className="w-4 h-4" />
-                                                <span className="font-semibold">{track.incomeRange}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <Users className="w-4 h-4" />
-                                                <span>{track.studentsCount.toLocaleString()} students</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <CardContent className={`p-6 ${track.bgColor}`}>
-                                    <p className="text-sm text-gray-700 mb-5">{track.description}</p>
-
-                                    {/* Steps */}
-                                    <div className="space-y-2.5 mb-5">
-                                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Your Journey</p>
-                                        {track.steps.map((step, j) => (
-                                            <div
-                                                key={j}
-                                                className={`flex items-center gap-3 p-3 rounded-xl border ${step.status === "available"
-                                                    ? "bg-white border-gray-200"
-                                                    : "bg-gray-50 border-gray-100"
-                                                    }`}
-                                            >
-                                                <span className="text-lg">{getStepIcon(step.type)}</span>
-                                                <div className="flex-1">
-                                                    <p className={`text-sm font-medium ${step.status === "available" ? "text-gray-900" : "text-gray-500"
-                                                        }`}>
-                                                        {step.name}
-                                                    </p>
-                                                </div>
-                                                {step.status === "available" ? (
-                                                    <CheckCircle className="w-5 h-5 text-green-500" />
-                                                ) : (
-                                                    <Lock className="w-4 h-4 text-gray-400" />
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <Link href={`/tracks/${track.slug}`}>
-                                        <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
-                                            Explore {track.name} Track
-                                            <ArrowRight className="w-4 h-4 ml-2" />
-                                        </Button>
-                                    </Link>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {/* Testimonials - After Career Tracks */}
-            {!searchQuery && !selectedCategory && (
-                <section className="pt-4">
-                    <div className="text-center mb-8">
-                        <Badge className="bg-green-100 text-green-700 mb-3">
-                            <TrendingUp className="w-3 h-3 mr-1" />
-                            Real Results
-                        </Badge>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Students Transforming Their Lives</h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto">
-                            Join thousands of practitioners who built successful careers with AccrediPro certifications.
-                        </p>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {TESTIMONIALS.map((t, i) => (
-                            <Card key={i} className="bg-white border-gray-200 hover:shadow-lg transition-all">
-                                <CardContent className="p-5">
-                                    {/* Stars */}
-                                    <div className="flex gap-0.5 mb-3">
-                                        {[...Array(5)].map((_, j) => (
-                                            <Star key={j} className="w-4 h-4 text-gold-400 fill-gold-400" />
-                                        ))}
-                                    </div>
-
-                                    {/* Quote */}
-                                    <p className="text-sm text-gray-700 mb-4 leading-relaxed">"{t.quote}"</p>
-
-                                    {/* Author */}
-                                    <div className="flex items-center gap-3">
-                                        <Avatar className="h-10 w-10 ring-2 ring-burgundy-100">
-                                            <AvatarImage src={t.avatar} alt={t.name} />
-                                            <AvatarFallback className="bg-gradient-to-br from-burgundy-400 to-burgundy-600 text-white text-sm font-bold">
-                                                {t.name.split(' ').map(n => n[0]).join('')}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex-1">
-                                            <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                                            <p className="text-xs text-gray-500">{t.role}</p>
-                                        </div>
-                                        <Badge className="bg-green-100 text-green-700 text-xs font-semibold">
-                                            {t.income}
-                                        </Badge>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {/* Bottom CTA */}
-            {!searchQuery && !selectedCategory && (
-                <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 overflow-hidden">
-                    <CardContent className="p-8 relative">
-                        <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl" />
-                        </div>
-                        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
-                            <div className="text-center lg:text-left">
-                                <div className="inline-flex items-center gap-2 bg-gold-400/20 px-3 py-1 rounded-full mb-3">
-                                    <Trophy className="w-4 h-4 text-gold-400" />
-                                    <span className="text-sm font-semibold text-gold-300">Your Career Awaits</span>
-                                </div>
-                                <h3 className="text-2xl lg:text-3xl font-bold text-white mb-2">
-                                    Ready to Transform Your Career?
-                                </h3>
-                                <p className="text-burgundy-100 max-w-xl">
-                                    Get your personalized roadmap based on your goals. See exactly what steps to take and when.
-                                </p>
-                            </div>
-                            <div className="flex flex-col sm:flex-row gap-3">
-                                <Link href="/my-personal-roadmap-by-coach-sarah">
-                                    <Button size="lg" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold shadow-lg">
-                                        <Target className="w-5 h-5 mr-2" />
-                                        See My Roadmap
-                                    </Button>
-                                </Link>
-                                <Link href="/mentorship">
-                                    <Button size="lg" className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/40 font-semibold">
-                                        <MessageSquare className="w-5 h-5 mr-2" />
-                                        Talk to a Coach
-                                    </Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
         </div>
     );
 }

@@ -87,6 +87,15 @@ const LEADERBOARD = [
     { rank: 6, name: "Lisa K.", xp: 1420, level: "Practitioner", avatar: "👩‍🏫" },
 ];
 
+interface GoalsData {
+    incomeGoal: string | null;
+    timeline: string | null;
+    situation: string | null;
+    investmentReadiness: string | null;
+    obstacles: string[];
+    interests: string[];
+}
+
 interface ProfileTabsProps {
     user: {
         id: string;
@@ -100,6 +109,10 @@ interface ProfileTabsProps {
         role: string;
         emailVerified: Date | null;
         createdAt: Date;
+        hasCompletedOnboarding?: boolean;
+        learningGoal?: string | null;
+        focusAreas?: string | null;
+        location?: string | null;
         enrollments: Array<{
             id: string;
             status: string;
@@ -146,11 +159,12 @@ interface ProfileTabsProps {
         description: string;
         points: number;
     }>;
+    goals?: GoalsData;
 }
 
 type TabType = "overview" | "progress" | "settings" | "knowledge";
 
-export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
+export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
     const [activeTab, setActiveTab] = useState<TabType>("overview");
     const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
     const [currentPassword, setCurrentPassword] = useState("");
@@ -793,6 +807,81 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
 
             {activeTab === "settings" && (
                 <div className="grid lg:grid-cols-2 gap-6">
+                    {/* My Goals & Journey - NEW */}
+                    {goals && (goals.incomeGoal || user.learningGoal) && (
+                        <Card className="card-premium lg:col-span-2 bg-gradient-to-br from-burgundy-50 via-white to-gold-50 border-burgundy-200">
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                                        <Target className="w-5 h-5 text-burgundy-600" />
+                                        My Goals & Journey
+                                    </h3>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-burgundy-600 border-burgundy-200 hover:bg-burgundy-50"
+                                        onClick={() => window.location.href = '/start-here'}
+                                    >
+                                        <Pencil className="w-3 h-3 mr-1.5" />
+                                        Update Goals
+                                    </Button>
+                                </div>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    {/* Primary Goal */}
+                                    {user.learningGoal && (
+                                        <div className="p-4 bg-white rounded-xl border border-gray-100">
+                                            <p className="text-sm text-gray-500 mb-1">Primary Goal</p>
+                                            <p className="font-medium text-gray-900 capitalize">{user.learningGoal.replace(/_/g, ' ')}</p>
+                                        </div>
+                                    )}
+                                    {/* Income Target */}
+                                    {goals.incomeGoal && (
+                                        <div className="p-4 bg-white rounded-xl border border-gray-100">
+                                            <p className="text-sm text-gray-500 mb-1">Income Target</p>
+                                            <p className="font-medium text-gold-700">
+                                                {goals.incomeGoal === 'empire' ? '$50K+/month (Empire Builder)' :
+                                                    goals.incomeGoal === 'full_time' ? '$10K-$50K/month (Full-Time)' :
+                                                        goals.incomeGoal === 'side_income' ? '$1K-$10K/month (Side Income)' :
+                                                            goals.incomeGoal.replace(/_/g, ' ')}
+                                            </p>
+                                        </div>
+                                    )}
+                                    {/* Timeline */}
+                                    {goals.timeline && (
+                                        <div className="p-4 bg-white rounded-xl border border-gray-100">
+                                            <p className="text-sm text-gray-500 mb-1">Timeline</p>
+                                            <p className="font-medium text-gray-900 capitalize">{goals.timeline.replace(/_/g, ' ')}</p>
+                                        </div>
+                                    )}
+                                    {/* Current Situation */}
+                                    {goals.situation && (
+                                        <div className="p-4 bg-white rounded-xl border border-gray-100">
+                                            <p className="text-sm text-gray-500 mb-1">Current Situation</p>
+                                            <p className="font-medium text-gray-900 capitalize">{goals.situation.replace(/_/g, ' ')}</p>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Focus Areas */}
+                                {goals.interests && goals.interests.length > 0 && (
+                                    <div className="mt-4">
+                                        <p className="text-sm text-gray-500 mb-2">Focus Areas</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {goals.interests.map((interest, i) => (
+                                                <Badge key={i} variant="secondary" className="bg-burgundy-100 text-burgundy-700 border-burgundy-200 capitalize">
+                                                    {interest.replace(/_/g, ' ')}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {/* Message */}
+                                <p className="mt-4 text-sm text-gray-600 italic bg-gold-50 px-4 py-2 rounded-lg border border-gold-100">
+                                    🚀 You're ready to accelerate! Let's make it happen.
+                                </p>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Account Information - First */}
                     <Card className="card-premium lg:col-span-2">
                         <CardContent className="p-6">

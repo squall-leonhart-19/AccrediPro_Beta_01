@@ -299,11 +299,11 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
     const hourOfDay = now.getHours();
     const secondsInDay = hourOfDay * 3600 + now.getMinutes() * 60 + now.getSeconds();
 
-    // Base numbers - starting high, growing day by day
-    const baseMembers = 5235;
-    const basePractitioners = 1721; // Target: ~1721/2000 (86%)
-    const baseTransformations = 20134;
-    const baseEarnings = 8400000;
+    // Base numbers synced with dashboard stats
+    const baseMembers = 9207;
+    const basePractitioners = 3970; // Target: 10,000 by end of 2026
+    const baseTransformations = 31500;
+    const baseEarnings = 19800000;
 
     // Dynamic daily practitioner growth (small daily variation for realism)
     // Use a seeded random-like function for today's increment
@@ -405,10 +405,12 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
         filtered = [...filtered].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
 
-    // Always show pinned posts first
-    const pinned = filtered.filter(p => p.isPinned);
-    const notPinned = filtered.filter(p => !p.isPinned);
-    return [...pinned, ...notPinned];
+    // Only filter out pinned posts when viewing ALL posts (no category selected)
+    // When a category is specifically selected, show all posts including pinned ones
+    if (selectedCategory === null) {
+      return filtered.filter(p => !p.isPinned);
+    }
+    return filtered;
   }, [allPosts, selectedCommunity, selectedCategory, searchQuery, sortBy]);
 
   // Reset pagination when filters change
@@ -491,95 +493,73 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
   const featuredGraduate = getDailyFeaturedGraduate();
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-[1600px] mx-auto">
-      {/* Improved Hero Banner with Community Goal */}
+    <div className="space-y-4 lg:space-y-6 animate-fade-in max-w-[1600px] mx-auto">
+      {/* MOBILE-FIRST Hero Banner - Compact on mobile, full on desktop */}
       <Card className="bg-gradient-to-br from-burgundy-800 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-green-400/10 rounded-full blur-3xl"></div>
-
-        <CardContent className="p-6 relative">
-          {/* Top Row: Title + Stats + CTA */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
+        <CardContent className="p-3 sm:p-4 lg:p-6 relative">
+          {/* Mobile: Compact single-row header */}
+          <div className="flex items-center justify-between gap-3">
             {/* Left: Title + Live Indicator */}
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400/20 to-gold-500/10 flex items-center justify-center border border-gold-400/20">
-                <Heart className="w-7 h-7 text-gold-400" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-gold-400/20 to-gold-500/10 flex items-center justify-center border border-gold-400/20 shrink-0">
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-gold-400" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white tracking-tight">AccrediPro Community</h1>
-                <div className="flex items-center gap-3 text-sm mt-1">
-                  <span className="flex items-center gap-1.5 text-green-400 font-medium">
-                    <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
-                    {dynamicStats.onlineNow} online
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-tight">Community</h1>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="flex items-center gap-1 text-green-400 font-medium">
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    {dynamicStats.onlineNow}
                   </span>
-                  <span className="text-burgundy-300">•</span>
-                  <span className="text-burgundy-200">{dynamicStats.coachesOnline} coaches available</span>
+                  <span className="text-burgundy-200 hidden sm:inline">• {dynamicStats.coachesOnline} coaches</span>
                 </div>
               </div>
             </div>
 
-            {/* Center: Impact Numbers - More compact */}
-            <div className="flex items-center gap-4 lg:gap-6 bg-white/5 rounded-2xl px-6 py-3 border border-white/10">
-              <div className="text-center">
-                <p className="text-2xl lg:text-3xl font-bold text-white">{dynamicStats.totalMembers.toLocaleString()}</p>
-                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Members</p>
+            {/* Right: Key Stats + CTA */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              {/* Stats - Compact on mobile */}
+              <div className="hidden sm:flex items-center gap-3 bg-white/5 rounded-xl px-3 py-2 border border-white/10">
+                <div className="text-center">
+                  <p className="text-lg font-bold text-white">{dynamicStats.totalMembers.toLocaleString()}</p>
+                  <p className="text-[9px] text-burgundy-200 uppercase">Members</p>
+                </div>
+                <div className="w-px h-8 bg-white/20"></div>
+                <div className="text-center">
+                  <p className="text-lg font-bold text-gold-400">{dynamicStats.certifiedPractitioners.toLocaleString()}+</p>
+                  <p className="text-[9px] text-burgundy-200 uppercase">Certified</p>
+                </div>
+                <div className="w-px h-8 bg-white/20 hidden lg:block"></div>
+                <div className="text-center hidden lg:block">
+                  <p className="text-lg font-bold text-green-400">${(dynamicStats.totalEarnings / 1000000).toFixed(1)}M+</p>
+                  <p className="text-[9px] text-burgundy-200 uppercase">Earned</p>
+                </div>
               </div>
-              <div className="w-px h-10 bg-white/20"></div>
-              <div className="text-center">
-                <p className="text-2xl lg:text-3xl font-bold text-gold-400">{dynamicStats.certifiedPractitioners.toLocaleString()}+</p>
-                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Certified</p>
-              </div>
-              <div className="w-px h-10 bg-white/20"></div>
-              <div className="text-center">
-                <p className="text-2xl lg:text-3xl font-bold text-green-400">${(dynamicStats.totalEarnings / 1000000).toFixed(1)}M+</p>
-                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Earned</p>
-              </div>
-              <div className="w-px h-10 bg-white/20 hidden md:block"></div>
-              <div className="text-center hidden md:block">
-                <p className="text-2xl lg:text-3xl font-bold text-white">{dynamicStats.clientTransformations.toLocaleString()}+</p>
-                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Lives Changed</p>
-              </div>
-            </div>
 
-            {/* Right: CTA */}
-            <CreatePostDialog
-              communityId={selectedCommunity !== "all" ? selectedCommunity : undefined}
-              communityName={selectedCommunityData?.name}
-              defaultCategory={selectedCategory || undefined}
-            />
+              {/* CTA */}
+              <CreatePostDialog
+                communityId={selectedCommunity !== "all" ? selectedCommunity : undefined}
+                communityName={selectedCommunityData?.name}
+                defaultCategory={selectedCategory || undefined}
+              />
+            </div>
           </div>
 
-          {/* Community Goal Banner */}
-          <div className="bg-gradient-to-r from-gold-500/20 via-gold-400/15 to-gold-500/20 rounded-xl p-4 border border-gold-400/20">
-            <div className="flex flex-col gap-3">
-              {/* Top row: Icon + Goal text + Progress */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gold-400/20 flex items-center justify-center shrink-0">
-                    <Target className="w-5 h-5 text-gold-400" />
-                  </div>
-                  <div>
-                    <p className="text-gold-300 text-sm font-semibold">Community Goal: 2,000 Certified Practitioners by 2025</p>
-                    <p className="text-burgundy-200 text-xs">We&apos;re {Math.round((dynamicStats.certifiedPractitioners / 2000) * 100)}% there! Every story inspires another practitioner to join.</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 sm:ml-auto">
-                  <div className="flex-1 sm:w-48 h-2.5 bg-burgundy-900/50 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-gold-400 to-gold-500 rounded-full transition-all duration-1000"
-                      style={{ width: `${Math.min((dynamicStats.certifiedPractitioners / 2000) * 100, 100)}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-gold-400 text-sm font-bold whitespace-nowrap">{dynamicStats.certifiedPractitioners.toLocaleString()}/2,000</span>
-                </div>
+          {/* Community Goal Banner - HIDDEN on mobile, shown on tablet+ */}
+          <div className="hidden md:block mt-4 bg-gradient-to-r from-gold-500/20 via-gold-400/15 to-gold-500/20 rounded-xl p-3 border border-gold-400/20">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <Target className="w-5 h-5 text-gold-400 shrink-0" />
+                <span className="text-gold-300 text-sm font-medium">Goal: 10,000 Certified by 2026</span>
               </div>
-              {/* Bottom row: CTA explanation */}
-              <div className="flex items-center justify-between bg-burgundy-900/30 rounded-lg px-3 py-2">
-                <p className="text-burgundy-100 text-xs">
-                  <span className="text-gold-400 font-medium">Click &quot;New Discussion&quot;</span> above to share your wins, celebrate graduation, or inspire others with your journey!
-                </p>
-                <span className="text-burgundy-300 text-[10px] hidden sm:inline">+{7 + Math.floor(Math.sin(new Date().getDate() * 12.9898) * 43758.5453 % 1 * 20)} joined today</span>
+              <div className="flex items-center gap-2">
+                <div className="w-32 h-2 bg-burgundy-900/50 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-gold-400 to-gold-500 rounded-full"
+                    style={{ width: `${Math.min((dynamicStats.certifiedPractitioners / 10000) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <span className="text-gold-400 text-xs font-bold">{Math.round((dynamicStats.certifiedPractitioners / 10000) * 100)}%</span>
               </div>
             </div>
           </div>
@@ -589,10 +569,11 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
       {/* Community Selector - Hidden for now (FM-only launch) */}
       {/* Students see only their enrolled community based on their tag/optin */}
 
-      <div className="grid lg:grid-cols-5 xl:grid-cols-6 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-1 xl:col-span-1 space-y-4">
-          {/* Featured Graduate Spotlight - Simplified */}
+      {/* MOBILE: Single column. DESKTOP: Grid with sidebar */}
+      <div className="grid lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-6">
+        {/* Sidebar - HIDDEN on mobile, shown on desktop only */}
+        <div className="hidden lg:block lg:col-span-1 xl:col-span-1 space-y-4">
+          {/* Featured Graduate Spotlight - Desktop only */}
           <Card className="border border-gray-200">
             <div className="bg-burgundy-600 p-3">
               <h3 className="font-semibold text-white flex items-center gap-2 text-sm">
@@ -621,108 +602,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
             </CardContent>
           </Card>
 
-          {/* Topics - Enhanced UI */}
-          <Card className="border-0 shadow-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-600 p-4">
-              <h3 className="font-bold text-white flex items-center gap-2 text-base">
-                <div className="p-1.5 bg-white/20 rounded-lg">
-                  <Megaphone className="w-4 h-4 text-white" />
-                </div>
-                Browse Topics
-              </h3>
-              <p className="text-burgundy-200 text-xs mt-1">Explore {Object.values(categoryPostCounts).reduce((a, b) => a + b, 0).toLocaleString()}+ posts</p>
-            </div>
-            <CardContent className="p-3">
-              <div className="grid grid-cols-2 gap-2">
-                {postCategories.map((cat) => {
-                  const Icon = cat.icon;
-                  const isSelected = selectedCategory === cat.id;
-                  const postCount = categoryPostCounts[cat.id] || 0;
-
-                  // Color mapping for each category
-                  const colorMap: Record<string, { bg: string; text: string; border: string; icon: string; iconBg: string; gradient: string }> = {
-                    introductions: { bg: "bg-pink-50", text: "text-pink-700", border: "border-pink-200", icon: "text-pink-600", iconBg: "bg-pink-100", gradient: "from-pink-500 to-rose-500" },
-                    "questions-everyone-has": { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", icon: "text-blue-600", iconBg: "bg-blue-100", gradient: "from-blue-500 to-indigo-500" },
-                    "career-pathway": { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200", icon: "text-purple-600", iconBg: "bg-purple-100", gradient: "from-purple-500 to-violet-500" },
-                    "coaching-tips": { bg: "bg-green-50", text: "text-green-700", border: "border-green-200", icon: "text-green-600", iconBg: "bg-green-100", gradient: "from-green-500 to-emerald-500" },
-                    wins: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200", icon: "text-amber-600", iconBg: "bg-amber-100", gradient: "from-amber-500 to-orange-500" },
-                    graduates: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: "text-emerald-600", iconBg: "bg-emerald-100", gradient: "from-emerald-500 to-teal-500" },
-                  };
-                  const colors = colorMap[cat.id] || { bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200", icon: "text-gray-600", iconBg: "bg-gray-100", gradient: "from-gray-500 to-gray-600" };
-
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                      className={`relative flex flex-col items-center p-3 rounded-xl text-center transition-all duration-200 group overflow-hidden ${isSelected
-                        ? `${colors.bg} border ${colors.border} shadow-md ring-2 ring-offset-1 ring-${cat.id === 'wins' ? 'amber' : cat.id === 'graduates' ? 'emerald' : cat.id === 'questions-everyone-has' ? 'blue' : cat.id === 'career-pathway' ? 'purple' : cat.id === 'coaching-tips' ? 'green' : 'pink'}-400`
-                        : `bg-white hover:${colors.bg} border border-gray-100 hover:border-gray-200 hover:shadow-sm`
-                        }`}
-                    >
-                      {/* Icon with gradient background when selected */}
-                      <div className={`p-2 rounded-lg mb-1.5 transition-all duration-200 ${isSelected
-                        ? `bg-gradient-to-br ${colors.gradient} shadow-sm`
-                        : `${colors.iconBg} group-hover:scale-105`
-                        }`}>
-                        <Icon className={`w-4 h-4 ${isSelected ? "text-white" : colors.icon}`} />
-                      </div>
-
-                      {/* Label */}
-                      <span className={`font-medium text-xs leading-tight block ${isSelected ? colors.text : "text-gray-700"}`}>
-                        {cat.label}
-                      </span>
-
-                      {/* Post count badge */}
-                      <div className={`mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${isSelected
-                        ? `bg-gradient-to-r ${colors.gradient} text-white shadow-sm`
-                        : `${colors.iconBg} ${colors.text}`
-                        }`}>
-                        {postCount.toLocaleString()}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Clear filter button */}
-              {selectedCategory && (
-                <button
-                  onClick={() => setSelectedCategory(null)}
-                  className="w-full mt-3 p-2 text-xs text-burgundy-600 hover:text-burgundy-700 bg-burgundy-50 hover:bg-burgundy-100 rounded-lg transition-colors flex items-center justify-center gap-1 font-medium"
-                >
-                  <X className="w-3 h-3" /> Clear filter
-                </button>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Ask Your Coach CTA - With Sarah's profile */}
-          <Card className="border border-gray-200 hover:border-burgundy-300 transition-colors">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <Avatar className="w-10 h-10 ring-2 ring-amber-400">
-                  <AvatarImage src="/coaches/sarah-coach.webp" alt="Coach Sarah" />
-                  <AvatarFallback className="bg-amber-100 text-amber-700 font-semibold">SM</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-semibold text-gray-900">Ask Your Coach</h3>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    Sarah is online
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs text-gray-600 mb-3">Your dedicated FM Coach is here to help you succeed!</p>
-              <Link href="/messages">
-                <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Message Sarah
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-
-          {/* Community Guidelines - Simplified */}
+          {/* Community Guidelines - Desktop only */}
           <Card className="border border-gray-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-3">
@@ -793,16 +673,77 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
             </div>
           </div>
 
-          {/* Active Filter Badge */}
-          {selectedCategory && currentCategoryData && (
-            <div className="flex items-center gap-2">
-              <Badge className={`${currentCategoryData.color} border-0 py-2 px-4`}>
-                <currentCategoryData.icon className="w-4 h-4 mr-1.5" />
-                {currentCategoryData.label}
-                <button onClick={() => setSelectedCategory(null)} className="ml-2 hover:opacity-70">×</button>
-              </Badge>
-            </div>
-          )}
+          {/* Topic Tabs - WRAPPING on mobile */}
+          <div className="w-full flex flex-wrap gap-1.5 sm:gap-2">
+            {/* All Posts Tab */}
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className={`flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all ${selectedCategory === null
+                ? 'bg-burgundy-600 text-white shadow-md'
+                : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              All
+            </button>
+
+            {/* Category Tabs */}
+            {postCategories.map((cat) => {
+              const Icon = cat.icon;
+              const isActive = selectedCategory === cat.id;
+              const count = categoryPostCounts[cat.id] || 0;
+
+              // Color mapping for active state
+              const activeColors: Record<string, string> = {
+                wins: 'bg-amber-500',
+                graduates: 'bg-emerald-500',
+                'questions-everyone-has': 'bg-blue-500',
+                'career-pathway': 'bg-purple-500',
+                'coaching-tips': 'bg-green-500',
+                introductions: 'bg-pink-500',
+              };
+
+              // Short labels for mobile
+              const shortLabel = cat.label
+                .replace('Introduce Yourself', 'Intro')
+                .replace('Questions Everyone Has', 'Q&A')
+                .replace('Coaching Tips', 'Tips')
+                .replace('Share Your Wins', '🏆')
+                .replace('New Graduates', '🎓')
+                .replace('Career Pathway', '💼');
+
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(isActive ? null : cat.id)}
+                  className={`flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all ${isActive
+                    ? `${activeColors[cat.id] || 'bg-burgundy-600'} text-white shadow-md`
+                    : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                    }`}
+                >
+                  {/* Show icon on desktop, emoji on mobile for space */}
+                  <span className="hidden sm:flex items-center gap-1.5">
+                    <Icon className="w-4 h-4" />
+                    {cat.label.replace('Introduce Yourself', 'Intro').replace('Questions Everyone Has', 'Q&A').replace('Coaching Tips', 'Tips').replace('Share Your ', '').replace('New ', '').replace(' Pathway', '')}
+                  </span>
+                  <span className="sm:hidden">{shortLabel}</span>
+                  <span className={`hidden sm:inline px-1.5 py-0.5 rounded-full text-xs ${isActive ? 'bg-white/20' : 'bg-gray-100'}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+
+            {/* Announcements Link */}
+            <Link
+              href="/community/announcements"
+              className="flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-burgundy-100 to-burgundy-50 border border-burgundy-200 text-burgundy-700 hover:from-burgundy-200 hover:to-burgundy-100 transition-all"
+            >
+              <Megaphone className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Announcements</span>
+              <span className="sm:hidden">📢</span>
+            </Link>
+          </div>
 
           {/* Posts - Compact UI for all */}
           <div className="space-y-3">
