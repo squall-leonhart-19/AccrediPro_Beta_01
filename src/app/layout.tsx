@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import MetaPixel from "@/components/tracking/meta-pixel";
 import { QueryProvider } from "@/components/providers/query-provider";
@@ -138,6 +139,7 @@ export default function RootLayout({
           </Suspense>
           {children}
           <Toaster richColors position="top-right" />
+          <SpeedInsights />
         </QueryProvider>
       </body>
     </html>
