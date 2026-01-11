@@ -24,9 +24,23 @@ export function FloatingChatWidget({
     const [isTyping, setIsTyping] = useState(false);
     const [visitorId, setVisitorId] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const isNearBottom = useRef(true);
+
+    const handleScroll = () => {
+        if (scrollContainerRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+            // Check if within 100px of bottom
+            isNearBottom.current = scrollHeight - scrollTop - clientHeight < 100;
+        }
+    };
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        // Smart scroll: only scroll if near bottom OR if it's a user message (we just sent it)
+        const lastMsg = messages[messages.length - 1];
+        if (isNearBottom.current || lastMsg?.role === "user") {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
     }, [messages]);
 
     // Generate visitor ID on mount
@@ -62,6 +76,13 @@ export function FloatingChatWidget({
                         if (welcomeMsg) result.push(welcomeMsg);
                         result.push(...serverMessages);
                         result.push(...pendingUserMsgs);
+
+                        // Optimization: Only update state if messages actually changed
+                        // Simple check: length diff or last message content diff
+                        if (prev.length === result.length &&
+                            prev[prev.length - 1]?.content === result[result.length - 1]?.content) {
+                            return prev;
+                        }
 
                         return result;
                     });
@@ -106,7 +127,13 @@ export function FloatingChatWidget({
 
         const userMessage = inputValue;
         setInputValue("");
+
+        // Optimistic update
         setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+
+        // Force scroll to bottom when user sends
+        isNearBottom.current = true;
+
         setIsTyping(true);
 
         try {
@@ -199,7 +226,11 @@ export function FloatingChatWidget({
                     ) : (
                         <>
                             {/* Messages */}
-                            <div className="h-72 overflow-y-auto p-4 bg-gray-50">
+                            <div
+                                ref={scrollContainerRef}
+                                onScroll={handleScroll}
+                                className="h-72 overflow-y-auto p-4 bg-gray-50"
+                            >
                                 {messages.map((msg, i) => (
                                     <div key={i} className={`mb-3 flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                         <div className={`max-w-[85%] p-3 rounded-xl text-sm ${msg.role === "user"

@@ -77,7 +77,7 @@ export function OnboardingGate({
                             steps={steps}
                             currentStep={1}
                             progress={progress}
-                            lessonBaseUrl="/womens-health-diploma/lesson"
+                            lessonBaseUrl="/health-coach-diploma/lesson"
                         />
                     </div>
                     <WelcomeVideoStep
@@ -100,7 +100,7 @@ export function OnboardingGate({
                             steps={steps}
                             currentStep={2}
                             progress={progress}
-                            lessonBaseUrl="/womens-health-diploma/lesson"
+                            lessonBaseUrl="/health-coach-diploma/lesson"
                         />
                     </div>
                     <OnboardingQuestionsStep

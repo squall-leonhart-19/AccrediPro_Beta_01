@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { OnboardingWizard } from "@/components/ui/onboarding-wizard";
-import { InteractiveTour } from "@/components/ui/interactive-tour";
+
 import {
     Sparkles,
     CheckCircle,
@@ -22,7 +22,7 @@ import {
     Heart,
     Map,
     RotateCcw,
-    Compass,
+
     Camera,
     Users,
     UserCheck,
@@ -104,28 +104,21 @@ interface StartHereClientProps {
     } | null;
     userId: string;
     enrollments: number;
-    tourComplete: boolean;
     onboardingData: OnboardingData;
     hasMessagedCoach?: boolean;
     hasIntroPost?: boolean;
 }
 
-export function StartHereClient({ user, userId, enrollments, tourComplete: initialTourComplete, onboardingData, hasMessagedCoach = false, hasIntroPost = false }: StartHereClientProps) {
+export function StartHereClient({ user, userId, enrollments, onboardingData, hasMessagedCoach = false, hasIntroPost = false }: StartHereClientProps) {
     const [showQuestionsWizard, setShowQuestionsWizard] = useState(false);
-    const [showTour, setShowTour] = useState(false);
     const [questionsCompleted, setQuestionsCompleted] = useState(user?.hasCompletedOnboarding || false);
-    const [tourCompleted, setTourCompleted] = useState(initialTourComplete);
 
     // Check localStorage for completion statuses
     useEffect(() => {
         const localQuestionsComplete = localStorage.getItem(`onboarding-complete-${userId}`) === "true";
-        const localTourComplete = localStorage.getItem(`tour-complete-${userId}`) === "true";
 
         if (localQuestionsComplete) {
             setQuestionsCompleted(true);
-        }
-        if (localTourComplete) {
-            setTourCompleted(true);
         }
     }, [userId]);
 
@@ -134,19 +127,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
         setQuestionsCompleted(true);
     };
 
-    const handleTourComplete = () => {
-        setShowTour(false);
-        setTourCompleted(true);
-    };
 
-    const handleTourSkip = () => {
-        setShowTour(false);
-        setTourCompleted(true);
-    };
-
-    const startTour = () => {
-        setShowTour(true);
-    };
 
     // Calculate checklist progress - Reordered for best user experience
     // Personalization questions trigger the OnboardingWizard modal
@@ -188,18 +169,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                 emoji: "🗺️",
                 reward: "+15 XP",
             },
-            {
-                id: "tutorial",
-                label: "Take the Platform Tour",
-                description: "Get a quick walkthrough of all the amazing features",
-                completed: tourCompleted,
-                link: null,
-                action: tourCompleted ? null : startTour,
-                icon: Compass,
-                color: "purple",
-                emoji: "🧭",
-                reward: "+10 XP",
-            },
+
             {
                 id: "profile",
                 label: "Upload Your Profile Photo",
@@ -256,14 +226,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
 
     return (
         <>
-            {/* Interactive Tour Modal */}
-            {showTour && (
-                <InteractiveTour
-                    onComplete={handleTourComplete}
-                    onSkip={handleTourSkip}
-                    userId={userId}
-                />
-            )}
+
 
             {/* Questions Wizard Modal */}
             {showQuestionsWizard && (

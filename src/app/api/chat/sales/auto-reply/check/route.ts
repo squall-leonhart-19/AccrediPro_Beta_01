@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { COACH_PERSONAS, getPersonaByKey } from "@/config/coach-personas";
+import { sendEmail, emailWrapper } from "@/lib/email";
 
 // Map persona keys to coach emails
 const PERSONA_EMAILS: Record<keyof typeof COACH_PERSONAS, string> = {
@@ -113,11 +114,13 @@ export async function GET() {
                 // Generate and send auto-reply
                 try {
                     const personaKey = await sendAutoReply(sortedMsgs, lastMsg.visitorId);
-                    repliesSent.push({
-                        visitorId: lastMsg.visitorId,
-                        messageCount: sortedMsgs.length,
-                        persona: personaKey
-                    });
+                    if (personaKey) {
+                        repliesSent.push({
+                            visitorId: lastMsg.visitorId,
+                            messageCount: sortedMsgs.length,
+                            persona: personaKey
+                        });
+                    }
                 } catch (error) {
                     console.error(`Failed to send auto-reply for ${lastMsg.visitorId}:`, error);
                 }
@@ -155,21 +158,77 @@ Did you have any other questions I can help with? I'm here if you need me!
 No pressure - just wanted to make sure you didn't miss anything. 😊`;
 
                 try {
-                    const persona = getPersonaByKey(detectPersona(lastMsg.page));
-                    await prisma.salesChat.create({
-                        data: {
-                            visitorId: lastMsg.visitorId,
-                            visitorName: lastMsg.visitorName,
-                            visitorEmail: lastMsg.visitorEmail,
-                            page: lastMsg.page,
-                            message: reengagementMessage,
-                            isFromVisitor: false,
-                            isRead: true,
-                            repliedBy: persona.name,
-                        },
+                    const detectorPersona = detectPersona(lastMsg.page);
+                    const isWH = (lastMsg.page || "").toLowerCase().includes("womens-health") || (lastMsg.page || "").toLowerCase().includes("women-health");
+                    const coachEmail = isWH ? "sarah_womenhealth@accredipro-certificate.com" : PERSONA_EMAILS[detectorPersona];
+
+                    // Lookup coach user ID
+                    const coach = await prisma.user.findFirst({
+                        where: { email: coachEmail },
+                        select: { id: true }
                     });
-                    reengagementsSent.push(lastMsg.visitorId);
-                    console.log(`[AUTO-REPLY] 🔔 Sent 24h re-engagement to ${lastMsg.visitorId}`);
+
+                    if (coach) {
+                        await prisma.salesChat.create({
+                            data: {
+                                visitorId: lastMsg.visitorId,
+                                visitorName: lastMsg.visitorName,
+                                visitorEmail: lastMsg.visitorEmail,
+                                page: lastMsg.page,
+                                message: reengagementMessage,
+                                isFromVisitor: false,
+                                isRead: true,
+                                repliedBy: coach.id, // Use ID, not name
+                            },
+                        });
+                        reengagementsSent.push(lastMsg.visitorId);
+                        console.log(`[AUTO-REPLY] 🔔 Sent 24h re-engagement to ${lastMsg.visitorId}`);
+
+                        // SEND EMAIL NOTIFICATION
+                        if (optin?.email) {
+                            try {
+                                // Check suppression
+                                const suppressedUser = await prisma.user.findFirst({
+                                    where: {
+                                        email: optin.email.toLowerCase(),
+                                        marketingTags: { some: { tag: { slug: { in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed", "suppress_do_not_contact"] } } } }
+                                    },
+                                    select: { id: true }
+                                });
+
+                                if (!suppressedUser) {
+                                    const persona = getPersonaByKey(detectorPersona);
+                                    const emailContent = `
+                                      <h2 style="color: #722F37; margin-bottom: 20px;">Checking in...</h2>
+                                      <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
+                                        <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
+                                          "${reengagementMessage.replace(/\n/g, '<br>')}"
+                                        </p>
+                                      </div>
+                                      <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
+                                        <p style="margin: 0; font-size: 15px; color: #333;">
+                                          <strong>💬 To reply:</strong> Just reply to this email!
+                                        </p>
+                                      </div>
+                                    `;
+
+                                    await sendEmail({
+                                        to: optin.email,
+                                        subject: `${persona.name} sent you a message`,
+                                        html: emailWrapper(emailContent, "Checking in on your progress"),
+                                        replyTo: "chat@accredipro-certificate.com",
+                                    });
+                                    console.log(`[AUTO-REPLY] 📧 Sent re-engagement email to ${optin.email}`);
+                                }
+                            } catch (err) {
+                                console.error(`[AUTO-REPLY] ❌ Failed to send re-engagement email:`, err);
+                            }
+                        }
+
+                    } else {
+                        console.error(`[AUTO-REPLY] ❌ Coach not found for email ${coachEmail} (Re-engagement)`);
+                    }
+
                 } catch (error) {
                     console.error(`Failed to send re-engagement for ${lastMsg.visitorId}:`, error);
                 }
@@ -188,7 +247,7 @@ No pressure - just wanted to make sure you didn't miss anything. 😊`;
     }
 }
 
-async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promise<string> {
+async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promise<string | null> {
     // Lazy initialize Anthropic only when needed
     const anthropic = new Anthropic({
         apiKey: process.env.ANTHROPIC_API_KEY,
@@ -207,11 +266,16 @@ async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promis
         page.includes("pcos") || page.includes("thyroid");
     const coachEmail = isWH ? "sarah_womenhealth@accredipro-certificate.com" : PERSONA_EMAILS[personaKey];
 
-    // Fetch coach's knowledge base from database
+    // Fetch coach's knowledge base AND ID from database
     const coach = await prisma.user.findFirst({
         where: { email: coachEmail },
-        select: { knowledgeBase: true }
+        select: { knowledgeBase: true, id: true }
     });
+
+    if (!coach) {
+        console.error(`[AUTO-REPLY] ❌ Coach not found for email ${coachEmail} - skipping reply`);
+        return null;
+    }
 
     // Build conversation history for AI
     const messages = conversationMsgs.map((m) => ({
@@ -228,7 +292,7 @@ ${persona.tone}
 YOUR EXPERTISE:
 ${persona.knowledgeBase}
 
-${coach?.knowledgeBase ? `
+${coach.knowledgeBase ? `
 SPECIFIC KNOWLEDGE BASE (Use this for current offers, pricing, FAQs, testimonials):
 ${coach.knowledgeBase}
 ` : ''}
@@ -262,7 +326,7 @@ INSTRUCTIONS:
             message: aiReply,
             isFromVisitor: false,
             isRead: true,
-            repliedBy: persona.name, // Just the name (e.g. "Sarah M."), NO "(AI)" suffix
+            repliedBy: coach.id, // Use valid User ID
         },
     });
 
@@ -276,7 +340,54 @@ INSTRUCTIONS:
         data: { isRead: true },
     });
 
-    console.log(`[AUTO-REPLY] ✅ Sent reply to visitor ${visitorId} as ${persona.name}`);
+    console.log(`[AUTO-REPLY] ✅ Sent reply to visitor ${visitorId} as ${persona.name} (User ID: ${coach.id})`);
+
+    // ===== SEND EMAIL NOTIFICATION =====
+    // Look up for email to send notification
+    try {
+        const optin = await prisma.chatOptin.findUnique({ where: { visitorId } });
+
+        if (optin?.email) {
+            // Check for suppression
+            const suppressedUser = await prisma.user.findFirst({
+                where: {
+                    email: optin.email.toLowerCase(),
+                    marketingTags: { some: { tag: { slug: { in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed", "suppress_do_not_contact"] } } } }
+                },
+                select: { id: true }
+            });
+
+            if (!suppressedUser) {
+                const emailContent = `
+                  <h2 style="color: #722F37; margin-bottom: 20px;">You have a new message from ${persona.name}!</h2>
+                  <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
+                      "${aiReply}"
+                    </p>
+                  </div>
+                  <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
+                    <p style="margin: 0; font-size: 15px; color: #333;">
+                      <strong>💬 To reply:</strong> Just reply to this email! Your message will be sent directly to ${persona.name}.
+                    </p>
+                  </div>
+                  <p style="color: #999; font-size: 13px; margin-top: 30px;">
+                    Or <a href="https://sarah.accredipro.academy/checkout-fm-certification" style="color: #722F37;">visit our sales page</a> to continue the conversation.
+                  </p>
+                `;
+
+                await sendEmail({
+                    to: optin.email,
+                    subject: `${persona.name} replied to your message`,
+                    html: emailWrapper(emailContent, `${persona.name} from AccrediPro has replied to your message`),
+                    replyTo: "chat@accredipro-certificate.com",
+                });
+                console.log(`[AUTO-REPLY] 📧 Email notification sent to ${optin.email}`);
+            }
+        }
+    } catch (e) {
+        console.error(`[AUTO-REPLY] ❌ Failed to send email to visitor ${visitorId}:`, e);
+    }
+
     return personaKey;
 }
 

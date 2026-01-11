@@ -111,7 +111,7 @@ export function LeadOnboardingClient({
                             <p className="text-burgundy-200 mb-4">
                                 You&apos;ve completed all 9 lessons!
                             </p>
-                            <Link href="/womens-health-diploma/complete">
+                            <Link href="/holistic-nutrition-diploma/complete">
                                 <Button size="lg" className="bg-white text-burgundy-600 hover:bg-burgundy-50">
                                     Claim Your Certificate
                                 </Button>
@@ -131,7 +131,7 @@ export function LeadOnboardingClient({
                                         Lesson {currentStep - 2}: {steps[currentStep - 1]?.title.replace(/Lesson \d+: /, "")}
                                     </h3>
                                 </div>
-                                <Link href={`/womens-health-diploma/lesson/${currentStep - 2}`}>
+                                <Link href={`/holistic-nutrition-diploma/lesson/${currentStep - 2}`}>
                                     <Button className="bg-white text-burgundy-600 hover:bg-burgundy-50">
                                         Start <ArrowRight className="w-4 h-4 ml-2" />
                                     </Button>
@@ -185,13 +185,13 @@ export function LeadOnboardingClient({
                                         </div>
                                         <div>
                                             {isCompleted ? (
-                                                <Link href={`/womens-health-diploma/lesson/${lessonNum}`}>
+                                                <Link href={`/holistic-nutrition-diploma/lesson/${lessonNum}`}>
                                                     <Button size="sm" variant="ghost" className="text-emerald-600">
                                                         <Star className="w-4 h-4 mr-1" /> Review
                                                     </Button>
                                                 </Link>
                                             ) : isNext ? (
-                                                <Link href={`/womens-health-diploma/lesson/${lessonNum}`}>
+                                                <Link href={`/holistic-nutrition-diploma/lesson/${lessonNum}`}>
                                                     <Button size="sm" className="bg-burgundy-600 text-white">
                                                         <Play className="w-4 h-4 mr-1" /> Start
                                                     </Button>
@@ -201,7 +201,7 @@ export function LeadOnboardingClient({
                                                     <Lock className="w-3 h-3" /> Locked
                                                 </span>
                                             ) : (
-                                                <Link href={`/womens-health-diploma/lesson/${lessonNum}`}>
+                                                <Link href={`/holistic-nutrition-diploma/lesson/${lessonNum}`}>
                                                     <Button size="sm" variant="outline">Start</Button>
                                                 </Link>
                                             )}

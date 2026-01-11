@@ -78,7 +78,7 @@ export function CompleteClient({
                                 — and your diploma will arrive by email <strong>AND</strong> in this portal in <strong>24 hours</strong>.
                                 <br />
                                 <Link
-                                    href="/womens-health-diploma/chat"
+                                    href="/gut-health-diploma/chat"
                                     className="inline-flex items-center gap-2 mt-2 px-4 py-2.5 rounded-lg font-bold text-white text-sm bg-burgundy-600 hover:bg-burgundy-700"
                                 >
                                     <MessageCircle className="w-4 h-4" />
