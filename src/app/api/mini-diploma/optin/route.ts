@@ -188,6 +188,7 @@ export async function POST(request: NextRequest) {
         const coachEmail = COACH_EMAILS[course];
         const coach = coachEmail ? await prisma.user.findUnique({
             where: { email: coachEmail },
+            select: { id: true },
         }) : null;
 
         // Create user and enrollment in transaction
@@ -213,6 +214,7 @@ export async function POST(request: NextRequest) {
                     },
                 },
             },
+            select: { id: true },
         });
 
         // Send welcome message from the appropriate Sarah coach

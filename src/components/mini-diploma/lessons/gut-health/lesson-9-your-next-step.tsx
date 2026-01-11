@@ -23,99 +23,109 @@ export function LessonYourNextStep({
         {
             id: 1,
             type: 'coach',
-            content: `{name}, you made it to the final lesson! 🎉 I'm so proud of you for completing this journey.`,
+            content: `Hey {name}! 🎉 Congratulations on making it to the final lesson! You've come so far in understanding gut health, and now it's time to talk about your next step - becoming a certified Gut Health Specialist.`,
         },
         {
             id: 2,
-            type: 'coach',
-            content: `Let's take a moment to reflect on everything you've learned...`,
+            type: 'system',
+            content: `**What You've Accomplished**
+• Mastered the fundamentals of gut microbiome science
+• Learned to identify digestive disorders and imbalances
+• Understood the gut-brain connection and its health implications
+• Gained practical skills in nutrition and lifestyle interventions
+• Developed protocols for supporting optimal gut health`,
+            systemStyle: 'takeaway',
         },
         {
             id: 3,
-            type: 'system',
-            content: `**What You've Mastered**
-✓ The 5 key female hormones and how they interact
-✓ The 4 phases of the menstrual cycle
-✓ Common hormonal imbalances and their signs
-✓ The gut-hormone connection
-✓ Thyroid function and testing
-✓ Stress, adrenals, and the cortisol cascade
-✓ Nutrition strategies for hormone balance
-✓ Supporting women through all life stages`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `Think about where you started compared to where you are now. You have the knowledge to make a real difference in people's lives - including your own! Let's explore what certification means for your future.`,
         },
         {
             id: 4,
             type: 'user-choice',
-            content: `What will you do with this knowledge?`,
-            choices: [
-                "Apply it to my own health first",
-                "Help friends and family",
-                "Use it professionally to help women",
-            ],
+            content: `What's your primary motivation for pursuing gut health certification?`,
+            choices: ["Help clients with digestive issues professionally", "Enhance my existing health practice", "Personal health journey and helping family/friends"],
             showReaction: true,
         },
         {
             id: 5,
-            type: 'coach',
-            content: `Whether you're supporting yourself or others, you now have foundational knowledge that most people - even many doctors - don't have!`,
+            type: 'system',
+            content: `**Certification Requirements**
+• Complete all 9 course modules with passing grades
+• Submit final case study analysis
+• Pass comprehensive certification exam (80% or higher)
+• Agree to continuing education requirements
+• Commit to ethical practice standards`,
+            systemStyle: 'info',
         },
         {
             id: 6,
             type: 'coach',
-            content: `💡 I truly believe that women's health is one of the most impactful areas you can work in. So many women are suffering unnecessarily. With what you've learned, you can make a real difference - even if it's just helping one person understand their body better.`,
+            content: `The certification process ensures you're truly ready to help others. It's not just about passing a test - it's about demonstrating you can apply this knowledge safely and effectively.`,
         },
         {
             id: 7,
             type: 'system',
-            content: `**The Bigger Picture**
-Women's health impacts:
-• Families (healthy moms, healthy kids)
-• Workplaces (productivity, reduced sick days)
-• Healthcare costs (prevention > treatment)
-• Generational health (we pass patterns down)
-
-→ When you help one woman, you help ripples of people`,
-            systemStyle: 'quote',
+            content: `**Your Certification Includes**
+• Official Gut Health Specialist certificate
+• Digital badge for professional profiles
+• Access to practitioner-only resources and protocols
+• Monthly continuing education webinars
+• Professional liability insurance discounts
+• Marketing materials for your practice`,
+            systemStyle: 'takeaway',
         },
         {
             id: 8,
             type: 'user-choice',
-            content: `How are you feeling about everything you've learned?`,
-            choices: [
-                "Excited and empowered!",
-                "Ready to learn even more",
-                "Eager to put it into practice",
-            ],
+            content: `How do you plan to use your certification?`,
+            choices: ["Start my own gut health practice", "Add services to existing business", "Work within healthcare/wellness teams"],
             showReaction: true,
         },
         {
             id: 9,
             type: 'coach',
-            content: `That's amazing! I love your energy! 🙌`,
+            content: `Whatever path you choose, you'll have ongoing support. This certification isn't the end - it's really just the beginning of your journey as a gut health specialist!`,
         },
         {
             id: 10,
-            type: 'coach',
-            content: `Congratulations, {name}! 🎊 You've officially completed the Gut Health & Hormones Mini Diploma!`,
+            type: 'system',
+            content: `**Continuing Your Education**
+• Advanced gut health protocols masterclass
+• Pediatric gut health specialization
+• Functional testing interpretation course
+• Business building for health practitioners
+• Research updates and new findings quarterly`,
+            systemStyle: 'info',
         },
         {
             id: 11,
-            type: 'system',
-            content: `**Certificate Unlocked!**
-You've completed all 9 lessons.
-
-Your official Gut Health & Hormones Mini Diploma certificate is ready to download!
-
-→ Share it on LinkedIn
-→ Add it to your credentials
-→ Celebrate your achievement! 🌸`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `Remember, the field of gut health is constantly evolving. Staying current with research and best practices is what separates great practitioners from good ones.`,
         },
         {
             id: 12,
+            type: 'system',
+            content: `**Next Steps Checklist**
+• Review all course materials one final time
+• Complete your case study submission
+• Schedule your certification exam
+• Join the graduate practitioner community
+• Plan your continuing education pathway`,
+            systemStyle: 'takeaway',
+        },
+        {
+            id: 13,
             type: 'coach',
-            content: `Thank you for learning with me, {name}. You're going to do amazing things with this knowledge. I'll be in touch soon! 💕`,
+            content: `{name}, you have everything you need to succeed as a certified Gut Health Specialist. Trust in your knowledge, continue learning, and remember - you're going to help so many people heal and thrive! 🌟`,
+        },
+        {
+            id: 14,
+            type: 'system',
+            content: `**Final Thought**
+"The best time to plant a tree was 20 years ago. The second best time is now. You've planted the seeds of knowledge - now watch them grow into a practice that transforms lives."`,
+            systemStyle: 'quote',
         },
     ];
 
@@ -123,7 +133,7 @@ Your official Gut Health & Hormones Mini Diploma certificate is ready to downloa
         <LessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Your Next Step"
-            lessonSubtitle="Taking your knowledge forward"
+            lessonSubtitle="Becoming a certified Gut Health Specialist"
             totalLessons={totalLessons}
             messages={messages}
             onComplete={onComplete}

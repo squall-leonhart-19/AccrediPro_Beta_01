@@ -1,13 +1,13 @@
 "use client";
 
-import { LessonMeetYourHormones } from "./lesson-1-meet-your-hormones";
-import { LessonMonthlyDance } from "./lesson-2-monthly-dance";
-import { LessonHormonesGoneRogue } from "./lesson-3-hormones-gone-rogue";
-import { LessonGutHormoneAxis } from "./lesson-4-gut-hormone-axis";
-import { LessonThyroidEnergy } from "./lesson-5-thyroid-energy";
-import { LessonStressAdrenals } from "./lesson-6-stress-adrenals";
-import { LessonFoodAsMedicine } from "./lesson-7-food-as-medicine";
-import { LessonLifeStageSupport } from "./lesson-8-life-stage-support";
+import { LessonIntroductionToGutHealth } from "./lesson-1-introduction-to-gut-health";
+import { LessonTheMicrobiome } from "./lesson-2-the-microbiome";
+import { LessonLeakyGutSyndrome } from "./lesson-3-leaky-gut-syndrome";
+import { LessonSiboAndDysbiosis } from "./lesson-4-sibo-and-dysbiosis";
+import { LessonTheGutBrainAxis } from "./lesson-5-the-gut-brain-axis";
+import { LessonDigestiveEnzymesAndHcl } from "./lesson-6-digestive-enzymes-and-hcl";
+import { LessonHealingProtocols } from "./lesson-7-healing-protocols";
+import { LessonFoodSensitivities } from "./lesson-8-food-sensitivities";
 import { LessonYourNextStep } from "./lesson-9-your-next-step";
 
 interface LessonRouterProps {
@@ -20,9 +20,8 @@ interface LessonRouterProps {
 
 /**
  * Routes to the correct Gut Health lesson component based on lesson number
- * All lessons share the same Sarah chat format
  */
-export function WomensHealthLessonRouter({
+export function GutHealthLessonRouter({
     lessonNumber,
     firstName,
     onComplete,
@@ -40,24 +39,24 @@ export function WomensHealthLessonRouter({
 
     switch (lessonNumber) {
         case 1:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonIntroductionToGutHealth {...commonProps} />;
         case 2:
-            return <LessonMonthlyDance {...commonProps} />;
+            return <LessonTheMicrobiome {...commonProps} />;
         case 3:
-            return <LessonHormonesGoneRogue {...commonProps} />;
+            return <LessonLeakyGutSyndrome {...commonProps} />;
         case 4:
-            return <LessonGutHormoneAxis {...commonProps} />;
+            return <LessonSiboAndDysbiosis {...commonProps} />;
         case 5:
-            return <LessonThyroidEnergy {...commonProps} />;
+            return <LessonTheGutBrainAxis {...commonProps} />;
         case 6:
-            return <LessonStressAdrenals {...commonProps} />;
+            return <LessonDigestiveEnzymesAndHcl {...commonProps} />;
         case 7:
-            return <LessonFoodAsMedicine {...commonProps} />;
+            return <LessonHealingProtocols {...commonProps} />;
         case 8:
-            return <LessonLifeStageSupport {...commonProps} />;
+            return <LessonFoodSensitivities {...commonProps} />;
         case 9:
             return <LessonYourNextStep {...commonProps} />;
         default:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonIntroductionToGutHealth {...commonProps} />;
     }
 }

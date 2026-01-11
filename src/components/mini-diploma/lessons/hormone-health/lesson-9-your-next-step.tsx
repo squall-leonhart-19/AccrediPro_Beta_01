@@ -23,99 +23,104 @@ export function LessonYourNextStep({
         {
             id: 1,
             type: 'coach',
-            content: `{name}, you made it to the final lesson! 🎉 I'm so proud of you for completing this journey.`,
+            content: `Hey {name}! 🎉 Congratulations on making it to the final lesson! You've covered so much ground in hormone health, and now it's time to talk about your next steps as a certified Hormone Health Specialist.`,
         },
         {
             id: 2,
-            type: 'coach',
-            content: `Let's take a moment to reflect on everything you've learned...`,
+            type: 'system',
+            content: `**Certification Requirements**
+• Complete all 9 lessons with 80% or higher quiz scores
+• Submit final case study analysis
+• Pass comprehensive certification exam (75 questions)
+• Complete 10 hours of practical application exercises
+• Agree to continuing education commitments`,
+            systemStyle: 'info',
         },
         {
             id: 3,
-            type: 'system',
-            content: `**What You've Mastered**
-✓ The 5 key female hormones and how they interact
-✓ The 4 phases of the menstrual cycle
-✓ Common hormonal imbalances and their signs
-✓ The gut-hormone connection
-✓ Thyroid function and testing
-✓ Stress, adrenals, and the cortisol cascade
-✓ Nutrition strategies for hormone balance
-✓ Supporting women through all life stages`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `The certification process might seem intensive, but you're already well-prepared! Every lesson has been building toward this moment where you can confidently help others optimize their hormone health.`,
         },
         {
             id: 4,
             type: 'user-choice',
-            content: `What will you do with this knowledge?`,
-            choices: [
-                "Apply it to my own health first",
-                "Help friends and family",
-                "Use it professionally to help women",
-            ],
+            content: `What aspect of becoming certified excites you most?`,
+            choices: ["Helping clients transform their health", "Having official credentials to share my expertise", "Joining a community of hormone health professionals"],
             showReaction: true,
         },
         {
             id: 5,
-            type: 'coach',
-            content: `Whether you're supporting yourself or others, you now have foundational knowledge that most people - even many doctors - don't have!`,
+            type: 'system',
+            content: `**Your Scope of Practice as a Hormone Health Specialist**
+• Provide education on hormone-supportive nutrition
+• Guide lifestyle modifications for hormonal balance
+• Recommend appropriate testing and tracking methods
+• Refer to medical professionals when necessary
+• Support clients through hormone optimization journeys
+• Teach stress management and sleep optimization`,
+            systemStyle: 'info',
         },
         {
             id: 6,
             type: 'coach',
-            content: `💡 I truly believe that women's health is one of the most impactful areas you can work in. So many women are suffering unnecessarily. With what you've learned, you can make a real difference - even if it's just helping one person understand their body better.`,
+            content: `Remember, as a Hormone Health Specialist, you're not diagnosing or treating medical conditions. You're empowering people with knowledge and practical strategies to support their body's natural hormone production and balance.`,
         },
         {
             id: 7,
             type: 'system',
-            content: `**The Bigger Picture**
-Women's health impacts:
-• Families (healthy moms, healthy kids)
-• Workplaces (productivity, reduced sick days)
-• Healthcare costs (prevention > treatment)
-• Generational health (we pass patterns down)
-
-→ When you help one woman, you help ripples of people`,
-            systemStyle: 'quote',
+            content: `**Building Your Practice: Next Steps**
+• Define your ideal client avatar
+• Create hormone health assessment tools
+• Develop signature programs or packages
+• Build relationships with healthcare providers for referrals
+• Continue learning through advanced certifications
+• Join professional networks and communities`,
+            systemStyle: 'takeaway',
         },
         {
             id: 8,
             type: 'user-choice',
-            content: `How are you feeling about everything you've learned?`,
-            choices: [
-                "Excited and empowered!",
-                "Ready to learn even more",
-                "Eager to put it into practice",
-            ],
+            content: `Which client population are you most interested in serving?`,
+            choices: ["Women navigating perimenopause and menopause", "Young adults struggling with hormonal acne and mood swings", "Anyone wanting to optimize energy and metabolism"],
             showReaction: true,
         },
         {
             id: 9,
             type: 'coach',
-            content: `That's amazing! I love your energy! 🙌`,
+            content: `Each client population has unique needs, and your specialized knowledge will make such a difference in their lives. The hormone health field is growing rapidly as more people seek natural, root-cause approaches.`,
         },
         {
             id: 10,
-            type: 'coach',
-            content: `Congratulations, {name}! 🎊 You've officially completed the Hormone Health & Hormones Mini Diploma!`,
+            type: 'system',
+            content: `**Continuing Education Opportunities**
+• Advanced hormone testing interpretation
+• Specialized populations (PCOS, thyroid disorders, adrenal dysfunction)
+• Functional nutrition for hormone health
+• Mind-body approaches to hormonal balance
+• Business development for health practitioners
+• Research updates and emerging therapies`,
+            systemStyle: 'info',
         },
         {
             id: 11,
-            type: 'system',
-            content: `**Certificate Unlocked!**
-You've completed all 9 lessons.
-
-Your official Hormone Health & Hormones Mini Diploma certificate is ready to download!
-
-→ Share it on LinkedIn
-→ Add it to your credentials
-→ Celebrate your achievement! 🌸`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `The learning never stops in this field! Hormones research is constantly evolving, and staying current will keep you at the forefront of helping your clients achieve lasting results.`,
         },
         {
             id: 12,
+            type: 'system',
+            content: `**"The best way to predict the future is to create it. Your journey as a Hormone Health Specialist starts with the commitment to help others reclaim their vitality through balanced hormones."**`,
+            systemStyle: 'quote',
+        },
+        {
+            id: 13,
             type: 'coach',
-            content: `Thank you for learning with me, {name}. You're going to do amazing things with this knowledge. I'll be in touch soon! 💕`,
+            content: `{name}, you now have the knowledge foundation to make a real impact in people's lives. Your certification exam will be available within 24 hours, and I know you're going to do amazing! 💪`,
+        },
+        {
+            id: 14,
+            type: 'coach',
+            content: `Take some time to review your notes, complete any outstanding assignments, and when you're ready, dive into that certification exam. I'm so proud of how far you've come, and I can't wait to welcome you officially to our community of certified specialists!`,
         },
     ];
 
@@ -123,7 +128,7 @@ Your official Hormone Health & Hormones Mini Diploma certificate is ready to dow
         <LessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Your Next Step"
-            lessonSubtitle="Taking your knowledge forward"
+            lessonSubtitle="Becoming a certified Hormone Health Specialist"
             totalLessons={totalLessons}
             messages={messages}
             onComplete={onComplete}

@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email },
+      select: { id: true },
     });
 
     if (existingUser) {
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
         leadSource: validatedData.leadSource || "direct",
         leadSourceDetail: validatedData.leadSourceDetail,
       },
+      select: { id: true, email: true, firstName: true, lastName: true },
     });
 
     // Send welcome email

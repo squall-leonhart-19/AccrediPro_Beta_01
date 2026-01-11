@@ -22,9 +22,9 @@ export async function POST(
     // Find user by ID or email
     let user;
     if (userId) {
-      user = await prisma.user.findUnique({ where: { id: userId } });
+      user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, firstName: true, lastName: true } });
     } else if (email) {
-      user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+      user = await prisma.user.findUnique({ where: { email: email.toLowerCase() }, select: { id: true, email: true, firstName: true, lastName: true } });
     }
 
     if (!user) {

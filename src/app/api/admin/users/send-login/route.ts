@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
         // Fetch existing user to check current email
         const existingUser = await prisma.user.findUnique({
             where: { id: data.userId },
+            select: { id: true, email: true },
         });
 
         if (!existingUser) {
@@ -38,6 +39,7 @@ export async function POST(request: NextRequest) {
         if (data.email && (!existingUser.email || data.email.toLowerCase() !== existingUser.email.toLowerCase())) {
             const emailCollision = await prisma.user.findUnique({
                 where: { email: data.email.toLowerCase() },
+                select: { id: true },
             });
 
             if (emailCollision) {

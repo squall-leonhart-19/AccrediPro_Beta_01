@@ -44,9 +44,27 @@ export async function POST(request: NextRequest) {
         status: "ACTIVE",
         progress: 0,
       },
-      include: {
-        user: true,
-        course: true,
+      select: {
+        id: true,
+        userId: true,
+        courseId: true,
+        status: true,
+        progress: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        course: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+          },
+        },
       },
     });
 
