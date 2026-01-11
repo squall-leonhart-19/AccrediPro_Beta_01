@@ -146,6 +146,8 @@ export async function POST(request: NextRequest) {
             });
 
             // Update user with mini diploma info and phone if missing
+            // Update user with mini diploma info and phone if missing
+            /*
             await prisma.user.update({
                 where: { id: existingUser.id },
                 data: {
@@ -157,6 +159,7 @@ export async function POST(request: NextRequest) {
                     // }),
                 },
             });
+            */
 
             return NextResponse.json({
                 success: true,
