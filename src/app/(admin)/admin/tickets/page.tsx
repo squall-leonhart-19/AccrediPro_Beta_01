@@ -466,7 +466,7 @@ export default function TicketsPage() {
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Left Panel - Ticket List (Compact) */}
       <div className={cn(
-        "w-[300px] min-w-[300px] bg-white border-r flex flex-col",
+        "w-[340px] min-w-[340px] bg-white border-r flex flex-col",
         "lg:flex",
         !showSidebar && "hidden"
       )}>
@@ -521,7 +521,7 @@ export default function TicketsPage() {
                   key={tab.id}
                   onClick={() => setStatusFilter(tab.id)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap",
+                    "flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap",
                     isActive
                       ? "border-[#722F37] text-[#722F37] bg-[#722F37]/5"
                       : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50"
@@ -866,7 +866,7 @@ export default function TicketsPage() {
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 bg-white">
+            <ScrollArea className="flex-1 bg-slate-50/50">
               <div className="px-4 py-3">
                 <div className="space-y-4">
                   {selectedTicket.messages.map((msg, idx) => {
@@ -887,10 +887,10 @@ export default function TicketsPage() {
                           </div>
                         )}
                         {/* All messages left aligned */}
-                        <div className="flex gap-3">
+                        <div className="flex gap-4 max-w-3xl">
                           <Avatar className={cn(
-                            "w-8 h-8 flex-shrink-0",
-                            isCustomer ? "border border-slate-200" : "border-2 border-[#722F37]/30"
+                            "w-10 h-10 flex-shrink-0 mt-1",
+                            isCustomer ? "border border-slate-200" : "border-2 border-[#722F37]/20"
                           )}>
                             {!isCustomer && (
                               <AvatarImage
@@ -899,7 +899,7 @@ export default function TicketsPage() {
                               />
                             )}
                             <AvatarFallback className={cn(
-                              "text-xs font-semibold",
+                              "text-sm font-bold",
                               isCustomer
                                 ? "bg-slate-100 text-slate-600"
                                 : "bg-[#722F37] text-white"
@@ -909,43 +909,38 @@ export default function TicketsPage() {
                                 : (DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"]?.initials || "SM")}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
+                          <div className="flex-1 min-w-0 space-y-1">
+                            <div className="flex items-center gap-2">
                               {!isCustomer && (() => {
                                 const dept = DEPARTMENT_CONFIG[selectedTicket.department || "SUPPORT"] || DEPARTMENT_CONFIG.SUPPORT;
-                                const DeptIcon = dept.icon;
                                 return (
-                                  <>
-                                    <span className={cn("text-sm font-semibold", dept.color)}>
-                                      {dept.teamName}
-                                    </span>
-                                    <span className={cn("text-[10px] px-1.5 py-0.5 rounded-full border font-medium", dept.bgLight, dept.color, dept.border)}>
-                                      <DeptIcon className="w-3 h-3 inline mr-0.5" />
-                                      {dept.responder}
-                                    </span>
-                                  </>
+                                  <span className={cn("text-xs font-bold", dept.color)}>
+                                    {dept.responder} <span className="text-slate-400 font-normal">from {dept.teamName}</span>
+                                  </span>
                                 );
                               })()}
                               {isCustomer && (
-                                <span className="text-sm font-semibold text-slate-700">
+                                <span className="text-xs font-bold text-slate-900">
                                   {selectedTicket.customerName}
                                 </span>
                               )}
-                              <span className="text-xs text-slate-400">
+                              <span className="text-[10px] text-slate-400">
                                 {format(new Date(msg.createdAt), "h:mm a")}
                               </span>
-                              {!isCustomer && msg.sentBy?.name && (
-                                <span className="text-xs text-slate-400">• via {msg.sentBy.name}</span>
-                              )}
                               {msg.isInternal && (
-                                <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700 border-amber-300">
-                                  Internal Note
-                                </Badge>
+                                <span className="text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">
+                                  INTERNAL NOTE
+                                </span>
                               )}
                             </div>
+
                             <div className={cn(
-                              "text-sm text-slate-700 leading-relaxed",
-                              msg.isInternal && "bg-amber-50 border border-amber-200 rounded-lg p-3"
+                              "text-sm leading-relaxed p-4 rounded-2xl shadow-sm relative group",
+                              msg.isInternal
+                                ? "bg-amber-50 border border-amber-200 text-slate-800 rounded-tl-none"
+                                : isCustomer
+                                  ? "bg-white border border-slate-200 text-slate-800 rounded-tl-none"
+                                  : "bg-blue-50 border border-blue-100 text-slate-800 rounded-tl-none"
                             )}>
                               <p className="whitespace-pre-wrap">{msg.content}</p>
                             </div>
@@ -960,7 +955,7 @@ export default function TicketsPage() {
             </ScrollArea>
 
             {/* Reply Box */}
-            <div className="p-4 border-t bg-white flex-shrink-0">
+            <div className="p-4 pb-6 border-t bg-white flex-shrink-0">
               <div className="max-w-3xl mx-auto">
                 {/* Quick Actions */}
                 <div className="flex items-center justify-between mb-2">

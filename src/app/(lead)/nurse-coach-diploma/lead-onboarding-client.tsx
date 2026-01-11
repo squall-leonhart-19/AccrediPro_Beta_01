@@ -254,7 +254,7 @@ export function LeadOnboardingClient({
                         </h1>
                         <p className="text-burgundy-100 text-sm mb-4">
                             {progress === 0
-                                ? "Ready to take your first step towards becoming a certified women's health practitioner?"
+                                ? "Ready to take your first step towards becoming a certified nurse coach?"
                                 : progress < 50
                                     ? "You're making great progress! Keep going - your first client could be weeks away."
                                     : progress < 100
