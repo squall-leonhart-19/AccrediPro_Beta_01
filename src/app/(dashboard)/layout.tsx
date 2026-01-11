@@ -11,6 +11,39 @@ import { OnboardingWrapper } from "@/components/onboarding/onboarding-wrapper";
 import { AchievementProvider } from "@/components/gamification/achievement-toast";
 import { FloatingCoachWidget } from "@/components/dashboard/floating-coach-widget";
 
+// All mini diploma course slugs
+const MINI_DIPLOMA_SLUGS = [
+  "womens-health-mini-diploma",
+  "functional-medicine-mini-diploma",
+  "gut-health-mini-diploma",
+  "health-coach-mini-diploma",
+  "holistic-nutrition-mini-diploma",
+  "hormone-health-mini-diploma",
+  "nurse-coach-mini-diploma",
+];
+
+// Map mini diploma slug to tag prefix for completion tracking
+const DIPLOMA_TAG_PREFIX: Record<string, string> = {
+  "womens-health-mini-diploma": "wh-lesson-complete",
+  "functional-medicine-mini-diploma": "functional-medicine-lesson-complete",
+  "gut-health-mini-diploma": "gut-health-lesson-complete",
+  "health-coach-mini-diploma": "health-coach-lesson-complete",
+  "holistic-nutrition-mini-diploma": "holistic-nutrition-lesson-complete",
+  "hormone-health-mini-diploma": "hormone-health-lesson-complete",
+  "nurse-coach-mini-diploma": "nurse-coach-lesson-complete",
+};
+
+// Map mini diploma slug to lead portal route
+const DIPLOMA_ROUTES: Record<string, string> = {
+  "womens-health-mini-diploma": "/womens-health-diploma",
+  "functional-medicine-mini-diploma": "/functional-medicine-diploma",
+  "gut-health-mini-diploma": "/gut-health-diploma",
+  "health-coach-mini-diploma": "/health-coach-diploma",
+  "holistic-nutrition-mini-diploma": "/holistic-nutrition-diploma",
+  "hormone-health-mini-diploma": "/hormone-health-diploma",
+  "nurse-coach-mini-diploma": "/nurse-coach-diploma",
+};
+
 async function getUserOnboardingData(userId: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -47,28 +80,29 @@ async function getUserOnboardingData(userId: string) {
   });
 
   // Check if user is mini-diploma-only (single mini-diploma enrollment, not completed)
-  const isWomensHealthLead =
+  const firstEnrollmentSlug = enrollments[0]?.course?.slug || "";
+  const isMiniDiplomaOnly =
     enrollments.length === 1 &&
-    enrollments[0].course.slug === "womens-health-mini-diploma" &&
+    MINI_DIPLOMA_SLUGS.includes(firstEnrollmentSlug) &&
     enrollments[0].status !== "COMPLETED";
 
-  const isFMLead =
-    enrollments.length === 1 &&
-    enrollments[0].course.slug === "fm-mini-diploma" &&
-    enrollments[0].status !== "COMPLETED";
+  // Get the mini diploma slug if user is a lead
+  const miniDiplomaSlug = isMiniDiplomaOnly ? firstEnrollmentSlug : null;
+  const miniDiplomaRoute = miniDiplomaSlug ? DIPLOMA_ROUTES[miniDiplomaSlug] : null;
 
-  const isMiniDiplomaOnly = isWomensHealthLead || isFMLead;
-
-  // Get completed lessons for diploma progress
+  // Get completed lessons for diploma progress (check correct tag prefix)
   let diplomaCompleted = false;
-  if (isWomensHealthLead) {
-    const completedLessons = await prisma.userTag.count({
-      where: {
-        userId,
-        tag: { startsWith: "wh-lesson-complete:" },
-      },
-    });
-    diplomaCompleted = completedLessons >= 9;
+  if (isMiniDiplomaOnly && miniDiplomaSlug) {
+    const tagPrefix = DIPLOMA_TAG_PREFIX[miniDiplomaSlug];
+    if (tagPrefix) {
+      const completedLessons = await prisma.userTag.count({
+        where: {
+          userId,
+          tag: { startsWith: `${tagPrefix}:` },
+        },
+      });
+      diplomaCompleted = completedLessons >= 9;
+    }
   }
 
   // Check if certificate was claimed
@@ -92,7 +126,7 @@ async function getUserOnboardingData(userId: string) {
     avatar: user?.avatar || null,
     coachName,
     isMiniDiplomaOnly,
-    isWomensHealthLead,
+    miniDiplomaRoute,
     diplomaCompleted,
     certificateClaimed: leadOnboarding?.claimedCertificate || false,
     lessonCount,
@@ -118,7 +152,7 @@ export default async function DashboardLayout({
     avatar,
     coachName,
     isMiniDiplomaOnly,
-    isWomensHealthLead,
+    miniDiplomaRoute,
     diplomaCompleted,
     certificateClaimed,
     lessonCount,
@@ -128,8 +162,8 @@ export default async function DashboardLayout({
   const MILESTONE_INTERVALS = [5, 10, 15, 25, 50, 75, 100];
   const nextMilestone = MILESTONE_INTERVALS.find(m => m > lessonCount) || 100;
 
-  // Lead users see the LeadSidebar instead of DashboardNav
-  if (isWomensHealthLead) {
+  // Mini Diploma lead users see the LeadSidebar instead of DashboardNav
+  if (isMiniDiplomaOnly) {
     return (
       <SessionProvider>
         <SWRProvider>
