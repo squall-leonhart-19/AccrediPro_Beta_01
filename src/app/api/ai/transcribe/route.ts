@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import OpenAI from "openai";
 
 /**
  * POST /api/ai/transcribe
@@ -30,6 +29,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Audio file or URL required" }, { status: 400 });
     }
 
+    // Dynamic import to avoid build-time crash
+    const { default: OpenAI } = await import("openai");
     const openai = new OpenAI({ apiKey });
     let transcription: string;
 

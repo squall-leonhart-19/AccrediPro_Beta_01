@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import Anthropic from "@anthropic-ai/sdk";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
@@ -21,6 +17,11 @@ export async function POST(req: NextRequest) {
         if (!message) {
             return NextResponse.json({ error: "Message required" }, { status: 400 });
         }
+
+        // Initialize Anthropic inside handler to avoid build-time crash
+        const anthropic = new Anthropic({
+            apiKey: process.env.ANTHROPIC_API_KEY,
+        });
 
         // Get user info for personalization
         const user = await prisma.user.findUnique({
@@ -59,17 +60,17 @@ YOUR PERSONALITY:
 
 Keep responses concise (2-3 paragraphs max). Use emojis sparingly (1-2 max).`;
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+        const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-5-20250929",
+            max_tokens: 400,
+            system: systemPrompt,
             messages: [
-                { role: "system", content: systemPrompt },
                 { role: "user", content: message },
             ],
-            max_tokens: 400,
-            temperature: 0.8,
         });
 
-        const reply = completion.choices[0]?.message?.content || "I'm here to help! Could you rephrase your question?";
+        const textBlock = response.content.find((block) => block.type === "text");
+        const reply = textBlock?.type === "text" ? textBlock.text : "I'm here to help! Could you rephrase your question?";
 
         return NextResponse.json({
             success: true,

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { generateSarahVoice, generateVoice } from "@/lib/elevenlabs";
-import OpenAI from "openai";
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,6 +54,9 @@ export async function POST(req: NextRequest) {
     }
 
     console.log("📢 Using OpenAI TTS as fallback...");
+
+    // Dynamic import to avoid build-time crash
+    const { default: OpenAI } = await import("openai");
     const openai = new OpenAI({ apiKey });
 
     // Map voice names for OpenAI
