@@ -1,13 +1,13 @@
 "use client";
 
-import { LessonMeetYourHormones } from "./lesson-1-meet-your-hormones";
-import { LessonMonthlyDance } from "./lesson-2-monthly-dance";
-import { LessonHormonesGoneRogue } from "./lesson-3-hormones-gone-rogue";
-import { LessonGutHormoneAxis } from "./lesson-4-gut-hormone-axis";
-import { LessonThyroidEnergy } from "./lesson-5-thyroid-energy";
-import { LessonStressAdrenals } from "./lesson-6-stress-adrenals";
-import { LessonFoodAsMedicine } from "./lesson-7-food-as-medicine";
-import { LessonLifeStageSupport } from "./lesson-8-life-stage-support";
+import { LessonFoodAsMedicine } from "./lesson-1-food-as-medicine";
+import { LessonMacronutrients } from "./lesson-2-macronutrients";
+import { LessonMicronutrients } from "./lesson-3-micronutrients";
+import { LessonAntiInflammatoryEating } from "./lesson-4-anti-inflammatory-eating";
+import { LessonBloodSugarBalance } from "./lesson-5-blood-sugar-balance";
+import { LessonGutNutritionConnection } from "./lesson-6-gut-nutrition-connection";
+import { LessonPersonalizedNutrition } from "./lesson-7-personalized-nutrition";
+import { LessonMindfulEating } from "./lesson-8-mindful-eating";
 import { LessonYourNextStep } from "./lesson-9-your-next-step";
 
 interface LessonRouterProps {
@@ -20,9 +20,8 @@ interface LessonRouterProps {
 
 /**
  * Routes to the correct Holistic Nutrition lesson component based on lesson number
- * All lessons share the same Sarah chat format
  */
-export function WomensHealthLessonRouter({
+export function HolisticNutritionLessonRouter({
     lessonNumber,
     firstName,
     onComplete,
@@ -40,24 +39,24 @@ export function WomensHealthLessonRouter({
 
     switch (lessonNumber) {
         case 1:
-            return <LessonMeetYourHormones {...commonProps} />;
-        case 2:
-            return <LessonMonthlyDance {...commonProps} />;
-        case 3:
-            return <LessonHormonesGoneRogue {...commonProps} />;
-        case 4:
-            return <LessonGutHormoneAxis {...commonProps} />;
-        case 5:
-            return <LessonThyroidEnergy {...commonProps} />;
-        case 6:
-            return <LessonStressAdrenals {...commonProps} />;
-        case 7:
             return <LessonFoodAsMedicine {...commonProps} />;
+        case 2:
+            return <LessonMacronutrients {...commonProps} />;
+        case 3:
+            return <LessonMicronutrients {...commonProps} />;
+        case 4:
+            return <LessonAntiInflammatoryEating {...commonProps} />;
+        case 5:
+            return <LessonBloodSugarBalance {...commonProps} />;
+        case 6:
+            return <LessonGutNutritionConnection {...commonProps} />;
+        case 7:
+            return <LessonPersonalizedNutrition {...commonProps} />;
         case 8:
-            return <LessonLifeStageSupport {...commonProps} />;
+            return <LessonMindfulEating {...commonProps} />;
         case 9:
             return <LessonYourNextStep {...commonProps} />;
         default:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonFoodAsMedicine {...commonProps} />;
     }
 }

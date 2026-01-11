@@ -1,13 +1,13 @@
 "use client";
 
-import { LessonMeetYourHormones } from "./lesson-1-meet-your-hormones";
-import { LessonMonthlyDance } from "./lesson-2-monthly-dance";
-import { LessonHormonesGoneRogue } from "./lesson-3-hormones-gone-rogue";
-import { LessonGutHormoneAxis } from "./lesson-4-gut-hormone-axis";
-import { LessonThyroidEnergy } from "./lesson-5-thyroid-energy";
-import { LessonStressAdrenals } from "./lesson-6-stress-adrenals";
-import { LessonFoodAsMedicine } from "./lesson-7-food-as-medicine";
-import { LessonLifeStageSupport } from "./lesson-8-life-stage-support";
+import { LessonFromBedsideToBusiness } from "./lesson-1-from-bedside-to-business";
+import { LessonTheCoachingMindset } from "./lesson-2-the-coaching-mindset";
+import { LessonBurnoutRecovery } from "./lesson-3-burnout-recovery";
+import { LessonCoreCoachingSkills } from "./lesson-4-core-coaching-skills";
+import { LessonHealthBehaviorChange } from "./lesson-5-health-behavior-change";
+import { LessonBuildingYourPractice } from "./lesson-6-building-your-practice";
+import { LessonMarketingForNurses } from "./lesson-7-marketing-for-nurses";
+import { LessonLegalAndEthicalConsiderations } from "./lesson-8-legal-and-ethical-considerations";
 import { LessonYourNextStep } from "./lesson-9-your-next-step";
 
 interface LessonRouterProps {
@@ -20,9 +20,8 @@ interface LessonRouterProps {
 
 /**
  * Routes to the correct Nurse Life Coach lesson component based on lesson number
- * All lessons share the same Sarah chat format
  */
-export function WomensHealthLessonRouter({
+export function NurseCoachLessonRouter({
     lessonNumber,
     firstName,
     onComplete,
@@ -40,24 +39,24 @@ export function WomensHealthLessonRouter({
 
     switch (lessonNumber) {
         case 1:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonFromBedsideToBusiness {...commonProps} />;
         case 2:
-            return <LessonMonthlyDance {...commonProps} />;
+            return <LessonTheCoachingMindset {...commonProps} />;
         case 3:
-            return <LessonHormonesGoneRogue {...commonProps} />;
+            return <LessonBurnoutRecovery {...commonProps} />;
         case 4:
-            return <LessonGutHormoneAxis {...commonProps} />;
+            return <LessonCoreCoachingSkills {...commonProps} />;
         case 5:
-            return <LessonThyroidEnergy {...commonProps} />;
+            return <LessonHealthBehaviorChange {...commonProps} />;
         case 6:
-            return <LessonStressAdrenals {...commonProps} />;
+            return <LessonBuildingYourPractice {...commonProps} />;
         case 7:
-            return <LessonFoodAsMedicine {...commonProps} />;
+            return <LessonMarketingForNurses {...commonProps} />;
         case 8:
-            return <LessonLifeStageSupport {...commonProps} />;
+            return <LessonLegalAndEthicalConsiderations {...commonProps} />;
         case 9:
             return <LessonYourNextStep {...commonProps} />;
         default:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonFromBedsideToBusiness {...commonProps} />;
     }
 }

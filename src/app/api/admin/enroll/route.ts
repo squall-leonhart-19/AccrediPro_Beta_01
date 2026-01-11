@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
     // Check if already enrolled
     const existingEnrollment = await prisma.enrollment.findUnique({
       where: { userId_courseId: { userId, courseId } },
+      select: { id: true },
     });
 
     if (existingEnrollment) {
@@ -36,7 +37,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create enrollment
+    // Fetch user and course separately to avoid P2022 errors with nested includes
+    const [user, course] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true, firstName: true, lastName: true },
+      }),
+      prisma.course.findUnique({
+        where: { id: courseId },
+        select: { id: true, title: true, slug: true },
+      }),
+    ]);
+
+    if (!user || !course) {
+      return NextResponse.json(
+        { success: false, error: "User or Course not found" },
+        { status: 404 }
+      );
+    }
+
+    // Create enrollment without nested includes
     const enrollment = await prisma.enrollment.create({
       data: {
         userId,
@@ -50,21 +70,6 @@ export async function POST(request: NextRequest) {
         courseId: true,
         status: true,
         progress: true,
-        user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        course: {
-          select: {
-            id: true,
-            title: true,
-            slug: true,
-          },
-        },
       },
     });
 
@@ -79,13 +84,13 @@ export async function POST(request: NextRequest) {
     });
 
     // Send welcome email
-    if (enrollment.user.email) {
+    if (user.email) {
       try {
         await sendWelcomeEmail({
-          to: enrollment.user.email,
-          firstName: enrollment.user.firstName || "Student",
-          courseName: enrollment.course.title,
-          courseSlug: enrollment.course.slug,
+          to: user.email,
+          firstName: user.firstName || "Student",
+          courseName: course.title,
+          courseSlug: course.slug,
         });
       } catch (emailError) {
         console.error("Failed to send welcome email:", emailError);
@@ -98,11 +103,11 @@ export async function POST(request: NextRequest) {
         userId,
         type: "SYSTEM",
         title: "Welcome to Your New Course!",
-        message: `You've been enrolled in ${enrollment.course.title}. Start learning today!`,
+        message: `You've been enrolled in ${course.title}. Start learning today!`,
       },
     });
 
-    return NextResponse.json({ success: true, data: enrollment });
+    return NextResponse.json({ success: true, data: { ...enrollment, user, course } });
   } catch (error) {
     console.error("Admin enroll error:", error);
     return NextResponse.json(
