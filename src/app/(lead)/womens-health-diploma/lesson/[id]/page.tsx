@@ -19,7 +19,7 @@ export default function LessonPage() {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const res = await fetch(`/api/lead-onboarding/lesson-status?lesson=${lessonId}`);
+                const res = await fetch(`/api/lead-onboarding/lesson-status?lesson=${lessonId}&niche=womens-health`);
                 if (res.ok) {
                     const data = await res.json();
                     setFirstName(data.firstName || "friend");
@@ -49,7 +49,7 @@ export default function LessonPage() {
             const res = await fetch("/api/lead-onboarding/lesson-complete", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ lessonId }),
+                body: JSON.stringify({ lessonId, niche: "womens-health" }),
             });
 
             if (res.ok) {

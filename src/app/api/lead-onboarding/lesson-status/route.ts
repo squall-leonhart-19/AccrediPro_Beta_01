@@ -3,6 +3,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// Map niche to tag prefix
+const NICHE_TAG_PREFIX: Record<string, string> = {
+    "womens-health": "wh-lesson-complete",
+    "gut-health": "gut-health-lesson-complete",
+    "functional-medicine": "functional-medicine-lesson-complete",
+    "health-coach": "health-coach-lesson-complete",
+    "nurse-coach": "nurse-coach-lesson-complete",
+    "holistic-nutrition": "holistic-nutrition-lesson-complete",
+    "hormone-health": "hormone-health-lesson-complete",
+};
+
 // GET - Get lesson status and user info
 export async function GET(request: NextRequest) {
     try {
@@ -13,6 +24,10 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url);
         const lessonId = parseInt(searchParams.get("lesson") || "0");
+        const niche = searchParams.get("niche") || "womens-health";
+
+        // Get tag prefix for this niche (default to womens-health)
+        const tagPrefix = NICHE_TAG_PREFIX[niche] || "wh-lesson-complete";
 
         // Get user info
         const user = await prisma.user.findUnique({
@@ -24,7 +39,7 @@ export async function GET(request: NextRequest) {
         const lessonTag = await prisma.userTag.findFirst({
             where: {
                 userId: session.user.id,
-                tag: `wh-lesson-complete:${lessonId}`,
+                tag: `${tagPrefix}:${lessonId}`,
             },
         });
 

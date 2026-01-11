@@ -84,6 +84,14 @@ export function middleware(request: NextRequest) {
         return response;
     }
 
+    // For lead diploma pages, add the pathname header so layout can detect which diploma
+    const pathname = request.nextUrl.pathname;
+    if (pathname.includes("-diploma")) {
+        const response = NextResponse.next();
+        response.headers.set("x-pathname", pathname);
+        return response;
+    }
+
     return NextResponse.next();
 }
 

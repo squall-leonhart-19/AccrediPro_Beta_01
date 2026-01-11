@@ -2,13 +2,25 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { LeadSidebar } from "@/components/lead-portal/LeadSidebar";
 
 interface LeadLayoutProps {
     children: React.ReactNode;
 }
 
-async function getLeadData(userId: string) {
+// Map diploma slug to tag prefix
+const DIPLOMA_TAG_PREFIX: Record<string, string> = {
+    "womens-health-diploma": "wh-lesson-complete",
+    "gut-health-diploma": "gut-health-lesson-complete",
+    "functional-medicine-diploma": "functional-medicine-lesson-complete",
+    "health-coach-diploma": "health-coach-lesson-complete",
+    "nurse-coach-diploma": "nurse-coach-lesson-complete",
+    "holistic-nutrition-diploma": "holistic-nutrition-lesson-complete",
+    "hormone-health-diploma": "hormone-health-lesson-complete",
+};
+
+async function getLeadData(userId: string, diplomaSlug: string) {
     const [user, leadOnboarding] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
@@ -30,11 +42,14 @@ async function getLeadData(userId: string) {
         }).catch(() => null), // Handle if table doesn't exist yet
     ]);
 
-    // Check if all lessons completed
+    // Get tag prefix for this diploma (default to womens-health)
+    const tagPrefix = DIPLOMA_TAG_PREFIX[diplomaSlug] || "wh-lesson-complete";
+
+    // Check if all lessons completed for this specific diploma
     const completedLessons = await prisma.userTag.count({
         where: {
             userId,
-            tag: { startsWith: "wh-lesson-complete:" },
+            tag: { startsWith: `${tagPrefix}:` },
         },
     });
 
@@ -53,7 +68,15 @@ export default async function LeadLayout({ children }: LeadLayoutProps) {
         redirect("/login");
     }
 
-    const { user, leadOnboarding, diplomaCompleted } = await getLeadData(session.user.id);
+    // Get the current URL pathname from headers
+    const headersList = await headers();
+    const pathname = headersList.get("x-pathname") || headersList.get("x-invoke-path") || "";
+
+    // Extract diploma slug from pathname (e.g., /gut-health-diploma/profile -> gut-health-diploma)
+    const pathParts = pathname.split("/").filter(Boolean);
+    const diplomaSlug = pathParts.find(part => part.includes("-diploma")) || "womens-health-diploma";
+
+    const { user, leadOnboarding, diplomaCompleted } = await getLeadData(session.user.id, diplomaSlug);
 
     if (!user) {
         redirect("/login");
