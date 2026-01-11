@@ -55,6 +55,7 @@ export async function sendPurchaseDMs(options: SendPurchaseDMsOptions): Promise<
                     { role: "ADMIN" }, // Fallback to any admin
                 ],
             },
+            select: { id: true },
         });
 
         if (!coachUser) {
@@ -134,10 +135,12 @@ export async function hasReceivedWelcomeDMs(userId: string): Promise<boolean> {
  * Trigger DM flow for a specific user (can be called manually)
  */
 export async function triggerWelcomeDMs(userId: string): Promise<boolean> {
-    // Get user info
+    // Get user info - use select to avoid P2022 errors
     const user = await prisma.user.findUnique({
         where: { id: userId },
-        include: {
+        select: {
+            id: true,
+            firstName: true,
             enrollments: {
                 include: { course: true },
                 orderBy: { enrolledAt: "desc" },

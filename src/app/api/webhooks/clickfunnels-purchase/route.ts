@@ -355,8 +355,16 @@ export async function POST(request: NextRequest) {
             null;
         const purchaseUserAgent = userAgent || request.headers.get("user-agent") || null;
 
+        // Use safe select to avoid P2022 errors from missing columns in production DB
         let user = await prisma.user.findUnique({
             where: { email: normalizedEmail },
+            select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                phone: true,
+            },
         });
 
         let isNewUser = false;
@@ -364,6 +372,7 @@ export async function POST(request: NextRequest) {
 
         if (!user) {
             // Create new user with standard password
+            // TEMPORARILY DISABLED fields that may not exist: registrationIp, registrationUserAgent, tosAcceptedAt, tosVersion, refundPolicyAcceptedAt, refundPolicyVersion
             const standardPassword = "Futurecoach2025";
             const hashedPassword = await bcrypt.hash(standardPassword, 12);
 
@@ -376,13 +385,13 @@ export async function POST(request: NextRequest) {
                     phone: phone || null,
                     role: "STUDENT",
                     emailVerified: new Date(),
-                    // DISPUTE EVIDENCE: Capture at purchase time
-                    registrationIp: purchaseIp,
-                    registrationUserAgent: purchaseUserAgent,
-                    tosAcceptedAt: new Date(), // TOS accepted at checkout
-                    tosVersion: "1.0",
-                    refundPolicyAcceptedAt: new Date(), // Refund policy accepted at checkout
-                    refundPolicyVersion: "1.0",
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
                 },
             });
 
@@ -394,21 +403,11 @@ export async function POST(request: NextRequest) {
             if (!user.firstName && firstName) updates.firstName = firstName;
             if (!user.lastName && lastName) updates.lastName = lastName;
             if (!user.phone && phone) updates.phone = phone;
-            // Update TOS if not set
-            if (!(user as any).tosAcceptedAt) {
-                updates.tosAcceptedAt = new Date();
-                updates.tosVersion = "1.0";
-                updates.refundPolicyAcceptedAt = new Date();
-                updates.refundPolicyVersion = "1.0";
-            }
-            // Update registration IP if not set
-            if (!(user as any).registrationIp && purchaseIp) {
-                updates.registrationIp = purchaseIp;
-                updates.registrationUserAgent = purchaseUserAgent;
-            }
+            // TEMPORARILY DISABLED: These columns may not exist in production DB
+            // TODO: Re-enable after running db:push or migration
 
             if (Object.keys(updates).length > 0) {
-                user = await prisma.user.update({
+                await prisma.user.update({
                     where: { id: user.id },
                     data: updates,
                 });

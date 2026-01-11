@@ -274,6 +274,7 @@ function htmlToPlainText(html: string): string {
  */
 async function isEmailSuppressed(email: string): Promise<{ suppressed: boolean; reason?: string }> {
   try {
+    // Use select to avoid P2022 errors from missing columns
     const user = await prisma.user.findFirst({
       where: {
         email: email.toLowerCase(),
@@ -285,7 +286,8 @@ async function isEmailSuppressed(email: string): Promise<{ suppressed: boolean; 
           }
         }
       },
-      include: {
+      select: {
+        id: true,
         marketingTags: {
           where: {
             tag: { slug: { in: SUPPRESSION_TAGS } }

@@ -1003,6 +1003,7 @@ export async function triggerAutoMessage({
         // Get Sarah Women's Health coach specifically
         const sarahWH = await prisma.user.findFirst({
           where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
         await sendAutoDM(userId, user.firstName || "there", whCoachId, `wh_lesson_${lessonNumber}_complete`, whLessonContent);
@@ -1020,6 +1021,7 @@ export async function triggerAutoMessage({
       if (whContent) {
         const sarahWH = await prisma.user.findFirst({
           where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
         await sendAutoDM(userId, user.firstName || "there", whCoachId, `wh_access_expiring_${daysLeft}day`, whContent);
@@ -1033,6 +1035,7 @@ export async function triggerAutoMessage({
       if (whContent) {
         const sarahWH = await prisma.user.findFirst({
           where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
         await sendAutoDM(userId, user.firstName || "there", whCoachId, "wh_certificate_ready", whContent);
@@ -1048,6 +1051,7 @@ export async function triggerAutoMessage({
       if (whContent) {
         const sarahWH = await prisma.user.findFirst({
           where: { email: "sarah_womenhealth@accredipro-certificate.com" },
+          select: { id: true },
         });
         const whCoachId = sarahWH?.id || coachId;
         await sendAutoDM(userId, user.firstName || "there", whCoachId, `wh_inactive_${daysInactive}days`, whContent);
@@ -1175,6 +1179,7 @@ async function sendFirstLoginWelcome(userId: string, firstName: string, coachId:
         ],
       },
       orderBy: { createdAt: "asc" },
+      select: { id: true },
     });
 
     const adminId = adminUser?.id || coachId;
@@ -1184,6 +1189,7 @@ async function sendFirstLoginWelcome(userId: string, firstName: string, coachId:
       where: {
         email: "sarah@accredipro-certificate.com",
       },
+      select: { id: true },
     });
 
     // Use Sarah's ID if found, otherwise fall back to the provided coachId

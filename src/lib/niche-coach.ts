@@ -93,6 +93,7 @@ export async function assignCoachByTag(
           isActive: true,
         },
         orderBy: { createdAt: "asc" },
+        select: { id: true },
       });
 
       if (!fallbackCoach) {
@@ -175,6 +176,7 @@ export async function assignCoachByFocusAreas(
         isActive: true,
       },
       orderBy: { createdAt: "asc" },
+      select: { id: true },
     });
 
     if (fallbackCoach) {
@@ -196,9 +198,11 @@ export async function assignCoachByFocusAreas(
  * Get the assigned coach details for a user
  */
 export async function getUserCoach(userId: string) {
+  // Use select to avoid P2022 errors from missing columns in production DB
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
+    select: {
+      id: true,
       assignedCoach: {
         select: {
           id: true,

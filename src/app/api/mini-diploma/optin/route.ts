@@ -145,21 +145,17 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            // Update user with mini diploma info and phone if missing
-            // Update user with mini diploma info and phone if missing
-            /*
             await prisma.user.update({
                 where: { id: existingUser.id },
                 data: {
-                    // miniDiplomaCategory: course,
-                    // miniDiplomaOptinAt: new Date(),
+                    miniDiplomaCategory: course,
+                    miniDiplomaOptinAt: new Date(),
                     // Don't override accessExpiresAt if they're already a paid user
-                    // ...(existingUser.userType === "LEAD" && {
-                    //    accessExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-                    // }),
+                    ...(existingUser.userType === "LEAD" && {
+                        accessExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    }),
                 },
             });
-            */
 
             return NextResponse.json({
                 success: true,
@@ -202,14 +198,14 @@ export async function POST(request: NextRequest) {
                 lastName: lastName.trim(),
                 passwordHash,
                 role: "STUDENT",
-                // userType: "LEAD",
+                userType: "LEAD",
                 isActive: true,
-                // leadSource: "mini-diploma",
-                // leadSourceDetail: course,
-                // miniDiplomaCategory: course,
-                // miniDiplomaOptinAt: new Date(),
-                // accessExpiresAt,
-                // assignedCoachId: coach?.id || null,
+                leadSource: "mini-diploma",
+                leadSourceDetail: course,
+                miniDiplomaCategory: course,
+                miniDiplomaOptinAt: new Date(),
+                accessExpiresAt,
+                assignedCoachId: coach?.id || null,
                 enrollments: {
                     create: {
                         courseId: courseData.id,

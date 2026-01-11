@@ -413,6 +413,7 @@ export async function POST(request: NextRequest) {
     if (eventType === "refund" || eventType === "refunded" || eventType === "charge.refunded") {
       const user = await prisma.user.findUnique({
         where: { email: normalizedEmail },
+        select: { id: true },
       });
 
       if (user) {
@@ -476,8 +477,17 @@ export async function POST(request: NextRequest) {
     const purchaseUserAgent = request.headers.get("user-agent");
 
     // 1. Find or create user
+    // Use safe select to avoid P2022 errors from missing columns in production DB
     let user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        leadSource: true,
+      },
     });
 
     let isNewUser = false;
@@ -487,7 +497,9 @@ export async function POST(request: NextRequest) {
       const defaultPassword = "Futurecoach2025";
       const passwordHash = await bcrypt.hash(defaultPassword, 12);
 
-      user = await prisma.user.create({
+      // Create user with only columns that definitely exist in production DB
+      // TEMPORARILY DISABLED fields that may not exist: registrationIp, registrationUserAgent, tosAcceptedAt, tosVersion, refundPolicyAcceptedAt, refundPolicyVersion
+      const newUser = await prisma.user.create({
         data: {
           email: normalizedEmail,
           firstName: firstName || "Student",
@@ -503,15 +515,17 @@ export async function POST(request: NextRequest) {
             ? "functional-medicine"
             : null,
           miniDiplomaOptinAt: new Date(),
-          // DISPUTE EVIDENCE: Capture at purchase time
-          registrationIp: purchaseIp,
-          registrationUserAgent: purchaseUserAgent,
-          tosAcceptedAt: new Date(), // TOS accepted at checkout
-          tosVersion: "1.0",
-          refundPolicyAcceptedAt: new Date(), // Refund policy accepted at checkout
-          refundPolicyVersion: "1.0",
+        },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          leadSource: true,
         },
       });
+      user = newUser;
 
       isNewUser = true;
       console.log(`Created new user from ClickFunnels: ${normalizedEmail} (IP: ${purchaseIp})`);
@@ -546,21 +560,21 @@ export async function POST(request: NextRequest) {
         updates.leadSource = "ClickFunnels";
         updates.leadSourceDetail = productName || productId || "Purchase";
       }
-      // Update TOS if not set (for users who existed before we added this)
-      if (!(user as any).tosAcceptedAt) {
-        updates.tosAcceptedAt = new Date();
-        updates.tosVersion = "1.0";
-        updates.refundPolicyAcceptedAt = new Date();
-        updates.refundPolicyVersion = "1.0";
-      }
-      // Update registration IP if not set
-      if (!(user as any).registrationIp && purchaseIp) {
-        updates.registrationIp = purchaseIp;
-        updates.registrationUserAgent = purchaseUserAgent;
-      }
+      // TEMPORARILY DISABLED: These columns may not exist in production DB
+      // TODO: Re-enable after running db:push or migration
+      // if (!(user as any).tosAcceptedAt) {
+      //   updates.tosAcceptedAt = new Date();
+      //   updates.tosVersion = "1.0";
+      //   updates.refundPolicyAcceptedAt = new Date();
+      //   updates.refundPolicyVersion = "1.0";
+      // }
+      // if (!(user as any).registrationIp && purchaseIp) {
+      //   updates.registrationIp = purchaseIp;
+      //   updates.registrationUserAgent = purchaseUserAgent;
+      // }
 
       if (Object.keys(updates).length > 0) {
-        user = await prisma.user.update({
+        await prisma.user.update({
           where: { id: user.id },
           data: updates,
         });

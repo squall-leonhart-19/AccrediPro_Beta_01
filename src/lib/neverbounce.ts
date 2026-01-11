@@ -161,9 +161,10 @@ async function suppressEmailByAddress(email: string, source: string): Promise<vo
   try {
     const normalizedEmail = email.toLowerCase();
 
-    // Find user by email
+    // Find user by email - use select to avoid P2022 errors
     const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail }
+      where: { email: normalizedEmail },
+      select: { id: true },
     });
 
     if (!user) {

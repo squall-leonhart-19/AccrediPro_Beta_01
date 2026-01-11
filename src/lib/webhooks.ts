@@ -95,7 +95,7 @@ export async function onLessonCompleted(
   moduleId: string
 ) {
   const [user, lesson, course] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId } }),
+    prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, firstName: true, lastName: true } }),
     prisma.lesson.findUnique({ where: { id: lessonId } }),
     prisma.course.findUnique({ where: { id: courseId } }),
   ]);
