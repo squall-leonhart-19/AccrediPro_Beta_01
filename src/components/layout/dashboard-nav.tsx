@@ -141,10 +141,19 @@ const fullNavItems: NavItem[] = [
 // Shows: Lessons, Introduce Yourself, Chat, and LOCKED Training (teaser)
 // Note: locked state is determined dynamically based on isMiniDiplomaOnly
 const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) => {
-  // Route to appropriate mini diploma based on course
-  const lessonPath = courseSlug === "womens-health-mini-diploma"
-    ? "/womens-health-diploma"
-    : "/mini-diploma";
+  // Map course slugs to their correct route paths
+  // Default to womens-health-diploma if unknown, but try to derive from slug
+  let lessonPath = "/womens-health-diploma";
+
+  if (courseSlug) {
+    if (courseSlug === "gut-health-mini-diploma") lessonPath = "/gut-health-diploma";
+    else if (courseSlug === "functional-medicine-mini-diploma") lessonPath = "/functional-medicine-diploma";
+    else if (courseSlug === "health-coach-mini-diploma") lessonPath = "/health-coach-diploma";
+    else if (courseSlug === "holistic-nutrition-mini-diploma") lessonPath = "/holistic-nutrition-diploma";
+    else if (courseSlug === "hormone-health-mini-diploma") lessonPath = "/hormone-health-diploma";
+    else if (courseSlug === "nurse-coach-mini-diploma") lessonPath = "/nurse-coach-diploma";
+    else if (courseSlug === "womens-health-mini-diploma") lessonPath = "/womens-health-diploma";
+  }
 
   return [
     { href: lessonPath, label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
@@ -153,6 +162,7 @@ const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) =
     // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
   ];
 };
+
 
 // Minimal nav for FM Preview users - Module 0 & 1 only
 // Shows: Lessons, Chat, and locked full certification CTA

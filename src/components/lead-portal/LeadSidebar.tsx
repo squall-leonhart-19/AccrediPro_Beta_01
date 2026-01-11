@@ -51,6 +51,21 @@ export function LeadSidebar({
         pathname?.startsWith("/community") || false
     );
 
+    // Dynamic base path for diploma
+    // If pathname starts with one of our known diploma routes, use that as base
+    // Otherwise default to /womens-health-diploma (legacy fallback)
+    const getDiplomaBasePath = () => {
+        if (!pathname) return "/womens-health-diploma";
+        const parts = pathname.split("/");
+        // parts[1] should be the diploma slug (e.g., gut-health-diploma)
+        if (parts[1] && parts[1].includes("-diploma")) {
+            return `/${parts[1]}`;
+        }
+        return "/womens-health-diploma";
+    };
+
+    const basePath = getDiplomaBasePath();
+
     const isActive = (href: string) =>
         pathname === href || pathname?.startsWith(href + "/");
 
@@ -58,7 +73,7 @@ export function LeadSidebar({
         <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-burgundy-800 text-white flex flex-col">
             {/* Logo */}
             <div className="p-4 border-b border-burgundy-700">
-                <Link href="/womens-health-diploma" className="flex items-center gap-2">
+                <Link href={basePath} className="flex items-center gap-2">
                     <Image
                         src="/newlogo.webp"
                         alt="AccrediPro"
@@ -100,8 +115,8 @@ export function LeadSidebar({
             <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
                 {/* My Profile */}
                 <Link
-                    href="/womens-health-diploma/profile"
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/womens-health-diploma/profile")
+                    href={`${basePath}/profile`}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive(`${basePath}/profile`)
                         ? "bg-burgundy-700 text-white"
                         : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
                         }`}
@@ -112,15 +127,15 @@ export function LeadSidebar({
 
                 {/* My Mini Diploma (Start Here) */}
                 <Link
-                    href="/womens-health-diploma"
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${pathname === "/womens-health-diploma"
+                    href={basePath}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${pathname === basePath
                         ? "bg-burgundy-700 text-white"
                         : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
                         }`}
                 >
                     <BookOpen className="w-5 h-5 flex-shrink-0" />
                     <span className="font-medium">My Mini Diploma</span>
-                    {pathname === "/womens-health-diploma" && (
+                    {pathname === basePath && (
                         <ChevronRight className="w-4 h-4 ml-auto" />
                     )}
                 </Link>
@@ -188,8 +203,8 @@ export function LeadSidebar({
                 <Link
                     href="/messages"
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/messages")
-                            ? "bg-burgundy-700 text-white"
-                            : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                        ? "bg-burgundy-700 text-white"
+                        : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
                         }`}
                 >
                     <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -202,8 +217,8 @@ export function LeadSidebar({
                 {/* Certificate - Only show after completion */}
                 {diplomaCompleted && (
                     <Link
-                        href="/womens-health-diploma/certificate"
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/womens-health-diploma/certificate")
+                        href={`${basePath}/certificate`}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive(`${basePath}/certificate`)
                             ? "bg-burgundy-700 text-white"
                             : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
                             }`}
@@ -216,8 +231,8 @@ export function LeadSidebar({
                 {/* Career Roadmap - Only show after completion */}
                 {diplomaCompleted && (
                     <Link
-                        href="/womens-health-diploma/career-roadmap"
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/womens-health-diploma/career-roadmap")
+                        href={`${basePath}/career-roadmap`}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive(`${basePath}/career-roadmap`)
                             ? "bg-burgundy-700 text-white"
                             : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
                             }`}
@@ -227,6 +242,7 @@ export function LeadSidebar({
                     </Link>
                 )}
             </nav>
+
 
             {/* Success Feed */}
             <div className="p-3 border-t border-burgundy-700">
