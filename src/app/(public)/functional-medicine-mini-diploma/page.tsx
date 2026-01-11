@@ -328,7 +328,7 @@ export default function WomensHealthMiniDiplomaPage() {
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                                        
+                                        <span>Certificate upon completion</span>
                                     </div>
                                 </div>
                             </form>
