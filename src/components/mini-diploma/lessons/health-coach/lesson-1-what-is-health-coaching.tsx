@@ -11,7 +11,7 @@ interface LessonProps {
     isCompleted?: boolean;
 }
 
-export function LessonWhatIsHealthCoaching?({
+export function LessonWhatIsHealthCoaching({
     lessonNumber,
     totalLessons = 9,
     firstName = "friend",
