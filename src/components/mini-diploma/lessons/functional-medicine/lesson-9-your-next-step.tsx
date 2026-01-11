@@ -23,99 +23,116 @@ export function LessonYourNextStep({
         {
             id: 1,
             type: 'coach',
-            content: `{name}, you made it to the final lesson! 🎉 I'm so proud of you for completing this journey.`,
+            content: `{name}!! 🎉 You made it! I'm so proud of you for completing this Mini Diploma!`,
         },
         {
             id: 2,
             type: 'coach',
-            content: `Let's take a moment to reflect on everything you've learned...`,
+            content: `In just 60 minutes, you've learned more about root-cause medicine than most conventionally trained doctors ever will.`,
         },
         {
             id: 3,
             type: 'system',
-            content: `**What You've Mastered**
-✓ The 5 key female hormones and how they interact
-✓ The 4 phases of the menstrual cycle
-✓ Common hormonal imbalances and their signs
-✓ The gut-hormone connection
-✓ Thyroid function and testing
-✓ Stress, adrenals, and the cortisol cascade
-✓ Nutrition strategies for hormone balance
-✓ Supporting women through all life stages`,
-            systemStyle: 'takeaway',
+            content: `**What You've Learned**
+✅ The 5 root causes of chronic disease
+✅ Why the gut is the foundation of health
+✅ How inflammation drives disease
+✅ The toxin burden we all carry
+✅ Stress and HPA axis dysfunction
+✅ Hidden nutrient deficiencies
+✅ Functional vs. conventional lab interpretation
+✅ How to build effective protocols`,
+            systemStyle: 'info',
         },
         {
             id: 4,
             type: 'user-choice',
-            content: `What will you do with this knowledge?`,
+            content: `How are you feeling right now?`,
             choices: [
-                "Apply it to my own health first",
-                "Help friends and family",
-                "Use it professionally to help women",
+                "Excited - I want to learn more!",
+                "Empowered - I finally understand my health",
+                "Motivated - I want to help others",
             ],
             showReaction: true,
         },
         {
             id: 5,
             type: 'coach',
-            content: `Whether you're supporting yourself or others, you now have foundational knowledge that most people - even many doctors - don't have!`,
+            content: `That's amazing! This is just the beginning. There's so much more depth to explore.`,
         },
         {
             id: 6,
-            type: 'coach',
-            content: `💡 I truly believe that women's health is one of the most impactful areas you can work in. So many women are suffering unnecessarily. With what you've learned, you can make a real difference - even if it's just helping one person understand their body better.`,
+            type: 'system',
+            content: `**Your Options Now**
+1. **Download your Mini Diploma Certificate** - Share it on LinkedIn!
+2. **Continue to Full Certification** - Become Board Certified
+3. **Join our Community** - Connect with 20,000+ practitioners`,
+            systemStyle: 'takeaway',
         },
         {
             id: 7,
-            type: 'system',
-            content: `**The Bigger Picture**
-Women's health impacts:
-• Families (healthy moms, healthy kids)
-• Workplaces (productivity, reduced sick days)
-• Healthcare costs (prevention > treatment)
-• Generational health (we pass patterns down)
-
-→ When you help one woman, you help ripples of people`,
-            systemStyle: 'quote',
+            type: 'coach',
+            content: `The Complete Career Certification takes you from curious learner to confident, credentialed practitioner. 🎓`,
         },
         {
             id: 8,
+            type: 'system',
+            content: `**What's in the Full Certification?**
+• 3-Level Certification (FM-FC, FM-CP, FM-BC)
+• 25+ in-depth lessons
+• Clinical protocols and case studies
+• Functional lab interpretation mastery
+• My Circle Mastermind (5-person pod, DAILY check-ins)
+• ASI Practitioner Directory listing
+• Done-for-you business templates
+• Sarah mentorship access
+• LIFETIME ACCESS`,
+            systemStyle: 'info',
+        },
+        {
+            id: 9,
             type: 'user-choice',
-            content: `How are you feeling about everything you've learned?`,
+            content: `What matters most to you in continuing?`,
             choices: [
-                "Excited and empowered!",
-                "Ready to learn even more",
-                "Eager to put it into practice",
+                "Getting certified and credentialed",
+                "Accountability and community",
+                "Practical business tools",
             ],
             showReaction: true,
         },
         {
-            id: 9,
-            type: 'coach',
-            content: `That's amazing! I love your energy! 🙌`,
-        },
-        {
             id: 10,
             type: 'coach',
-            content: `Congratulations, {name}! 🎊 You've officially completed the Functional Medicine & Hormones Mini Diploma!`,
+            content: `All of those are included! And the investment is just $297 - less than 2 client sessions once you're certified.`,
         },
         {
             id: 11,
             type: 'system',
-            content: `**Certificate Unlocked!**
-You've completed all 9 lessons.
-
-Your official Functional Medicine & Hormones Mini Diploma certificate is ready to download!
-
-→ Share it on LinkedIn
-→ Add it to your credentials
-→ Celebrate your achievement! 🌸`,
-            systemStyle: 'takeaway',
+            content: `**The Math**
+• Average practitioner charges $150-300/session
+• $297 / $150 = 2 clients to break even
+• Everything after that = profit + purpose`,
+            systemStyle: 'quote',
         },
         {
             id: 12,
             type: 'coach',
-            content: `Thank you for learning with me, {name}. You're going to do amazing things with this knowledge. I'll be in touch soon! 💕`,
+            content: `{name}, you have something special. The fact that you finished this training shows you're serious.`,
+        },
+        {
+            id: 13,
+            type: 'coach',
+            content: `I'd love to continue this journey with you. Check out the full certification when you're ready.`,
+        },
+        {
+            id: 14,
+            type: 'coach',
+            content: `Congratulations on completing your Functional Medicine Mini Diploma! 🌟`,
+        },
+        {
+            id: 15,
+            type: 'coach',
+            content: `Your certificate is ready to download. And I'll be here when you're ready for the next step. 💕`,
         },
     ];
 
@@ -123,7 +140,7 @@ Your official Functional Medicine & Hormones Mini Diploma certificate is ready t
         <LessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Your Next Step"
-            lessonSubtitle="Taking your knowledge forward"
+            lessonSubtitle="Becoming a Certified Functional Medicine Practitioner"
             totalLessons={totalLessons}
             messages={messages}
             onComplete={onComplete}

@@ -315,13 +315,13 @@ You introduce yourself the same way. Nothing changed.
 
 PATH B: You decide.
 
-One year from now: You're Board Certified. WH-FC, WH-CP, WH-BC.
+One year from now: You're Board Certified. HN-FC, HN-CP, HN-BC.
 
 Clients find you through the ASI Directory.
 
 Your Mastermind pod texts you every morning.
 
-You introduce yourself: "I'm {{firstName}}, WH-BC - Board Certified Master Practitioner."
+You introduce yourself: "I'm {{firstName}}, HN-BC - Board Certified Master Practitioner."
 
 Both paths take 365 days.
 
@@ -665,7 +665,7 @@ BEFORE:
 - Learning alone
 
 AFTER:
-"{{firstName}}, WH-BC - Board Certified Master Practitioner"
+"{{firstName}}, HN-BC - Board Certified Master Practitioner"
 - 3 credentials (FC, CP, BC)
 - Clients trust and PAY
 - Listed in ASI Directory
@@ -685,7 +685,7 @@ $297 for this transformation.
         day: 23,
         text: `{{firstName}}, real quotes from real practitioners:
 
-"The day I updated my LinkedIn to show WH-BC was the day everything clicked. I wasn't 'trying to be' a practitioner. I WAS one."
+"The day I updated my LinkedIn to show HN-BC was the day everything clicked. I wasn't 'trying to be' a practitioner. I WAS one."
 - Maria
 
 "My pod texts more than my actual friends. We've become family."
@@ -717,7 +717,7 @@ When you complete certification, you're automatically listed in the ASI Practiti
 
 Here's how it works:
 
-1. Woman in Dallas searches "certified women's health practitioner"
+1. Woman in Dallas searches "certified holistic nutrition practitioner"
 2. Finds YOUR profile
 3. Clicks "Book Consultation"
 4. You get a notification: "New client inquiry"
@@ -741,9 +741,9 @@ No awkward networking.
         text: `{{firstName}}, let me show you what $297 gets you:
 
 3-LEVEL CERTIFICATION:
-✅ WH-FC (Foundation Certified)
-✅ WH-CP (Certified Practitioner)
-✅ WH-BC (Board Certified Master)
+✅ HN-FC (Foundation Certified)
+✅ HN-CP (Certified Practitioner)
+✅ HN-BC (Board Certified Master)
 
 TRAINING:
 ✅ 25+ in-depth lessons
@@ -907,7 +907,7 @@ I want to personally invite you to take the next step.
 The Complete Career Certification - $297
 
 Everything you need:
-→ 3 certifications (WH-FC, WH-CP, WH-BC)
+→ 3 certifications (HN-FC, HN-CP, HN-BC)
 → Board Certified Master title
 → My Circle Mastermind (daily check-ins)
 → ASI Directory listing (clients find YOU)
@@ -957,7 +957,7 @@ You THINK: "Maybe I could help people"
 You FEEL: Imposter syndrome
 
 After certification:
-You SAY: "I'm {{firstName}}, WH-BC - Board Certified Master Practitioner"
+You SAY: "I'm {{firstName}}, HN-BC - Board Certified Master Practitioner"
 You THINK: "I HELP people"
 You FEEL: Confidence. Authority. Purpose.
 
@@ -969,7 +969,7 @@ To charge.
 To help.
 To BE a practitioner.
 
-Ready to become {{firstName}}, WH-BC?
+Ready to become {{firstName}}, HN-BC?
 
 ${CTA_LINK}
 
@@ -994,7 +994,7 @@ Here's what our practitioners actually report:
 → Built-in referral network
 
 3️⃣ Credential Authority
-→ WH-BC = instant trust
+→ HN-BC = instant trust
 → People pay for expertise
 
 4️⃣ Word of Mouth
@@ -1073,7 +1073,7 @@ This is the kind of practical advice our practitioners share with clients daily.
 
 Do you know anyone who'd love this?
 
-A friend, sister, colleague who's curious about women's health?
+A friend, sister, colleague who's curious about holistic nutrition?
 
 Forward them the Mini Diploma. It's free. They get the same training you got.
 
@@ -1156,7 +1156,7 @@ export const LESSON_COMPLETION_DMS: SarahDM[] = [
 
 LESSON 1 DONE!
 
-You now understand the 5 key hormones that run women's health.
+You now understand the 5 key hormones that run holistic nutrition.
 
 This is foundational. Most people never learn this.
 
@@ -1306,7 +1306,7 @@ Your certificate is being prepared.
 
 But more importantly... you're ready for what's next.
 
-When you're ready to become {{firstName}}, WH-BC - Board Certified Master Practitioner:
+When you're ready to become {{firstName}}, HN-BC - Board Certified Master Practitioner:
 
 ${CTA_LINK}
 

@@ -64,7 +64,7 @@ export async function DELETE(request: NextRequest) {
                     await safeDeleteMany(prisma.messageReaction, { messageId: { in: messageIds } });
                 }
                 await safeDeleteMany(prisma.message, { OR: [{ senderId: userId }, { receiverId: userId }] });
-                await safeDeleteMany(prisma.typingStatus, { userId });
+                await safeDeleteMany(prisma.typingStatus, { OR: [{ senderId: userId }, { receiverId: userId }] });
 
                 // Notifications
                 await safeDeleteMany(prisma.notification, { userId });
@@ -101,8 +101,8 @@ export async function DELETE(request: NextRequest) {
                 await safeDeleteMany(prisma.userCreditProfile, { userId });
                 await safeDeleteMany(prisma.userBehavior, { userId });
 
-                // Finally delete the user
-                await prisma.user.delete({ where: { id: userId } });
+                // Finally delete the user - use select to avoid P2022 errors
+                await prisma.user.delete({ where: { id: userId }, select: { id: true } });
 
             } catch (userError) {
                 console.error(`Failed to delete user ${userId}:`, userError);

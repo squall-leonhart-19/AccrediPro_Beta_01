@@ -4,7 +4,7 @@
  * OFFER: $297 Complete Career Certification
  * 
  * What's Included:
- * - 3-Level Certification (WH-FC™ + WH-CP™ + WH-BC™)
+ * - 3-Level Certification (NLC-FC™ + NLC-CP™ + NLC-BC™)
  * - Board Certified Master Practitioner title
  * - 25+ in-depth lessons
  * - Sarah mentorship access
@@ -112,7 +112,7 @@ And now? I get to live what once felt impossible: helping women transform their 
 
 That's why I'm so passionate about this path - because if I could step from survival into purpose, I know you can too.
 
-So tell me, {{firstName}} - what made you curious about women's health? What's your story?
+So tell me, {{firstName}} - what made you curious about nurse life coaching? What's your story?
 
 Hit reply. I want to hear it.
 
@@ -304,7 +304,7 @@ Learning this material isn't easy. It requires time, focus, and mental energy.
 
 So wherever you are right now...
 
-If you've finished: I'm SO proud of you. You now understand more about women's health than most people ever will. Your completion certificate is on its way.
+If you've finished: I'm SO proud of you. You now understand more about nurse life coaching than most people ever will. Your completion certificate is on its way.
 
 And {{firstName}} - something shifted in you. You're not the same person who signed up two weeks ago. You understand things now. You see connections.
 
@@ -350,7 +350,7 @@ Today: Diane works from home. Makes $8,000/month. Sees 8-10 clients a week.
 Here's what changed:
 
 Before: "Diane Smith, RN, Retired"
-After: "Diane Smith, RN, WH-BC - Board Certified Master Practitioner"
+After: "Diane Smith, RN, NLC-BC - Board Certified Master Practitioner"
 
 That little addition changed EVERYTHING.
 
@@ -375,7 +375,7 @@ Want to know what my days look like now?
 
 8:00am - Check my Mastermind pod chat. Share my daily intention. Cheer on my pod members. We do this every single day - 5 of us, holding each other accountable.
 
-9:00am - First client call. A woman in Texas with hormone symptoms. I sign my notes: "Sarah, WH-BC"
+9:00am - First client call. A woman in Texas with hormone symptoms. I sign my notes: "Sarah, NLC-BC"
 
 10:30am - Second call. A long-term client who's finally sleeping through the night. Happy tears.
 
@@ -389,7 +389,7 @@ Evening - Dinner together. Present. Not exhausted.
 
 No commute. No 14-hour days. No asking permission.
 
-I introduce myself differently now: "I'm Sarah, a Board Certified Master Practitioner specializing in women's health."
+I introduce myself differently now: "I'm Sarah, a Board Certified Master Practitioner specializing in nurse life coaching."
 
 That sentence changed my income, my schedule, and my self-respect.
 
@@ -502,9 +502,9 @@ Not terrible. Just... the same.
 
 PATH B: You Made a Decision
 
-You're Board Certified. Three levels complete: WH-FC, WH-CP, WH-BC.
+You're Board Certified. Three levels complete: NLC-FC, NLC-CP, NLC-BC.
 
-You introduce yourself: "Hi, I'm {{firstName}}, WH-BC - Board Certified Master Practitioner."
+You introduce yourself: "Hi, I'm {{firstName}}, NLC-BC - Board Certified Master Practitioner."
 
 You're in the ASI Directory. Clients find YOU.
 
@@ -544,9 +544,9 @@ The Complete Career Certification - $297
 What's included:
 
 ALL 3 CERTIFICATION LEVELS:
-- WH-FC (Foundation Certified)
-- WH-CP (Certified Practitioner)
-- WH-BC (Board Certified Master)
+- NLC-FC (Foundation Certified)
+- NLC-CP (Certified Practitioner)
+- NLC-BC (Board Certified Master)
 
 THE TRAINING:
 - 25+ in-depth lessons
@@ -598,17 +598,17 @@ You've already built the foundation.
 STEP 1: Complete Career Certification ($297)
 Everything you need in one package:
 
-LEVEL 1: WH-FC - Foundation Certified
+LEVEL 1: NLC-FC - Foundation Certified
 - Core principles
 - Basic assessment skills
 - Your first credential
 
-LEVEL 2: WH-CP - Certified Practitioner
+LEVEL 2: NLC-CP - Certified Practitioner
 - Clinical depth
 - Protocol design
 - Advanced techniques
 
-LEVEL 3: WH-BC - Board Certified Master
+LEVEL 3: NLC-BC - Board Certified Master
 - Elite status
 - Complex cases
 - Full authority
@@ -702,7 +702,7 @@ BEFORE Certification:
 - Not listed anywhere
 
 AFTER Certification:
-"{{firstName}}, WH-BC - Board Certified Master Practitioner"
+"{{firstName}}, NLC-BC - Board Certified Master Practitioner"
 - Professional credential (CMA, CPD, IPHM recognized)
 - Clients trust and pay
 - Listed in ASI Directory
@@ -711,15 +711,15 @@ AFTER Certification:
 What you get:
 
 3 CREDENTIALS:
-- WH-FC (Foundation Certified)
-- WH-CP (Certified Practitioner)
-- WH-BC (Board Certified Master)
+- NLC-FC (Foundation Certified)
+- NLC-CP (Certified Practitioner)
+- NLC-BC (Board Certified Master)
 
 THE BADGE:
 Display on LinkedIn, website, email signature.
 
 THE DIRECTORY:
-Women searching for "certified women's health practitioner" find YOU.
+Women searching for "certified nurse life coaching practitioner" find YOU.
 
 THE POD:
 5-person Mastermind. Daily check-ins. Lifetime friends.
@@ -727,11 +727,11 @@ THE POD:
 THE VERIFICATION:
 Anyone can verify your credential at accredipro.com/verify
 
-Maria told me: "The day I updated my LinkedIn to show WH-BC was the day everything clicked. I wasn't 'trying to be' a practitioner. I WAS one."
+Maria told me: "The day I updated my LinkedIn to show NLC-BC was the day everything clicked. I wasn't 'trying to be' a practitioner. I WAS one."
 
 You're not buying a course for $297.
 
-You're becoming {{firstName}}, WH-BC - Board Certified Master Practitioner.
+You're becoming {{firstName}}, NLC-BC - Board Certified Master Practitioner.
 
 Ready? https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
 
@@ -843,11 +843,11 @@ When you complete certification, you're automatically listed in the ASI Practiti
 
 Here's how it works:
 
-1. A woman in Dallas searches "certified women's health practitioner near me"
+1. A woman in Dallas searches "certified nurse life coaching practitioner near me"
 
 2. ASI Directory ranks high (we invest heavily in SEO)
 
-3. She finds WH-BC practitioners in her area
+3. She finds NLC-BC practitioners in her area
 
 4. She clicks your profile and sends an inquiry
 
@@ -933,7 +933,7 @@ Day 1: Welcome. You're matched with your Mastermind pod.
 Week 1: Core training begins. Daily pod check-ins start.
 Week 4-8: Clinical depth. You're building real skills.
 Week 8-12: Practice building. First clients.
-Certification: You become {{firstName}}, WH-BC.
+Certification: You become {{firstName}}, NLC-BC.
 
 Your badge. Your directory listing. Your pod. Your career.
 
@@ -1052,7 +1052,7 @@ $297. 3 levels. Daily Mastermind. Directory listing. Business templates.
 
 Thank you for being part of the ASI community, {{firstName}}.
 
-Whenever you're ready to become {{firstName}}, WH-BC - you know where to find me.
+Whenever you're ready to become {{firstName}}, NLC-BC - you know where to find me.
 
 ${ASI_SIGNATURE}
 

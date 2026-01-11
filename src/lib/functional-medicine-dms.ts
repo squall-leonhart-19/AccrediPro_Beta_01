@@ -169,7 +169,7 @@ Waiting for someone who knows what to look for.
         id: "day_5",
         type: "time_based",
         day: 5,
-        text: `{{firstName}}, your gut is making decisions for your hormones.
+        text: `{{firstName}}, your gut is making decisions for your root-causes.
 
 Scary, right?
 
@@ -177,7 +177,7 @@ Scary, right?
 Estrogen metabolism? Happens in your gut.
 Inflammation? Starts in your gut.
 
-When someone has "hormone problems," I don't ask about hormones first.
+When someone has "root-cause problems," I don't ask about root-causes first.
 
 I ask: "How's your digestion?"
 
@@ -199,14 +199,14 @@ We look at the whole woman.
 
 But since you've stuck with the Mini Diploma, I want to give you something special.
 
-The #1 hormone-balancing tip I give my paying clients:
+The #1 root-cause-balancing tip I give my paying clients:
 
 SEED CYCLING.
 
 Week 1-2 (Follicular): 1 tbsp flax seeds + 1 tbsp pumpkin seeds
 Week 3-4 (Luteal): 1 tbsp sesame seeds + 1 tbsp sunflower seeds
 
-These seeds contain specific nutrients that support the hormones dominant in each phase.
+These seeds contain specific nutrients that support the root-causes dominant in each phase.
 
 It sounds too simple. But I've seen it change cycles, reduce PMS, and help with fertility more times than I can count.
 
@@ -264,7 +264,7 @@ And uses them to make cortisol instead.
 
 Result? Low libido. Mood swings. Irregular cycles. Weight gain.
 
-The solution isn't hormone replacement.
+The solution isn't root-cause replacement.
 It's addressing the STRESS.
 
 This is root-cause thinking. This is what sets us apart.
@@ -291,7 +291,7 @@ Six months ago, Diane was:
 - Burned out
 - Ready to quit healthcare forever
 
-Today she works from home introviewing 8-10 women a week about their hormones.
+Today she works from home introviewing 8-10 women a week about their root-causes.
 
 She told me: "I make more in one week now than I used to make in two weeks at the hospital. And I actually ENJOY my work."
 
@@ -315,13 +315,13 @@ You introduce yourself the same way. Nothing changed.
 
 PATH B: You decide.
 
-One year from now: You're Board Certified. WH-FC, WH-CP, WH-BC.
+One year from now: You're Board Certified. FM-FC, FM-CP, FM-BC.
 
 Clients find you through the ASI Directory.
 
 Your Mastermind pod texts you every morning.
 
-You introduce yourself: "I'm {{firstName}}, WH-BC - Board Certified Master Practitioner."
+You introduce yourself: "I'm {{firstName}}, FM-BC - Board Certified Master Practitioner."
 
 Both paths take 365 days.
 
@@ -520,7 +520,7 @@ Symptoms that get dismissed:
 - Weight gain → "Eat less, exercise more"
 - Sleep issues → "Have you tried melatonin?"
 
-Meanwhile, hormones are SHIFTING.
+Meanwhile, root-causes are SHIFTING.
 
 Most doctors don't even TEST for it. They say "you're too young for menopause."
 
@@ -570,7 +570,7 @@ Every day.
         day: 19,
         text: `{{firstName}}, random but CRUCIAL:
 
-Your liver is your hormone headquarters.
+Your liver is your root-cause headquarters.
 
 It metabolizes and clears excess estrogen.
 
@@ -582,7 +582,7 @@ Result?
 - Mood swings
 - Stubborn weight
 
-Supporting your liver = supporting your hormones.
+Supporting your liver = supporting your root-causes.
 
 This is what Board Certified practitioners understand that most wellness coaches DON'T.
 
@@ -631,7 +631,7 @@ Neither will you.
         day: 21,
         text: `{{firstName}}, three weeks.
 
-You now know things most people never will about women's hormones.
+You now know things most people never will about women's root-causes.
 
 You understand connections doctors miss.
 
@@ -665,7 +665,7 @@ BEFORE:
 - Learning alone
 
 AFTER:
-"{{firstName}}, WH-BC - Board Certified Master Practitioner"
+"{{firstName}}, FM-BC - Board Certified Master Practitioner"
 - 3 credentials (FC, CP, BC)
 - Clients trust and PAY
 - Listed in ASI Directory
@@ -685,7 +685,7 @@ $297 for this transformation.
         day: 23,
         text: `{{firstName}}, real quotes from real practitioners:
 
-"The day I updated my LinkedIn to show WH-BC was the day everything clicked. I wasn't 'trying to be' a practitioner. I WAS one."
+"The day I updated my LinkedIn to show FM-BC was the day everything clicked. I wasn't 'trying to be' a practitioner. I WAS one."
 - Maria
 
 "My pod texts more than my actual friends. We've become family."
@@ -717,7 +717,7 @@ When you complete certification, you're automatically listed in the ASI Practiti
 
 Here's how it works:
 
-1. Woman in Dallas searches "certified women's health practitioner"
+1. Woman in Dallas searches "certified functional medicine practitioner"
 2. Finds YOUR profile
 3. Clicks "Book Consultation"
 4. You get a notification: "New client inquiry"
@@ -741,9 +741,9 @@ No awkward networking.
         text: `{{firstName}}, let me show you what $297 gets you:
 
 3-LEVEL CERTIFICATION:
-✅ WH-FC (Foundation Certified)
-✅ WH-CP (Certified Practitioner)
-✅ WH-BC (Board Certified Master)
+✅ FM-FC (Foundation Certified)
+✅ FM-CP (Certified Practitioner)
+✅ FM-BC (Board Certified Master)
 
 TRAINING:
 ✅ 25+ in-depth lessons
@@ -907,7 +907,7 @@ I want to personally invite you to take the next step.
 The Complete Career Certification - $297
 
 Everything you need:
-→ 3 certifications (WH-FC, WH-CP, WH-BC)
+→ 3 certifications (FM-FC, FM-CP, FM-BC)
 → Board Certified Master title
 → My Circle Mastermind (daily check-ins)
 → ASI Directory listing (clients find YOU)
@@ -957,7 +957,7 @@ You THINK: "Maybe I could help people"
 You FEEL: Imposter syndrome
 
 After certification:
-You SAY: "I'm {{firstName}}, WH-BC - Board Certified Master Practitioner"
+You SAY: "I'm {{firstName}}, FM-BC - Board Certified Master Practitioner"
 You THINK: "I HELP people"
 You FEEL: Confidence. Authority. Purpose.
 
@@ -969,7 +969,7 @@ To charge.
 To help.
 To BE a practitioner.
 
-Ready to become {{firstName}}, WH-BC?
+Ready to become {{firstName}}, FM-BC?
 
 ${CTA_LINK}
 
@@ -994,7 +994,7 @@ Here's what our practitioners actually report:
 → Built-in referral network
 
 3️⃣ Credential Authority
-→ WH-BC = instant trust
+→ FM-BC = instant trust
 → People pay for expertise
 
 4️⃣ Word of Mouth
@@ -1051,7 +1051,7 @@ Xenoestrogens are EVERYWHERE.
 
 Plastics. Pesticides. Personal care products. Even receipts.
 
-They mimic estrogen in your body and mess with your natural hormone balance.
+They mimic estrogen in your body and mess with your natural root-cause balance.
 
 Simple switches that help:
 → Glass containers instead of plastic
@@ -1073,7 +1073,7 @@ This is the kind of practical advice our practitioners share with clients daily.
 
 Do you know anyone who'd love this?
 
-A friend, sister, colleague who's curious about women's health?
+A friend, sister, colleague who's curious about functional medicine?
 
 Forward them the Mini Diploma. It's free. They get the same training you got.
 
@@ -1156,7 +1156,7 @@ export const LESSON_COMPLETION_DMS: SarahDM[] = [
 
 LESSON 1 DONE!
 
-You now understand the 5 key hormones that run women's health.
+You now understand the 5 key root-causes that run functional medicine.
 
 This is foundational. Most people never learn this.
 
@@ -1204,7 +1204,7 @@ You're 1/3 through! You're actually doing this!
         lessonNumber: 4,
         text: `{{firstName}}, Lesson 4 COMPLETE!
 
-The gut-hormone connection blows most people's minds.
+The gut-root-cause connection blows most people's minds.
 
 You now understand something that changes EVERYTHING about how you see health.
 
@@ -1238,7 +1238,7 @@ This knowledge is gold.
         lessonNumber: 6,
         text: `{{firstName}}, Lesson 6 DONE!
 
-Stress & Adrenals - the hidden driver behind SO many hormone issues.
+Stress & Adrenals - the hidden driver behind SO many root-cause issues.
 
 You understand connections now that most wellness "experts" don't.
 
@@ -1291,13 +1291,13 @@ ALL 9 LESSONS COMPLETE!!!
 I am SO incredibly proud of you right now!
 
 You understand:
-✅ The 5 key hormones
+✅ The 5 key root-causes
 ✅ The 4 cycle phases
 ✅ Hormonal imbalance signs
-✅ Gut-hormone connection
+✅ Gut-root-cause connection
 ✅ Thyroid function
 ✅ Stress & adrenals
-✅ Nutrition for hormones
+✅ Nutrition for root-causes
 ✅ Life stage support
 
 This is REAL knowledge. For REAL women.
@@ -1306,7 +1306,7 @@ Your certificate is being prepared.
 
 But more importantly... you're ready for what's next.
 
-When you're ready to become {{firstName}}, WH-BC - Board Certified Master Practitioner:
+When you're ready to become {{firstName}}, FM-BC - Board Certified Master Practitioner:
 
 ${CTA_LINK}
 

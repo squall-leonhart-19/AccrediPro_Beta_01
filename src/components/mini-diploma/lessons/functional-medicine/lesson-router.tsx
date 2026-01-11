@@ -1,13 +1,13 @@
 "use client";
 
-import { LessonMeetYourHormones } from "./lesson-1-meet-your-hormones";
-import { LessonMonthlyDance } from "./lesson-2-monthly-dance";
-import { LessonHormonesGoneRogue } from "./lesson-3-hormones-gone-rogue";
-import { LessonGutHormoneAxis } from "./lesson-4-gut-hormone-axis";
-import { LessonThyroidEnergy } from "./lesson-5-thyroid-energy";
-import { LessonStressAdrenals } from "./lesson-6-stress-adrenals";
-import { LessonFoodAsMedicine } from "./lesson-7-food-as-medicine";
-import { LessonLifeStageSupport } from "./lesson-8-life-stage-support";
+import { LessonRootCauseMedicine } from "./lesson-1-root-cause-medicine";
+import { LessonGutFoundation } from "./lesson-2-gut-foundation";
+import { LessonInflammationConnection } from "./lesson-3-inflammation-connection";
+import { LessonToxinBurden } from "./lesson-4-toxin-burden";
+import { LessonStressHPA } from "./lesson-5-stress-hpa-axis";
+import { LessonNutrientDeficiencies } from "./lesson-6-nutrient-deficiencies";
+import { LessonLabInterpretation } from "./lesson-7-lab-interpretation";
+import { LessonBuildingProtocols } from "./lesson-8-building-protocols";
 import { LessonYourNextStep } from "./lesson-9-your-next-step";
 
 interface LessonRouterProps {
@@ -20,9 +20,9 @@ interface LessonRouterProps {
 
 /**
  * Routes to the correct Functional Medicine lesson component based on lesson number
- * All lessons share the same Sarah chat format
+ * 9-Lesson curriculum covering root-cause medicine foundations
  */
-export function WomensHealthLessonRouter({
+export function FunctionalMedicineLessonRouter({
     lessonNumber,
     firstName,
     onComplete,
@@ -40,24 +40,24 @@ export function WomensHealthLessonRouter({
 
     switch (lessonNumber) {
         case 1:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonRootCauseMedicine {...commonProps} />;
         case 2:
-            return <LessonMonthlyDance {...commonProps} />;
+            return <LessonGutFoundation {...commonProps} />;
         case 3:
-            return <LessonHormonesGoneRogue {...commonProps} />;
+            return <LessonInflammationConnection {...commonProps} />;
         case 4:
-            return <LessonGutHormoneAxis {...commonProps} />;
+            return <LessonToxinBurden {...commonProps} />;
         case 5:
-            return <LessonThyroidEnergy {...commonProps} />;
+            return <LessonStressHPA {...commonProps} />;
         case 6:
-            return <LessonStressAdrenals {...commonProps} />;
+            return <LessonNutrientDeficiencies {...commonProps} />;
         case 7:
-            return <LessonFoodAsMedicine {...commonProps} />;
+            return <LessonLabInterpretation {...commonProps} />;
         case 8:
-            return <LessonLifeStageSupport {...commonProps} />;
+            return <LessonBuildingProtocols {...commonProps} />;
         case 9:
             return <LessonYourNextStep {...commonProps} />;
         default:
-            return <LessonMeetYourHormones {...commonProps} />;
+            return <LessonRootCauseMedicine {...commonProps} />;
     }
 }
