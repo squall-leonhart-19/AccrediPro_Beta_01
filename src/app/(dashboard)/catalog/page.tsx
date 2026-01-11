@@ -83,7 +83,11 @@ async function getCourses() {
       isFree: true,
       price: true,
       certificateType: true,
-      // Removed social proof fields - may not exist in production
+      // Social Proof fields
+      displayReviews: true,
+      displayEnrollments: true,
+      displayRating: true,
+      socialProofEnabled: true,
       category: {
         select: {
           id: true,
@@ -111,6 +115,12 @@ async function getCourses() {
       },
       _count: {
         select: { enrollments: true, reviews: true },
+      },
+      analytics: {
+        select: {
+          totalEnrolled: true,
+          avgRating: true,
+        },
       },
     },
     orderBy: [{ isFeatured: 'desc' }, { title: 'asc' }],
@@ -221,12 +231,21 @@ export default async function CoursesPage() {
       lessons: m.lessons.map((l) => ({ id: l.id })),
     })),
     _count: course._count,
-    analytics: null,
-    // Social Proof - use _count as fallback since display columns may not exist
-    socialProof: {
+    analytics: course.analytics
+      ? {
+        totalEnrolled: course.analytics.totalEnrolled,
+        avgRating: Number(course.analytics.avgRating),
+      }
+      : null,
+    // Social Proof - use display values if enabled, otherwise fall back to real counts
+    socialProof: (course as any).socialProofEnabled !== false ? {
+      reviews: (course as any).displayReviews || course._count.reviews || 0,
+      enrollments: (course as any).displayEnrollments || course._count.enrollments || 0,
+      rating: (course as any).displayRating ? Number((course as any).displayRating) : 4.8,
+    } : {
       reviews: course._count.reviews || 0,
       enrollments: course._count.enrollments || 0,
-      rating: 4.8, // Default rating
+      rating: course.analytics ? Number(course.analytics.avgRating) : 0,
     },
   }));
 
