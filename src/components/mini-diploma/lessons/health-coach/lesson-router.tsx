@@ -1,6 +1,6 @@
 "use client";
 
-import { LessonWhatIsHealthCoaching? } from "./lesson-1-what-is-health-coaching?";
+import { LessonWhatIsHealthCoaching } from "./lesson-1-what-is-health-coaching";
 import { LessonCoreCoachingCompetencies } from "./lesson-2-core-coaching-competencies";
 import { LessonTheWellnessWheel } from "./lesson-3-the-wellness-wheel";
 import { LessonGoalSettingAndActionPlans } from "./lesson-4-goal-setting-and-action-plans";
@@ -39,7 +39,7 @@ export function HealthCoachLessonRouter({
 
     switch (lessonNumber) {
         case 1:
-            return <LessonWhatIsHealthCoaching? {...commonProps} />;
+            return <LessonWhatIsHealthCoaching {...commonProps} />;
         case 2:
             return <LessonCoreCoachingCompetencies {...commonProps} />;
         case 3:
@@ -57,6 +57,7 @@ export function HealthCoachLessonRouter({
         case 9:
             return <LessonYourNextStep {...commonProps} />;
         default:
-            return <LessonWhatIsHealthCoaching? {...commonProps} />;
+            return <LessonWhatIsHealthCoaching {...commonProps} />;
     }
 }
+
