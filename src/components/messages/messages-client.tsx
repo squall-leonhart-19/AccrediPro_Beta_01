@@ -1334,7 +1334,7 @@ export function MessagesClient({
   };
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex bg-white rounded-2xl overflow-hidden overflow-x-hidden shadow-2xl border border-gray-200/50">
+    <div className="h-full w-full flex bg-white rounded-xl overflow-hidden shadow-xl border border-gray-200/50">
       {/* Hidden file inputs */}
       <input
         type="file"
@@ -1562,7 +1562,7 @@ export function MessagesClient({
       </div>
 
       {/* Chat Area */}
-      <div className={cn("flex-1 flex flex-col bg-gray-50", !selectedUser ? "hidden lg:flex" : "flex")}>
+      <div className={cn("flex-1 min-w-0 flex flex-col bg-gray-50", !selectedUser ? "hidden lg:flex" : "flex")}>
         {selectedUser ? (
           <>
             {/* Chat Header */}
