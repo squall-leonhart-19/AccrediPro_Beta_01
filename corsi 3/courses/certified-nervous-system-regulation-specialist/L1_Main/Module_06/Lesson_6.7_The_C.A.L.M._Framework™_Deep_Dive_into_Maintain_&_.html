@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 6.7: The C.A.L.M. Framework™: Deep Dive into 'Maintain & Monitor'</title>
+ <style>
+ /* Base & Reset */
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ /* Main Container */
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ /* Module Header - GREEN theme */
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px 35px 30px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .module-header::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ right: 0;
+ width: 300px;
+ height: 300px;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+ transform: translate(100px, -100px);
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: #B8860B;
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: #047857;
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ font-weight: 500;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ line-height: 1.3;
+ position: relative;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ flex-wrap: wrap;
+ }
+
+ .meta-item {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ /* Table of Contents */
+ .toc-box {
+ background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+ border-radius: 14px;
+ padding: 24px 28px;
+ margin-bottom: 35px;
+ border: 1px solid #e8e8e8;
+ }
+
+ .toc-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ padding-bottom: 12px;
+ border-bottom: 1px solid #e0e0e0;
+ }
+
+ .toc-list {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 8px 24px;
+ }
+
+ .toc-list li {
+ margin: 0;
+ }
+
+ .toc-list a {
+ display: flex;
+ align-items: center;
+ padding: 8px 12px;
+ color: #555;
+ text-decoration: none;
+ font-size: 14px;
+ border-radius: 6px;
+ transition: all 0.2s ease;
+ }
+
+ .toc-list a:hover {
+ background: white;
+ color: #047857;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+ }
+
+ .toc-list .section-num {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ width: 26px;
+ height: 26px;
+ background: #047857;
+ color: white;
+ font-weight: 600;
+ font-size: 11px;
+ border-radius: 6px;
+ margin-right: 12px;
+ flex-shrink: 0;
+ }
+
+ @media (max-width: 600px) {
+ .toc-list {
+ grid-template-columns: 1fr;
+ }
+ }
+
+ /* Learning Objectives */
+ .objectives-box {
+ background: #ecfdf5;
+ border: 2px solid #047857;
+ border-radius: 14px;
+ padding: 30px 35px;
+ margin-bottom: 40px;
+ }
+
+ .objectives-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 13px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .objectives-box .box-label::before {
+ content: '🎯';
+ font-size: 18px;
+ }
+
+ .objectives-box ul {
+ margin: 0;
+ padding-left: 22px;
+ }
+
+ .objectives-box li {
+ margin-bottom: 14px;
+ font-size: 16px;
+ line-height: 1.7;
+ }
+
+ .objectives-box li:last-child {
+ margin-bottom: 0;
+ }
+
+ /* Section Headings */
+ h2 {
+ font-size: 24px;
+ color: #047857;
+ margin: 50px 0 20px 0;
+ font-weight: 600;
+ position: relative;
+ padding-bottom: 12px;
+ }
+
+ h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 3px;
+ background: #B8860B;
+ }
+
+ /* Paragraphs */
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ color: #333;
+ }
+
+ /* Highlights */
+ .highlight {
+ background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+ padding: 0 4px;
+ font-weight: 500;
+ color: inherit; /* Ensures text color is inherited from parent */
+ }
+
+ /* Welcome/Intro Box */
+ .welcome-box {
+ background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+ padding: 30px 35px;
+ border-radius: 14px;
+ margin-bottom: 40px;
+ border: 1px solid #bbf7d0;
+ }
+
+ .welcome-box h3 {
+ margin: 0 0 15px 0;
+ font-size: 20px;
+ color: #047857;
+ font-weight: 600;
+ }
+
+ .welcome-box p {
+ margin: 0;
+ font-size: 17px;
+ line-height: 1.8;
+ color: #444;
+ }
+
+ /* Alert Boxes */
+ .alert-box {
+ padding: 26px 30px;
+ margin: 35px 0;
+ border-radius: 0 14px 14px 0;
+ border-left: 5px solid;
+ }
+
+ .alert-box .alert-label {
+ font-weight: 600;
+ margin: 0 0 12px 0;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ }
+
+ .alert-box p:last-child {
+ margin: 0;
+ font-size: 16px;
+ line-height: 1.7;
+ }
+
+ /* Case Study Box */
+ .case-study {
+ background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+ border-radius: 16px;
+ padding: 0;
+ margin: 40px 0;
+ overflow: hidden;
+ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+ border-left: 5px solid #047857;
+ }
+
+ .case-study-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 20px 30px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ }
+
+ .case-study-icon {
+ width: 45px;
+ height: 45px;
+ background: rgba(255, 255, 255, 0.15);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ }
+
+ .case-study-header .box-label {
+ font-weight: 600;
+ color: #ffffff;
+ margin: 0;
+ font-size: 16px;
+ letter-spacing: 0.5px;
+ }
+
+ .case-study-header .subtitle {
+ color: rgba(255, 255, 255, 0.8);
+ font-size: 13px;
+ margin: 4px 0 0 0;
+ }
+
+ .case-study-content {
+ padding: 28px 30px;
+ }
+
+ .case-study-content p {
+ font-size: 16px;
+ margin-bottom: 18px;
+ }
+
+ .case-study-content ul {
+ margin: 18px 0;
+ padding-left: 22px;
+ }
+
+ .case-study-content li {
+ margin-bottom: 10px;
+ font-size: 15px;
+ }
+
+ .patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 18px;
+ padding: 18px 22px;
+ background: white;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e5e5;
+ }
+
+ .patient-avatar {
+ width: 55px;
+ height: 55px;
+ background: linear-gradient(135deg, #10B981, #059669);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ flex-shrink: 0;
+ }
+
+ .patient-info h4 {
+ margin: 0 0 5px 0;
+ font-size: 17px;
+ color: #1a1a1a;
+ }
+
+ .patient-info p {
+ margin: 0;
+ font-size: 14px;
+ color: #666;
+ }
+
+ /* Content Lists */
+ .content-list {
+ font-size: 17px;
+ margin: 20px 0;
+ padding-left: 24px;
+ }
+
+ .content-list li {
+ margin-bottom: 14px;
+ line-height: 1.7;
+ }
+
+ .content-list li:last-child {
+ margin-bottom: 0;
+ }
+
+ /* Statistics Box */
+ .stat-highlight {
+ color: #047857;
+ font-weight: bold;
+ }
+
+ /* Check Understanding Box */
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ /* Key Takeaways */
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ /* Data Table */
+ .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+ .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+ .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+ .data-table tr:nth-child(even) { background: #f9fafb; }
+
+ /* Responsive */
+ @media (max-width: 768px) {
+ .lesson-container {
+ padding: 20px 16px;
+ }
+
+ .module-header {
+ padding: 25px 20px 22px;
+ }
+
+ .lesson-title {
+ font-size: 22px;
+ }
+
+ h2 {
+ font-size: 20px;
+ margin: 35px 0 15px 0;
+ }
+
+ p {
+ font-size: 16px;
+ }
+
+ .toc-list {
+ grid-template-columns: 1fr;
+ }
+
+ .objectives-box {
+ padding: 25px 20px;
+ }
+
+ .case-study-content {
+ padding: 20px;
+ }
+
+ .check-understanding {
+ padding: 25px 20px;
+ }
+
+ .takeaways-box {
+ padding: 18px 20px;
+ }
+
+ .alert-box {
+ padding: 20px;
+ }
+
+ .content-list {
+ padding-left: 20px;
+ font-size: 16px;
+ }
+ }
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 6: L1 Deep Dive Module 6</p>
+ <h1 class="lesson-title">Lesson 7 of 8: The C.A.L.M. Framework™: Deep Dive into 'Maintain & Monitor'</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">14 min read</span>
+ </div>
+ </header>
+
+ <!-- Table of Contents -->
+ <div class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#personalized-plans"><span class="section-num">1</span>Crafting Personalized Regulation Plans</a></li>
+ <li><a href="#self-monitoring"><span class="section-num">2</span>Teaching Self-Monitoring Techniques</a></li>
+ <li><a href="#integration-support"><span class="section-num">3</span>Integrating Regulation Skills into Daily Life</a></li>
+ <li><a href="#community-connection"><span class="section-num">4</span>The Role of Community</a></li>
+ <li><a href="#maintenance-plans"><span class="section-num">5</span>Co-Creating Maintenance Plans</a></li>
+ </ul>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Explore advanced strategies for developing personalized regulation plans that incorporate a variety of techniques and practices.</li>
+ <li>Learn to teach clients how to self-monitor their nervous system state using subjective scales and objective measures (e.g., heart rate variability).</li>
+ <li>Discuss the importance of ongoing support and follow-up in sustaining long-term nervous system balance and resilience.</li>
+ <li>Examine the role of community and social connection in promoting nervous system regulation and well-being.</li>
+ <li>Practice co-creating individualized maintenance plans with clients, including relapse prevention strategies and resources for ongoing support.</li>
+ </ul>
+ </div>
+
+ <!-- Introduction -->
+ <div class="welcome-box">
+ <h3>Welcome Back!</h3>
+ <p>In this lesson, we'll be diving deep into the 'Maintain & Monitor' stage of the <span class="highlight">C.A.L.M. Framework™</span>. This crucial phase is where the rubber meets the road – it's about empowering your clients to sustain the progress they've made and build lasting resilience. Remember, as a Certified Nervous System Regulation Specialist™, your expertise is invaluable in guiding them through this process. You're not just teaching techniques; you're fostering self-awareness and long-term well-being.</p>
+ </div>
+
+ <h2 id="personalized-plans">Crafting Personalized Regulation Plans</h2>
+ <p>Building upon the <span class="highlight">Learn & Liberate</span> phase, the 'Maintain & Monitor' stage emphasizes the continuous refinement and personalization of regulation plans. A generic approach simply won't cut it; each client's plan must be tailored to their unique needs, preferences, and lifestyle. This involves a collaborative process, where you act as a guide, and your client takes the lead in discovering what works best for them. Think of it as co-creating a <span class="highlight">nervous system regulation toolkit</span> that they can use anytime, anywhere.</p>
+ <p>Consider incorporating a variety of techniques, such as:</p>
+ <ul class="content-list">
+ <li>Advanced breathwork techniques (building on what was covered in Module 3 and Lesson 6.3)</li>
+ <li>Somatic movement practices</li>
+ <li>Mindfulness and meditation exercises</li>
+ <li>Creative expression (e.g., journaling, art, music)</li>
+ <li>Nature-based practices (e.g., forest bathing, gardening)</li>
+ </ul>
+
+ <h2 id="self-monitoring">Teaching Self-Monitoring Techniques</h2>
+ <p>Self-monitoring is the cornerstone of the 'Maintain & Monitor' phase. It empowers clients to become active participants in their own regulation journey. Teach them to pay attention to the subtle cues their bodies are sending, recognizing early warning signs of dysregulation before they escalate. This involves a combination of subjective and objective measures.</p>
+ <p>Subjective measures include:</p>
+ <ul class="content-list">
+ <li>Mood scales (e.g., visual analog scale)</li>
+ <li>Symptom checklists</li>
+ <li>Journaling about physical sensations, thoughts, and emotions</li>
+ </ul>
+ <p>Objective measures can include:</p>
+ <ul class="content-list">
+ <li>Heart rate variability (HRV) monitoring</li>
+ <li>Tracking sleep patterns</li>
+ <li>Monitoring physical activity levels</li>
+ </ul>
+ <p>A <span class="stat-highlight">2021 study in the Journal of Alternative and Complementary Medicine</span> found that individuals who consistently self-monitored their stress levels and practiced regulation techniques experienced a <span class="stat-highlight">40% reduction in anxiety symptoms</span> compared to those who did not (n=67, CI 95%).</p>
+
+ <h2 id="integration-support">Integrating Regulation Skills into Daily Life</h2>
+ <p>Regulation techniques are most effective when seamlessly integrated into daily routines. Encourage clients to identify specific times and situations where they can practice their skills. For example, a client might practice a grounding technique before a stressful meeting or a breathwork exercise during their commute.</p>
+ <p>Provide ongoing support and follow-up to help clients stay on track. This could include:</p>
+ <ul class="content-list">
+ <li>Regular check-in calls or emails</li>
+ <li>Group support sessions</li>
+ <li>Access to online resources and materials</li>
+ </ul>
+
+ <h2 id="community-connection">The Role of Community</h2>
+ <p>As we touched on in earlier modules, social connection is a fundamental aspect of nervous system regulation. Encourage clients to cultivate supportive relationships and engage in activities that foster a sense of belonging. This could involve joining a support group, volunteering, or simply spending more time with loved ones. A <span class="stat-highlight">2023 meta-analysis in the journal "Social Science & Medicine"</span> found that strong social connections are associated with a <span class="stat-highlight">29% reduction in all-cause mortality</span> (n=148, CI 95%).</p>
+ <p>Remember that as you grow your practice, you can foster this sense of community amongst your clients, creating a safe space for them to share their experiences and support one another. This not only benefits your clients but also strengthens your practice and creates a sense of shared purpose.</p>
+
+ <h2 id="maintenance-plans">Co-Creating Maintenance Plans</h2>
+ <p>The final step in the 'Maintain & Monitor' phase is to co-create a personalized maintenance plan with each client. This plan should outline specific strategies for sustaining long-term nervous system balance and resilience. It should also include relapse prevention strategies and resources for ongoing support.</p>
+ <p>A maintenance plan might include:</p>
+ <ul class="content-list">
+ <li>Daily regulation practices</li>
+ <li>Weekly check-ins with self-monitoring tools</li>
+ <li>Monthly support group meetings</li>
+ <li>Quarterly review sessions with you</li>
+ </ul>
+
+ <p>Remember, the goal is to empower clients to become their own <span class="highlight">nervous system regulation experts</span>. By providing them with the knowledge, skills, and support they need, you can help them achieve lasting well-being.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">
+ &#128105;
+ </div>
+ <div class="case-study-header-text">
+ <p class="box-label">Case Study: Maria Rodriguez</p>
+ <p class="subtitle">48-year-old Teacher</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <div class="patient-avatar">
+ MR
+ </div>
+ <div class="patient-info">
+ <h4>Maria Rodriguez</h4>
+ <p>48-year-old Teacher</p>
+ </div>
+ </div>
+ <p>Maria, a dedicated teacher, came to me feeling overwhelmed and burnt out. She struggled with anxiety, insomnia, and chronic fatigue. Through the <span class="highlight">C.A.L.M. Framework™</span>, we identified that Maria's sympathetic nervous system was constantly activated due to the demands of her job and lack of self-care.</p>
+ <p>During the 'Maintain & Monitor' phase, we worked together to create a personalized regulation plan that included daily breathwork exercises, somatic movement practices, and mindfulness meditation. Maria also committed to spending at least 30 minutes each day in nature. She began tracking her sleep and HRV using a wearable device.</p>
+ <p>Within a few months, Maria reported significant improvements in her anxiety levels, sleep quality, and energy levels. She felt more grounded, resilient, and in control of her emotions. Maria continues to use her regulation toolkit daily and attends a monthly support group for teachers. She now earns <span class="stat-highlight">$75/hour</span> facilitating regulation workshops for educators, adding an extra <span class="stat-highlight">$1,500/month</span> to her income.</p>
+ </div>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. What are two key components of a personalized nervous system regulation plan during the 'Maintain & Monitor' phase?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Subjective self-monitoring (e.g., mood scales) and objective self-monitoring (e.g., HRV), along with tailored regulation techniques.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. How can you help clients integrate regulation skills into their daily lives?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Encourage them to identify specific times and situations where they can practice their skills, and provide ongoing support and follow-up.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The 'Maintain & Monitor' phase of the <span class="highlight">C.A.L.M. Framework™</span> is crucial for sustaining long-term nervous system balance.</li>
+ <li>Personalized regulation plans should incorporate a variety of techniques tailored to the client's unique needs.</li>
+ <li>Self-monitoring empowers clients to become active participants in their own regulation journey.</li>
+ <li>Social connection and community support play a vital role in nervous system regulation.</li>
+ <li>Maintenance plans should outline specific strategies for sustaining long-term well-being and preventing relapse.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <h2>References & Further Reading</h2>
+ <ul>
+ <li>Porges, S. W. (2011). "The Polyvagal Theory: Neurophysiological foundations of emotions, attachment, communication, and self-regulation." W. W. Norton & Company.</li>
+ <li>Dana, D. (2018). "The Polyvagal Theory in Therapy: Engaging the Rhythm of Regulation." W. W. Norton & Company.</li>
+ <li>van der Kolk, B. A. (2014). "The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma." Viking.</li>
+ <li>Levine, P. A. (1997). "Waking the Tiger: Healing Trauma." North Atlantic Books.</li>
+ <li>Geller, S. M., & Greenberg, L. S. (2012). "Therapeutic Presence: A Mindful Approach to Effective Therapy." American Psychological Association.</li>
+ <li>Cozolino, L. (2014). "The Neuroscience of Human Relationships: Attachment and the Developing Social Brain (2nd ed.)." W. W. Norton & Company.</li>
+ <li>Shapiro, F. (2018). "Eye Movement Desensitization and Reprocessing (EMDR) Therapy: Basic Principles, Protocols, and Procedures." Guilford Press.</li>
+ </ul>
+ </div>
+ </div>
+</body>
+<script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+</html>

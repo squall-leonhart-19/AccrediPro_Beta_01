@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Resend } from "resend";
+import { WH_NURTURE_60_DAY_V3 } from "@/lib/wh-nurture-60-day-v3";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -62,7 +63,6 @@ const EMAIL_VARIANTS = [
     day: 0,
     originalSubject: "{{firstName}}, your free Mini Diploma is ready",
     subject: "Re: your free Mini Diploma access",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 You're in.
@@ -96,61 +96,50 @@ Sarah
 P.S. Check your messages inside the platform - I've left you a personal voice note. I want you to hear my voice before we really get started.`,
   },
 
-  // Email 2 - Day 1: Sarah's Story (Deep Storytelling Version)
+  // Email 2 - Day 1: Sarah's Story (Deep Emotional Version for 35-40+ Women)
   {
     id: 2,
     name: "Email 2: Sarah's Story",
     day: 1,
     originalSubject: "Re: Can I share something personal?",
     subject: "Re: my story (thought you'd relate)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
-Can I tell you something I don't share with everyone?
+Can I tell you a little bit of my story?
 
-<strong>The Kitchen Floor Moment</strong>
+A few years ago, I was a single mom trying to keep everything together.
 
-It was 11pm on a Tuesday. My daughter was finally asleep. I was sitting on my kitchen floor, bills spread around me, calculator in hand.
+By day, I was working long hours, giving clients the same generic "eat better, drink water, exercise" advice I'd seen online. By night, I was collapsing on the couch, wondering how I could ever provide the kind of life my child deserved.
 
-The numbers didn't add up. Again.
+<strong>Inside, I felt like a fraud.</strong>
 
-I'd just worked a 12-hour day at a job that was slowly killing me. Gave the same generic advice I'd given a hundred times: "Eat more vegetables. Drink more water. Try to reduce stress."
+I loved helping people, but when clients came to me with real struggles - chronic fatigue, brain fog, autoimmune symptoms - I didn't know what to do. I could see the disappointment in their eyes when I said, "You should ask your doctor about that."
 
-I knew it wasn't helping anyone. And I couldn't even take my own advice - I was exhausted, inflamed, running on coffee and anxiety.
+Meanwhile, my own health was unraveling. Stress, exhaustion, and the heavy weight of "doing it all" as a single mom.
 
-<strong>I looked at my reflection in the microwave door and didn't recognize myself.</strong>
+I remember standing in the kitchen one night, staring at the bills, fighting back tears, and thinking: <strong>"There has to be more than this. There has to be a better way."</strong>
 
-When did I become this tired, defeated person? When did "helping people" start feeling like a lie I told myself to get through the day?
+That's when I found integrative and functional medicine.
 
-Have you ever felt that way, {{firstName}}? That gap between who you are and who you wanted to become?
+It was like someone handed me the missing puzzle pieces: finally understanding how to look at root causes, how to make sense of labs, how to design real protocols that worked.
 
-<strong>The Moment Everything Changed</strong>
+<strong>But more than that - it gave me back my hope.</strong>
 
-That night, I couldn't sleep. I started researching at 2am. Functional medicine. Root-cause health. A different approach.
+Hope that I could truly help my clients. Hope that I could build a career I loved. Hope that I could create a future for my family that didn't depend on burning out or "faking it."
 
-And something clicked.
+And now? I get to live what once felt impossible: helping people transform their health at the root level, while being present for my child and proud of the work I do.
 
-For the first time, I understood WHY I felt so stuck. Why my clients weren't getting better. Why the advice I'd been giving was like putting band-aids on broken legs.
+That's why I'm so passionate about this path - because if I could step from survival into purpose, I know you can too.
 
-<strong>It wasn't that I was bad at my job. I just didn't have the right tools.</strong>
+So tell me, {{firstName}} - what made you curious about functional medicine? What's your story?
 
-Fast forward three years: I work from home. I set my own hours. I help people who've been dismissed by every doctor they've seen. And my daughter? She tells her friends her mom "helps people feel better."
+Hit reply. I want to hear it.
 
-That's worth everything.
-
-<strong>I'm telling you this because...</strong>
-
-If you're where I was - tired, stuck, wondering if there's more - I need you to know: there is.
-
-The Mini Diploma you're taking right now? It's the first step on the same path I walked.
-
-So tell me, {{firstName}} - what made you curious about functional medicine? What's YOUR kitchen floor moment?
-
-Hit reply. I want to hear your story.
+With love,
 
 Sarah
 
-P.S. I still have that microwave. Every time I see my reflection in it now, I smile. Crazy how much can change.`,
+P.S. This path changed everything for me. I can't wait to see what it does for you.`,
   },
 
   // Email 3 - Day 3: The "Aha" Moment (Why Generic Advice Fails)
@@ -160,7 +149,6 @@ P.S. I still have that microwave. Every time I see my reflection in it now, I sm
     day: 3,
     originalSubject: "{{firstName}}, this is why generic advice fails",
     subject: "Re: why the usual advice doesn't work",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I need to tell you about Linda.
@@ -215,7 +203,6 @@ P.S. Linda now refers me clients. Her exact words: "I tell everyone - the doctor
     day: 5,
     originalSubject: "Update: The discovery that changed everything",
     subject: "Re: the training I mentioned",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Remember the kitchen floor moment I told you about?
@@ -269,7 +256,6 @@ P.S. If you haven't finished your Mini Diploma yet, do that first. The Graduate 
     day: 7,
     originalSubject: "Re: From burned-out nurse to $8k/month",
     subject: "Re: Diane's story (burned-out nurse)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I want to tell you about Diane.
@@ -339,7 +325,6 @@ P.S. About 35% of our students come from medical backgrounds - nurses, doctors, 
     day: 9,
     originalSubject: "{{firstName}}, here's the roadmap",
     subject: "Re: your complete roadmap",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Can I be honest with you?
@@ -421,7 +406,6 @@ P.S. Look at that roadmap again. You're at Step 0. The question isn't "if" you c
     day: 11,
     originalSubject: "Re: \"How do I actually get clients?\"",
     subject: "Re: getting clients (the real answer)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I need to tell you about Kelly.
@@ -506,7 +490,6 @@ P.S. Kelly's waitlist problem? She solved it by raising her prices. Twice. She n
     day: 13,
     originalSubject: "Re: From yoga teacher to functional coach",
     subject: "Re: Vicki's transformation",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I want to tell you about Vicki. Especially if you've ever thought: <strong>"But I don't have a medical background."</strong>
@@ -593,7 +576,6 @@ P.S. Vicki's yoga students now call her their "health guru." Same people, same t
     day: 15,
     originalSubject: "{{firstName}}, is this even legit?",
     subject: "Re: about our accreditation",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Can we have an honest conversation?
@@ -676,7 +658,6 @@ P.S. Still skeptical? Good. Skeptics make the best students - they actually pay 
     day: 17,
     originalSubject: "Re: \"I don't have time for this\"",
     subject: "Re: about the time commitment",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Let me guess what you're thinking:
@@ -762,7 +743,6 @@ P.S. Maria studied while her three kids slept. She'd text me at midnight: "Just 
     day: 19,
     originalSubject: "Update: Let's talk about the $997",
     subject: "Re: the investment question",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Let's have an honest conversation about money.
@@ -868,7 +848,6 @@ P.S. If money is genuinely the barrier - not fear dressed up as a money objectio
     day: 21,
     originalSubject: "Re: Single mom, 3 kids, now $12k/month",
     subject: "Re: Maria's journey (single mom)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I need to tell you about Maria.
@@ -966,7 +945,6 @@ P.S. Maria's daughter is now 8. She tells everyone her mom "helps people feel be
     day: 23,
     originalSubject: "{{firstName}}, two paths ahead",
     subject: "Re: thinking about your decision",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I want to try something with you.
@@ -1050,7 +1028,6 @@ P.S. Maria told me: "I wish I'd started five years earlier. But I'm grateful I d
     day: 25,
     originalSubject: "Re: Your questions answered",
     subject: "Re: your questions (answered)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Before you decide anything, I want to answer the questions I know you're asking.
@@ -1144,7 +1121,6 @@ P.S. The guarantee means there's literally zero risk. Worst case: you try it, it
     day: 27,
     originalSubject: "[IMPORTANT] Enrollment closing Friday",
     subject: "Re: enrollment closing Friday",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -1230,7 +1206,6 @@ P.S. If you have questions, reply RIGHT NOW. I'm here this week specifically to 
     day: 28,
     originalSubject: "Update: Bonus expires in 48 hours",
     subject: "Re: 48 hours left",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -1304,7 +1279,6 @@ P.S. I've never had someone regret enrolling. I've had plenty regret waiting. Wh
     day: 29,
     originalSubject: "{{firstName}}, final call",
     subject: "Re: final call",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -1395,7 +1369,6 @@ P.S. If you're reading this and you've already decided yes - stop reading. Close
     day: 1,
     originalSubject: "Testing HTML branding impact",
     subject: "Re: my story (thought you'd relate)",
-    useHtmlBranding: true, // Flag for HTML template
     content: `{{firstName}},
 
 Can I tell you a little bit of my story?
@@ -1504,7 +1477,6 @@ Sarah`,
     day: 5,
     originalSubject: "Testing full branding + button",
     subject: "Re: the training I mentioned",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -1531,7 +1503,6 @@ Sarah`,
     day: 9,
     originalSubject: "Testing multiple links",
     subject: "Re: your complete roadmap",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 One of the biggest questions I get is: "Sarah, how does this actually work? What's the path?"
@@ -1591,7 +1562,6 @@ Sarah`,
     day: 27,
     originalSubject: "Testing urgency words",
     subject: "Re: enrollment closing Friday",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I have to be honest with you: This week is your last chance to join.
@@ -1622,7 +1592,6 @@ Sarah`,
     day: 21,
     originalSubject: "Testing deep storytelling",
     subject: "Re: Maria's full story (you need to hear this)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I need to tell you about Maria.
@@ -1720,7 +1689,6 @@ P.S. Maria's daughter is now 8. She tells everyone her mom "helps people feel be
     day: 27,
     originalSubject: "Testing price/sales + bold",
     subject: "Re: everything included (and the guarantee)",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -1813,7 +1781,6 @@ P.S. Remember: <strong>30-day guarantee means zero risk</strong>. Try it. If it'
     day: 35,
     originalSubject: "I noticed you didn't join",
     subject: "Re: a special opportunity",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I noticed you didn't join us during the enrollment period.
@@ -1871,7 +1838,6 @@ P.S. I'm not doing this to create fake urgency. The 48-hour window is real. Afte
     day: 36,
     originalSubject: "Why I created the scholarship",
     subject: "Re: why I created scholarships",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I want to tell you why scholarships exist in our program.
@@ -1936,7 +1902,6 @@ P.S. Teresa now refers me more students than anyone else. She always says the sa
     day: 37,
     originalSubject: "Scholarship expires tonight",
     subject: "Re: scholarship expires midnight",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -2015,7 +1980,6 @@ P.S. If money is genuinely the last barrier, reply to this email. I mean it. Let
     day: 0,
     originalSubject: "A gift that changes everything",
     subject: "Re: a Christmas gift for yourself",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 This Christmas, I want to talk about a different kind of gift.
@@ -2081,7 +2045,6 @@ P.S. Don't let another year go by wondering "what if." This Christmas, give your
     day: 0,
     originalSubject: "What I wished for myself (Christmas morning)",
     subject: "Re: what I wished for (Merry Christmas)",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Merry Christmas.
@@ -2144,7 +2107,6 @@ P.S. Tomorrow is the last day for Christmas enrollment with the bonus live Q&A a
     day: 0,
     originalSubject: "Christmas enrollment closes tonight",
     subject: "Re: enrollment closes tonight",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -2206,7 +2168,6 @@ P.S. If you're reading this and you've already decided yes - stop reading. Go en
     day: 0,
     originalSubject: "Your 2025 resolution (with teeth)",
     subject: "Re: your 2025 resolution",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Let me guess your New Year's resolution:
@@ -2282,7 +2243,6 @@ P.S. "New Year, new me" is a cliche. But "New Year, new career" is a strategy. L
     day: 0,
     originalSubject: "Happy New Year + certification",
     subject: "Re: Happy New Year",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 <strong>Happy New Year.</strong>
@@ -2352,7 +2312,6 @@ P.S. Tomorrow is the last day for the New Year enrollment bonus. If you're going
     day: 0,
     originalSubject: "Start 2025 strong (final hours)",
     subject: "Re: final hours for enrollment",
-    useHtmlBranding: true,
     useCtaButton: true,
     content: `{{firstName}},
 
@@ -2429,7 +2388,6 @@ P.S. A year from now, you'll be a year older. The only question is whether you'l
     day: 1,
     originalSubject: "{{firstName}}, did you get in okay?",
     subject: "Re: checking in",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 Quick check-in from me.
@@ -2462,7 +2420,6 @@ P.S. If something went wrong with your account or you need help, just hit reply.
     day: 3,
     originalSubject: "{{firstName}}, what's holding you back?",
     subject: "Re: haven't forgotten about you",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 Still haven't seen you log in, and honestly - I'm curious why.
@@ -2501,7 +2458,6 @@ Password: Futurecoach2025`,
     day: 7,
     originalSubject: "{{firstName}}, I'm going to stop emailing soon",
     subject: "Re: one last thing",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 This is my last check-in about your Mini Diploma.
@@ -2551,7 +2507,6 @@ P.S. Life is short. The things we're "going to get to someday" often never happe
     day: 2,
     originalSubject: "{{firstName}}, you're SO close",
     subject: "Re: you logged in (almost there!)",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 I saw you logged in! That's awesome.
@@ -2586,7 +2541,6 @@ P.S. The first lesson explains WHY conventional health advice fails so many peop
     day: 5,
     originalSubject: "{{firstName}}, honest question",
     subject: "Re: quick honest question",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 Can I ask you something honestly?
@@ -2631,7 +2585,6 @@ Sarah`,
     day: 10,
     originalSubject: "{{firstName}}, the uncomfortable truth",
     subject: "Re: something uncomfortable",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 I'm going to say something uncomfortable.
@@ -2683,7 +2636,6 @@ P.S. This is my last email about starting. After this, I'll assume you're not in
     day: 7,
     originalSubject: "{{firstName}}, where did you go?",
     subject: "Re: noticed you disappeared",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 I noticed you were making progress on your Mini Diploma, and then... you disappeared.
@@ -2722,7 +2674,6 @@ P.S. When you complete the Mini Diploma, something cool unlocks. I'll tell you m
     day: 14,
     originalSubject: "{{firstName}}, about unfinished things",
     subject: "Re: something on my mind",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 Do you know what's funny about unfinished things?
@@ -2759,7 +2710,6 @@ P.S. Every person who's ever built something meaningful has felt the urge to qui
     day: 21,
     originalSubject: "{{firstName}}, your last chance to finish",
     subject: "Re: before I let this go",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 This is my last email about your Mini Diploma.
@@ -2809,7 +2759,6 @@ P.S. A lot of people who complete the Mini Diploma tell me it was a turning poin
     day: 1,
     originalSubject: "Great job on Day 1!",
     subject: "Re: just wanted to say...",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 Just noticed you finished Day 1 - wanted to say nice work!
@@ -2839,7 +2788,6 @@ P.S. Most people who finish Day 1 go on to complete the whole thing. You're alre
     day: 2,
     originalSubject: "Almost there!",
     subject: "Re: Day 2 done!",
-    useHtmlBranding: false,
     content: `{{firstName}}!
 
 You did it - Day 2 complete!
@@ -2872,7 +2820,6 @@ P.S. I'm genuinely excited for you. The final exam is easier than you think, and
     day: 3,
     originalSubject: "Time for your final exam!",
     subject: "Re: you did it!",
-    useHtmlBranding: false,
     content: `{{firstName}},
 
 ALL THREE DAYS COMPLETE!
@@ -2917,7 +2864,6 @@ P.S. 96% of people who reach this point pass on their first try. You've got this
     day: 0,
     originalSubject: "following up on our chat...",
     subject: "Re: following up on our conversation",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 It was great chatting with you earlier today.
@@ -2944,7 +2890,6 @@ P.S. If you're ready to take the next step, here's the link: https://sarah.accre
     day: 0,
     originalSubject: "one thing I forgot to mention...",
     subject: "Re: one thing I forgot to mention",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 After we chatted, I realized there's something I forgot to tell you.
@@ -2975,7 +2920,6 @@ Sarah`,
     day: 0,
     originalSubject: "quick summary from our chat",
     subject: "Re: quick summary",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Thanks for taking the time to chat with me today.
@@ -3010,7 +2954,6 @@ Sarah`,
     day: 1,
     originalSubject: "thinking about you...",
     subject: "Re: been thinking about our conversation",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I woke up this morning thinking about our chat yesterday.
@@ -3041,7 +2984,6 @@ Sarah`,
     day: 1,
     originalSubject: "what other students say...",
     subject: "Re: thought you'd want to see this",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I wanted to share something with you.
@@ -3072,7 +3014,6 @@ Sarah`,
     day: 1,
     originalSubject: "the fear you didn't mention...",
     subject: "Re: the thing you didn't say",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Can I be honest with you about something?
@@ -3108,7 +3049,6 @@ Sarah`,
     day: 2,
     originalSubject: "questions I usually get...",
     subject: "Re: questions you might have",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I wanted to answer some questions you might be thinking about (even if you haven't asked them yet).
@@ -3142,7 +3082,6 @@ P.S. Enrollment link when you're ready: https://sarah.accredipro.academy/checkou
     day: 2,
     originalSubject: "can I ask you something real?",
     subject: "Re: honest question for you",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 I have a real question for you. Not a sales question - a life question.
@@ -3177,7 +3116,6 @@ Sarah`,
     day: 2,
     originalSubject: "imagining your future...",
     subject: "Re: picture this",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Close your eyes for a second. (Well, after you read this.)
@@ -3212,7 +3150,6 @@ Sarah`,
     day: 3,
     originalSubject: "the sale ends soon...",
     subject: "Re: wanted to let you know",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Quick heads up.
@@ -3243,7 +3180,6 @@ Sarah`,
     day: 3,
     originalSubject: "about your risk...",
     subject: "Re: about the risk",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Let me remove the risk for you.
@@ -3277,7 +3213,6 @@ Sarah`,
     day: 3,
     originalSubject: "my final thoughts...",
     subject: "Re: final thoughts from me",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 This will probably be my last email about this.
@@ -3315,7 +3250,6 @@ Sarah`,
     day: 5,
     originalSubject: "last call...",
     subject: "Re: final notice",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 The New Year Sale ends tonight at midnight.
@@ -3344,7 +3278,6 @@ Sarah`,
     day: 5,
     originalSubject: "one last thing...",
     subject: "Re: before I go",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 This is my last email about the certification. I promise.
@@ -3375,7 +3308,6 @@ P.S. The sale ends tonight. Just so you know.`,
     day: 5,
     originalSubject: "goodbye (for now)",
     subject: "Re: goodbye for now",
-    useHtmlBranding: true,
     content: `{{firstName}},
 
 Sale ends tonight. This is my last email.
@@ -3403,6 +3335,1345 @@ If it's a no: Thank you for your time. I mean that sincerely.
 All the best,
 Sarah`,
   },
+
+  // ============================================
+  // MINI DIPLOMA LEAD SEQUENCE - 9 Emails
+  // Women's Health lead nurture flow
+  // IDs: 100-108
+  // ============================================
+
+  // Mini Diploma 1: Welcome
+  {
+    id: 100,
+    name: "Mini Diploma 1: Welcome",
+    day: 0,
+    section: "mini_diploma",
+    originalSubject: "Welcome to your Mini Diploma",
+    subject: "Re: your Women's Health access",
+    content: `{{firstName}},
+
+You're in.
+
+I just saw your name come through, and I wanted to personally welcome you.
+
+Your FREE Women's Health Mini Diploma is ready - you can start right now.
+
+Here's what you're getting:
+- 9 quick lessons (about 6 minutes each)
+- Real knowledge about hormones, cycles, and women's health
+- Your own certificate when you finish
+- 7 days of access
+
+This isn't like other freebies that sit in your downloads folder. This is real training.
+
+Start Lesson 1 now: https://learn.accredipro.academy/womens-health-diploma
+
+I also left you a personal voice message inside. Check your Messages when you log in.
+
+Got questions? Just reply to this email.
+
+Sarah`,
+  },
+
+  // Welcome V02
+  {
+    id: 100.2,
+    name: "Welcome V02",
+    day: 0,
+    section: "mini_diploma",
+    originalSubject: "Welcome to your Mini Diploma",
+    subject: "Your login details to AccrediPro Academy",
+    useHtmlBranding: true,
+    content: `Hey {{firstName}}!
+
+I'm SO excited you're here! Your Women's Health & Hormones Mini Diploma is ready.
+
+Here's how to access your lessons:
+
+YOUR LOGIN DETAILS:
+Email: {{email}}
+Password: coach2026
+
+Save these! You can change your password anytime.
+
+What you'll learn with me:
+- The 5 key female hormones
+- The 4 phases of your cycle
+- Signs of hormonal imbalance
+- The gut-hormone connection
+- Nutrition for balance
+
+Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
+
+Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+
+I'll be chatting with you inside the lessons!
+
+Sarah`,
+  },
+
+  // Welcome V03
+  {
+    id: 100.3,
+    name: "Welcome V03 (Re:)",
+    day: 0,
+    section: "mini_diploma",
+    originalSubject: "Re: Welcome",
+    subject: "Re: Your login details to AccrediPro Academy",
+    useHtmlBranding: true,
+    content: `Hey {{firstName}}!
+
+I'm SO excited you're here! Your Women's Health & Hormones Mini Diploma is ready.
+
+Here's how to access your lessons:
+
+YOUR LOGIN DETAILS:
+Email: {{email}}
+Password: coach2026
+
+Save these! You can change your password anytime.
+
+What you'll learn with me:
+- The 5 key female hormones
+- The 4 phases of your cycle
+- Signs of hormonal imbalance
+- The gut-hormone connection
+- Nutrition for balance
+
+Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
+
+Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+
+I'll be chatting with you inside the lessons!
+
+Sarah`,
+  },
+
+  // Welcome V04
+  {
+    id: 100.4,
+    name: "Welcome V04 (Login Details)",
+    day: 0,
+    section: "mini_diploma",
+    originalSubject: "Your login details",
+    subject: "Your login details to AccrediPro Academy",
+    useHtmlBranding: true,
+    content: `Hey {{firstName}}!
+
+I'm SO excited you're here! Your Women's Health & Hormones Mini Diploma is ready.
+
+Here's how to access your lessons:
+
+YOUR LOGIN DETAILS:
+Email: {{email}}
+Password: coach2026
+
+Save these! You can change your password anytime.
+
+What you'll learn with me:
+- The 5 key female hormones
+- The 4 phases of your cycle
+- Signs of hormonal imbalance
+- The gut-hormone connection
+- Nutrition for balance
+
+Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
+
+Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+
+I'll be chatting with you inside the lessons!
+
+Sarah`,
+  },
+
+  // Welcome V05
+  {
+    id: 100.5,
+    name: "Welcome V05 (Simple)",
+    day: 0,
+    section: "mini_diploma",
+    originalSubject: "Your access",
+    subject: "Your login details to AccrediPro Academy",
+    useHtmlBranding: true,
+    content: `Hey {{firstName}}!
+
+I'm SO excited you're here! Your Women's Health & Hormones Mini Diploma is ready.
+
+Here's how to access your lessons:
+
+YOUR LOGIN DETAILS:
+Email: {{email}}
+Password: coach2026
+
+Save these! You can change your password anytime.
+
+What you'll learn with me:
+- The 5 key female hormones
+- The 4 phases of your cycle
+- Signs of hormonal imbalance
+- The gut-hormone connection
+- Nutrition for balance
+
+Start Your First Lesson: https://learn.accredipro.academy/womens-health-diploma
+
+Important: You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!
+
+I'll be chatting with you inside the lessons!
+
+Sarah`,
+  },
+
+  // Mini Diploma 2: Day 1 Start Nudge
+  {
+    id: 101,
+    name: "Mini Diploma 2: Day 1 Start",
+    day: 1,
+    section: "mini_diploma",
+    originalSubject: "Have you started yet?",
+    subject: "Re: quick question",
+    content: `{{firstName}},
+
+Just checking in - have you had a chance to start your Mini Diploma yet?
+
+I know life gets busy. But here's the thing: Lesson 1 takes just 6 minutes. That's shorter than your morning coffee break.
+
+Once you start, you'll understand why hormones affect EVERYTHING - your energy, mood, weight, sleep, even your skin.
+
+Your access is active for 7 days. Let's not waste it.
+
+Start now: https://learn.accredipro.academy/womens-health-diploma
+
+I left you a voice message inside too - give it a listen.
+
+Sarah`,
+  },
+
+  // Mini Diploma 3: Day 2 Momentum
+  {
+    id: 102,
+    name: "Mini Diploma 3: Day 2 Momentum",
+    day: 2,
+    section: "mini_diploma",
+    originalSubject: "12 minutes = 2 lessons",
+    subject: "Re: following up",
+    content: `{{firstName}},
+
+I noticed you haven't started your lessons yet - is everything okay?
+
+I get it. Starting something new can feel overwhelming. But I want you to know:
+
+2 lessons = just 12 minutes total.
+
+That's it. In 12 minutes, you'll already be ahead of 90% of people who sign up for free courses and never even open them.
+
+You signed up for a reason. That curiosity matters. Don't let it fade.
+
+Start Lesson 1 now: https://learn.accredipro.academy/womens-health-diploma
+
+If something's blocking you, just reply and tell me. I'm here to help.
+
+Sarah`,
+  },
+
+  // Mini Diploma 4: Lesson 3 Halfway
+  {
+    id: 103,
+    name: "Mini Diploma 4: Lesson 3 Halfway",
+    day: 3,
+    section: "mini_diploma",
+    originalSubject: "You're halfway there!",
+    subject: "Re: you're halfway there",
+    content: `{{firstName}},
+
+You just completed Lesson 3 - you're officially HALFWAY through your Mini Diploma.
+
+I'm so proud of you right now.
+
+Most people who download free courses never even start. But you? You're DOING the work. That tells me something about you.
+
+What you've learned so far:
+- The 5 key female hormones
+- The 4 menstrual cycle phases
+- Signs of hormonal imbalances
+
+And the best stuff is coming up in Lessons 4-6.
+
+Keep going: https://learn.accredipro.academy/womens-health-diploma
+
+You've got this.
+
+Sarah`,
+  },
+
+  // Mini Diploma 5: Lesson 6 Two-Thirds
+  {
+    id: 104,
+    name: "Mini Diploma 5: Lesson 6 Complete",
+    day: 4,
+    section: "mini_diploma",
+    originalSubject: "Only 3 lessons left!",
+    subject: "Re: only 3 lessons left",
+    content: `{{firstName}},
+
+Lesson 6 DONE. You're two-thirds through your Mini Diploma.
+
+You now know more about women's health than most people ever will:
+- Hormones and cycles
+- Gut-hormone connection
+- Thyroid function
+- Stress and adrenals
+
+Only 3 more lessons until your certificate.
+
+Can you finish today? I think you can.
+
+Go get it: https://learn.accredipro.academy/womens-health-diploma
+
+So proud of you,
+Sarah`,
+  },
+
+  // Mini Diploma 6: Day 4 Urgency
+  {
+    id: 105,
+    name: "Mini Diploma 6: 3 Days Left",
+    day: 4,
+    section: "mini_diploma",
+    originalSubject: "3 days left on your access",
+    subject: "Re: 3 days left",
+    content: `{{firstName}},
+
+Quick heads up - your access to the Women's Health Mini Diploma expires in just 3 days.
+
+You've got a few lessons left. Each one is only about 6 minutes - you can totally finish this.
+
+Don't miss out on your certificate.
+
+I know you're busy. But imagine how you'll feel when you've actually FINISHED something. When you have that certificate to show for it.
+
+Start now: https://learn.accredipro.academy/womens-health-diploma
+
+I'm here cheering you on,
+Sarah`,
+  },
+
+  // Mini Diploma 7: Day 5 48h
+  {
+    id: 106,
+    name: "Mini Diploma 7: 48 Hours Left",
+    day: 5,
+    section: "mini_diploma",
+    originalSubject: "48 HOURS left!",
+    subject: "Re: 48 hours left",
+    content: `{{firstName}},
+
+Your access expires in just 48 HOURS.
+
+You've still got a few lessons to go. Each one is only 6 minutes.
+
+I really don't want you to miss getting your certificate. You came so far just to stop now?
+
+Finish tonight? I believe in you.
+
+Go now: https://learn.accredipro.academy/womens-health-diploma
+
+Sarah`,
+  },
+
+  // Mini Diploma 8: Day 6 Final
+  {
+    id: 107,
+    name: "Mini Diploma 8: Last Day",
+    day: 6,
+    section: "mini_diploma",
+    originalSubject: "LAST DAY",
+    subject: "Re: last day",
+    content: `{{firstName}},
+
+This is it. LAST DAY.
+
+Your access expires tomorrow and your certificate is so close.
+
+Just a few more lessons. You can do this TODAY.
+
+Each lesson is 6 minutes. That's less time than scrolling your phone.
+
+Your certificate is waiting: https://learn.accredipro.academy/womens-health-diploma
+
+Don't let this slip away,
+Sarah
+
+PS: If you're already done, ignore this. But if not - GO FINISH.`,
+  },
+
+  // Mini Diploma 9: All Complete
+  {
+    id: 108,
+    name: "Mini Diploma 9: Certificate Ready",
+    day: 7,
+    section: "mini_diploma",
+    originalSubject: "YOUR CERTIFICATE IS READY!",
+    subject: "Re: your certificate is ready",
+    content: `{{firstName}},
+
+YOU DID IT. All 9 lessons COMPLETE.
+
+I am so incredibly proud of you right now.
+
+You now understand:
+- The 5 key female hormones
+- The 4 menstrual cycle phases
+- Hormonal imbalance signs
+- The gut-hormone connection
+- Thyroid function
+- Stress and adrenals
+- Nutrition for hormone balance
+- Life stage support
+
+This is REAL knowledge that will help REAL women - starting with YOU.
+
+Your certificate is ready: https://learn.accredipro.academy/womens-health-diploma/certificate
+
+As a graduate, you also get:
+- 30 days of continued access
+- 20% off our full certification program
+- Access to the Graduate Training video
+
+Thank you for learning with me. I can't wait to see what you do with this knowledge.
+
+With so much pride,
+Sarah
+
+PS: The full certification goes much deeper. If you want to actually help clients and build a practice, let's talk. Just reply to this email.`,
+  },
+  // ============================================
+  // MINI DIPLOMA NURTURING SEQUENCE - 21 Emails
+  // Women's Health → WH Career Accelerator ($997)
+  // IDs: 200-220
+  // ============================================
+
+  // Nurture 1: Welcome (Day 0)
+  {
+    id: 200,
+    name: "Nurture 1: Welcome + Value Stack",
+    day: 0,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Welcome to your Mini Diploma",
+    subject: "Re: your Women's Health access",
+    content: `{{firstName}},
+
+You're in.
+
+I just saw your name come through, and I wanted to personally welcome you.
+
+Your FREE Women's Health Mini Diploma is ready - you can start right now.
+
+<strong>Your Login Details:</strong>
+Email: {{email}}
+Password: coach2026
+
+Login here: https://learn.accredipro.academy/login
+
+What you're getting:
+- 9 quick lessons on hormones, cycles, and women's health
+- Real clinical knowledge (not surface-level fluff)
+- Your own certificate when you finish
+- 7 days to complete
+
+This isn't like those PDFs that sit in your downloads folder. This is real training.
+
+When you finish, I'll tell you about the full certification path - where women like you are building practices, helping clients, and earning $5K-$12K/month.
+
+But first, let's get you through your Mini Diploma.
+
+Start Lesson 1 now: https://learn.accredipro.academy/womens-health-diploma
+
+I also left you a personal voice message inside. Check Messages when you log in.
+
+Got questions? Just reply.
+
+Sarah`,
+  },
+
+  // Nurture 2: Sarah's Story (Day 1)
+  {
+    id: 201,
+    name: "Nurture 2: Sarah's WH Story",
+    day: 1,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "My hormone journey",
+    subject: "Re: my story (thought you'd relate)",
+    content: `{{firstName}},
+
+Can I tell you something personal?
+
+The Moment That Changed Everything
+
+I was 47. Exhausted. Couldn't sleep. Brain fog so bad I'd forget words mid-sentence. Mood swings that made me feel like a stranger in my own body.
+
+My doctor said: "It's just stress. Try to relax."
+
+I knew something was wrong. I FELT it. But nobody would listen.
+
+So I started researching. Hormones. Perimenopause. The things nobody taught us about our own bodies.
+
+And suddenly, everything made sense.
+
+The exhaustion wasn't weakness. The mood swings weren't personality flaws. The weight gain wasn't lack of willpower.
+
+It was my hormones. And once I understood that, I could actually DO something about it.
+
+That's why I created this training. Because every woman deserves to understand her own body.
+
+How's your Mini Diploma going? Have you started yet?
+
+If not, Lesson 1 takes just 6 minutes. Start here: https://learn.accredipro.academy/womens-health-diploma
+
+Sarah
+
+P.S. Hit reply and tell me - what made you curious about women's health? What's YOUR story?`,
+  },
+
+  // Nurture 3: Why Generic Advice Fails (Day 3)
+  {
+    id: 202,
+    name: "Nurture 3: Linda's Story",
+    day: 3,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Why nothing worked for Linda",
+    subject: "Re: why the usual advice doesn't work",
+    content: `{{firstName}},
+
+I need to tell you about Linda.
+
+She came to me at 52. Exhausted for three years. Brain fog so bad she'd forget her own thoughts.
+
+She'd seen four doctors. They all said the same thing:
+- "Your labs are normal."
+- "Try to sleep more."
+- "Maybe it's just stress."
+- "Have you considered antidepressants?"
+
+Sound familiar?
+
+Within 20 minutes of looking at her case through a root-cause lens, I found three things her doctors missed.
+
+It wasn't that they were bad doctors. They just weren't trained to look.
+
+Six weeks later, Linda texted me: "I feel like myself again. I forgot what that even felt like."
+
+This is what you're learning in your Mini Diploma.
+
+Not surface-level wellness advice. Real understanding of what's happening in your body - and what to do about it.
+
+Keep going: https://learn.accredipro.academy/womens-health-diploma
+
+Sarah`,
+  },
+
+  // Nurture 4: Graduate Training (Day 5)
+  {
+    id: 203,
+    name: "Nurture 4: The Discovery",
+    day: 5,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "The training that changed everything",
+    subject: "Re: the training I mentioned",
+    content: `{{firstName}},
+
+Remember my story about the exhaustion and brain fog at 47?
+
+There's a part I didn't share.
+
+After I figured out my own health, I couldn't stop learning. I went deep into women's hormones, perimenopause, menopause, the gut-hormone connection.
+
+And then I started helping other women.
+
+Friends first. Then friends of friends. Then women I'd never met who found me through referrals.
+
+Suddenly I had a practice. Clients who trusted me. Income coming in on my terms.
+
+All because I understood something most doctors miss.
+
+I Made Something For You
+
+It's called the Graduate Training. 45 minutes. No fluff.
+
+I walk you through:
+- How practitioners like you are building real income helping women with hormones
+- The exact certification path from curious to confident
+- What separates those who succeed from those who stay stuck
+- Real numbers - what our graduates actually earn
+
+Watch it when you can focus. Not while cooking dinner.
+
+First finish your Mini Diploma. Then watch this.
+
+Sarah
+
+P.S. If you're already done with the Mini Diploma, let me know! I want to hear how it went.`,
+  },
+
+  // Nurture 5: Diane's Story (Day 7)
+  {
+    id: 204,
+    name: "Nurture 5: Diane's Story",
+    day: 7,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "62-year-old nurse, $8K/month",
+    subject: "Re: Diane's story (burned-out nurse)",
+    content: `{{firstName}},
+
+I want to tell you about Diane.
+
+She was a nurse for 40 years. Accomplished. Respected. And completely burned out.
+
+The day she called me, she said:
+
+"Sarah, I love helping people. But I can't do this anymore. The 5am alarms. The 14-hour shifts. I'm 62 years old and I'm tired."
+
+Then she said something that broke my heart:
+
+"But what else can I do? I'm too old to start over."
+
+Have you ever felt that? Too far down one path to change direction?
+
+I asked her: "What if you're not starting over? What if you're taking everything you know and finally using it properly?"
+
+Here's what happened:
+
+Month 1: Certified. First time in years she felt like she was learning something that mattered.
+
+Month 3: First three clients. Women with hormone issues who'd been dismissed by doctors.
+
+Month 6: $8,000/month. Working from home. No 5am alarms. No commute.
+
+Diane is 62. She's building the practice she should have had all along.
+
+What about you?
+
+Sarah
+
+P.S. About 35% of our students come from medical backgrounds. If that's you, you're not starting from zero.`,
+  },
+
+  // Nurture 6: The Roadmap (Day 9)
+  {
+    id: 205,
+    name: "Nurture 6: The Roadmap",
+    day: 9,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Your complete path",
+    subject: "Re: your complete roadmap",
+    content: `{{firstName}},
+
+I hate vague promises.
+
+"Change your life!" "Find your purpose!" Cool. But HOW?
+
+Here's the actual roadmap:
+
+STEP 0: Mini Diploma (You're Here)
+- Learn the fundamentals
+- Earn your first credential
+- Time: A few hours
+
+STEP 1: WH Certification ($997)
+- Full clinical training
+- Foundation + Advanced + Master + Practice
+- DFY website included
+- Time: 8-12 weeks
+
+STEP 2: Board Certification (Included)
+- Practicum hours
+- Advanced cases
+- BC-WHP credential
+
+What This Actually Looks Like:
+
+Maria: Single mom, now $12K/month
+Diane: 62 years old, $8K/month
+Kelly: Zero business experience, now has a waitlist
+
+They're not special. They just got trained properly.
+
+$997 pays for itself with your first 2-3 clients.
+
+But I'll talk more about that later. First - have you finished your Mini Diploma?
+
+Sarah`,
+  },
+
+  // Nurture 7: How to Get Clients (Day 11)
+  {
+    id: 206,
+    name: "Nurture 7: Kelly's Waitlist",
+    day: 11,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "How Kelly got a waitlist",
+    subject: "Re: getting clients (the real answer)",
+    content: `{{firstName}},
+
+Kelly messaged me three months after getting certified:
+
+"Sarah, I have a WAITLIST. I've never had a waitlist for anything in my life."
+
+Here's the thing about Kelly:
+
+Zero business experience. Terrified of marketing. She told me: "I don't have a following. I don't know how to sell."
+
+So how did she build a waitlist in 90 days?
+
+The Simple System:
+
+1. She posted what she was learning
+"I learned something wild today about how hormones affect sleep. Never knew this before."
+Friends started asking questions.
+
+2. She offered free 15-minute calls
+People who get value in 15 minutes want to pay for more.
+
+3. She let her first clients talk
+They referred friends. Those friends became clients.
+
+That's it. No fancy funnel. No paid ads.
+
+Your network IS your market. You already know women struggling with hormone issues. You just don't have the tools to help them yet.
+
+When you do? You're not selling - you're serving.
+
+We give you the whole system inside the certification.
+
+Sarah`,
+  },
+
+  // NEW: Community Momentum (Day 12)
+  {
+    id: 207,
+    name: "Nurture 8: Community Momentum",
+    day: 12,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "What happened this week",
+    subject: "Re: what happened this week",
+    content: `{{firstName}},
+
+Quick update on what happened in our community this week:
+
+- 47 new practitioners enrolled
+- 12 graduates got their first paying clients
+- 3 practitioners hit $10K/month
+- 156 women are learning alongside you right now
+
+Some messages from this week:
+
+Jennifer (Texas): "Just booked my 5th client. This is real."
+
+Amanda (California): "I was terrified to start. Now I have a waitlist."
+
+Lisa (Ohio): "Hit $6K this month. Quit my job next week."
+
+This isn't some small thing, {{firstName}}. This is a movement.
+
+Women all over the country are building practices, helping clients, creating income on their terms.
+
+You're not alone in this. There's a whole community waiting for you.
+
+Ready to join them?
+
+Sarah
+
+P.S. Still working on your Mini Diploma? No rush - but don't miss out on the momentum.`,
+  },
+
+  // Nurture 9: Vicki's Story (Day 13)
+  {
+    id: 208,
+    name: "Nurture 9: Vicki's Transformation",
+    day: 13,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Yoga teacher → WH practitioner",
+    subject: "Re: Vicki's transformation",
+    content: `{{firstName}},
+
+If you've ever thought "But I don't have a medical background" - this is for you.
+
+Vicki was a yoga teacher.
+
+Her students would come to class exhausted, struggling with issues yoga couldn't touch. Hormone chaos. Gut problems. Brain fog.
+
+She'd say something supportive. But inside, she felt helpless.
+
+"I felt like I was only scratching the surface. Like I was giving people an hour of relief in a life of struggle."
+
+When she found our program, she almost didn't enroll.
+
+Her fears:
+- "I don't have a science degree. Can I understand this?"
+- "Will anyone take me seriously?"
+- "What if I fail?"
+
+Here's what happened:
+
+Month 2: Her yoga students became her first clients. They already trusted her.
+
+Month 4: $4,200/month added income. Didn't give up yoga - just added coaching.
+
+Month 6: Raising prices. Getting referrals from people she'd never met.
+
+About 25% of our students come from wellness backgrounds. You're not starting from zero.
+
+Sarah`,
+  },
+
+  // Nurture 10: Is This Legit? (Day 15)
+  {
+    id: 209,
+    name: "Nurture 10: Is This Legit?",
+    day: 15,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Let's be honest",
+    subject: "Re: about our accreditation",
+    content: `{{firstName}},
+
+I know what you might be thinking:
+
+"Is this actually legitimate? Or just another online certificate that means nothing?"
+
+Fair question.
+
+What We're NOT:
+- A weekend workshop with a PDF
+- A glorified YouTube playlist
+- A program where everyone passes because they paid
+
+What We Actually Are:
+
+Full Clinical Training
+- 21 modules of real knowledge
+- Lab interpretation, protocol design, client assessment
+
+Real Assessment
+- You don't just watch videos
+- Case studies, exams, demonstrated competency
+
+Verifiable Credentials
+- Every certificate has a verification number
+- Public registry anyone can check
+
+Graduates Who Actually Practice
+- Building businesses
+- Helping clients
+- Charging real money
+
+But here's what actually matters:
+
+After this program, you won't wonder "Am I qualified?" You'll KNOW you are.
+
+That confidence? Clients feel it.
+
+Sarah`,
+  },
+
+  // NEW: Even If You've Failed Before (Day 16)
+  {
+    id: 210,
+    name: "Nurture 11: Even If You've Failed",
+    day: 16,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "If you've tried before",
+    subject: "Re: if you've tried other programs",
+    content: `{{firstName}},
+
+I need to address something.
+
+If you've tried other courses before and they didn't work - I get it.
+
+Maybe you bought a certification that was mostly fluff.
+Maybe you finished but didn't know what to do next.
+Maybe you invested money and time... and nothing changed.
+
+That's not your fault.
+
+Most programs give you information but not transformation. They teach you ABOUT health, but not how to BUILD a practice.
+
+Here's what's different:
+
+1. We don't leave you hanging
+Full training PLUS business-in-a-box. Website, marketing, intake forms - built for you.
+
+2. You're not alone
+Weekly live calls. Accountability pod. Coach Sarah AI 24/7.
+
+3. We have skin in the game
+Income guarantee. If you do the work and don't hit your goals, we keep supporting you FREE.
+
+Jennifer told me: "I'd failed at two other certifications. I almost didn't try again. Now I'm earning more than my old nursing job."
+
+Past failures don't define your future.
+
+This time is different.
+
+Sarah`,
+  },
+
+  // Nurture 12: Time Objection (Day 17)
+  {
+    id: 211,
+    name: "Nurture 12: Time Objection",
+    day: 17,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "About the time commitment",
+    subject: "Re: about the time commitment",
+    content: `{{firstName}},
+
+Let me guess what you're thinking:
+
+"This sounds great, Sarah. But I don't have time."
+
+I hear this every day.
+
+Here's the truth:
+
+Nobody "finds" time. You make time for what matters.
+
+How much time this week did you spend:
+- Scrolling Instagram?
+- Watching Netflix?
+- Lying awake at 2am worrying about your future?
+
+If you have 45 minutes a day to worry about your life, you have 45 minutes a day to change it.
+
+How the program works:
+
+Self-Paced
+Study at 5am. Study at 10pm. Study on lunch breaks. No live sessions required.
+
+5-7 Hours Per Week
+Less than an hour a day. Most finish in 8-12 weeks.
+
+Mobile-Friendly
+Watch on your phone in the pickup line. Listen while cooking.
+
+Rachel enrolled while working full-time with two kids under 5. She finished in 11 weeks. Two months later, she had her first client.
+
+Time is what you make it.
+
+Sarah`,
+  },
+
+  // Nurture 13: Money Talk (Day 19)
+  {
+    id: 212,
+    name: "Nurture 13: The Investment",
+    day: 19,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Let's talk about $997",
+    subject: "Re: the investment question",
+    content: `{{firstName}},
+
+Let's have an honest conversation about money.
+
+The WH certification is $997.
+
+I'm not going to pretend that's nothing.
+
+So let's do real math:
+
+Traditional health certifications: $15,000-$50,000
+Nursing/medical school: $100,000+
+Time investment: 2-6 YEARS
+
+Our program:
+- Investment: $997
+- Time: 8-12 weeks
+- PLUS: DFY website, marketing, AI coach, directory listing - all included
+
+The Return:
+
+Most graduates charge $200-$500 per session.
+
+$997 / $250 per session = 4 clients to break even.
+
+After that? Everything is profit.
+
+Maria earns $12K/month. Her $997 paid back in week one.
+Diane earns $8K/month. Her $997 paid back in month one.
+
+Payment Plans Available:
+- 3 payments of $349
+- 6 payments of $179
+
+What's the cost of NOT doing this?
+
+Another year stuck?
+Another year watching others build the life you want?
+
+Ready when you are: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+
+Sarah`,
+  },
+
+  // NEW: Future Pacing (Day 20)
+  {
+    id: 213,
+    name: "Nurture 14: Future Pacing",
+    day: 20,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "What if it works?",
+    subject: "Re: what if it actually works",
+    content: `{{firstName}},
+
+Close your eyes for a second. (Read this first, then close them.)
+
+Imagine it's one year from today.
+
+You wake up without an alarm. No commute. No boss.
+
+You check your calendar - three client calls today. Women who found you because you HELP people like them.
+
+Your phone buzzes. A client thanking you for changing her life. Her energy is back. Her hormones are balanced. She feels like herself again.
+
+You helped her do that.
+
+After your calls, you pick up your daughter from school. On time. Because your schedule is YOURS.
+
+Your bank account shows the deposit from this week's sessions: $2,400.
+
+This isn't a fantasy. This is Maria's Tuesday. Diane's Wednesday. Kelly's every day.
+
+Now open your eyes.
+
+You have two choices:
+
+Path A: This time next year, you're in the same place. Same frustration. Same "what if."
+
+Path B: This time next year, you're the practitioner in that visualization.
+
+The only difference between Path A and Path B is a decision.
+
+Ready to decide: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+
+Sarah`,
+  },
+
+  // Nurture 15: Maria's Story (Day 21)
+  {
+    id: 214,
+    name: "Nurture 15: Maria's Journey",
+    day: 21,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Single mom, now $12K/month",
+    subject: "Re: Maria's journey (single mom)",
+    content: `{{firstName}},
+
+I need to tell you about Maria.
+
+Single mom. Three kids. Working nights at a call center.
+
+When she enrolled, she literally didn't have $997. She signed up for the payment plan - $179/month - terrified the whole time.
+
+Her husband had left. Bills were overwhelming. She was one crisis away from falling apart.
+
+"Sarah, I don't know if I can do this," she told me. "But I can't stay where I am."
+
+Here's what happened:
+
+Month 2: Finished certification. First time she felt proud of herself in years.
+
+Month 4: First three clients. Women who reminded her of her own mother.
+
+Month 6: $5,000/month. Quit the call center job.
+
+Month 12: $12,000/month. Her kids tell their friends their mom helps people feel better.
+
+The $179/month terrified her. Now she earns that in 45 minutes.
+
+She told me: "The investment wasn't an expense. It was the down payment on a different life."
+
+Is today your Day 1?
+
+Sarah`,
+  },
+
+  // Nurture 16: Two Paths (Day 23)
+  {
+    id: 215,
+    name: "Nurture 16: Two Paths",
+    day: 23,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Two paths ahead",
+    subject: "Re: thinking about your decision",
+    content: `{{firstName}},
+
+I want to try something with you.
+
+There are two versions of you one year from now.
+
+Version A:
+Same job. Same frustration. Same knowing you could be doing more.
+Looking back and thinking: "I wish I had just tried."
+
+Version B:
+Helping women every week. Making real impact.
+Income that gives you freedom. Schedule that gives you time.
+Looking back and thinking: "I'm so glad I decided."
+
+Both versions are real. Both are possible.
+
+The only difference is what you decide right now.
+
+Not "someday." Not "when I'm ready." Right now.
+
+Maria was terrified when she enrolled. Now she makes $12K/month.
+Diane thought she was too old. Now she works from home at 62.
+Kelly had zero business experience. Now she has a waitlist.
+
+They weren't special. They just decided.
+
+What will you decide?
+
+Sarah
+
+P.S. If you're reading this and thinking "I should do this" - listen to that voice. It's trying to tell you something.`,
+  },
+
+  // NEW: Permission to Invest (Day 24)
+  {
+    id: 216,
+    name: "Nurture 17: Permission to Invest",
+    day: 24,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "You're allowed to want this",
+    subject: "Re: a quick reminder",
+    content: `{{firstName}},
+
+Can I tell you something?
+
+You're allowed to invest in yourself.
+
+I know that might sound obvious. But for women - especially women over 40 - it often isn't.
+
+We're trained to put everyone else first. Kids. Partners. Parents. Work.
+
+Our dreams? "Someday." "When the kids are older." "When we have more money."
+
+I've watched so many women almost enroll... then stop because they felt guilty spending $997 on themselves.
+
+Meanwhile, they spend that much on everyone else without thinking twice.
+
+So let me say this clearly:
+
+You are allowed to want more for yourself.
+You are allowed to invest in your future.
+You are allowed to put yourself first for once.
+
+This isn't selfish. It's necessary.
+
+Because when you build something meaningful, everyone around you benefits too.
+
+Your kids see a mom who goes after what she wants.
+Your partner sees someone who believes in herself.
+Your clients get a practitioner who actually cares.
+
+You deserve this, {{firstName}}.
+
+And I'll be here when you're ready.
+
+Sarah`,
+  },
+
+  // Nurture 18: FAQ (Day 25)
+  {
+    id: 217,
+    name: "Nurture 18: FAQ",
+    day: 25,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Your questions answered",
+    subject: "Re: your questions (answered)",
+    content: `{{firstName}},
+
+Before you decide, let me answer the questions I know you're asking:
+
+"How long does it take?"
+8-12 weeks, 5-7 hours per week. Self-paced.
+
+"What if I don't have a medical background?"
+25% of our students come from wellness backgrounds (yoga, massage, nutrition). The training meets you where you are.
+
+"What if I'm too old?"
+Diane is 62. She makes $8K/month. You're not too old.
+
+"How do I get clients?"
+We give you the complete system: website, marketing templates, referral engine. Kelly had a waitlist in 90 days with zero business experience.
+
+"What if it doesn't work for me?"
+Income guarantee. Do the work, and if you don't hit your goals, we keep supporting you FREE until you do.
+
+"What's included in $997?"
+- Full WH certification (Foundation + Advanced + Master + Practice)
+- Board certification path included
+- DFY website
+- AI Coach Sarah (lifetime)
+- Practitioner directory (lifetime)
+- Live mentorship
+- Accountability pod
+- Templates vault
+- Private community (lifetime)
+
+Total value: $28,000+. Your investment: $997.
+
+Any other questions? Just reply.
+
+Sarah`,
+  },
+
+  // Nurture 19: Closing Friday (Day 27)
+  {
+    id: 218,
+    name: "Nurture 19: Closing Friday",
+    day: 27,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Enrollment closing Friday",
+    subject: "Re: enrollment closing Friday",
+    content: `{{firstName}},
+
+I need to tell you something important.
+
+This enrollment period closes Friday at midnight.
+
+I know you've seen this kind of thing before. "HURRY! LIMITED TIME!"
+
+But here's why I actually close enrollment:
+
+When it's always open, people don't start. "I'll do it next month." And next month becomes never.
+
+So I close enrollment. Not to pressure you. To give you a real decision point.
+
+What happens Friday:
+- Enrollment closes for this round
+- The bonus package disappears
+- Next enrollment is... I don't know when
+
+What's on the table:
+
+Full WH Certification Program
+- All credentials included
+- DFY website + marketing
+- Lifetime AI coach + directory
+- Investment: $997
+
+If you've been waiting for a sign, this is it.
+
+Ready: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+
+Not ready: That's okay. Just know this offer won't be here Monday.
+
+Sarah`,
+  },
+
+  // Nurture 20: 48 Hours (Day 28)
+  {
+    id: 219,
+    name: "Nurture 20: 48 Hours",
+    day: 28,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "48 hours left",
+    subject: "Re: 48 hours left",
+    content: `{{firstName}},
+
+Quick one.
+
+48 hours.
+
+That's how much time you have before:
+- Bonuses disappear
+- Enrollment closes
+- Next opportunity is months away
+
+I'm not going to pretend I know what's right for you.
+
+But I've learned something:
+
+The women who succeed are the ones who stop waiting for perfect conditions.
+
+They don't wait until they have more time. (They never do.)
+They don't wait until they have more money. (There's always something.)
+They don't wait until they feel "ready." (Nobody ever does.)
+
+They just decide.
+
+Ready to decide: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+
+Sarah`,
+  },
+
+  // Nurture 21: Final Call (Day 29)
+  {
+    id: 220,
+    name: "Nurture 21: Final Call",
+    day: 29,
+    section: "mini_diploma_nurturing",
+    useHtmlBranding: true,
+    originalSubject: "Final call",
+    subject: "Re: final call",
+    content: `{{firstName}},
+
+This is my last email.
+
+Tonight at midnight, enrollment closes.
+
+No more reminders. No more "think about it."
+
+You've read the stories. Diane at 62. Maria as a single mom. Kelly with no business experience.
+
+You've seen the roadmap. Mini Diploma to Certified Practitioner to real income.
+
+You know the investment. $997. Pays for itself with 2-3 clients.
+
+The only question left is:
+
+Are you going to do this?
+
+If yes: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+
+If no: Thank you for being here. I mean that. Not everyone takes action, and that's okay.
+
+But if there's even a small part of you that's saying "I should do this"...
+
+Listen to that voice.
+
+Whatever you decide, I'm rooting for you.
+
+Sarah
+
+P.S. The bonuses expire at midnight. The enrollment closes. And this version of the offer is gone.
+
+If you're in: https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw
+
+If not: I'll stop emailing. No hard feelings.
+
+I hope this is your year.`,
+  },
 ];
 
 // GET - Return all variants info
@@ -3418,7 +4689,24 @@ export async function GET(request: NextRequest) {
     const variantId = searchParams.get('variantId');
 
     if (variantId) {
-      const variant = EMAIL_VARIANTS.find(v => v.id === parseInt(variantId));
+      const parsedId = parseInt(variantId);
+      // Check EMAIL_VARIANTS first, then WH v2 (IDs 300+)
+      let variant: any = EMAIL_VARIANTS.find(v => v.id === parsedId);
+      if (!variant && parsedId >= 300) {
+        const whIndex = parsedId - 300;
+        const whEmail = WH_NURTURE_60_DAY_V3[whIndex];
+        if (whEmail) {
+          variant = {
+            id: parsedId,
+            name: `WH v2 Email ${whEmail.id}: Day ${whEmail.day}`,
+            day: whEmail.day,
+            originalSubject: whEmail.subject,
+            subject: whEmail.subject,
+            content: whEmail.content,
+            section: "wh_nurture_v2",
+          };
+        }
+      }
       if (!variant) {
         return NextResponse.json({ error: "Variant not found" }, { status: 404 });
       }
@@ -3490,15 +4778,29 @@ ${personalizedContent.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')}
       });
     }
 
-    // Return list of all variants
+    // Return list of all variants (including WH Nurture v2)
+    // Convert WH v2 emails to the expected format with IDs 300+
+    const whV2Emails = WH_NURTURE_60_DAY_V3.map((email, index) => ({
+      id: 300 + index,
+      name: `WH v2 Email ${email.id}: Day ${email.day}`,
+      day: email.day,
+      originalSubject: email.subject,
+      subject: email.subject,
+      content: email.content,
+      section: "wh_nurture_v2",
+    }));
+
+    const allVariants = [...EMAIL_VARIANTS, ...whV2Emails];
+
     return NextResponse.json({
-      variants: EMAIL_VARIANTS.map(v => ({
+      variants: allVariants.map(v => ({
         id: v.id,
         name: v.name,
         day: v.day,
         originalSubject: v.originalSubject,
         subject: v.subject,
         contentPreview: v.content.substring(0, 150) + "...",
+        section: (v as any).section || null,
       })),
     });
   } catch (error) {
@@ -3522,12 +4824,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Test email is required" }, { status: 400 });
     }
 
-    const maxVariantId = Math.max(...EMAIL_VARIANTS.map(v => v.id));
-    if (!variantId || variantId < 1 || variantId > maxVariantId) {
-      return NextResponse.json({ error: `Invalid variant ID (1-${maxVariantId})` }, { status: 400 });
+    // Check both EMAIL_VARIANTS and WH v2 emails
+    let variant: any = EMAIL_VARIANTS.find(v => v.id === variantId);
+    if (!variant && variantId >= 300) {
+      const whIndex = variantId - 300;
+      const whEmail = WH_NURTURE_60_DAY_V3[whIndex];
+      if (whEmail) {
+        variant = {
+          id: variantId,
+          name: `WH v2 Email ${whEmail.id}: Day ${whEmail.day}`,
+          day: whEmail.day,
+          originalSubject: whEmail.subject,
+          subject: whEmail.subject,
+          content: whEmail.content,
+          section: "wh_nurture_v2",
+        };
+      }
     }
-
-    const variant = EMAIL_VARIANTS.find(v => v.id === variantId);
     if (!variant) {
       return NextResponse.json({ error: "Variant not found" }, { status: 404 });
     }

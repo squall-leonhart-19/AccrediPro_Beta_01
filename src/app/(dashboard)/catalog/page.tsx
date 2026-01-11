@@ -83,6 +83,11 @@ async function getCourses() {
       isFree: true,
       price: true,
       certificateType: true,
+      // Social Proof fields
+      displayReviews: true,
+      displayEnrollments: true,
+      displayRating: true,
+      socialProofEnabled: true,
       category: {
         select: {
           id: true,
@@ -118,7 +123,7 @@ async function getCourses() {
         },
       },
     },
-    orderBy: [{ isFeatured: 'desc' }, { createdAt: 'asc' }],
+    orderBy: [{ isFeatured: 'desc' }, { title: 'asc' }],
   });
 }
 
@@ -232,6 +237,16 @@ export default async function CoursesPage() {
         avgRating: Number(course.analytics.avgRating),
       }
       : null,
+    // Social Proof - use display values if enabled, otherwise fall back to real counts
+    socialProof: (course as any).socialProofEnabled !== false ? {
+      reviews: (course as any).displayReviews || course._count.reviews || 0,
+      enrollments: (course as any).displayEnrollments || course._count.enrollments || 0,
+      rating: (course as any).displayRating ? Number((course as any).displayRating) : 4.8,
+    } : {
+      reviews: course._count.reviews || 0,
+      enrollments: course._count.enrollments || 0,
+      rating: course.analytics ? Number(course.analytics.avgRating) : 0,
+    },
   }));
 
   const categoriesData = categories.map((cat) => ({
@@ -266,7 +281,7 @@ export default async function CoursesPage() {
         isLoggedIn={!!session?.user?.id}
         miniDiplomaCompletedAt={graduateStatus.miniDiplomaCompletedAt?.toISOString() || null}
         graduateAccessExpiresAt={graduateStatus.accessExpiresAt?.toISOString() || null}
-        isGraduate={graduateStatus.isGraduate}
+        isGraduate={!!graduateStatus.isGraduate}
       />
     </div>
   );

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Documenting and Tracking Progress During Implementation</title>
+ <style>
+ /* Base & Reset */
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ /* Main Container */
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ /* Module Header - GREEN theme for Gut Health */
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px 35px 30px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .module-header::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ right: 0;
+ width: 300px;
+ height: 300px;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+ transform: translate(100px, -100px);
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: #B8860B;
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: #047857;
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ font-weight: 500;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ line-height: 1.3;
+ position: relative;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ flex-wrap: wrap;
+ }
+
+ .meta-item {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ /* Table of Contents */
+ .toc-box {
+ background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+ border-radius: 14px;
+ padding: 24px 28px;
+ margin-bottom: 35px;
+ border: 1px solid #e8e8e8;
+ }
+
+ .toc-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ padding-bottom: 12px;
+ border-bottom: 1px solid #e0e0e0;
+ }
+
+ .toc-list {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 8px 24px;
+ }
+
+ .toc-list li {
+ margin: 0;
+ }
+
+ .toc-list a {
+ display: flex;
+ align-items: center;
+ padding: 8px 12px;
+ color: #555;
+ text-decoration: none;
+ font-size: 14px;
+ border-radius: 6px;
+ transition: all 0.2s ease;
+ }
+
+ .toc-list a:hover {
+ background: white;
+ color: #047857;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+ }
+
+ .toc-list .section-num {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ width: 26px;
+ height: 26px;
+ background: #047857;
+ color: white;
+ font-weight: 600;
+ font-size: 11px;
+ border-radius: 6px;
+ margin-right: 12px;
+ flex-shrink: 0;
+ }
+
+ @media (max-width: 600px) {
+ .toc-list {
+ grid-template-columns: 1fr;
+ }
+ }
+
+ /* Learning Objectives */
+ .objectives-box {
+ background: #ecfdf5;
+ border: 2px solid #047857;
+ border-radius: 14px;
+ padding: 30px 35px;
+ margin-bottom: 40px;
+ }
+
+ .objectives-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 13px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .objectives-box .box-label::before {
+ content: '🎯';
+ font-size: 18px;
+ }
+
+ .objectives-box ul {
+ margin: 0;
+ padding-left: 22px;
+ }
+
+ .objectives-box li {
+ margin-bottom: 14px;
+ font-size: 16px;
+ line-height: 1.7;
+ }
+
+ .objectives-box li:last-child {
+ margin-bottom: 0;
+ }
+
+ /* Section Headings */
+ h2 {
+ font-size: 24px;
+ color: #047857;
+ margin: 50px 0 20px 0;
+ font-weight: 600;
+ position: relative;
+ padding-bottom: 12px;
+ }
+
+ h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 3px;
+ background: #B8860B;
+ }
+
+ /* Paragraphs */
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ color: #333;
+ }
+
+ /* Highlights */
+ .highlight {
+ background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+ padding: 0 4px;
+ font-weight: 500;
+ color: inherit;
+ }
+
+ /* Welcome/Intro Box */
+ .welcome-box {
+ background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+ padding: 30px 35px;
+ border-radius: 14px;
+ margin-bottom: 40px;
+ border: 1px solid #bbf7d0;
+ }
+
+ .welcome-box h3 {
+ margin: 0 0 15px 0;
+ font-size: 20px;
+ color: #047857;
+ font-weight: 600;
+ }
+
+ .welcome-box p {
+ margin: 0;
+ font-size: 17px;
+ line-height: 1.8;
+ color: #444;
+ }
+
+ /* Alert Boxes */
+ .alert-box {
+ padding: 26px 30px;
+ margin: 35px 0;
+ border-radius: 0 14px 14px 0;
+ border-left: 5px solid;
+ }
+
+ .alert-box .alert-label {
+ font-weight: 600;
+ margin: 0 0 12px 0;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ }
+
+ .alert-box p:last-child {
+ margin: 0;
+ font-size: 16px;
+ line-height: 1.7;
+ }
+
+ /* Case Study Box */
+ .case-study {
+ background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+ border-radius: 16px;
+ padding: 0;
+ margin: 40px 0;
+ overflow: hidden;
+ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+ }
+
+ .case-study-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 20px 30px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ }
+
+ .case-study-icon {
+ width: 45px;
+ height: 45px;
+ background: rgba(255, 255, 255, 0.15);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ }
+
+ .case-study-header .box-label {
+ font-weight: 600;
+ color: #ffffff;
+ margin: 0;
+ font-size: 16px;
+ letter-spacing: 0.5px;
+ }
+
+ .case-study-header .subtitle {
+ color: rgba(255, 255, 255, 0.8);
+ font-size: 13px;
+ margin: 4px 0 0 0;
+ }
+
+ .case-study-content {
+ padding: 28px 30px;
+ }
+
+ .case-study-content p {
+ font-size: 16px;
+ margin-bottom: 18px;
+ }
+
+ .case-study-content ul {
+ margin: 18px 0;
+ padding-left: 22px;
+ }
+
+ .case-study-content li {
+ margin-bottom: 10px;
+ font-size: 15px;
+ }
+
+ .patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 18px;
+ padding: 18px 22px;
+ background: white;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e5e5;
+ }
+
+ .patient-avatar {
+ width: 55px;
+ height: 55px;
+ background: linear-gradient(135deg, #059669, #047857);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ flex-shrink: 0;
+ }
+
+ .patient-info h4 {
+ margin: 0 0 5px 0;
+ font-size: 17px;
+ color: #1a1a1a;
+ }
+
+ .patient-info p {
+ margin: 0;
+ font-size: 14px;
+ color: #666;
+ }
+
+ /* Content Lists */
+ .content-list {
+ font-size: 17px;
+ margin: 20px 0;
+ padding-left: 24px;
+ }
+
+ .content-list li {
+ margin-bottom: 14px;
+ line-height: 1.7;
+ }
+
+ .content-list li:last-child {
+ margin-bottom: 0;
+ }
+
+ /* Statistics Box */
+ .stat-highlight {
+ color: #047857;
+ font-weight: bold;
+ }
+
+ /* Principle Cards */
+ .principle-card {
+ background: linear-gradient(to right, #fafafa, #ffffff);
+ border-left: 5px solid #047857;
+ padding: 24px 28px;
+ margin-bottom: 18px;
+ border-radius: 0 14px 14px 0;
+ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+ transition: transform 0.2s ease, box-shadow 0.2s ease;
+ }
+
+ .principle-card:hover {
+ transform: translateX(5px);
+ box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+ }
+
+ .principle-card .principle-title {
+ font-weight: 700;
+ color: #047857;
+ margin: 0 0 10px 0;
+ font-size: 17px;
+ }
+
+ .principle-card .principle-text {
+ margin: 0;
+ font-size: 15px;
+ line-height: 1.7;
+ }
+
+ .principle-card ul {
+ margin: 12px 0 0 0;
+ padding-left: 20px;
+ font-size: 14px;
+ }
+
+ .principle-card li {
+ margin-bottom: 5px;
+ }
+
+ /* Check Understanding Box */
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ /* Key Takeaways */
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ /* Data Table Styling */
+ .data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+ }
+
+ .data-table th {
+ background: #047857;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+ }
+
+ .data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+ }
+
+ .data-table tr:nth-child(even) {
+ background: #f9fafb;
+ }
+
+ /* Responsive */
+ @media (max-width: 768px) {
+ .lesson-container {
+ padding: 20px 16px;
+ }
+
+ .module-header {
+ padding: 25px 20px 22px;
+ }
+
+ .lesson-title {
+ font-size: 22px;
+ }
+
+ h2 {
+ font-size: 20px;
+ margin: 35px 0 15px 0;
+ }
+
+ p {
+ font-size: 16px;
+ }
+
+ .toc-list {
+ grid-template-columns: 1fr;
+ }
+
+ .objectives-box {
+ padding: 25px 20px;
+ }
+
+ .check-understanding {
+ padding: 25px 20px;
+ }
+
+ .takeaways-box {
+ padding: 18px 20px;
+ }
+ }
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 6: I: Integrate & Implement</p>
+ <h1 class="lesson-title">Documenting and Tracking Progress During Implementation</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">14 min read</span>
+ <span class="meta-item">Lesson 7 of 8</span>
+ </div>
+ </header>
+
+ <!-- Table of Contents -->
+ <div class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#importance">1. Importance of Detailed Record-Keeping</a></li>
+ <li><a href="#tools">2. Utilizing Journals, Apps, and Other Tracking Tools</a></li>
+ <li><a href="#subjective">3. Subjective vs. Objective Measurements</a></li>
+ <li><a href="#trends">4. Analyzing Trends and Patterns</a></li>
+ <li><a href="#sharing">5. Sharing Data with Healthcare Providers</a></li>
+ </ul>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Explain the critical importance of detailed record-keeping during medicinal mushroom implementation.</li>
+ <li>Recommend user-friendly methods and tools for clients to track their experiences.</li>
+ <li>Distinguish between subjective (client-reported) and objective (measurable) data.</li>
+ <li>Describe how to analyze collected data to identify correlations between mushroom consumption and health outcomes.</li>
+ <li>Emphasize the importance of open communication with the client's medical team, and how to facilitate this.</li>
+ </ul>
+ </div>
+
+ <p>Welcome back! In the previous lessons, we've covered tailoring integration strategies, practical implementation techniques, overcoming adherence challenges, integrating medicinal mushrooms with other lifestyle factors, and ensuring safety during integration. Now, it's time to focus on a crucial aspect of the <span class="highlight">I: Integrate & Implement</span> phase of the <span class="highlight">M.Y.C.E.L.I.A. Framework™</span>: documenting and tracking progress.</p>
+
+ <h2 id="importance">Importance of Detailed Record-Keeping</h2>
+ <p>Imagine embarking on a journey without a map or compass. That's what implementing a medicinal mushroom protocol without detailed record-keeping is like. Tracking symptoms, dosage, and lifestyle factors is absolutely critical for several reasons:</p>
+ <ul>
+ <li><strong>Personalization:</strong> Every individual responds differently. Detailed records allow for fine-tuning the protocol to meet the client's unique needs.</li>
+ <li><strong>Safety:</strong> Identifying potential adverse reactions or interactions early on is paramount.</li>
+ <li><strong>Effectiveness:</strong> By tracking progress, you can determine whether the protocol is working and make necessary adjustments.</li>
+ <li><strong>Empowerment:</strong> Clients feel more involved and in control of their health journey when they actively participate in tracking their progress.</li>
+ </ul>
+ <p>Think of record-keeping as your superpower, providing insights that would otherwise remain hidden. It allows you to move from guesswork to data-driven decisions, ultimately leading to better outcomes for your clients. As a Certified Medicinal Mushroom Specialist™, you are not just recommending mushrooms; you are guiding a personalized journey, and documentation is your guide.</p>
+ <p>Many women like you are finding success by combining their passion for wellness with a structured approach like the M.Y.C.E.L.I.A. Framework™. For example, Sarah, a former teacher, now earns a comfortable income of <span class="stat-highlight">$60,000 per year</span> by offering personalized medicinal mushroom consultations, and she attributes her success to meticulous record-keeping and data analysis.</p>
+
+ <h2 id="tools">Utilizing Journals, Apps, and Other Tracking Tools</h2>
+ <p>The good news is that tracking progress doesn't have to be complicated. There are numerous user-friendly methods available:</p>
+ <ul>
+ <li><strong>Traditional Journals:</strong> A simple notebook can be incredibly effective. Encourage clients to record their daily dosage, symptoms, mood, energy levels, and any other relevant observations.</li>
+ <li><strong>Digital Spreadsheets:</strong> Tools like Google Sheets or Microsoft Excel allow for easy data entry and analysis.</li>
+ <li><strong>Mobile Apps:</strong> Many apps are specifically designed for tracking health and wellness metrics, such as symptom trackers, mood diaries, and food logs.</li>
+ <li><strong>Wearable Technology:</strong> Devices like smartwatches can track sleep patterns, heart rate variability, and activity levels, providing valuable objective data.</li>
+ </ul>
+ <p>The key is to find a method that the client finds easy and sustainable. Consider their tech savviness, lifestyle, and preferences. Offer a few options and let them choose what works best for them. Provide templates or examples to get them started. Remember, consistency is more important than complexity.</p>
+
+ <h2 id="subjective">Subjective vs. Objective Measurements</h2>
+ <p>It's important to distinguish between <span class="highlight">subjective</span> and <span class="highlight">objective</span> measurements. Subjective data includes client-reported feelings, such as mood, energy levels, pain, and overall well-being. Objective data, on the other hand, includes measurable data, such as lab results, blood pressure, heart rate variability, and sleep patterns.</p>
+ <p>Both types of data are valuable and provide different pieces of the puzzle. Subjective data offers insights into the client's lived experience, while objective data provides concrete evidence of physiological changes. Encourage clients to track both types of data whenever possible.</p>
+ <p>For example, a client may report feeling less anxious (subjective), while their heart rate variability shows improvement (objective). This combination of data provides a more complete picture of their progress.</p>
+
+ <h2 id="trends">Analyzing Trends and Patterns</h2>
+ <p>Once you've collected sufficient data, it's time to analyze it to identify trends and patterns. Look for correlations between mushroom consumption and health outcomes. Are symptoms improving with consistent dosage? Are there any specific mushrooms that seem to be more effective for certain individuals? </p>
+ <p>Here's where your expertise as a Certified Medicinal Mushroom Specialist™ truly shines. You can use the data to tailor the protocol, adjust dosages, or recommend different mushrooms based on the client's individual response. Don't be afraid to experiment and iterate. Remember, the <span class="highlight">M.Y.C.E.L.I.A. Framework™</span> is about continuous learning and adaptation.</p>
+
+ <h2 id="sharing">Sharing Data with Healthcare Providers</h2>
+ <p>It's crucial to emphasize the importance of open communication with the client's medical team. Medicinal mushrooms can be a powerful complement to conventional treatments, but it's essential to ensure that all healthcare providers are aware of the client's entire health regimen. </p>
+ <p>Encourage clients to share their tracking data with their doctors, nurses, and other healthcare professionals. This allows for a more comprehensive and integrated approach to care. Offer to provide a summary of the client's progress and the rationale behind your recommendations. By fostering collaboration, you can ensure the best possible outcomes for your clients.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">
+ &#128113;
+ </div>
+ <div class="box-label">Case Study: Eleanor, 52</div>
+ <div class="subtitle">Tracking Improves Outcomes</div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <div class="patient-avatar">E</div>
+ <div class="patient-info">
+ <h4>Eleanor</h4>
+ <p>52 years old</p>
+ </div>
+ </div>
+ <p>Eleanor, a 52-year-old former librarian, presented with complaints of brain fog and fatigue. Following the <span class="highlight">M.Y.C.E.L.I.A. Framework™</span>, a protocol including Lion's Mane and Cordyceps was established. Eleanor meticulously tracked her symptoms using a simple journal.</p>
+ <p><strong>Intervention:</strong> Lion's Mane (1000mg daily) and Cordyceps (1500mg daily), along with dietary modifications.</p>
+ <p><strong>Outcomes:</strong> After 4 weeks, Eleanor reported a significant improvement in cognitive function and energy levels. Her journal entries revealed a clear correlation between mushroom consumption and reduced brain fog. The data also highlighted that she experienced better results when taking the Lion's Mane in the morning. Eleanor continues to thrive, and now recommends medicinal mushrooms to her friends, showing the potential impact you can have on your community.</p>
+ </div>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is detailed record-keeping crucial during medicinal mushroom implementation?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Detailed record-keeping allows for personalization, safety monitoring, effectiveness evaluation, and client empowerment.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the difference between subjective and objective measurements, and why are both important?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Subjective measurements are client-reported feelings, while objective measurements are measurable data. Both are important because they provide different pieces of the puzzle, offering insights into the client's lived experience and concrete evidence of physiological changes.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Detailed record-keeping is essential for personalizing protocols, ensuring safety, evaluating effectiveness, and empowering clients.</li>
+ <li>Utilize a variety of tracking tools, including journals, spreadsheets, apps, and wearable technology, to suit individual client preferences.</li>
+ <li>Distinguish between subjective and objective measurements to gain a comprehensive understanding of client progress.</li>
+ <li>Analyze trends and patterns in the data to tailor protocols and optimize outcomes.</li>
+ <li>Encourage open communication with the client's medical team to ensure integrated and comprehensive care.</li>
+ </ul>
+ </div>
+
+ <h2 id="references">References & Further Reading</h2>
+ <ul>
+ <li>Hobbs, C. (1995). "Medicinal Mushrooms: An Exploration of Tradition, Healing, and Culture." Botanica Press.</li>
+ <li>Stamets, P. (2005). "Mycelium Running: How Mushrooms Can Help Save the World." Ten Speed Press.</li>
+ <li>Wasser, S. P. (2011). "Herbal Medicine: Biomolecular and Clinical Aspects. 2nd edition." Chapter 9, Medicinal mushrooms: Their pharmacological properties and current medical uses. CRC Press/Taylor & Francis.</li>
+ <li>Lull, C., Wichers, H. J., & Savelkoul, H. F. (2005). "Antiinflammatory and immunomodulating properties of fungal beta-glucans." Molecules, 10(1), 107-120.</li>
+ <li>Patel, S., & Goyal, A. (2012). "Recent developments in mushrooms as anti-cancer therapeutics: a review." 3 Biotech, 2(1), 1-15.</li>
+ <li>Friedman, M. (2015). "Chemistry, Nutrition, and Health-Promoting Properties of Hericium erinaceus (Lion's Mane) Mushroom." Journal of Agricultural and Food Chemistry, 63(32), 7108-7123.</li>
+ <li>Lai, P. L., Naidu, M., Sabaratnam, V., Wong, K. H., David, R. P., Kuppusamy, U. R., & Abdullah, N. (2013). "Neurotrophic properties of the Lion's mane medicinal mushroom, Hericium erinaceus (Higher Basidiomycetes) from Malaysia." International Journal of Medicinal Mushrooms, 15(6), 539-554.</li>
+ </ul>
+
+ </div>
+ <script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+ </script>
+</body>
+
+</html>

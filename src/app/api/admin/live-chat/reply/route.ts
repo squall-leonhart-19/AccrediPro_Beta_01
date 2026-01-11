@@ -28,58 +28,65 @@ function detectPersonaAndCoach(page: string | null): { personaKey: keyof typeof 
 
   const p = page.toLowerCase().trim();
 
-  // FM/Health (Sarah)
+  // Women's Health Mini Diploma (Sarah WH - SEPARATE from FM Sarah)
+  if (p.includes("womens-health") || p.includes("women-health") || p.includes("hormone") ||
+    p.includes("menopause") || p.includes("fertility") || p.includes("prenatal") ||
+    p.includes("pcos") || p.includes("thyroid")) {
+    return { personaKey: "fm-health", coachEmail: "sarah_womenhealth@accredipro-certificate.com" };
+  }
+
+  // FM/Health (Sarah FM)
   if (p === "fm-course-certification" || p === "fm-certification" || p === "hn-course-certification") {
     return { personaKey: "fm-health", coachEmail: "sarah@accredipro-certificate.com" };
   }
 
   // Mental Health (Olivia)
   if (p.includes("narcissistic") || p.includes("trauma") || p.includes("abuse") || p.includes("grief") ||
-      p.includes("addiction") || p.includes("neuro") || p.includes("adhd") || p.includes("autism") ||
-      p.includes("anxiety") || p.includes("depression")) {
+    p.includes("addiction") || p.includes("neuro") || p.includes("adhd") || p.includes("autism") ||
+    p.includes("anxiety") || p.includes("depression")) {
     return { personaKey: "mental-health", coachEmail: "olivia@accredipro-certificate.com" };
   }
 
   // Life Coaching (Marcus)
   if (p.includes("life-coach") || p.includes("career") || p.includes("finance") || p.includes("money") ||
-      p.includes("habit") || p.includes("success") || p.includes("confidence")) {
+    p.includes("habit") || p.includes("success") || p.includes("confidence")) {
     return { personaKey: "life-coaching", coachEmail: "marcus@accredipro-certificate.com" };
   }
 
   // Spiritual (Luna)
   if (p.includes("spiritual") || p.includes("energy") || p.includes("reiki") || p.includes("chakra") ||
-      p.includes("crystal") || p.includes("tarot") || p.includes("astrology") || p.includes("sacred") ||
-      p.includes("manifest")) {
+    p.includes("crystal") || p.includes("tarot") || p.includes("astrology") || p.includes("sacred") ||
+    p.includes("manifest")) {
     return { personaKey: "spiritual", coachEmail: "luna@accredipro-certificate.com" };
   }
 
   // Herbalism (Sage)
   if (p.includes("herbal") || p.includes("plant") || p.includes("ayurveda") || p.includes("tcm") ||
-      p.includes("chinese") || p.includes("naturopath")) {
+    p.includes("chinese") || p.includes("naturopath")) {
     return { personaKey: "herbalism", coachEmail: "sage@accredipro-certificate.com" };
   }
 
   // Yoga/Movement (Maya)
   if (p.includes("yoga") || p.includes("somatic") || p.includes("movement") || p.includes("breath") ||
-      p.includes("sound") || p.includes("music") || p.includes("meditation")) {
+    p.includes("sound") || p.includes("music") || p.includes("meditation")) {
     return { personaKey: "yoga-movement", coachEmail: "maya@accredipro-certificate.com" };
   }
 
   // Pet (Bella)
   if (p.includes("pet-") || p.includes("animal") || p.includes("equine") || p.includes("canine") ||
-      p.includes("feline")) {
+    p.includes("feline")) {
     return { personaKey: "pet", coachEmail: "bella@accredipro-certificate.com" };
   }
 
   // Parenting (Emma)
   if (p.includes("parent") || p.includes("family") || p.includes("kid") || p.includes("teen") ||
-      p.includes("couple")) {
+    p.includes("couple")) {
     return { personaKey: "parenting", coachEmail: "emma@accredipro-certificate.com" };
   }
 
   // Faith (Grace)
   if (p.includes("christian") || p.includes("faith") || p.includes("biblical") || p.includes("ministry") ||
-      p.includes("jesus")) {
+    p.includes("jesus")) {
     return { personaKey: "faith", coachEmail: "grace@accredipro-certificate.com" };
   }
 

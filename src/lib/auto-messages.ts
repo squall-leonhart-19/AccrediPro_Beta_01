@@ -22,7 +22,18 @@ interface TriggerAutoMessageOptions {
   | "sequence_day_10"
   | "sequence_day_20"
   | "sequence_day_27"
-  | "sequence_day_30";
+  | "sequence_day_30"
+  // WH 60-Day Sequence DMs ($297 offer)
+  | "wh_sequence_day_0"
+  | "wh_sequence_day_7"
+  | "wh_sequence_day_14"
+  | "wh_sequence_day_21"
+  | "wh_sequence_day_30"
+  | "wh_sequence_day_36"
+  | "wh_sequence_day_42"
+  | "wh_sequence_day_45"
+  | "wh_sequence_day_52"
+  | "wh_sequence_day_60";
   triggerValue?: string; // e.g., course ID or module number
 }
 
@@ -1331,27 +1342,24 @@ async function sendSarahWelcomeWithVoiceFromScheduled(
   });
   console.log(`[AUTO-MESSAGE] Created Sarah's text message: ${textMessage.id}`);
 
-  // Generate voice message using ElevenLabs with Sarah's cloned voice
-  const voiceResult = await generateAndUploadVoice(voiceScript, `welcome-${userId.slice(0, 8)}`);
+  // Use pre-recorded welcome audio file (instead of generating TTS)
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy";
+  const staticAudioUrl = `${BASE_URL}/audio/welcome-mini-diploma.mp3`;
 
-  if (voiceResult) {
-    // Create the voice message with uploaded audio URL
-    const voiceMessage = await prisma.message.create({
-      data: {
-        senderId: coachId,
-        receiverId: userId,
-        content: `🎤 Voice message from Sarah`,
-        attachmentUrl: voiceResult.url,
-        attachmentType: "voice",
-        attachmentName: "Welcome from Sarah",
-        voiceDuration: voiceResult.duration,
-        messageType: "DIRECT",
-      },
-    });
-    console.log(`[AUTO-MESSAGE] Created voice message: ${voiceMessage.id}`);
-  } else {
-    console.warn(`[AUTO-MESSAGE] Could not generate voice, skipping voice message`);
-  }
+  // Create the voice message with static audio URL
+  const voiceMessage = await prisma.message.create({
+    data: {
+      senderId: coachId,
+      receiverId: userId,
+      content: `🎤 Voice message from Sarah`,
+      attachmentUrl: staticAudioUrl,
+      attachmentType: "voice",
+      attachmentName: "Welcome from Sarah",
+      voiceDuration: 15, // Approximate duration of the pre-recorded audio
+      messageType: "DIRECT",
+    },
+  });
+  console.log(`[AUTO-MESSAGE] Created voice message with static audio: ${voiceMessage.id}`);
 
   // Create notification
   await prisma.notification.create({

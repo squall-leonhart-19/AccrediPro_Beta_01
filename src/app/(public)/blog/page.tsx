@@ -1,279 +1,263 @@
 import Link from "next/link";
+import { PublicLayout } from "@/components/public/public-layout";
 import { Button } from "@/components/ui/button";
 import {
+  BookOpen,
+  Clock,
   ArrowRight,
-  Mail,
+  Tag,
+  User,
+  Search,
+  TrendingUp,
 } from "lucide-react";
-import { featuredPost, allBlogPosts } from "@/lib/blog-data";
 
 export const metadata = {
-  title: "Blog | Functional Medicine Insights | AccrediPro Academy",
-  description: "Expert articles on functional medicine, gut health, hormones, nutrition, and building a health coaching practice. Free resources from AccrediPro Academy.",
+  title: "Blog | AccrediPro Standards Institute",
+  description: "Expert insights on functional medicine, health coaching, certification, and building a wellness practice. Resources for health professionals.",
   openGraph: {
-    title: "Functional Medicine Blog | AccrediPro Academy",
-    description: "Expert articles on functional medicine, gut health, hormones, nutrition, and building a health coaching practice.",
-    type: "website",
+    title: "ASI Blog",
+    description: "Expert insights for health and wellness professionals.",
   },
 };
 
+const featuredPost = {
+  title: "The Complete Guide to Starting a Functional Medicine Practice in 2025",
+  excerpt: "Everything you need to know about launching your functional medicine practice, from certification to getting your first clients.",
+  category: "Practice Building",
+  readTime: "12 min read",
+  date: "January 8, 2025",
+  image: null,
+  slug: "/blog/starting-functional-medicine-practice-2025",
+};
+
+const categories = [
+  { name: "All", count: 48 },
+  { name: "Functional Medicine", count: 15 },
+  { name: "Career Guide", count: 12 },
+  { name: "Practice Building", count: 10 },
+  { name: "Nutrition", count: 8 },
+  { name: "Certification", count: 3 },
+];
+
+const posts = [
+  {
+    title: "5 Signs You're Ready for a Career in Health Coaching",
+    excerpt: "Discover the key indicators that suggest you're well-suited for a rewarding career in health and wellness coaching.",
+    category: "Career Guide",
+    readTime: "6 min read",
+    date: "January 6, 2025",
+    slug: "/blog/signs-ready-health-coaching-career",
+  },
+  {
+    title: "Understanding Root Cause Medicine: A Beginner's Guide",
+    excerpt: "Learn the fundamental principles of root cause medicine and how it differs from conventional symptom-based approaches.",
+    category: "Functional Medicine",
+    readTime: "8 min read",
+    date: "January 4, 2025",
+    slug: "/blog/root-cause-medicine-guide",
+  },
+  {
+    title: "How to Price Your Wellness Services for Profit",
+    excerpt: "Practical strategies for setting prices that reflect your value and ensure a sustainable practice.",
+    category: "Practice Building",
+    readTime: "7 min read",
+    date: "January 2, 2025",
+    slug: "/blog/pricing-wellness-services",
+  },
+  {
+    title: "The Gut-Brain Connection: What Every Practitioner Should Know",
+    excerpt: "Explore the fascinating science behind the gut-brain axis and its implications for client health.",
+    category: "Functional Medicine",
+    readTime: "10 min read",
+    date: "December 28, 2024",
+    slug: "/blog/gut-brain-connection",
+  },
+  {
+    title: "Building Client Trust in Your First Year of Practice",
+    excerpt: "Proven techniques for establishing credibility and building lasting relationships with clients.",
+    category: "Practice Building",
+    readTime: "5 min read",
+    date: "December 26, 2024",
+    slug: "/blog/building-client-trust",
+  },
+  {
+    title: "Why Accreditation Matters for Your Certification",
+    excerpt: "Understanding the importance of accredited credentials and how they impact your career prospects.",
+    category: "Certification",
+    readTime: "4 min read",
+    date: "December 24, 2024",
+    slug: "/blog/why-accreditation-matters",
+  },
+];
+
 export default function BlogPage() {
-  const categories = [
-    "All Posts",
-    "Gut Health",
-    "Hormones",
-    "Nutrition",
-    "Business",
-    "Career",
-  ];
-
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-burgundy-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AP</span>
-              </div>
-              <span className="text-lg font-bold text-burgundy-600">AccrediPro</span>
-            </Link>
-
-            <div className="hidden md:flex items-center gap-8">
-              <Link href="/accreditation" className="text-gray-600 hover:text-burgundy-600">Accreditations</Link>
-              <Link href="/testimonials" className="text-gray-600 hover:text-burgundy-600">Testimonials</Link>
-              <Link href="/about" className="text-gray-600 hover:text-burgundy-600">About</Link>
-              <Link href="/blog" className="text-burgundy-600 font-semibold">Blog</Link>
-              <Link href="/contact" className="text-gray-600 hover:text-burgundy-600">Contact</Link>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Link href="/login">
-                <Button variant="ghost">Sign In</Button>
-              </Link>
-              <Link href="/register">
-                <Button>Apply Now</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <PublicLayout>
       {/* Hero */}
-      <header className="pt-32 pb-20 px-4 bg-gradient-to-br from-burgundy-50 via-white to-gold-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="text-burgundy-600 font-bold uppercase tracking-wider text-sm mb-4 block">
-            AccrediPro Blog
-          </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-            Functional Medicine <span className="text-burgundy-600 italic">Insights</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-            Expert articles on root-cause health, clinical protocols, and building a thriving wellness practice. Free education from our faculty.
-          </p>
-        </div>
-      </header>
-
-      {/* Categories */}
-      <section className="py-8 bg-white border-y border-gray-100 sticky top-16 z-40">
+      <section className="py-16 lg:py-20 bg-gradient-to-br from-burgundy-50 via-white to-gold-50">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
-                  index === 0
-                    ? "bg-burgundy-600 text-white"
-                    : "bg-burgundy-50 text-burgundy-600 hover:bg-burgundy-100"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 bg-burgundy-100 text-burgundy-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <BookOpen className="w-4 h-4" />
+              ASI Blog
+            </span>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Insights & Resources
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Expert guidance on functional medicine, building your practice,
+              and thriving as a health professional.
+            </p>
+          </div>
+
+          {/* Search */}
+          <div className="max-w-xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="search"
+                placeholder="Search articles..."
+                className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 outline-none"
+              />
+            </div>
           </div>
         </div>
       </section>
 
       {/* Featured Post */}
-      <section className="py-16 bg-burgundy-50/30">
+      <section className="py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4">
-          <Link href={`/blog/${featuredPost.slug}`}>
-            <article className="bg-white rounded-2xl shadow-xl overflow-hidden grid md:grid-cols-2 hover:-translate-y-2 transition duration-300 cursor-pointer">
-              <div className="relative h-64 md:h-auto">
-                <img
-                  src={featuredPost.image}
-                  alt={featuredPost.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute top-4 left-4 bg-gold-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  FEATURED
-                </div>
-              </div>
-              <div className="p-8 md:p-12 flex flex-col justify-center">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                  <span className="bg-burgundy-50 px-3 py-1 rounded-full text-burgundy-600 font-semibold text-xs">
-                    {featuredPost.category}
+          <Link href={featuredPost.slug}>
+            <div className="bg-gradient-to-br from-burgundy-600 to-burgundy-800 rounded-2xl p-8 lg:p-12 text-white hover:shadow-xl transition-shadow">
+              <div className="flex flex-col lg:flex-row gap-8 items-center">
+                <div className="flex-1">
+                  <span className="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-sm mb-4">
+                    <TrendingUp className="w-4 h-4" /> Featured
                   </span>
-                  <span>•</span>
-                  <span>{featuredPost.readTime}</span>
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 hover:text-burgundy-600 transition">
-                  {featuredPost.title}
-                </h2>
-                <p className="text-gray-600 mb-6">{featuredPost.excerpt}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={featuredPost.author.image}
-                      alt={featuredPost.author.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <p className="font-bold text-gray-900 text-sm">{featuredPost.author.name}</p>
-                      <p className="text-xs text-gray-500">{featuredPost.date}</p>
-                    </div>
+                  <h2 className="text-2xl lg:text-3xl font-bold mb-4">
+                    {featuredPost.title}
+                  </h2>
+                  <p className="text-burgundy-100 mb-6">
+                    {featuredPost.excerpt}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-burgundy-200">
+                    <span className="flex items-center gap-1">
+                      <Tag className="w-4 h-4" />
+                      {featuredPost.category}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {featuredPost.readTime}
+                    </span>
+                    <span>{featuredPost.date}</span>
                   </div>
-                  <span className="text-burgundy-600 font-bold text-sm hover:text-gold-600 transition flex items-center gap-1">
-                    Read More <ArrowRight className="w-4 h-4" />
-                  </span>
+                </div>
+                <div className="lg:w-64 flex-shrink-0">
+                  <div className="bg-white/10 rounded-xl p-8 text-center">
+                    <BookOpen className="w-16 h-16 text-gold-400 mx-auto mb-4" />
+                    <span className="text-gold-400 font-medium">Read Now →</span>
+                  </div>
                 </div>
               </div>
-            </article>
+            </div>
           </Link>
         </div>
       </section>
 
-      {/* Blog Grid */}
-      <section className="py-16 bg-white">
+      {/* Categories + Posts */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-2xl font-bold text-gray-900">Latest Articles</h2>
-            <select className="px-4 py-2 border border-gray-200 rounded-lg text-sm">
-              <option>Most Recent</option>
-              <option>Most Popular</option>
-              <option>Oldest First</option>
-            </select>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {allBlogPosts.map((article, index) => (
-              <Link key={index} href={`/blog/${article.slug}`}>
-                <article className="bg-burgundy-50/50 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition duration-300 h-full">
-                  <div className="h-48 overflow-hidden">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full h-full object-cover hover:scale-110 transition duration-500"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                      <span className="bg-white px-2 py-1 rounded text-burgundy-600 font-semibold">
-                        {article.category}
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* Sidebar */}
+            <div className="lg:w-64 flex-shrink-0">
+              <h3 className="font-bold text-gray-900 mb-4">Categories</h3>
+              <ul className="space-y-2">
+                {categories.map((category, i) => (
+                  <li key={i}>
+                    <button className={`w-full flex items-center justify-between px-4 py-2 rounded-lg text-left transition-colors ${i === 0 ? "bg-burgundy-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                      }`}>
+                      {category.name}
+                      <span className={`text-xs ${i === 0 ? "text-burgundy-200" : "text-gray-400"}`}>
+                        {category.count}
                       </span>
-                      <span>•</span>
-                      <span>{article.readTime}</span>
-                    </div>
-                    <h3 className="font-bold text-lg text-gray-900 mb-3 hover:text-burgundy-600 transition line-clamp-2">
-                      {article.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{article.excerpt}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">{article.date}</span>
-                      <span className="text-burgundy-600 font-bold text-sm hover:text-gold-600 transition">
-                        Read →
-                      </span>
-                    </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
 
-          {/* Pagination */}
-          <div className="flex justify-center gap-2 mt-12">
-            <button className="w-10 h-10 rounded-full bg-burgundy-600 text-white font-bold">1</button>
-            <button className="w-10 h-10 rounded-full bg-burgundy-50 text-burgundy-600 font-bold hover:bg-burgundy-100 transition">2</button>
-            <button className="w-10 h-10 rounded-full bg-burgundy-50 text-burgundy-600 font-bold hover:bg-burgundy-100 transition">3</button>
-            <button className="w-10 h-10 rounded-full bg-burgundy-50 text-burgundy-600 font-bold hover:bg-burgundy-100 transition">
-              <ArrowRight className="w-4 h-4 mx-auto" />
-            </button>
+              <div className="mt-8 bg-burgundy-50 rounded-xl p-6">
+                <h4 className="font-bold text-gray-900 mb-2">Get Certified</h4>
+                <p className="text-gray-600 text-sm mb-4">
+                  Ready to start your professional journey?
+                </p>
+                <Link href="/fm-course-certification">
+                  <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700">
+                    Learn More
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Posts Grid */}
+            <div className="flex-1">
+              <div className="grid md:grid-cols-2 gap-6">
+                {posts.map((post, i) => (
+                  <Link key={i} href={post.slug}>
+                    <article className="bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow h-full">
+                      <span className="inline-flex items-center gap-1 text-xs text-burgundy-600 bg-burgundy-50 px-2 py-1 rounded-full mb-3">
+                        <Tag className="w-3 h-3" />
+                        {post.category}
+                      </span>
+                      <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                      <div className="flex items-center gap-4 text-xs text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {post.readTime}
+                        </span>
+                        <span>{post.date}</span>
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Load More */}
+              <div className="text-center mt-12">
+                <Button variant="outline" size="lg">
+                  Load More Articles
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Newsletter CTA */}
-      <section className="py-20 bg-burgundy-600 text-white">
+      <section className="py-16 bg-burgundy-600">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <Mail className="w-12 h-12 text-gold-400 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get Weekly Insights</h2>
-          <p className="text-burgundy-100 mb-8 max-w-xl mx-auto">
-            Join 5,000+ health professionals receiving our weekly newsletter with clinical tips, research updates, and practice-building strategies.
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Get Weekly Insights
+          </h2>
+          <p className="text-burgundy-100 mb-8">
+            Join 15,000+ health professionals receiving our weekly newsletter.
           </p>
-          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
               type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-gold-500 focus:outline-none"
+              placeholder="Your email address"
+              className="flex-1 px-4 py-3 rounded-xl border-0 focus:ring-2 focus:ring-gold-400 outline-none"
             />
-            <Button type="submit" variant="secondary" className="bg-gold-500 text-burgundy-900 hover:bg-gold-400">
+            <Button className="bg-gold-500 text-gray-900 hover:bg-gold-400">
               Subscribe
             </Button>
-          </form>
-          <p className="text-xs text-burgundy-300 mt-4">No spam. Unsubscribe anytime.</p>
+          </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-burgundy-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">AP</span>
-                </div>
-                <span className="text-lg font-bold">AccrediPro</span>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Free functional medicine education. Expert insights. Practice-building strategies.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><Link href="/" className="hover:text-white">Home</Link></li>
-                <li><Link href="/certifications" className="hover:text-white">Certifications</Link></li>
-                <li><Link href="/accreditation" className="hover:text-white">Accreditation</Link></li>
-                <li><Link href="/blog" className="hover:text-white text-burgundy-400">Blog</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><Link href="/testimonials" className="hover:text-white">Testimonials</Link></li>
-                <li><Link href="/about" className="hover:text-white">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
-              <p className="text-sm text-gray-400">
-                <a href="mailto:info@accredipro.academy" className="hover:text-white">
-                  info@accredipro.academy
-                </a>
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
-            <p>&copy; {new Date().getFullYear()} AccrediPro Academy. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </PublicLayout>
   );
 }

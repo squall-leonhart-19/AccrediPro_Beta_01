@@ -155,16 +155,20 @@ export async function POST(request: NextRequest) {
                     </div>
                   </div>
 
-                  <!-- Footer -->
-                  <div style="text-align: center; padding: 25px 20px; color: #888;">
-                    <p style="margin: 0 0 10px 0; font-size: 13px;">
-                      <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
-                      &nbsp;|&nbsp;
-                      <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
-                    </p>
-                    <p style="margin: 0; font-size: 11px; color: #aaa;">
-                      © ${new Date().getFullYear()} AccrediPro Academy™. All rights reserved.
-                    </p>
+                  <!-- Footer with Physical Address -->
+                  <div style="background: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eee;">
+                    <p style="margin: 0 0 5px 0; color: #722F37; font-size: 13px; font-weight: bold;">AccrediPro LLC</p>
+                    <p style="margin: 0; color: #999; font-size: 11px;">(At Rockefeller Center)</p>
+                    <p style="margin: 0; color: #999; font-size: 11px;">1270 Ave of the Americas, 7th Fl -1182</p>
+                    <p style="margin: 0; color: #999; font-size: 11px;">New York, NY 10020, United States</p>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                      <p style="margin: 0 0 5px 0; font-size: 12px;">
+                        <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
+                        &nbsp;|&nbsp;
+                        <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
+                      </p>
+                      <p style="margin: 0; font-size: 10px; color: #aaa;">© ${new Date().getFullYear()} AccrediPro Academy™</p>
+                    </div>
                   </div>
                 </div>
               </body>
@@ -311,17 +315,24 @@ export async function POST(request: NextRequest) {
                   </div>
                 </div>
 
-                <!-- Footer -->
-                <div style="text-align: center; padding: 25px 20px; color: #888;">
-                  <p style="margin: 0 0 10px 0; font-size: 13px;">
-                    <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
-                    &nbsp;|&nbsp;
-                    <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
-                  </p>
-                  <p style="margin: 0; font-size: 11px; color: #aaa;">
-                    © ${new Date().getFullYear()} AccrediPro Academy™. All rights reserved.<br>
-                    Accredited by 9 leading healthcare certification bodies.
-                  </p>
+                <!-- Footer with Physical Address (CAN-SPAM Compliance) -->
+                <div style="background: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eee;">
+                  <p style="margin: 0 0 5px 0; color: #722F37; font-size: 13px; font-weight: bold;">AccrediPro LLC</p>
+                  <p style="margin: 0; color: #999; font-size: 11px;">(At Rockefeller Center)</p>
+                  <p style="margin: 0; color: #999; font-size: 11px;">1270 Ave of the Americas, 7th Fl -1182</p>
+                  <p style="margin: 0; color: #999; font-size: 11px;">New York, NY 10020</p>
+                  <p style="margin: 0 0 15px 0; color: #999; font-size: 11px;">United States</p>
+                  <p style="margin: 0; color: #bbb; font-size: 10px; font-style: italic;">Veritas Et Excellentia - Truth and Excellence in Education</p>
+                  <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                    <p style="margin: 0 0 5px 0; font-size: 12px;">
+                      <a href="https://accredipro.academy" style="color: #722F37; text-decoration: none;">AccrediPro Academy</a>
+                      &nbsp;|&nbsp;
+                      <a href="https://learn.accredipro.academy/dashboard" style="color: #722F37; text-decoration: none;">My Dashboard</a>
+                    </p>
+                    <p style="margin: 0; font-size: 10px; color: #aaa;">
+                      © ${new Date().getFullYear()} AccrediPro Academy™. All rights reserved.
+                    </p>
+                  </div>
                 </div>
               </div>
             </body>
@@ -333,59 +344,7 @@ export async function POST(request: NextRequest) {
       // Continue anyway
     }
 
-    // Notify staff via email
-    try {
-      await resend.emails.send({
-        from: "AccrediPro Support <support@accredipro-certificate.com>",
-        to: "info@accredipro.academy", // Staff notification email
-        subject: `🎫 New Ticket #${ticket.ticketNumber}: ${subject}`,
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head><meta charset="utf-8"></head>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-              <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <div style="background: #6B2C40; padding: 20px; border-radius: 8px 8px 0 0;">
-                  <h2 style="color: #FFD700; margin: 0;">🎫 New Support Ticket</h2>
-                </div>
-                <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
-                  <table style="width: 100%; margin-bottom: 20px;">
-                    <tr>
-                      <td style="padding: 8px 0; color: #666;">Ticket #</td>
-                      <td style="padding: 8px 0; font-weight: bold;">${ticket.ticketNumber}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px 0; color: #666;">From</td>
-                      <td style="padding: 8px 0;"><strong>${customerName}</strong> (${customerEmail})</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px 0; color: #666;">Category</td>
-                      <td style="padding: 8px 0;">${category || "GENERAL"}</td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 8px 0; color: #666;">Subject</td>
-                      <td style="padding: 8px 0; font-weight: bold;">${subject}</td>
-                    </tr>
-                  </table>
-
-                  <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-                    <p style="margin: 0 0 8px; font-weight: bold; color: #666;">Message:</p>
-                    <p style="margin: 0; white-space: pre-wrap;">${message}</p>
-                  </div>
-
-                  <a href="https://learn.accredipro.academy/admin/tickets"
-                     style="display: inline-block; background: #6B2C40; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
-                    Open Ticket in Admin →
-                  </a>
-                </div>
-              </div>
-            </body>
-          </html>
-        `,
-      });
-    } catch (staffEmailError) {
-      console.error("Failed to send staff notification:", staffEmailError);
-    }
+    // Staff notification removed - use /admin/tickets dashboard instead
 
     return NextResponse.json({
       success: true,

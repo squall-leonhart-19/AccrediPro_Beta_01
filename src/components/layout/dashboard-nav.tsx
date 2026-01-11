@@ -35,6 +35,7 @@ import {
   Sparkles,
   Users2,
   ChevronDown,
+  Gift,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -130,6 +131,7 @@ const fullNavItems: NavItem[] = [
     tourId: "settings",
     children: [
       { href: "/profile", label: "My Profile", icon: User, tourId: "profile" },
+      { href: "/referrals", label: "Referral Program", icon: Gift, tourId: "referrals" },
       { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
     ]
   },

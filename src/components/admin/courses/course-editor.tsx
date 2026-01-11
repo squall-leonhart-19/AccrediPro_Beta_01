@@ -94,6 +94,11 @@ interface Course {
     targetAudience?: string;
     estimatedWeeks?: number;
     enrollmentLimit?: number;
+    // Social Proof
+    displayReviews?: number;
+    displayEnrollments?: number;
+    displayRating?: number;
+    socialProofEnabled?: boolean;
     modules: Module[];
     tags: { tag: { id: string; name: string } }[];
     offers: { offer: SpecialOffer }[];
@@ -188,6 +193,11 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                     targetAudience: course.targetAudience || null,
                     estimatedWeeks: course.estimatedWeeks || null,
                     enrollmentLimit: course.enrollmentLimit || null,
+                    // Social Proof
+                    displayReviews: course.displayReviews || 0,
+                    displayEnrollments: course.displayEnrollments || 0,
+                    displayRating: course.displayRating || 4.8,
+                    socialProofEnabled: course.socialProofEnabled ?? true,
                 }),
             });
 
@@ -468,6 +478,10 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                         <TabsTrigger value="analytics" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
                             <BarChart3 className="w-4 h-4 mr-2" />
                             Analytics
+                        </TabsTrigger>
+                        <TabsTrigger value="social-proof" className="data-[state=active]:bg-burgundy-100 data-[state=active]:text-burgundy-800">
+                            <Star className="w-4 h-4 mr-2" />
+                            Social Proof
                         </TabsTrigger>
                     </TabsList>
 
@@ -1279,6 +1293,118 @@ export function CourseEditor({ course: initialCourse, categories, coaches = [], 
                                             <span className="font-medium">{course.thumbnail ? "100%" : "80%"}</span>
                                         </div>
                                         <Progress value={course.thumbnail ? 100 : 80} className="h-2" />
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    {/* SOCIAL PROOF TAB */}
+                    <TabsContent value="social-proof" className="space-y-6">
+                        <Card className="border-0 shadow-sm">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Star className="w-5 h-5 text-yellow-500" />
+                                    Social Proof Display Settings
+                                </CardTitle>
+                                <CardDescription>
+                                    Configure how reviews, enrollments, and ratings appear on this course. These are display values for marketing purposes.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {/* Enable/Disable Toggle */}
+                                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <Label className="font-medium">Enable Social Proof</Label>
+                                        <p className="text-sm text-gray-500">Show reviews, enrollments and ratings on course pages</p>
+                                    </div>
+                                    <Switch
+                                        checked={course.socialProofEnabled ?? true}
+                                        onCheckedChange={(checked) => setCourse({ ...course, socialProofEnabled: checked })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {/* Display Reviews */}
+                                    <div className="space-y-2">
+                                        <Label className="font-medium flex items-center gap-2">
+                                            <Users className="w-4 h-4 text-blue-500" />
+                                            Display Reviews Count
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            max={99999}
+                                            value={course.displayReviews || 0}
+                                            onChange={(e) => setCourse({ ...course, displayReviews: parseInt(e.target.value) || 0 })}
+                                            placeholder="e.g., 1298"
+                                        />
+                                        <p className="text-xs text-gray-500">Recommended: 1,000 - 10,000</p>
+                                    </div>
+
+                                    {/* Display Enrollments */}
+                                    <div className="space-y-2">
+                                        <Label className="font-medium flex items-center gap-2">
+                                            <TrendingUp className="w-4 h-4 text-green-500" />
+                                            Display Enrollments Count
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={0}
+                                            max={99999}
+                                            value={course.displayEnrollments || 0}
+                                            onChange={(e) => setCourse({ ...course, displayEnrollments: parseInt(e.target.value) || 0 })}
+                                            placeholder="e.g., 5432"
+                                        />
+                                        <p className="text-xs text-gray-500">Recommended: 2,000 - 15,000</p>
+                                    </div>
+
+                                    {/* Display Rating */}
+                                    <div className="space-y-2">
+                                        <Label className="font-medium flex items-center gap-2">
+                                            <Star className="w-4 h-4 text-yellow-500" />
+                                            Display Rating
+                                        </Label>
+                                        <Input
+                                            type="number"
+                                            min={4.0}
+                                            max={5.0}
+                                            step={0.1}
+                                            value={course.displayRating || 4.8}
+                                            onChange={(e) => setCourse({ ...course, displayRating: parseFloat(e.target.value) || 4.8 })}
+                                            placeholder="e.g., 4.8"
+                                        />
+                                        <p className="text-xs text-gray-500">Range: 4.0 - 5.0</p>
+                                    </div>
+                                </div>
+
+                                {/* Preview Box */}
+                                <div className="border rounded-lg p-4 bg-gradient-to-r from-gray-50 to-white">
+                                    <Label className="text-sm font-medium text-gray-600 mb-3 block">Preview</Label>
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex items-center gap-1">
+                                            <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                                            <span className="font-bold text-lg">{course.displayRating?.toFixed(1) || "4.8"}</span>
+                                            <span className="text-gray-500">({(course.displayReviews || 0).toLocaleString()} reviews)</span>
+                                        </div>
+                                        <div className="h-6 w-px bg-gray-200" />
+                                        <div className="flex items-center gap-1 text-gray-600">
+                                            <Users className="w-4 h-4" />
+                                            <span>{(course.displayEnrollments || 0).toLocaleString()} students enrolled</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Info Notice */}
+                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                                    <div className="flex items-start gap-3">
+                                        <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm font-medium text-amber-800">Daily Auto-Increment Active</p>
+                                            <p className="text-sm text-amber-700 mt-1">
+                                                Reviews and enrollments automatically increase by +1 to +9 daily across all courses to maintain fresh, growing numbers.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>

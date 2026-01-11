@@ -26,6 +26,8 @@ import {
   Heart,
   Ticket,
   DollarSign,
+  Brain,
+  Gift,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -41,6 +43,9 @@ const navItems = [
   { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap },
   { href: "/admin/communications", label: "Communications", icon: Bell },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/referrals", label: "Referral Program", icon: Gift },
+  { href: "/admin/oracle", label: "Oracle", icon: Brain },
+  { href: "/admin/super-tools", label: "Super Tools", icon: Shield },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

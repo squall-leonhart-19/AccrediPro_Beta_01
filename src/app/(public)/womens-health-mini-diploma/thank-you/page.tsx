@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
     ArrowRight, Copy, Check,
-    GraduationCap, Lock, Clock,
+    GraduationCap, Lock, Clock, Sparkles,
 } from "lucide-react";
 
 export default function WomensHealthThankYouPage() {
@@ -59,85 +59,45 @@ export default function WomensHealthThankYouPage() {
             </header>
 
             {/* Main Content */}
-            <main className="max-w-2xl mx-auto px-4 py-12 md:py-16">
-                {/* Sarah Welcome Message */}
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mb-8">
-                    <div className="p-6 md:p-8">
-                        {/* Sarah's Avatar & Message */}
-                        <div className="flex gap-4">
-                            <div className="flex-shrink-0">
-                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-burgundy-400 to-burgundy-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                                    S
-                                </div>
-                            </div>
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="font-bold text-gray-900">Sarah</span>
-                                    <span className="text-xs bg-burgundy-100 text-burgundy-700 px-2 py-0.5 rounded-full">Your Coach</span>
-                                </div>
-                                <div className="bg-burgundy-50 rounded-2xl rounded-tl-none p-4 border border-burgundy-100">
-                                    <p className="text-gray-700 leading-relaxed">
-                                        Hey {firstName}! I'm so excited you're here! I'll be your personal guide through the Women's Health Mini Diploma.
-                                    </p>
-                                    <p className="text-gray-700 leading-relaxed mt-3">
-                                        I've helped hundreds of women understand their hormones, and I can't wait to share everything with you. See you inside!
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Voice Note Preview - Non-clickable */}
-                        <div className="mt-4 ml-18 pl-[72px]">
-                            <div className="bg-gray-100 rounded-xl p-3 border border-gray-200 inline-flex items-center gap-3 opacity-60">
-                                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                    <div className="w-0 h-0 border-t-[5px] border-t-transparent border-l-[8px] border-l-gray-500 border-b-[5px] border-b-transparent ml-0.5" />
-                                </div>
-                                <div className="flex gap-0.5">
-                                    {[3, 5, 8, 4, 7, 9, 5, 6, 8, 4, 6, 3].map((h, i) => (
-                                        <div
-                                            key={i}
-                                            className="w-1 bg-gray-400 rounded-full"
-                                            style={{ height: `${h * 2}px` }}
-                                        />
-                                    ))}
-                                </div>
-                                <span className="text-xs text-gray-500 italic">Voice messages unlock inside...</span>
-                            </div>
-                        </div>
+            <main className="max-w-lg mx-auto px-4 py-8 md:py-12">
+                {/* Success Banner */}
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-6 mb-6 text-center text-white shadow-lg">
+                    <div className="w-14 h-14 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
+                        <Check className="h-7 w-7" />
                     </div>
+                    <h1 className="text-2xl font-bold mb-1">
+                        You're In, {firstName}! 🎉
+                    </h1>
+                    <p className="text-green-100 text-sm">
+                        Your Women's Health Mini Diploma is ready
+                    </p>
                 </div>
 
-                {/* Access Card */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-4 text-center">
-                        <p className="text-white font-semibold flex items-center justify-center gap-2">
-                            <Check className="h-5 w-5" />
-                            You're all set! Here's your login details...
-                        </p>
+                {/* Login Credentials Card */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+                    <div className="bg-burgundy-600 px-4 py-3">
+                        <p className="text-white font-semibold text-center">📧 Your Login Details</p>
                     </div>
 
-                    <div className="p-6 md:p-8">
+                    <div className="p-5">
                         {/* User Details */}
                         {userData && (
-                            <div className="bg-burgundy-50 rounded-xl p-4 mb-5 border border-burgundy-100">
-                                <p className="text-sm text-burgundy-600 font-medium mb-1">Your account</p>
-                                <p className="text-lg font-bold text-gray-900">
-                                    {userData.firstName} {userData.lastName}
-                                </p>
-                                <p className="text-gray-600">{userData.email}</p>
+                            <div className="bg-burgundy-50 rounded-xl p-4 mb-4 border border-burgundy-100">
+                                <p className="text-xs text-burgundy-600 font-medium mb-1">Email</p>
+                                <p className="text-gray-900 font-semibold text-sm truncate">{userData.email}</p>
                             </div>
                         )}
 
                         {/* Password Box */}
-                        <div className="bg-gray-50 rounded-xl p-5 mb-6 border border-gray-200">
-                            <p className="text-sm text-gray-500 mb-2">Your password</p>
-                            <div className="flex items-center justify-between">
-                                <p className="text-3xl font-mono font-bold text-gray-900 tracking-wider">{password}</p>
+                        <div className="bg-gray-50 rounded-xl p-4 mb-5 border border-gray-200">
+                            <p className="text-xs text-gray-500 mb-1">Password</p>
+                            <div className="flex items-center justify-between gap-3">
+                                <p className="text-2xl font-mono font-bold text-gray-900">{password}</p>
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={copyPassword}
-                                    className="border-gray-300 hover:bg-gray-100"
+                                    className="border-gray-300 hover:bg-gray-100 flex-shrink-0"
                                 >
                                     {copied ? (
                                         <Check className="h-4 w-4 mr-1 text-green-600" />
@@ -150,12 +110,12 @@ export default function WomensHealthThankYouPage() {
                         </div>
 
                         {/* 7-Day Notice */}
-                        <div className="bg-amber-50 rounded-xl p-4 mb-6 border border-amber-200 flex items-start gap-3">
+                        <div className="bg-amber-50 rounded-xl p-3 mb-5 border border-amber-200 flex items-start gap-3">
                             <Clock className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                             <div>
-                                <p className="font-semibold text-amber-800">You have 7 days</p>
-                                <p className="text-sm text-amber-700">
-                                    Complete all 9 lessons to unlock your certificate before access expires!
+                                <p className="font-semibold text-amber-800 text-sm">7-Day Access</p>
+                                <p className="text-xs text-amber-700">
+                                    Complete 9 lessons to get your certificate!
                                 </p>
                             </div>
                         </div>
@@ -164,46 +124,74 @@ export default function WomensHealthThankYouPage() {
                         <a href="https://learn.accredipro.academy/login" target="_blank" rel="noopener noreferrer">
                             <Button
                                 size="lg"
-                                className="w-full h-14 bg-burgundy-600 hover:bg-burgundy-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                                className="w-full h-14 bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                             >
-                                Go to Login Portal
+                                Start My Mini Diploma Now
                                 <ArrowRight className="h-5 w-5 ml-2" />
                             </Button>
                         </a>
+                    </div>
+                </div>
 
-                        <p className="text-center text-sm text-gray-400 mt-4">
-                            ~60 minutes to complete • Certificate included
-                        </p>
+                {/* What's Waiting */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 mb-6">
+                    <h3 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-burgundy-600" />
+                        What's Waiting Inside
+                    </h3>
+                    <div className="space-y-3 text-sm">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
+                                1
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900">Welcome Video from Sarah</p>
+                                <p className="text-xs text-gray-500">Meet your personal coach</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
+                                2
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900">9 Interactive Lessons</p>
+                                <p className="text-xs text-gray-500">~60 minutes total</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
+                                3
+                            </div>
+                            <div>
+                                <p className="font-medium text-gray-900">Certificate</p>
+                                <p className="text-xs text-gray-500">Unlocks after completion</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 {/* Certificate Preview */}
-                <div className="mt-10 text-center">
-                    <div className="inline-flex items-center gap-2 bg-burgundy-100 text-burgundy-800 px-4 py-2 rounded-full text-sm font-medium mb-5">
-                        <GraduationCap className="h-4 w-4" />
-                        Your certificate is waiting...
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 max-w-sm mx-auto relative">
+                <div className="text-center">
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-5 max-w-xs mx-auto relative">
                         {/* Blurred overlay */}
                         <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] rounded-2xl flex items-center justify-center z-10">
-                            <div className="bg-burgundy-600 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-                                <Lock className="h-4 w-4" />
-                                Complete 9 lessons to unlock
+                            <div className="bg-burgundy-600 text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5">
+                                <Lock className="h-3 w-3" />
+                                Complete to unlock
                             </div>
                         </div>
 
-                        <div className="border-4 border-double border-burgundy-200 rounded-xl p-5">
+                        <div className="border-4 border-double border-burgundy-200 rounded-xl p-4">
                             <Image
                                 src="/newlogo.webp"
                                 alt="AccrediPro"
-                                width={40}
-                                height={40}
+                                width={36}
+                                height={36}
                                 className="mx-auto mb-2"
                             />
-                            <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Mini Diploma</p>
-                            <p className="text-sm font-bold text-burgundy-700 mb-1">Women's Health & Hormones</p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-[9px] text-gray-400 uppercase tracking-widest mb-1">Mini Diploma</p>
+                            <p className="text-xs font-bold text-burgundy-700 mb-1">Women's Health & Hormones</p>
+                            <p className="text-[10px] text-gray-400">
                                 {userData ? `${userData.firstName} ${userData.lastName}` : "Your Name Here"}
                             </p>
                         </div>
@@ -212,7 +200,7 @@ export default function WomensHealthThankYouPage() {
             </main>
 
             {/* Footer */}
-            <footer className="bg-gray-100 py-6 mt-12">
+            <footer className="bg-gray-100 py-6 mt-8">
                 <div className="max-w-6xl mx-auto px-4 text-center text-xs text-gray-400">
                     <p>This site is not a part of the Facebook website or Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.</p>
                 </div>

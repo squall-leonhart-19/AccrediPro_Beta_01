@@ -216,8 +216,19 @@ export function LeadOnboardingClient({
         );
     };
 
+    // Test user buttons
+    const handleCompleteAll = async () => {
+        const res = await fetch("/api/lead-onboarding/test-complete", { method: "POST" });
+        if (res.ok) window.location.reload();
+    };
+
+    const handleReset = async () => {
+        const res = await fetch("/api/lead-onboarding/test-complete", { method: "DELETE" });
+        if (res.ok) window.location.reload();
+    };
+
     return (
-        <div className="p-6">
+        <div className="p-4 md:p-6">
             {/* Hero Header with Sarah */}
             <div className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl" />
@@ -275,24 +286,29 @@ export function LeadOnboardingClient({
                 </div>
             </div>
 
-            {/* Step Checklist (collapsed view) */}
+            {/* Step Progress - Motivating Milestones */}
             <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-                <h2 className="font-semibold text-gray-900 mb-3">Your Progress</h2>
-                <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-2">
-                    {steps.map((step, i) => (
-                        <div
-                            key={step.id}
-                            className={`relative w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${step.completed
-                                ? "bg-emerald-500 text-white"
-                                : currentStep === step.id
-                                    ? "bg-burgundy-600 text-white ring-2 ring-burgundy-400 ring-offset-2"
-                                    : "bg-gray-200 text-gray-400"
-                                }`}
-                            title={step.title}
-                        >
-                            {step.completed ? <CheckCircle className="w-4 h-4" /> : step.id}
-                        </div>
-                    ))}
+                <div className="flex items-center justify-between mb-3">
+                    <h2 className="font-semibold text-gray-900">Your Journey to $3-5K/month</h2>
+                    <span className="text-sm font-bold text-burgundy-600">{progress}%</span>
+                </div>
+                <Progress value={progress} className="h-2 mb-4" />
+                <div className="flex flex-wrap gap-2 text-xs">
+                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${watchedVideo ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
+                        {watchedVideo ? "✓" : "○"} Meet Sarah
+                    </span>
+                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedQuestions ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
+                        {completedQuestions ? "✓" : "○"} Your Why
+                    </span>
+                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedLessons.length >= 3 ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
+                        {completedLessons.length >= 3 ? "✓" : "○"} $1K Foundation
+                    </span>
+                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedLessons.length >= 6 ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
+                        {completedLessons.length >= 6 ? "✓" : "○"} $3K Skills
+                    </span>
+                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedLessons.length >= 9 ? "bg-gold-100 text-gold-700 font-bold" : "bg-gray-100 text-gray-400"}`}>
+                        {completedLessons.length >= 9 ? "🎉" : "○"} $5K Ready!
+                    </span>
                 </div>
             </div>
 

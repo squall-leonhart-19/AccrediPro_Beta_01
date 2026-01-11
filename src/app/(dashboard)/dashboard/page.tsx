@@ -12,6 +12,7 @@ import { ClientProgressRing } from "@/components/dashboard/client-progress-ring"
 import { CoursesList } from "@/components/dashboard/courses-list";
 import { CommunityWins } from "@/components/dashboard/community-wins";
 import { PodLeaderboardPreview } from "@/components/dashboard/pod-leaderboard-preview";
+import { ReferralCard } from "@/components/dashboard/referral-card";
 import { generateZombieSuccessEvents } from "@/lib/success-events";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import { getSocialProofStats } from "@/lib/social-proof";
@@ -32,12 +33,22 @@ async function getDashboardData(userId: string) {
   const [enrollments, certificatesData, userStreak, user, userTags] = await Promise.all([
     prisma.enrollment.findMany({
       where: { userId },
-      include: {
+      select: {
+        id: true,
+        status: true,
+        lastAccessedAt: true,
         course: {
-          include: {
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            thumbnail: true,
             modules: {
               where: { isPublished: true },
-              include: {
+              select: {
+                id: true,
+                title: true,
+                order: true,
                 lessons: {
                   where: { isPublished: true },
                   select: { id: true, title: true, order: true },
@@ -158,6 +169,32 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
 
+  let dashboardData;
+  try {
+    dashboardData = await getDashboardData(session.user.id);
+  } catch (error: any) {
+    console.error("[DASHBOARD] Data fetch error:", error?.message || error);
+    // Show a friendly error page
+    return (
+      <DashboardWrapper>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center p-8 bg-white rounded-xl shadow-lg max-w-md">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">⚠️</span>
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Dashboard Loading Issue</h2>
+            <p className="text-gray-600 mb-4">
+              We&apos;re performing a database update. Please wait a moment and refresh the page.
+            </p>
+            <p className="text-sm text-gray-400">
+              Error: {error?.message || "Unknown database error"}
+            </p>
+          </div>
+        </div>
+      </DashboardWrapper>
+    );
+  }
+
   const {
     enrollments,
     certificates,
@@ -169,7 +206,7 @@ export default async function DashboardPage() {
     specialization,
     nextLesson,
     completedLessonsCount,
-  } = await getDashboardData(session.user.id);
+  } = dashboardData;
 
   // Check for mini diploma only users
   const hasFMMiniDiplomaOnly =
@@ -348,6 +385,9 @@ export default async function DashboardPage() {
 
             {/* Career Ladder (Income view) */}
             <CareerLadder currentStage={getCurrentStage()} />
+
+            {/* Referral Card */}
+            <ReferralCard userId={session.user.id} firstName={firstName} />
 
             {/* Pod Leaderboard Preview */}
             <PodLeaderboardPreview currentUserRank={3} />

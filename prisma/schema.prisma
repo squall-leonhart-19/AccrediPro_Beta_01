@@ -34,9 +34,21 @@ model User {
   lastLoginAt            DateTime?
   firstLoginAt           DateTime? // Track first ever login
   loginCount             Int       @default(0)
+
+  // Login Recovery Tracking (for no-login email sequence)
+  loginRecovery3hSentAt  DateTime? // 3 hours after signup if no login
+  loginRecovery24hSentAt DateTime? // 24 hours after signup if no login
+  loginRecovery72hSentAt DateTime? // 72 hours after signup if no login
+  loginRecovery7dSentAt  DateTime? // 7 days after signup if no login
+
   leadSource             String? // Where they came from (freebie, webinar, etc.)
   leadSourceDetail       String? // Specific detail (which freebie, etc.)
   assignedCoachId        String? // Auto-assigned coach based on category
+
+  // Referral System
+  referralCode     String?  @unique // Unique referral code for sharing
+  referredBy       String?          // User ID who referred this user
+  referralCount    Int      @default(0) // Number of successful referrals
 
   // Meta (Facebook) Tracking for Conversions API
   fbclid String? // Facebook Click ID from URL
@@ -80,6 +92,14 @@ model User {
   level            Int      @default(1) // Gamification level
   xp               Int      @default(0) // Experience points
   knowledgeBase    String?  @db.Text // AI Knowledge Base for this mentor
+
+  // Professional Directory Fields (ASI Verified Professionals)
+  slug               String?  @unique // URL-friendly profile slug
+  professionalTitle  String?  // e.g., "Certified Functional Medicine Practitioner"
+  acceptingClients   Boolean  @default(false) // Is currently accepting new clients
+  isPublicDirectory  Boolean  @default(false) // Show in public professionals directory
+  website            String?  // Personal/practice website
+  socialLinks        Json?    // LinkedIn, Instagram, etc.
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -148,6 +168,11 @@ model User {
   // Dispute Evidence
   payments          Payment[] // All payment transactions
   resourceDownloads ResourceDownload[] // File download tracking
+
+  // Oracle AI Operations
+  oracleEvents      OracleEvent[]
+  oracleActions     OracleAction[]
+  oracleSegment     OracleSegment?
 
   @@index([email])
   @@index([role])
@@ -277,7 +302,6 @@ model Course {
   difficulty       Difficulty      @default(BEGINNER)
   duration         Int? // Total duration in minutes
   certificateType  CertificateType @default(COMPLETION)
-  certificateImage String? // Certificate preview image for this course
 
   // SEO fields
   metaTitle       String?
@@ -292,6 +316,12 @@ model Course {
   categoryId   String?
   instructorId String?
   coachId      String? // Assigned coach for 1:1 support
+
+  // Social Proof Fields (dynamic display counts)
+  displayReviews     Int     @default(0) // Displayed review count (1,298 - 9,997)
+  displayEnrollments Int     @default(0) // Displayed enrollment count
+  displayRating      Decimal @default(4.8) @db.Decimal(2, 1) // Average rating (4.0 - 5.0)
+  socialProofEnabled Boolean @default(true) // Enable/disable social proof display
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -2707,3 +2737,162 @@ model ResourceDownload {
   @@index([resourceId])
   @@index([createdAt])
 }
+
+// ==================== AUTOMATION RULES ====================
+
+model AutoTagRule {
+  id          String    @id @default(cuid())
+  name        String    // Rule name for display
+  trigger     String    // "course_complete", "mini_diploma_complete", "enrollment", "inactivity", "signup"
+  triggerData Json      @default("{}") // Additional trigger config (e.g., courseId, days)
+  action      String    // "add_tag", "remove_tag", "enroll_course"
+  actionData  Json      @default("{}") // Additional action config (e.g., tag name, courseId)
+  isActive    Boolean   @default(true)
+  runsCount   Int       @default(0)
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isActive])
+  @@index([trigger])
+}
+
+// ==================== ORACLE - AI OPERATIONS COMMANDER ====================
+
+// Track ALL user events for behavior analysis
+model OracleEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  event     String   // login, lesson_complete, email_open, dm_read, etc.
+  metadata  Json?    // { lessonId, courseId, emailId, etc. }
+  source    String?  // web, email, dm, api
+  sessionId String?  // group events by session
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([event, createdAt])
+  @@index([createdAt])
+}
+
+// Actions Oracle takes (or queues for approval)
+model OracleAction {
+  id          String    @id @default(cuid())
+  userId      String
+  actionType  String    // email, dm, push, post, alert
+  status      String    @default("pending") // pending, approved, executed, rejected, failed
+  priority    Int       @default(5) // 1-10, higher = more urgent
+  
+  // Content
+  template    String?   // template name if using template
+  subject     String?   // for emails
+  content     String    @db.Text // the message content
+  metadata    Json?     // additional data
+  
+  // Trigger info
+  triggeredBy String    // rule_name, ai_decision, manual
+  triggerData Json?     // why this was triggered
+  
+  // Execution info
+  scheduledAt DateTime? // when to execute (null = asap)
+  executedAt  DateTime?
+  
+  // Outcome tracking
+  outcome     Json?     // { opened, clicked, replied, converted }
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([status, scheduledAt])
+  @@index([actionType, createdAt])
+}
+
+// Dynamic user segmentation
+model OracleSegment {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  // Engagement classification
+  engagementLevel String @default("new") // new, active, moderate, dormant, lost
+  engagementScore Int    @default(50) // 0-100
+  
+  // Risk assessment
+  churnRisk       Int    @default(0) // 0-100
+  churnReason     String? // inactivity, stuck, no_progress, etc.
+  
+  // Lifecycle stage
+  lifecycle       String @default("lead") // lead, new, active, engaged, graduate, alumni
+  
+  // Persona classification
+  persona         String? // career_changer, professional, hobbyist, etc.
+  learningStyle   String? // visual, audio, reading, doing
+  
+  // Value classification
+  ltv             Decimal? @db.Decimal(10, 2) // lifetime value
+  valueSegment    String?  // high, medium, low
+  
+  // Prediction scores
+  completionProb  Int?    // 0-100
+  upgradeProb     Int?    // 0-100
+  referralProb    Int?    // 0-100
+  
+  // Optimal contact info
+  bestContactTime String? // morning, afternoon, evening
+  bestChannel     String? // email, dm, push
+  
+  lastAnalyzed    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Automation rules for Oracle
+model OracleRule {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  
+  // Trigger conditions
+  trigger     String  // event_based, time_based, segment_based
+  conditions  Json    // { event: "lesson_complete", days_since: 3, etc. }
+  
+  // Action to take
+  actionType  String  // email, dm, push, post, tag
+  actionData  Json    // { template: "welcome", subject: "...", etc. }
+  
+  // Control
+  isActive    Boolean @default(true)
+  priority    Int     @default(5)
+  cooldown    Int     @default(24) // hours between repeated triggers
+  maxPerUser  Int?    // max times per user (null = unlimited)
+  
+  // Stats
+  timesTriggered Int  @default(0)
+  lastTriggered  DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, trigger])
+}
+
+// AI Analysis logs (for learning)
+model OracleInsight {
+  id          String   @id @default(cuid())
+  type        String   // hypothesis, observation, recommendation
+  title       String
+  content     String   @db.Text
+  confidence  Int?     // 0-100
+  metadata    Json?
+  status      String   @default("new") // new, reviewed, implemented, rejected
+  createdAt   DateTime @default(now())
+  
+  @@index([type, status])
+  @@index([createdAt])
+}
+

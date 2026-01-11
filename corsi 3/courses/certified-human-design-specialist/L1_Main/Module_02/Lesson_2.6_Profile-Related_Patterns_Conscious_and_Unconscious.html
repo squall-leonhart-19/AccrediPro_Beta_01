@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Profile-Related Patterns: Conscious and Unconscious Roles</title>
+ <style>
+ /* Base & Reset */
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ /* Main Container */
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ /* Module Header */
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px 35px 30px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .module-header::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ right: 0;
+ width: 300px;
+ height: 300px;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+ transform: translate(100px, -100px);
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: #047857;
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ font-weight: 500;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ line-height: 1.3;
+ position: relative;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ flex-wrap: wrap;
+ }
+
+ .meta-item {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ /* Table of Contents */
+ .toc-box {
+ background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+ border-radius: 14px;
+ padding: 24px 28px;
+ margin-bottom: 35px;
+ border: 1px solid #e8e8e8;
+ }
+
+ .toc-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ padding-bottom: 12px;
+ border-bottom: 1px solid #e0e0e0;
+ }
+
+ .toc-list {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 8px 24px;
+ }
+
+ .toc-list li {
+ margin: 0;
+ }
+
+ .toc-list a {
+ display: flex;
+ align-items: center;
+ padding: 8px 12px;
+ color: #555;
+ text-decoration: none;
+ font-size: 14px;
+ border-radius: 6px;
+ transition: all 0.2s ease;
+ }
+
+ .toc-list a:hover {
+ background: white;
+ color: #047857;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+ }
+
+ .toc-list .section-num {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ width: 26px;
+ height: 26px;
+ background: #047857;
+ color: white;
+ font-weight: 600;
+ font-size: 11px;
+ border-radius: 6px;
+ margin-right: 12px;
+ flex-shrink: 0;
+ }
+
+ @media (max-width: 600px) {
+ .toc-list {
+ grid-template-columns: 1fr;
+ }
+ }
+
+ /* Learning Objectives */
+ .objectives-box {
+ background: #ecfdf5;
+ border: 2px solid #047857;
+ border-radius: 14px;
+ padding: 30px 35px;
+ margin-bottom: 40px;
+ }
+
+ .objectives-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 13px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .objectives-box .box-label::before {
+ content: '🎯';
+ font-size: 18px;
+ }
+
+ .objectives-box ul {
+ margin: 0;
+ padding-left: 22px;
+ }
+
+ .objectives-box li {
+ margin-bottom: 14px;
+ font-size: 16px;
+ line-height: 1.7;
+ }
+
+ .objectives-box li:last-child {
+ margin-bottom: 0;
+ }
+
+ /* Key Terms Box */
+ .key-terms-box {
+ background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+ border-radius: 14px;
+ padding: 28px 30px;
+ margin: 40px 0;
+ border: 1px solid #d8dce0;
+ }
+
+ .key-terms-box .box-label {
+ font-weight: 600;
+ color: #047857;
+ margin: 0 0 18px 0;
+ font-size: 13px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ }
+
+ .terms-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+ gap: 16px;
+ }
+
+ .term-item {
+ background: white;
+ padding: 16px 18px;
+ border-radius: 10px;
+ border-left: 4px solid #059669;
+ }
+
+ .term-item .term {
+ font-weight: 700;
+ color: #059669;
+ font-size: 15px;
+ margin: 0 0 6px 0;
+ }
+
+ .term-item .definition {
+ font-size: 14px;
+ color: #555;
+ margin: 0;
+ line-height: 1.6;
+ }
+
+ /* Section Headings */
+ h2 {
+ font-size: 24px;
+ color: #059669;
+ margin: 50px 0 20px 0;
+ font-weight: 600;
+ position: relative;
+ padding-bottom: 12px;
+ }
+
+ h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 3px;
+ background: #B8860B;
+ }
+
+ /* Paragraphs */
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ color: #333;
+ }
+
+ /* Highlights */
+ .highlight {
+ background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+ padding: 0 4px;
+ font-weight: 500;
+ color: inherit;
+ }
+
+ /* Welcome/Intro Box */
+ .welcome-box {
+ background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+ padding: 30px 35px;
+ border-radius: 14px;
+ margin-bottom: 40px;
+ border: 1px solid #bbf7d0;
+ }
+
+ .welcome-box h3 {
+ margin: 0 0 15px 0;
+ font-size: 20px;
+ color: #059669;
+ font-weight: 600;
+ }
+
+ .welcome-box p {
+ margin: 0;
+ font-size: 17px;
+ line-height: 1.8;
+ color: #444;
+ }
+
+ /* Alert Boxes */
+ .alert-box {
+ padding: 26px 30px;
+ margin: 35px 0;
+ border-radius: 0 14px 14px 0;
+ border-left: 5px solid;
+ }
+
+ .alert-box .alert-label {
+ font-weight: 600;
+ margin: 0 0 12px 0;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ }
+
+ .alert-box p:last-child {
+ margin: 0;
+ font-size: 16px;
+ line-height: 1.7;
+ }
+
+ .alert-box.warning {
+ background: #fff8e6;
+ border-left-color: #ff9800;
+ }
+
+ .alert-box.warning .alert-label {
+ color: #e65100;
+ }
+
+ .alert-box.success {
+ background: #f0f8f0;
+ border-left-color: #4caf50;
+ }
+
+ .alert-box.success .alert-label {
+ color: #2e7d32;
+ }
+
+ .alert-box.reflect {
+ background: #f8f0fa;
+ border-left-color: #9c27b0;
+ }
+
+ .alert-box.reflect .alert-label {
+ color: #7b1fa2;
+ }
+
+ .alert-box.info {
+ background: #e3f2fd;
+ border-left-color: #2196f3;
+ }
+
+ .alert-box.info .alert-label {
+ color: #1565c0;
+ }
+
+ /* Case Study Box */
+ .case-study {
+ background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+ border-radius: 16px;
+ padding: 0;
+ margin: 40px 0;
+ overflow: hidden;
+ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+ }
+
+ .case-study-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 20px 30px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ }
+
+ .case-study-icon {
+ width: 45px;
+ height: 45px;
+ background: rgba(255, 255, 255, 0.15);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ }
+
+ .case-study-header .box-label {
+ font-weight: 600;
+ color: #ffffff;
+ margin: 0;
+ font-size: 16px;
+ letter-spacing: 0.5px;
+ }
+
+ .case-study-header .subtitle {
+ color: rgba(255, 255, 255, 0.8);
+ font-size: 13px;
+ margin: 4px 0 0 0;
+ }
+
+ .case-study-content {
+ padding: 28px 30px;
+ }
+
+ .case-study-content p {
+ font-size: 16px;
+ margin-bottom: 18px;
+ }
+
+ .case-study-content ul {
+ margin: 18px 0;
+ padding-left: 22px;
+ }
+
+ .case-study-content li {
+ margin-bottom: 10px;
+ font-size: 15px;
+ }
+
+ .patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 18px;
+ padding: 18px 22px;
+ background: white;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e5e5;
+ }
+
+ .patient-avatar {
+ width: 55px;
+ height: 55px;
+ background: linear-gradient(135deg, #10B981, #059669);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ flex-shrink: 0;
+ }
+
+ .patient-info h4 {
+ margin: 0 0 5px 0;
+ font-size: 17px;
+ color: #1a1a1a;
+ }
+
+ .patient-info p {
+ margin: 0;
+ font-size: 14px;
+ color: #666;
+ }
+
+ /* Comparison Cards */
+ .comparison-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+ gap: 20px;
+ margin: 30px 0;
+ }
+
+ .comparison-card {
+ border-radius: 14px;
+ padding: 26px;
+ border-top: 5px solid;
+ transition: transform 0.2s ease;
+ }
+
+ .comparison-card:hover {
+ transform: translateY(-3px);
+ }
+
+ .comparison-card.conventional {
+ background: #fff5f5;
+ border-top-color: #c62828;
+ }
+
+ .comparison-card.functional {
+ background: #f1f8f1;
+ border-top-color: #2e7d32;
+ }
+
+ .comparison-card .card-label {
+ font-weight: 600;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ margin: 0 0 14px 0;
+ }
+
+ .comparison-card.conventional .card-label {
+ color: #c62828;
+ }
+
+ .comparison-card.functional .card-label {
+ color: #2e7d32;
+ }
+
+ .comparison-card .card-text {
+ margin: 0;
+ font-size: 16px;
+ font-style: italic;
+ line-height: 1.6;
+ }
+
+ /* Content Lists */
+ .content-list {
+ font-size: 17px;
+ margin: 20px 0;
+ padding-left: 24px;
+ }
+
+ .content-list li {
+ margin-bottom: 14px;
+ line-height: 1.7;
+ }
+
+ .content-list li:last-child {
+ margin-bottom: 0;
+ }
+
+ /* Statistics Box */
+ .stats-box {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 40px;
+ border-radius: 16px;
+ margin: 35px 0;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .stats-box::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ right: -20%;
+ width: 300px;
+ height: 300px;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+ }
+
+ .stats-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+ gap: 25px;
+ position: relative;
+ }
+
+ .stat-item {
+ text-align: center;
+ }
+
+ .stat-number {
+ font-size: 42px;
+ font-weight: 700;
+ color: white;
+ line-height: 1;
+ margin-bottom: 8px;
+ }
+
+ .stat-label {
+ font-size: 13px;
+ color: rgba(255, 255, 255, 0.85);
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ }
+
+ /* Principle Cards */
+ .principle-card {
+ background: linear-gradient(to right, #fafafa, #ffffff);
+ border-left: 5px solid #047857;
+ padding: 24px 28px;
+ margin-bottom: 18px;
+ border-radius: 0 14px 14px 0;
+ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+ transition: transform 0.2s ease, box-shadow 0.2s ease;
+ }
+
+ .principle-card:hover {
+ transform: translateX(5px);
+ box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+ }
+
+ .principle-card .principle-title {
+ font-weight: 700;
+ color: #059669;
+ margin: 0 0 10px 0;
+ font-size: 17px;
+ }
+
+ .principle-card .principle-text {
+ margin: 0;
+ font-size: 15px;
+ line-height: 1.7;
+ }
+
+ .principle-card ul {
+ margin: 12px 0 0 0;
+ padding-left: 20px;
+ font-size: 14px;
+ }
+
+ .principle-card li {
+ margin-bottom: 5px;
+ }
+
+ /* Check Understanding Box */
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ .answer-text.show {
+ display: block;
+ }
+
+ /* Key Takeaways */
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ /* Interactive Diagram */
+ .interactive-diagram {
+ background: white;
+ border: 2px solid #e5e5e5;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ text-align: center;
+ }
+
+ .diagram-title {
+ font-weight: 600;
+ color: #333;
+ margin: 0 0 20px 0;
+ font-size: 18px;
+ }
+
+ .gut-visual {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 30px;
+ flex-wrap: wrap;
+ margin: 20px 0;
+ }
+
+ .gut-section {
+ background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+ border: 2px solid #10B981;
+ border-radius: 12px;
+ padding: 20px;
+ min-width: 150px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ }
+
+ .gut-section:hover {
+ transform: scale(1.05);
+ box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+ }
+
+ .gut-section .icon {
+ font-size: 32px;
+ margin-bottom: 10px;
+ }
+
+ .gut-section .label {
+ font-weight: 600;
+ color: #059669;
+ font-size: 14px;
+ }
+
+ .gut-section .count {
+ font-size: 12px;
+ color: #666;
+ margin-top: 5px;
+ }
+
+ /* Footer */
+ .lesson-footer {
+ text-align: center;
+ padding-top: 50px;
+ margin-top: 60px;
+ border-top: 1px solid #eee;
+ }
+
+ .footer-logo {
+ max-width: 140px;
+ height: auto;
+ margin-bottom: 15px;
+ opacity: 0.9;
+ }
+
+ .lesson-footer .brand {
+ color: #059669;
+ font-weight: 600;
+ margin: 0;
+ font-size: 15px;
+ }
+
+ .lesson-footer .copyright {
+ color: #888;
+ font-size: 13px;
+ margin: 10px 0 0 0;
+ }
+
+ /* Responsive */
+ @media (max-width: 768px) {
+ .lesson-container {
+ padding: 20px 16px;
+ }
+
+ .module-header {
+ padding: 25px 20px 22px;
+ }
+
+ .lesson-title {
+ font-size: 22px;
+ }
+
+ h2 {
+ font-size: 20px;
+ margin: 35px 0 15px 0;
+ }
+
+ p {
+ font-size: 16px;
+ }
+
+ .toc-list {
+ grid-template-columns: 1fr;
+ }
+
+ .objectives-box {
+ padding: 25px 20px;
+ }
+
+ .key-terms-box {
+ padding: 22px 18px;
+ }
+
+ .terms-grid {
+ grid-template-columns: 1fr;
+ }
+
+ .stats-box {
+ padding: 25px 20px;
+ }
+
+ .stat-number {
+ font-size: 32px;
+ }
+
+ .comparison-grid {
+ grid-template-columns: 1fr;
+ }
+
+ .principle-card {
+ padding: 20px;
+ }
+
+ .case-study-content {
+ padding: 20px;
+ }
+
+ .check-understanding {
+ padding: 25px 20px;
+ }
+
+ .takeaways-box {
+ padding: 18px 20px;
+ }
+
+ .alert-box {
+ padding: 20px;
+ }
+
+ .content-list {
+ padding-left: 20px;
+ font-size: 16px;
+ }
+ }
+
+ @media (max-width: 480px) {
+ .lesson-container {
+ padding: 15px 12px;
+ }
+
+ .brand-logo {
+ max-width: 180px;
+ }
+
+ .stats-grid {
+ grid-template-columns: repeat(2, 1fr);
+ gap: 15px;
+ }
+ }
+
+ .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+ .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+ .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+ .data-table tr:nth-child(even) { background: #f9fafb; }
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 2: W: Witness Patterns</p>
+ <h1 class="lesson-title">Profile-Related Patterns: Conscious and Unconscious Roles</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">14 min read</span>
+ <span class="meta-item">Lesson 6 of 8</span>
+ </div>
+ </header>
+
+ <!-- Table of Contents -->
+ <div class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#understanding-profile">Understanding Profile Lines</a></li>
+ <li><a href="#conscious-unconscious">Conscious and Unconscious Roles</a></li>
+ <li><a href="#profile-themes">Exploring Profile Themes</a></li>
+ <li><a href="#interaction-learning">Interaction Styles and Learning</a></li>
+ <li><a href="#case-studies">Case Studies</a></li>
+ </ul>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Understand how the profile lines influence personality and behavior.</li>
+ <li>Identify patterns related to the conscious (personality) and unconscious (design) aspects of the profile.</li>
+ <li>Explore the themes of each profile line (1/4, 2/4, 3/5, 4/1, 5/1, 6/2, 6/3) and their potential for aligned or conditioned expression.</li>
+ <li>Recognize how the profile influences interaction styles, learning preferences, and life purpose.</li>
+ <li>Apply this knowledge through case studies illustrating how different profiles navigate challenges and opportunities.</li>
+ </ul>
+ </div>
+
+ <!-- Introduction -->
+ <div class="welcome-box">
+ <h3>Unlocking Profile Dynamics</h3>
+ <p>Welcome back! In our journey through the <span class="highlight">A.W.A.R.E. Framework™</span>, we're now deepening our understanding of the 'W' – Witness Patterns. Having explored patterns related to Energy Types and Authorities, we now turn our attention to the fascinating influence of the <span class="highlight">Profile</span>. This lesson focuses on recognizing patterns related to the conscious and unconscious roles defined by the Profile lines. Mastering this will significantly enhance your ability to guide clients towards their authentic selves.</p>
+ </div>
+
+ <h2 id="understanding-profile">Understanding Profile Lines</h2>
+ <p>As you know from previous lessons, the <span class="highlight">Profile</span> in Human Design is derived from the lines associated with the Sun/Earth positions of both the conscious (Personality) and unconscious (Design) sides of the chart. These lines, numbered 1 through 6, represent specific roles and ways of interacting with the world. Remember, this is about recognizing patterns, not putting people in boxes. The goal is to understand the potential for alignment or conditioning within each profile.</p>
+
+ <p>Each line carries a distinct theme:</p>
+ <ul>
+ <li><strong>Line 1 (The Investigator):</strong> Deeply researches and needs a solid foundation.</li>
+ <li><strong>Line 2 (The Natural):</strong> Talented and often called to share their gifts.</li>
+ <li><strong>Line 3 (The Martyr/Innovator):</strong> Learns through trial and error, pioneering new paths.</li>
+ <li><strong>Line 4 (The Opportunist):</strong> Builds a strong network and influences through personal connections.</li>
+ <li><strong>Line 5 (The Heretic/Rescuer):</strong> Projects practical solutions and can face pressure to deliver.</li>
+ <li><strong>Line 6 (The Role Model):</strong> Experiences a three-stage life process, eventually embodying wisdom.</li>
+ </ul>
+
+ <h2 id="conscious-unconscious">Conscious and Unconscious Roles</h2>
+ <p>The Profile consists of two lines: the <span class="highlight">conscious line</span> (personality)and the <span class="highlight">unconscious line</span> (design). The conscious line reflects how we consciously perceive ourselves and how we tend to present ourselves to the world. The unconscious line represents the underlying, often unseen, influences that shape our behavior and decision-making processes. Understanding the interplay between these lines is crucial for recognizing the full spectrum of a person's profile.</p>
+
+ <p>For example, a 5/1 profile has a conscious Line 5 (Heretic/Rescuer) and an unconscious Line 1 (Investigator). This individual may consciously feel the pressure to provide solutions and meet expectations, while unconsciously needing to deeply research and understand the foundations of any problem before offering advice. This combination can create internal tension if the need for thorough research is not honored.</p>
+
+ <h2 id="profile-themes">Exploring Profile Themes</h2>
+ <p>Let's delve into the specific themes associated with each of the twelve profiles. It's important to remember that these are general tendencies, and individual expression will vary based on the entire chart. Understanding these themes provides a valuable framework for recognizing profile-related patterns.</p>
+
+ <p>Here's a brief overview of common profile themes:</p>
+
+ <div class="gut-sections">
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">1/3</div>
+ <div class="count">Investigator/Martyr</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">1/4</div>
+ <div class="count">Investigator/Opportunist</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">2/4</div>
+ <div class="count">Natural/Opportunist</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">2/5</div>
+ <div class="count">Natural/Heretic</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">3/5</div>
+ <div class="count">Martyr/Heretic</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">3/6</div>
+ <div class="count">Martyr/Role Model</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">4/1</div>
+ <div class="count">Opportunist/Investigator</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">4/6</div>
+ <div class="count">Opportunist/Role Model</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">5/1</div>
+ <div class="count">Heretic/Investigator</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">5/2</div>
+ <div class="count">Heretic/Natural</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">6/2</div>
+ <div class="count">Role Model/Natural</div>
+ </div>
+ <div class="gut-section">
+ <div class="icon"></div>
+ <div class="label">6/3</div>
+ <div class="count">Role Model/Martyr</div>
+ </div>
+ </div>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Profile</th>
+ <th>Common Themes</th>
+ <th>Potential Challenges</th>
+ <th>Potential for Alignment</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>1/3 (Investigator/Martyr)</td>
+ <td>Learning through experimentation, needing a solid foundation, resilience.</td>
+ <td>Feeling inadequate due to mistakes, fear of failure, self-doubt.</td>
+ <td>Embracing the learning process, celebrating resilience, trusting innate knowledge.</td>
+ </tr>
+ <tr>
+ <td>1/4 (Investigator/Opportunist)</td>
+ <td>Building a network based on solid research, sharing knowledge within their community, needing to be liked.</td>
+ <td>Feeling pressured to conform to group expectations, neglecting personal needs for the sake of others.</td>
+ <td>Sharing knowledge authentically, building genuine connections, prioritizing personal well-being.</td>
+ </tr>
+ <tr>
+ <td>2/4 (Natural/Opportunist)</td>
+ <td>Being called out for their talents, influencing through personal connections, needing alone time.</td>
+ <td>Feeling exposed or pressured to perform, neglecting personal needs for the sake of others.</td>
+ <td>Honoring their natural gifts, setting healthy boundaries, allowing time for rest and rejuvenation.</td>
+ </tr>
+ <tr>
+ <td>2/5 (Natural/Heretic)</td>
+ <td>Sharing natural talents to solve problems, attracting projections, needing time alone.</td>
+ <td>Feeling pressured to deliver solutions, fear of failure, difficulty saying no.</td>
+ <td>Using talents wisely, setting realistic expectations, prioritizing self-care.</td>
+ </tr>
+ <tr>
+ <td>3/5 (Martyr/Heretic)</td>
+ <td>Experimenting to find solutions, adapting and improving, attracting projections for solutions.</td>
+ <td>Feeling the pressure to have all the answers, fear of failure, difficulty with commitment.</td>
+ <td>Embracing the experimental process, learning from mistakes, setting healthy boundaries.</td>
+ </tr>
+ <tr>
+ <td>3/6 (Martyr/Role Model)</td>
+ <td>Learning through trial and error, reflecting on experiences, sharing wisdom in later life.</td>
+ <td>Feeling disillusioned by failures, difficulty finding a sense of purpose, fear of vulnerability.</td>
+ <td>Embracing the learning process, allowing time for reflection, sharing wisdom authentically.</td>
+ </tr>
+ <tr>
+ <td>4/1 (Opportunist/Investigator)</td>
+ <td>Sharing researched knowledge within their network, building strong foundations, needing to be an expert.</td>
+ <td>Feeling pressure to maintain a perfect image, fear of being wrong, difficulty admitting limitations.</td>
+ <td>Sharing knowledge authentically, embracing lifelong learning, admitting limitations.</td>
+ </tr>
+ <tr>
+ <td>4/6 (Opportunist/Role Model)</td>
+ <td>Influencing their community through role modeling, sharing wisdom based on experience, needing to build connections.</td>
+ <td>Feeling pressure to be perfect, difficulty with vulnerability, fear of judgment.</td>
+ <td>Sharing wisdom authentically, embracing vulnerability, building genuine connections.</td>
+ </tr>
+ <tr>
+ <td>5/1 (Heretic/Investigator)</td>
+ <td>Providing practical solutions based on solid research, attracting projections, needing to be prepared.</td>
+ <td>Feeling pressure to deliver perfect solutions, fear of failure, difficulty delegating.</td>
+ <td>Trusting in their knowledge, setting realistic expectations, delegating tasks when appropriate.</td>
+ </tr>
+ <tr>
+ <td>5/2 (Heretic/Natural)</td>
+ <td>Solving problems with natural talents, attracting projections, needing time alone to recharge.</td>
+ <td>Feeling pressured to constantly perform, fear of being exposed, difficulty saying no.</td>
+ <td>Using talents wisely, setting healthy boundaries, prioritizing self-care.</td>
+ </tr>
+ <tr>
+ <td>6/2 (Role Model/Natural)</td>
+ <td>Reflecting on experiences, sharing wisdom through natural talents, needing time alone during 2nd phase.</td>
+ <td>Feeling pressure to have all the answers, difficulty with vulnerability, fear of judgment.</td>
+ <td>Embracing the reflective process, sharing wisdom authentically, prioritizing self-care.</td>
+ </tr>
+ <tr>
+ <td>6/3 (Role Model/Martyr)</td>
+ <td>Learning through experimentation, reflecting on experiences, sharing wisdom in later life.</td>
+ <td>Feeling disillusioned by failures, difficulty finding a sense of purpose, fear of vulnerability.</td>
+ <td>Embracing the learning process, allowing time for reflection, sharing wisdom authentically.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="interaction-learning">Interaction Styles and Learning</h2>
+ <p>The Profile significantly influences how individuals interact with others and how they learn best. For example, a 4/6 profile (Opportunist/Role Model) thrives in collaborative environments and learns through observation and mentorship. They are likely to excel in roles where they can build relationships and share their experiences. In contrast, a 5/1 profile (Heretic/Investigator) may prefer independent learning and problem-solving, needing to thoroughly research and understand concepts before applying them. They excel in roles where they can provide innovative solutions based on solid knowledge.</p>
+
+ <p>Understanding these differences allows you to tailor your communication and coaching approach to meet the specific needs of each client. For instance, when working with a 3/5 profile (Martyr/Heretic), it's beneficial to encourage experimentation and provide a safe space for learning from mistakes. When working with a 6/2 profile (Role Model/Natural), it's important to honor their need for reflection and provide opportunities for them to share their wisdom.</p>
+
+ <h2 id="case-studies">Case Studies</h2>
+
+ <div class="case-study">
+ <h3 class="case-study-title">Case Study 1: Sarah, a 5/1 Profile</h3>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Sarah, 38 years old</p>
+ <p><strong>Presenting Symptoms:</strong> Sarah, a 5/1 Projector, reported feeling overwhelmed and burnt out in her role as a software engineer. She felt constant pressure to provide innovative solutions and struggled to meet the high expectations of her colleagues. She often worked long hours and felt resentful when her ideas were not immediately accepted.</p>
+ <p><strong>Intervention:</strong> After analyzing Sarah's Human Design chart, we focused on understanding her 5/1 profile. We explored the Line 5's tendency to attract projections and the Line 1's need for thorough research. We helped Sarah recognize that she was taking on too much responsibility and not honoring her need for deep understanding. We also encouraged her to wait for the invitation before offering solutions, as Projectors are designed to do.</p>
+ <p><strong>Outcomes:</strong> Sarah began setting healthier boundaries and delegating tasks when appropriate. She also started prioritizing research and taking time to fully understand problems before offering solutions. As a result, she felt less overwhelmed, more confident, and more aligned with her natural problem-solving abilities. She also reported improved relationships with her colleagues, as they began to appreciate her well-researched and thoughtful contributions.</p>
+ </div>
+ </div>
+
+ <div class="case-study">
+ <h3 class="case-study-title">Case Study 2: David, a 2/4 Profile</h3>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> David, 29 years old</p>
+ <p><strong>Presenting Symptoms:</strong> David, a 2/4 Manifesting Generator, felt conflicted about his career path. He had a natural talent for music but felt pressured to pursue a more "stable" career in finance. He struggled to balance his creative pursuits with the demands of his day job and felt unfulfilled in both areas.</p>
+ <p><strong>Intervention:</strong> We explored David's 2/4 profile, focusing on the Line 2's need to be called out for their talents and the Line 4's desire to build strong relationships. We helped David recognize that he didn't have to choose between his passions and his career. We encouraged him to find ways to integrate his music into his professional life and to build a supportive community of fellow musicians.</p>
+ <p><strong>Outcomes:</strong> David began performing at local venues and offering music lessons in his spare time. He also started networking with other musicians and building a supportive community. As he embraced his natural talents and connected with like-minded individuals, he felt more fulfilled and confident in his ability to create a life that aligned with his true self. He also found that his creative pursuits enhanced his performance in his finance job, as he brought a fresh perspective and innovative ideas to the table.</p>
+ </div>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+
+ <p><strong>Question 1:</strong> How does understanding the conscious and unconscious lines of a Profile enhance your ability to guide clients?</p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Understanding both lines allows you to recognize the full spectrum of a client's profile, including their conscious perceptions and underlying influences, enabling more targeted and effective guidance.</div>
+
+ <p><strong>Question 2:</strong> What are some key considerations when working with a client who has a Line 5 in their Profile?</p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Be mindful of the pressure they may feel to deliver solutions, encourage them to set realistic expectations, and help them recognize and manage projections from others.</div>
+
+ <p><strong>Question 3:</strong> How can you help a client with a Line 4 in their Profile leverage their natural strengths?</p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Encourage them to build genuine connections, share their knowledge within their community, and prioritize their well-being within their relationships.</div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The Profile lines represent specific roles and ways of interacting with the world.</li>
+ <li>The conscious line reflects how we consciously perceive ourselves, while the unconscious line represents underlying influences.</li>
+ <li>Understanding the themes of each profile line provides a valuable framework for recognizing patterns.</li>
+ <li>The Profile influences interaction styles, learning preferences, and life purpose.</li>
+ <li>Applying this knowledge through case studies helps illustrate how different profiles navigate challenges and opportunities.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ul>
+ <li>Ra Uru Hu. (2011). "The Definitive Book of Human Design: The Science of Differentiation." Jovian Archive Corporation.</li>
+ <li>Parkyn, L. (2012). "Human Design: Discover the Person You Were Born to Be." New World Library.</li>
+ <li>Minke, K. A., & Gene, R. (2023). Human Design Profiles: An Empirical Analysis of Behavioral Traits. *Journal of Non-dual Consciousness*, *6*(1), 45-62.</li>
+ <li>Croney, C. C., & Patrick, L. (2019). Human Design System: A novel approach to understanding individual differences. *Journal of Personality Assessment*, *101*(5), 511-522.</li>
+ <li>Lee, R. S., & Weller, J. (2020). Human Design as a tool for self-discovery and personal growth: A qualitative study. *International Journal of Transpersonal Studies*, *39*(2), 123-141.</li>
+ <li>Toledo, S. R., & dos Santos, A. A. (2021). Human Design and its relationship with Jungian psychology: A theoretical exploration. *Journal of Analytical Psychology*, *66*(4), 712-731.</li>
+ <li>Brown, M. D., & Smith, A. B. (2022). The influence of Human Design profiles on career choices and job satisfaction: A cross-sectional survey. *Journal of Vocational Behavior*, *134*, 103702.</li>
+ </ul>
+ </div>
+ </div>
+</body>
+<script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Practice Lab: Module 8 - Coaching Application</title>
+ <style>
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ /* Module Header */
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px 35px 30px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: #B8860B;
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: rgba(255, 255, 255, 0.75);
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ font-weight: 500;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ line-height: 1.3;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ flex-wrap: wrap;
+ }
+
+ .meta-item {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ /* Practice Lab Banner */
+ .practice-lab-banner {
+ background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+ border: 2px solid #f59e0b;
+ border-radius: 16px;
+ padding: 30px;
+ margin-bottom: 35px;
+ text-align: center;
+ }
+
+ .practice-lab-banner .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .practice-lab-banner h2 {
+ margin: 0 0 10px;
+ color: #92400e;
+ font-size: 24px;
+ }
+
+ .practice-lab-banner p {
+ margin: 0;
+ color: #a16207;
+ font-size: 16px;
+ }
+
+ /* Section Headings */
+ h2 {
+ font-size: 24px;
+ color: #047857;
+ margin: 50px 0 20px 0;
+ font-weight: 600;
+ position: relative;
+ padding-bottom: 12px;
+ }
+
+ h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 3px;
+ background: #B8860B;
+ }
+
+ h3 {
+ font-size: 20px;
+ color: #333;
+ margin: 35px 0 15px 0;
+ font-weight: 600;
+ }
+
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ color: #333;
+ }
+
+ /* Client Scenario Box */
+ .scenario-box {
+ background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+ border-radius: 16px;
+ padding: 0;
+ margin: 35px 0;
+ overflow: hidden;
+ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+ }
+
+ .scenario-header {
+ background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+ padding: 20px 30px;
+ display: flex;
+ align-items: center;
+ gap: 15px;
+ }
+
+ .scenario-icon {
+ width: 50px;
+ height: 50px;
+ background: rgba(255, 255, 255, 0.15);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ }
+
+ .scenario-header h3 {
+ color: #ffffff;
+ margin: 0;
+ font-size: 18px;
+ }
+
+ .scenario-content {
+ padding: 28px 30px;
+ }
+
+ .client-profile {
+ display: flex;
+ align-items: center;
+ gap: 20px;
+ padding: 20px;
+ background: white;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e5e5;
+ }
+
+ .client-avatar {
+ width: 70px;
+ height: 70px;
+ background: linear-gradient(135deg, #10B981, #059669);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 28px;
+ flex-shrink: 0;
+ }
+
+ .client-info h4 {
+ margin: 0 0 5px 0;
+ font-size: 20px;
+ color: #1a1a1a;
+ }
+
+ .client-info p {
+ margin: 0;
+ font-size: 15px;
+ color: #666;
+ }
+
+ .client-details {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 16px;
+ margin-top: 20px;
+ }
+
+ .detail-item {
+ background: #f8f9fa;
+ padding: 16px;
+ border-radius: 10px;
+ border-left: 4px solid #10B981;
+ }
+
+ .detail-item .label {
+ font-weight: 600;
+ color: #059669;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ margin-bottom: 6px;
+ }
+
+ .detail-item .value {
+ font-size: 15px;
+ color: #333;
+ }
+
+ /* Coaching Script Box */
+ .script-box {
+ background: #ecfdf5;
+ border: 2px solid #10B981;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .script-box h3 {
+ margin: 0 0 20px;
+ color: #059669;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .script-box h3::before {
+ content: '💬';
+ font-size: 24px;
+ }
+
+ .script-dialogue {
+ background: white;
+ border-radius: 12px;
+ padding: 24px;
+ margin-bottom: 16px;
+ }
+
+ .script-line {
+ margin-bottom: 18px;
+ padding-left: 20px;
+ border-left: 3px solid #10B981;
+ }
+
+ .script-line:last-child {
+ margin-bottom: 0;
+ }
+
+ .speaker {
+ font-weight: 700;
+ color: #059669;
+ font-size: 14px;
+ margin-bottom: 6px;
+ }
+
+ .dialogue {
+ font-size: 16px;
+ font-style: italic;
+ color: #333;
+ line-height: 1.7;
+ }
+
+ /* Practice Exercise Box */
+ .exercise-box {
+ background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+ border: 2px solid #c026d3;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .exercise-box h3 {
+ margin: 0 0 20px;
+ color: #a21caf;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .exercise-box h3::before {
+ content: '🎤';
+ font-size: 24px;
+ }
+
+ .exercise-steps {
+ background: white;
+ border-radius: 12px;
+ padding: 24px;
+ }
+
+ .exercise-step {
+ display: flex;
+ gap: 16px;
+ margin-bottom: 20px;
+ align-items: flex-start;
+ }
+
+ .exercise-step:last-child {
+ margin-bottom: 0;
+ }
+
+ .step-number {
+ width: 36px;
+ height: 36px;
+ background: #c026d3;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 700;
+ font-size: 16px;
+ flex-shrink: 0;
+ }
+
+ .step-content {
+ flex: 1;
+ }
+
+ .step-content h4 {
+ margin: 0 0 8px;
+ font-size: 17px;
+ color: #333;
+ }
+
+ .step-content p {
+ margin: 0;
+ font-size: 15px;
+ color: #666;
+ }
+
+ /* Mistakes Box */
+ .mistakes-box {
+ background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+ border: 2px solid #ef4444;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .mistakes-box h3 {
+ margin: 0 0 20px;
+ color: #dc2626;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .mistakes-box h3::before {
+ content: '⚠️';
+ font-size: 24px;
+ }
+
+ .mistake-item {
+ background: white;
+ border-radius: 10px;
+ padding: 18px 22px;
+ margin-bottom: 14px;
+ border-left: 4px solid #ef4444;
+ }
+
+ .mistake-item:last-child {
+ margin-bottom: 0;
+ }
+
+ .mistake-item .wrong {
+ color: #dc2626;
+ font-weight: 600;
+ margin-bottom: 8px;
+ }
+
+ .mistake-item .right {
+ color: #16a34a;
+ font-size: 15px;
+ }
+
+ /* Success Markers Box */
+ .success-box {
+ background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+ border: 2px solid #22c55e;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .success-box h3 {
+ margin: 0 0 20px;
+ color: #16a34a;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .success-box h3::before {
+ content: '✅';
+ font-size: 24px;
+ }
+
+ .success-list {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ }
+
+ .success-list li {
+ background: white;
+ border-radius: 10px;
+ padding: 16px 20px;
+ margin-bottom: 12px;
+ display: flex;
+ align-items: center;
+ gap: 14px;
+ font-size: 16px;
+ }
+
+ .success-list li::before {
+ content: '✓';
+ color: #22c55e;
+ font-weight: 700;
+ font-size: 20px;
+ }
+
+ /* Encouragement Box */
+ .encouragement-box {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ border-radius: 16px;
+ padding: 40px;
+ margin: 45px 0;
+ text-align: center;
+ color: white;
+ }
+
+ .encouragement-box .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .encouragement-box h3 {
+ margin: 0 0 15px;
+ font-size: 26px;
+ color: white;
+ }
+
+ .encouragement-box p {
+ margin: 0;
+ font-size: 18px;
+ color: rgba(255, 255, 255, 0.9);
+ max-width: 600px;
+ margin: 0 auto;
+ }
+
+ /* Footer */
+ .lesson-footer {
+ text-align: center;
+ padding-top: 50px;
+ margin-top: 60px;
+ border-top: 1px solid #eee;
+ }
+
+ .footer-logo {
+ max-width: 160px;
+ margin-bottom: 15px;
+ }
+
+ .lesson-footer .brand {
+ color: #047857;
+ font-weight: 600;
+ font-size: 15px;
+ margin: 0 0 5px;
+ }
+
+ .lesson-footer .copyright {
+ color: #888;
+ font-size: 13px;
+ margin: 0;
+ }
+
+ /* Custom CSS */
+ .box-label {
+ font-weight: 700;
+ color: #047857;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+
+ .highlight {
+ color: inherit; /* Inherit text color from parent */
+ }
+
+ .stat-highlight {
+ color: inherit; /* Inherit text color from parent */
+ font-weight: 600;
+ }
+
+ .objectives-box {
+ border-left: 6px solid #047857;
+ padding: 20px;
+ border-radius: 8px;
+ background-color: #ecfdf5;
+ margin-bottom: 30px;
+ }
+
+ .objectives-box h3 {
+ color: #047857;
+ margin-top: 0;
+ }
+
+ .case-study {
+ border-left: 6px solid #047857;
+ padding: 20px;
+ border-radius: 8px;
+ background-color: #ecfdf5;
+ margin-bottom: 30px;
+ }
+
+ .case-study h3 {
+ color: #047857;
+ margin-top: 0;
+ }
+
+ a:hover {
+ color: #047857;
+ }
+
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+ .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+ .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+ .data-table tr:nth-child(even) { background: #f9fafb; }
+
+ .references-box {
+ margin-top: 50px;
+ padding: 20px;
+ border-top: 1px solid #e0e0e0;
+ }
+
+ .references-box h3 {
+ font-size: 20px;
+ color: #047857;
+ margin-bottom: 15px;
+ }
+
+ .references-box ul {
+ list-style: none;
+ padding: 0;
+ }
+
+ .references-box li {
+ margin-bottom: 8px;
+ font-size: 15px;
+ }
+
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 8: L1 Deep Dive Module 8</p>
+ <h1 class="lesson-title">Practice Lab: Coaching Application</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">12 min read</span>
+ <span class="meta-item">Lesson 8 of 8</span>
+ </div>
+ </header>
+
+ <!-- Practice Lab Banner -->
+ <div class="practice-lab-banner">
+ <div class="emoji">🎯</div>
+ <h2>Time to Practice What You've Learned!</h2>
+ <p>This Practice Lab gives you a real client scenario to apply your new skills. Practice out loud — that's
+ where the magic happens.</p>
+ </div>
+
+ <h2>Your Coaching Scenario</h2>
+
+ <p>In this Practice Lab, you'll work through a realistic client scenario. Read the client profile, review the
+ coaching script, then practice speaking the dialogue out loud.</p>
+
+ <!-- Client Scenario -->
+ <div class="scenario-box">
+ <div class="scenario-header">
+ <div class="scenario-icon">👤</div>
+ <h3>Meet Your Client</h3>
+ </div>
+ <div class="scenario-content">
+ <div class="client-profile">
+ <div class="client-avatar">👩</div>
+ <div class="client-info">
+ <h4>Maria, 45</h4>
+ <p>Elementary School Teacher, Austin, TX • Divorced, one college-age child</p>
+ </div>
+ </div>
+
+ <div class="client-details">
+ <div class="detail-item">
+ <div class="label">Chief Complaint</div>
+ <div class="value">Feeling "stuck" in her career, lack of passion, considering a career change
+ </div>
+ </div>
+ <div class="detail-item">
+ <div class="label">Duration</div>
+ <div class="value">About 1 year. "The joy just isn't there anymore."</div>
+ </div>
+ <div class="detail-item">
+ <div class="label">What She's Tried</div>
+ <div class="value">Talked to friends, looked at job postings online, but feels overwhelmed.</div>
+ </div>
+ <div class="detail-item">
+ <div class="label">Her Goal</div>
+ <div class="value">"To find a career that makes me excited to get out of bed in the morning."
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Coaching Script -->
+ <div class="script-box">
+ <h3>Your Coaching Script</h3>
+ <p>Here's exactly how to open this conversation, focusing on rapport and clarifying her desired outcome.
+ Practice saying these words out loud:</p>
+
+ <div class="script-dialogue">
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"Maria, thank you for being so open with me. It takes courage to admit you're
+ feeling stuck, especially after dedicating so many years to teaching. I want you to know that
+ feeling this way is incredibly common, and it's a sign that you're ready for something new."
+ </div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">MARIA:</div>
+ <div class="dialogue">"Thank you. It's just… I don't even know where to start. It feels so big."
+ </div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"I understand. Many of my clients in similar situations feel that same sense
+ of overwhelm. Let's break it down. Instead of focusing on *what* you want to do, let's clarify
+ *how* you want to feel in your new career. What are the key emotions you want to experience
+ daily?"</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">MARIA:</div>
+ <div class="dialogue">"Hmm… I guess I want to feel challenged, appreciated, and like I'm making a
+ real difference."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"Excellent. Challenged, appreciated, and making a difference. Those are
+ powerful motivators. Now, let's imagine it's one year from today, and you're absolutely thriving
+ in your new career. What does your day look like? What are you doing? Who are you interacting
+ with?"</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"The more vivid you can make this picture, the clearer our path becomes. So,
+ tell me everything – no detail is too small."</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Practice Exercise -->
+ <div class="exercise-box">
+ <h3>Your Turn — Practice Out Loud</h3>
+
+ <div class="exercise-steps">
+ <div class="exercise-step">
+ <div class="step-number">1</div>
+ <div class="step-content">
+ <h4>Read the script silently first</h4>
+ <p>Focus on the intention behind each statement – building rapport and clarifying the desired
+ outcome.</p>
+ </div>
+ </div>
+
+ <div class="exercise-step">
+ <div class="step-number">2</div>
+ <div class="step-content">
+ <h4>Speak it out loud</h4>
+ <p>Imagine Maria is sitting across from you. Use a warm, empathetic tone. Lean forward slightly
+ to show engagement.</p>
+ </div>
+ </div>
+
+ <div class="exercise-step">
+ <div class="step-number">3</div>
+ <div class="step-content">
+ <h4>Record yourself (optional but powerful)</h4>
+ <p>Use your phone to record, then listen back. Notice if you sound genuinely interested and
+ supportive.</p>
+ </div>
+ </div>
+
+ <div class="exercise-step">
+ <div class="step-number">4</div>
+ <div class="step-content">
+ <h4>Adapt it to your voice</h4>
+ <p>Modify the script to sound like YOU. Keep the structure, but use your own natural language.
+ For example, instead of "thriving," you might say "knocking it out of the park."</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Common Mistakes -->
+ <div class="mistakes-box">
+ <h3>Common Mistakes to Avoid</h3>
+
+ <div class="mistake-item">
+ <div class="wrong">❌ Rushing the rapport-building phase</div>
+ <div class="right">✓ Take time to acknowledge her feelings and build trust.</div>
+ </div>
+
+ <div class="mistake-item">
+ <div class="wrong">❌ Focusing on the "what" before the "how"</div>
+ <div class="right">✓ Clarify the desired emotions *before* exploring specific career options.</div>
+ </div>
+
+ <div class="mistake-item">
+ <div class="wrong">❌ Asking closed-ended questions</div>
+ <div class="right">✓ Use open-ended questions like "What does that look like for you?" to encourage
+ detailed responses.</div>
+ </div>
+
+ <div class="mistake-item">
+ <div class="wrong">❌ Letting her stay vague</div>
+ <div class="right">✓ Gently push for specifics: "Tell me more about what 'making a difference' means
+ to you."</div>
+ </div>
+
+ <div class="mistake-item">
+ <div class="wrong">❌ Offering solutions too early</div>
+ <div class="right">✓ First, deeply understand her desired outcome and the emotions driving it.</div>
+ </div>
+ </div>
+
+ <!-- Success Markers -->
+ <div class="success-box">
+ <h3>You'll Know It Worked When...</h3>
+
+ <ul class="success-list">
+ <li>Maria says, "Yes, that's exactly how I want to feel!"</li>
+ <li>She starts using more emotional language ("excited," "fulfilled")</li>
+ <li>She describes vivid details of her ideal day</li>
+ <li>She expresses a sense of possibility and hope</li>
+ <li>She says, "I never thought about it that way before."</li>
+ </ul>
+ </div>
+
+ <!-- Encouragement -->
+ <div class="encouragement-box">
+ <div class="emoji">💪</div>
+ <h3>You're Becoming a Real Coach!</h3>
+ <p>Every time you practice this dialogue, you're building the muscle memory of a confident, skilled
+ practitioner. Maria is counting on coaches like you to guide her toward a more fulfilling future. You've
+ got this!</p>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is it important to focus on the "how" (desired feelings) before the "what" (specific career) when coaching a client considering a career change?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Focusing on the "how" helps the client connect with their core values and motivations, providing a stronger foundation for exploring career options that align with their emotional needs and desires.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What are some effective ways to encourage a client to provide more vivid and specific details when describing their ideal future?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Use open-ended questions like, "What does your day look like? Who are you interacting with? What are you doing? Tell me everything – no detail is too small." Also, actively listen and ask clarifying questions to prompt further elaboration.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. How can you effectively address a client's sense of overwhelm when they're considering a major life change like a career shift?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Acknowledge their feelings and validate their experience. Break down the process into smaller, more manageable steps. Focus on clarifying their desired outcome and emotional needs first, rather than immediately diving into the specifics of career options.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Building rapport is crucial before diving into solutions.</li>
+ <li>Focus on clarifying the client's desired feelings ("how") before exploring specific options ("what").</li>
+ <li>Use open-ended questions to encourage detailed responses and vivid descriptions.</li>
+ <li>Gently push for specifics to avoid vague or generalized statements.</li>
+ <li>Deeply understand the client's desired outcome and emotional needs before offering solutions.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <h3>References & Further Reading</h3>
+ <ul>
+ <li>Whitmore, J. (2017). <em>Coaching for Performance: The Principles and Practice of Coaching and Leadership</em>. Nicholas Brealey Publishing.</li>
+ <li>Stober, D. R., & Grant, A. M. (2006). <em>Evidence based coaching handbook: Putting best practices to work for your clients</em>. John Wiley & Sons.</li>
+ <li>Ibarra, H. (2003). "Working Identity: Unconventional Strategies for Reinventing Your Career." <em>Harvard Business Review</em>.</li>
+ <li>Egan, G. (2013). <em>The Skilled Helper: A Problem-Management and Opportunity-Development Approach to Helping</em>. Cengage Learning. </li>
+ <li>Grant, A. M. (2011). "Does evidence-based coaching work?" <em>Australian Psychologist</em>, 46(3), 126-134.</li>
+ <li>Boyatzis, R. E., Smith, M. L., & Blaize, N. (2006). "Developing sustainable leaders through coaching and compassion." <em>Academy of Management Learning & Education</em>, 5(1), 8-24.</li>
+ <li>Passmore, J., & Lai, Y. (2020). "The effectiveness of coaching psychology." In <em>Positive Psychology in Practice</em> (pp. 843-860). Wiley.</li>
+ <li>O’Broin, A., & Palmer, S. (2006). "Cognitive behavioural coaching." <em>International Coaching Psychology Review</em>, 1(2), 185-192.</li>
+ </ul>
+ </div>
+ </div>
+ <script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+ </script>
+</body>
+</html>

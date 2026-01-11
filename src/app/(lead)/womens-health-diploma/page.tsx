@@ -96,7 +96,7 @@ export default async function WomensHealthDiplomaPage() {
 
   const { user, leadOnboarding, completedLessons } = data;
   const firstName = user?.firstName || "there";
-  const isTestUser = user?.email === "at.seed019@gmail.com";
+  const isTestUser = user?.email === "at.seed019@gmail.com" || user?.email === "tortolialessio1997@gmail.com";
 
   // Onboarding status
   const watchedVideo = isTestUser || leadOnboarding?.watchedVideo || false;

@@ -104,6 +104,11 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
         targetAudience: (course as any).targetAudience || null,
         estimatedWeeks: (course as any).estimatedWeeks || null,
         enrollmentLimit: (course as any).enrollmentLimit || null,
+        // Social Proof fields
+        displayReviews: (course as any).displayReviews || 0,
+        displayEnrollments: (course as any).displayEnrollments || 0,
+        displayRating: (course as any).displayRating ? Number((course as any).displayRating) : 4.8,
+        socialProofEnabled: (course as any).socialProofEnabled ?? true,
         createdAt: course.createdAt.toISOString(),
         updatedAt: course.updatedAt.toISOString(),
         publishedAt: course.publishedAt?.toISOString() || null,

@@ -8,12 +8,15 @@ import {
     User,
     BookOpen,
     Users,
-    MessageSquare,
     Award,
     Target,
     ChevronRight,
+    ChevronDown,
     TrendingUp,
     LogOut,
+    Home,
+    Hand,
+    Megaphone,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -44,41 +47,12 @@ export function LeadSidebar({
 }: LeadSidebarProps) {
     const pathname = usePathname();
     const [onlineCount] = useState(Math.floor(Math.random() * 30) + 35);
+    const [communityOpen, setCommunityOpen] = useState(
+        pathname?.startsWith("/community") || false
+    );
 
-    const navItems = [
-        {
-            href: "/womens-health-diploma/profile",
-            icon: User,
-            label: "My Profile",
-            show: true,
-        },
-        {
-            href: "/womens-health-diploma",
-            icon: BookOpen,
-            label: "My Mini Diploma",
-            show: true,
-        },
-        {
-            href: "/womens-health-diploma/community",
-            icon: Users,
-            label: "Community",
-            show: true,
-        },
-        // Chat with Sarah removed - it uses dashboard layout
-        // Will add back when we have lead-specific chat page
-        {
-            href: "/womens-health-diploma/certificate",
-            icon: Award,
-            label: "My Certificate",
-            show: diplomaCompleted,
-        },
-        {
-            href: "/womens-health-diploma/career-roadmap",
-            icon: Target,
-            label: "Your Career Roadmap",
-            show: diplomaCompleted,
-        },
-    ];
+    const isActive = (href: string) =>
+        pathname === href || pathname?.startsWith(href + "/");
 
     return (
         <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-burgundy-800 text-white flex flex-col">
@@ -124,26 +98,134 @@ export function LeadSidebar({
 
             {/* Navigation */}
             <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-                {navItems
-                    .filter((item) => item.show)
-                    .map((item) => {
-                        const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
-                        const Icon = item.icon;
-                        return (
+                {/* My Profile */}
+                <Link
+                    href="/womens-health-diploma/profile"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/womens-health-diploma/profile")
+                        ? "bg-burgundy-700 text-white"
+                        : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                        }`}
+                >
+                    <User className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-medium">My Profile</span>
+                </Link>
+
+                {/* My Mini Diploma (Start Here) */}
+                <Link
+                    href="/womens-health-diploma"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${pathname === "/womens-health-diploma"
+                        ? "bg-burgundy-700 text-white"
+                        : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                        }`}
+                >
+                    <BookOpen className="w-5 h-5 flex-shrink-0" />
+                    <span className="font-medium">My Mini Diploma</span>
+                    {pathname === "/womens-health-diploma" && (
+                        <ChevronRight className="w-4 h-4 ml-auto" />
+                    )}
+                </Link>
+
+                {/* Community - Expandable Section */}
+                <div>
+                    <button
+                        onClick={() => setCommunityOpen(!communityOpen)}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors w-full ${pathname?.startsWith("/community")
+                            ? "bg-burgundy-700 text-white"
+                            : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                            }`}
+                    >
+                        <Users className="w-5 h-5 flex-shrink-0" />
+                        <span className="font-medium">Community</span>
+                        {communityOpen ? (
+                            <ChevronDown className="w-4 h-4 ml-auto" />
+                        ) : (
+                            <ChevronRight className="w-4 h-4 ml-auto" />
+                        )}
+                    </button>
+
+                    {communityOpen && (
+                        <div className="ml-4 mt-1 space-y-1">
+                            {/* Community Hub */}
                             <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive
-                                    ? "bg-burgundy-700 text-white"
-                                    : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                                href="/community"
+                                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === "/community"
+                                    ? "bg-burgundy-700/70 text-white"
+                                    : "text-burgundy-300 hover:bg-burgundy-700/30 hover:text-white"
                                     }`}
                             >
-                                <Icon className="w-5 h-5 flex-shrink-0" />
-                                <span className="font-medium">{item.label}</span>
-                                {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+                                <Home className="w-4 h-4 flex-shrink-0" />
+                                <span>Community Hub</span>
                             </Link>
-                        );
-                    })}
+
+                            {/* Introduce Yourself */}
+                            <Link
+                                href="/community/cmj94foua0000736vfwdlheir"
+                                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === "/community/cmj94foua0000736vfwdlheir"
+                                    ? "bg-burgundy-700/70 text-white"
+                                    : "text-burgundy-300 hover:bg-burgundy-700/30 hover:text-white"
+                                    }`}
+                            >
+                                <Hand className="w-4 h-4 flex-shrink-0" />
+                                <span>👋 Introduce Yourself</span>
+                            </Link>
+
+                            {/* Announcements */}
+                            <Link
+                                href="/community?category=announcements"
+                                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname?.includes("announcements")
+                                    ? "bg-burgundy-700/70 text-white"
+                                    : "text-burgundy-300 hover:bg-burgundy-700/30 hover:text-white"
+                                    }`}
+                            >
+                                <Megaphone className="w-4 h-4 flex-shrink-0" />
+                                <span>Announcements</span>
+                            </Link>
+                        </div>
+                    )}
+                </div>
+
+                {/* Chat with Sarah */}
+                <Link
+                    href="/messages"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/messages")
+                            ? "bg-burgundy-700 text-white"
+                            : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                        }`}
+                >
+                    <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span className="font-medium">Chat with Sarah</span>
+                    <span className="ml-auto w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                </Link>
+
+                {/* Certificate - Only show after completion */}
+                {diplomaCompleted && (
+                    <Link
+                        href="/womens-health-diploma/certificate"
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/womens-health-diploma/certificate")
+                            ? "bg-burgundy-700 text-white"
+                            : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                            }`}
+                    >
+                        <Award className="w-5 h-5 flex-shrink-0" />
+                        <span className="font-medium">My Certificate</span>
+                    </Link>
+                )}
+
+                {/* Career Roadmap - Only show after completion */}
+                {diplomaCompleted && (
+                    <Link
+                        href="/womens-health-diploma/career-roadmap"
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/womens-health-diploma/career-roadmap")
+                            ? "bg-burgundy-700 text-white"
+                            : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                            }`}
+                    >
+                        <Target className="w-5 h-5 flex-shrink-0" />
+                        <span className="font-medium">Your Career Roadmap</span>
+                    </Link>
+                )}
             </nav>
 
             {/* Success Feed */}

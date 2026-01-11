@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Practice Lab: Advanced Clinical Case Application</title>
+ <style>
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: #B8860B;
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: rgba(255, 255, 255, 0.75);
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ }
+
+ .meta-item {
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ .practice-lab-banner {
+ background: #ecfdf5;
+ border: 2px solid #047857;
+ border-radius: 16px;
+ padding: 30px;
+ margin-bottom: 35px;
+ text-align: center;
+ }
+
+ .practice-lab-banner .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .practice-lab-banner h2 {
+ margin: 0 0 10px;
+ color: #047857;
+ font-size: 24px;
+ }
+
+ .practice-lab-banner p {
+ margin: 0;
+ color: #059669;
+ font-size: 16px;
+ }
+
+ h2 {
+ font-size: 24px;
+ color: #047857;
+ margin: 50px 0 20px;
+ padding-bottom: 12px;
+ border-bottom: 3px solid #B8860B;
+ display: inline-block;
+ }
+
+ h3 {
+ font-size: 20px;
+ color: #333;
+ margin: 35px 0 15px;
+ }
+
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ }
+
+ /* Complex Case Box */
+ .complex-case {
+ background: #fafafa;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ border: 2px solid #047857;
+ }
+
+ .case-header {
+ display: flex;
+ align-items: center;
+ gap: 20px;
+ margin-bottom: 25px;
+ }
+
+ .case-avatar {
+ width: 80px;
+ height: 80px;
+ background: linear-gradient(135deg, #047857, #059669);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 32px;
+ color: #fff;
+ }
+
+ .case-title h3 {
+ margin: 0 0 5px;
+ font-size: 22px;
+ color: #1a1a1a;
+ }
+
+ .case-title p {
+ margin: 0;
+ color: #666;
+ font-size: 15px;
+ }
+
+ .case-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 16px;
+ margin-top: 20px;
+ }
+
+ .case-item {
+ background: white;
+ padding: 18px;
+ border-radius: 10px;
+ border-left: 4px solid #047857;
+ }
+
+ .case-item .label {
+ font-weight: 600;
+ color: #047857;
+ font-size: 12px;
+ text-transform: uppercase;
+ margin-bottom: 6px;
+ }
+
+ .case-item .value {
+ font-size: 14px;
+ color: #333;
+ line-height: 1.6;
+ }
+
+ /* Clinical Reasoning Box */
+ .reasoning-box {
+ background: #ecfdf5;
+ border: 2px solid #047857;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .reasoning-box h3 {
+ margin: 0 0 20px;
+ color: #047857;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .reasoning-step {
+ background: white;
+ border-radius: 10px;
+ padding: 20px;
+ margin-bottom: 14px;
+ }
+
+ .reasoning-step .step-label {
+ font-weight: 700;
+ color: #047857;
+ font-size: 14px;
+ margin-bottom: 8px;
+ }
+
+ .reasoning-step .step-content {
+ font-size: 15px;
+ line-height: 1.7;
+ }
+
+ /* Differential Considerations */
+ .differential-box {
+ background: #f0f9ff;
+ border: 2px solid #0284c7;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .differential-box h3 {
+ margin: 0 0 20px;
+ color: #0369a1;
+ }
+
+ .differential-grid {
+ display: grid;
+ gap: 14px;
+ }
+
+ .differential-item {
+ background: white;
+ padding: 18px;
+ border-radius: 10px;
+ display: flex;
+ gap: 16px;
+ align-items: flex-start;
+ }
+
+ .differential-item .priority {
+ width: 36px;
+ height: 36px;
+ background: #0284c7;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 700;
+ flex-shrink: 0;
+ }
+
+ .differential-item .content h4 {
+ margin: 0 0 6px;
+ font-size: 16px;
+ }
+
+ .differential-item .content p {
+ margin: 0;
+ font-size: 14px;
+ color: #666;
+ }
+
+ /* Referral Triggers */
+ .referral-box {
+ background: #fef2f2;
+ border: 2px solid #ef4444;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .referral-box h3 {
+ margin: 0 0 20px;
+ color: #dc2626;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .referral-box h3::before {
+ content: '🚨';
+ font-size: 24px;
+ }
+
+ .referral-list {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ }
+
+ .referral-list li {
+ background: white;
+ padding: 16px 20px;
+ margin-bottom: 10px;
+ border-radius: 10px;
+ border-left: 4px solid #ef4444;
+ font-size: 15px;
+ }
+
+ /* Protocol Planning */
+ .protocol-box {
+ background: #ecfdf5;
+ border: 2px solid #10B981;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .protocol-box h3 {
+ margin: 0 0 20px;
+ color: #059669;
+ }
+
+ .protocol-phases {
+ display: grid;
+ gap: 16px;
+ }
+
+ .phase-card {
+ background: white;
+ padding: 20px;
+ border-radius: 12px;
+ border: 1px solid #d1fae5;
+ }
+
+ .phase-card .phase-header {
+ font-weight: 700;
+ color: #059669;
+ font-size: 15px;
+ margin-bottom: 10px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .phase-card ul {
+ margin: 0;
+ padding-left: 20px;
+ font-size: 14px;
+ }
+
+ .phase-card li {
+ margin-bottom: 6px;
+ }
+
+ /* Encouragement */
+ .encouragement-box {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ border-radius: 16px;
+ padding: 40px;
+ margin: 45px 0;
+ text-align: center;
+ color: white;
+ }
+
+ .encouragement-box .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .encouragement-box h3 {
+ margin: 0 0 15px;
+ font-size: 26px;
+ color: white;
+ }
+
+ .encouragement-box p {
+ margin: 0;
+ font-size: 18px;
+ color: rgba(255, 255, 255, 0.9);
+ max-width: 600px;
+ margin: 0 auto;
+ }
+
+ .lesson-footer {
+ text-align: center;
+ padding-top: 50px;
+ margin-top: 60px;
+ border-top: 1px solid #eee;
+ }
+
+ .footer-logo {
+ max-width: 160px;
+ margin-bottom: 15px;
+ }
+
+ .lesson-footer .brand {
+ color: #047857;
+ font-weight: 600;
+ font-size: 15px;
+ margin: 0 0 5px;
+ }
+
+ .lesson-footer .copyright {
+ color: #888;
+ font-size: 13px;
+ margin: 0;
+ }
+
+ @media (max-width: 600px) {
+ .case-grid {
+ grid-template-columns: 1fr;
+ }
+ }
+
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ .objectives-box {
+ background: #f8f6f3;
+ border-left: 6px solid #047857;
+ padding: 20px;
+ margin-bottom: 30px;
+ border-radius: 8px;
+ }
+
+ .objectives-box h3 {
+ color: #047857;
+ margin-top: 0;
+ margin-bottom: 15px;
+ font-size: 20px;
+ }
+
+ .objectives-box ul {
+ padding-left: 20px;
+ margin-bottom: 0;
+ }
+
+ .objectives-box li {
+ margin-bottom: 8px;
+ font-size: 16px;
+ }
+
+ .case-study {
+ background: #f8f6f3;
+ border-left: 6px solid #047857;
+ padding: 20px;
+ margin-bottom: 30px;
+ border-radius: 8px;
+ }
+
+ .case-study h3 {
+ color: #047857;
+ margin-top: 0;
+ margin-bottom: 15px;
+ font-size: 20px;
+ }
+
+ .case-study p {
+ margin-bottom: 15px;
+ }
+
+ .box-label {
+ font-size: 16px;
+ font-weight: bold;
+ color: #047857;
+ margin-bottom: 10px;
+ display: block;
+ }
+
+ .highlight {
+ color: inherit;
+ font-weight: bold;
+ }
+
+ .stat-highlight {
+ color: #047857;
+ font-weight: bold;
+ }
+
+ a {
+ color: #059669;
+ text-decoration: none;
+ }
+
+ a:hover {
+ color: #047857;
+ }
+
+ .references-box {
+ margin-top: 50px;
+ padding: 20px;
+ border-top: 1px solid #e5e7eb;
+ }
+
+ .references-box h3 {
+ color: #047857;
+ margin-bottom: 20px;
+ }
+
+ .references-box ul {
+ list-style: none;
+ padding: 0;
+ }
+
+ .references-box li {
+ margin-bottom: 10px;
+ font-size: 14px;
+ }
+ .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+ .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+ .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+ .data-table tr:nth-child(even) { background: #f9fafb; }
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 23: L2 Advanced Techniques</p>
+ <h1 class="lesson-title">Practice Lab: Advanced Clinical Case Application</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">14 min read</span>
+ <span class="meta-item">Lesson 8 of 8</span>
+ </div>
+ </header>
+
+ <div class="practice-lab-banner">
+ <h2>Advanced Clinical Case Study</h2>
+ <p>Let's dive into a complex case requiring advanced positive parenting techniques. This case will challenge your clinical reasoning and protocol planning skills.</p>
+ </div>
+
+ <h2>Client Profile: The Blended Family</h2>
+
+ <div class="complex-case">
+ <div class="case-header">
+ <div class="case-avatar">👪</div>
+ <div class="case-title">
+ <h3>The Miller-Jones Family</h3>
+ <p>Phoenix, AZ • Blended family • Two households</p>
+ </div>
+ </div>
+
+ <div class="case-grid">
+ <div class="case-item">
+ <div class="label">Parents</div>
+ <div class="value">Sarah Miller, 44 (Stepmom) • David Jones, 46 (Dad) • Emily White, 45 (Mom, separate household)</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Children</div>
+ <div class="value">Liam Jones, 14 (David & Emily's son) • Chloe Jones, 11 (David & Emily's daughter) • Noah Miller, 8 (Sarah's son, lives primarily with his father)</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Presenting Problem</div>
+ <div class="value">High conflict, sibling rivalry, defiance, inconsistent discipline, loyalty binds, emotional dysregulation across all family members.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Family Structure</div>
+ <div class="value">50/50 custody of Liam and Chloe. Noah visits Sarah every other weekend. David and Sarah have been married for 4 years. High animosity between Sarah and Emily.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Sarah's Concerns</div>
+ <div class="value">Feels like an outsider. Liam is openly hostile towards her. Chloe is withdrawn. David undermines her parenting. Noah misses his mom.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">David's Concerns</div>
+ <div class="value">Feels stuck in the middle. Wants peace. Unsure how to handle the conflict between Sarah and Emily. Worried about the impact on the children.</div>
+ </div>
+ </div>
+ </div>
+
+ <h2>Clinical Reasoning Process</h2>
+
+ <div class="reasoning-box">
+ <h3>Systems Thinking in Blended Families</h3>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 1: Map the Family System</div>
+ <div class="step-content">Visualize the complex relationships: David-Emily (ex-spouses), David-Sarah (current spouses), Sarah-Liam, Sarah-Chloe (step relationships), Emily-Liam, Emily-Chloe (parent-child), Noah-Sarah (parent-child), Noah-David, Noah-Emily (complex because of living situation). Identify triangles and alliances. <span class="highlight">Family systems theory</span> is critical here.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 2: Identify Core Issues</div>
+ <div class="step-content">Loss and grief (divorce), loyalty conflicts (children feeling torn between parents), role ambiguity (Sarah's role as stepmom), unresolved conflict between adults, differing parenting styles, boundary issues between households.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 3: Assess Emotional Regulation</div>
+ <div class="step-content">Evaluate each family member's ability to manage their emotions. High conflict families often have low emotional regulation skills. Look for signs of anxiety, depression, and anger. Sarah, David, and the children all demonstrate signs of emotional dysregulation.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 4: Develop a Hypothesis</div>
+ <div class="step-content">The Miller-Jones family is struggling with the transition to a blended family due to unresolved grief, loyalty conflicts, poor communication, and inconsistent parenting. Sarah feels excluded and undermined, David feels overwhelmed, and the children are acting out as a result of the stress and instability.</div>
+ </div>
+ </div>
+
+ <h2>Differential Considerations</h2>
+
+ <div class="differential-box">
+ <h3>Considering Alternative Explanations</h3>
+
+ <div class="differential-grid">
+ <div class="differential-item">
+ <div class="priority">1</div>
+ <div class="content">
+ <h4>Unidentified Learning Disabilities</h4>
+ <p>Liam's defiance could be exacerbated by undiagnosed learning challenges. Rule out ADHD or dyslexia.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">2</div>
+ <div class="content">
+ <h4>Bullying</h4>
+ <p>Chloe's withdrawal could be a sign of bullying at school. Explore this possibility.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">3</div>
+ <div class="content">
+ <h4>Parental Alienation</h4>
+ <p>Emily may be consciously or unconsciously alienating the children from Sarah. Assess for signs of <span class="highlight">parental alienation syndrome</span>.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">4</div>
+ <div class="content">
+ <h4>Mental Health Concerns</h4>
+ <p>Evaluate Sarah and David for symptoms of depression or anxiety, which can impact their parenting abilities. Noah may be experiencing separation anxiety.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2>When to Refer</h2>
+
+ <div class="referral-box">
+ <h3>Red Flags – Know Your Scope</h3>
+
+ <ul class="referral-list">
+ <li><strong>Suspected child abuse or neglect</strong> – Mandatory reporting to child protective services.</li>
+ <li><strong>Suicidal ideation or self-harm</strong> – Immediate mental health referral.</li>
+ <li><strong>Severe depression or anxiety</strong> that impairs daily functioning – Mental health professional.</li>
+ <li><strong>Substance abuse</strong> – Addiction specialist.</li>
+ <li><strong>Legal disputes</strong> regarding custody or visitation – Family law attorney.</li>
+ </ul>
+ </div>
+
+ <h2>Phased Intervention Plan</h2>
+
+ <div class="protocol-box">
+ <h3>Building a Harmonious Blended Family</h3>
+
+ <div class="protocol-phases">
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 1: Stabilization (Weeks 1-4)</div>
+ <ul>
+ <li><strong>Individual sessions</strong> with Sarah and David to address their individual concerns and emotional regulation skills.</li>
+ <li><strong>Communication skills training</strong> for Sarah and David. Focus on active listening, empathy, and conflict resolution.</li>
+ <li><strong>Establish clear, consistent rules and expectations</strong> for the children in both households.</li>
+ <li><strong>Implement a positive reinforcement system</strong> to encourage desired behaviors.</li>
+ <li><strong>Begin family meetings</strong> to create a safe space for open communication.</li>
+ </ul>
+ </div>
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 2: Reconnection & Repair (Weeks 5-8)</div>
+ <ul>
+ <li><strong>Stepfamily education</strong> to normalize the challenges of blended families.</li>
+ <li><strong>Activities to promote bonding and connection</strong> between Sarah and the stepchildren.</li>
+ <li><strong>Address loyalty conflicts</strong> by validating the children's feelings for both parents.</li>
+ <li><strong>Encourage co-parenting communication</strong> between David and Emily. Mediation may be necessary.</li>
+ <li><strong>Play therapy</strong> for Noah to address separation anxiety and attachment issues.</li>
+ </ul>
+ </div>
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 3: Long-Term Growth (Weeks 9-12)</div>
+ <ul>
+ <li><strong>Continue family meetings</strong> to address ongoing issues and maintain open communication.</li>
+ <li><strong>Develop a long-term co-parenting plan</strong> that prioritizes the children's needs.</li>
+ <li><strong>Teach the children problem-solving skills</strong> to resolve conflicts independently.</li>
+ <li><strong>Encourage individual therapy</strong> for family members who need additional support.</li>
+ <li><strong>Celebrate successes and acknowledge progress.</strong></li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. What are the key differences between working with nuclear families versus blended families?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Blended families have more complex relationship dynamics, including step-relationships, ex-spouses, and potential loyalty conflicts. They often require a greater emphasis on communication, boundary setting, and co-parenting skills.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. How would you address a situation where a child expresses a strong dislike for their step-parent?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Validate the child's feelings without judgment. Explore the reasons behind the dislike. Encourage open communication between the child and step-parent in a safe, supportive environment. Focus on building a positive relationship through shared activities and empathy.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Blended families present unique challenges that require a systems-thinking approach.</li>
+ <li>Addressing loss, loyalty conflicts, and role ambiguity is crucial for successful integration.</li>
+ <li>Effective communication, consistent discipline, and emotional regulation are essential skills for all family members.</li>
+ <li>Co-parenting relationships significantly impact the well-being of children in blended families.</li>
+ <li>Positive reinforcement and celebrating successes can foster a harmonious family environment.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <h3>References & Further Reading</h3>
+ <ul>
+ <li>Papernow, P. L. (2018). "Surviving and thriving in stepfamily life: What works and what doesn't." Routledge.</li>
+ <li>Emery, R. E. (2012). "Renegotiating family relationships: Divorce, child custody, and mediation." Guilford Press.</li>
+ <li>Bray, J. H., & Amato, P. R. (2003). "The effects of divorce on children." *Future of Children*, *13*(1), 126-152.</li>
+ <li>Hetherington, E. M., & Kelly, J. (2002). "For better or for worse: Divorce reconsidered." W. W. Norton & Company.</li>
+ <li>Fehlberg, B., Field, R., & Kaganas, F. (2012). "The best interests of the child in family law: International perspectives." Hart Publishing.</li>
+ <li>Ganong, L. H., & Coleman, M. (2017). "Stepfamily relationships: Development, dynamics, and interventions." Springer.</li>
+ <li>Visher, E. B., & Visher, J. S. (1991). "How to win as a stepfamily." Demeter Press.</li>
+ </ul>
+ </div>
+
+ </div>
+</body>
+<script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+
+</html>

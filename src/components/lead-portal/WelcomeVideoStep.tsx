@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Play, CheckCircle, Volume2 } from "lucide-react";
+import { CheckCircle, Volume2 } from "lucide-react";
 
 interface WelcomeVideoStepProps {
     onComplete: () => void;
@@ -11,11 +11,21 @@ interface WelcomeVideoStepProps {
 }
 
 export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there" }: WelcomeVideoStepProps) {
-    const [isPlaying, setIsPlaying] = useState(false);
     const [hasWatched, setHasWatched] = useState(isCompleted);
     const [isLoading, setIsLoading] = useState(false);
+    const [showContinue, setShowContinue] = useState(false);
 
-    const handleVideoEnd = async () => {
+    // Show continue button after 10 seconds
+    useEffect(() => {
+        if (!hasWatched) {
+            const timer = setTimeout(() => {
+                setShowContinue(true);
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [hasWatched]);
+
+    const handleVideoComplete = async () => {
         if (hasWatched) return;
 
         setIsLoading(true);
@@ -33,16 +43,6 @@ export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there" 
         } finally {
             setIsLoading(false);
         }
-    };
-
-    // Simulate video completion after play
-    const handlePlay = () => {
-        setIsPlaying(true);
-        // For now, mark as complete after 5 seconds (demo)
-        // In production, this would track actual video completion
-        setTimeout(() => {
-            handleVideoEnd();
-        }, 5000);
     };
 
     if (isCompleted || hasWatched) {
@@ -63,73 +63,46 @@ export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there" 
 
     return (
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-            {/* Video Container */}
-            <div className="relative aspect-video bg-gradient-to-br from-burgundy-700 to-burgundy-900">
-                {!isPlaying ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6">
-                        {/* Sarah Avatar */}
-                        <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 ring-4 ring-white/30">
-                            <span className="text-4xl font-bold">S</span>
-                        </div>
+            {/* Sarah Header */}
+            <div className="bg-burgundy-600 px-4 py-3 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
+                    S
+                </div>
+                <div>
+                    <p className="text-white font-semibold">Hey {firstName}! 👋</p>
+                    <p className="text-burgundy-200 text-sm">Watch this quick intro from Sarah</p>
+                </div>
+            </div>
 
-                        <h2 className="text-2xl font-bold mb-2 text-center">
-                            Hey {firstName}! 👋
-                        </h2>
-                        <p className="text-burgundy-200 text-center mb-6 max-w-md">
-                            I'm Sarah, and I'm so excited to guide you through this journey.
-                            Watch this quick 60-second intro before we begin.
-                        </p>
+            {/* Vimeo Video Embed - Shows Immediately */}
+            <div style={{ padding: "56.25% 0 0 0", position: "relative" }}>
+                <iframe
+                    src="https://player.vimeo.com/video/1117011390?badge=0&autopause=0&player_id=0&app_id=58479"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                    title="Welcome Message from Sarah"
+                />
+            </div>
 
-                        {/* Play Button */}
-                        <Button
-                            onClick={handlePlay}
-                            size="lg"
-                            className="bg-white text-burgundy-700 hover:bg-burgundy-50 font-bold px-8 py-6 rounded-xl shadow-lg group"
-                        >
-                            <Play className="w-6 h-6 mr-2 group-hover:scale-110 transition-transform" />
-                            Watch Welcome Video
-                        </Button>
-
-                        <p className="text-burgundy-300 text-sm mt-4 flex items-center gap-2">
-                            <Volume2 className="w-4 h-4" />
-                            60 seconds • Sound on recommended
-                        </p>
-                    </div>
+            {/* Continue Button - Shows after 10 seconds */}
+            <div className="p-4 bg-burgundy-50 border-t border-burgundy-100">
+                {showContinue ? (
+                    <Button
+                        onClick={handleVideoComplete}
+                        disabled={isLoading}
+                        className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-semibold py-3"
+                    >
+                        {isLoading ? "Saving..." : "Continue to Next Step →"}
+                    </Button>
                 ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                        {/* Playing State */}
-                        <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 animate-pulse">
-                            <Volume2 className="w-10 h-10" />
-                        </div>
-                        <p className="text-xl font-medium">Playing...</p>
-                        <p className="text-burgundy-200 text-sm mt-2">Your journey starts now 🌟</p>
-
-                        {/* Progress bar */}
-                        <div className="w-64 h-2 bg-white/20 rounded-full mt-6 overflow-hidden">
-                            <div
-                                className="h-full bg-white rounded-full animate-[progress_5s_linear]"
-                                style={{
-                                    animation: "progress 5s linear forwards",
-                                }}
-                            />
-                        </div>
-                    </div>
+                    <p className="text-sm text-burgundy-600 text-center flex items-center justify-center gap-2">
+                        <Volume2 className="w-4 h-4" />
+                        Watch the video - continue button appears shortly
+                    </p>
                 )}
             </div>
-
-            {/* Info Footer */}
-            <div className="p-4 bg-burgundy-50 border-t border-burgundy-100">
-                <p className="text-sm text-burgundy-700 text-center">
-                    ✨ This quick intro will help you get the most out of your mini diploma
-                </p>
-            </div>
-
-            <style jsx>{`
-        @keyframes progress {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-      `}</style>
         </div>
     );
 }

@@ -1,37 +1,97 @@
 import Link from "next/link";
-import { Shield, Mail, Calendar, ArrowLeft, FileText, Scale, AlertTriangle, CreditCard, BookOpen, Users, Building2, Gavel, Ban, Eye, FileCheck, UserCheck, Lock, Globe, Bell, RefreshCw } from "lucide-react";
+import Image from "next/image";
+import { Shield, Mail, Calendar, ArrowLeft, FileText, Scale, AlertTriangle, CreditCard, BookOpen, Users, Building2, Gavel, Ban, Eye, FileCheck, UserCheck, Lock, Globe, Bell, RefreshCw, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
+// ASI Brand Colors
+const BRAND = {
+  burgundy: "#722f37",
+  burgundyDark: "#4e1f24",
+  gold: "#d4af37",
+  goldLight: "#e8c547",
+  cream: "#fdf8f0",
+};
+
+export const metadata = {
+  title: "Terms of Service | Accreditation Standards Institute",
+  description: "Terms of Service and Digital Product Purchase Agreement for ASI certification programs and educational services.",
+};
 
 export default function TermsOfServicePage() {
-  const lastUpdated = "December 31, 2024";
+  const lastUpdated = "January 1, 2025";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-white">
+      {/* Top Bar */}
+      <div style={{ backgroundColor: BRAND.burgundyDark }} className="text-white py-2 px-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-2">
+              <span>🇺🇸</span> USA Headquarters
+            </span>
+            <span className="flex items-center gap-2">
+              <span>🇦🇪</span> Dubai Office
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link href="/verify" className="hover:opacity-80 transition-opacity" style={{ color: BRAND.gold }}>
+              Verify Credential
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/ASI_LOGO-removebg-preview.png"
+                alt="Accreditation Standards Institute"
+                width={160}
+                height={48}
+                className="h-12 w-auto"
+              />
+            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/login">
+                <Button variant="ghost" style={{ color: BRAND.burgundy }}>Log In</Button>
+              </Link>
+              <Link href="/certifications">
+                <Button style={{ backgroundColor: BRAND.burgundy, color: "white" }} className="hover:opacity-90">
+                  View Certifications
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Header */}
-      <div className="bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800 text-white">
+      <div className="text-white" style={{ background: `linear-gradient(135deg, ${BRAND.burgundyDark} 0%, ${BRAND.burgundy} 100%)` }}>
         <div className="max-w-4xl mx-auto px-4 py-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-burgundy-200 hover:text-white mb-6 transition-colors">
+          <Link href="/" className="inline-flex items-center gap-2 hover:opacity-80 mb-6 transition-opacity" style={{ color: BRAND.gold }}>
             <ArrowLeft className="w-4 h-4" />
-            Back to AccrediPro
+            Back to ASI Home
           </Link>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-              <Scale className="w-6 h-6 text-gold-400" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center border" style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)' }}>
+              <Scale className="w-6 h-6" style={{ color: BRAND.gold }} />
             </div>
-            <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30">
+            <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: `${BRAND.gold}20`, color: BRAND.gold, border: `1px solid ${BRAND.gold}40` }}>
               Legal Document
-            </Badge>
+            </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Terms of Service</h1>
-          <p className="text-burgundy-100 text-lg mb-2">
+          <p className="text-lg mb-2" style={{ color: '#f5f5f5' }}>
             Digital Product Purchase Agreement
           </p>
-          <p className="text-burgundy-200 mb-4">
-            AccrediPro LLC — A Wyoming Limited Liability Company
+          <p className="mb-4" style={{ color: BRAND.gold }}>
+            Accreditation Standards Institute LLC — A Delaware Limited Liability Company
           </p>
-          <div className="flex items-center gap-2 text-burgundy-200 text-sm">
+          <div className="flex items-center gap-2 text-sm" style={{ color: '#d1d5db' }}>
             <Calendar className="w-4 h-4" />
             Last Updated: {lastUpdated}
           </div>
@@ -46,7 +106,7 @@ export default function TermsOfServicePage() {
             <div>
               <h3 className="font-bold text-amber-800 mb-2">Please Read Carefully Before Purchasing</h3>
               <p className="text-amber-700 text-sm leading-relaxed">
-                This document constitutes a legally binding agreement between you and AccrediPro LLC. By completing your purchase, you acknowledge that you have read, understood, and agree to be bound by all terms and conditions set forth herein. Your electronic acceptance has the same legal effect as a handwritten signature.
+                This document constitutes a legally binding agreement between you and Accreditation Standards Institute LLC. By completing your purchase, you acknowledge that you have read, understood, and agree to be bound by all terms and conditions set forth herein. Your electronic acceptance has the same legal effect as a handwritten signature.
               </p>
             </div>
           </div>
@@ -56,12 +116,12 @@ export default function TermsOfServicePage() {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
         <Card className="border-0 shadow-lg">
-          <CardContent className="p-8 md:p-12 prose prose-burgundy max-w-none">
+          <CardContent className="p-8 md:p-12 prose prose-gray max-w-none">
 
             {/* Article I */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Building2 className="w-6 h-6 text-burgundy-600" />
+                <Building2 className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article I: Parties and Agreement
               </h2>
 
@@ -70,7 +130,7 @@ export default function TermsOfServicePage() {
                 This Terms of Service and Digital Product Purchase Agreement ("Agreement") is entered into between:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
-                <li><strong>Company:</strong> AccrediPro LLC, a Wyoming Limited Liability Company, with principal offices at 1309 Coffeen Avenue STE 1200, Sheridan, Wyoming 82801, United States ("Company," "We," "Us," or "Our")</li>
+                <li><strong>Company:</strong> Accreditation Standards Institute LLC ("ASI," "Company," "We," "Us," or "Our"), a Delaware Limited Liability Company with operational headquarters in the United States and regional office in Dubai, UAE</li>
                 <li><strong>Purchaser:</strong> The individual or entity completing this purchase ("You," "Your," "Purchaser," or "Student")</li>
               </ul>
 
@@ -105,7 +165,7 @@ export default function TermsOfServicePage() {
             {/* Article II */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <BookOpen className="w-6 h-6 text-burgundy-600" />
+                <BookOpen className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article II: Nature of Digital Products
               </h2>
 
@@ -116,36 +176,47 @@ export default function TermsOfServicePage() {
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
                 <li>Online courses, certification programs, and educational curricula</li>
                 <li>Video lectures, tutorials, and recorded training sessions</li>
-                <li>Audio recordings, podcasts, and guided meditations</li>
+                <li>Audio recordings, podcasts, and guided content</li>
                 <li>Written materials, eBooks, PDFs, workbooks, and worksheets</li>
-                <li>Templates, scripts, frameworks, and business tools</li>
+                <li>Templates, scripts, frameworks, and professional tools</li>
                 <li>Assessments, quizzes, examinations, and certification tests</li>
                 <li>Community access, forums, and group coaching platforms</li>
                 <li>Mentorship, support, and coaching communications</li>
+                <li>Mini-diplomas, certificates, and credential verification services</li>
                 <li>Any other educational or training materials delivered electronically</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.2 Immediate Delivery and Access</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.2 Certification and Credential Programs</h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                ASI certification programs are designed to establish competency-based professional standards in functional medicine and health coaching. Our certifications:
+              </p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
+                <li>Are recognized by employers and healthcare organizations in 45+ countries</li>
+                <li>Require completion of all coursework and passing of competency assessments</li>
+                <li>Include lifetime credential validity with continuing education requirements</li>
+                <li>Are publicly verifiable through our credential verification system</li>
+              </ul>
+
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.3 Immediate Delivery and Access</h3>
               <p className="text-gray-700 leading-relaxed mb-4">You understand and acknowledge that:</p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
                 <li>Digital Products are delivered immediately upon successful payment processing</li>
-                <li>Access credentials are transmitted to your registered email address within sixty (60) seconds of purchase confirmation</li>
+                <li>Access credentials are transmitted to your registered email address within minutes of purchase confirmation</li>
                 <li>The transmission of access credentials constitutes full and complete delivery of the purchased Digital Products</li>
                 <li>Your choice to access or not access the materials does not affect delivery status</li>
                 <li>Digital Products, once delivered, cannot be "returned" in the manner of physical goods</li>
-                <li>The intangible and immediately accessible nature of Digital Products makes traditional returns impossible</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.3 Lifetime Access</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.4 Lifetime Access</h3>
               <p className="text-gray-700 leading-relaxed mb-4">Subject to compliance with this Agreement, purchased courses include lifetime access, which means:</p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
-                <li>You may access course content for as long as AccrediPro operates the platform</li>
+                <li>You may access course content for as long as ASI operates the platform</li>
                 <li>You will receive updates and improvements to course content at no additional charge</li>
                 <li>Access is contingent upon continued compliance with all terms herein</li>
-                <li>In the event AccrediPro ceases operations, you retain any materials previously downloaded</li>
+                <li>In the event ASI ceases operations, you retain any materials previously downloaded</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.4 Technical Requirements</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">2.5 Technical Requirements</h3>
               <p className="text-gray-700 leading-relaxed mb-4">You are solely responsible for:</p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
                 <li>Obtaining and maintaining compatible devices, software, and internet connectivity</li>
@@ -158,7 +229,7 @@ export default function TermsOfServicePage() {
             {/* Article III */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <CreditCard className="w-6 h-6 text-burgundy-600" />
+                <CreditCard className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article III: Payment Terms
               </h2>
 
@@ -169,19 +240,24 @@ export default function TermsOfServicePage() {
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">3.2 Payment Processing</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Payments are processed securely through our third-party payment processors. By submitting payment, you authorize us to charge the payment method provided for the total amount of your purchase. We do not store complete credit card information on our servers.
+                Payments are processed securely through our third-party payment processors (including Stripe and PayPal). By submitting payment, you authorize us to charge the payment method provided for the total amount of your purchase. We do not store complete credit card information on our servers. All transactions are encrypted using industry-standard SSL/TLS protocols.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">3.3 Order Confirmation</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">3.3 Payment Plans</h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Where payment plans are offered, you agree to complete all scheduled payments. Failure to complete payment plan obligations may result in suspension of access until payments are current. Outstanding balances may be referred to collection agencies.
+              </p>
+
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">3.4 Order Confirmation</h3>
               <p className="text-gray-700 leading-relaxed mb-4">Upon successful payment processing, you will receive:</p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
-                <li>An order confirmation email within sixty (60) seconds</li>
+                <li>An order confirmation email within minutes</li>
                 <li>Login credentials to access your student dashboard</li>
                 <li>A receipt for your records and tax purposes</li>
                 <li>Instructions for accessing your purchased Digital Products</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">3.4 Failed Payments</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">3.5 Failed Payments</h3>
               <p className="text-gray-700 leading-relaxed">
                 If your payment is declined or fails for any reason, you will not receive access to Digital Products. We reserve the right to suspend or terminate accounts with outstanding payment obligations or failed payment attempts.
               </p>
@@ -189,15 +265,15 @@ export default function TermsOfServicePage() {
 
             {/* Article IV - Refund Policy */}
             <section className="mb-10">
-              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 mb-6">
-                <h2 className="text-2xl font-bold text-red-800 mb-2 flex items-center gap-2">
+              <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: '#fef2f2', border: '2px solid #fecaca' }}>
+                <h2 className="text-2xl font-bold mb-2 flex items-center gap-2" style={{ color: '#991b1b' }}>
                   <Ban className="w-6 h-6" />
-                  Article IV: Refund Policy – All Sales Final
+                  Article IV: Refund Policy — All Sales Final
                 </h2>
-                <p className="text-red-700 font-bold text-lg">
+                <p className="font-bold text-lg" style={{ color: '#dc2626' }}>
                   ALL SALES ARE FINAL. NO REFUNDS.
                 </p>
-                <p className="text-red-600 text-sm mt-2">
+                <p className="text-sm mt-2" style={{ color: '#b91c1c' }}>
                   This policy applies to all Digital Products regardless of whether you access the materials, complete the program, or are satisfied with your purchase.
                 </p>
               </div>
@@ -255,13 +331,13 @@ export default function TermsOfServicePage() {
             {/* Article V - Certification Guarantee */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <FileCheck className="w-6 h-6 text-burgundy-600" />
+                <FileCheck className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article V: Conditional 30-Day Certification Guarantee
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">5.1 Limited Guarantee Scope</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                The sole and exclusive circumstance under which a refund may be considered is our Certification Guarantee, which applies only to certification programs and requires strict compliance with all conditions set forth below. This guarantee does not apply to non-certification products, add-ons, bonuses, or supplementary materials.
+                The sole and exclusive circumstance under which a refund may be considered is our Certification Guarantee, which applies only to full certification programs (not mini-diplomas or free courses) and requires strict compliance with all conditions set forth below. This guarantee does not apply to non-certification products, add-ons, bonuses, or supplementary materials.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">5.2 Mandatory Eligibility Requirements</h3>
@@ -279,10 +355,10 @@ export default function TermsOfServicePage() {
                 <li><strong>No Certification Claimed:</strong> You must NOT have already received, claimed, downloaded, or used your certification credentials.</li>
               </ol>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">5.4 Guarantee Request Procedure</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">5.3 Guarantee Request Procedure</h3>
               <p className="text-gray-700 leading-relaxed mb-4">To submit a Certification Guarantee request:</p>
               <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-                <li>Email info@accredipro.academy within thirty (30) calendar days of enrollment</li>
+                <li>Email legal@accreditation-standards.org within thirty (30) calendar days of enrollment</li>
                 <li>Include your full legal name, order number, and account email address</li>
                 <li>Provide a detailed explanation of your efforts to complete the program</li>
                 <li>Attach documentation evidencing satisfaction of all requirements</li>
@@ -308,9 +384,9 @@ export default function TermsOfServicePage() {
                 You expressly agree not to initiate any chargeback, payment dispute, retrieval request, or transaction reversal through your bank, credit card issuer, payment processor, or any financial institution for any reason other than documented and verified identity theft supported by a police report.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">6.3 Consequences of Fraudulent Chargeback</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">6.2 Consequences of Fraudulent Chargeback</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                In the event you initiate a Fraudulent Chargeback, you agree that AccrediPro may pursue any or all of the following remedies:
+                In the event you initiate a Fraudulent Chargeback, you agree that ASI may pursue any or all of the following remedies:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
                 <li>Immediate termination of all access to all products, services, and platforms</li>
@@ -322,22 +398,22 @@ export default function TermsOfServicePage() {
                 <li>Seek recovery of all damages, costs, attorney's fees, and collection expenses</li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">6.5 Mandatory Pre-Dispute Resolution</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">6.3 Mandatory Pre-Dispute Resolution</h3>
               <p className="text-gray-700 leading-relaxed">
-                Before initiating any chargeback, payment dispute, or legal action, you agree to first contact AccrediPro directly at info@accredipro.academy and allow forty-eight (48) business hours for response and investigation.
+                Before initiating any chargeback, payment dispute, or legal action, you agree to first contact ASI directly at support@accreditation-standards.org and allow forty-eight (48) business hours for response and investigation.
               </p>
             </section>
 
             {/* Article VII - Data Collection */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Eye className="w-6 h-6 text-burgundy-600" />
+                <Eye className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article VII: Evidence Collection and Documentation
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">7.1 Consent to Data Collection</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                You expressly consent to AccrediPro's collection, storage, and use of the following data for purposes including fraud prevention, dispute resolution, service improvement, and legal compliance:
+                You expressly consent to ASI's collection, storage, and use of the following data for purposes including fraud prevention, dispute resolution, service improvement, and legal compliance:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
                 <li><strong>IP Address:</strong> Your IP address at the time of purchase, account creation, and all subsequent platform access</li>
@@ -353,20 +429,20 @@ export default function TermsOfServicePage() {
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">7.2 Evidentiary Value</h3>
               <p className="text-gray-700 leading-relaxed">
-                You agree that AccrediPro's server logs, database records, system-generated reports, and analytics data constitute prima facie evidence of delivery, access, usage, and engagement. You waive any objection to the authenticity, reliability, or admissibility of such electronic records in any legal, arbitration, or dispute resolution proceeding.
+                You agree that ASI's server logs, database records, system-generated reports, and analytics data constitute prima facie evidence of delivery, access, usage, and engagement. You waive any objection to the authenticity, reliability, or admissibility of such electronic records in any legal, arbitration, or dispute resolution proceeding.
               </p>
             </section>
 
             {/* Article VIII - Representations */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <UserCheck className="w-6 h-6 text-burgundy-600" />
+                <UserCheck className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article VIII: Purchaser Representations and Warranties
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">8.1 Pre-Purchase Representations</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                By completing this purchase, you represent and warrant to AccrediPro that each of the following statements is true and accurate:
+                By completing this purchase, you represent and warrant to ASI that each of the following statements is true and accurate:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
                 <li><strong>Financial Capability:</strong> You have sufficient funds to complete this purchase without creating undue financial hardship.</li>
@@ -384,24 +460,24 @@ export default function TermsOfServicePage() {
             {/* Article IX - IP */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Lock className="w-6 h-6 text-burgundy-600" />
+                <Lock className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article IX: Intellectual Property
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">9.1 Ownership</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                All Digital Products and associated materials are the exclusive intellectual property of AccrediPro LLC and its licensors, protected by United States and international copyright, trademark, trade secret, and intellectual property laws.
+                All Digital Products and associated materials are the exclusive intellectual property of Accreditation Standards Institute LLC and its licensors, protected by United States and international copyright, trademark, trade secret, and intellectual property laws.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">9.2 Limited License</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Upon purchase, AccrediPro grants you a limited, non-exclusive, non-transferable, revocable license to:
+                Upon purchase, ASI grants you a limited, non-exclusive, non-transferable, revocable license to:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
                 <li>Access and view course materials for your personal educational purposes only</li>
                 <li>Download provided resources for your personal reference and use</li>
                 <li>Apply knowledge and skills learned in your personal or professional practice</li>
-                <li>Reference your AccrediPro certification in professional credentials upon successful completion</li>
+                <li>Reference your ASI certification in professional credentials upon successful completion</li>
               </ul>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">9.3 Prohibited Activities</h3>
@@ -413,24 +489,25 @@ export default function TermsOfServicePage() {
                 <li>Sell, license, or monetize access to course materials</li>
                 <li>Create derivative works based on our content</li>
                 <li>Remove or alter any copyright notices or trademarks</li>
+                <li>Misrepresent ASI certification credentials</li>
               </ul>
             </section>
 
             {/* Article X - Disclaimers */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-6 h-6 text-burgundy-600" />
+                <AlertTriangle className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article X: Disclaimers and Limitations
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">10.1 Educational Purpose</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                AccrediPro Academy provides educational training for health and wellness coaches. Our programs are educational credentials only and do not constitute medical training, professional licensure, or authorization to diagnose, treat, prescribe, or provide medical advice.
+                Accreditation Standards Institute provides educational training for functional medicine practitioners and health coaches. Our programs are educational credentials only and do not constitute medical training, professional licensure, or authorization to diagnose, treat, prescribe, or provide medical advice. ASI certifications demonstrate competency in specific knowledge areas but do not replace state-required professional licensing where applicable.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">10.2 No Guarantee of Results</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                While we may reference earning potential, career opportunities, or client outcomes, AccrediPro makes no guarantee regarding your ability to attract clients, generate income, build a successful business, or achieve any particular results.
+                While we may reference earning potential, career opportunities, or practitioner outcomes, ASI makes no guarantee regarding your ability to attract clients, generate income, build a successful practice, or achieve any particular results. Results depend entirely on individual effort, market conditions, and numerous factors beyond our control.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">10.3 Disclaimer of Warranties</h3>
@@ -440,25 +517,25 @@ export default function TermsOfServicePage() {
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">10.4 Limitation of Liability</h3>
               <p className="text-gray-700 leading-relaxed">
-                To the maximum extent permitted by applicable law, AccrediPro's total liability to you for any claims arising from this Agreement shall not exceed the amount you paid for the specific product giving rise to the claim. In no event shall AccrediPro be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages.
+                To the maximum extent permitted by applicable law, ASI's total liability to you for any claims arising from this Agreement shall not exceed the amount you paid for the specific product giving rise to the claim. In no event shall ASI be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages.
               </p>
             </section>
 
             {/* Article XI - Account */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Shield className="w-6 h-6 text-burgundy-600" />
+                <Shield className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article XI: Account and Termination
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">11.1 Account Security</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                You are solely responsible for maintaining the confidentiality of your login credentials and for all activities occurring under your account. Account sharing is strictly prohibited.
+                You are solely responsible for maintaining the confidentiality of your login credentials and for all activities occurring under your account. Account sharing is strictly prohibited and grounds for immediate termination.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">11.2 Termination by AccrediPro</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">11.2 Termination by ASI</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                AccrediPro reserves the right to suspend or terminate your account and access to Digital Products, with or without notice, for:
+                ASI reserves the right to suspend or terminate your account and access to Digital Products, with or without notice, for:
               </p>
               <ul className="list-disc pl-6 text-gray-700 space-y-2">
                 <li>Violation of any term of this Agreement</li>
@@ -467,32 +544,33 @@ export default function TermsOfServicePage() {
                 <li>Harassment, abuse, or threats toward staff or other students</li>
                 <li>Initiation of chargebacks or payment disputes</li>
                 <li>Account sharing or unauthorized access provision</li>
+                <li>Misrepresentation of ASI credentials or certification status</li>
               </ul>
             </section>
 
             {/* Article XII - Disputes */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Gavel className="w-6 h-6 text-burgundy-600" />
+                <Gavel className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article XII: Dispute Resolution
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">12.1 Governing Law</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                This Agreement shall be governed by and construed in accordance with the laws of the State of Wyoming, United States, without regard to its conflict of law principles.
+                This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, United States, without regard to its conflict of law principles.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">12.2 Mandatory Arbitration</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Any controversy, claim, or dispute arising out of or relating to this Agreement shall be exclusively resolved through binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules. The arbitration shall be conducted in Sheridan, Wyoming, or via video conference at the Company's election.
+                Any controversy, claim, or dispute arising out of or relating to this Agreement shall be exclusively resolved through binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules. The arbitration shall be conducted in Delaware, United States, or via video conference at the Company's election.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">12.3 Class Action Waiver</h3>
               <p className="text-gray-700 leading-relaxed mb-4 font-medium">
-                YOU AGREE THAT ANY ARBITRATION OR LEGAL PROCEEDING SHALL BE LIMITED TO THE DISPUTE BETWEEN ACCREDIPRO AND YOU INDIVIDUALLY. You hereby waive any right to participate in class action, collective action, mass action, representative action, or consolidated proceeding against AccrediPro.
+                YOU AGREE THAT ANY ARBITRATION OR LEGAL PROCEEDING SHALL BE LIMITED TO THE DISPUTE BETWEEN ASI AND YOU INDIVIDUALLY. You hereby waive any right to participate in class action, collective action, mass action, representative action, or consolidated proceeding against ASI.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">12.6 Statute of Limitations</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">12.4 Statute of Limitations</h3>
               <p className="text-gray-700 leading-relaxed">
                 Any claim or cause of action arising from this Agreement must be filed within one (1) year after such claim arose, or be forever barred.
               </p>
@@ -501,13 +579,13 @@ export default function TermsOfServicePage() {
             {/* Article XIII - General */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Globe className="w-6 h-6 text-burgundy-600" />
+                <Globe className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Article XIII: General Provisions
               </h2>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">13.1 Entire Agreement</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                This Agreement, together with our Privacy Policy and any supplemental terms for specific products, constitutes the entire agreement between you and AccrediPro concerning the subject matter hereof.
+                This Agreement, together with our Privacy Policy, Refund Policy, Credential Terms, and any supplemental terms for specific products, constitutes the entire agreement between you and ASI concerning the subject matter hereof.
               </p>
 
               <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">13.2 Severability</h3>
@@ -515,39 +593,44 @@ export default function TermsOfServicePage() {
                 If any provision of this Agreement is found to be invalid, such invalidity shall not affect the remaining provisions, which shall continue in full force and effect.
               </p>
 
-              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">13.10 Modifications</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mt-6 mb-3">13.3 Modifications</h3>
               <p className="text-gray-700 leading-relaxed">
-                AccrediPro reserves the right to modify this Agreement at any time. Material changes will be communicated via email. Your continued use of Digital Products following notice of changes constitutes acceptance of the modified terms.
+                ASI reserves the right to modify this Agreement at any time. Material changes will be communicated via email. Your continued use of Digital Products following notice of changes constitutes acceptance of the modified terms.
               </p>
             </section>
 
             {/* Contact Section */}
             <section className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Mail className="w-6 h-6 text-burgundy-600" />
+                <Mail className="w-6 h-6" style={{ color: BRAND.burgundy }} />
                 Contact Information
               </h2>
-              <div className="bg-burgundy-50 rounded-xl p-6 border border-burgundy-100">
-                <p className="text-gray-900 font-bold text-lg mb-3">AccrediPro LLC</p>
+              <div className="rounded-xl p-6 border" style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}20` }}>
+                <p className="text-gray-900 font-bold text-lg mb-3">Accreditation Standards Institute LLC</p>
                 <div className="space-y-2 text-gray-700">
-                  <p>1309 Coffeen Avenue STE 1200</p>
-                  <p>Sheridan, Wyoming 82801</p>
-                  <p>United States</p>
+                  <p>United States Headquarters</p>
+                  <p>Dubai, UAE Regional Office</p>
                   <p className="pt-2">
-                    <strong>Email:</strong>{" "}
-                    <a href="mailto:info@accredipro.academy" className="text-burgundy-600 hover:underline font-medium">
-                      info@accredipro.academy
+                    <strong>Legal Inquiries:</strong>{" "}
+                    <a href="mailto:legal@accreditation-standards.org" className="font-medium hover:underline" style={{ color: BRAND.burgundy }}>
+                      legal@accreditation-standards.org
+                    </a>
+                  </p>
+                  <p>
+                    <strong>Support:</strong>{" "}
+                    <a href="mailto:support@accreditation-standards.org" className="font-medium hover:underline" style={{ color: BRAND.burgundy }}>
+                      support@accreditation-standards.org
                     </a>
                   </p>
                   <p>
                     <strong>Website:</strong>{" "}
-                    <a href="https://learn.accredipro.academy" className="text-burgundy-600 hover:underline font-medium">
-                      learn.accredipro.academy
+                    <a href="https://accreditation-standards.org" className="font-medium hover:underline" style={{ color: BRAND.burgundy }}>
+                      accreditation-standards.org
                     </a>
                   </p>
                 </div>
                 <p className="text-gray-500 text-sm mt-4">
-                  © AccrediPro LLC. All Rights Reserved.
+                  © {new Date().getFullYear()} Accreditation Standards Institute LLC. All Rights Reserved.
                 </p>
               </div>
             </section>
@@ -558,22 +641,39 @@ export default function TermsOfServicePage() {
         {/* Related Links */}
         <div className="mt-8 flex flex-wrap gap-4 justify-center">
           <Link href="/privacy-policy">
-            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+            <Button variant="outline" className="hover:opacity-80" style={{ borderColor: `${BRAND.burgundy}40`, color: BRAND.burgundy }}>
               Privacy Policy
             </Button>
           </Link>
           <Link href="/refund-policy">
-            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+            <Button variant="outline" className="hover:opacity-80" style={{ borderColor: `${BRAND.burgundy}40`, color: BRAND.burgundy }}>
               Refund Policy
             </Button>
           </Link>
+          <Link href="/credential-terms">
+            <Button variant="outline" className="hover:opacity-80" style={{ borderColor: `${BRAND.burgundy}40`, color: BRAND.burgundy }}>
+              Credential Terms
+            </Button>
+          </Link>
           <Link href="/code-of-ethics">
-            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+            <Button variant="outline" className="hover:opacity-80" style={{ borderColor: `${BRAND.burgundy}40`, color: BRAND.burgundy }}>
               Code of Ethics
             </Button>
           </Link>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="text-white py-8 mt-12" style={{ backgroundColor: BRAND.burgundyDark }}>
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-sm" style={{ color: '#d1d5db' }}>
+            © {new Date().getFullYear()} Accreditation Standards Institute LLC. All rights reserved.
+          </p>
+          <p className="text-xs mt-2" style={{ color: '#9ca3af' }}>
+            The Global Authority in Functional Medicine & Health Certification
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

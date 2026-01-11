@@ -19,6 +19,7 @@ import {
   UserPlus,
   Download,
   Bot, // Import Bot icon
+  Sparkles,
   GraduationCap,
   Flame,
   Star,
@@ -182,9 +183,13 @@ export function UsersClient({ courses }: UsersClientProps) {
   const [changingEmail, setChangingEmail] = useState(false);
 
   // Activity tab states for dispute resolution
-  const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity" | "ai">("overview");
   const [activityData, setActivityData] = useState<any>(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
+
+  // AI Summary state
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [loadingAiSummary, setLoadingAiSummary] = useState(false);
 
   // Role change state
   const [roleDialogOpen, setRoleDialogOpen] = useState(false);
@@ -665,6 +670,7 @@ export function UsersClient({ courses }: UsersClientProps) {
     setSelectedUser(user);
     setDetailTab("overview");
     setActivityData(null);
+    setAiSummary(null);
     setDetailDialogOpen(true);
   };
 
@@ -1661,6 +1667,35 @@ export function UsersClient({ courses }: UsersClientProps) {
                 >
                   🛡️ Activity & Disputes
                 </button>
+                <button
+                  onClick={async () => {
+                    setDetailTab("ai");
+                    if (!aiSummary && !loadingAiSummary) {
+                      setLoadingAiSummary(true);
+                      try {
+                        const res = await fetch("/api/admin/super-tools/ai-summary", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ userId: selectedUser.id }),
+                        });
+                        if (res.ok) {
+                          const data = await res.json();
+                          setAiSummary(data.summary);
+                        } else {
+                          setAiSummary("Failed to generate AI summary. Please try again.");
+                        }
+                      } catch (error) {
+                        setAiSummary("Error generating summary.");
+                      } finally {
+                        setLoadingAiSummary(false);
+                      }
+                    }
+                  }}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${detailTab === "ai" ? "border-burgundy-600 text-burgundy-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  AI Summary
+                </button>
               </div>
 
               {detailTab === "overview" && (
@@ -2562,6 +2597,60 @@ Terms: https://learn.accredipro.academy/terms-of-service
                       <p className="text-gray-500">Click the Activity tab to load dispute data</p>
                     </div>
                   )}
+                </div>
+              )}
+
+              {detailTab === "ai" && (
+                <div className="space-y-4 mt-4">
+                  <div className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-lg">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Sparkles className="w-5 h-5 text-purple-600" />
+                      <h3 className="font-semibold text-purple-900">AI-Powered User Analysis</h3>
+                    </div>
+                    {loadingAiSummary ? (
+                      <div className="flex items-center justify-center py-12">
+                        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                        <span className="ml-3 text-purple-700">Analyzing user data...</span>
+                      </div>
+                    ) : aiSummary ? (
+                      <div className="prose prose-sm max-w-none">
+                        <div className="bg-white p-4 rounded-lg border whitespace-pre-wrap text-sm text-gray-700 leading-relaxed">
+                          {aiSummary}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-4"
+                          onClick={async () => {
+                            setLoadingAiSummary(true);
+                            setAiSummary(null);
+                            try {
+                              const res = await fetch("/api/admin/super-tools/ai-summary", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ userId: selectedUser.id }),
+                              });
+                              if (res.ok) {
+                                const data = await res.json();
+                                setAiSummary(data.summary);
+                              }
+                            } catch (error) {
+                              setAiSummary("Error regenerating summary.");
+                            } finally {
+                              setLoadingAiSummary(false);
+                            }
+                          }}
+                        >
+                          <RotateCcw className="w-4 h-4 mr-2" />
+                          Regenerate Summary
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        Click the AI Summary tab to analyze this user.
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </>

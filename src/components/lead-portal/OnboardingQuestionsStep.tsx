@@ -12,11 +12,9 @@ import {
     Briefcase,
     Stethoscope,
     Clock,
-    Users,
     Home,
     Building,
     GraduationCap,
-    DollarSign,
     Sparkles,
     CheckCircle
 } from "lucide-react";
@@ -30,31 +28,31 @@ interface OnboardingQuestionsStepProps {
 }
 
 const BRING_REASONS = [
-    { id: "help_self", label: "I want to help myself/my family with health issues", icon: Heart },
-    { id: "career_change", label: "I'm looking for a career change", icon: Briefcase },
-    { id: "add_practice", label: "I want to add this to my existing practice", icon: Stethoscope },
-    { id: "curious", label: "I'm just curious about women's health", icon: Sparkles },
+    { id: "help_self", label: "I want to understand my own body better", icon: Heart },
+    { id: "career_change", label: "I'm ready for a fresh start and new career", icon: Briefcase },
+    { id: "add_practice", label: "I already work in health and want to expand", icon: Stethoscope },
+    { id: "curious", label: "I'm curious and love learning new things!", icon: Sparkles },
 ];
 
 const SITUATIONS = [
-    { id: "stay_at_home_mom", label: "Stay-at-home mom looking for flexible income", icon: Home },
-    { id: "corporate", label: "Corporate professional burnt out from 9-5", icon: Building },
-    { id: "healthcare", label: "Healthcare worker wanting something more meaningful", icon: Stethoscope },
-    { id: "retiree", label: "Retiree looking for purpose and extra income", icon: Clock },
-    { id: "practitioner", label: "Already a coach/practitioner wanting to expand", icon: GraduationCap },
+    { id: "stay_at_home_mom", label: "I'm a mom looking for something flexible", icon: Home },
+    { id: "corporate", label: "I'm burnt out from the corporate grind", icon: Building },
+    { id: "healthcare", label: "I work in healthcare but want more meaning", icon: Stethoscope },
+    { id: "retiree", label: "I'm in a new life chapter and want purpose", icon: Clock },
+    { id: "practitioner", label: "I'm already a coach and want to grow", icon: GraduationCap },
 ];
 
 const INCOME_GOALS = [
-    { id: "2-4k", label: "$2,000-$4,000/month", subtext: "Nice side income", icon: DollarSign },
-    { id: "5-8k", label: "$5,000-$8,000/month", subtext: "Replace my current job", icon: DollarSign },
-    { id: "10k+", label: "$10,000+/month", subtext: "Build a real business", icon: DollarSign },
+    { id: "2-4k", label: "$2,000-$4,000/month", subtext: "A nice boost for my family" },
+    { id: "5-8k", label: "$5,000-$8,000/month", subtext: "Freedom from my current job" },
+    { id: "10k+", label: "$10,000+/month", subtext: "A thriving business of my own" },
 ];
 
 const DOING_IT_FOR = [
-    { id: "myself", label: "Myself" },
-    { id: "family", label: "My family/kids" },
-    { id: "others_health", label: "Women in my life who struggle with health" },
-    { id: "help_others", label: "Others like me who need help" },
+    { id: "myself", label: "Myself - it's my time now 💪" },
+    { id: "family", label: "My family and kids 👨‍👩‍👧" },
+    { id: "others_health", label: "Women who struggle like I did 💕" },
+    { id: "help_others", label: "People who need guidance 🌟" },
 ];
 
 export function OnboardingQuestionsStep({
@@ -113,6 +111,15 @@ export function OnboardingQuestionsStep({
         }
     };
 
+    // Sarah's warm messages for each step
+    const sarahMessages = {
+        1: `I'd love to know what brought you here today, ${firstName}! 💕`,
+        2: `Tell me a bit about where you are in life right now...`,
+        3: `Here's a fun one! If you could earn extra income doing something you love, what would feel amazing?`,
+        4: `I love this question! Dream with me for a second...`,
+        5: `Last one! Who inspires you to keep going?`,
+    };
+
     if (isCompleted) {
         return (
             <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
@@ -120,10 +127,10 @@ export function OnboardingQuestionsStep({
                     <CheckCircle className="w-8 h-8 text-emerald-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-emerald-800 mb-2">
-                    Profile Complete ✓
+                    I know you so much better now! ✨
                 </h3>
                 <p className="text-emerald-600">
-                    Great! Sarah now knows how to personalize your experience.
+                    Let's start your learning journey together!
                 </p>
             </div>
         );
@@ -131,22 +138,29 @@ export function OnboardingQuestionsStep({
 
     return (
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-6 text-white">
-                <h2 className="text-xl font-bold mb-2">Tell Us About You</h2>
-                <p className="text-burgundy-200 text-sm">
-                    This helps Sarah personalize your experience (Step {step} of {totalSteps})
-                </p>
+            {/* Sarah Header - Warm and Personal */}
+            <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-5 text-white">
+                <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-xl font-bold">S</span>
+                    </div>
+                    <div className="flex-1">
+                        <p className="text-burgundy-200 text-xs mb-1">Sarah says...</p>
+                        <p className="text-lg font-medium leading-relaxed">
+                            {sarahMessages[step as keyof typeof sarahMessages]}
+                        </p>
+                    </div>
+                </div>
                 {/* Progress dots */}
                 <div className="flex gap-2 mt-4">
                     {[1, 2, 3, 4, 5].map((s) => (
                         <div
                             key={s}
-                            className={`h-2 flex-1 rounded-full transition-colors ${s < step
-                                    ? "bg-emerald-400"
-                                    : s === step
-                                        ? "bg-white"
-                                        : "bg-white/30"
+                            className={`h-1.5 flex-1 rounded-full transition-colors ${s < step
+                                ? "bg-emerald-400"
+                                : s === step
+                                    ? "bg-white"
+                                    : "bg-white/30"
                                 }`}
                         />
                     ))}
@@ -154,29 +168,26 @@ export function OnboardingQuestionsStep({
             </div>
 
             {/* Questions */}
-            <div className="p-6">
+            <div className="p-5">
                 {step === 1 && (
-                    <div className="space-y-4">
-                        <Label className="text-lg font-semibold text-gray-900">
-                            What brought you here today, {firstName}?
-                        </Label>
-                        <div className="grid gap-3">
+                    <div className="space-y-3">
+                        <div className="grid gap-2.5">
                             {BRING_REASONS.map((reason) => {
                                 const Icon = reason.icon;
                                 return (
                                     <button
                                         key={reason.id}
                                         onClick={() => setBringReason(reason.id)}
-                                        className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${bringReason === reason.id
-                                                ? "border-burgundy-500 bg-burgundy-50"
-                                                : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
+                                        className={`flex items-center gap-3 p-3.5 rounded-xl border-2 transition-all text-left ${bringReason === reason.id
+                                            ? "border-burgundy-500 bg-burgundy-50"
+                                            : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
                                             }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${bringReason === reason.id ? "bg-burgundy-500 text-white" : "bg-gray-100 text-gray-600"
+                                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${bringReason === reason.id ? "bg-burgundy-500 text-white" : "bg-gray-100 text-gray-500"
                                             }`}>
-                                            <Icon className="w-5 h-5" />
+                                            <Icon className="w-4 h-4" />
                                         </div>
-                                        <span className={`font-medium ${bringReason === reason.id ? "text-burgundy-700" : "text-gray-700"}`}>
+                                        <span className={`font-medium text-sm ${bringReason === reason.id ? "text-burgundy-700" : "text-gray-700"}`}>
                                             {reason.label}
                                         </span>
                                     </button>
@@ -187,27 +198,24 @@ export function OnboardingQuestionsStep({
                 )}
 
                 {step === 2 && (
-                    <div className="space-y-4">
-                        <Label className="text-lg font-semibold text-gray-900">
-                            What describes you best right now?
-                        </Label>
-                        <div className="grid gap-3">
+                    <div className="space-y-3">
+                        <div className="grid gap-2.5">
                             {SITUATIONS.map((situation) => {
                                 const Icon = situation.icon;
                                 return (
                                     <button
                                         key={situation.id}
                                         onClick={() => setCurrentSituation(situation.id)}
-                                        className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${currentSituation === situation.id
-                                                ? "border-burgundy-500 bg-burgundy-50"
-                                                : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
+                                        className={`flex items-center gap-3 p-3.5 rounded-xl border-2 transition-all text-left ${currentSituation === situation.id
+                                            ? "border-burgundy-500 bg-burgundy-50"
+                                            : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
                                             }`}
                                     >
-                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${currentSituation === situation.id ? "bg-burgundy-500 text-white" : "bg-gray-100 text-gray-600"
+                                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${currentSituation === situation.id ? "bg-burgundy-500 text-white" : "bg-gray-100 text-gray-500"
                                             }`}>
-                                            <Icon className="w-5 h-5" />
+                                            <Icon className="w-4 h-4" />
                                         </div>
-                                        <span className={`font-medium ${currentSituation === situation.id ? "text-burgundy-700" : "text-gray-700"}`}>
+                                        <span className={`font-medium text-sm ${currentSituation === situation.id ? "text-burgundy-700" : "text-gray-700"}`}>
                                             {situation.label}
                                         </span>
                                     </button>
@@ -218,21 +226,18 @@ export function OnboardingQuestionsStep({
                 )}
 
                 {step === 3 && (
-                    <div className="space-y-4">
-                        <Label className="text-lg font-semibold text-gray-900">
-                            If you could earn extra income, how much would feel life-changing?
-                        </Label>
-                        <div className="grid gap-3">
+                    <div className="space-y-3">
+                        <div className="grid gap-2.5">
                             {INCOME_GOALS.map((goal) => (
                                 <button
                                     key={goal.id}
                                     onClick={() => setIncomeGoal(goal.id)}
                                     className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${incomeGoal === goal.id
-                                            ? "border-burgundy-500 bg-burgundy-50"
-                                            : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
+                                        ? "border-burgundy-500 bg-burgundy-50"
+                                        : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
                                         }`}
                                 >
-                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold ${incomeGoal === goal.id ? "bg-burgundy-500 text-white" : "bg-emerald-100 text-emerald-600"
+                                    <div className={`w-11 h-11 rounded-lg flex items-center justify-center text-lg font-bold ${incomeGoal === goal.id ? "bg-burgundy-500 text-white" : "bg-emerald-100 text-emerald-600"
                                         }`}>
                                         $
                                     </div>
@@ -249,82 +254,68 @@ export function OnboardingQuestionsStep({
                 )}
 
                 {step === 4 && (
-                    <div className="space-y-4">
-                        <Label className="text-lg font-semibold text-gray-900">
-                            What would change in your life if you achieved this?
-                        </Label>
-                        <p className="text-gray-500 text-sm">
-                            Be specific! This helps Sarah understand your goals.
+                    <div className="space-y-3">
+                        <p className="text-gray-600 text-sm">
+                            If you hit that income goal, what would change for you? Paint me a picture! 🎨
                         </p>
                         <Textarea
                             value={lifeChangeGoal}
                             onChange={(e) => setLifeChangeGoal(e.target.value)}
-                            placeholder="I could finally quit my stressful job and have more time with my kids while doing something I love..."
-                            className="min-h-[150px] text-base"
+                            placeholder="I could finally take that vacation, pay off those bills, spend mornings with my kids instead of rushing to work..."
+                            className="min-h-[130px] text-base"
                         />
-                        <p className="text-sm text-gray-400">
-                            {lifeChangeGoal.length} characters
-                            {lifeChangeGoal.length < 10 && " (minimum 10)"}
+                        <p className="text-xs text-gray-400">
+                            {lifeChangeGoal.length < 10 && "Just a few more words..."}
                         </p>
                     </div>
                 )}
 
                 {step === 5 && (
-                    <div className="space-y-6">
-                        <div className="space-y-4">
-                            <Label className="text-lg font-semibold text-gray-900">
-                                Who are you doing this for?
-                            </Label>
-                            <div className="grid grid-cols-2 gap-3">
-                                {DOING_IT_FOR.map((option) => (
-                                    <button
-                                        key={option.id}
-                                        onClick={() => setDoingItFor(option.id)}
-                                        className={`p-4 rounded-xl border-2 transition-all text-center ${doingItFor === option.id
-                                                ? "border-burgundy-500 bg-burgundy-50"
-                                                : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
-                                            }`}
-                                    >
-                                        <span className={`font-medium ${doingItFor === option.id ? "text-burgundy-700" : "text-gray-700"}`}>
-                                            {option.label}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-2.5">
+                            {DOING_IT_FOR.map((option) => (
+                                <button
+                                    key={option.id}
+                                    onClick={() => setDoingItFor(option.id)}
+                                    className={`p-3.5 rounded-xl border-2 transition-all text-center ${doingItFor === option.id
+                                        ? "border-burgundy-500 bg-burgundy-50"
+                                        : "border-gray-200 hover:border-burgundy-300 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    <span className={`font-medium text-sm ${doingItFor === option.id ? "text-burgundy-700" : "text-gray-700"}`}>
+                                        {option.label}
+                                    </span>
+                                </button>
+                            ))}
                         </div>
 
                         {/* Optional Photo Upload */}
-                        <div className="border-t pt-6">
-                            <Label className="text-base font-semibold text-gray-900 mb-3 block">
-                                Upload your photo (optional)
-                            </Label>
-                            <div className="flex items-center gap-4">
+                        <div className="border-t pt-4 mt-4">
+                            <p className="text-sm font-medium text-gray-700 mb-2">
+                                Add your photo so I can put a face to the name! 📸
+                            </p>
+                            <div className="flex items-center gap-3">
                                 <div className="relative">
                                     {userAvatar ? (
                                         <Image
                                             src={userAvatar}
                                             alt="Your photo"
-                                            width={64}
-                                            height={64}
-                                            className="w-16 h-16 rounded-full object-cover"
+                                            width={56}
+                                            height={56}
+                                            className="w-14 h-14 rounded-full object-cover"
                                         />
                                     ) : (
-                                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                                            <Camera className="w-6 h-6 text-gray-400" />
+                                        <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                                            <Camera className="w-5 h-5 text-gray-400" />
                                         </div>
                                     )}
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">
-                                        Makes your experience more personal! 📸
-                                    </p>
-                                    <button
-                                        className="text-sm text-burgundy-600 hover:underline mt-1"
-                                        onClick={() => setPhotoUploaded(true)}
-                                    >
-                                        {photoUploaded ? "Photo added ✓" : "Add photo later in settings"}
-                                    </button>
-                                </div>
+                                <button
+                                    className="text-sm text-burgundy-600 hover:underline"
+                                    onClick={() => setPhotoUploaded(true)}
+                                >
+                                    {photoUploaded ? "Photo added ✓" : "I'll add one later"}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -332,7 +323,7 @@ export function OnboardingQuestionsStep({
             </div>
 
             {/* Footer */}
-            <div className="p-6 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
+            <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
                 {step > 1 ? (
                     <Button
                         variant="ghost"
@@ -351,7 +342,7 @@ export function OnboardingQuestionsStep({
                         disabled={!canProceed()}
                         className="bg-burgundy-600 hover:bg-burgundy-700 text-white"
                     >
-                        Continue
+                        Next
                         <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                 ) : (
@@ -367,7 +358,7 @@ export function OnboardingQuestionsStep({
                             </>
                         ) : (
                             <>
-                                Start Learning
+                                Let's Go! 🚀
                                 <ArrowRight className="w-4 h-4 ml-2" />
                             </>
                         )}

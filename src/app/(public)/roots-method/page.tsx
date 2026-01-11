@@ -836,7 +836,7 @@ export default function ROOTSMethodPage() {
                         <span className="font-semibold text-slate-300">AccrediPro Academy</span>
                     </div>
                     <p className="mb-4 max-w-3xl mx-auto text-xs">
-                        © 2025 AccrediPro Academy. All rights reserved.<br />
+                        © {new Date().getFullYear()} AccrediPro Academy. All rights reserved.<br />
                         R.O.O.T.S. Method™ is a trademark of AccrediPro Academy. This certification provides foundational education in integrative health, functional medicine principles, and practice-building. Income examples represent graduate goals and vary based on effort, background, and dedication. Full certification available for graduates who want to go deeper.
                     </p>
                 </div>

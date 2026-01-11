@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { DashboardNav } from "@/components/layout/dashboard-nav";
+import { LeadSidebar } from "@/components/lead-portal/LeadSidebar";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { NotificationProvider } from "@/components/providers/notification-provider";
 import { SWRProvider } from "@/components/providers/swr-provider";
@@ -16,15 +17,26 @@ async function getUserOnboardingData(userId: string) {
     select: {
       hasCompletedOnboarding: true,
       firstName: true,
+      lastName: true,
+      email: true,
+      avatar: true,
     },
   });
 
-  // Get all enrollments to check Mini Diploma status
+  // Get all enrollments to check Mini Diploma status - using explicit select to avoid P2022
   const enrollments = await prisma.enrollment.findMany({
     where: { userId },
-    include: {
+    select: {
+      id: true,
+      status: true,
       course: {
-        select: { slug: true, coachId: true, coach: { select: { firstName: true, lastName: true } } },
+        select: {
+          slug: true,
+          coachId: true,
+          coach: {
+            select: { firstName: true, lastName: true },
+          },
+        },
       },
     },
   });
@@ -35,10 +47,35 @@ async function getUserOnboardingData(userId: string) {
   });
 
   // Check if user is mini-diploma-only (single mini-diploma enrollment, not completed)
-  const isMiniDiplomaOnly =
+  const isWomensHealthLead =
     enrollments.length === 1 &&
-    (enrollments[0].course.slug === "fm-mini-diploma" || enrollments[0].course.slug === "womens-health-mini-diploma") &&
+    enrollments[0].course.slug === "womens-health-mini-diploma" &&
     enrollments[0].status !== "COMPLETED";
+
+  const isFMLead =
+    enrollments.length === 1 &&
+    enrollments[0].course.slug === "fm-mini-diploma" &&
+    enrollments[0].status !== "COMPLETED";
+
+  const isMiniDiplomaOnly = isWomensHealthLead || isFMLead;
+
+  // Get completed lessons for diploma progress
+  let diplomaCompleted = false;
+  if (isWomensHealthLead) {
+    const completedLessons = await prisma.userTag.count({
+      where: {
+        userId,
+        tag: { startsWith: "wh-lesson-complete:" },
+      },
+    });
+    diplomaCompleted = completedLessons >= 9;
+  }
+
+  // Check if certificate was claimed
+  const leadOnboarding = await prisma.leadOnboarding.findUnique({
+    where: { userId },
+    select: { claimedCertificate: true },
+  }).catch(() => null);
 
   // Get coach name from first enrollment with a coach
   const enrollmentWithCoach = enrollments.find((e) => e.course.coachId);
@@ -50,8 +87,14 @@ async function getUserOnboardingData(userId: string) {
     // Mini Diploma users skip onboarding for max conversion
     hasCompletedOnboarding: isMiniDiplomaOnly ? true : (user?.hasCompletedOnboarding ?? false),
     userName: user?.firstName || "Learner",
+    lastName: user?.lastName || "",
+    email: user?.email || "",
+    avatar: user?.avatar || null,
     coachName,
     isMiniDiplomaOnly,
+    isWomensHealthLead,
+    diplomaCompleted,
+    certificateClaimed: leadOnboarding?.claimedCertificate || false,
     lessonCount,
   };
 }
@@ -67,14 +110,65 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const { hasCompletedOnboarding, userName, coachName, lessonCount } = await getUserOnboardingData(
-    session.user.id
-  );
+  const {
+    hasCompletedOnboarding,
+    userName,
+    lastName,
+    email,
+    avatar,
+    coachName,
+    isMiniDiplomaOnly,
+    isWomensHealthLead,
+    diplomaCompleted,
+    certificateClaimed,
+    lessonCount,
+  } = await getUserOnboardingData(session.user.id);
 
   // Calculate next milestone for coach widget
   const MILESTONE_INTERVALS = [5, 10, 15, 25, 50, 75, 100];
   const nextMilestone = MILESTONE_INTERVALS.find(m => m > lessonCount) || 100;
 
+  // Lead users see the LeadSidebar instead of DashboardNav
+  if (isWomensHealthLead) {
+    return (
+      <SessionProvider>
+        <SWRProvider>
+          <NotificationProvider>
+            <AchievementProvider>
+              <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+                {/* Lead Sidebar */}
+                <LeadSidebar
+                  firstName={userName}
+                  lastName={lastName}
+                  email={email}
+                  avatar={avatar}
+                  diplomaCompleted={diplomaCompleted}
+                  certificateClaimed={certificateClaimed}
+                />
+
+                {/* Main content - adjusted for lead sidebar */}
+                <main className="pl-64 pt-0 overflow-x-hidden">
+                  <div className="p-4 lg:p-8 max-w-full overflow-x-hidden">
+                    {children}
+                  </div>
+                </main>
+
+                {/* Floating Coach Sarah Widget */}
+                <FloatingCoachWidget
+                  userName={userName}
+                  userId={session.user.id}
+                  currentLessonCount={lessonCount}
+                  nextMilestone={nextMilestone}
+                />
+              </div>
+            </AchievementProvider>
+          </NotificationProvider>
+        </SWRProvider>
+      </SessionProvider>
+    );
+  }
+
+  // Regular users see the full dashboard
   return (
     <SessionProvider>
       <SWRProvider>
@@ -111,4 +205,3 @@ export default async function DashboardLayout({
     </SessionProvider>
   );
 }
-

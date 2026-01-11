@@ -6,8 +6,8 @@ import prisma from "./prisma";
 import { headers } from "next/headers";
 import { triggerAutoMessage } from "./auto-messages";
 import { lookupIpLocation } from "./ip-geolocation";
+import { trackEvent, EVENTS } from "./oracle/track";
 
-// Helper to parse user agent
 function parseUserAgent(ua: string | null) {
   if (!ua) return { device: "Unknown", browser: "Unknown" };
 
@@ -177,6 +177,13 @@ export const authOptions: NextAuthOptions = {
         }).catch((err) => {
           console.error("[AUTH] Failed to create login history:", err);
         });
+
+        // Track login event in Oracle (fire and forget)
+        trackEvent(user.id, EVENTS.LOGIN, {
+          isFirstLogin,
+          device,
+          browser,
+        }).catch(() => { });
 
         // Send welcome message on first login
         if (isFirstLogin) {

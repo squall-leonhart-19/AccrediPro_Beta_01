@@ -123,9 +123,10 @@ export async function POST(request: NextRequest) {
             }
 
             // User exists but not enrolled - enroll them
-            const courseData = await prisma.course.findUnique({
-                where: { slug: courseSlug },
-            });
+            const courseResults = await prisma.$queryRaw<any[]>`
+                SELECT id FROM "Course" WHERE slug = ${courseSlug} LIMIT 1
+            `;
+            const courseData = courseResults[0];
 
             if (!courseData) {
                 return NextResponse.json(
@@ -143,7 +144,7 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            // Update user with mini diploma info
+            // Update user with mini diploma info and phone if missing
             await prisma.user.update({
                 where: { id: existingUser.id },
                 data: {
@@ -167,9 +168,10 @@ export async function POST(request: NextRequest) {
         const passwordHash = await bcrypt.hash(LEAD_PASSWORD, 10);
 
         // Find the course
-        const courseData = await prisma.course.findUnique({
-            where: { slug: courseSlug },
-        });
+        const courseResults = await prisma.$queryRaw<any[]>`
+            SELECT id FROM "Course" WHERE slug = ${courseSlug} LIMIT 1
+        `;
+        const courseData = courseResults[0];
 
         if (!courseData) {
             return NextResponse.json(
@@ -228,15 +230,20 @@ export async function POST(request: NextRequest) {
                         },
                     });
 
-                    // Schedule voice message (will be processed by cron)
-                    await prisma.scheduledVoiceMessage.create({
+                    // Create voice message with static audio file (instant - no cron needed)
+                    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://learn.accredipro.academy";
+                    const staticAudioUrl = `${BASE_URL}/audio/welcome-mini-diploma.mp3`;
+
+                    await prisma.message.create({
                         data: {
                             senderId: coach.id,
                             receiverId: user.id,
-                            voiceText: welcomeContent.voiceScript(firstName.trim()),
-                            textContent: `🎤 Voice message from Sarah`,
-                            scheduledFor: new Date(Date.now() + 30 * 1000), // 30 seconds later
-                            status: "PENDING",
+                            content: `🎤 Voice message from Sarah`,
+                            attachmentUrl: staticAudioUrl,
+                            attachmentType: "voice",
+                            attachmentName: "Welcome from Sarah",
+                            voiceDuration: 15,
+                            messageType: "DIRECT",
                         },
                     });
 

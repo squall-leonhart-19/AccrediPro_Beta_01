@@ -1877,7 +1877,7 @@ export function MessagesClient({
                               )}
                               <div
                                 className={cn(
-                                  "rounded-2xl px-3.5 py-2.5 relative text-sm transition-all duration-200",
+                                  "rounded-2xl px-3.5 py-2.5 relative text-sm transition-all duration-200 max-w-[75%] break-words",
                                   isOwn
                                     ? "message-bubble-premium text-white rounded-br-md chat-bubble-own"
                                     : "bg-white text-gray-900 rounded-bl-md border border-gray-100 chat-bubble-other"

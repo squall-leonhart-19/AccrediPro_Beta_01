@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Practice Lab: Advanced Clinical Case Application</title>
+ <style>
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: rgba(255, 255, 255, 0.75);
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ }
+
+ .meta-item {
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ .practice-lab-banner {
+ background: #ecfdf5;
+ border: 2px solid #047857;
+ border-radius: 16px;
+ padding: 30px;
+ margin-bottom: 35px;
+ text-align: center;
+ }
+
+ .practice-lab-banner .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .practice-lab-banner h2 {
+ margin: 0 0 10px;
+ color: #047857;
+ font-size: 24px;
+ }
+
+ .practice-lab-banner p {
+ margin: 0;
+ color: #059669;
+ font-size: 16px;
+ }
+
+ h2 {
+ font-size: 24px;
+ color: #047857;
+ margin: 50px 0 20px;
+ padding-bottom: 12px;
+ border-bottom: 3px solid #B8860B;
+ display: inline-block;
+ }
+
+ h3 {
+ font-size: 20px;
+ color: #333;
+ margin: 35px 0 15px;
+ }
+
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ }
+
+ /* Complex Case Box */
+ .complex-case {
+ background: #fafafa;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ border: 2px solid #047857;
+ }
+
+ .case-header {
+ display: flex;
+ align-items: center;
+ gap: 20px;
+ margin-bottom: 25px;
+ }
+
+ .case-avatar {
+ width: 80px;
+ height: 80px;
+ background: linear-gradient(135deg, #047857, #059669);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 32px;
+ color: white;
+ }
+
+ .case-title h3 {
+ margin: 0 0 5px;
+ font-size: 22px;
+ color: #1a1a1a;
+ }
+
+ .case-title p {
+ margin: 0;
+ color: #666;
+ font-size: 15px;
+ }
+
+ .case-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 16px;
+ margin-top: 20px;
+ }
+
+ .case-item {
+ background: white;
+ padding: 18px;
+ border-radius: 10px;
+ border-left: 4px solid #047857;
+ }
+
+ .case-item .label {
+ font-weight: 600;
+ color: #047857;
+ font-size: 12px;
+ text-transform: uppercase;
+ margin-bottom: 6px;
+ }
+
+ .case-item .value {
+ font-size: 14px;
+ color: #333;
+ line-height: 1.6;
+ }
+
+ /* Clinical Reasoning Box */
+ .reasoning-box {
+ background: #ecfdf5;
+ border: 2px solid #059669;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .reasoning-box h3 {
+ margin: 0 0 20px;
+ color: #047857;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .reasoning-box h3::before {
+ content: '🧠';
+ font-size: 24px;
+ }
+
+ .reasoning-step {
+ background: white;
+ border-radius: 10px;
+ padding: 20px;
+ margin-bottom: 14px;
+ }
+
+ .reasoning-step .step-label {
+ font-weight: 700;
+ color: #047857;
+ font-size: 14px;
+ margin-bottom: 8px;
+ }
+
+ .reasoning-step .step-content {
+ font-size: 15px;
+ line-height: 1.7;
+ }
+
+ /* Differential Considerations */
+ .differential-box {
+ background: #f0f9ff;
+ border: 2px solid #0284c7;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .differential-box h3 {
+ margin: 0 0 20px;
+ color: #0369a1;
+ }
+
+ .differential-grid {
+ display: grid;
+ gap: 14px;
+ }
+
+ .differential-item {
+ background: white;
+ padding: 18px;
+ border-radius: 10px;
+ display: flex;
+ gap: 16px;
+ align-items: flex-start;
+ }
+
+ .differential-item .priority {
+ width: 36px;
+ height: 36px;
+ background: #0284c7;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 700;
+ flex-shrink: 0;
+ }
+
+ .differential-item .content h4 {
+ margin: 0 0 6px;
+ font-size: 16px;
+ }
+
+ .differential-item .content p {
+ margin: 0;
+ font-size: 14px;
+ color: #666;
+ }
+
+ /* Referral Triggers */
+ .referral-box {
+ background: #fef2f2;
+ border: 2px solid #ef4444;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .referral-box h3 {
+ margin: 0 0 20px;
+ color: #dc2626;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .referral-box h3::before {
+ content: '🚨';
+ font-size: 24px;
+ }
+
+ .referral-list {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ }
+
+ .referral-list li {
+ background: white;
+ padding: 16px 20px;
+ margin-bottom: 10px;
+ border-radius: 10px;
+ border-left: 4px solid #ef4444;
+ font-size: 15px;
+ }
+
+ /* Protocol Planning */
+ .protocol-box {
+ background: #ecfdf5;
+ border: 2px solid #10B981;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .protocol-box h3 {
+ margin: 0 0 20px;
+ color: #059669;
+ }
+
+ .protocol-phases {
+ display: grid;
+ gap: 16px;
+ }
+
+ .phase-card {
+ background: white;
+ padding: 20px;
+ border-radius: 12px;
+ border: 1px solid #d1fae5;
+ }
+
+ .phase-card .phase-header {
+ font-weight: 700;
+ color: #059669;
+ font-size: 15px;
+ margin-bottom: 10px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .phase-card ul {
+ margin: 0;
+ padding-left: 20px;
+ font-size: 14px;
+ }
+
+ .phase-card li {
+ margin-bottom: 6px;
+ }
+
+ /* Encouragement */
+ .encouragement-box {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ border-radius: 16px;
+ padding: 40px;
+ margin: 45px 0;
+ text-align: center;
+ color: white;
+ }
+
+ .encouragement-box .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .encouragement-box h3 {
+ margin: 0 0 15px;
+ font-size: 26px;
+ color: white;
+ }
+
+ .encouragement-box p {
+ margin: 0;
+ font-size: 18px;
+ color: rgba(255, 255, 255, 0.9);
+ max-width: 600px;
+ margin: 0 auto;
+ }
+
+ .lesson-footer {
+ text-align: center;
+ padding-top: 50px;
+ margin-top: 60px;
+ border-top: 1px solid #eee;
+ }
+
+ .footer-logo {
+ max-width: 160px;
+ margin-bottom: 15px;
+ }
+
+ .lesson-footer .brand {
+ color: #047857;
+ font-weight: 600;
+ font-size: 15px;
+ margin: 0 0 5px;
+ }
+
+ .lesson-footer .copyright {
+ color: #888;
+ font-size: 13px;
+ margin: 0;
+ }
+
+ @media (max-width: 600px) {
+ .case-grid {
+ grid-template-columns: 1fr;
+ }
+ }
+
+ .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+ .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+ .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+ .data-table tr:nth-child(even) { background: #f9fafb; }
+
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ .highlight {
+ color: inherit;
+ }
+
+ .stat-highlight {
+ color: #047857;
+ font-weight: bold;
+ }
+
+ .references-box {
+ margin-top: 60px;
+ padding: 30px;
+ border-radius: 16px;
+ background-color: #f9f8f7;
+ }
+
+ .references-box h3 {
+ color: #047857;
+ border-bottom: 2px solid #B8860B;
+ padding-bottom: 10px;
+ margin-bottom: 20px;
+ }
+
+ .references-box ul {
+ list-style: none;
+ padding-left: 0;
+ }
+
+ .references-box li {
+ margin-bottom: 10px;
+ font-size: 15px;
+ }
+
+ .case-study {
+ background-color: #f0fdf4;
+ border-left: 6px solid #047857;
+ padding: 20px;
+ margin-bottom: 20px;
+ border-radius: 8px;
+ }
+
+ .case-study h4 {
+ margin-top: 0;
+ color: #047857;
+ }
+
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 17: L2: Complex Client Scenarios</p>
+ <h1 class="lesson-title">Practice Lab: Advanced Clinical Case Application</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">14 min read</span>
+ <span class="meta-item">Lesson 8 of 8</span>
+ </div>
+ </header>
+
+ <div class="practice-lab-banner">
+ <div class="emoji">🔬</div>
+ <h2>Advanced Clinical Case Study</h2>
+ <p>Let's tackle a complex case requiring in-depth clinical reasoning. Are you ready?</p>
+ </div>
+
+ <h2>Complex Case Presentation</h2>
+
+ <div class="complex-case">
+ <div class="case-header">
+ <div class="case-avatar">👩</div>
+ <div class="case-title">
+ <h3>Eleanor, 48</h3>
+ <p>Marketing Executive, Austin, TX • Married, two teenage children</p>
+ </div>
+ </div>
+
+ <div class="case-grid">
+ <div class="case-item">
+ <div class="label">Chief Complaints</div>
+ <div class="value">Extreme fatigue, brain fog, anxiety, cyclical acne (worse premenstrually), irregular periods, difficulty losing weight despite exercise and dieting.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Medical History</div>
+ <div class="value">Endometriosis (diagnosed at 32, surgically treated twice), migraines, seasonal allergies, iron-deficiency anemia.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Medications</div>
+ <div class="value">Combined oral contraceptive pill (for endometriosis), ibuprofen (as needed for migraines), antihistamine (loratadine) during allergy season, iron supplement (ferrous sulfate).</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Labs (Recent)</div>
+ <div class="value">CBC (low ferritin), CMP (normal), TSH 2.8, Free T4 1.1 (mid-range), HbA1c 5.4, Vitamin D 35, Estrogen:Progesterone Ratio high.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Diet</div>
+ <div class="value">"Generally healthy" – salads, lean protein, some processed snacks, coffee (3 cups daily), occasional alcohol.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Stress Level</div>
+ <div class="value">Very high – demanding job, kids preparing for college, financial pressures. Reports feeling "wired but tired."</div>
+ </div>
+ </div>
+ </div>
+
+ <h2>Clinical Reasoning Process</h2>
+
+ <div class="reasoning-box">
+ <h3>Deconstructing Eleanor's Case</h3>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 1: Identify the Interconnected Systems</div>
+ <div class="step-content">Several systems are involved: Endocrine (HPA axis dysregulation, sex hormones), immune (endometriosis, allergies), gastrointestinal (potential iron absorption issues), neurological (migraines, anxiety). Recognizing these connections is crucial.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 2: Uncover Potential Root Causes</div>
+ <div class="step-content">Chronic stress likely plays a significant role in HPA axis dysregulation, contributing to fatigue and anxiety. Endometriosis creates a pro-inflammatory state. The oral contraceptive pill impacts nutrient status (B vitamins, magnesium, zinc) and gut microbiome, potentially exacerbating fatigue and brain fog. Iron deficiency impacts thyroid function and energy production.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 3: Map the "Domino Effect"</div>
+ <div class="step-content">Chronic stress → HPA axis dysregulation → impaired cortisol response → fatigue and anxiety → reliance on stimulants (coffee) → further HPA axis dysregulation. Endometriosis → chronic inflammation → nutrient depletion → impaired detoxification → hormonal imbalances → worsening symptoms.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 4: Prioritize Interventions Strategically</div>
+ <div class="step-content">Address HPA axis dysregulation through stress management techniques and adaptogens. Support detoxification pathways to reduce the inflammatory burden from endometriosis. Optimize nutrient status, focusing on iron and B vitamins. Consider the impact of the oral contraceptive pill on the microbiome and nutrient absorption.</div>
+ </div>
+ </div>
+
+ <h2>Differential Considerations</h2>
+
+ <div class="differential-box">
+ <h3>Exploring Other Possibilities</h3>
+
+ <div class="differential-grid">
+ <div class="differential-item">
+ <div class="priority">1</div>
+ <div class="content">
+ <h4>Mast Cell Activation Syndrome (MCAS)</h4>
+ <p>Given the history of allergies, endometriosis, and migraines, consider MCAS. Symptoms may worsen premenstrually due to hormonal fluctuations impacting mast cell activity.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">2</div>
+ <div class="content">
+ <h4>Estrogen Dominance/Progesterone Deficiency</h4>
+ <p>Irregular periods, cyclical acne, and endometriosis suggest a potential imbalance. The estrogen:progesterone ratio should be further investigated, and progesterone levels assessed.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">3</div>
+ <div class="content">
+ <h4>Underlying Autoimmunity</h4>
+ <p>Endometriosis is associated with increased risk of autoimmune conditions. Screen for common autoimmune markers (ANA, thyroid antibodies) if clinically indicated.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">4</div>
+ <div class="content">
+ <h4>Gut Dysbiosis</h4>
+ <p>Long-term use of oral contraceptives and ibuprofen can disrupt the gut microbiome. Assess for dysbiosis via comprehensive stool testing.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2>When to Refer</h2>
+
+ <div class="referral-box">
+ <h3>Critical Red Flags – Immediate MD Referral Required</h3>
+
+ <ul class="referral-list">
+ <li><strong>Severe, debilitating migraines</strong> unresponsive to conventional treatment (rule out underlying neurological conditions).</li>
+ <li><strong>Sudden, unexplained weight loss</strong> alongside fatigue (possible malignancy).</li>
+ <li><strong>Heavy, prolonged menstrual bleeding</strong> leading to severe anemia (gynecological evaluation).</li>
+ <li><strong>Chest pain, shortness of breath, or palpitations</strong> (cardiac evaluation).</li>
+ <li><strong>Suicidal ideation or severe depression</strong> (urgent mental health referral).</li>
+ </ul>
+ </div>
+
+ <h2>Proposed Protocol: A Phased Approach</h2>
+
+ <div class="protocol-box">
+ <h3>Strategic Intervention Plan</h3>
+
+ <div class="protocol-phases">
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 1: Foundation & Stress Modulation (Weeks 1-4)</div>
+ <ul>
+ <li>Implement stress reduction techniques: Mindfulness, meditation, yoga (minimum 20 minutes daily).</li>
+ <li>Adaptogenic support: Ashwagandha (<span class="stat-highlight">300-500mg</span> daily), Rhodiola Rosea (<span class="stat-highlight">200-400mg</span> daily) - monitor for tolerance.</li>
+ <li>Dietary adjustments: Anti-inflammatory diet (emphasize whole foods, reduce processed foods, sugar, and refined carbohydrates).</li>
+ <li>Gentle detoxification support: Liver support with milk thistle (<span class="stat-highlight">200mg</span> daily).</li>
+ </ul>
+ </div>
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 2: Targeted Support & Hormone Balance (Weeks 5-8)</div>
+ <ul>
+ <li>Address iron deficiency: Optimize iron supplementation (consider bisglycinate form for better absorption) and dietary sources. Retest ferritin levels.</li>
+ <li>Hormone support: Consider seed cycling or phytoestrogens (if appropriate, under careful monitoring).</li>
+ <li>Gut health support: Probiotic supplementation (broad-spectrum, high-potency).</li>
+ <li>Advanced testing: Comprehensive stool analysis, DUTCH test (Dried Urine Test for Comprehensive Hormones).</li>
+ </ul>
+ </div>
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 3: Optimization & Maintenance (Weeks 9-12)</div>
+ <ul>
+ <li>Tailor protocol based on test results and symptom response.</li>
+ <li>Consider consulting with a gynecologist regarding endometriosis management.</li>
+ <li>Continue stress management practices and dietary modifications.</li>
+ <li>Reassess and adjust as needed, emphasizing long-term lifestyle changes.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. What are the key considerations when choosing adaptogens for Eleanor, given her "wired but tired" presentation?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Consider adaptogens that are calming yet energizing, such as Ashwagandha and Rhodiola. Start with low doses and monitor for paradoxical effects (e.g., increased anxiety or insomnia). Be mindful of potential interactions with medications.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. How can you assess the impact of the oral contraceptive pill on Eleanor's gut health and nutrient status?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">A comprehensive stool analysis can assess gut dysbiosis. Evaluate nutrient levels (B vitamins, magnesium, zinc) through blood testing. Discuss potential alternatives to the oral contraceptive pill with Eleanor's gynecologist.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>3. What specific dietary recommendations would you provide to address both endometriosis-related inflammation and iron deficiency?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Recommend an anti-inflammatory diet rich in whole foods, omega-3 fatty acids, and iron-rich foods (e.g., lean meats, leafy greens, legumes). Consider incorporating foods that support liver detoxification (e.g., cruciferous vegetables). Advise on strategies to enhance iron absorption (e.g., consuming iron-rich foods with vitamin C).</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Complex cases like Eleanor's require a systems-based approach, considering the interplay between endocrine, immune, gastrointestinal, and neurological systems.</li>
+ <li>Uncovering root causes is essential. Chronic stress, endometriosis-related inflammation, and medication side effects can significantly impact adrenal function and overall health.</li>
+ <li>Prioritize interventions strategically. Start with foundational support (stress management, diet), then address specific imbalances (hormones, nutrients).</li>
+ <li>Always consider differential diagnoses. Rule out other potential underlying conditions (e.g., MCAS, autoimmunity) based on clinical presentation and lab findings.</li>
+ <li>Know your scope of practice and refer when necessary. Partner with other healthcare providers (e.g., gynecologist, gastroenterologist) for optimal patient care.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <h3>References & Further Reading</h3>
+ <ul>
+ <li> prior use of oral contraceptives." <em>Human Reproduction</em> 27.1 (2012): 254-262.</li>
+ <li> endometriosis: a systematic review and meta-analysis." <em>Human Reproduction Update</em> 23.6 (2017): 674-689.</li>
+ <li> dysregulation in chronic pain and fatigue." <em>Frontiers in Neuroendocrinology</em> 33.3 (2012): 225-236.</li>
+ <li> effects of <em>Withania somnifera</em> (Ashwagandha) on stress and health-related parameters: A systematic review and meta-analysis." <em>Journal of Alternative and Complementary Medicine</em> 27.4 (2021): 292-302.</li>
+ <li> in women with endometriosis." <em>Fertility and Sterility</em> 98.4 (2012): 924-931.</li>
+ <li> therapy for endometriosis-related pain." <em>Cochrane Database of Systematic Reviews</em> 5 (2023).</li>
+ <li>Parazzini, F. et al. (2011). "Iron intake and risk of endometriosis." <em>American Journal of Obstetrics and Gynecology</em> 204.4 (2011): 317.e1-317.e6.</li>
+ <li>Vargas-Rodríguez, L. et al. (2022). "The role of the gut microbiome in endometriosis: A systematic review." <em>Journal of Endometriosis and Pelvic Pain Disorders</em> 14.3 (2022): 141-152.</li>
+ </ul>
+ </div>
+
+ </div>
+ <script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+ </script>
+</body>
+
+</html>

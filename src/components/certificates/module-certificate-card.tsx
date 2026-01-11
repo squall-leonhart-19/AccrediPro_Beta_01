@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Download, Share2, Award, Loader2, Eye, Calendar, Hash } from "lucide-react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -54,11 +55,15 @@ export function ModuleCertificateCard({
 
   const handleDownloadPDF = async () => {
     setDownloading(true);
+    const toastId = toast.loading("Generating certificate PDF...");
+
     try {
-      // Try server-side PDF generation first (uses Sejda API)
+      // 1. Try Server-Side API (PDFBolt)
       const response = await fetch("/api/certificates/pdf", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           studentName,
           moduleTitle,
@@ -69,39 +74,43 @@ export function ModuleCertificateCard({
         }),
       });
 
-      if (response.ok) {
-        const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get("content-type");
 
-        if (contentType?.includes("application/pdf")) {
-          // Server returned PDF directly
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = `${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          return;
-        }
+      if (response.ok && contentType?.includes("application/pdf")) {
+        // Success - Download PDF
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
 
-        // Fallback: server returned HTML for client-side rendering
-        const data = await response.json();
-        if (data.fallback && data.html) {
-          await generatePDFClientSide(data.html);
-          return;
-        }
+        toast.dismiss(toastId);
+        toast.success("Certificate downloaded successfully!");
+      } else {
+        // Fallback to Client-Side if API fails or returns fallback instructions
+        console.warn("Server-side PDF generation failed or requested fallback, switching to client-side.");
+        await generatePDFClientSide(generateCertificateHTML());
+        toast.dismiss(toastId);
+        toast.success("Certificate downloaded successfully!");
       }
 
-      // If server failed, use client-side generation
-      await generatePDFClientSide(generateCertificateHTML());
-
     } catch (error) {
-      console.error("PDF download failed:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      alert(`Failed to generate PDF: ${errorMessage}. Please try again.`);
+      console.error("PDF download failed (Server-Side), trying fallback:", error);
+      // Try fallback one last time if fetch failed completely
+      try {
+        await generatePDFClientSide(generateCertificateHTML());
+        toast.dismiss(toastId);
+        toast.success("Certificate downloaded successfully! (Fallback)");
+      } catch (fallbackError) {
+        toast.dismiss(toastId);
+        toast.error(`Failed to generate PDF: ${fallbackError instanceof Error ? fallbackError.message : "Unknown error"}`);
+      }
     } finally {
+      // Cleanup fallback container if exists (handled by generatePDFClientSide logic usually, but safe to check)
       const leftover = document.getElementById("pdf-certificate-container");
       if (leftover) {
         document.body.removeChild(leftover);
@@ -114,205 +123,118 @@ export function ModuleCertificateCard({
     const html2canvas = (await import("html2canvas")).default;
     const { jsPDF } = await import("jspdf");
 
-    const container = document.createElement("div");
-    container.id = "pdf-certificate-container";
-    container.style.cssText = `
-      position: absolute;
-      left: -10000px;
+    // Create an iframe to isolate the rendering from global app styles (Tailwind v4 uses oklch which crashes html2canvas)
+    const iframe = document.createElement("iframe");
+    iframe.id = "pdf-certificate-container";
+    iframe.style.cssText = `
+      position: fixed;
+      left: 0;
       top: 0;
       width: 1122px;
       height: 793px;
-      background-color: #fdfbf7;
-      overflow: hidden;
+      z-index: -9999;
+      border: none;
     `;
-    container.innerHTML = htmlContent;
-    document.body.appendChild(container);
+    document.body.appendChild(iframe);
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!doc) {
+        throw new Error("Could not create iframe document");
+      }
 
-    const certificateElement = container.querySelector(".certificate") as HTMLElement;
-    if (!certificateElement) {
-      document.body.removeChild(container);
-      throw new Error("Certificate element not found");
+      // Write content into the iframe - PRISTINE environment, no global CSS
+      doc.open();
+      doc.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body { margin: 0; padding: 0; background-color: #fdfbf7; }
+            </style>
+          </head>
+          <body>
+            ${htmlContent}
+          </body>
+        </html>
+      `);
+      doc.close();
+
+      // Wait for font rendering / layout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const certificateElement = doc.querySelector(".certificate") as HTMLElement;
+      if (!certificateElement) {
+        throw new Error("Certificate element not found in iframe");
+      }
+
+      const canvas = await html2canvas(certificateElement, {
+        scale: 2,
+        backgroundColor: "#fdfbf7",
+        width: 1122,
+        height: 793,
+        logging: false,
+        window: doc.defaultView,
+      } as any);
+
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      pdf.addImage(imgData, "PNG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+
+      pdf.save(`${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`);
+
+      // Cleanup on success
+      if (document.body.contains(iframe)) {
+        document.body.removeChild(iframe);
+      }
+    } catch (e) {
+      console.error("IFrame generation failed:", e);
+      // Cleanup is handled by handleDownloadPDF finally block if checks ID,
+      // but we should throw to let the toast know
+      throw e;
     }
-
-    const canvas = await html2canvas(certificateElement, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#fdfbf7",
-      width: 1122,
-      height: 793,
-      logging: false,
-    });
-
-    document.body.removeChild(container);
-
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "mm",
-      format: "a4",
-    });
-
-    const imgData = canvas.toDataURL("image/png", 1.0);
-    pdf.addImage(imgData, "PNG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-
-    const pdfBlob = pdf.output("blob");
-    const url = URL.createObjectURL(pdfBlob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   };
 
   const generateCertificateHTML = () => {
     return `
-      <div class="certificate" style="
-        width: 1122px;
-        height: 793px;
-        padding: 40px 70px;
-        background: linear-gradient(135deg, #fdfbf7 0%, #fff9f0 100%);
-        border: 4px solid #722F37;
-        position: relative;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        font-family: Georgia, serif;
-        box-sizing: border-box;
-      ">
-        <div style="
-          position: absolute;
-          top: 24px;
-          left: 24px;
-          right: 24px;
-          bottom: 24px;
-          border: 2px solid #D4AF37;
-          pointer-events: none;
-        "></div>
-
-        <div style="
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 18px;
-          margin-bottom: 16px;
-        ">
-          <div style="
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #D4AF37;
-            font-size: 28px;
-            font-weight: bold;
-          ">AP</div>
-          <div style="
-            font-size: 28px;
-            color: #722F37;
-            font-weight: bold;
-            letter-spacing: 4px;
-          ">ACCREDIPRO ACADEMY</div>
-        </div>
-
-        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-          <div style="
-            font-size: 14px;
-            color: #722F37;
-            font-weight: bold;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #D4AF37;
-            display: inline-block;
-          ">${courseName}</div>
-
-          <div style="
-            font-size: 44px;
-            color: #722F37;
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-family: 'Times New Roman', serif;
-          ">Certificate of Completion</div>
-
-          <div style="
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 12px;
-          ">This is to certify that</div>
-
-          <div style="
-            font-size: 44px;
-            color: #333;
-            font-family: 'Brush Script MT', cursive;
-            margin-bottom: 12px;
-            border-bottom: 3px solid #D4AF37;
-            display: inline-block;
-            padding: 0 35px 6px;
-          ">${formattedName}</div>
-
-          <div style="
-            font-size: 15px;
-            color: #555;
-            max-width: 600px;
-            margin: 0 auto 12px;
-            line-height: 1.5;
-          ">has successfully completed the module and demonstrated proficiency in</div>
-
-          <div style="
-            font-size: 28px;
-            color: #722F37;
-            font-weight: bold;
-            margin-bottom: 16px;
-          ">${cleanModuleTitle}</div>
-        </div>
-
-        <div style="margin: 8px 0;">
-          <div style="
-            width: 70px;
-            height: 70px;
-            border: 2px solid #D4AF37;
-            border-radius: 50%;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #D4AF37;
-          ">
-            <div style="font-size: 28px;">★</div>
-            <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">Certified</div>
+      <div class="certificate" style="width:1122px;height:793px;background:#1a1a1a;border:10px solid #C9A227;position:relative;font-family:Georgia,serif;box-sizing:border-box;">
+        <div style="position:absolute;top:20px;left:20px;right:20px;bottom:20px;border:2px solid #C9A22755;box-sizing:border-box;"></div>
+        <div style="padding:45px 80px;text-align:center;color:#fff;height:100%;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:15px;">
+            <div style="width:65px;height:65px;background:#C9A227;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#1a1a1a;font-size:26px;font-weight:bold;">AP</div>
+            <div style="font-size:30px;color:#C9A227;letter-spacing:7px;">ACCREDIPRO ACADEMY</div>
           </div>
-        </div>
-
-        <div style="
-          display: flex;
-          justify-content: center;
-          gap: 150px;
-          margin-top: 8px;
-        ">
-          <div style="text-align: center;">
-            <div style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px;">Date</div>
-            <div style="font-size: 12px; color: #666; margin-top: 2px;">${fullFormattedDate}</div>
+          <div style="font-size:12px;color:#C9A227;letter-spacing:5px;margin-bottom:20px;text-transform:uppercase;">${courseName}</div>
+          <div style="width:450px;height:1px;background:#C9A22788;margin:0 auto 25px;"></div>
+          <div style="font-size:56px;color:#fff;font-style:italic;margin-bottom:12px;">Certificate of Completion</div>
+          <div style="font-size:17px;color:#888;margin-bottom:22px;">This is to certify that</div>
+          <div style="font-size:58px;font-family:cursive;color:#C9A227;margin-bottom:12px;">${formattedName}</div>
+          <div style="width:400px;height:3px;background:#C9A227;margin:0 auto 22px;"></div>
+          <div style="font-size:16px;color:#999;margin-bottom:15px;max-width:650px;margin-left:auto;margin-right:auto;line-height:1.5;">
+            has successfully completed all course requirements and demonstrated exceptional proficiency in
           </div>
-          <div style="text-align: center;">
-            <div style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px;">Certificate ID</div>
-            <div style="font-size: 12px; color: #666; margin-top: 2px;">${certificateId}</div>
+          <div style="font-size:32px;color:#fff;font-weight:bold;margin-bottom:25px;">${cleanModuleTitle}</div>
+          <div style="display:flex;justify-content:center;align-items:center;gap:80px;">
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:#555;letter-spacing:2px;margin-bottom:6px;">DATE ISSUED</div>
+              <div style="font-size:17px;color:#ccc;">${fullFormattedDate}</div>
+            </div>
+            <div style="width:95px;height:95px;border:4px solid #C9A227;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div style="font-size:32px;color:#C9A227;line-height:1;margin-top:-12px;">★</div>
+              <div style="font-size:10px;color:#C9A227;letter-spacing:2px;margin-top:6px;">VERIFIED</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:11px;color:#555;letter-spacing:2px;margin-bottom:6px;">CERTIFICATE ID</div>
+              <div style="font-size:17px;color:#ccc;font-family:monospace;">${certificateId}</div>
+            </div>
           </div>
+          <div style="font-size:12px;color:#555;font-style:italic;margin-top:20px;">Veritas Et Excellentia — Truth and Excellence</div>
         </div>
-
-        <div style="
-          font-size: 11px;
-          color: #999;
-          font-style: italic;
-          margin-top: 8px;
-          letter-spacing: 0.5px;
-        ">Veritas Et Excellentia — Truth and Excellence</div>
       </div>
     `;
   };
@@ -342,13 +264,13 @@ export function ModuleCertificateCard({
       <Card className="overflow-hidden hover:shadow-md transition-shadow">
         <div className="flex items-center gap-4 p-4">
           {/* Mini Certificate Preview */}
-          <div className="w-24 h-16 bg-gradient-to-br from-[#fdfbf7] to-[#fff9f0] rounded-lg border border-gold-300 flex-shrink-0 relative overflow-hidden">
-            <div className="absolute inset-1 border border-gold-200/50 rounded" />
+          <div className="w-24 h-16 rounded-lg flex-shrink-0 relative overflow-hidden" style={{ background: '#1a1a1a', border: '2px solid #C9A227' }}>
+            <div className="absolute inset-1 rounded" style={{ border: '1px solid rgba(201,162,39,0.3)' }} />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="w-5 h-5 bg-burgundy-600 rounded flex items-center justify-center mb-0.5">
-                <span className="text-gold-400 text-[6px] font-bold">AP</span>
+              <div className="w-6 h-6 rounded flex items-center justify-center mb-0.5" style={{ background: '#C9A227' }}>
+                <span className="text-[7px] font-bold" style={{ color: '#1a1a1a' }}>AP</span>
               </div>
-              <Award className="w-3 h-3 text-gold-500" />
+              <span className="text-lg" style={{ color: '#C9A227' }}>★</span>
             </div>
           </div>
 
@@ -412,68 +334,71 @@ export function ModuleCertificateCard({
             </DialogTitle>
           </DialogHeader>
 
-          {/* Full Certificate Preview */}
-          <div className="bg-gradient-to-br from-[#fdfbf7] to-[#fff9f0] p-6 md:p-8 relative rounded-lg border border-gold-300">
+          {/* Full Certificate Preview - Luxury 3E Dark Gold Theme */}
+          <div className="p-6 md:p-8 relative rounded-lg" style={{ background: '#1a1a1a', border: '4px solid #C9A227' }}>
             {/* Decorative Border */}
-            <div className="absolute inset-3 border border-gold-400/50 rounded-lg pointer-events-none" />
+            <div className="absolute inset-4 rounded-lg pointer-events-none" style={{ border: '1px solid rgba(201,162,39,0.3)' }} />
 
             <div className="relative text-center">
               {/* Header */}
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-burgundy-600 to-burgundy-700 rounded-xl flex items-center justify-center">
-                  <span className="text-gold-400 font-bold text-sm">AP</span>
+              <div className="flex items-center justify-center gap-3 mb-4 flex-wrap">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center" style={{ background: '#C9A227' }}>
+                  <span className="font-bold text-base md:text-lg" style={{ color: '#1a1a1a' }}>AP</span>
                 </div>
-                <h2 className="text-xl font-bold text-burgundy-700 tracking-wider">
+                <h2 className="text-lg md:text-2xl font-bold tracking-widest" style={{ color: '#C9A227' }}>
                   ACCREDIPRO ACADEMY
                 </h2>
               </div>
 
-              {/* Course Name Badge */}
-              <Badge className="bg-burgundy-600 text-white mb-3">
+              {/* Course Name */}
+              <p className="text-xs tracking-widest uppercase mb-4" style={{ color: '#C9A227' }}>
                 {courseName}
-              </Badge>
-
-              {/* Title */}
-              <h1 className="text-2xl md:text-3xl font-serif font-bold text-burgundy-700 mb-2">
-                Certificate of Completion
-              </h1>
-              <p className="text-gray-500 text-sm mb-3">This is to certify that</p>
-
-              {/* Recipient Name */}
-              <p className="text-2xl md:text-3xl font-serif text-gray-800 border-b-2 border-gold-400 inline-block px-6 pb-2 mb-3">
-                {formattedName}
               </p>
 
+              <div className="w-48 md:w-64 h-px mx-auto mb-5" style={{ background: 'rgba(201,162,39,0.5)' }} />
+
+              {/* Title */}
+              <h1 className="text-2xl md:text-3xl font-serif italic text-white mb-3">
+                Certificate of Completion
+              </h1>
+              <p className="text-gray-400 text-sm md:text-base mb-4">This is to certify that</p>
+
+              {/* Recipient Name */}
+              <p className="text-2xl md:text-3xl font-serif mb-3" style={{ color: '#C9A227' }}>
+                {formattedName}
+              </p>
+              <div className="w-36 md:w-48 h-0.5 mx-auto mb-4" style={{ background: '#C9A227' }} />
+
               {/* Description */}
-              <p className="text-gray-600 text-sm max-w-md mx-auto mb-2">
-                has successfully completed the module and demonstrated proficiency in
+              <p className="text-gray-400 text-xs md:text-sm max-w-lg mx-auto mb-3">
+                has successfully completed all course requirements and demonstrated exceptional proficiency in
               </p>
 
               {/* Module Name */}
-              <h3 className="text-xl font-bold text-burgundy-700 mb-4">
+              <h3 className="text-lg md:text-xl font-bold text-white mb-5">
                 {cleanModuleTitle}
               </h3>
 
               {/* Seal */}
-              <div className="w-14 h-14 border-2 border-gold-400 rounded-full flex flex-col items-center justify-center mx-auto mb-4">
-                <Award className="w-5 h-5 text-gold-500" />
-                <span className="text-[7px] text-gold-600 uppercase tracking-wider">Certified</span>
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex flex-col items-center justify-center mx-auto mb-4" style={{ border: '2px solid #C9A227' }}>
+                <span className="text-xl md:text-2xl -mt-2" style={{ color: '#C9A227' }}>★</span>
+                <span className="text-[7px] md:text-[8px] uppercase tracking-wider mt-1" style={{ color: '#C9A227' }}>VERIFIED</span>
               </div>
 
               {/* Footer Info */}
-              <div className="flex items-center justify-center gap-8 text-xs text-gray-500">
+              <div className="flex items-center justify-center gap-12 text-xs">
                 <div>
-                  <p className="text-gray-400 uppercase tracking-wider mb-0.5">Date</p>
-                  <p className="text-gray-700">{fullFormattedDate}</p>
+                  <p className="text-gray-500 uppercase tracking-wider mb-1">Date Issued</p>
+                  <p className="text-gray-300">{fullFormattedDate}</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 uppercase tracking-wider mb-0.5">Certificate ID</p>
-                  <p className="text-gray-700 font-mono">{certificateId}</p>
+                  <p className="text-gray-500 uppercase tracking-wider mb-1">Certificate ID</p>
+                  <p className="text-gray-300 font-mono">{certificateId}</p>
                 </div>
               </div>
 
               {/* Motto */}
-              <p className="text-xs text-gray-400 italic mt-4">
+              <p className="text-xs text-gray-500 italic mt-4">
                 Veritas Et Excellentia — Truth and Excellence
               </p>
             </div>

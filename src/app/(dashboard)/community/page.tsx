@@ -8,15 +8,27 @@ export const dynamic = "force-dynamic";
 
 // Get user's enrolled communities based on their course enrollments
 async function getUserCommunities(userId: string) {
-  // Get user's enrollments with course categories
+  // Get user's enrollments with course categories using explicit select
   const enrollments = await prisma.enrollment.findMany({
     where: { userId },
-    include: {
+    select: {
+      id: true,
       course: {
-        include: {
+        select: {
+          id: true,
+          slug: true,
           category: {
-            include: {
-              community: true,
+            select: {
+              id: true,
+              name: true,
+              color: true,
+              community: {
+                select: {
+                  id: true,
+                  name: true,
+                  memberCount: true,
+                },
+              },
             },
           },
         },

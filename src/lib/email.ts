@@ -12,7 +12,7 @@ const SUPPRESSION_TAGS = [
 ];
 
 // Transactional emails (password reset, course enrollment, etc.)
-const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <info@accredipro-certificate.com>";
+const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <support@accredipro-certificate.com>";
 // Marketing/sequence emails - PERSONAL NAME to reach primary inbox
 // Format: "Sarah <email>" looks like a personal email, not marketing
 const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@accredipro-certificate.com>";
@@ -1258,9 +1258,7 @@ export async function sendWomensHealthWelcomeEmail({ to, firstName, isExistingUs
 
   return sendEmail({
     to,
-    subject: isExistingUser
-      ? `${firstName}, your Women's Health Mini Diploma is ready!`
-      : `Welcome ${firstName}! Let's learn about hormones together`,
+    subject: `Your login details of AccrediPro Academy`,
     html: emailWrapper(content, `Your free Women's Health Mini Diploma with Sarah is ready!`),
   });
 }

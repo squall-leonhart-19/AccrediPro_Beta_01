@@ -63,6 +63,12 @@ interface Coach {
     title: string | null;
 }
 
+interface SocialProof {
+    reviews: number;
+    enrollments: number;
+    rating: number;
+}
+
 interface Course {
     id: string;
     slug: string;
@@ -84,6 +90,7 @@ interface Course {
         reviews: number;
     };
     analytics: CourseAnalytics | null;
+    socialProof?: SocialProof;
 }
 
 interface Enrollment {
@@ -445,18 +452,19 @@ export function CourseCatalogFilters({
 
         switch (sortBy) {
             case "newest": filtered = [...filtered].reverse(); break;
-            case "popular": filtered = [...filtered].sort((a, b) => (b.analytics?.totalEnrolled || b._count.enrollments) - (a.analytics?.totalEnrolled || a._count.enrollments)); break;
-            case "rating": filtered = [...filtered].sort((a, b) => (b.analytics?.avgRating || 0) - (a.analytics?.avgRating || 0)); break;
+            case "popular": filtered = [...filtered].sort((a, b) => (b.socialProof?.enrollments || b._count.enrollments) - (a.socialProof?.enrollments || a._count.enrollments)); break;
+            case "rating": filtered = [...filtered].sort((a, b) => (b.socialProof?.rating || 0) - (a.socialProof?.rating || 0)); break;
             case "price-low": filtered = [...filtered].sort((a, b) => (a.price || 0) - (b.price || 0)); break;
             case "price-high": filtered = [...filtered].sort((a, b) => (b.price || 0) - (a.price || 0)); break;
         }
         return filtered;
     }, [courses, searchQuery, selectedCategory, selectedSuperCategory, selectedTier, sortBy, enrollmentMap]);
 
-    const totalEnrolled = courses.reduce((acc, c) => acc + (c.analytics?.totalEnrolled || c._count.enrollments), 0);
-    const totalReviews = courses.reduce((acc, c) => acc + c._count.reviews, 0);
+    // Use socialProof data for display counts (from admin panel)
+    const totalEnrolled = courses.reduce((acc, c) => acc + (c.socialProof?.enrollments || c._count.enrollments), 0);
+    const totalReviews = courses.reduce((acc, c) => acc + (c.socialProof?.reviews || c._count.reviews), 0);
     const avgRating = courses.length > 0
-        ? (courses.reduce((acc, c) => acc + (c.analytics?.avgRating || 4.8), 0) / courses.length).toFixed(1)
+        ? (courses.reduce((acc, c) => acc + (c.socialProof?.rating || 4.8), 0) / courses.length).toFixed(1)
         : "4.9";
 
     const formatDuration = (minutes: number | null) => {
@@ -512,11 +520,11 @@ export function CourseCatalogFilters({
                             <div className="hidden md:flex items-center gap-2">
                                 <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
                                     <Users className="w-3 h-3 mr-1.5 text-gold-400" />
-                                    {(totalEnrolled + 2500).toLocaleString()}+ Students
+                                    {totalEnrolled.toLocaleString()}+ Students
                                 </Badge>
                                 <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
                                     <Star className="w-3 h-3 mr-1.5 text-gold-400 fill-gold-400" />
-                                    {avgRating} • 1,344+ Reviews
+                                    {avgRating} • {totalReviews.toLocaleString()}+ Reviews
                                 </Badge>
                                 <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
                                     <Shield className="w-3 h-3 mr-1.5 text-gold-400" />
@@ -638,14 +646,14 @@ export function CourseCatalogFilters({
                     {filteredCourses.map((course) => {
                         const enrollment = enrollmentMap.get(course.id);
                         const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-                        const courseAvgRating = course.analytics?.avgRating || 4.9;
-                        // Custom enrolled/review counts based on course for social proof
-                        const isFMPractitioner = course.slug === "functional-medicine-complete-certification";
+                        // Use socialProof data from admin panel (dynamic values)
+                        const courseAvgRating = course.socialProof?.rating || 4.9;
+                        const enrolledCount = course.socialProof?.enrollments || course._count.enrollments || 100;
+                        const reviewCount = course.socialProof?.reviews || course._count.reviews || 50;
+                        // Cohort closed status (keep for specific courses)
                         const isWomensHormone = course.slug === "womens-hormone-health-coach";
                         const isGutHealth = course.slug === "gut-health-digestive-wellness-coach";
                         const isCohortClosed = isWomensHormone || isGutHealth;
-                        const enrolledCount = isFMPractitioner ? 1447 : isWomensHormone ? 892 : isGutHealth ? 756 : (course.analytics?.totalEnrolled || course._count.enrollments) + 100;
-                        const reviewCount = isFMPractitioner ? 823 : isWomensHormone ? 412 : isGutHealth ? 347 : course._count.reviews;
                         const coach = course.coach || DEFAULT_COACH;
                         const originalPrice = course.price ? Math.round(course.price * 1.5) : null;
                         const discountPercent = originalPrice && course.price ? getDiscountPercent(originalPrice, course.price) : 0;

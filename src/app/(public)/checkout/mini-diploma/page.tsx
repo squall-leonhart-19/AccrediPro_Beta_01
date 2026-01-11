@@ -172,11 +172,10 @@ export default function MiniDiplomaCheckoutPage() {
                             {/* Order Bump */}
                             <div
                                 onClick={() => setOrderBumpSelected(!orderBumpSelected)}
-                                className={`relative bg-gradient-to-r cursor-pointer transition-all ${
-                                    orderBumpSelected
+                                className={`relative bg-gradient-to-r cursor-pointer transition-all ${orderBumpSelected
                                         ? "from-amber-50 to-yellow-50 border-amber-400 shadow-lg"
                                         : "from-amber-50/50 to-yellow-50/50 border-amber-200 hover:border-amber-300"
-                                } rounded-2xl border-2 border-dashed overflow-hidden`}
+                                    } rounded-2xl border-2 border-dashed overflow-hidden`}
                             >
                                 {/* Bump Header */}
                                 <div className="bg-gradient-to-r from-amber-400 to-yellow-400 px-4 py-2 flex items-center gap-2">
@@ -187,11 +186,10 @@ export default function MiniDiplomaCheckoutPage() {
                                 <div className="p-5">
                                     <div className="flex items-start gap-4">
                                         {/* Checkbox */}
-                                        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${
-                                            orderBumpSelected
+                                        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 mt-1 transition-all ${orderBumpSelected
                                                 ? "bg-amber-500 border-amber-500"
                                                 : "border-amber-400 bg-white"
-                                        }`}>
+                                            }`}>
                                             {orderBumpSelected && (
                                                 <CheckCircle2 className="h-4 w-4 text-white" />
                                             )}
@@ -478,7 +476,7 @@ export default function MiniDiplomaCheckoutPage() {
                 <footer className="bg-slate-100 border-t border-slate-200 py-6 mt-12">
                     <div className="max-w-6xl mx-auto px-4 text-center text-sm text-slate-500">
                         <p className="mb-2">
-                            © 2025 AccrediPro Academy. All rights reserved.
+                            © {new Date().getFullYear()} AccrediPro Academy. All rights reserved.
                         </p>
                         <div className="flex items-center justify-center gap-4">
                             <Link href="/terms" className="hover:text-burgundy-600 transition-colors">Terms</Link>

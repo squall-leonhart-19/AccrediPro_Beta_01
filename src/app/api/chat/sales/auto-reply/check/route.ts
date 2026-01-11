@@ -23,6 +23,11 @@ function detectPersona(page: string | null): keyof typeof COACH_PERSONAS {
 
     const p = page.toLowerCase().trim();
 
+    // 🌸 WOMEN'S HEALTH (Sarah - with WH-specific context)
+    if (p.includes("womens-health") || p.includes("women-health") || p.includes("hormone") ||
+        p.includes("menopause") || p.includes("fertility") || p.includes("prenatal") ||
+        p.includes("pcos") || p.includes("thyroid")) return "fm-health";
+
     // 🏆 EXACT MATCHES (High Traffic Sales Pages)
     // These must NEVER be mis-identified.
     if (p === "fm-course-certification" || p === "fm-certification") return "fm-health";
@@ -193,7 +198,14 @@ async function sendAutoReply(conversationMsgs: any[], visitorId: string): Promis
     const firstMsg = conversationMsgs[0];
     const personaKey = detectPersona(firstMsg.page);
     const persona = getPersonaByKey(personaKey);
-    const coachEmail = PERSONA_EMAILS[personaKey];
+
+    // WH pages use separate Sarah account
+    const page = (firstMsg.page || "").toLowerCase();
+    const isWH = page.includes("womens-health") || page.includes("women-health") ||
+        page.includes("hormone") || page.includes("menopause") ||
+        page.includes("fertility") || page.includes("prenatal") ||
+        page.includes("pcos") || page.includes("thyroid");
+    const coachEmail = isWH ? "sarah_womenhealth@accredipro-certificate.com" : PERSONA_EMAILS[personaKey];
 
     // Fetch coach's knowledge base from database
     const coach = await prisma.user.findFirst({

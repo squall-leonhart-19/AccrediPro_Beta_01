@@ -14,8 +14,18 @@ import {
   ArrowRight,
   CheckCircle,
   Shield,
-  Sparkles
+  Sparkles,
+  Award
 } from "lucide-react";
+
+// ASI Brand Colors
+const BRAND = {
+  burgundy: "#722f37",
+  burgundyDark: "#4e1f24",
+  gold: "#d4af37",
+  goldLight: "#e8c547",
+  cream: "#fdf8f0",
+};
 
 function LoginForm() {
   const router = useRouter();
@@ -67,8 +77,6 @@ function LoginForm() {
 
       if (cleared) {
         console.log("[LOGIN] Nuclear cleanup executed. Stale chunks removed.");
-        // Optional: Force reload if we found chunks to ensure clean state? 
-        // Better to let the user try logging in.
       }
     }
   }, []);
@@ -107,8 +115,20 @@ function LoginForm() {
           setError(result.error);
         }
       } else if (result?.ok) {
-        console.log("[LOGIN] Success! Redirecting to:", callbackUrl);
-        router.push(callbackUrl);
+        console.log("[LOGIN] Success! Checking user type for redirect...");
+
+        // Check if user should go to lead portal
+        try {
+          const response = await fetch("/api/auth/get-redirect");
+          const data = await response.json();
+          const redirectUrl = data.redirectUrl || callbackUrl;
+          console.log("[LOGIN] Redirecting to:", redirectUrl);
+          router.push(redirectUrl);
+        } catch (err) {
+          // Fallback to default
+          console.log("[LOGIN] Redirect check failed, using default:", callbackUrl);
+          router.push(callbackUrl);
+        }
         router.refresh();
       } else {
         console.error("[LOGIN] Unexpected result - no error but not ok:", result);
@@ -127,7 +147,7 @@ function LoginForm() {
       <CardContent className="p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-burgundy-50 rounded-full text-burgundy-600 text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-4" style={{ backgroundColor: `${BRAND.burgundy}10`, color: BRAND.burgundy }}>
             <Shield className="w-4 h-4" />
             Secure Login
           </div>
@@ -135,7 +155,7 @@ function LoginForm() {
             Welcome Back
           </h2>
           <p className="text-gray-500">
-            Sign in to continue your learning journey
+            Sign in to continue your certification journey
           </p>
         </div>
 
@@ -199,7 +219,18 @@ function LoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 transition-all bg-gray-50 focus:bg-white"
+                className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl transition-all bg-gray-50 focus:bg-white outline-none"
+                style={{
+                  boxShadow: 'none',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = BRAND.burgundy;
+                  e.target.style.boxShadow = `0 0 0 3px ${BRAND.burgundy}20`;
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
             </div>
           </div>
@@ -218,7 +249,15 @@ function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 transition-all bg-gray-50 focus:bg-white"
+                className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl transition-all bg-gray-50 focus:bg-white outline-none"
+                onFocus={(e) => {
+                  e.target.style.borderColor = BRAND.burgundy;
+                  e.target.style.boxShadow = `0 0 0 3px ${BRAND.burgundy}20`;
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
               <button
                 type="button"
@@ -241,7 +280,8 @@ function LoginForm() {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-burgundy-600 focus:ring-burgundy-500 cursor-pointer"
+                className="w-4 h-4 rounded border-gray-300 cursor-pointer"
+                style={{ accentColor: BRAND.burgundy }}
               />
               <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
                 Remember me
@@ -249,7 +289,8 @@ function LoginForm() {
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-burgundy-600 hover:text-burgundy-700 font-medium hover:underline"
+              className="text-sm font-medium hover:underline"
+              style={{ color: BRAND.burgundy }}
             >
               Forgot password?
             </Link>
@@ -258,7 +299,11 @@ function LoginForm() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full py-6 text-base font-semibold rounded-xl bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 shadow-lg shadow-burgundy-500/25 transition-all hover:shadow-xl hover:shadow-burgundy-500/30 group"
+            className="w-full py-6 text-base font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl group"
+            style={{
+              background: `linear-gradient(to right, ${BRAND.burgundy}, ${BRAND.burgundyDark})`,
+              boxShadow: `0 10px 25px -5px ${BRAND.burgundy}40`
+            }}
             size="lg"
             disabled={loading}
           >
@@ -285,16 +330,28 @@ function LoginForm() {
             <div className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-4 text-gray-500">New to AccrediPro?</span>
+            <span className="bg-white px-4 text-gray-500">New to ASI?</span>
           </div>
         </div>
 
         {/* Register Link */}
         <Link
           href="/register"
-          className="flex items-center justify-center gap-2 w-full py-3.5 border-2 border-burgundy-200 text-burgundy-700 rounded-xl font-medium hover:bg-burgundy-50 hover:border-burgundy-300 transition-all group"
+          className="flex items-center justify-center gap-2 w-full py-3.5 border-2 rounded-xl font-medium transition-all group"
+          style={{
+            borderColor: `${BRAND.burgundy}30`,
+            color: BRAND.burgundy
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = `${BRAND.burgundy}08`;
+            e.currentTarget.style.borderColor = `${BRAND.burgundy}50`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.borderColor = `${BRAND.burgundy}30`;
+          }}
         >
-          <Sparkles className="w-5 h-5" />
+          <Award className="w-5 h-5" />
           Create your account
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
@@ -330,7 +387,7 @@ export default function LoginPage() {
             <div className="space-y-4">
               <div className="h-12 bg-gray-100 rounded-xl" />
               <div className="h-12 bg-gray-100 rounded-xl" />
-              <div className="h-12 bg-burgundy-200 rounded-xl" />
+              <div className="h-12 rounded-xl" style={{ backgroundColor: `${BRAND.burgundy}20` }} />
             </div>
           </div>
         </CardContent>

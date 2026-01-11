@@ -44,12 +44,7 @@ export function MiniDiplomaCertificate({
                 }),
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Failed to generate PDF");
-            }
-
-            // Check if we got a PDF back or a fallback HTML response
+            // Check if we got a PDF back
             const contentType = response.headers.get("content-type");
             if (contentType?.includes("application/pdf")) {
                 // Download the PDF
@@ -62,12 +57,27 @@ export function MiniDiplomaCertificate({
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
+            } else if (response.ok) {
+                // Got HTML fallback - open in new window for printing
+                const data = await response.json();
+                if (data.html) {
+                    const printWindow = window.open('', '_blank');
+                    if (printWindow) {
+                        printWindow.document.write(data.html);
+                        printWindow.document.close();
+                        printWindow.onload = () => printWindow.print();
+                    }
+                } else {
+                    throw new Error("No PDF or HTML received");
+                }
             } else {
-                throw new Error("Unexpected response format");
+                throw new Error("Failed to generate certificate");
             }
         } catch (error) {
             console.error("PDF download failed:", error);
-            alert("Failed to generate PDF. Please try again.");
+            // Ultimate fallback - print the current page
+            alert("PDF service temporarily unavailable. Click OK to print this page instead.");
+            window.print();
         } finally {
             setDownloading(false);
         }

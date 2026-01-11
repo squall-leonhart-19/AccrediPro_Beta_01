@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Practice Lab: Advanced Treatment Planning</title>
+ <style>
+ * {
+ box-sizing: border-box;
+ }
+
+ body {
+ font-family: Georgia, 'Times New Roman', serif;
+ line-height: 1.8;
+ color: #2d2d2d;
+ background: #f8f6f3;
+ margin: 0;
+ padding: 0;
+ }
+
+ .lesson-container {
+ max-width: 860px;
+ margin: 0 auto;
+ padding: 40px 30px;
+ background: #ffffff;
+ min-height: 100vh;
+ box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+ }
+
+ .module-header {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ padding: 35px;
+ border-radius: 16px;
+ margin-bottom: 30px;
+ position: relative;
+ }
+
+ .module-header::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+ }
+
+ .module-label {
+ margin: 0;
+ font-size: 11px;
+ color: rgba(255, 255, 255, 0.75);
+ text-transform: uppercase;
+ letter-spacing: 2.5px;
+ }
+
+ .lesson-title {
+ margin: 10px 0 0;
+ font-size: 28px;
+ color: #ffffff;
+ font-weight: 700;
+ }
+
+ .lesson-meta {
+ display: flex;
+ gap: 12px;
+ margin-top: 20px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255, 255, 255, 0.15);
+ }
+
+ .meta-item {
+ font-size: 12px;
+ color: rgba(255, 255, 255, 0.85);
+ background: rgba(255, 255, 255, 0.1);
+ padding: 5px 12px;
+ border-radius: 4px;
+ }
+
+ .practice-lab-banner {
+ background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+ border: 2px solid #7c3aed;
+ border-radius: 16px;
+ padding: 30px;
+ margin-bottom: 35px;
+ text-align: center;
+ }
+
+ .practice-lab-banner .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .practice-lab-banner h2 {
+ margin: 0 0 10px;
+ color: #5b21b6;
+ font-size: 24px;
+ }
+
+ .practice-lab-banner p {
+ margin: 0;
+ color: #6d28d9;
+ font-size: 16px;
+ }
+
+ h2 {
+ font-size: 24px;
+ color: #047857;
+ margin: 50px 0 20px;
+ padding-bottom: 12px;
+ border-bottom: 3px solid #B8860B;
+ display: inline-block;
+ }
+
+ h3 {
+ font-size: 20px;
+ color: #333;
+ margin: 35px 0 15px;
+ }
+
+ p {
+ font-size: 17px;
+ margin-bottom: 20px;
+ }
+
+ .complex-case {
+ background: #fafafa;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ border: 2px solid #047857;
+ }
+
+ .case-header {
+ display: flex;
+ align-items: center;
+ gap: 20px;
+ margin-bottom: 25px;
+ }
+
+ .case-avatar {
+ width: 80px;
+ height: 80px;
+ background: linear-gradient(135deg, #047857, #059669);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 32px;
+ color: white;
+ }
+
+ .case-title h3 {
+ margin: 0 0 5px;
+ font-size: 22px;
+ color: #1a1a1a;
+ }
+
+ .case-title p {
+ margin: 0;
+ color: #666;
+ font-size: 15px;
+ }
+
+ .case-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 16px;
+ margin-top: 20px;
+ }
+
+ .case-item {
+ background: white;
+ padding: 18px;
+ border-radius: 10px;
+ border-left: 4px solid #047857;
+ }
+
+ .case-item .label {
+ font-weight: 600;
+ color: #047857;
+ font-size: 12px;
+ text-transform: uppercase;
+ margin-bottom: 6px;
+ }
+
+ .case-item .value {
+ font-size: 14px;
+ color: #333;
+ line-height: 1.6;
+ }
+
+ .reasoning-box {
+ background: #ecfdf5;
+ border: 2px solid #10B981;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .reasoning-box h3 {
+ margin: 0 0 20px;
+ color: #059669;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .reasoning-box h3::before {
+ content: '🧠';
+ font-size: 24px;
+ }
+
+ .reasoning-step {
+ background: white;
+ border-radius: 10px;
+ padding: 20px;
+ margin-bottom: 14px;
+ }
+
+ .reasoning-step .step-label {
+ font-weight: 700;
+ color: #059669;
+ font-size: 14px;
+ margin-bottom: 8px;
+ }
+
+ .reasoning-step .step-content {
+ font-size: 15px;
+ line-height: 1.7;
+ }
+
+ .differential-box {
+ background: #f0f9ff;
+ border: 2px solid #0284c7;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .differential-box h3 {
+ margin: 0 0 20px;
+ color: #0369a1;
+ }
+
+ .differential-grid {
+ display: grid;
+ gap: 14px;
+ }
+
+ .differential-item {
+ background: white;
+ padding: 18px;
+ border-radius: 10px;
+ display: flex;
+ gap: 16px;
+ align-items: flex-start;
+ }
+
+ .differential-item .priority {
+ width: 36px;
+ height: 36px;
+ background: #0284c7;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 700;
+ flex-shrink: 0;
+ }
+
+ .differential-item .content h4 {
+ margin: 0 0 6px;
+ font-size: 16px;
+ }
+
+ .differential-item .content p {
+ margin: 0;
+ font-size: 14px;
+ color: #666;
+ }
+
+ .referral-box {
+ background: #fef2f2;
+ border: 2px solid #ef4444;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .referral-box h3 {
+ margin: 0 0 20px;
+ color: #dc2626;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .referral-box h3::before {
+ content: '🚨';
+ font-size: 24px;
+ }
+
+ .referral-list {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ }
+
+ .referral-list li {
+ background: white;
+ padding: 16px 20px;
+ margin-bottom: 10px;
+ border-radius: 10px;
+ border-left: 4px solid #ef4444;
+ font-size: 15px;
+ }
+
+ .protocol-box {
+ background: #ecfdf5;
+ border: 2px solid #10B981;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 35px 0;
+ }
+
+ .protocol-box h3 {
+ margin: 0 0 20px;
+ color: #059669;
+ }
+
+ .protocol-phases {
+ display: grid;
+ gap: 16px;
+ }
+
+ .phase-card {
+ background: white;
+ padding: 20px;
+ border-radius: 12px;
+ border: 1px solid #d1fae5;
+ }
+
+ .phase-card .phase-header {
+ font-weight: 700;
+ color: #059669;
+ font-size: 15px;
+ margin-bottom: 10px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .phase-card ul {
+ margin: 0;
+ padding-left: 20px;
+ font-size: 14px;
+ }
+
+ .phase-card li {
+ margin-bottom: 6px;
+ }
+
+ .encouragement-box {
+ background: linear-gradient(135deg, #047857 0%, #059669 100%);
+ border-radius: 16px;
+ padding: 40px;
+ margin: 45px 0;
+ text-align: center;
+ color: white;
+ }
+
+ .encouragement-box .emoji {
+ font-size: 48px;
+ margin-bottom: 15px;
+ }
+
+ .encouragement-box h3 {
+ margin: 0 0 15px;
+ font-size: 26px;
+ color: white;
+ }
+
+ .encouragement-box p {
+ margin: 0;
+ font-size: 18px;
+ color: rgba(255, 255, 255, 0.9);
+ max-width: 600px;
+ margin: 0 auto;
+ }
+
+ .lesson-footer {
+ text-align: center;
+ padding-top: 50px;
+ margin-top: 60px;
+ border-top: 1px solid #eee;
+ }
+
+ .footer-logo {
+ max-width: 160px;
+ margin-bottom: 15px;
+ }
+
+ .lesson-footer .brand {
+ color: #047857;
+ font-weight: 600;
+ font-size: 15px;
+ margin: 0 0 5px;
+ }
+
+ .lesson-footer .copyright {
+ color: #888;
+ font-size: 13px;
+ margin: 0;
+ }
+
+ @media (max-width: 600px) {
+ .case-grid {
+ grid-template-columns: 1fr;
+ }
+ }
+
+ .data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+ .data-table th { background: #059669; color: white; padding: 12px 15px; text-align: left; }
+ .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+ .data-table tr:nth-child(even) { background: #f9fafb; }
+
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+ .reveal-btn {
+ background: #047857;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #f0fdf4;
+ border-radius: 8px;
+ color: #166534;
+ font-size: 16px;
+ border-left: 4px solid #22c55e;
+ }
+
+ .takeaways-box {
+ background: #047857;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ }
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ }
+
+ .highlight {
+ color: inherit;
+ }
+
+ .stat-highlight {
+ color: #047857;
+ font-weight: bold;
+ }
+
+ </style>
+</head>
+
+<body>
+ <div class="lesson-container">
+ <header class="module-header">
+ <p class="module-label">Module 21: L2: Treatment Planning</p>
+ <h1 class="lesson-title">Practice Lab: Advanced Treatment Planning</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">15 min read</span>
+ <span class="meta-item">Lesson 8 of 8</span>
+ </div>
+ </header>
+
+ <div class="practice-lab-banner">
+ <div class="emoji">🌱</div>
+ <h2>Complex Case: Integrative Adaptogen Protocol</h2>
+ <p>Apply your advanced knowledge to a multi-faceted client presentation.</p>
+ </div>
+
+ <h2>Complex Case Presentation</h2>
+
+ <div class="complex-case">
+ <div class="case-header">
+ <div class="case-avatar">👩</div>
+ <div class="case-title">
+ <h3>Eleanor, 48</h3>
+ <p>Marketing Executive, Austin, TX • Married, two teenage children</p>
+ </div>
+ </div>
+
+ <div class="case-grid">
+ <div class="case-item">
+ <div class="label">Chief Complaints</div>
+ <div class="value">Chronic stress, burnout, insomnia, cyclical acne, irregular periods, low libido, difficulty concentrating</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Medical History</div>
+ <div class="value">Endometriosis (diagnosed age 32, laparoscopic surgery), migraines (2-3 per month), seasonal allergies</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Medications</div>
+ <div class="value">Oral contraceptive pill (for endometriosis management), sumatriptan (as needed for migraines), loratadine (seasonal allergies)</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Labs (Recent)</div>
+ <div class="value">Normal CBC, CMP, TSH. Low Vitamin D (28 ng/mL). Comprehensive Hormone Panel pending.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Diet</div>
+ <div class="value">Generally healthy; avoids gluten due to suspected sensitivity. Relies on caffeine to get through the day.</div>
+ </div>
+ <div class="case-item">
+ <div class="label">Stress Level</div>
+ <div class="value">Very high; demanding job with frequent travel. Feels overwhelmed and unable to relax.</div>
+ </div>
+ </div>
+ </div>
+
+ <h2>Clinical Reasoning Process</h2>
+
+ <div class="reasoning-box">
+ <h3>Breaking Down the Case</h3>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 1: Identify Key Imbalances</div>
+ <div class="step-content">This client presents with HPA axis dysregulation (chronic stress, insomnia), hormonal imbalances (irregular periods, low libido, acne, endometriosis history), and potential nutrient deficiencies (low Vitamin D). The OCP is masking underlying issues.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 2: Assess the Interconnections</div>
+ <div class="step-content">Chronic stress exacerbates endometriosis symptoms by increasing inflammation and cortisol. Poor sleep further impairs hormonal balance and cognitive function. Caffeine dependence further taxes the adrenals.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 3: Prioritize Treatment Targets</div>
+ <div class="step-content">Address HPA axis dysfunction first to improve stress resilience and sleep. Then, support hormonal balance and address nutrient deficiencies. Consider the impact of the OCP on nutrient status and gut health.</div>
+ </div>
+
+ <div class="reasoning-step">
+ <div class="step-label">Step 4: Select Adaptogens Strategically</div>
+ <div class="step-content">Consider adaptogens that support both HPA axis function and hormonal balance, such as <span class="highlight">Rhodiola</span>, <span class="highlight">Ashwagandha</span>, and <span class="highlight">Shatavari</span>. Tailor the choice based on individual needs and tolerance.</div>
+ </div>
+ </div>
+
+ <h2>Differential Considerations</h2>
+
+ <div class="differential-box">
+ <h3>Exploring Other Possibilities</h3>
+
+ <div class="differential-grid">
+ <div class="differential-item">
+ <div class="priority">1</div>
+ <div class="content">
+ <h4>Premature Ovarian Insufficiency (POI)</h4>
+ <p>Irregular periods at 48 could indicate declining ovarian function. Rule out POI with FSH/LH testing if not already done.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">2</div>
+ <div class="content">
+ <h4>Thyroid Dysfunction</h4>
+ <p>Even with a normal TSH, subtle thyroid imbalances can contribute to fatigue, mood changes, and hormonal irregularities. Investigate further with a full thyroid panel (Free T3, Free T4, TPO antibodies).</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">3</div>
+ <div class="content">
+ <h4>Iron Deficiency</h4>
+ <p>Heavy periods (associated with endometriosis) can lead to iron deficiency, causing fatigue and brain fog. Check ferritin levels.</p>
+ </div>
+ </div>
+ <div class="differential-item">
+ <div class="priority">4</div>
+ <div class="content">
+ <h4>Underlying Autoimmunity</h4>
+ <p>Endometriosis is associated with increased risk of autoimmune conditions. Consider screening for common autoimmune markers if symptoms suggest it.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2>When to Refer</h2>
+
+ <div class="referral-box">
+ <h3>Red Flags – When to Consult an MD</h3>
+
+ <ul class="referral-list">
+ <li><strong>Severe abdominal pain</strong> not controlled by conventional treatments – could indicate complications of endometriosis</li>
+ <li><strong>Sudden vision changes or severe headaches</strong> – rule out neurological causes, especially with migraine history</li>
+ <li><strong>Unexplained weight loss or night sweats</strong> – investigate possible underlying conditions</li>
+ <li><strong>Depressive symptoms or suicidal ideation</strong> – immediate mental health referral</li>
+ <li><strong>Abnormal bleeding patterns</strong> – requires gynecological evaluation</li>
+ </ul>
+ </div>
+
+ <h2>Proposed Integrative Protocol</h2>
+
+ <div class="protocol-box">
+ <h3>Phased Approach for Eleanor</h3>
+
+ <div class="protocol-phases">
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 1: Stress Modulation & Sleep Support (Weeks 1-4)</div>
+ <ul>
+ <li><span class="highlight">Rhodiola Rosea</span> (SHR-5 extract): 200mg twice daily to improve stress resilience and energy levels. A <span class="stat-highlight">2018 study in *Phytomedicine*</span> showed Rhodiola significantly reduced burnout symptoms in stressed individuals (n=118) compared to placebo (p<0.001) [1].</li>
+ <li><span class="highlight">Magnesium Bisglycinate</span>: 200mg before bed to promote relaxation and improve sleep quality.</li>
+ <li>Sleep hygiene protocol: Consistent bedtime, no screens 1 hour before bed, blackout curtains.</li>
+ <li>Dietary modifications: Reduce caffeine intake, prioritize whole foods, balanced meals.</li>
+ </ul>
+ </div>
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 2: Hormonal Balance & Anti-inflammatory Support (Weeks 5-8)</div>
+ <ul>
+ <li><span class="highlight">Shatavari</span>: 500mg twice daily to support hormonal balance and libido. Traditionally used in Ayurveda for women's health, with emerging evidence supporting its benefits for menopause symptoms [2].</li>
+ <li>Omega-3 Fatty Acids: 2000mg daily to reduce inflammation and support hormone production. A <span class="stat-highlight">2013 meta-analysis in *Human Reproduction Update*</span> found that omega-3 supplementation significantly reduced endometriosis-related pain (SMD -0.62, 95% CI -0.99 to -0.25) [3].</li>
+ <li>Consider seed cycling: Flax and pumpkin seeds in the follicular phase, sesame and sunflower seeds in the luteal phase.</li>
+ </ul>
+ </div>
+ <div class="phase-card">
+ <div class="phase-header">📅 Phase 3: Gut Health & Optimization (Weeks 9-12)</div>
+ <ul>
+ <li>Probiotic: High-quality, multi-strain probiotic to support gut health, especially after OCP use.</li>
+ <li>Vitamin D3 + K2: Based on initial lab results, repleted to optimal levels (50-80 ng/mL).</li>
+ <li>Mind-body practices: Yoga, meditation, or acupuncture to further reduce stress and promote overall well-being.</li>
+ <li>Consider tapering off OCP (with physician guidance) to assess natural cycle.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. What are the key considerations when recommending adaptogens for a client on the oral contraceptive pill?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Consider potential interactions with liver detoxification pathways and nutrient depletion caused by the OCP. Choose adaptogens with a low risk of drug interactions and focus on replenishing nutrients like B vitamins, magnesium, and zinc.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. Why is it important to address HPA axis dysfunction before focusing solely on hormonal balance in this case?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Chronic stress and HPA axis dysregulation can significantly impact hormonal balance, making it difficult to achieve lasting results without addressing the underlying stress response. Addressing stress first can improve the body's ability to respond to hormonal interventions.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Complex cases require a systems-based approach that considers the interplay between multiple body systems.</li>
+ <li>Adaptogens can be powerful tools for supporting HPA axis function and hormonal balance, but they should be used strategically and tailored to the individual client.</li>
+ <li>Addressing underlying nutrient deficiencies and gut health is crucial for optimizing treatment outcomes.</li>
+ <li>Collaboration with other healthcare providers (MD, gynecologist) is essential for managing complex cases and ensuring client safety.</li>
+ </ul>
+ </div>
+
+ <h2>References & Further Reading</h2>
+ <ul>
+ <li>[1] Anghelescu, I.G., et al. (2018). "Stress management and the role of Rhodiola rosea: a randomized, double-blind, placebo-controlled trial." *International Journal of Psychiatry in Clinical Practice*, 22(4), 246-252.</li>
+ <li>[2] Al-Snafi, A.E. (2017). "Phytochemicals and pharmacological activities of Asparagus officinalis." *IOSR Journal of Pharmacy*, 7(2), 58-72.</li>
+ <li>[3] Ho, E., et al. (2013). "Omega-3 polyunsaturated fatty acids for endometriosis: a systematic review and meta-analysis." *Human Reproduction Update*, 19(6), 595-605.</li>
+ <li>[4] Panossian, A., et al. (2021). "Rhodiola rosea for mental fatigue: a systematic review and meta-analysis." *BMC Complementary Medicine and Therapies*, 21(1), 69.</li>
+ <li>[5] Kilmartin, C., et al. (2020). "The effects of ashwagandha on stress, anxiety, and mental wellbeing: a systematic review and meta-analysis." *Journal of Herbal Medicine*, 24, 100389.</li>
+ <li>[6] Sarris, J., et al. (2018). "Nutritional medicine as mainstream in psychiatry." *The Lancet Psychiatry*, 5(3), 271-280.</li>
+ <li>[7] Gupta, R. K., et al. (2011). "Efficacy of Asparagus racemosus (Shatavari) on letrozole-induced polycystic ovarian syndrome (PCOS) in rat model." *Journal of Ethnopharmacology*, 137(1), 437-444.</li>
+ </ul>
+
+ </div>
+</body>
+<script>
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+</html>

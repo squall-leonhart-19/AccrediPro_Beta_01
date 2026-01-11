@@ -9,6 +9,12 @@ interface Variant {
   originalSubject: string;
   subject: string;
   contentPreview: string;
+  section?: string;
+}
+
+interface FullVariant extends Variant {
+  content: string;
+  html: string;
 }
 
 interface TestResult {
@@ -27,6 +33,22 @@ export default function InboxTestPage() {
   const [sendAllProgress, setSendAllProgress] = useState<{ current: number; total: number } | null>(null);
   const [results, setResults] = useState<TestResult[]>([]);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [activeSection, setActiveSection] = useState<"all" | "nurture" | "mini_diploma" | "mini_diploma_nurturing" | "wh_nurture_v2">("all");
+
+  // Modal state
+  const [modalVariant, setModalVariant] = useState<FullVariant | null>(null);
+  const [modalTab, setModalTab] = useState<"preview" | "raw">("preview");
+  const [loadingModal, setLoadingModal] = useState(false);
+
+  // Filter variants by section
+  const filteredVariants = variants.filter(v => {
+    if (activeSection === "all") return true;
+    if (activeSection === "mini_diploma") return v.section === "mini_diploma" || (v.id >= 100 && v.id <= 108);
+    if (activeSection === "mini_diploma_nurturing") return v.section === "mini_diploma_nurturing" || (v.id >= 200 && v.id <= 220);
+    if (activeSection === "wh_nurture_v2") return v.section === "wh_nurture_v2" || (v.id >= 300 && v.id <= 325);
+    if (activeSection === "nurture") return !v.section && v.id < 100;
+    return true;
+  });
 
   useEffect(() => {
     fetchVariants();
@@ -89,6 +111,37 @@ export default function InboxTestPage() {
     );
   };
 
+  // Open preview modal with full content
+  const openPreview = async (variantId: number) => {
+    setLoadingModal(true);
+    setModalTab("preview");
+    try {
+      const res = await fetch(`/api/admin/marketing/inbox-test?variantId=${variantId}`);
+      const data = await res.json();
+      if (data.id) {
+        setModalVariant(data);
+      }
+    } catch (error) {
+      console.error("Error fetching variant:", error);
+    } finally {
+      setLoadingModal(false);
+    }
+  };
+
+  const closeModal = () => {
+    setModalVariant(null);
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setMessage({ type: "success", text: "Copied to clipboard!" });
+      setTimeout(() => setMessage(null), 2000);
+    } catch (err) {
+      setMessage({ type: "error", text: "Failed to copy" });
+    }
+  };
+
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const sendAllEmails = async () => {
@@ -99,10 +152,10 @@ export default function InboxTestPage() {
 
     setSendingAll(true);
     setMessage(null);
-    const total = variants.length;
+    const total = filteredVariants.length;
 
-    for (let i = 0; i < variants.length; i++) {
-      const variant = variants[i];
+    for (let i = 0; i < filteredVariants.length; i++) {
+      const variant = filteredVariants[i];
       setSendAllProgress({ current: i + 1, total });
       setSending(variant.id);
 
@@ -126,7 +179,7 @@ export default function InboxTestPage() {
       }
 
       // Wait 2 seconds before sending next email (except for the last one)
-      if (i < variants.length - 1) {
+      if (i < filteredVariants.length - 1) {
         await delay(2000);
       }
     }
@@ -167,6 +220,57 @@ export default function InboxTestPage() {
         </div>
       </div>
 
+      {/* Section Tabs */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setActiveSection("all")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "all"
+              ? "bg-burgundy-600 text-white"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+          >
+            All ({variants.length})
+          </button>
+          <button
+            onClick={() => setActiveSection("nurture")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "nurture"
+              ? "bg-burgundy-600 text-white"
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+          >
+            Nurture Sequence ({variants.filter(v => !v.section && v.id < 100).length})
+          </button>
+          <button
+            onClick={() => setActiveSection("mini_diploma")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "mini_diploma"
+              ? "bg-emerald-600 text-white"
+              : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+              }`}
+          >
+            Mini Diploma ({variants.filter(v => v.section === "mini_diploma" || (v.id >= 100 && v.id <= 108)).length})
+          </button>
+          <button
+            onClick={() => setActiveSection("mini_diploma_nurturing")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "mini_diploma_nurturing"
+              ? "bg-purple-600 text-white"
+              : "bg-purple-100 text-purple-700 hover:bg-purple-200"
+              }`}
+          >
+            WH Nurturing ({variants.filter(v => v.section === "mini_diploma_nurturing" || (v.id >= 200 && v.id <= 220)).length})
+          </button>
+          <button
+            onClick={() => setActiveSection("wh_nurture_v2")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "wh_nurture_v2"
+              ? "bg-green-600 text-white"
+              : "bg-green-100 text-green-700 hover:bg-green-200"
+              }`}
+          >
+            WH v2 60-Day ({variants.filter(v => v.section === "wh_nurture_v2" || (v.id >= 300 && v.id <= 325)).length})
+          </button>
+        </div>
+      </div>
+
       {/* Test Email Input */}
       <div className="bg-white rounded-lg shadow p-6 mb-8">
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -182,18 +286,17 @@ export default function InboxTestPage() {
           />
           <button
             onClick={sendAllEmails}
-            disabled={sendingAll || !testEmail || variants.length === 0}
-            className={`px-6 py-2 rounded-lg font-medium text-sm whitespace-nowrap ${
-              sendingAll
-                ? "bg-amber-100 text-amber-700 cursor-wait"
-                : !testEmail
+            disabled={sendingAll || !testEmail || filteredVariants.length === 0}
+            className={`px-6 py-2 rounded-lg font-medium text-sm whitespace-nowrap ${sendingAll
+              ? "bg-amber-100 text-amber-700 cursor-wait"
+              : !testEmail
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-green-600 text-white hover:bg-green-700"
-            }`}
+              }`}
           >
             {sendingAll
               ? `Sending ${sendAllProgress?.current}/${sendAllProgress?.total}...`
-              : `Send All (${variants.length} emails)`}
+              : `Send All (${filteredVariants.length} emails)`}
           </button>
         </div>
         <p className="mt-2 text-sm text-gray-500">
@@ -215,75 +318,77 @@ export default function InboxTestPage() {
       </div>
 
       {/* Message */}
-      {message && (
-        <div
-          className={`mb-6 p-4 rounded-lg ${
-            message.type === "success"
+      {
+        message && (
+          <div
+            className={`mb-6 p-4 rounded-lg ${message.type === "success"
               ? "bg-green-50 text-green-800 border border-green-200"
               : "bg-red-50 text-red-800 border border-red-200"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
+              }`}
+          >
+            {message.text}
+          </div>
+        )
+      }
 
       {/* Results Summary */}
-      {results.length > 0 && (
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-lg font-semibold mb-4">Test Results ({results.length}/{variants.length} tested)</h2>
-          <div className="grid grid-cols-5 gap-2">
-            <div className="text-center p-2 bg-green-100 rounded">
-              <div className="text-2xl font-bold text-green-700">
-                {results.filter(r => r.landedIn === "Primary").length}
+      {
+        results.length > 0 && (
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <h2 className="text-lg font-semibold mb-4">Test Results ({results.length}/{variants.length} tested)</h2>
+            <div className="grid grid-cols-5 gap-2">
+              <div className="text-center p-2 bg-green-100 rounded">
+                <div className="text-2xl font-bold text-green-700">
+                  {results.filter(r => r.landedIn === "Primary").length}
+                </div>
+                <div className="text-xs text-green-600">Primary</div>
               </div>
-              <div className="text-xs text-green-600">Primary</div>
-            </div>
-            <div className="text-center p-2 bg-yellow-100 rounded">
-              <div className="text-2xl font-bold text-yellow-700">
-                {results.filter(r => r.landedIn === "Promotions").length}
+              <div className="text-center p-2 bg-yellow-100 rounded">
+                <div className="text-2xl font-bold text-yellow-700">
+                  {results.filter(r => r.landedIn === "Promotions").length}
+                </div>
+                <div className="text-xs text-yellow-600">Promotions</div>
               </div>
-              <div className="text-xs text-yellow-600">Promotions</div>
-            </div>
-            <div className="text-center p-2 bg-blue-100 rounded">
-              <div className="text-2xl font-bold text-blue-700">
-                {results.filter(r => r.landedIn === "Updates").length}
+              <div className="text-center p-2 bg-blue-100 rounded">
+                <div className="text-2xl font-bold text-blue-700">
+                  {results.filter(r => r.landedIn === "Updates").length}
+                </div>
+                <div className="text-xs text-blue-600">Updates</div>
               </div>
-              <div className="text-xs text-blue-600">Updates</div>
-            </div>
-            <div className="text-center p-2 bg-red-100 rounded">
-              <div className="text-2xl font-bold text-red-700">
-                {results.filter(r => r.landedIn === "Spam").length}
+              <div className="text-center p-2 bg-red-100 rounded">
+                <div className="text-2xl font-bold text-red-700">
+                  {results.filter(r => r.landedIn === "Spam").length}
+                </div>
+                <div className="text-xs text-red-600">Spam</div>
               </div>
-              <div className="text-xs text-red-600">Spam</div>
-            </div>
-            <div className="text-center p-2 bg-gray-100 rounded">
-              <div className="text-2xl font-bold text-gray-700">
-                {results.filter(r => !r.landedIn).length}
+              <div className="text-center p-2 bg-gray-100 rounded">
+                <div className="text-2xl font-bold text-gray-700">
+                  {results.filter(r => !r.landedIn).length}
+                </div>
+                <div className="text-xs text-gray-600">Pending</div>
               </div>
-              <div className="text-xs text-gray-600">Pending</div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* Variants Grid */}
       <div className="space-y-4">
-        {variants.map(variant => {
+        {filteredVariants.map(variant => {
           const result = getResultForVariant(variant.id);
           return (
             <div
               key={variant.id}
-              className={`bg-white rounded-lg shadow p-6 border-l-4 ${
-                result?.landedIn === "Primary"
-                  ? "border-green-500"
-                  : result?.landedIn === "Promotions"
+              className={`bg-white rounded-lg shadow p-6 border-l-4 ${result?.landedIn === "Primary"
+                ? "border-green-500"
+                : result?.landedIn === "Promotions"
                   ? "border-yellow-500"
                   : result?.landedIn === "Updates"
-                  ? "border-blue-500"
-                  : result?.landedIn === "Spam"
-                  ? "border-red-500"
-                  : "border-gray-200"
-              }`}
+                    ? "border-blue-500"
+                    : result?.landedIn === "Spam"
+                      ? "border-red-500"
+                      : "border-gray-200"
+                }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -297,15 +402,14 @@ export default function InboxTestPage() {
                     <h3 className="font-semibold text-gray-900">{variant.name}</h3>
                     {result?.landedIn && (
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded ${
-                          result.landedIn === "Primary"
-                            ? "bg-green-100 text-green-700"
-                            : result.landedIn === "Promotions"
+                        className={`px-2 py-1 text-xs font-medium rounded ${result.landedIn === "Primary"
+                          ? "bg-green-100 text-green-700"
+                          : result.landedIn === "Promotions"
                             ? "bg-yellow-100 text-yellow-700"
                             : result.landedIn === "Updates"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {result.landedIn}
                       </span>
@@ -331,15 +435,20 @@ export default function InboxTestPage() {
                 </div>
                 <div className="ml-4 flex flex-col gap-2">
                   <button
+                    onClick={() => openPreview(variant.id)}
+                    className="px-4 py-2 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  >
+                    👁 View
+                  </button>
+                  <button
                     onClick={() => sendTest(variant.id)}
                     disabled={sending !== null || sendingAll || !testEmail}
-                    className={`px-4 py-2 rounded-lg font-medium text-sm ${
-                      sending === variant.id
-                        ? "bg-amber-100 text-amber-700 cursor-wait"
-                        : sendingAll || !testEmail
+                    className={`px-4 py-2 rounded-lg font-medium text-sm ${sending === variant.id
+                      ? "bg-amber-100 text-amber-700 cursor-wait"
+                      : sendingAll || !testEmail
                         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                         : "bg-burgundy-600 text-white hover:bg-burgundy-700"
-                    }`}
+                      }`}
                   >
                     {sending === variant.id ? "Sending..." : "Send Test"}
                   </button>
@@ -355,15 +464,14 @@ export default function InboxTestPage() {
                       <button
                         key={tab}
                         onClick={() => markResult(variant.id, tab)}
-                        className={`px-3 py-1 text-sm rounded ${
-                          tab === "Primary"
-                            ? "bg-green-100 text-green-700 hover:bg-green-200"
-                            : tab === "Promotions"
+                        className={`px-3 py-1 text-sm rounded ${tab === "Primary"
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : tab === "Promotions"
                             ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                             : tab === "Updates"
-                            ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                            : "bg-red-100 text-red-700 hover:bg-red-200"
-                        }`}
+                              ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                              : "bg-red-100 text-red-700 hover:bg-red-200"
+                          }`}
                       >
                         {tab}
                       </button>
@@ -391,12 +499,87 @@ export default function InboxTestPage() {
       </div>
 
       {/* Progress Tracker */}
-      {results.length > 0 && results.every(r => r.landedIn === "Primary") && results.length === variants.length && (
-        <div className="mt-6 p-4 bg-green-100 border border-green-300 rounded-lg text-center">
-          <div className="text-2xl mb-2">{variants.length}/{variants.length} Primary!</div>
-          <p className="text-green-800">All emails passed! Ready to update the live nurture sequence.</p>
+      {
+        results.length > 0 && results.every(r => r.landedIn === "Primary") && results.length === variants.length && (
+          <div className="mt-6 p-4 bg-green-100 border border-green-300 rounded-lg text-center">
+            <div className="text-2xl mb-2">{variants.length}/{variants.length} Primary!</div>
+            <p className="text-green-800">All emails passed! Ready to update the live nurture sequence.</p>
+          </div>
+        )
+      }
+
+      {/* Email Preview Modal */}
+      {(modalVariant || loadingModal) && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">
+                  {loadingModal ? "Loading..." : modalVariant?.name}
+                </h2>
+                {modalVariant && (
+                  <p className="text-sm text-gray-500">Day {modalVariant.day} • {modalVariant.subject}</p>
+                )}
+              </div>
+              <button
+                onClick={closeModal}
+                className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Tabs */}
+            {modalVariant && (
+              <>
+                <div className="flex border-b px-4">
+                  <button
+                    onClick={() => setModalTab("preview")}
+                    className={`px-4 py-3 font-medium text-sm border-b-2 -mb-px ${modalTab === "preview"
+                      ? "border-burgundy-600 text-burgundy-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700"
+                      }`}
+                  >
+                    Preview
+                  </button>
+                  <button
+                    onClick={() => setModalTab("raw")}
+                    className={`px-4 py-3 font-medium text-sm border-b-2 -mb-px ${modalTab === "raw"
+                      ? "border-burgundy-600 text-burgundy-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700"
+                      }`}
+                  >
+                    Raw Text
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="flex-1 overflow-y-auto p-4">
+                  {modalTab === "preview" ? (
+                    <div
+                      className="prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: modalVariant.html }}
+                    />
+                  ) : (
+                    <div className="relative">
+                      <button
+                        onClick={() => copyToClipboard(modalVariant.content)}
+                        className="absolute top-2 right-2 px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded font-medium"
+                      >
+                        📋 Copy
+                      </button>
+                      <pre className="bg-gray-50 p-4 rounded-lg text-sm whitespace-pre-wrap font-mono overflow-x-auto">
+                        {modalVariant.content}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
-    </div>
+    </div >
   );
 }

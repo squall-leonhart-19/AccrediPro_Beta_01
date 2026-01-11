@@ -39,9 +39,9 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   // Fix Turbopack workspace root detection
-  turbopack: {
-    root: process.cwd(),
-  },
+  // turbopack: {
+  //   root: process.cwd(),
+  // },
 };
 
 export default withSentryConfig(nextConfig, {

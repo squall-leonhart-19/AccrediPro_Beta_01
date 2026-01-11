@@ -399,7 +399,7 @@ export default function FMTestPage() {
             {/* Footer */}
             <footer className="fm-footer">
                 <img src="/newlogo.webp" alt="AccrediPro" />
-                <p>© 2025 AccrediPro Academy. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} AccrediPro Academy. All rights reserved.</p>
                 <p><a href="/privacy-policy">Privacy</a> • <a href="/terms-of-service">Terms</a> • <a href="/contact">Contact</a></p>
             </footer>
 
