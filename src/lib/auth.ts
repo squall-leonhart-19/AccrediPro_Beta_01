@@ -196,18 +196,19 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
+        // Map mini diploma category to course slug
+        let miniDiplomaCourseSlug: string | null = null;
         if (user.miniDiplomaCategory) {
-          // Map category to course slug
           const categoryToSlug: Record<string, string> = {
             "womens-health": "womens-health-mini-diploma",
-            "functional-medicine": "functional-medicine-mini-diploma", // updated from fm-mini-diploma for consistency
+            "functional-medicine": "functional-medicine-mini-diploma",
             "functional-medicine-general": "functional-medicine-mini-diploma",
             "functional-medicine-clinician": "functional-medicine-mini-diploma",
             "gut-health": "gut-health-mini-diploma",
             "health-coach": "health-coach-mini-diploma",
             "holistic-nutrition": "holistic-nutrition-mini-diploma",
             "hormone-health": "hormone-health-mini-diploma",
-            "hormones": "hormone-health-mini-diploma", // handle alias
+            "hormones": "hormone-health-mini-diploma",
             "nurse-coach": "nurse-coach-mini-diploma",
             "autism": "autism-mini-diploma",
           };
