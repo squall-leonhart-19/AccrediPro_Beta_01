@@ -148,7 +148,7 @@ export default function WomensHealthMiniDiplomaPage() {
                 }));
                 window.location.href = "/womens-health-mini-diploma/thank-you";
             } else {
-                window.location.href = "/community";
+                window.location.href = "/womens-health-mini-diploma/thank-you";
             }
 
         } catch (err: any) {
