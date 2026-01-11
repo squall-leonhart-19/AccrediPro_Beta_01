@@ -23,109 +23,102 @@ export function LessonYourNextStep({
         {
             id: 1,
             type: 'coach',
-            content: `Hey {name}! 🎉 Congratulations on making it to the final lesson! You've come so far in understanding gut health, and now it's time to talk about your next step - becoming a certified Gut Health Specialist.`,
+            content: `{name}!! 🎉 You made it! I'm so proud of you for completing this Mini Diploma!`,
         },
         {
             id: 2,
-            type: 'system',
-            content: `**What You've Accomplished**
-• Mastered the fundamentals of gut microbiome science
-• Learned to identify digestive disorders and imbalances
-• Understood the gut-brain connection and its health implications
-• Gained practical skills in nutrition and lifestyle interventions
-• Developed protocols for supporting optimal gut health`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `In just 60 minutes, you've learned more about gut health than most conventionally trained doctors ever will.`,
         },
         {
             id: 3,
-            type: 'coach',
-            content: `Think about where you started compared to where you are now. You have the knowledge to make a real difference in people's lives - including your own! Let's explore what certification means for your future.`,
+            type: 'system',
+            content: `**What You've Learned**
+✅ Why the gut is the foundation of all health
+✅ The microbiome and its trillions of partners
+✅ Leaky gut and intestinal permeability
+✅ SIBO, dysbiosis, and bacterial imbalances
+✅ The gut-brain axis connection
+✅ Digestive enzymes and stomach acid
+✅ The 5R healing protocol
+✅ Food sensitivities and elimination`,
+            systemStyle: 'info',
         },
         {
             id: 4,
             type: 'user-choice',
-            content: `What's your primary motivation for pursuing gut health certification?`,
-            choices: ["Help clients with digestive issues professionally", "Enhance my existing health practice", "Personal health journey and helping family/friends"],
+            content: `How are you feeling right now?`,
+            choices: [
+                "Excited - I want to learn more!",
+                "Empowered - I finally understand my gut",
+                "Motivated - I want to help others",
+            ],
             showReaction: true,
         },
         {
             id: 5,
-            type: 'system',
-            content: `**Certification Requirements**
-• Complete all 9 course modules with passing grades
-• Submit final case study analysis
-• Pass comprehensive certification exam (80% or higher)
-• Agree to continuing education requirements
-• Commit to ethical practice standards`,
-            systemStyle: 'info',
+            type: 'coach',
+            content: `That's amazing! This is just the beginning. There's so much more depth to explore.`,
         },
         {
             id: 6,
-            type: 'coach',
-            content: `The certification process ensures you're truly ready to help others. It's not just about passing a test - it's about demonstrating you can apply this knowledge safely and effectively.`,
-        },
-        {
-            id: 7,
             type: 'system',
-            content: `**Your Certification Includes**
-• Official Gut Health Specialist certificate
-• Digital badge for professional profiles
-• Access to practitioner-only resources and protocols
-• Monthly continuing education webinars
-• Professional liability insurance discounts
-• Marketing materials for your practice`,
+            content: `**Your Options Now**
+1. **Download your Mini Diploma Certificate** - Share it on LinkedIn!
+2. **Continue to Full Certification** - Become Board Certified
+3. **Join our Community** - Connect with 20,000+ practitioners`,
             systemStyle: 'takeaway',
         },
         {
+            id: 7,
+            type: 'coach',
+            content: `The Complete Career Certification takes you from curious learner to confident, credentialed Gut Health Specialist. 🎓`,
+        },
+        {
             id: 8,
-            type: 'user-choice',
-            content: `How do you plan to use your certification?`,
-            choices: ["Start my own gut health practice", "Add services to existing business", "Work within healthcare/wellness teams"],
-            showReaction: true,
+            type: 'system',
+            content: `**What's in the Full Certification?**
+• 3-Level Certification (GH-FC, GH-CP, GH-BC)
+• 25+ in-depth lessons
+• Clinical protocols and case studies
+• Functional lab interpretation mastery
+• My Circle Mastermind (5-person pod, DAILY check-ins)
+• ASI Practitioner Directory listing
+• Done-for-you business templates
+• Sarah mentorship access
+• LIFETIME ACCESS`,
+            systemStyle: 'info',
         },
         {
             id: 9,
-            type: 'coach',
-            content: `Whatever path you choose, you'll have ongoing support. This certification isn't the end - it's really just the beginning of your journey as a gut health specialist!`,
+            type: 'user-choice',
+            content: `What matters most to you in continuing?`,
+            choices: [
+                "Getting certified and credentialed",
+                "Accountability and community",
+                "Practical business tools",
+            ],
+            showReaction: true,
         },
         {
             id: 10,
-            type: 'system',
-            content: `**Continuing Your Education**
-• Advanced gut health protocols masterclass
-• Pediatric gut health specialization
-• Functional testing interpretation course
-• Business building for health practitioners
-• Research updates and new findings quarterly`,
-            systemStyle: 'info',
+            type: 'coach',
+            content: `All of those are included! And the investment is just $297 - less than 2 client sessions once you're certified.`,
         },
         {
             id: 11,
             type: 'coach',
-            content: `Remember, the field of gut health is constantly evolving. Staying current with research and best practices is what separates great practitioners from good ones.`,
+            content: `{name}, you have something special. The fact that you finished this training shows you're serious.`,
         },
         {
             id: 12,
-            type: 'system',
-            content: `**Next Steps Checklist**
-• Review all course materials one final time
-• Complete your case study submission
-• Schedule your certification exam
-• Join the graduate practitioner community
-• Plan your continuing education pathway`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `Congratulations on completing your Gut Health Mini Diploma! 🌟`,
         },
         {
             id: 13,
             type: 'coach',
-            content: `{name}, you have everything you need to succeed as a certified Gut Health Specialist. Trust in your knowledge, continue learning, and remember - you're going to help so many people heal and thrive! 🌟`,
-        },
-        {
-            id: 14,
-            type: 'system',
-            content: `**Final Thought**
-"The best time to plant a tree was 20 years ago. The second best time is now. You've planted the seeds of knowledge - now watch them grow into a practice that transforms lives."`,
-            systemStyle: 'quote',
+            content: `Your certificate is ready to download. And I'll be here when you're ready for the next step. 💕`,
         },
     ];
 
@@ -133,7 +126,7 @@ export function LessonYourNextStep({
         <LessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Your Next Step"
-            lessonSubtitle="Becoming a certified Gut Health Specialist"
+            lessonSubtitle="Becoming a Certified Gut Health Specialist"
             totalLessons={totalLessons}
             messages={messages}
             onComplete={onComplete}

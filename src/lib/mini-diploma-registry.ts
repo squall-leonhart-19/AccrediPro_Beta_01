@@ -4,8 +4,6 @@ import { NURSE_COACH_NURTURE_SEQUENCE } from "./nurse-coach-nurture-60-day";
 import { NURSE_COACH_DMS } from "./nurse-coach-dms";
 import { HOLISTIC_NUTRITION_NURTURE_SEQUENCE } from "./holistic-nutrition-nurture-60-day";
 import { HOLISTIC_NUTRITION_DMS } from "./holistic-nutrition-dms";
-import { NARC_RECOVERY_NURTURE_SEQUENCE } from "./narc-recovery-nurture-60-day";
-import { NARC_RECOVERY_DMS } from "./narc-recovery-dms";
 import { HORMONE_HEALTH_NURTURE_SEQUENCE } from "./hormone-health-nurture-60-day";
 import { HORMONE_HEALTH_DMS } from "./hormone-health-dms";
 import { GUT_HEALTH_NURTURE_SEQUENCE } from "./gut-health-nurture-60-day";
@@ -39,8 +37,6 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         completionTag: "wh-mini-diploma:completed"
     },
 
-    // Future niches will be added here by the generator script
-
     "functional-medicine-mini-diploma": {
         name: "Functional Medicine",
         slug: "functional-medicine-mini-diploma",
@@ -69,16 +65,6 @@ export const MINI_DIPLOMA_REGISTRY: Record<string, MiniDiplomaConfig> = {
         nudgePrefix: "hormone-health-nudge",
         nurturePrefix: "hormone-health-nurture",
         completionTag: "hormone-health-mini-diploma:completed"
-    },
-
-    "narc-recovery-mini-diploma": {
-        name: "Narcissistic Abuse Recovery",
-        slug: "narc-recovery-mini-diploma",
-        nurtureSequence: NARC_RECOVERY_NURTURE_SEQUENCE,
-        dmSequence: NARC_RECOVERY_DMS,
-        nudgePrefix: "narc-recovery-nudge",
-        nurturePrefix: "narc-recovery-nurture",
-        completionTag: "narc-recovery-mini-diploma:completed"
     },
 
     "holistic-nutrition-mini-diploma": {

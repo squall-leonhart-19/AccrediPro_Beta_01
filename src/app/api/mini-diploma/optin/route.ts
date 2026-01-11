@@ -9,7 +9,12 @@ const LEAD_PASSWORD = "coach2026";
 // Course slugs by mini diploma type
 const COURSE_SLUGS: Record<string, string> = {
     "womens-health": "womens-health-mini-diploma",
-    "functional-medicine": "fm-mini-diploma",
+    "functional-medicine": "functional-medicine-mini-diploma",
+    "gut-health": "gut-health-mini-diploma",
+    "hormone-health": "hormone-health-mini-diploma",
+    "holistic-nutrition": "holistic-nutrition-mini-diploma",
+    "nurse-coach": "nurse-coach-mini-diploma",
+    "health-coach": "health-coach-mini-diploma",
 };
 
 // Coach emails by mini diploma type
@@ -266,8 +271,19 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // Send welcome email with login details
+        // Send welcome email with login details - niche-specific
         try {
+            const nicheNames: Record<string, string> = {
+                "womens-health": "Women's Health & Hormones",
+                "functional-medicine": "Functional Medicine",
+                "gut-health": "Gut Health",
+                "hormone-health": "Hormone Health",
+                "holistic-nutrition": "Holistic Nutrition",
+                "nurse-coach": "Nurse Life Coach",
+                "health-coach": "Health Coach",
+            };
+            const nicheName = nicheNames[course] || course;
+
             if (course === "womens-health") {
                 await sendWomensHealthWelcomeEmail({
                     to: email.toLowerCase(),
@@ -276,13 +292,17 @@ export async function POST(request: NextRequest) {
                     password: LEAD_PASSWORD,
                 });
             } else {
+                // Send generic niche welcome email - customize per niche
                 await sendFreebieWelcomeEmail({
                     to: email.toLowerCase(),
                     firstName: firstName.trim(),
                     isExistingUser: false,
+                    nicheName,
+                    password: LEAD_PASSWORD,
+                    diplomaSlug: courseSlug,
                 });
             }
-            console.log(`[OPTIN] Welcome email sent to ${email}`);
+            console.log(`[OPTIN] Welcome email sent to ${email} for ${nicheName}`);
         } catch (emailError) {
             console.error("[OPTIN] Failed to send welcome email:", emailError);
             // Don't fail registration if email fails

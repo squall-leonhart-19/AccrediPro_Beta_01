@@ -1126,23 +1126,28 @@ interface FreebieWelcomeEmailOptions {
   to: string;
   firstName: string;
   isExistingUser: boolean;
+  nicheName?: string;
+  password?: string;
+  diplomaSlug?: string;
 }
 
-export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser }: FreebieWelcomeEmailOptions) {
+export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser, nicheName = "Functional Medicine", password = "coach2026", diplomaSlug = "functional-medicine-diploma" }: FreebieWelcomeEmailOptions) {
+  const dashboardUrl = `${BASE_URL}/${diplomaSlug}`;
+
   const content = isExistingUser ? `
     <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome Back, ${firstName}!</h2>
 
-    <p style="color: #555; font-size: 16px;">Great news! Your free Mini Diploma in Functional Medicine is now ready.</p>
+    <p style="color: #555; font-size: 16px;">Great news! Your free <strong>${nicheName} Mini Diploma</strong> is now ready.</p>
 
     <p style="color: #555; font-size: 16px;">Since you already have an account, simply log in with your existing credentials to access:</p>
 
     ${highlightBox(`
       <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">What's Waiting For You:</p>
       <ul style="margin: 0; padding-left: 20px; color: #555;">
-        <li style="margin: 5px 0;">Complete video training on functional medicine essentials</li>
+        <li style="margin: 5px 0;">9 interactive lessons on ${nicheName}</li>
         <li style="margin: 5px 0;">Mini Diploma certificate upon completion</li>
         <li style="margin: 5px 0;">Personal audio welcome from Sarah</li>
-        <li style="margin: 5px 0;">Lifetime access to all materials</li>
+        <li style="margin: 5px 0;">7 days to complete</li>
       </ul>
     `, 'cream')}
 
@@ -1154,42 +1159,42 @@ export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser }:
 
     <p style="color: #555; font-size: 16px; margin-top: 30px;">See you inside!<br/><strong>Sarah</strong><br/>AccrediPro Academy</p>
   ` : `
-    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome, ${firstName}!</h2>
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Hey ${firstName}!</h2>
 
-    <p style="color: #555; font-size: 16px;">Your free Mini Diploma in Functional Medicine is ready and waiting for you.</p>
+    <p style="color: #555; font-size: 16px;">I'm SO excited you're here! Your <strong>${nicheName} Mini Diploma</strong> is ready.</p>
 
-    <p style="color: #555; font-size: 16px;">Here are your login details:</p>
+    <p style="color: #555; font-size: 16px;">Here's how to access your lessons:</p>
 
     ${highlightBox(`
-      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Credentials:</p>
+      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Details:</p>
       <p style="margin: 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${to}</p>
-      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> Futurecoach2025</p>
-      <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">You can change your password anytime from your account settings.</p>
+      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> ${password}</p>
+      <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">Save these! You can change your password anytime.</p>
     `, 'cream')}
 
-    <p style="color: #555; font-size: 16px;">Once you log in, you'll find:</p>
+    <p style="color: #555; font-size: 16px;">What you'll learn with me:</p>
     <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 8px 0;">Your Mini Diploma course ready to start</li>
-      <li style="margin: 8px 0;">A personal audio welcome from me</li>
-      <li style="margin: 8px 0;">Step-by-step video lessons</li>
+      <li style="margin: 8px 0;">9 interactive lessons on ${nicheName}</li>
+      <li style="margin: 8px 0;">Expert knowledge from Sarah</li>
       <li style="margin: 8px 0;">Your certificate upon completion</li>
+      <li style="margin: 8px 0;">7 days to complete</li>
     </ul>
 
-    ${primaryButton('Login Now', `${BASE_URL}/login`)}
+    ${primaryButton('Start Your First Lesson', dashboardUrl)}
 
     <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;">Questions? Just reply to this email. I personally read every message.</p>
+      <p style="margin: 0; font-size: 14px; color: #666;"><strong>Important:</strong> You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!</p>
     </div>
 
-    <p style="color: #555; font-size: 16px; margin-top: 30px;">Looking forward to seeing you inside!<br/><strong>Sarah</strong><br/>AccrediPro Academy</p>
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">I'll be chatting with you inside the lessons!<br/><strong>Sarah</strong></p>
   `;
 
   return sendEmail({
     to,
     subject: isExistingUser
-      ? `${firstName}, your Mini Diploma is ready!`
-      : `Welcome ${firstName}! Your Mini Diploma awaits`,
-    html: emailWrapper(content, `Your free Mini Diploma in Functional Medicine is ready!`),
+      ? `${firstName}, your ${nicheName} Mini Diploma is ready!`
+      : `Your login details for AccrediPro Academy`,
+    html: emailWrapper(content, `Your free ${nicheName} Mini Diploma is ready!`),
   });
 }
 

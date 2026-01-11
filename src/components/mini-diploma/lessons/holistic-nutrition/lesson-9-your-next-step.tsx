@@ -23,107 +23,71 @@ export function LessonYourNextStep({
         {
             id: 1,
             type: 'coach',
-            content: `Hey {name}! 🎉 Congratulations on making it to our final lesson! You've covered so much ground in holistic nutrition, and now it's time to talk about your next steps toward becoming a certified Holistic Nutrition Specialist.`,
+            content: `{name}!! 🎉 You made it! I'm so proud of you for completing this Mini Diploma!`,
         },
         {
             id: 2,
-            type: 'system',
-            content: `**Your Journey So Far**
-• Mastered foundational nutrition principles and macronutrients
-• Explored the healing power of micronutrients and whole foods
-• Learned to assess nutritional needs and create personalized plans
-• Discovered how to address common health concerns through nutrition
-• Developed skills in meal planning and lifestyle integration`,
-            systemStyle: 'takeaway',
+            type: 'coach',
+            content: `In just 60 minutes, you've learned more about holistic nutrition than most people ever will.`,
         },
         {
             id: 3,
-            type: 'coach',
-            content: `Before we dive into certification details, I'm curious about your goals. What's driving your passion for holistic nutrition?`,
+            type: 'system',
+            content: `**What You've Learned**
+✅ Food as medicine principles
+✅ Macronutrients decoded
+✅ Micronutrient essentials
+✅ Anti-inflammatory eating
+✅ Blood sugar balance
+✅ Gut-nutrition connection
+✅ Personalized nutrition approaches
+✅ Mindful eating practices`,
+            systemStyle: 'info',
         },
         {
             id: 4,
             type: 'user-choice',
-            content: `What's your primary motivation for pursuing holistic nutrition certification?`,
-            choices: ["Help family and friends with better nutrition", "Start a nutrition consulting practice", "Enhance my current health/wellness career"],
+            content: `How are you feeling right now?`,
+            choices: [
+                "Excited - I want to learn more!",
+                "Empowered - I understand nutrition deeply",
+                "Motivated - I want to help others eat better",
+            ],
             showReaction: true,
         },
         {
             id: 5,
             type: 'coach',
-            content: `That's fantastic! Whatever your motivation, you're on the right path. Let me walk you through what becoming a certified Holistic Nutrition Specialist actually involves.`,
+            content: `That's amazing! This is just the beginning. There's so much more depth to explore.`,
         },
         {
             id: 6,
             type: 'system',
-            content: `**Certification Requirements Overview**
-• Complete all 9 core curriculum lessons with 80% or higher
-• Pass comprehensive final assessment covering all modules
-• Submit case study analysis demonstrating practical application
-• Complete 20 hours of documented practice consultations
-• Maintain continuing education credits annually`,
+            content: `**What's in the Full Certification?**
+• 3-Level Certification (HN-FC, HN-CP, HN-BC)
+• 25+ in-depth lessons
+• Clinical nutrition protocols
+• My Circle Mastermind (5-person pod, DAILY check-ins)
+• ASI Practitioner Directory listing
+• Done-for-you business templates
+• Sarah mentorship access
+• LIFETIME ACCESS`,
             systemStyle: 'info',
         },
         {
             id: 7,
-            type: 'system',
-            content: `**Your Scope of Practice as a Holistic Nutrition Specialist**
-• Provide nutritional education and wellness coaching
-• Create personalized meal plans and lifestyle recommendations
-• Conduct nutritional assessments and food sensitivity guidance
-• Offer supplement and whole food recommendations
-• Support clients in developing sustainable healthy habits
-• **Note**: Cannot diagnose medical conditions or prescribe medications`,
-            systemStyle: 'info',
+            type: 'coach',
+            content: `The investment is just $297 - less than 2 client sessions once you're certified.`,
         },
         {
             id: 8,
             type: 'coach',
-            content: `Understanding your scope of practice is crucial for building trust with clients and staying within ethical boundaries. Now, let's talk about the practical side of starting your practice.`,
+            content: `Congratulations on completing your Holistic Nutrition Mini Diploma! 🌟`,
         },
         {
             id: 9,
-            type: 'user-choice',
-            content: `Which aspect of building your nutrition practice feels most challenging right now?`,
-            choices: ["Finding and attracting ideal clients", "Setting appropriate pricing and packages", "Building confidence in my consultation skills"],
-            showReaction: true,
-        },
-        {
-            id: 10,
-            type: 'system',
-            content: `**Building Your Holistic Nutrition Practice**
-• **Client Acquisition**: Start with friends/family, leverage social media, partner with local wellness providers
-• **Pricing Strategy**: Research local market rates, offer package deals, consider sliding scale for accessibility
-• **Professional Development**: Join nutrition associations, attend workshops, find a mentor
-• **Business Essentials**: Obtain liability insurance, create intake forms, establish clear boundaries`,
-            systemStyle: 'info',
-        },
-        {
-            id: 11,
             type: 'coach',
-            content: `Remember {name}, every expert was once a beginner. Your certification is just the beginning of a lifelong learning journey in holistic nutrition.`,
-        },
-        {
-            id: 12,
-            type: 'system',
-            content: `**Continuing Your Education**
-• Stay current with nutrition research and emerging trends
-• Specialize in areas like sports nutrition, digestive health, or hormonal balance
-• Attend conferences and workshops in functional medicine
-• Consider additional certifications in related fields
-• Build a network with other holistic health practitioners`,
-            systemStyle: 'takeaway',
-        },
-        {
-            id: 13,
-            type: 'coach',
-            content: `You've shown incredible dedication throughout this program. Your next step is to take your final assessment, and then you'll be ready to start making a real difference in people's lives through holistic nutrition! 🌱`,
-        },
-        {
-            id: 14,
-            type: 'system',
-            content: `**"The groundwork for all happiness is good health, and nutrition is the foundation of good health."** - Dr. Asa Andrew`,
-            systemStyle: 'quote',
+            content: `Your certificate is ready to download. And I'll be here when you're ready for the next step. 💕`,
         },
     ];
 
@@ -131,7 +95,7 @@ export function LessonYourNextStep({
         <LessonBase
             lessonNumber={lessonNumber}
             lessonTitle="Your Next Step"
-            lessonSubtitle="Becoming a certified Holistic Nutrition Specialist"
+            lessonSubtitle="Becoming a Certified Holistic Nutrition Specialist"
             totalLessons={totalLessons}
             messages={messages}
             onComplete={onComplete}
