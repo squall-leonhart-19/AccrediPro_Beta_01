@@ -81,6 +81,7 @@ export function LeadOnboardingClient({
                     onComplete={handleVideoComplete}
                     isCompleted={false}
                     firstName={firstName}
+                    niche="functional-medicine"
                 />
             );
         }
@@ -93,6 +94,7 @@ export function LeadOnboardingClient({
                     isCompleted={false}
                     firstName={firstName}
                     userAvatar={userAvatar}
+                    niche="functional-medicine"
                 />
             );
         }

@@ -19,7 +19,7 @@ const LESSONS = [
 ];
 
 async function getLeadProgress(userId: string) {
-    const [user, enrollment, leadOnboarding, completionTags] = await Promise.all([
+    const [user, enrollment, onboardingTags, completionTags] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -36,13 +36,13 @@ async function getLeadProgress(userId: string) {
                 course: { slug: "functional-medicine-mini-diploma" },
             },
         }),
-        prisma.leadOnboarding.findUnique({
-            where: { userId },
-            select: {
-                watchedVideo: true,
-                completedQuestions: true,
+        // Use niche-specific tags for onboarding instead of shared LeadOnboarding table
+        prisma.userTag.findMany({
+            where: {
+                userId,
+                tag: { in: ["functional-medicine-video-watched", "functional-medicine-questions-completed"] },
             },
-        }).catch(() => null),
+        }),
         prisma.userTag.findMany({
             where: {
                 userId,
@@ -57,9 +57,15 @@ async function getLeadProgress(userId: string) {
         completionTags.map((t) => parseInt(t.tag.replace("functional-medicine-lesson-complete:", "")))
     );
 
+    // Check niche-specific onboarding tags
+    const onboardingTagSet = new Set(onboardingTags.map(t => t.tag));
+    const watchedVideo = onboardingTagSet.has("functional-medicine-video-watched");
+    const completedQuestions = onboardingTagSet.has("functional-medicine-questions-completed");
+
     return {
         user,
-        leadOnboarding,
+        watchedVideo,
+        completedQuestions,
         completedLessons: Array.from(completedLessons),
     };
 }
@@ -71,12 +77,12 @@ export default async function FunctionalMedicineDiplomaPage() {
     const data = await getLeadProgress(session.user.id);
     if (!data) redirect("/dashboard");
 
-    const { user, leadOnboarding, completedLessons } = data;
+    const { user, watchedVideo: rawWatchedVideo, completedQuestions: rawCompletedQuestions, completedLessons } = data;
     const firstName = user?.firstName || "there";
     const isTestUser = user?.email === "at.seed019@gmail.com" || user?.email === "tortolialessio1997@gmail.com";
 
-    const watchedVideo = isTestUser || leadOnboarding?.watchedVideo || false;
-    const completedQuestions = isTestUser || leadOnboarding?.completedQuestions || false;
+    const watchedVideo = isTestUser || rawWatchedVideo;
+    const completedQuestions = isTestUser || rawCompletedQuestions;
 
     const steps = [
         { id: 1, title: "Watch Welcome Video", completed: watchedVideo },

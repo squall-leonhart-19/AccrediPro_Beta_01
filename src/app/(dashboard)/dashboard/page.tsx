@@ -208,25 +208,24 @@ export default async function DashboardPage() {
     completedLessonsCount,
   } = dashboardData;
 
-  // Check for mini diploma only users
-  const hasFMMiniDiplomaOnly =
-    enrollments.length === 1 &&
-    enrollments[0].course.slug === "fm-mini-diploma" &&
-    enrollments[0].status !== "COMPLETED";
+  // Check for mini diploma only users - redirect them to their lead portal
+  const MINI_DIPLOMA_REDIRECTS: Record<string, string> = {
+    "womens-health-mini-diploma": "/womens-health-diploma",
+    "functional-medicine-mini-diploma": "/functional-medicine-diploma",
+    "gut-health-mini-diploma": "/gut-health-diploma",
+    "health-coach-mini-diploma": "/health-coach-diploma",
+    "holistic-nutrition-mini-diploma": "/holistic-nutrition-diploma",
+    "hormone-health-mini-diploma": "/hormone-health-diploma",
+    "nurse-coach-mini-diploma": "/nurse-coach-diploma",
+  };
 
-  const hasWomensHealthMiniDiplomaOnly =
-    enrollments.length === 1 &&
-    enrollments[0].course.slug === "womens-health-mini-diploma" &&
-    enrollments[0].status !== "COMPLETED";
-
-  if (hasFMMiniDiplomaOnly) {
-    const { redirect } = await import("next/navigation");
-    redirect("/mini-diploma");
-  }
-
-  if (hasWomensHealthMiniDiplomaOnly) {
-    const { redirect } = await import("next/navigation");
-    redirect("/womens-health-diploma");
+  if (enrollments.length === 1 && enrollments[0].status !== "COMPLETED") {
+    const courseSlug = enrollments[0].course.slug;
+    const redirectPath = MINI_DIPLOMA_REDIRECTS[courseSlug];
+    if (redirectPath) {
+      const { redirect } = await import("next/navigation");
+      redirect(redirectPath);
+    }
   }
 
   const completedCourses = enrollments.filter((e) => e.status === "COMPLETED").length;

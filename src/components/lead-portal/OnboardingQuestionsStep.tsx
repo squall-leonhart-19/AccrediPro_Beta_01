@@ -25,6 +25,7 @@ interface OnboardingQuestionsStepProps {
     isCompleted: boolean;
     firstName?: string;
     userAvatar?: string | null;
+    niche?: string; // Optional niche for per-niche tracking
 }
 
 const BRING_REASONS = [
@@ -59,7 +60,8 @@ export function OnboardingQuestionsStep({
     onComplete,
     isCompleted,
     firstName = "there",
-    userAvatar
+    userAvatar,
+    niche
 }: OnboardingQuestionsStepProps) {
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,6 +89,7 @@ export function OnboardingQuestionsStep({
                     lifeChangeGoal,
                     doingItFor,
                     uploadedPhoto: photoUploaded,
+                    niche, // Include niche for per-niche tracking
                 }),
             });
 

@@ -19,9 +19,28 @@ export async function POST(request: NextRequest) {
             lifeChangeGoal,
             doingItFor,
             uploadedPhoto,
+            niche,
         } = body;
 
-        // Upsert lead onboarding record
+        // If niche is provided, also create a niche-specific completion tag
+        if (niche) {
+            const tag = `${niche}-questions-completed`;
+            await prisma.userTag.upsert({
+                where: {
+                    userId_tag: {
+                        userId: session.user.id,
+                        tag,
+                    },
+                },
+                update: {},
+                create: {
+                    userId: session.user.id,
+                    tag,
+                },
+            });
+        }
+
+        // Upsert lead onboarding record (also keep the shared record for data storage)
         const onboarding = await prisma.leadOnboarding.upsert({
             where: { userId: session.user.id },
             update: {

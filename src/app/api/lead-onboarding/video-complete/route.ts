@@ -11,7 +11,40 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Upsert lead onboarding record
+        // Get niche from request body (optional)
+        let niche: string | undefined;
+        try {
+            const body = await request.json();
+            niche = body.niche;
+        } catch {
+            // No body or invalid JSON - use default behavior
+        }
+
+        // If niche is provided, use niche-specific tag instead of shared LeadOnboarding
+        if (niche) {
+            const tag = `${niche}-video-watched`;
+            await prisma.userTag.upsert({
+                where: {
+                    userId_tag: {
+                        userId: session.user.id,
+                        tag,
+                    },
+                },
+                update: {},
+                create: {
+                    userId: session.user.id,
+                    tag,
+                },
+            });
+
+            return NextResponse.json({
+                success: true,
+                message: "Video marked as watched",
+                tag,
+            });
+        }
+
+        // Fallback: Upsert shared lead onboarding record (for backward compatibility)
         const onboarding = await prisma.leadOnboarding.upsert({
             where: { userId: session.user.id },
             update: {

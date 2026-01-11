@@ -8,9 +8,10 @@ interface WelcomeVideoStepProps {
     onComplete: () => void;
     isCompleted: boolean;
     firstName?: string;
+    niche?: string; // Optional niche for per-niche tracking
 }
 
-export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there" }: WelcomeVideoStepProps) {
+export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there", niche }: WelcomeVideoStepProps) {
     const [hasWatched, setHasWatched] = useState(isCompleted);
     const [isLoading, setIsLoading] = useState(false);
     const [showContinue, setShowContinue] = useState(false);
@@ -32,6 +33,8 @@ export function WelcomeVideoStep({ onComplete, isCompleted, firstName = "there" 
         try {
             const res = await fetch("/api/lead-onboarding/video-complete", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ niche }),
             });
 
             if (res.ok) {
