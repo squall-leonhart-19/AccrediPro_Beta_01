@@ -85,23 +85,43 @@ const FAQS = [
 
 export default function WomensHealthMiniDiplomaPage() {
     const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isVerifying, setIsVerifying] = useState(false);
     const [error, setError] = useState("");
     const [openFaq, setOpenFaq] = useState<number | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
+        setIsVerifying(true);
         setError("");
 
         try {
+            // Step 1: Verify email with NeverBounce
+            const verifyRes = await fetch("/api/verify-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+            const verifyData = await verifyRes.json();
+
+            if (!verifyData.valid) {
+                setError(verifyData.message || "Please enter a valid email address.");
+                setIsVerifying(false);
+                return;
+            }
+
+            // Step 2: Submit to mini-diploma optin
+            setIsVerifying(false);
+            setIsSubmitting(true);
+
             const response = await fetch("/api/mini-diploma/optin", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     firstName,
-                    lastName: "", // Optional now
+                    lastName,
                     email,
                     course: "womens-health",
                 }),
@@ -123,7 +143,7 @@ export default function WomensHealthMiniDiplomaPage() {
             if (result?.error) {
                 sessionStorage.setItem("miniDiplomaUser", JSON.stringify({
                     firstName: firstName.trim(),
-                    lastName: "",
+                    lastName: lastName.trim(),
                     email: email.toLowerCase().trim(),
                 }));
                 window.location.href = "/womens-health-mini-diploma/thank-you";
@@ -134,6 +154,7 @@ export default function WomensHealthMiniDiplomaPage() {
         } catch (err: any) {
             setError(err.message || "Failed to register. Please try again.");
             setIsSubmitting(false);
+            setIsVerifying(false);
         }
     };
 
@@ -233,6 +254,21 @@ export default function WomensHealthMiniDiplomaPage() {
                                 </div>
 
                                 <div>
+                                    <Label htmlFor="lastName" className="text-gray-700 text-sm font-medium">
+                                        Last Name
+                                    </Label>
+                                    <Input
+                                        id="lastName"
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="Your last name"
+                                        required
+                                        className="mt-1 h-12 border-gray-200 focus:border-burgundy-500 focus:ring-burgundy-500 text-base"
+                                    />
+                                </div>
+
+                                <div>
                                     <Label htmlFor="email" className="text-gray-700 text-sm font-medium">
                                         Email Address
                                     </Label>
@@ -255,10 +291,15 @@ export default function WomensHealthMiniDiplomaPage() {
 
                                 <Button
                                     type="submit"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || isVerifying}
                                     className="w-full h-14 bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all"
                                 >
-                                    {isSubmitting ? (
+                                    {isVerifying ? (
+                                        <span className="flex items-center gap-2">
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                            Verifying Email...
+                                        </span>
+                                    ) : isSubmitting ? (
                                         <span className="flex items-center gap-2">
                                             <Loader2 className="h-5 w-5 animate-spin" />
                                             Creating Your Account...
