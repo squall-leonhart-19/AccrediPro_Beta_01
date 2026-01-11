@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+import Anthropic from "@anthropic-ai/sdk";
 
 export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
@@ -21,6 +17,11 @@ export async function POST(req: NextRequest) {
         if (!userId) {
             return NextResponse.json({ error: "userId required" }, { status: 400 });
         }
+
+        // Initialize Anthropic inside handler to avoid build-time crash
+        const anthropic = new Anthropic({
+            apiKey: process.env.ANTHROPIC_API_KEY,
+        });
 
         // Fetch comprehensive user data
         const user = await prisma.user.findUnique({
@@ -124,13 +125,11 @@ KEY METRICS:
 - Total lesson progress entries: ${user._count.progress}
 `;
 
-        // Call OpenAI
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                {
-                    role: "system",
-                    content: `You are an expert customer success analyst for AccrediPro Academy, an online certification platform for health & wellness professionals. 
+        // Call Anthropic
+        const response = await anthropic.messages.create({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 800,
+            system: `You are an expert customer success analyst for AccrediPro Academy, an online certification platform for health & wellness professionals. 
 
 Your job is to analyze user data and provide:
 1. A brief plain-English summary of who this user is and their journey
@@ -138,18 +137,17 @@ Your job is to analyze user data and provide:
 3. Risk assessment (healthy, at-risk, churning)
 4. 2-3 specific actionable recommendations for the admin team
 
-Be concise but insightful. Use specific data points to support your analysis. Format with clear sections.`
-                },
+Be concise but insightful. Use specific data points to support your analysis. Format with clear sections.`,
+            messages: [
                 {
                     role: "user",
                     content: `Analyze this user and provide insights:\n\n${context}`
                 }
             ],
-            max_tokens: 800,
-            temperature: 0.7,
         });
 
-        const summary = completion.choices[0]?.message?.content || "Unable to generate summary.";
+        const textBlock = response.content.find((block) => block.type === "text");
+        const summary = textBlock?.type === "text" ? textBlock.text : "Unable to generate summary.";
 
         return NextResponse.json({
             success: true,
