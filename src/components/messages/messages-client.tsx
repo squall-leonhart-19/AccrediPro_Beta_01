@@ -1240,7 +1240,7 @@ export function MessagesClient({
     // Voice message - clean, compact design
     if (message.attachmentType === "voice" && message.attachmentUrl) {
       return (
-        <div className="min-w-[180px] max-w-[260px]">
+        <div className="w-full max-w-[220px]">
           <div className="flex items-center gap-3">
             {/* Play/Pause Button - Compact */}
             <button
@@ -1879,7 +1879,7 @@ export function MessagesClient({
                               )}
                               <div
                                 className={cn(
-                                  "rounded-2xl px-3.5 py-2.5 relative text-sm transition-all duration-200 max-w-[75%] break-words",
+                                  "rounded-2xl px-3.5 py-2.5 relative text-sm transition-all duration-200 break-words overflow-hidden",
                                   isOwn
                                     ? "message-bubble-premium text-white rounded-br-md chat-bubble-own"
                                     : "bg-white text-gray-900 rounded-bl-md border border-gray-100 chat-bubble-other"

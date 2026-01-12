@@ -342,20 +342,21 @@ export default function PostDetailClient({
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans pb-20">
+    <div className="min-h-screen bg-gray-50 font-sans pb-20">
 
-      {/* Minimal Top Navbar */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-40 px-4 h-14 flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => router.push('/community')} className="hover:bg-gray-100 rounded-full shrink-0">
-          <ArrowLeft className="w-5 h-5 text-gray-700" />
+      {/* School-Quality Top Navbar with Burgundy Branding */}
+      <div className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-b border-burgundy-800 sticky top-0 z-40 px-4 h-14 flex items-center gap-3 shadow-sm">
+        <Button variant="ghost" size="icon" onClick={() => router.push('/community')} className="hover:bg-white/10 rounded-full shrink-0 text-white">
+          <ArrowLeft className="w-5 h-5" />
         </Button>
-        <h1 className="font-bold text-sm sm:text-lg text-gray-900 truncate flex-1">
+        <h1 className="font-bold text-sm sm:text-lg text-white truncate flex-1">
           {post.title}
         </h1>
       </div>
 
       {/* TRUE Full-Width Layout */}
-      <div className="px-4 sm:px-6 lg:px-12 xl:px-20 py-4 space-y-4">
+      <div className="px-4 sm:px-6 lg:px-12 xl:px-20 py-6 space-y-4">
+
 
         {/* Main Post Content */}
         <main className="max-w-5xl mx-auto space-y-4">
