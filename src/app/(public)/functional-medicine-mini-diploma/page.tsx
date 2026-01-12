@@ -9,7 +9,8 @@ import {
     Award, CheckCircle2, ArrowRight,
     GraduationCap, Users, Star, Clock,
     BookOpen, MessageCircle, Loader2, Shield,
-    Globe, ChevronDown, ChevronUp, Zap,
+    Globe, ChevronDown, ChevronUp, Zap, ArrowDown,
+    DollarSign, Heart, Sparkles, X
 } from "lucide-react";
 import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
@@ -19,18 +20,6 @@ import { MultiStepQualificationForm, QualificationData } from "@/components/lead
 
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
-
-// AccrediPro Brand Colors (from homepage)
-const BRAND = {
-    burgundy: "#722f37",
-    burgundyDark: "#4e1f24",
-    gold: "#d4af37",
-    goldLight: "#e8c547",
-    cream: "#fdf8f0",
-    // Metallic gradients
-    goldMetallic: "linear-gradient(135deg, #d4af37 0%, #f7e7a0 25%, #d4af37 50%, #b8860b 75%, #d4af37 100%)",
-    burgundyMetallic: "linear-gradient(135deg, #722f37 0%, #9a4a54 25%, #722f37 50%, #4e1f24 75%, #722f37 100%)",
-};
 
 function FunctionalMedicineMiniDiplomaContent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,75 +117,86 @@ function FunctionalMedicineMiniDiplomaContent() {
     };
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: BRAND.cream }}>
+        <div className="min-h-screen bg-white">
             {/* Functional Medicine Niche Pixel */}
             <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
 
-            {/* Top Banner - Gold Metallic */}
-            <div className="py-2.5 px-4 text-center text-sm" style={{ background: BRAND.goldMetallic }}>
-                <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 flex-wrap">
-                    <span className="font-bold" style={{ color: BRAND.burgundyDark }}>
-                        🧬 Free Functional Medicine Mini-Diploma
-                    </span>
-                    <span style={{ color: BRAND.burgundyDark }}>•</span>
-                    <span style={{ color: BRAND.burgundyDark }}>
-                        <strong>243 women</strong> started this week — Limited cohort access
-                    </span>
-                </div>
+            {/* URGENCY BAR - Hormozi style */}
+            <div className="bg-red-600 text-white py-2 px-4 text-center">
+                <p className="text-sm md:text-base font-bold">
+                    ⚡ FREE FOR THE NEXT 24 HOURS ⚡ (Normally $97) — 847 women claimed access this week
+                </p>
             </div>
 
-            {/* Hero Section */}
-            <section className="relative overflow-hidden pt-12 pb-20" style={{ backgroundColor: BRAND.burgundyDark }}>
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute inset-0" style={{
-                        backgroundImage: `radial-gradient(circle at 2px 2px, ${BRAND.gold} 1px, transparent 0)`,
-                        backgroundSize: '48px 48px'
-                    }} />
-                </div>
+            {/* HERO SECTION - Direct Response Style */}
+            <section className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white pt-8 pb-16 md:pt-12 md:pb-24 relative overflow-hidden">
+                {/* Background glow */}
+                <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/20 rounded-full blur-[120px]" />
 
-                {/* Glow Effects */}
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] opacity-20" style={{ backgroundColor: BRAND.gold }} />
-
-                <div className="relative max-w-6xl mx-auto px-6">
-                    <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-                        <div className="text-white">
-                            {/* Badge */}
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
-                                <Shield className="w-4 h-4" style={{ color: BRAND.gold }} />
-                                <span className="text-sm font-medium" style={{ color: BRAND.gold }}>ASI Certified — Globally Recognized</span>
-                            </div>
-
-                            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-[1.15]">
-                                <span className="text-white">Your Free</span>
-                                <span className="block mt-2" style={{ color: BRAND.gold }}>
-                                    Functional Medicine
-                                </span>
-                                <span className="block mt-2 text-white">Mini-Diploma Awaits</span>
-                            </h1>
-
-                            <p className="text-xl mb-8 opacity-90 max-w-xl">
-                                60 minutes. 9 lessons. 1 certificate. Start your journey to becoming a
-                                <strong className="text-white"> certified Functional Medicine practitioner</strong> — completely free.
+                <div className="relative max-w-6xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-start">
+                        {/* Left Column - Copy */}
+                        <div>
+                            {/* Problem Agitation Hook */}
+                            <p className="text-emerald-400 font-bold text-sm md:text-base mb-4 uppercase tracking-wide">
+                                For Women Ready To Leave Their 9-5 Behind
                             </p>
 
-                            <div className="flex flex-wrap gap-6 mb-6">
-                                <div className="flex items-center gap-2 text-sm opacity-80">
-                                    <Award className="w-5 h-5" style={{ color: BRAND.gold }} />
-                                    20,000+ Certified
+                            {/* Main Headline */}
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-6">
+                                Get Certified In<br />
+                                <span className="text-emerald-400">Functional Medicine</span><br />
+                                In 60 Minutes<br />
+                                <span className="text-slate-400 text-2xl md:text-3xl">(For Free)</span>
+                            </h1>
+
+                            {/* Subheadline - Paint the dream */}
+                            <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-lg leading-relaxed">
+                                …And discover how 4,000+ women are earning <strong className="text-white">$3,000-$8,000/month</strong> helping clients heal — without a medical degree, office rent, or years of schooling.
+                            </p>
+
+                            {/* Proof Points */}
+                            <div className="flex flex-wrap gap-4 md:gap-6 mb-8">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                        <Award className="w-5 h-5 text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-white">9 Lessons</p>
+                                        <p className="text-xs text-slate-400">Complete in 1 hour</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm opacity-80">
-                                    <Star className="w-5 h-5" style={{ color: BRAND.gold }} />
-                                    4.9/5 Rating
+                                <div className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                        <GraduationCap className="w-5 h-5 text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-white">Certificate</p>
+                                        <p className="text-xs text-slate-400">ASI Verified</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2 text-sm opacity-80">
-                                    <Globe className="w-5 h-5" style={{ color: BRAND.gold }} />
-                                    45+ Countries
+                                <div className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                        <Users className="w-5 h-5 text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-white">Coach Support</p>
+                                        <p className="text-xs text-slate-400">Sarah guides you</p>
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* Mobile CTA */}
+                            <Button
+                                onClick={scrollToForm}
+                                className="lg:hidden w-full h-14 text-lg font-bold bg-emerald-500 hover:bg-emerald-600 text-white mb-6"
+                            >
+                                Claim Free Access Now
+                                <ArrowDown className="ml-2 w-5 h-5" />
+                            </Button>
                         </div>
 
-                        {/* Lead Capture Form */}
+                        {/* Right Column - Form */}
                         <div id="lead-form" className="relative z-10">
                             <MultiStepQualificationForm
                                 onSubmit={handleSubmit}
@@ -208,176 +208,221 @@ function FunctionalMedicineMiniDiplomaContent() {
                 </div>
             </section>
 
-            {/* What is Functional Medicine */}
-            <section className="py-20" style={{ backgroundColor: BRAND.cream }}>
-                <div className="max-w-6xl mx-auto px-6">
+            {/* INCOME PROOF - Hormozi Stack */}
+            <section className="py-16 md:py-20 bg-slate-50">
+                <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.burgundy}10` }}>
-                            <Zap className="w-4 h-4" style={{ color: BRAND.burgundy }} />
-                            <span className="text-sm font-semibold" style={{ color: BRAND.burgundy }}>The $4.5 Trillion Wellness Industry</span>
-                        </div>
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: BRAND.burgundy }}>
-                            What is Functional Medicine?
+                        <p className="text-emerald-600 font-bold text-sm uppercase tracking-wide mb-3">Real Results From Real Women</p>
+                        <h2 className="text-3xl md:text-4xl font-black text-slate-900">
+                            They Started Where You Are.<br />
+                            <span className="text-emerald-600">Now They Earn $3K-$8K/Month.</span>
                         </h2>
-                        <p className="text-lg max-w-3xl mx-auto" style={{ color: "#666" }}>
-                            <strong style={{ color: BRAND.burgundy }}>Functional Medicine</strong> addresses the root causes of disease — not just symptoms.
-                            While conventional medicine asks "what drug treats this symptom?", Functional Medicine asks
-                            "<strong>why is this happening in the first place?</strong>"
-                        </p>
                     </div>
 
+                    {/* Income Stories */}
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { title: "Root-Cause Focus", desc: "Find what's actually causing health issues, not just mask symptoms with medications" },
-                            { title: "Whole-Person Care", desc: "Understand the connections between gut, hormones, immune system, and mental health" },
-                            { title: "Prevention First", desc: "Catch dysfunction early before it becomes chronic disease" },
-                        ].map((item, i) => (
-                            <div key={i} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                                <div className="w-10 h-10 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: `${BRAND.burgundy}10` }}>
-                                    <CheckCircle2 className="w-5 h-5" style={{ color: BRAND.burgundy }} />
-                                </div>
-                                <h3 className="text-lg font-bold mb-2" style={{ color: BRAND.burgundy }}>{item.title}</h3>
-                                <p className="text-gray-600 text-sm">{item.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Income Section */}
-            <section className="py-20 bg-white">
-                <div className="max-w-6xl mx-auto px-6">
-                    <p className="text-xs font-bold tracking-[2px] uppercase mb-3" style={{ color: BRAND.gold }}>Real Income. Real Flexibility.</p>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 max-w-2xl" style={{ color: BRAND.burgundy }}>What Certified Functional Medicine Practitioners Earn</h2>
-                    <p className="text-lg max-w-2xl mb-12" style={{ color: "#666" }}>
-                        These aren't "top 1%" outliers. These are women who started exactly where you are.
-                    </p>
-
-                    <div className="grid md:grid-cols-3 gap-6">
-                        <div className="rounded-xl p-8 text-center border" style={{ backgroundColor: BRAND.cream, borderColor: "#e5e1db" }}>
-                            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: BRAND.burgundy }}>Part-Time (10-15 hrs/week)</p>
-                            <p className="text-4xl font-bold mb-1" style={{ color: BRAND.gold }}>$2,500</p>
-                            <p className="text-sm mb-4" style={{ color: "#888" }}>per month</p>
-                            <p className="text-sm" style={{ color: "#555" }}>4-6 clients at $150/session. Perfect while kids are in school.</p>
-                        </div>
-                        <div className="rounded-xl p-8 text-center shadow-lg relative transform md:-translate-y-4" style={{ backgroundColor: BRAND.burgundy }}>
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>Most Common</div>
-                            <p className="text-xs font-bold uppercase tracking-wider mb-2 text-white/80">Full-Time (25-30 hrs/week)</p>
-                            <p className="text-4xl font-bold mb-1" style={{ color: BRAND.gold }}>$5k–$7.5k</p>
-                            <p className="text-sm mb-4 text-white/60">per month</p>
-                            <p className="text-sm text-white/90">10-15 clients with monthly packages. Replace your 9-5.</p>
-                        </div>
-                        <div className="rounded-xl p-8 text-center border" style={{ backgroundColor: BRAND.cream, borderColor: "#e5e1db" }}>
-                            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: BRAND.burgundy }}>Scaled (Group Programs)</p>
-                            <p className="text-4xl font-bold mb-1" style={{ color: BRAND.gold }}>$10,000+</p>
-                            <p className="text-sm mb-4" style={{ color: "#888" }}>per month</p>
-                            <p className="text-sm" style={{ color: "#555" }}>Add group coaching or digital courses for leverage.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Testimonials */}
-            <section className="py-20" style={{ backgroundColor: BRAND.cream }}>
-                <div className="max-w-6xl mx-auto px-6">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-3" style={{ color: BRAND.burgundy }}>Women Who Were Exactly Where You Are</h2>
-                    <p className="text-lg text-center mb-12" style={{ color: "#888" }}>Real Functional Medicine practitioners. Different backgrounds. Same transformation.</p>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {[
-                            {
-                                name: "Jennifer M., 47",
-                                detail: "Former HR Director → Functional Medicine Coach",
-                                income: "Now earning $6,200/month part-time",
-                                text: "After 22 years in corporate, I was burned out. My own hormone journey taught me more than any doctor. Now I help women in perimenopause using Functional Medicine principles — and my kids tell me they're proud of me for the first time in years.",
-                                initials: "JM"
-                            },
-                            {
-                                name: "Rachel T., 41",
-                                detail: "Stay-at-home mom → Functional Wellness Practitioner",
-                                income: "Now earning $4,800/month around kids' schedules",
-                                text: "I showed my husband the career roadmap and landed my first paying client in week 3. We paid off my certification in the first month with Functional Medicine consultations.",
-                                initials: "RT"
-                            },
-                            {
-                                name: "Diane K., 52",
-                                detail: "Nurse Practitioner → Integrative Functional Medicine Coach",
-                                income: "Now earning $8,500/month with group programs",
-                                text: "As a nurse for 18 years, I knew medicine wasn't solving root causes. My nursing background + Functional Medicine certification = exactly what clients need.",
-                                initials: "DK"
-                            },
-                            {
-                                name: "Monica H., 45",
-                                detail: "Rebuilding after divorce → Functional Gut Health Specialist",
-                                income: "Now earning $5,400/month with waitlist clients",
-                                text: "I'd spent years healing my gut after autoimmune issues — and realized that Functional Medicine knowledge was worth something. 14 months later, I have a practice I love.",
-                                initials: "MH"
-                            }
-                        ].map((t, i) => (
-                            <div key={i} className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
-                                <p className="text-[15px] italic leading-relaxed mb-6" style={{ color: "#333" }}>&ldquo;{t.text}&rdquo;</p>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold" style={{ backgroundColor: BRAND.burgundy }}>
-                                        {t.initials}
+                            { name: "Jennifer M.", income: "$4,200/mo", before: "Exhausted nurse", story: "I was done with 12-hour shifts. Now I coach 8 clients from home." },
+                            { name: "Patricia L.", income: "$6,800/mo", before: "Corporate burnout", story: "Left my desk job at 47. Best decision I ever made." },
+                            { name: "Michelle R.", income: "$3,100/mo", before: "Stay-at-home mom", story: "Started while kids napped. Now it's my full-time income." }
+                        ].map((story, i) => (
+                            <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+                                        <span className="text-emerald-700 font-bold text-lg">{story.name[0]}</span>
                                     </div>
                                     <div>
-                                        <p className="font-bold" style={{ color: BRAND.burgundy }}>{t.name}</p>
-                                        <p className="text-xs text-gray-500">{t.detail}</p>
-                                        <p className="text-xs font-bold mt-0.5" style={{ color: BRAND.gold }}>{t.income}</p>
+                                        <p className="font-bold text-slate-900">{story.name}</p>
+                                        <p className="text-xs text-slate-500">{story.before}</p>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* How It Works */}
-            <section className="py-20 text-white" style={{ backgroundColor: BRAND.burgundyDark }}>
-                <div className="max-w-6xl mx-auto px-6">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Your Path from Here to Certified Functional Medicine Practitioner</h2>
-
-                    <div className="grid md:grid-cols-4 gap-8">
-                        {[
-                            { step: "1", title: "Complete Free Mini-Diploma", text: "60 minutes. Learn Functional Medicine foundations. Get your first certificate today." },
-                            { step: "2", title: "Choose Your Specialty", text: "Hormones, gut health, metabolic health, or 8 other Functional Medicine tracks." },
-                            { step: "3", title: "Get ASI Board Certified", text: "8-12 weeks at your own pace. Lifetime access. Coach support throughout." },
-                            { step: "4", title: "Launch Your Practice", text: "Our Career Roadmap shows exactly how to get your first Functional Medicine clients." }
-                        ].map((s, i) => (
-                            <div key={i} className="text-center">
-                                <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl" style={{ color: BRAND.gold }}>
-                                    {s.step}
+                                <p className="text-slate-600 text-sm mb-4 italic">"{story.story}"</p>
+                                <div className="bg-emerald-50 rounded-xl px-4 py-3 text-center">
+                                    <p className="text-2xl font-black text-emerald-600">{story.income}</p>
+                                    <p className="text-xs text-emerald-700">Monthly Income</p>
                                 </div>
-                                <h4 className="text-lg font-bold mb-2">{s.title}</h4>
-                                <p className="text-sm opacity-80 leading-relaxed">{s.text}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* FAQs */}
-            <section className="py-20" style={{ backgroundColor: BRAND.cream }}>
-                <div className="max-w-3xl mx-auto px-6">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" style={{ color: BRAND.burgundy }}>Functional Medicine Mini-Diploma FAQs</h2>
-                    <div className="space-y-4">
+            {/* THIS IS FOR YOU - Qualification Section */}
+            <section className="py-16 md:py-20 bg-white">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
+                            This Is For You If…
+                        </h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {/* FOR YOU */}
+                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
+                            <h3 className="font-bold text-emerald-800 mb-4 flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5" /> Perfect For You If:
+                            </h3>
+                            <ul className="space-y-3 text-slate-700">
+                                {[
+                                    "You're tired of trading time for money",
+                                    "You've always wanted to help people heal",
+                                    "You want flexibility around family",
+                                    "You're ready for purpose-driven work",
+                                    "You can invest 60 minutes today"
+                                ].map((item, i) => (
+                                    <li key={i} className="flex items-start gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                        <span className="text-sm">{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* NOT FOR YOU */}
+                        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                            <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                                <X className="w-5 h-5" /> Not For You If:
+                            </h3>
+                            <ul className="space-y-3 text-slate-600">
+                                {[
+                                    "You expect overnight results without effort",
+                                    "You're not willing to learn something new",
+                                    "You're happy in your current career",
+                                    "You prefer someone else to do the work"
+                                ].map((item, i) => (
+                                    <li key={i} className="flex items-start gap-2">
+                                        <X className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                                        <span className="text-sm">{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* WHAT YOU'LL LEARN */}
+            <section className="py-16 md:py-20 bg-slate-900 text-white">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <p className="text-emerald-400 font-bold text-sm uppercase mb-3">Inside Your Free Mini-Diploma</p>
+                        <h2 className="text-3xl md:text-4xl font-black">
+                            9 Lessons That Could Change<br />
+                            <span className="text-emerald-400">Your Entire Career Path</span>
+                        </h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4">
                         {[
-                            { q: "What will I learn in the Functional Medicine mini-diploma?", a: "You'll learn the foundations of root-cause medicine: how the gut, hormones, and immune system connect; early warning signs of dysfunction; and how Functional Medicine differs from conventional approaches. It's your first step toward certification." },
-                            { q: "Is this really free?", a: "Yes, 100% free. No credit card required. The Functional Medicine Mini-Diploma is our way of letting you experience ASI training before investing in full certification." },
-                            { q: "Can I coach without a medical degree?", a: "Yes. Functional Medicine coaches provide education, accountability, and support — not medical diagnosis. You're filling the gap doctors leave. Our certification teaches you exactly what's in scope." },
-                            { q: "How long does the full Functional Medicine certification take?", a: "The free mini-diploma takes 60 minutes. Full Functional Medicine certification is 8-12 weeks at your own pace. Most students complete it while working full-time." },
-                            { q: "What's the investment for full Functional Medicine certification?", a: "Full Functional Medicine certification programs range from $497-$997. That's less than one month of income as a certified practitioner. Payment plans available." },
+                            { num: 1, title: "Root Cause Medicine", desc: "Why symptoms are just the tip" },
+                            { num: 2, title: "The Gut Foundation", desc: "Where 80% of healing begins" },
+                            { num: 3, title: "Inflammation Connection", desc: "The hidden driver of disease" },
+                            { num: 4, title: "The Toxin Burden", desc: "Modern detox protocols" },
+                            { num: 5, title: "Stress & HPA Axis", desc: "Hormonal stress response" },
+                            { num: 6, title: "Nutrient Deficiencies", desc: "Testing and correction" },
+                            { num: 7, title: "Lab Interpretation", desc: "Reading functional labs" },
+                            { num: 8, title: "Building Protocols", desc: "Client healing plans" },
+                            { num: 9, title: "Your Next Step", desc: "Career roadmap unlocked" }
+                        ].map((lesson) => (
+                            <div key={lesson.num} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                                        {lesson.num}
+                                    </div>
+                                    <h4 className="font-bold text-white">{lesson.title}</h4>
+                                </div>
+                                <p className="text-slate-400 text-sm pl-11">{lesson.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-10">
+                        <Button
+                            onClick={scrollToForm}
+                            className="h-14 px-10 text-lg font-bold bg-emerald-500 hover:bg-emerald-600"
+                        >
+                            Get Free Access Now
+                            <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
+                        <p className="text-slate-500 text-sm mt-3">Takes 30 seconds • No credit card required</p>
+                    </div>
+                </div>
+            </section>
+
+            {/* VALUE STACK - Hormozi Style */}
+            <section className="py-16 md:py-20 bg-white">
+                <div className="max-w-3xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
+                            Everything You're Getting<br />
+                            <span className="text-emerald-600">100% Free Today</span>
+                        </h2>
+                    </div>
+
+                    <div className="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
+                        {[
+                            { item: "9-Lesson Functional Medicine Mini-Diploma", value: "$97" },
+                            { item: "ASI-Verified Certificate of Completion", value: "$47" },
+                            { item: "Access to Coach Sarah (Your Personal Guide)", value: "$197" },
+                            { item: "Career Roadmap & Next Steps Plan", value: "$27" },
+                            { item: "Exclusive Community Access", value: "$47" }
+                        ].map((row, i) => (
+                            <div key={i} className={`flex items-center justify-between p-4 ${i < 4 ? "border-b border-slate-200" : ""}`}>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                                    <span className="font-medium text-slate-800">{row.item}</span>
+                                </div>
+                                <span className="text-slate-400 line-through text-sm">{row.value}</span>
+                            </div>
+                        ))}
+                        <div className="bg-emerald-600 p-6 text-center text-white">
+                            <p className="text-sm opacity-80 mb-1">Total Value: <span className="line-through">$415</span></p>
+                            <p className="text-4xl font-black">FREE TODAY</p>
+                            <p className="text-sm opacity-80 mt-1">Limited Time • Normally $97</p>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-8">
+                        <Button
+                            onClick={scrollToForm}
+                            className="h-14 px-10 text-lg font-bold bg-emerald-600 hover:bg-emerald-700"
+                        >
+                            Claim Your Free Diploma
+                            <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
+                    </div>
+                </div>
+            </section>
+
+            {/* FAQ */}
+            <section className="py-16 md:py-20 bg-slate-50">
+                <div className="max-w-3xl mx-auto px-4">
+                    <h2 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-10">
+                        Frequently Asked Questions
+                    </h2>
+
+                    <div className="space-y-3">
+                        {[
+                            { q: "Is this really free?", a: "Yes, 100% free. No credit card required. We offer this to help you experience what's possible in functional medicine." },
+                            { q: "How long does it take?", a: "About 60 minutes total. You can do all 9 lessons in one sitting, or spread them out over a few days." },
+                            { q: "What's the catch?", a: "No catch. After completing, you'll have the option to continue your education with our full certification — but there's no obligation." },
+                            { q: "Is the certificate real?", a: "Yes! It's issued by AccrediPro Standards Institute (ASI) and recognized by employers worldwide." },
+                            { q: "Do I need prior experience?", a: "Not at all. This mini-diploma is designed for complete beginners." }
                         ].map((faq, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                            <div key={i} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                                    className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                                    className="w-full flex items-center justify-between p-4 text-left"
                                 >
-                                    <span className="font-semibold" style={{ color: BRAND.burgundy }}>{faq.q}</span>
-                                    {openFaq === i ? <ChevronUp className="w-5 h-5" style={{ color: BRAND.gold }} /> : <ChevronDown className="w-5 h-5" style={{ color: BRAND.gold }} />}
+                                    <span className="font-semibold text-slate-800">{faq.q}</span>
+                                    {openFaq === i ? (
+                                        <ChevronUp className="w-5 h-5 text-slate-400" />
+                                    ) : (
+                                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                                    )}
                                 </button>
                                 {openFaq === i && (
-                                    <div className="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4">
+                                    <div className="px-4 pb-4 text-slate-600 text-sm">
                                         {faq.a}
                                     </div>
                                 )}
@@ -387,48 +432,41 @@ function FunctionalMedicineMiniDiplomaContent() {
                 </div>
             </section>
 
-            {/* Final CTA */}
-            <section className="py-20 bg-white text-center">
-                <div className="max-w-4xl mx-auto px-6">
-                    <h2 className="text-4xl font-bold mb-4" style={{ color: BRAND.burgundy }}>Start Your Functional Medicine Journey Today</h2>
-                    <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: "#666" }}>
-                        60 minutes. 9 lessons. Your first certificate in Functional Medicine. Completely free.
+            {/* FINAL CTA */}
+            <section className="py-16 md:py-20 bg-slate-900 text-white text-center">
+                <div className="max-w-3xl mx-auto px-4">
+                    <h2 className="text-3xl md:text-4xl font-black mb-6">
+                        Your Next Chapter Starts<br />
+                        <span className="text-emerald-400">In 60 Minutes</span>
+                    </h2>
+                    <p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">
+                        Women just like you are already earning $3K-$8K/month as functional medicine practitioners. The only question is: will you join them?
                     </p>
-
-                    <div className="flex justify-center mb-8">
-                        <Button
-                            onClick={scrollToForm}
-                            className="text-lg font-bold px-8 py-6 rounded-xl shadow-xl hover:opacity-90 transition-all"
-                            style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
-                        >
-                            Start Your Free Mini-Diploma Now
-                            <ArrowRight className="w-5 h-5 ml-2" />
-                        </Button>
-                    </div>
-
-                    <div className="max-w-lg mx-auto p-6 rounded-xl text-sm border" style={{ backgroundColor: BRAND.cream, borderColor: "#e5e1db", color: "#666" }}>
-                        <strong style={{ color: BRAND.burgundy }}>Our Promise:</strong> Complete the free Functional Medicine mini-diploma in 60 minutes. If you don't learn something valuable about root-cause health, we'll personally apologize.
-                    </div>
+                    <Button
+                        onClick={scrollToForm}
+                        className="h-16 px-12 text-xl font-bold bg-emerald-500 hover:bg-emerald-600"
+                    >
+                        Get My Free Diploma Now
+                        <ArrowRight className="ml-2 w-6 h-6" />
+                    </Button>
+                    <p className="text-slate-500 text-sm mt-4">⚡ Free for next 24 hours only</p>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="py-12 text-center text-sm" style={{ backgroundColor: BRAND.burgundyDark, color: "rgba(255,255,255,0.6)" }}>
-                <div className="max-w-6xl mx-auto px-6">
-                    <Image
-                        src="/ASI_LOGO-removebg-preview.png"
-                        alt="Accreditation Standards Institute"
-                        width={140}
-                        height={40}
-                        className="mx-auto mb-4 opacity-80"
-                    />
-                    <p className="mb-4 text-white">ASI Certified Functional Medicine Programs | Est. 2024 | 20,000+ Practitioners</p>
-                    <p className="text-xs max-w-lg mx-auto">This site is not a part of Facebook or Meta. Health coaching is education-based and does not replace medical care.</p>
+            <footer className="bg-slate-950 text-slate-400 py-10">
+                <div className="max-w-5xl mx-auto px-4 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                        <Image src="/logos/accredipro-logo-gold.svg" alt="AccrediPro" width={140} height={36} />
+                    </div>
+                    <p className="text-sm">
+                        © {new Date().getFullYear()} AccrediPro Standards Institute. All rights reserved.
+                    </p>
                 </div>
             </footer>
 
-            {/* Live Chat Widget */}
-            <FloatingChatWidget page="functional-medicine-mini-diploma" />
+            {/* Floating Chat Widget */}
+            <FloatingChatWidget />
         </div>
     );
 }
@@ -436,8 +474,8 @@ function FunctionalMedicineMiniDiplomaContent() {
 export default function FunctionalMedicineMiniDiplomaPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#fdf8f0" }}>
-                <Loader2 className="h-8 w-8 animate-spin" style={{ color: "#722f37" }} />
+            <div className="min-h-screen flex items-center justify-center bg-slate-900">
+                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
             </div>
         }>
             <FunctionalMedicineMiniDiplomaContent />
