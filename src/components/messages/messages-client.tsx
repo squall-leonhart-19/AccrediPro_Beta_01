@@ -1606,10 +1606,41 @@ export function MessagesClient({
                         </div>
                       </div>
                     ) : (
-                      <p className="text-xs text-green-600 flex items-center gap-1">
-                        <Circle className="w-1.5 h-1.5 fill-current" />
-                        Active now
-                      </p>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xs text-green-600 flex items-center gap-1">
+                          <Circle className="w-1.5 h-1.5 fill-current" />
+                          Active now
+                        </p>
+                        {/* Enrollment Badges - Show what student is enrolled in */}
+                        {selectedUser.enrollments && selectedUser.enrollments.length > 0 && (
+                          <div className="flex items-center gap-1 flex-wrap">
+                            {selectedUser.enrollments.slice(0, 3).map((enrollment) => {
+                              // Get short name from course title (e.g., "Certified Functional Medicine" -> "FM")
+                              const shortName = enrollment.course.title
+                                .replace(/Certified\s+/i, '')
+                                .replace(/Practitioner|Coach|Specialist/i, '')
+                                .split(' ')
+                                .filter((w: string) => w.length > 2)
+                                .slice(0, 2)
+                                .map((w: string) => w[0])
+                                .join('')
+                                .toUpperCase() || 'COURSE';
+                              return (
+                                <span
+                                  key={enrollment.id}
+                                  className="text-[9px] px-1.5 py-0.5 bg-burgundy-100 text-burgundy-700 rounded font-medium"
+                                  title={enrollment.course.title}
+                                >
+                                  {shortName} {Math.round(enrollment.progress)}%
+                                </span>
+                              );
+                            })}
+                            {selectedUser.enrollments.length > 3 && (
+                              <span className="text-[9px] text-gray-400">+{selectedUser.enrollments.length - 3}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
