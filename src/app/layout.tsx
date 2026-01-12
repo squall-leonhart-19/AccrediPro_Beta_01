@@ -5,6 +5,8 @@ import "./globals.css";
 import MetaPixel from "@/components/tracking/meta-pixel";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -138,6 +140,8 @@ export default function RootLayout({
           </Suspense>
           {children}
           <Toaster richColors position="top-right" />
+          <Analytics />
+          <SpeedInsights />
         </QueryProvider>
       </body>
     </html>
