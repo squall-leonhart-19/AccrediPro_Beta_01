@@ -45,10 +45,12 @@ export async function GET(request: NextRequest) {
     // Only show them if explicitly requested with includeLeads=true
     if (!includeLeads) {
       andConditions.push({
-        AND: [
-          { miniDiplomaOptinAt: null },
-          { role: { not: "LEAD" } } // Also exclude explicit leads
-        ]
+        // Temporarily relaxed to ensure Admins/Purchasers aren't hidden
+        // AND: [
+        //   { miniDiplomaOptinAt: null },
+        //   { role: { not: "LEAD" } }
+        // ]
+        role: { not: "LEAD" }
       });
     }
 
