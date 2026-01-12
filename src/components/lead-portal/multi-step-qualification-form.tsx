@@ -257,7 +257,7 @@ export function MultiStepQualificationForm({
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="phone">Phone Number (Required for access)</Label>
+                            <Label htmlFor="phone">Phone for Coach Support</Label>
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
                                 <div className="absolute left-9 top-3.5 text-gray-500 font-medium border-r border-gray-300 pr-2 mr-2 text-sm leading-none h-5 flex items-center">
@@ -276,7 +276,7 @@ export function MultiStepQualificationForm({
                                     placeholder="555-0123"
                                 />
                             </div>
-                            <p className="text-xs text-gray-400">We send your login details via SMS to prevent spam.</p>
+                            <p className="text-xs text-gray-400">Sarah will text you directly with your access link</p>
                         </div>
 
                         {error && (

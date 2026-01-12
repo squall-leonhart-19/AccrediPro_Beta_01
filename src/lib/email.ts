@@ -1134,67 +1134,74 @@ interface FreebieWelcomeEmailOptions {
 export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser, nicheName = "Functional Medicine", password = "coach2026", diplomaSlug = "functional-medicine-diploma" }: FreebieWelcomeEmailOptions) {
   const dashboardUrl = `${BASE_URL}/${diplomaSlug}`;
 
+  // Simple, plain-text style email to avoid Promotions tab
   const content = isExistingUser ? `
-    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome Back, ${firstName}!</h2>
-
-    <p style="color: #555; font-size: 16px;">Great news! Your free <strong>${nicheName} Mini Diploma</strong> is now ready.</p>
-
-    <p style="color: #555; font-size: 16px;">Since you already have an account, simply log in with your existing credentials to access:</p>
-
-    ${highlightBox(`
-      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">What's Waiting For You:</p>
-      <ul style="margin: 0; padding-left: 20px; color: #555;">
-        <li style="margin: 5px 0;">9 interactive lessons on ${nicheName}</li>
-        <li style="margin: 5px 0;">Mini Diploma certificate upon completion</li>
-        <li style="margin: 5px 0;">Personal audio welcome from Sarah</li>
-        <li style="margin: 5px 0;">7 days to complete</li>
-      </ul>
-    `, 'cream')}
-
-    ${primaryButton('Login to My Dashboard', `${BASE_URL}/login`)}
-
-    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;">Forgot your password? No problem! Use the "Forgot Password" link on the login page.</p>
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+      <p style="margin: 0 0 20px 0; font-size: 16px; color: #333;">Hey ${firstName}!</p>
+      
+      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+        Great news — your free <strong>${nicheName} Mini Diploma</strong> is ready!
+      </p>
+      
+      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+        Since you already have an account, just log in to start your 9 lessons with me.
+      </p>
+      
+      <p style="margin: 20px 0; font-size: 15px;">
+        <a href="${BASE_URL}/login" style="color: #722f37; font-weight: bold;">👉 Click here to login</a>
+      </p>
+      
+      <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
+        You have 7 days to complete all lessons and get your certificate.
+      </p>
+      
+      <p style="margin: 25px 0 0 0; font-size: 15px; color: #444;">
+        See you inside!<br/>
+        <strong>Sarah</strong>
+      </p>
     </div>
-
-    <p style="color: #555; font-size: 16px; margin-top: 30px;">See you inside!<br/><strong>Sarah</strong><br/>AccrediPro Academy</p>
   ` : `
-    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Hey ${firstName}!</h2>
-
-    <p style="color: #555; font-size: 16px;">I'm SO excited you're here! Your <strong>${nicheName} Mini Diploma</strong> is ready.</p>
-
-    <p style="color: #555; font-size: 16px;">Here's how to access your lessons:</p>
-
-    ${highlightBox(`
-      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Details:</p>
-      <p style="margin: 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${to}</p>
-      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> ${password}</p>
-      <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">Save these! You can change your password anytime.</p>
-    `, 'cream')}
-
-    <p style="color: #555; font-size: 16px;">What you'll learn with me:</p>
-    <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 8px 0;">9 interactive lessons on ${nicheName}</li>
-      <li style="margin: 8px 0;">Expert knowledge from Sarah</li>
-      <li style="margin: 8px 0;">Your certificate upon completion</li>
-      <li style="margin: 8px 0;">7 days to complete</li>
-    </ul>
-
-    ${primaryButton('Start Your First Lesson', dashboardUrl)}
-
-    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;"><strong>Important:</strong> You have 7 days to complete your mini diploma. Complete all 9 lessons to earn your certificate!</p>
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+      <p style="margin: 0 0 20px 0; font-size: 16px; color: #333;">Hey ${firstName}!</p>
+      
+      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+        I'm SO excited you're here! Your <strong>${nicheName} Mini Diploma</strong> is ready.
+      </p>
+      
+      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+        Here's how to log in:
+      </p>
+      
+      <div style="background: #f9f9f9; border-left: 3px solid #722f37; padding: 15px; margin: 20px 0;">
+        <p style="margin: 0 0 8px 0; font-size: 14px; color: #333;">
+          <strong>Email:</strong> ${to}
+        </p>
+        <p style="margin: 0; font-size: 14px; color: #333;">
+          <strong>Password:</strong> ${password}
+        </p>
+      </div>
+      
+      <p style="margin: 20px 0; font-size: 15px;">
+        <a href="${dashboardUrl}" style="color: #722f37; font-weight: bold;">👉 Start Lesson 1 Now</a>
+      </p>
+      
+      <p style="margin: 0 0 5px 0; font-size: 13px; color: #888;">
+        You have 7 days to complete all 9 lessons and earn your certificate.
+      </p>
+      
+      <p style="margin: 25px 0 0 0; font-size: 15px; color: #444;">
+        I'll be chatting with you inside the lessons!<br/>
+        <strong>Sarah</strong>
+      </p>
     </div>
-
-    <p style="color: #555; font-size: 16px; margin-top: 30px;">I'll be chatting with you inside the lessons!<br/><strong>Sarah</strong></p>
   `;
 
   return sendEmail({
     to,
     subject: isExistingUser
       ? `${firstName}, your ${nicheName} Mini Diploma is ready!`
-      : `Your login details for AccrediPro Academy`,
-    html: emailWrapper(content, `Your free ${nicheName} Mini Diploma is ready!`),
+      : `${firstName}, here's your login for AccrediPro`,
+    html: content, // Skip the heavy wrapper for cleaner delivery
   });
 }
 

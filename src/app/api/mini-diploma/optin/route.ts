@@ -341,6 +341,42 @@ export async function POST(request: NextRequest) {
             // Don't fail registration if email fails
         }
 
+        // GoHighLevel Webhook Integration
+        // Send lead data to GHL for SMS follow-ups
+        const ghlWebhookUrl = process.env.GHL_WEBHOOK_URL;
+        if (ghlWebhookUrl) {
+            try {
+                const ghlPayload = {
+                    // Contact Info
+                    firstName: firstName.trim(),
+                    lastName: lastName.trim(),
+                    email: email.toLowerCase(),
+                    phone: phone.trim(),
+                    // Source Tracking
+                    source: "mini-diploma",
+                    lead_source: course, // e.g., "functional-medicine"
+                    lead_source_detail: `${course}-mini-diploma`,
+                    // Qualification Answers
+                    life_stage: lifeStage || "",
+                    motivation: motivation || "",
+                    investment: investment || "",
+                    // Metadata
+                    signup_date: new Date().toISOString(),
+                    platform: "accredipro-lms",
+                };
+
+                await fetch(ghlWebhookUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(ghlPayload),
+                });
+                console.log(`[OPTIN] GHL webhook sent for ${email}`);
+            } catch (ghlError) {
+                console.error("[OPTIN] GHL webhook failed:", ghlError);
+                // Don't fail registration if GHL fails
+            }
+        }
+
         // TODO: Track in analytics/Facebook CAPI
         // await trackOptIn(email, course);
 
