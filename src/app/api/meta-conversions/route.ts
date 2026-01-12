@@ -19,8 +19,9 @@ import prisma from "@/lib/prisma";
  * - Purchase: Payment completed
  */
 
-const PIXEL_ID = process.env.META_PIXEL_ID;
-const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
+// Lead Pixel - for mini diploma optins (META_PIXEL_ID_2 to avoid Vercel conflict)
+const PIXEL_ID = process.env.META_PIXEL_ID_2 || "1829815637745689";
+const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN_2 || "EAAHMlaRKtUoBQVDSsAADRPEPdwAYhmJ3fQvR4lmoIF3bKQkz1VvBxjKhbrkjmAlX4tDwti5SbswSO5E2JHG3BGIMX0yLo30FgFZByJwCnecampjjOL9urgrRJ1ziy3ZASZCGRQZBtnGZCvUAjTHnxXYynU7S1CClKeZBg2aMTc4v7UbkScUk3zD3ZAjZCMKnDAZDZD";
 const TEST_EVENT_CODE = process.env.META_TEST_EVENT_CODE; // Optional: for testing
 
 type MetaEventName =

@@ -1,331 +1,482 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-    Users,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import {
+    UserPlus,
+    Search,
+    RefreshCw,
+    Calendar,
     TrendingUp,
-    Clock,
-    CheckCircle,
-    AlertTriangle,
-    ArrowRight,
-    Play,
-    BookOpen,
-    Award,
     Filter,
+    Download,
+    ExternalLink,
+    MessageCircle,
+    Trophy,
 } from "lucide-react";
-import { LeadsTableClient } from "./LeadsTableClient";
+import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
-async function getLeadsData() {
-    // Get all users enrolled in mini-diplomas (leads)
-    const leads = await prisma.enrollment.findMany({
-        where: {
-            course: {
-                slug: { in: ["womens-health-mini-diploma", "fm-mini-diploma"] }
-            }
-        },
-        select: {
-            id: true,
-            status: true,
-            enrolledAt: true,
-            lastAccessedAt: true,
-            user: {
-                select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    email: true,
-                    avatar: true,
-                    createdAt: true,
-                    lastLoginAt: true,
-                },
-            },
-            course: {
-                select: {
-                    slug: true,
-                    title: true,
-                },
-            },
-        },
-        orderBy: { enrolledAt: "desc" },
-    });
-
-    // Get lead onboarding data for each user
-    const userIds = leads.map(l => l.user.id);
-
-    const [onboardingData, lessonCompletions] = await Promise.all([
-        prisma.leadOnboarding.findMany({
-            where: { userId: { in: userIds } },
-            select: {
-                userId: true,
-                watchedVideo: true,
-                completedQuestions: true,
-                claimedCertificate: true,
-                // Onboarding answers
-                bringReason: true,
-                currentSituation: true,
-                incomeGoal: true,
-                lifeChangeGoal: true,
-                doingItFor: true,
-            },
-        }),
-        prisma.userTag.findMany({
-            where: {
-                userId: { in: userIds },
-                tag: { startsWith: "wh-lesson-complete:" },
-            },
-            select: {
-                userId: true,
-                tag: true,
-            },
-        }),
-    ]);
-
-    // Create lookup maps
-    const onboardingMap = new Map(onboardingData.map(o => [o.userId, o]));
-    const lessonsMap = new Map<string, number>();
-    lessonCompletions.forEach(l => {
-        lessonsMap.set(l.userId, (lessonsMap.get(l.userId) || 0) + 1);
-    });
-
-    // Calculate funnel stats
-    const funnelStats = {
-        total: leads.length,
-        watchedVideo: onboardingData.filter(o => o.watchedVideo).length,
-        completedQuestions: onboardingData.filter(o => o.completedQuestions).length,
-        startedLessons: [...lessonsMap.values()].filter(v => v >= 1).length,
-        completedHalf: [...lessonsMap.values()].filter(v => v >= 5).length,
-        completedAll: [...lessonsMap.values()].filter(v => v >= 9).length,
-        claimedCertificate: onboardingData.filter(o => o.claimedCertificate).length,
-    };
-
-    // Enrich leads with progress data
-    const enrichedLeads = leads.map(lead => {
-        const onboarding = onboardingMap.get(lead.user.id);
-        const lessonsCompleted = lessonsMap.get(lead.user.id) || 0;
-
-        // Calculate progress: video (10%) + questions (10%) + 9 lessons (80%)
-        let progress = 0;
-        if (onboarding?.watchedVideo) progress += 10;
-        if (onboarding?.completedQuestions) progress += 10;
-        progress += Math.min(80, (lessonsCompleted / 9) * 80);
-
-        // Calculate days since last active (use lastLoginAt if lastAccessedAt is null)
-        const lastActive = lead.lastAccessedAt || lead.user.lastLoginAt || lead.enrolledAt;
-        const daysSinceActive = Math.floor((Date.now() - new Date(lastActive).getTime()) / (1000 * 60 * 60 * 24));
-
-        // Calculate days until expiry (7-day access from enrollment)
-        const expiryDate = new Date(lead.enrolledAt);
-        expiryDate.setDate(expiryDate.getDate() + 7);
-        const daysUntilExpiry = Math.ceil((expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-
-        // Determine diploma type
-        const diplomaType = lead.course.slug.includes("womens-health") ? "WH" : "FM";
-
-        // Calculate status
-        let status: "hot" | "warm" | "cold" | "completed" = "warm";
-        if (lessonsCompleted >= 9) status = "completed";
-        else if (daysSinceActive <= 1) status = "hot";
-        else if (daysSinceActive <= 3) status = "warm";
-        else status = "cold";
-
-        return {
-            id: lead.id,
-            progress: Math.round(progress),
-            lessonsCompleted,
-            watchedVideo: onboarding?.watchedVideo || false,
-            completedQuestions: onboarding?.completedQuestions || false,
-            claimedCertificate: onboarding?.claimedCertificate || false,
-            status,
-            daysSinceActive,
-            daysUntilExpiry,
-            enrolledAt: lead.enrolledAt,
-            diplomaType: diplomaType as "WH" | "FM",
-            user: lead.user,
-            // Onboarding answers for admin view
-            onboardingAnswers: onboarding ? {
-                bringReason: onboarding.bringReason,
-                currentSituation: onboarding.currentSituation,
-                incomeGoal: onboarding.incomeGoal,
-                lifeChangeGoal: onboarding.lifeChangeGoal,
-                doingItFor: onboarding.doingItFor,
-            } : null,
-        };
-    });
-
-    return { leads: enrichedLeads, funnelStats };
+interface Lead {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string | null;
+    phone: string | null;
+    miniDiplomaCategory: string | null;
+    miniDiplomaOptinAt: string | null;
+    createdAt: string;
+    progress: number;
+    lessonCompleted: number;
+    lastActivity: string | null;
+    hasConvertedToPurchase: boolean;
 }
 
-export default async function AdminLeadsPage() {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) redirect("/login");
+interface LeadStats {
+    total: number;
+    today: number;
+    thisWeek: number;
+    thisMonth: number;
+    byCategory: { category: string; count: number }[];
+    conversionRate: number;
+}
 
-    // Check admin access
-    if (session.user.role !== "ADMIN" && session.user.role !== "MENTOR") {
-        redirect("/dashboard");
-    }
+const CATEGORY_COLORS: Record<string, string> = {
+    "functional-medicine": "bg-purple-100 text-purple-800",
+    "womens-health": "bg-pink-100 text-pink-800",
+    "gut-health": "bg-green-100 text-green-800",
+    "hormone-health": "bg-amber-100 text-amber-800",
+    "holistic-nutrition": "bg-emerald-100 text-emerald-800",
+    "nurse-coach": "bg-blue-100 text-blue-800",
+    "health-coach": "bg-cyan-100 text-cyan-800",
+};
 
-    const { leads, funnelStats } = await getLeadsData();
+const CATEGORY_LABELS: Record<string, string> = {
+    "functional-medicine": "Functional Medicine",
+    "womens-health": "Women's Health",
+    "gut-health": "Gut Health",
+    "hormone-health": "Hormone Health",
+    "holistic-nutrition": "Holistic Nutrition",
+    "nurse-coach": "Nurse Coach",
+    "health-coach": "Health Coach",
+    "unknown": "Unknown",
+};
 
-    const funnelSteps = [
-        { label: "Enrolled", value: funnelStats.total, icon: Users, color: "bg-gray-100 text-gray-600" },
-        { label: "Video Watched", value: funnelStats.watchedVideo, icon: Play, color: "bg-blue-100 text-blue-600" },
-        { label: "Questions Done", value: funnelStats.completedQuestions, icon: CheckCircle, color: "bg-purple-100 text-purple-600" },
-        { label: "Started Lessons", value: funnelStats.startedLessons, icon: BookOpen, color: "bg-emerald-100 text-emerald-600" },
-        { label: "50% Complete", value: funnelStats.completedHalf, icon: TrendingUp, color: "bg-amber-100 text-amber-600" },
-        { label: "Diploma Done", value: funnelStats.completedAll, icon: Award, color: "bg-gold-100 text-gold-600" },
-        { label: "Certificate", value: funnelStats.claimedCertificate, icon: Award, color: "bg-burgundy-100 text-burgundy-600" },
-    ];
+export default function LeadsPage() {
+    const [leads, setLeads] = useState<Lead[]>([]);
+    const [stats, setStats] = useState<LeadStats | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState<string>("all");
+    const [sortBy, setSortBy] = useState<string>("newest");
 
-    // Count by status
-    const hotCount = leads.filter(l => l.status === "hot").length;
-    const warmCount = leads.filter(l => l.status === "warm").length;
-    const coldCount = leads.filter(l => l.status === "cold").length;
-    const completedCount = leads.filter(l => l.status === "completed").length;
-    const expiringSoon = leads.filter(l => l.daysUntilExpiry <= 2 && l.daysUntilExpiry > 0).length;
+    useEffect(() => {
+        fetchLeads();
+    }, []);
+
+    const fetchLeads = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch("/api/admin/leads");
+            if (res.ok) {
+                const data = await res.json();
+                setLeads(data.leads);
+                setStats(data.stats);
+            }
+        } catch (error) {
+            console.error("Failed to fetch leads:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredLeads = leads
+        .filter((lead) => {
+            const matchesSearch =
+                searchQuery === "" ||
+                lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                lead.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                lead.lastName?.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesCategory =
+                categoryFilter === "all" || lead.miniDiplomaCategory === categoryFilter;
+
+            return matchesSearch && matchesCategory;
+        })
+        .sort((a, b) => {
+            if (sortBy === "newest") {
+                return new Date(b.miniDiplomaOptinAt || b.createdAt).getTime() -
+                    new Date(a.miniDiplomaOptinAt || a.createdAt).getTime();
+            }
+            if (sortBy === "oldest") {
+                return new Date(a.miniDiplomaOptinAt || a.createdAt).getTime() -
+                    new Date(b.miniDiplomaOptinAt || b.createdAt).getTime();
+            }
+            if (sortBy === "progress") {
+                return b.progress - a.progress;
+            }
+            return 0;
+        });
+
+    const exportLeads = () => {
+        const csv = [
+            ["Email", "First Name", "Last Name", "Phone", "Category", "Optin Date", "Progress", "Converted"].join(","),
+            ...filteredLeads.map((lead) =>
+                [
+                    lead.email,
+                    lead.firstName,
+                    lead.lastName || "",
+                    lead.phone || "",
+                    lead.miniDiplomaCategory || "",
+                    lead.miniDiplomaOptinAt || "",
+                    `${lead.progress}%`,
+                    lead.hasConvertedToPurchase ? "Yes" : "No",
+                ].join(",")
+            ),
+        ].join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `mini-diploma-leads-${new Date().toISOString().split("T")[0]}.csv`;
+        a.click();
+    };
+
+    const formatDate = (date: string | null) => {
+        if (!date) return "N/A";
+        return new Date(date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
+    const getProgressColor = (progress: number) => {
+        if (progress >= 100) return "bg-green-500";
+        if (progress >= 50) return "bg-amber-500";
+        if (progress > 0) return "bg-blue-500";
+        return "bg-gray-300";
+    };
+
+    // Find best performer
+    const bestPerformer = stats?.byCategory.length ? stats.byCategory[0] : null;
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Lead Management</h1>
-                    <p className="text-gray-500 mt-1">Track and convert mini-diploma leads</p>
+                    <h1 className="text-2xl font-bold text-gray-900">Lead Management</h1>
+                    <p className="text-gray-500">Mini Diploma optins - separate from purchases</p>
+                </div>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={exportLeads}>
+                        <Download className="w-4 h-4 mr-2" />
+                        Export CSV
+                    </Button>
+                    <Button variant="outline" onClick={fetchLeads}>
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Refresh
+                    </Button>
                 </div>
             </div>
 
-            {/* Expiring Soon Alert */}
-            {expiringSoon > 0 && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-                    <AlertTriangle className="w-5 h-5 text-red-600" />
-                    <span className="text-red-700 font-medium">
-                        ⚠️ {expiringSoon} lead{expiringSoon > 1 ? "s" : ""} expiring in the next 48 hours!
-                    </span>
+            {/* Stats Cards */}
+            {stats && (
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500">Total Leads</p>
+                                    <p className="text-3xl font-bold">{stats.total}</p>
+                                </div>
+                                <UserPlus className="w-8 h-8 text-burgundy-500" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500">Today</p>
+                                    <p className="text-3xl font-bold text-green-600">{stats.today}</p>
+                                </div>
+                                <Calendar className="w-8 h-8 text-green-500" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500">This Week</p>
+                                    <p className="text-3xl font-bold text-blue-600">{stats.thisWeek}</p>
+                                </div>
+                                <TrendingUp className="w-8 h-8 text-blue-500" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500">This Month</p>
+                                    <p className="text-3xl font-bold text-purple-600">{stats.thisMonth}</p>
+                                </div>
+                                <Calendar className="w-8 h-8 text-purple-500" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-gray-500">Conversion</p>
+                                    <p className="text-3xl font-bold text-gold-600">{stats.conversionRate}%</p>
+                                </div>
+                                <TrendingUp className="w-8 h-8 text-gold-500" />
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             )}
 
-            {/* Funnel Visualization */}
-            <Card className="mb-8 border-0 shadow-lg">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-burgundy-600" />
-                        Lead Funnel
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-end justify-between gap-4">
-                        {funnelSteps.map((step, i) => {
-                            const Icon = step.icon;
-                            const percentage = funnelStats.total > 0
-                                ? Math.round((step.value / funnelStats.total) * 100)
-                                : 0;
-                            const heightPct = Math.max(20, percentage);
-
-                            return (
-                                <div key={step.label} className="flex-1 text-center">
-                                    <div
-                                        className={`mx-auto mb-2 rounded-t-lg ${step.color} transition-all duration-500`}
-                                        style={{
-                                            height: `${heightPct * 1.5}px`,
-                                            minHeight: '30px'
-                                        }}
-                                    />
-                                    <p className="text-2xl font-bold text-gray-900">{step.value}</p>
-                                    <p className="text-xs text-gray-500 mt-1">{step.label}</p>
-                                    <p className="text-xs text-gray-400">{percentage}%</p>
-                                    {i < funnelSteps.length - 1 && (
-                                        <ArrowRight className="w-4 h-4 text-gray-300 mx-auto mt-2 hidden lg:block" />
-                                    )}
+            {/* Best Performer + Per-Category Stats */}
+            {stats && stats.byCategory.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Best Performer Card */}
+                    {bestPerformer && (
+                        <Card className="bg-gradient-to-br from-gold-50 to-amber-50 border-gold-200">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="flex items-center gap-2 text-lg">
+                                    <Trophy className="w-5 h-5 text-gold-600" />
+                                    Best Performer
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <Badge className={CATEGORY_COLORS[bestPerformer.category] || "bg-gray-100"}>
+                                            {CATEGORY_LABELS[bestPerformer.category] || bestPerformer.category}
+                                        </Badge>
+                                        <p className="text-3xl font-bold mt-2">{bestPerformer.count}</p>
+                                        <p className="text-sm text-gray-500">leads</p>
+                                    </div>
+                                    <div className="text-5xl">🏆</div>
                                 </div>
-                            );
-                        })}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Per-Category Stats */}
+                    <Card className="md:col-span-2">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-lg">Leads by Mini Diploma</CardTitle>
+                            <CardDescription>Which niches are performing best</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                {stats.byCategory.map((cat, index) => (
+                                    <div
+                                        key={cat.category}
+                                        className={`p-3 rounded-lg border ${index === 0 ? "bg-gold-50 border-gold-200" : "bg-gray-50"}`}
+                                    >
+                                        <div className="flex items-center justify-between mb-1">
+                                            <Badge variant="outline" className="text-xs">
+                                                {CATEGORY_LABELS[cat.category] || cat.category}
+                                            </Badge>
+                                            {index === 0 && <span className="text-sm">👑</span>}
+                                        </div>
+                                        <p className="text-2xl font-bold">{cat.count}</p>
+                                        <div className="mt-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full ${index === 0 ? "bg-gold-500" : "bg-burgundy-500"}`}
+                                                style={{ width: `${(cat.count / stats.total) * 100}%` }}
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-400 mt-1">
+                                            {Math.round((cat.count / stats.total) * 100)}% of total
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
+
+            {/* Filters */}
+            <Card>
+                <CardContent className="pt-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Input
+                                placeholder="Search by email, name..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-10"
+                            />
+                        </div>
+                        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                            <SelectTrigger className="w-[200px]">
+                                <Filter className="w-4 h-4 mr-2" />
+                                <SelectValue placeholder="All Categories" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Categories</SelectItem>
+                                <SelectItem value="functional-medicine">Functional Medicine</SelectItem>
+                                <SelectItem value="womens-health">Women&apos;s Health</SelectItem>
+                                <SelectItem value="gut-health">Gut Health</SelectItem>
+                                <SelectItem value="hormone-health">Hormone Health</SelectItem>
+                                <SelectItem value="holistic-nutrition">Holistic Nutrition</SelectItem>
+                                <SelectItem value="nurse-coach">Nurse Coach</SelectItem>
+                                <SelectItem value="health-coach">Health Coach</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                            <SelectTrigger className="w-[150px]">
+                                <SelectValue placeholder="Sort by" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="newest">Newest First</SelectItem>
+                                <SelectItem value="oldest">Oldest First</SelectItem>
+                                <SelectItem value="progress">By Progress</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-5 gap-4 mb-8">
-                <Card className="border-0 shadow-md">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-emerald-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-gray-900">{hotCount}</p>
-                                <p className="text-xs text-gray-500">🔥 Hot</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-0 shadow-md">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                                <Clock className="w-5 h-5 text-amber-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-gray-900">{warmCount}</p>
-                                <p className="text-xs text-gray-500">⏳ Warm</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-0 shadow-md">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <AlertTriangle className="w-5 h-5 text-blue-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-gray-900">{coldCount}</p>
-                                <p className="text-xs text-gray-500">❄️ Cold</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className="border-0 shadow-md">
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-burgundy-100 flex items-center justify-center">
-                                <Award className="w-5 h-5 text-burgundy-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
-                                <p className="text-xs text-gray-500">✅ Done</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card className={`border-0 shadow-md ${expiringSoon > 0 ? "ring-2 ring-red-400" : ""}`}>
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                                <Clock className="w-5 h-5 text-red-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold text-gray-900">{expiringSoon}</p>
-                                <p className="text-xs text-gray-500">⚠️ Expiring</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
             {/* Leads Table */}
-            <Card className="border-0 shadow-lg">
+            <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-burgundy-600" />
-                        All Leads ({leads.length})
+                    <CardTitle>
+                        {filteredLeads.length} Lead{filteredLeads.length !== 1 ? "s" : ""}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <LeadsTableClient leads={leads} />
+                    {loading ? (
+                        <div className="flex items-center justify-center h-48">
+                            <RefreshCw className="w-8 h-8 animate-spin text-gray-400" />
+                        </div>
+                    ) : filteredLeads.length === 0 ? (
+                        <div className="text-center py-12 text-gray-500">
+                            No leads found matching your criteria
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Lead</TableHead>
+                                        <TableHead>Category</TableHead>
+                                        <TableHead>Optin Date</TableHead>
+                                        <TableHead>Progress</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredLeads.map((lead) => (
+                                        <TableRow key={lead.id}>
+                                            <TableCell>
+                                                <div>
+                                                    <p className="font-medium">
+                                                        {lead.firstName} {lead.lastName}
+                                                    </p>
+                                                    <p className="text-sm text-gray-500">{lead.email}</p>
+                                                    {lead.phone && (
+                                                        <p className="text-xs text-gray-400">{lead.phone}</p>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {lead.miniDiplomaCategory ? (
+                                                    <Badge
+                                                        className={
+                                                            CATEGORY_COLORS[lead.miniDiplomaCategory] ||
+                                                            "bg-gray-100 text-gray-800"
+                                                        }
+                                                    >
+                                                        {CATEGORY_LABELS[lead.miniDiplomaCategory] ||
+                                                            lead.miniDiplomaCategory}
+                                                    </Badge>
+                                                ) : (
+                                                    <span className="text-gray-400">-</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <p className="text-sm">{formatDate(lead.miniDiplomaOptinAt)}</p>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="w-24">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                            <div
+                                                                className={`h-full ${getProgressColor(lead.progress)}`}
+                                                                style={{ width: `${lead.progress}%` }}
+                                                            />
+                                                        </div>
+                                                        <span className="text-xs font-medium">{lead.progress}%</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-400 mt-1">
+                                                        {lead.lessonCompleted} lesson{lead.lessonCompleted !== 1 ? "s" : ""}
+                                                    </p>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {lead.hasConvertedToPurchase ? (
+                                                    <Badge className="bg-green-500">Converted 💰</Badge>
+                                                ) : lead.progress >= 100 ? (
+                                                    <Badge className="bg-amber-500">Completed</Badge>
+                                                ) : lead.progress > 0 ? (
+                                                    <Badge className="bg-blue-500">In Progress</Badge>
+                                                ) : (
+                                                    <Badge variant="outline">Not Started</Badge>
+                                                )}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <Link href={`/admin/users/${lead.id}`}>
+                                                        <Button variant="ghost" size="sm" title="View User">
+                                                            <ExternalLink className="w-4 h-4" />
+                                                        </Button>
+                                                    </Link>
+                                                    <Link href={`/admin/live-chat?user=${lead.id}`}>
+                                                        <Button variant="ghost" size="sm" title="Chat">
+                                                            <MessageCircle className="w-4 h-4" />
+                                                        </Button>
+                                                    </Link>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>

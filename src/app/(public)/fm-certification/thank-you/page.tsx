@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Meta Pixel ID
+// Meta Pixel ID (Purchase tracking - Royal Certified account)
 const META_PIXEL_ID = "1287915349067829";
 
 // Confetti effect component

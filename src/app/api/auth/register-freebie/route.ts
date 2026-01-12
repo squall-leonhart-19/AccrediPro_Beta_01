@@ -146,6 +146,27 @@ export async function POST(request: NextRequest) {
                 isExistingUser: true,
             });
 
+            // === SERVER-SIDE META TRACKING for existing users ===
+            const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0] ||
+                             request.headers.get("x-real-ip") ||
+                             undefined;
+            const userAgent = request.headers.get("user-agent") || undefined;
+
+            sendLeadEvent({
+                email: emailLower,
+                firstName: existingUser.firstName || fName,
+                lastName: existingUser.lastName || lName,
+                phone: phone || existingUser.phone || undefined,
+                externalId: existingUser.id,
+                clientIp,
+                userAgent,
+                fbc: fbc || undefined,
+                fbp: fbp || undefined,
+                contentName: `Mini Diploma - ${miniDiplomaCategory}`,
+            }).catch((err) => {
+                console.error(`[META] Failed to send Lead event for existing user:`, err);
+            });
+
             // === GOHIGHLEVEL INTEGRATION for existing users ===
             console.log(`[GHL] Sending existing user to GHL: ${emailLower}`);
             sendLeadToGHL({

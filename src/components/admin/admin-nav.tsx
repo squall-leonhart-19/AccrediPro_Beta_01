@@ -28,12 +28,16 @@ import {
   DollarSign,
   Brain,
   Gift,
+  GraduationCap,
+  UserPlus,
 } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/purchases", label: "Purchases", icon: DollarSign },
+  { href: "/admin/leads", label: "Leads", icon: UserPlus },
+  { href: "/admin/mini-diploma", label: "Mini Diploma", icon: GraduationCap },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/community", label: "Community", icon: Heart },
