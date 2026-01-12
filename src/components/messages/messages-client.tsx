@@ -1237,51 +1237,53 @@ export function MessagesClient({
 
   // Render message content with attachments
   const renderMessageContent = (message: Message, isOwn: boolean) => {
-    // Voice message
+    // Voice message - clean, compact design
     if (message.attachmentType === "voice" && message.attachmentUrl) {
       return (
-        <div className="min-w-[220px]">
-          {/* Voice Message Header */}
-          <div className="flex items-center gap-2 mb-2">
-            <Mic className={cn("w-3.5 h-3.5", isOwn ? "text-white/70" : "text-burgundy-500")} />
-            <span className={cn("text-[10px] font-medium uppercase tracking-wide", isOwn ? "text-white/70" : "text-burgundy-500")}>
-              Voice Message
-            </span>
-            {message.isAiVoice && (
-              <span className={cn("text-[9px] px-1.5 py-0.5 rounded-full", isOwn ? "bg-white/20 text-white" : "bg-purple-100 text-purple-600")}>
-                AI Voice
-              </span>
-            )}
-          </div>
+        <div className="min-w-[180px] max-w-[260px]">
           <div className="flex items-center gap-3">
+            {/* Play/Pause Button - Compact */}
             <button
               onClick={() => toggleAudio(message.id, message.attachmentUrl!)}
               className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md",
+                "w-10 h-10 rounded-full flex items-center justify-center transition-all flex-shrink-0",
                 isOwn
-                  ? "bg-white/20 hover:bg-white/30 hover:scale-105"
-                  : "bg-gradient-to-br from-burgundy-500 to-burgundy-600 hover:from-burgundy-600 hover:to-burgundy-700 hover:scale-105"
+                  ? "bg-white/20 hover:bg-white/30"
+                  : "bg-burgundy-100 hover:bg-burgundy-200"
               )}
             >
               {playingAudio === message.id ? (
-                <Pause className={cn("w-5 h-5", isOwn ? "text-white" : "text-white")} />
+                <Pause className={cn("w-4 h-4", isOwn ? "text-white" : "text-burgundy-600")} />
               ) : (
-                <Play className={cn("w-5 h-5 ml-0.5", isOwn ? "text-white" : "text-white")} />
+                <Play className={cn("w-4 h-4 ml-0.5", isOwn ? "text-white" : "text-burgundy-600")} />
               )}
             </button>
-            <div className="flex-1">
-              {/* Duration Display - More Prominent */}
-              <div className={cn("text-lg font-bold mb-1", isOwn ? "text-white" : "text-gray-900")}>
+
+            {/* Waveform & Duration */}
+            <div className="flex-1 min-w-0">
+              <div className={cn("text-sm font-semibold", isOwn ? "text-white" : "text-gray-800")}>
                 {formatDuration(message.voiceDuration || 0)}
               </div>
-              <div className={cn("h-1.5 rounded-full", isOwn ? "bg-white/30" : "bg-burgundy-200")}>
-                <div className={cn("h-full rounded-full w-0 transition-all", isOwn ? "bg-white" : "bg-burgundy-500")} />
+              {/* Simple progress bar */}
+              <div className={cn("h-1 rounded-full mt-1", isOwn ? "bg-white/30" : "bg-gray-200")}>
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all",
+                    isOwn ? "bg-white" : "bg-burgundy-500",
+                    playingAudio === message.id ? "w-1/2" : "w-0"
+                  )}
+                />
               </div>
             </div>
           </div>
+
+          {/* Transcription/Caption */}
           {message.content && (
-            <p className={cn("text-sm mt-3 italic border-l-2 pl-2", isOwn ? "text-white/80 border-white/40" : "text-gray-600 border-burgundy-300")}>
-              &quot;{message.content}&quot;
+            <p className={cn(
+              "text-xs mt-2 line-clamp-2",
+              isOwn ? "text-white/70" : "text-gray-500"
+            )}>
+              {message.content}
             </p>
           )}
         </div>

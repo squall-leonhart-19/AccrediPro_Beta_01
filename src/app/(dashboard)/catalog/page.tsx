@@ -202,22 +202,11 @@ async function getUserGraduateStatus(userId: string) {
 }
 
 export default async function CoursesPage() {
+  // Redirect ALL users from /catalog to /messages (catalog page deprecated)
+  redirect("/messages");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const session = await getServerSession(authOptions);
-
-  // Redirect mini diploma only users to messages (they shouldn't see catalog)
-  if (session?.user?.id) {
-    const userEnrollments = await prisma.enrollment.findMany({
-      where: { userId: session.user.id },
-      select: { course: { select: { slug: true } }, status: true },
-    });
-
-    const allAreMiniDiploma = userEnrollments.length > 0 &&
-      userEnrollments.every(e => MINI_DIPLOMA_SLUGS.includes(e.course.slug));
-
-    if (allAreMiniDiploma) {
-      redirect("/messages");
-    }
-  }
 
   const [courses, categories, enrollments, specialOffers, wishlist, graduateStatus] = await Promise.all([
     getCourses(),
