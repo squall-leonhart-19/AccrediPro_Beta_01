@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -13,11 +14,14 @@ import {
     Trophy,
     Sparkles,
     ArrowRight,
-    Star,
     Clock,
+    BookOpen,
+    Target,
+    Award,
+    GraduationCap,
+    Timer,
+    Flame,
 } from "lucide-react";
-import { WelcomeVideoStep } from "@/components/lead-portal/WelcomeVideoStep";
-import { OnboardingQuestionsStep } from "@/components/lead-portal/OnboardingQuestionsStep";
 
 interface Step {
     id: number;
@@ -36,285 +40,361 @@ interface LeadOnboardingClientProps {
     progress: number;
 }
 
+// Module structure with lessons
+const MODULES = [
+    {
+        id: 1,
+        title: "Foundations",
+        description: "Core principles of functional medicine",
+        icon: BookOpen,
+        lessons: [
+            { id: 1, title: "Root Cause Medicine", duration: "8 min" },
+            { id: 2, title: "The Gut Foundation", duration: "7 min" },
+            { id: 3, title: "The Inflammation Connection", duration: "6 min" },
+        ],
+    },
+    {
+        id: 2,
+        title: "Core Concepts",
+        description: "Deep dive into key mechanisms",
+        icon: Target,
+        lessons: [
+            { id: 4, title: "The Toxin Burden", duration: "7 min" },
+            { id: 5, title: "Stress & The HPA Axis", duration: "8 min" },
+            { id: 6, title: "Nutrient Deficiencies", duration: "6 min" },
+        ],
+    },
+    {
+        id: 3,
+        title: "Application",
+        description: "Putting it all into practice",
+        icon: Award,
+        lessons: [
+            { id: 7, title: "Functional Lab Interpretation", duration: "9 min" },
+            { id: 8, title: "Building Protocols", duration: "8 min" },
+            { id: 9, title: "Your Next Step", duration: "5 min" },
+        ],
+    },
+];
+
 export function LeadOnboardingClient({
     firstName,
-    userAvatar,
-    watchedVideo: initialWatchedVideo,
-    completedQuestions: initialCompletedQuestions,
     completedLessons,
-    steps: initialSteps,
     currentStep: initialCurrentStep,
 }: LeadOnboardingClientProps) {
-    // Since we now collect qualification data in the opt-in funnel,
-    // skip video and questions steps - show lessons directly
-    const [watchedVideo, setWatchedVideo] = useState(true);
-    const [completedQuestions, setCompletedQuestions] = useState(true);
-    const [currentStep, setCurrentStep] = useState(initialCurrentStep);
+    const [currentStep] = useState(initialCurrentStep);
 
-    // Recalculate steps and progress when state changes
-    const steps = initialSteps.map((s, i) => {
-        if (s.id === 1) return { ...s, completed: true }; // Video always completed
-        if (s.id === 2) return { ...s, completed: true }; // Questions always completed
-        return s;
-    });
+    // Calculate progress
+    const totalLessons = 9;
+    const lessonsCompleted = completedLessons.length;
+    const progressPercent = Math.round((lessonsCompleted / totalLessons) * 100);
+    const isAllComplete = lessonsCompleted === totalLessons;
 
-    const stepsCompleted = steps.filter((s) => s.completed).length;
-    const progress = Math.round((stepsCompleted / 12) * 100);
+    // Calculate time remaining (estimate 7 min per lesson)
+    const lessonsRemaining = totalLessons - lessonsCompleted;
+    const timeRemaining = lessonsRemaining * 7;
 
-    const handleVideoComplete = () => {
-        setWatchedVideo(true);
-        setCurrentStep(2);
-    };
+    // Find next lesson
+    const nextLessonId = completedLessons.length > 0
+        ? Math.max(...completedLessons) + 1
+        : 1;
 
-    const handleQuestionsComplete = () => {
-        setCompletedQuestions(true);
-        setCurrentStep(3);
-    };
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+            {/* Top Header */}
+            <div className="bg-white border-b border-slate-200 px-6 py-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Image
+                            src="/asi-crest.webp"
+                            alt="ASI"
+                            width={48}
+                            height={48}
+                            className="rounded"
+                        />
+                        <div>
+                            <h1 className="font-bold text-lg text-slate-900">Functional Medicine Foundation</h1>
+                            <p className="text-sm text-slate-500">ASI-Verified Mini Diploma</p>
+                        </div>
+                    </div>
+                    {!isAllComplete && (
+                        <Badge className="bg-amber-100 text-amber-800 border-amber-300">
+                            <Timer className="w-3 h-3 mr-1" />
+                            7 Days Access
+                        </Badge>
+                    )}
+                </div>
+            </div>
 
-    // Render current step content
-    const renderStepContent = () => {
-        // Step 1: Welcome Video
-        if (!watchedVideo) {
-            return (
-                <WelcomeVideoStep
-                    onComplete={handleVideoComplete}
-                    isCompleted={false}
-                    firstName={firstName}
-                    niche="functional-medicine"
-                />
-            );
-        }
+            <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
+                {/* Welcome + Progress Section */}
+                <div className="grid lg:grid-cols-3 gap-4">
+                    {/* Welcome Card */}
+                    <Card className="lg:col-span-2 border-0 shadow-md bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 text-white overflow-hidden">
+                        <CardContent className="p-6 relative">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/10 rounded-full blur-3xl" />
+                            <div className="flex items-start gap-4">
+                                <div className="w-14 h-14 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                    <Image
+                                        src="/coaches/sarah-coach.webp"
+                                        alt="Sarah"
+                                        width={56}
+                                        height={56}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-burgundy-200 text-sm">Coach Sarah</p>
+                                    <h2 className="text-xl font-bold mb-2">
+                                        {lessonsCompleted === 0
+                                            ? `Welcome, ${firstName}! 👋`
+                                            : lessonsCompleted < 5
+                                                ? `Great progress, ${firstName}! 💪`
+                                                : isAllComplete
+                                                    ? `Congratulations, ${firstName}! 🎉`
+                                                    : `Almost there, ${firstName}! 🔥`
+                                        }
+                                    </h2>
+                                    <p className="text-burgundy-100 text-sm">
+                                        {lessonsCompleted === 0
+                                            ? "Ready to start your journey to becoming a certified practitioner?"
+                                            : isAllComplete
+                                                ? "You've completed all lessons! Time to claim your certificate."
+                                                : `You've completed ${lessonsCompleted} of 9 lessons. Keep going!`
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-        // Step 2: Onboarding Questions
-        if (!completedQuestions) {
-            return (
-                <OnboardingQuestionsStep
-                    onComplete={handleQuestionsComplete}
-                    isCompleted={false}
-                    firstName={firstName}
-                    userAvatar={userAvatar}
-                    niche="functional-medicine"
-                />
-            );
-        }
+                    {/* Stats Card */}
+                    <Card className="border-0 shadow-md">
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-sm font-medium text-slate-600">Your Progress</span>
+                                <span className="text-lg font-bold text-burgundy-600">{progressPercent}%</span>
+                            </div>
+                            <Progress value={progressPercent} className="h-2 mb-4" />
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-slate-50 rounded-lg p-3 text-center">
+                                    <div className="flex items-center justify-center gap-1 text-emerald-600 mb-1">
+                                        <CheckCircle className="w-4 h-4" />
+                                        <span className="font-bold">{lessonsCompleted}/9</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500">Completed</p>
+                                </div>
+                                <div className="bg-slate-50 rounded-lg p-3 text-center">
+                                    <div className="flex items-center justify-center gap-1 text-blue-600 mb-1">
+                                        <Clock className="w-4 h-4" />
+                                        <span className="font-bold">{timeRemaining}m</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500">Remaining</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
-        // Steps 3-12: Show lesson list
-        const isAllLessonsComplete = completedLessons.length === 9;
-
-        return (
-            <div className="space-y-4">
-                {/* Completion CTA or Next Lesson */}
-                {isAllLessonsComplete ? (
-                    <Card className="border-0 shadow-xl bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white">
-                        <CardContent className="p-6 text-center">
-                            <Trophy className="w-12 h-12 mx-auto mb-4 text-gold-400" />
-                            <h2 className="text-2xl font-bold mb-2">Congratulations! 🎉</h2>
-                            <p className="text-burgundy-200 mb-4">
-                                You&apos;ve completed all 9 lessons!
-                            </p>
+                {/* Completion CTA */}
+                {isAllComplete && (
+                    <Card className="border-0 shadow-lg bg-gradient-to-r from-gold-500 to-gold-600 text-white">
+                        <CardContent className="p-6 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
+                                    <GraduationCap className="w-8 h-8" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold">Your Certificate is Ready! 🎓</h3>
+                                    <p className="text-gold-100">Download your ASI-verified foundation certificate</p>
+                                </div>
+                            </div>
                             <Link href="/functional-medicine-diploma/complete">
-                                <Button size="lg" className="bg-white text-burgundy-600 hover:bg-burgundy-50">
-                                    Claim Your Certificate
+                                <Button size="lg" className="bg-white text-gold-700 hover:bg-gold-50 font-bold">
+                                    Claim Certificate
+                                    <ArrowRight className="w-5 h-5 ml-2" />
                                 </Button>
                             </Link>
                         </CardContent>
                     </Card>
-                ) : (
-                    <Card className="border-0 shadow-lg bg-gradient-to-r from-burgundy-600 to-burgundy-700">
-                        <CardContent className="p-5">
+                )}
+
+                {/* Next Lesson CTA (if not complete) */}
+                {!isAllComplete && nextLessonId <= 9 && (
+                    <Card className="border-2 border-burgundy-200 shadow-md bg-burgundy-50">
+                        <CardContent className="p-4 flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-xl bg-burgundy-600 flex items-center justify-center">
                                     <Play className="w-6 h-6 text-white" />
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-burgundy-200 text-sm">Continue Learning</p>
-                                    <h3 className="text-lg font-bold text-white">
-                                        Lesson {currentStep - 2}: {steps[currentStep - 1]?.title.replace(/Lesson \d+: /, "")}
+                                <div>
+                                    <p className="text-sm text-burgundy-600 font-medium flex items-center gap-1">
+                                        <Sparkles className="w-3 h-3" /> Continue Learning
+                                    </p>
+                                    <h3 className="font-bold text-slate-900">
+                                        Lesson {nextLessonId}: {MODULES.flatMap(m => m.lessons).find(l => l.id === nextLessonId)?.title}
                                     </h3>
                                 </div>
-                                <Link href={`/functional-medicine-diploma/lesson/${currentStep - 2}`}>
-                                    <Button className="bg-white text-burgundy-600 hover:bg-burgundy-50">
-                                        Start <ArrowRight className="w-4 h-4 ml-2" />
-                                    </Button>
-                                </Link>
                             </div>
+                            <Link href={`/functional-medicine-diploma/lesson/${nextLessonId}`}>
+                                <Button className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-semibold">
+                                    Start Lesson
+                                    <ArrowRight className="w-4 h-4 ml-2" />
+                                </Button>
+                            </Link>
                         </CardContent>
                     </Card>
                 )}
 
-                {/* Lesson List */}
-                <Card className="shadow-lg">
-                    <CardContent className="p-4">
-                        <div className="space-y-2">
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((lessonNum) => {
-                                const isCompleted = completedLessons.includes(lessonNum);
-                                const stepIndex = lessonNum + 1; // steps array index (0-based, +2 offset for video/questions)
-                                const lessonTitle = steps[stepIndex]?.title.replace(/Lesson \d+: /, "") || `Lesson ${lessonNum}`;
-                                const isNext = currentStep === lessonNum + 2;
-                                const prevCompleted = lessonNum === 1 || completedLessons.includes(lessonNum - 1);
-                                const isLocked = !isCompleted && !prevCompleted;
+                {/* Modules Grid */}
+                <div className="space-y-6">
+                    <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <BookOpen className="w-5 h-5 text-burgundy-600" />
+                        Course Curriculum
+                    </h2>
 
-                                return (
-                                    <div
-                                        key={lessonNum}
-                                        className={`flex items-center gap-4 p-3 rounded-lg ${isCompleted
-                                            ? "bg-emerald-50"
-                                            : isNext
-                                                ? "bg-burgundy-50 ring-2 ring-burgundy-400"
-                                                : isLocked
-                                                    ? "bg-gray-50 opacity-60"
-                                                    : "bg-gray-50 hover:bg-gray-100"
-                                            }`}
-                                    >
-                                        <div
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${isCompleted
-                                                ? "bg-emerald-500 text-white"
-                                                : isNext
-                                                    ? "bg-burgundy-600 text-white"
-                                                    : isLocked
-                                                        ? "bg-gray-200 text-gray-400"
-                                                        : "bg-gray-200 text-gray-600"
-                                                }`}
-                                        >
-                                            {isCompleted ? <CheckCircle className="w-5 h-5" /> : isLocked ? <Lock className="w-4 h-4" /> : lessonNum}
+                    {MODULES.map((module) => {
+                        const moduleLessonsComplete = module.lessons.filter(l =>
+                            completedLessons.includes(l.id)
+                        ).length;
+                        const moduleComplete = moduleLessonsComplete === module.lessons.length;
+                        const ModuleIcon = module.icon;
+
+                        return (
+                            <Card key={module.id} className="border-0 shadow-md overflow-hidden">
+                                {/* Module Header */}
+                                <div className={`px-5 py-4 border-b ${moduleComplete ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100'}`}>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${moduleComplete ? 'bg-emerald-500 text-white' : 'bg-burgundy-100 text-burgundy-600'}`}>
+                                                {moduleComplete ? <CheckCircle className="w-5 h-5" /> : <ModuleIcon className="w-5 h-5" />}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-900">Module {module.id}: {module.title}</h3>
+                                                <p className="text-sm text-slate-500">{module.description}</p>
+                                            </div>
                                         </div>
-                                        <div className="flex-1">
-                                            <h4 className={`font-medium ${isCompleted ? "text-emerald-700" : isLocked ? "text-gray-400" : "text-gray-900"}`}>
-                                                {lessonTitle}
-                                            </h4>
-                                            {isNext && <p className="text-xs text-burgundy-600 flex items-center gap-1"><Sparkles className="w-3 h-3" /> Up next</p>}
-                                        </div>
-                                        <div>
-                                            {isCompleted ? (
-                                                <Link href={`/functional-medicine-diploma/lesson/${lessonNum}`}>
-                                                    <Button size="sm" variant="ghost" className="text-emerald-600">
-                                                        <Star className="w-4 h-4 mr-1" /> Review
-                                                    </Button>
-                                                </Link>
-                                            ) : isNext ? (
-                                                <Link href={`/functional-medicine-diploma/lesson/${lessonNum}`}>
-                                                    <Button size="sm" className="bg-burgundy-600 text-white">
-                                                        <Play className="w-4 h-4 mr-1" /> Start
-                                                    </Button>
-                                                </Link>
-                                            ) : isLocked ? (
-                                                <span className="text-xs text-gray-400 flex items-center gap-1">
-                                                    <Lock className="w-3 h-3" /> Locked
-                                                </span>
-                                            ) : (
-                                                <Link href={`/functional-medicine-diploma/lesson/${lessonNum}`}>
-                                                    <Button size="sm" variant="outline">Start</Button>
-                                                </Link>
-                                            )}
-                                        </div>
+                                        <Badge className={moduleComplete ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}>
+                                            {moduleLessonsComplete}/{module.lessons.length} Complete
+                                        </Badge>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </CardContent>
-                </Card>
+                                </div>
+
+                                {/* Lessons */}
+                                <CardContent className="p-0">
+                                    <div className="divide-y divide-slate-100">
+                                        {module.lessons.map((lesson) => {
+                                            const isCompleted = completedLessons.includes(lesson.id);
+                                            const isNext = lesson.id === nextLessonId;
+                                            const prevCompleted = lesson.id === 1 || completedLessons.includes(lesson.id - 1);
+                                            const isLocked = !isCompleted && !prevCompleted;
+
+                                            return (
+                                                <div
+                                                    key={lesson.id}
+                                                    className={`flex items-center gap-4 px-5 py-4 transition-colors ${isCompleted
+                                                        ? 'bg-white'
+                                                        : isNext
+                                                            ? 'bg-burgundy-50/50'
+                                                            : isLocked
+                                                                ? 'bg-slate-50/50 opacity-60'
+                                                                : 'bg-white hover:bg-slate-50'
+                                                        }`}
+                                                >
+                                                    {/* Lesson Number/Icon */}
+                                                    <div
+                                                        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${isCompleted
+                                                            ? 'bg-emerald-500 text-white'
+                                                            : isNext
+                                                                ? 'bg-burgundy-600 text-white'
+                                                                : isLocked
+                                                                    ? 'bg-slate-200 text-slate-400'
+                                                                    : 'bg-slate-200 text-slate-600'
+                                                            }`}
+                                                    >
+                                                        {isCompleted ? (
+                                                            <CheckCircle className="w-5 h-5" />
+                                                        ) : isLocked ? (
+                                                            <Lock className="w-4 h-4" />
+                                                        ) : (
+                                                            lesson.id
+                                                        )}
+                                                    </div>
+
+                                                    {/* Lesson Info */}
+                                                    <div className="flex-1">
+                                                        <h4 className={`font-medium ${isCompleted ? 'text-slate-700' : isLocked ? 'text-slate-400' : 'text-slate-900'}`}>
+                                                            {lesson.title}
+                                                        </h4>
+                                                        <p className="text-xs text-slate-400 flex items-center gap-1">
+                                                            <Clock className="w-3 h-3" />
+                                                            {lesson.duration}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Action */}
+                                                    <div>
+                                                        {isCompleted ? (
+                                                            <Link href={`/functional-medicine-diploma/lesson/${lesson.id}`}>
+                                                                <Button size="sm" variant="ghost" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+                                                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                                                    Review
+                                                                </Button>
+                                                            </Link>
+                                                        ) : isNext ? (
+                                                            <Link href={`/functional-medicine-diploma/lesson/${lesson.id}`}>
+                                                                <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                                                    <Play className="w-4 h-4 mr-1" />
+                                                                    Start
+                                                                </Button>
+                                                            </Link>
+                                                        ) : isLocked ? (
+                                                            <span className="text-xs text-slate-400 flex items-center gap-1">
+                                                                <Lock className="w-3 h-3" />
+                                                                Locked
+                                                            </span>
+                                                        ) : (
+                                                            <Link href={`/functional-medicine-diploma/lesson/${lesson.id}`}>
+                                                                <Button size="sm" variant="outline" className="border-slate-300">
+                                                                    Start
+                                                                </Button>
+                                                            </Link>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+
+                {/* Certificate Preview */}
+                {!isAllComplete && (
+                    <Card className="border-0 shadow-md overflow-hidden">
+                        <CardContent className="p-6">
+                            <div className="flex items-center gap-6">
+                                <div className="relative w-32 h-24 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center opacity-50">
+                                    <GraduationCap className="w-12 h-12 text-slate-400" />
+                                    <Lock className="w-6 h-6 text-slate-500 absolute bottom-2 right-2" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-slate-900 mb-1">Your Certificate Awaits</h3>
+                                    <p className="text-sm text-slate-500 mb-2">
+                                        Complete all 9 lessons to unlock your ASI-Verified Foundation Certificate
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                        <Progress value={progressPercent} className="w-32 h-2" />
+                                        <span className="text-xs text-slate-500">{lessonsRemaining} lessons to go</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
-        );
-    };
-
-    // Test user buttons
-    const handleCompleteAll = async () => {
-        const res = await fetch("/api/lead-onboarding/test-complete", { method: "POST" });
-        if (res.ok) window.location.reload();
-    };
-
-    const handleReset = async () => {
-        const res = await fetch("/api/lead-onboarding/test-complete", { method: "DELETE" });
-        if (res.ok) window.location.reload();
-    };
-
-    return (
-        <div className="p-4 md:p-6">
-            {/* Hero Header with Sarah */}
-            <div className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-burgundy-400/20 rounded-full blur-2xl" />
-
-                <div className="relative flex items-start gap-4">
-                    {/* Sarah Avatar */}
-                    <div className="flex-shrink-0">
-                        <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center overflow-hidden">
-                            <img
-                                src="/coaches/sarah-coach.webp"
-                                alt="Sarah"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Welcome Message */}
-                    <div className="flex-1">
-                        <p className="text-burgundy-200 text-sm mb-1">Coach Sarah</p>
-                        <h1 className="text-xl font-bold mb-2">
-                            Hey {firstName}! 👋 Welcome back!
-                        </h1>
-                        <p className="text-burgundy-100 text-sm mb-4">
-                            {progress === 0
-                                ? "Ready to take your first step towards becoming a certified functional medicine practitioner?"
-                                : progress < 50
-                                    ? "You're making great progress! Keep going - your first client could be weeks away."
-                                    : progress < 100
-                                        ? "You're almost there! Complete your diploma to start earning $3-5K/month."
-                                        : "Amazing! You've completed your journey. Time to claim your certificate!"}
-                        </p>
-
-                        {/* Income Badge */}
-                        <div className="flex items-center gap-3">
-                            <Badge className="bg-gold-500/20 text-gold-300 border-gold-400/30">
-                                <Sparkles className="w-3 h-3 mr-1" />
-                                Path to $3-5K/month
-                            </Badge>
-                            <Badge className="bg-white/10 text-white border-white/20">
-                                <Trophy className="w-3 h-3 mr-1" />
-                                {stepsCompleted}/12 Steps
-                            </Badge>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="mt-5 pt-4 border-t border-white/10">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-burgundy-200">Your Mini Diploma Journey</span>
-                        <span className="text-sm font-bold text-gold-300">{progress}%</span>
-                    </div>
-                    <Progress value={progress} className="h-2 bg-white/20" />
-                </div>
-            </div>
-
-            {/* Step Progress - Motivating Milestones */}
-            <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-                <div className="flex items-center justify-between mb-3">
-                    <h2 className="font-semibold text-gray-900">Your Journey to $3-5K/month</h2>
-                    <span className="text-sm font-bold text-burgundy-600">{progress}%</span>
-                </div>
-                <Progress value={progress} className="h-2 mb-4" />
-                <div className="flex flex-wrap gap-2 text-xs">
-                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${watchedVideo ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
-                        {watchedVideo ? "✓" : "○"} Meet Sarah
-                    </span>
-                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedQuestions ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
-                        {completedQuestions ? "✓" : "○"} Your Why
-                    </span>
-                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedLessons.length >= 3 ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
-                        {completedLessons.length >= 3 ? "✓" : "○"} $1K Foundation
-                    </span>
-                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedLessons.length >= 6 ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-400"}`}>
-                        {completedLessons.length >= 6 ? "✓" : "○"} $3K Skills
-                    </span>
-                    <span className={`px-3 py-1.5 rounded-full flex items-center gap-1 ${completedLessons.length >= 9 ? "bg-gold-100 text-gold-700 font-bold" : "bg-gray-100 text-gray-400"}`}>
-                        {completedLessons.length >= 9 ? "🎉" : "○"} $5K Ready!
-                    </span>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            {renderStepContent()}
         </div>
     );
 }
