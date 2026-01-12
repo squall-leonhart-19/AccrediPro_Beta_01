@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import {
 import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
 import MetaPixel from "@/components/tracking/meta-pixel";
+import { FloatingChatWidget } from "@/components/lead-portal/floating-chat-widget";
 
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
@@ -85,7 +86,8 @@ const FAQS = [
     },
 ];
 
-export default function WomensHealthMiniDiplomaPage() {
+
+function UniqueFunctionalMedicineMiniDiplomaContent() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -161,6 +163,7 @@ export default function WomensHealthMiniDiplomaPage() {
                 email: email.toLowerCase(),
                 password: LEAD_PASSWORD,
                 redirect: false,
+                callbackUrl: "/functional-medicine-mini-diploma/thank-you",
             });
 
             if (result?.error) {
@@ -171,6 +174,7 @@ export default function WomensHealthMiniDiplomaPage() {
                 }));
                 window.location.href = "/functional-medicine-mini-diploma/thank-you";
             } else {
+                // The redirect in signIn should handle it, but fallback just in case or if redirect: false
                 window.location.href = "/functional-medicine-mini-diploma/thank-you";
             }
 
@@ -685,5 +689,17 @@ export default function WomensHealthMiniDiplomaPage() {
             {/* Live Chat Widget */}
             <FloatingChatWidget page="functional-medicine-mini-diploma" />
         </div>
+    );
+}
+
+export default function FunctionalMedicineMiniDiplomaPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <Loader2 className="h-8 w-8 text-burgundy-600 animate-spin" />
+            </div>
+        }>
+            <UniqueFunctionalMedicineMiniDiplomaContent />
+        </Suspense>
     );
 }

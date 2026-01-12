@@ -44,8 +44,7 @@ async function sendPurchaseToMeta(params: {
   currency?: string;
   contentName: string;
   firstName?: string;
-  contentName: string;
-  firstName?: string;
+
   externalId?: string;
   pixelId?: string;
   phone?: string;
