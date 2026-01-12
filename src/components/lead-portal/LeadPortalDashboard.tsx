@@ -83,7 +83,7 @@ export function LeadPortalDashboard({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Image
-                            src="/asi-crest.webp"
+                            src="/asi-logo.png"
                             alt="ASI"
                             width={48}
                             height={48}
