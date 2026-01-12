@@ -217,7 +217,7 @@ export function CoursesClient({ courses, enrollments }: CoursesClientProps) {
                                             </p>
                                         </div>
                                     </div>
-                                    <Link href="/coach-sarah">
+                                    <Link href="/messages">
                                         <Button className="bg-white text-burgundy-700 hover:bg-burgundy-50 whitespace-nowrap">
                                             <MessageCircle className="w-4 h-4 mr-2" />
                                             Talk with Sarah
@@ -277,7 +277,7 @@ export function CoursesClient({ courses, enrollments }: CoursesClientProps) {
                                             </div>
 
                                             {/* CTA - Talk with Sarah */}
-                                            <Link href="/coach-sarah">
+                                            <Link href="/messages">
                                                 <Button variant="outline" className="w-full border-burgundy-300 text-burgundy-700 hover:bg-burgundy-50">
                                                     <MessageCircle className="w-4 h-4 mr-2" />
                                                     Talk with Sarah

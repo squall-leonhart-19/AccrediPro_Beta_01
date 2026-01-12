@@ -828,7 +828,7 @@ export function CourseCatalogFilters({
                                                 </Button>
                                             </div>
                                         ) : (
-                                            <Link href="/coach-sarah" onClick={(e) => e.stopPropagation()}>
+                                            <Link href="/messages" onClick={(e) => e.stopPropagation()}>
                                                 <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-700 font-semibold text-xs sm:text-sm h-8 sm:h-10">
                                                     <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                                                     <span className="hidden sm:inline">Apply Now</span>
