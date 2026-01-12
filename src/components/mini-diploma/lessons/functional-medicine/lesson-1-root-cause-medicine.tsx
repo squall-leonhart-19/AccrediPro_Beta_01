@@ -22,13 +22,6 @@ export function LessonRootCauseMedicine({
     const messages: Message[] = [
         {
             id: 1,
-            type: 'pre-recorded-audio',
-            content: `🎧 Welcome to Module 1!`,
-            audioUrl: '/audio/functional-medicine/module-1-intro.mp3',
-            audioDuration: '0:45',
-        },
-        {
-            id: 2,
             type: 'coach',
             content: `Hey {name}! 💕 I'm so excited you're here to learn about Functional Medicine!`,
         },

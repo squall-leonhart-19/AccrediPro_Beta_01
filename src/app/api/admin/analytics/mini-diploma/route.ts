@@ -3,6 +3,28 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// All mini diploma course slugs
+const MINI_DIPLOMA_SLUGS = [
+    "womens-health-mini-diploma",
+    "functional-medicine-mini-diploma",
+    "gut-health-mini-diploma",
+    "health-coach-mini-diploma",
+    "holistic-nutrition-mini-diploma",
+    "hormone-health-mini-diploma",
+    "nurse-coach-mini-diploma",
+];
+
+// Tag prefixes for lesson completion (maps slug to tag prefix)
+const SLUG_TO_TAG_PREFIX: Record<string, string> = {
+    "womens-health-mini-diploma": "wh-lesson-complete",
+    "functional-medicine-mini-diploma": "functional-medicine-lesson-complete",
+    "gut-health-mini-diploma": "gut-health-lesson-complete",
+    "health-coach-mini-diploma": "health-coach-lesson-complete",
+    "holistic-nutrition-mini-diploma": "holistic-nutrition-lesson-complete",
+    "hormone-health-mini-diploma": "hormone-health-lesson-complete",
+    "nurse-coach-mini-diploma": "nurse-coach-lesson-complete",
+};
+
 /**
  * GET /api/admin/analytics/mini-diploma
  * Get Mini Diploma funnel analytics
@@ -15,45 +37,62 @@ export async function GET() {
         }
 
         const now = new Date();
-        const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-        // Get mini diploma course
-        const miniDiplomaCourse = await prisma.course.findFirst({
+        // Signups - users enrolled in any mini diploma course
+        const signups = await prisma.enrollment.count({
             where: {
-                OR: [
-                    { slug: { contains: "mini-diploma" } },
-                    { certificateType: "MINI_DIPLOMA" },
-                ],
+                course: { slug: { in: MINI_DIPLOMA_SLUGS } },
             },
         });
 
-        if (!miniDiplomaCourse) {
-            return NextResponse.json({ error: "Mini Diploma course not found" }, { status: 404 });
-        }
-
-        // Signups - users with miniDiplomaOptinAt
-        const signups = await prisma.user.count({
+        // Get all mini diploma enrollments with user tags to calculate real progress
+        const enrollments = await prisma.enrollment.findMany({
             where: {
-                miniDiplomaOptinAt: { not: null },
-                isFakeProfile: { not: true },
+                course: { slug: { in: MINI_DIPLOMA_SLUGS } },
+            },
+            select: {
+                userId: true,
+                status: true,
+                enrolledAt: true,
+                completedAt: true,
+                course: { select: { slug: true } },
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        tags: {
+                            select: { tag: true },
+                        },
+                    },
+                },
             },
         });
 
-        // Started - users enrolled in mini diploma
-        const started = await prisma.enrollment.count({
-            where: {
-                courseId: miniDiplomaCourse.id,
-                progress: { gt: 0 },
-            },
+        // Calculate progress for each enrollment based on UserTags
+        const enrollmentsWithProgress = enrollments.map((enrollment) => {
+            const tagPrefix = SLUG_TO_TAG_PREFIX[enrollment.course.slug];
+            if (!tagPrefix) {
+                return { ...enrollment, lessonsCompleted: 0, progress: 0 };
+            }
+
+            // Count lesson completion tags for this niche
+            const lessonsCompleted = enrollment.user.tags.filter(
+                (t) => t.tag.startsWith(`${tagPrefix}:`)
+            ).length;
+
+            // Progress is lessons completed / 9 * 100
+            const progress = Math.round((lessonsCompleted / 9) * 100);
+
+            return { ...enrollment, lessonsCompleted, progress };
         });
 
-        // Completed - users who finished mini diploma
-        const completed = await prisma.enrollment.count({
-            where: {
-                courseId: miniDiplomaCourse.id,
-                status: "COMPLETED",
-            },
-        });
+        // Started - users who have completed at least 1 lesson
+        const started = enrollmentsWithProgress.filter((e) => e.lessonsCompleted > 0).length;
+
+        // Completed - users who finished all 9 lessons
+        const completed = enrollmentsWithProgress.filter((e) => e.lessonsCompleted >= 9).length;
 
         // Watched training - users with training_watched tag
         const watchedTraining = await prisma.userTag.count({
@@ -79,106 +118,94 @@ export async function GET() {
             })
             : 0;
 
-        // Avg time to complete
-        const completedEnrollments = await prisma.enrollment.findMany({
-            where: {
-                courseId: miniDiplomaCourse.id,
-                status: "COMPLETED",
-                completedAt: { not: null },
-            },
-            select: {
-                enrolledAt: true,
-                completedAt: true,
-            },
-        });
-
+        // Avg time to complete (for users with 9 lessons done)
+        const completedWithDates = enrollmentsWithProgress.filter(
+            (e) => e.lessonsCompleted >= 9 && e.completedAt
+        );
         const avgTimeToComplete =
-            completedEnrollments.length > 0
+            completedWithDates.length > 0
                 ? Math.round(
-                    completedEnrollments.reduce((acc, e) => {
+                    completedWithDates.reduce((acc, e) => {
                         const days =
                             (new Date(e.completedAt!).getTime() - new Date(e.enrolledAt).getTime()) /
                             (1000 * 60 * 60 * 24);
                         return acc + days;
-                    }, 0) / completedEnrollments.length
+                    }, 0) / completedWithDates.length
                 )
                 : 0;
 
-        // Avg quiz score (if available)
-        const avgScore = 78; // Placeholder - would need quiz results table
+        // Avg quiz score (placeholder)
+        const avgScore = 78;
 
-        // Drop-off points by module
-        const modules = await prisma.module.findMany({
-            where: { courseId: miniDiplomaCourse.id },
-            orderBy: { order: "asc" },
-            select: { id: true, title: true },
+        // Drop-off points by lesson (1-9)
+        const lessonCounts: Record<number, number> = {};
+        for (let i = 1; i <= 9; i++) {
+            lessonCounts[i] = 0;
+        }
+
+        enrollmentsWithProgress.forEach((e) => {
+            for (let i = 1; i <= e.lessonsCompleted; i++) {
+                lessonCounts[i]++;
+            }
         });
 
-        const dropoffPoints = await Promise.all(
-            modules.map(async (module, index) => {
-                const atThisModule = await prisma.lessonProgress.count({
-                    where: {
-                        lesson: { moduleId: module.id },
-                        isCompleted: true,
-                    },
-                });
+        const dropoffPoints = [];
+        for (let i = 1; i <= 9; i++) {
+            const atThisLesson = lessonCounts[i] || 0;
+            const atPreviousLesson = i === 1 ? started : (lessonCounts[i - 1] || 0);
+            const dropRate =
+                atPreviousLesson > 0
+                    ? Math.round(((atPreviousLesson - atThisLesson) / atPreviousLesson) * 100)
+                    : 0;
 
-                const previousModule = index > 0 ? modules[index - 1] : null;
-                const atPreviousModule = previousModule
-                    ? await prisma.lessonProgress.count({
-                        where: {
-                            lesson: { moduleId: previousModule.id },
-                            isCompleted: true,
-                        },
-                    })
-                    : started;
+            dropoffPoints.push({
+                module: `Lesson ${i}`,
+                dropRate: Math.max(0, dropRate),
+            });
+        }
 
-                const dropRate =
-                    atPreviousModule > 0
-                        ? Math.round(((atPreviousModule - atThisModule) / atPreviousModule) * 100)
-                        : 0;
-
-                return {
-                    module: module.title,
-                    dropRate: Math.max(0, dropRate),
-                };
-            })
-        );
-
-        // Recent signups
-        const recentSignups = await prisma.user.findMany({
+        // Recent signups (most recent enrollments)
+        const recentEnrollments = await prisma.enrollment.findMany({
             where: {
-                miniDiplomaOptinAt: { not: null },
-                isFakeProfile: { not: true },
+                course: { slug: { in: MINI_DIPLOMA_SLUGS } },
             },
-            orderBy: { miniDiplomaOptinAt: "desc" },
+            orderBy: { enrolledAt: "desc" },
             take: 10,
             select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-                miniDiplomaOptinAt: true,
-                enrollments: {
-                    where: { courseId: miniDiplomaCourse.id },
-                    select: { progress: true, status: true },
-                },
-                tags: {
-                    where: { tag: { startsWith: "license_type:" } },
-                    select: { tag: true },
+                userId: true,
+                enrolledAt: true,
+                status: true,
+                course: { select: { slug: true } },
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        tags: { select: { tag: true } },
+                    },
                 },
             },
         });
 
-        const formattedRecentSignups = recentSignups.map((user) => ({
-            id: user.id,
-            name: `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Unknown",
-            email: user.email || "",
-            signupDate: user.miniDiplomaOptinAt?.toISOString() || "",
-            status: user.enrollments[0]?.status || "NOT_STARTED",
-            progress: user.enrollments[0]?.progress || 0,
-            licenseType: user.tags[0]?.tag.replace("license_type:", "") || undefined,
-        }));
+        const formattedRecentSignups = recentEnrollments.map((enrollment) => {
+            const tagPrefix = SLUG_TO_TAG_PREFIX[enrollment.course.slug] || "";
+            const lessonsCompleted = enrollment.user.tags.filter(
+                (t) => t.tag.startsWith(`${tagPrefix}:`)
+            ).length;
+            const progress = Math.round((lessonsCompleted / 9) * 100);
+            const licenseTag = enrollment.user.tags.find((t) => t.tag.startsWith("license_type:"));
+
+            return {
+                id: enrollment.user.id,
+                name: `${enrollment.user.firstName || ""} ${enrollment.user.lastName || ""}`.trim() || "Unknown",
+                email: enrollment.user.email || "",
+                signupDate: enrollment.enrolledAt.toISOString(),
+                status: lessonsCompleted >= 9 ? "COMPLETED" : lessonsCompleted > 0 ? "IN_PROGRESS" : "NOT_STARTED",
+                progress,
+                licenseType: licenseTag?.tag.replace("license_type:", "") || undefined,
+            };
+        });
 
         // Daily signups for last 14 days
         const dailySignups = [];
@@ -190,10 +217,10 @@ export async function GET() {
             const dayEnd = new Date(dayStart);
             dayEnd.setHours(23, 59, 59, 999);
 
-            const count = await prisma.user.count({
+            const count = await prisma.enrollment.count({
                 where: {
-                    miniDiplomaOptinAt: { gte: dayStart, lte: dayEnd },
-                    isFakeProfile: { not: true },
+                    course: { slug: { in: MINI_DIPLOMA_SLUGS } },
+                    enrolledAt: { gte: dayStart, lte: dayEnd },
                 },
             });
 
