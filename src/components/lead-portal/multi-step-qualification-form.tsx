@@ -4,8 +4,7 @@ import { useState } from "react";
 import {
     ArrowRight, CheckCircle2, Loader2,
     User, Mail, Phone, Lock, ChevronRight,
-    HeartPulse, Baby, Briefcase, DollarSign,
-    Users, Target, Gift, Zap
+    Heart, Clock, DollarSign, Sparkles, Gift
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,9 +18,12 @@ export type QualificationData = {
     lastName: string;
     email: string;
     phone: string;
-    // Step 2: Qualification
-    lifeStage: string;
+    // Step 2: Qualification (Sarah's questions)
+    incomeGoal: string;
+    timeCommitment: string;
     motivation: string;
+    // Legacy fields (mapped from new ones)
+    lifeStage: string;
     investment: string;
 };
 
@@ -44,8 +46,10 @@ export function MultiStepQualificationForm({
         lastName: "",
         email: "",
         phone: "",
-        lifeStage: "",
+        incomeGoal: "",
+        timeCommitment: "",
         motivation: "",
+        lifeStage: "",
         investment: ""
     });
 
@@ -64,22 +68,29 @@ export function MultiStepQualificationForm({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (step === 2) {
-            onSubmit(formData);
+            // Map new fields to legacy fields for API compatibility
+            const submissionData = {
+                ...formData,
+                lifeStage: formData.timeCommitment,
+                investment: formData.incomeGoal,
+            };
+            onSubmit(submissionData);
         }
     };
 
-    // Validation for Step 1 (Contact Info)
+    // Validation
     const isStep1Valid = formData.firstName && formData.email && formData.phone.length > 9;
-
-    // Validation for Step 2 (Questions)
-    const isStep2Valid = formData.lifeStage && formData.motivation && formData.investment;
+    const isStep2Valid = formData.incomeGoal && formData.timeCommitment && formData.motivation;
 
     return (
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-            {/* Urgency Banner */}
-            <div className="bg-gradient-to-r from-red-600 to-red-700 text-white text-center py-2 px-4">
-                <p className="text-sm font-bold flex items-center justify-center gap-2">
-                    <Zap className="w-4 h-4" />
+            {/* Urgency Banner - Gold Metallic */}
+            <div
+                className="text-center py-2.5 px-4"
+                style={{ background: "linear-gradient(135deg, #d4af37 0%, #f7e7a0 25%, #d4af37 50%, #b8860b 75%, #d4af37 100%)" }}
+            >
+                <p className="text-sm font-bold text-[#4e1f24] flex items-center justify-center gap-2">
+                    <Gift className="w-4 h-4" />
                     <span>FREE Today Only • Normally $97</span>
                 </p>
             </div>
@@ -87,13 +98,16 @@ export function MultiStepQualificationForm({
             {/* Progress Bar */}
             <div className="bg-gray-50 border-b border-gray-100 p-4">
                 <div className="flex items-center justify-between text-xs font-medium text-gray-500 mb-2">
-                    <span className={cn(step >= 1 ? "text-emerald-600" : "")}>Step 1: Get Access</span>
-                    <span className={cn(step >= 2 ? "text-emerald-600" : "")}>Step 2: Personalize</span>
+                    <span className={cn(step >= 1 ? "text-[#722f37]" : "")}>Step 1: Get Access</span>
+                    <span className={cn(step >= 2 ? "text-[#722f37]" : "")}>Step 2: Quick Questions</span>
                 </div>
                 <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
                     <div
-                        className="bg-emerald-500 h-full transition-all duration-500 ease-out"
-                        style={{ width: step === 1 ? "50%" : "100%" }}
+                        className="h-full transition-all duration-500 ease-out"
+                        style={{
+                            width: step === 1 ? "50%" : "100%",
+                            background: "linear-gradient(135deg, #722f37 0%, #9a4a54 50%, #722f37 100%)"
+                        }}
                     />
                 </div>
             </div>
@@ -102,12 +116,15 @@ export function MultiStepQualificationForm({
                 {step === 1 && (
                     <div className="space-y-5 animate-in slide-in-from-right-8 fade-in duration-300">
                         <div className="text-center mb-4">
-                            <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold mb-3">
-                                <Gift className="w-3 h-3" />
-                                FREE MINI DIPLOMA ACCESS
+                            <div
+                                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3"
+                                style={{ backgroundColor: "#722f3720", color: "#722f37" }}
+                            >
+                                <Sparkles className="w-3 h-3" />
+                                FROM SARAH, YOUR COACH
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900">Claim Your Free Certification</h3>
-                            <p className="text-gray-500 text-sm mt-1">Instant access • 9 lessons • Certificate included</p>
+                            <h3 className="text-xl font-bold text-gray-900">Hey! I'm Sarah 👋</h3>
+                            <p className="text-gray-500 text-sm mt-1">I'll personally guide you through your mini diploma</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
@@ -119,7 +136,7 @@ export function MultiStepQualificationForm({
                                         id="firstName"
                                         value={formData.firstName}
                                         onChange={(e) => updateField("firstName", e.target.value)}
-                                        className="pl-9 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                        className="pl-9 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#722f37] focus:border-transparent"
                                         placeholder="Jane"
                                         required
                                     />
@@ -131,7 +148,7 @@ export function MultiStepQualificationForm({
                                     id="lastName"
                                     value={formData.lastName}
                                     onChange={(e) => updateField("lastName", e.target.value)}
-                                    className="h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                    className="h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#722f37] focus:border-transparent"
                                     placeholder="Doe"
                                 />
                             </div>
@@ -146,7 +163,7 @@ export function MultiStepQualificationForm({
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => updateField("email", e.target.value)}
-                                    className="pl-9 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                    className="pl-9 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#722f37] focus:border-transparent"
                                     placeholder="jane@example.com"
                                     required
                                 />
@@ -154,7 +171,7 @@ export function MultiStepQualificationForm({
                         </div>
 
                         <div className="space-y-1.5">
-                            <Label htmlFor="phone" className="text-sm font-medium">Phone (for access link) *</Label>
+                            <Label htmlFor="phone" className="text-sm font-medium">Phone (I'll text your access link) *</Label>
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                                 <div className="absolute left-9 top-3 text-gray-500 font-medium border-r border-gray-300 pr-2 mr-2 text-sm leading-none h-5 flex items-center">
@@ -168,21 +185,21 @@ export function MultiStepQualificationForm({
                                         const clean = e.target.value.replace(/[^0-9-]/g, '');
                                         updateField("phone", clean);
                                     }}
-                                    className="pl-24 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                    className="pl-24 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:ring-2 focus:ring-[#722f37] focus:border-transparent"
                                     placeholder="555-0123"
                                     required
                                 />
                             </div>
-                            <p className="text-xs text-gray-400">We'll text your login link instantly</p>
                         </div>
 
                         <Button
                             type="button"
                             onClick={handleNext}
                             disabled={!isStep1Valid}
-                            className="w-full h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg"
+                            className="w-full h-14 text-lg font-bold text-white rounded-xl shadow-lg"
+                            style={{ background: "linear-gradient(135deg, #722f37 0%, #9a4a54 50%, #722f37 100%)" }}
                         >
-                            Get Free Access Now
+                            Continue — It's Free
                             <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
 
@@ -197,94 +214,112 @@ export function MultiStepQualificationForm({
                 {step === 2 && (
                     <div className="space-y-5 animate-in slide-in-from-right-8 fade-in duration-300">
                         <div className="text-center mb-4">
-                            <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold mb-3">
+                            <div
+                                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3"
+                                style={{ backgroundColor: "#d4af3730", color: "#8b6914" }}
+                            >
                                 <CheckCircle2 className="w-3 h-3" />
                                 Almost there, {formData.firstName}!
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900">Quick Questions to Personalize</h3>
-                            <p className="text-gray-500 text-sm mt-1">So Sarah knows how to help you best</p>
+                            <h3 className="text-xl font-bold text-gray-900">So I can help you better...</h3>
+                            <p className="text-gray-500 text-sm mt-1">Just 3 quick questions from me 💕</p>
                         </div>
 
-                        {/* Question 1: Life Stage */}
+                        {/* Q1: Income Goal */}
                         <div className="space-y-2">
-                            <Label className="text-sm font-semibold text-gray-700">Where are you in life right now?</Label>
+                            <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <DollarSign className="w-4 h-4 text-[#722f37]" />
+                                What's your income goal from this?
+                            </Label>
                             <div className="grid grid-cols-1 gap-2">
                                 {[
-                                    { id: "parents", label: "Kids still at home", icon: "🏡" },
-                                    { id: "empty-nest", label: "Empty nest / grown kids", icon: "🕊️" },
-                                    { id: "rebuilding", label: "Starting over or rebuilding", icon: "🌱" },
-                                    { id: "ready-now", label: "Ready for my next chapter", icon: "🚀" }
+                                    { id: "side-income", label: "Just a side income ($500-1K/mo)", emoji: "💰" },
+                                    { id: "replace-job", label: "Replace my job ($3-5K/mo)", emoji: "🎯" },
+                                    { id: "build-business", label: "Build a real business ($5K+/mo)", emoji: "🚀" }
                                 ].map((option) => (
                                     <button
                                         key={option.id}
                                         type="button"
-                                        onClick={() => updateField("lifeStage", option.id)}
+                                        onClick={() => updateField("incomeGoal", option.id)}
                                         className={cn(
                                             "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
-                                            formData.lifeStage === option.id
-                                                ? "border-emerald-500 bg-emerald-50 text-emerald-900"
-                                                : "border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50"
+                                            formData.incomeGoal === option.id
+                                                ? "border-[#722f37] bg-[#722f3710]"
+                                                : "border-gray-200 hover:border-[#722f3750] hover:bg-[#722f3708]"
                                         )}
                                     >
-                                        <span className="text-lg">{option.icon}</span>
-                                        <span className="text-sm font-medium">{option.label}</span>
-                                        {formData.lifeStage === option.id && (
-                                            <CheckCircle2 className="w-4 h-4 text-emerald-600 ml-auto" />
+                                        <span className="text-lg">{option.emoji}</span>
+                                        <span className="text-sm font-medium text-gray-700">{option.label}</span>
+                                        {formData.incomeGoal === option.id && (
+                                            <CheckCircle2 className="w-4 h-4 text-[#722f37] ml-auto" />
                                         )}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Question 2: Motivation */}
+                        {/* Q2: Time Commitment */}
                         <div className="space-y-2">
-                            <Label className="text-sm font-semibold text-gray-700">What's driving you to explore this?</Label>
-                            <div className="relative">
-                                <select
-                                    value={formData.motivation}
-                                    onChange={(e) => updateField("motivation", e.target.value)}
-                                    className="w-full p-3 pl-4 pr-10 border border-gray-200 rounded-xl appearance-none bg-white text-gray-700 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
-                                >
-                                    <option value="" disabled>Select one...</option>
-                                    <option value="burnout">Burned out from my current career</option>
-                                    <option value="health-journey">My health journey changed everything</option>
-                                    <option value="flexibility">Want flexibility and freedom</option>
-                                    <option value="purpose">Looking for purpose and meaning</option>
-                                    <option value="income">Need a new income source</option>
-                                </select>
-                                <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 rotate-90 text-gray-400 pointer-events-none" />
-                            </div>
-                        </div>
-
-                        {/* Question 3: Investment */}
-                        <div className="space-y-2">
-                            <Label className="text-sm font-semibold text-gray-700">If this felt right, could you invest in yourself?</Label>
+                            <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-[#722f37]" />
+                                How much time can you dedicate weekly?
+                            </Label>
                             <div className="grid grid-cols-1 gap-2">
                                 {[
-                                    { id: "budgeted", label: "Yes, I've budgeted for my growth" },
-                                    { id: "discuss", label: "I'd want to discuss with spouse first" },
-                                    { id: "exploring", label: "Just exploring right now" }
+                                    { id: "few-hours", label: "A few hours (fitting around life)", emoji: "⏰" },
+                                    { id: "part-time", label: "Part-time (10-15 hours/week)", emoji: "📅" },
+                                    { id: "all-in", label: "Ready to go all-in", emoji: "💪" }
                                 ].map((option) => (
                                     <button
                                         key={option.id}
                                         type="button"
-                                        onClick={() => updateField("investment", option.id)}
+                                        onClick={() => updateField("timeCommitment", option.id)}
                                         className={cn(
-                                            "w-full text-left p-3 rounded-xl border transition-all text-sm",
-                                            formData.investment === option.id
-                                                ? "border-emerald-500 bg-emerald-50 text-emerald-900"
-                                                : "border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50"
+                                            "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
+                                            formData.timeCommitment === option.id
+                                                ? "border-[#722f37] bg-[#722f3710]"
+                                                : "border-gray-200 hover:border-[#722f3750] hover:bg-[#722f3708]"
                                         )}
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <div className={cn(
-                                                "w-4 h-4 rounded-full border flex items-center justify-center",
-                                                formData.investment === option.id ? "border-emerald-500" : "border-gray-300"
-                                            )}>
-                                                {formData.investment === option.id && <div className="w-2 h-2 rounded-full bg-emerald-500" />}
-                                            </div>
-                                            {option.label}
-                                        </div>
+                                        <span className="text-lg">{option.emoji}</span>
+                                        <span className="text-sm font-medium text-gray-700">{option.label}</span>
+                                        {formData.timeCommitment === option.id && (
+                                            <CheckCircle2 className="w-4 h-4 text-[#722f37] ml-auto" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Q3: Motivation (The emotional one) */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                <Heart className="w-4 h-4 text-[#722f37]" />
+                                What's really driving you to make a change?
+                            </Label>
+                            <div className="grid grid-cols-1 gap-2">
+                                {[
+                                    { id: "more-time-family", label: "I want more time with my kids/family", emoji: "👨‍👩‍👧‍👦" },
+                                    { id: "burned-out", label: "I'm burned out and need something new", emoji: "😮‍💨" },
+                                    { id: "meaningful-work", label: "I want work that actually matters", emoji: "✨" },
+                                    { id: "bet-on-myself", label: "I'm finally ready to bet on myself", emoji: "🦋" }
+                                ].map((option) => (
+                                    <button
+                                        key={option.id}
+                                        type="button"
+                                        onClick={() => updateField("motivation", option.id)}
+                                        className={cn(
+                                            "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
+                                            formData.motivation === option.id
+                                                ? "border-[#722f37] bg-[#722f3710]"
+                                                : "border-gray-200 hover:border-[#722f3750] hover:bg-[#722f3708]"
+                                        )}
+                                    >
+                                        <span className="text-lg">{option.emoji}</span>
+                                        <span className="text-sm font-medium text-gray-700">{option.label}</span>
+                                        {formData.motivation === option.id && (
+                                            <CheckCircle2 className="w-4 h-4 text-[#722f37] ml-auto" />
+                                        )}
                                     </button>
                                 ))}
                             </div>
@@ -300,7 +335,8 @@ export function MultiStepQualificationForm({
                         <Button
                             type="submit"
                             disabled={!isStep2Valid || isSubmitting || isVerifying}
-                            className="w-full h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg"
+                            className="w-full h-14 text-lg font-bold text-white rounded-xl shadow-lg"
+                            style={{ background: "linear-gradient(135deg, #722f37 0%, #9a4a54 50%, #722f37 100%)" }}
                         >
                             {isVerifying ? (
                                 <span className="flex items-center gap-2">

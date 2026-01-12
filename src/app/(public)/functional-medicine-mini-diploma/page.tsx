@@ -21,13 +21,25 @@ import { MultiStepQualificationForm, QualificationData } from "@/components/lead
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
 
+// Brand Colors
+const BRAND = {
+    burgundy: "#722f37",
+    burgundyDark: "#4e1f24",
+    burgundyLight: "#9a4a54",
+    gold: "#d4af37",
+    goldLight: "#f7e7a0",
+    goldDark: "#b8860b",
+    cream: "#fdf8f0",
+    goldMetallic: "linear-gradient(135deg, #d4af37 0%, #f7e7a0 25%, #d4af37 50%, #b8860b 75%, #d4af37 100%)",
+    burgundyMetallic: "linear-gradient(135deg, #722f37 0%, #9a4a54 25%, #722f37 50%, #4e1f24 75%, #722f37 100%)",
+};
+
 function FunctionalMedicineMiniDiplomaContent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const { trackViewContent, trackLead } = useMetaTracking();
 
-    // Track ViewContent on mount
     useEffect(() => {
         trackViewContent(
             "Functional Medicine Mini Diploma",
@@ -40,7 +52,6 @@ function FunctionalMedicineMiniDiplomaContent() {
         setIsVerifying(true);
 
         try {
-            // Step 1: Verify email with NeverBounce
             const verifyRes = await fetch("/api/verify-email", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -54,7 +65,6 @@ function FunctionalMedicineMiniDiplomaContent() {
                 return;
             }
 
-            // Step 2: Submit to mini-diploma optin
             setIsVerifying(false);
             setIsSubmitting(true);
 
@@ -66,9 +76,9 @@ function FunctionalMedicineMiniDiplomaContent() {
                     lastName: formData.lastName,
                     email: formData.email,
                     phone: formData.phone,
-                    lifeStage: formData.lifeStage,
+                    lifeStage: formData.timeCommitment || formData.lifeStage,
                     motivation: formData.motivation,
-                    investment: formData.investment,
+                    investment: formData.incomeGoal || formData.investment,
                     course: "functional-medicine",
                 }),
             });
@@ -79,7 +89,6 @@ function FunctionalMedicineMiniDiplomaContent() {
                 throw new Error(data.error || "Something went wrong");
             }
 
-            // Track Lead (Server-Side via CAPI)
             trackLead(
                 "Functional Medicine Mini Diploma",
                 formData.email,
@@ -87,22 +96,19 @@ function FunctionalMedicineMiniDiplomaContent() {
                 PIXEL_CONFIG.FUNCTIONAL_MEDICINE
             );
 
-            // Store user data for thank you page
             sessionStorage.setItem("miniDiplomaUser", JSON.stringify({
                 firstName: formData.firstName.trim(),
                 lastName: formData.lastName.trim(),
                 email: formData.email.toLowerCase().trim(),
             }));
 
-            // Auto-login
-            const result = await signIn("credentials", {
+            await signIn("credentials", {
                 email: formData.email.toLowerCase(),
                 password: LEAD_PASSWORD,
                 redirect: false,
                 callbackUrl: "/functional-medicine-mini-diploma/thank-you",
             });
 
-            // Redirect to thank you page
             window.location.href = "/functional-medicine-mini-diploma/thank-you";
 
         } catch (err: any) {
@@ -117,71 +123,77 @@ function FunctionalMedicineMiniDiplomaContent() {
     };
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Functional Medicine Niche Pixel */}
+        <div className="min-h-screen" style={{ backgroundColor: BRAND.cream }}>
             <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
 
-            {/* URGENCY BAR - Hormozi style */}
-            <div className="bg-red-600 text-white py-2 px-4 text-center">
-                <p className="text-sm md:text-base font-bold">
-                    ⚡ FREE FOR THE NEXT 24 HOURS ⚡ (Normally $97) — 847 women claimed access this week
+            {/* URGENCY BAR - Gold Metallic */}
+            <div style={{ background: BRAND.goldMetallic }} className="py-2.5 px-4 text-center">
+                <p className="text-sm font-bold" style={{ color: BRAND.burgundyDark }}>
+                    ⚡ FREE Today Only (Normally $97) — 847 women started this week
                 </p>
             </div>
 
-            {/* HERO SECTION - Direct Response Style */}
-            <section className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white pt-8 pb-16 md:pt-12 md:pb-24 relative overflow-hidden">
-                {/* Background glow */}
-                <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/20 rounded-full blur-[120px]" />
+            {/* HERO SECTION */}
+            <section className="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-24" style={{ backgroundColor: BRAND.burgundyDark }}>
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: `radial-gradient(circle at 2px 2px, ${BRAND.gold} 1px, transparent 0)`,
+                        backgroundSize: '48px 48px'
+                    }} />
+                </div>
+
+                {/* Gold Glow */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[120px] opacity-20" style={{ backgroundColor: BRAND.gold }} />
 
                 <div className="relative max-w-6xl mx-auto px-4">
                     <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 items-start">
                         {/* Left Column - Copy */}
-                        <div>
-                            {/* Problem Agitation Hook */}
-                            <p className="text-emerald-400 font-bold text-sm md:text-base mb-4 uppercase tracking-wide">
-                                For Women Ready To Leave Their 9-5 Behind
-                            </p>
+                        <div className="text-white">
+                            {/* Sarah Badge */}
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ backgroundColor: `${BRAND.gold}20`, border: `1px solid ${BRAND.gold}40` }}>
+                                <Sparkles className="w-4 h-4" style={{ color: BRAND.gold }} />
+                                <span className="text-sm font-medium" style={{ color: BRAND.gold }}>Hi, I'm Sarah — Your Personal Coach</span>
+                            </div>
 
-                            {/* Main Headline */}
-                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black leading-[1.1] mb-6">
-                                Get Certified In<br />
-                                <span className="text-emerald-400">Functional Medicine</span><br />
-                                In 60 Minutes<br />
-                                <span className="text-slate-400 text-2xl md:text-3xl">(For Free)</span>
+                            <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-6">
+                                <span style={{ color: BRAND.goldLight }}>What If You Could Earn</span><br />
+                                <span className="text-white">$3,000-$5,000/month</span><br />
+                                <span className="text-white/80 text-2xl md:text-3xl">Helping People Heal?</span>
                             </h1>
 
-                            {/* Subheadline - Paint the dream */}
-                            <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-lg leading-relaxed">
-                                …And discover how 4,000+ women are earning <strong className="text-white">$3,000-$8,000/month</strong> helping clients heal — without a medical degree, office rent, or years of schooling.
+                            <p className="text-lg md:text-xl text-white/80 mb-8 max-w-lg leading-relaxed">
+                                In just <strong className="text-white">60 minutes</strong>, I'll teach you the foundations of Functional Medicine —
+                                the same approach that helped me leave my 9-5 and build a <strong className="text-white">$10K/month practice</strong> from home.
                             </p>
 
                             {/* Proof Points */}
                             <div className="flex flex-wrap gap-4 md:gap-6 mb-8">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <Award className="w-5 h-5 text-emerald-400" />
+                                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${BRAND.gold}20` }}>
+                                        <Award className="w-5 h-5" style={{ color: BRAND.gold }} />
                                     </div>
                                     <div>
                                         <p className="font-bold text-white">9 Lessons</p>
-                                        <p className="text-xs text-slate-400">Complete in 1 hour</p>
+                                        <p className="text-xs text-white/60">1 hour total</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <GraduationCap className="w-5 h-5 text-emerald-400" />
+                                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${BRAND.gold}20` }}>
+                                        <GraduationCap className="w-5 h-5" style={{ color: BRAND.gold }} />
                                     </div>
                                     <div>
                                         <p className="font-bold text-white">Certificate</p>
-                                        <p className="text-xs text-slate-400">ASI Verified</p>
+                                        <p className="text-xs text-white/60">ASI Verified</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                        <Users className="w-5 h-5 text-emerald-400" />
+                                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${BRAND.gold}20` }}>
+                                        <MessageCircle className="w-5 h-5" style={{ color: BRAND.gold }} />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-white">Coach Support</p>
-                                        <p className="text-xs text-slate-400">Sarah guides you</p>
+                                        <p className="font-bold text-white">I'll Guide You</p>
+                                        <p className="text-xs text-white/60">Every step</p>
                                     </div>
                                 </div>
                             </div>
@@ -189,9 +201,10 @@ function FunctionalMedicineMiniDiplomaContent() {
                             {/* Mobile CTA */}
                             <Button
                                 onClick={scrollToForm}
-                                className="lg:hidden w-full h-14 text-lg font-bold bg-emerald-500 hover:bg-emerald-600 text-white mb-6"
+                                className="lg:hidden w-full h-14 text-lg font-bold text-white mb-6"
+                                style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                             >
-                                Claim Free Access Now
+                                Get Free Access Now
                                 <ArrowDown className="ml-2 w-5 h-5" />
                             </Button>
                         </div>
@@ -208,38 +221,37 @@ function FunctionalMedicineMiniDiplomaContent() {
                 </div>
             </section>
 
-            {/* INCOME PROOF - Hormozi Stack */}
-            <section className="py-16 md:py-20 bg-slate-50">
+            {/* INCOME PROOF */}
+            <section className="py-16 md:py-20" style={{ backgroundColor: "#faf5eb" }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
-                        <p className="text-emerald-600 font-bold text-sm uppercase tracking-wide mb-3">Real Results From Real Women</p>
-                        <h2 className="text-3xl md:text-4xl font-black text-slate-900">
-                            They Started Where You Are.<br />
-                            <span className="text-emerald-600">Now They Earn $3K-$8K/Month.</span>
+                        <p className="font-bold text-sm uppercase tracking-wide mb-3" style={{ color: BRAND.burgundy }}>Real Women, Real Results</p>
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900">
+                            They Started Exactly Where You Are.<br />
+                            <span style={{ color: BRAND.burgundy }}>Now They're Earning $3K-$8K/Month.</span>
                         </h2>
                     </div>
 
-                    {/* Income Stories */}
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { name: "Jennifer M.", income: "$4,200/mo", before: "Exhausted nurse", story: "I was done with 12-hour shifts. Now I coach 8 clients from home." },
-                            { name: "Patricia L.", income: "$6,800/mo", before: "Corporate burnout", story: "Left my desk job at 47. Best decision I ever made." },
-                            { name: "Michelle R.", income: "$3,100/mo", before: "Stay-at-home mom", story: "Started while kids napped. Now it's my full-time income." }
+                            { name: "Jennifer M.", age: "47", income: "$4,200/mo", before: "Former nurse", story: "I was done with 12-hour shifts. Now I coach 8 clients from home around my grandkids' schedule." },
+                            { name: "Patricia L.", age: "52", income: "$6,800/mo", before: "Corporate burnout", story: "Left my desk job at 47. Best decision I ever made. My husband says I'm a different person." },
+                            { name: "Michelle R.", age: "41", income: "$3,100/mo", before: "Stay-at-home mom", story: "Started while my kids napped. Now they're in school and this is my full-time income." }
                         ].map((story, i) => (
-                            <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+                            <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-                                        <span className="text-emerald-700 font-bold text-lg">{story.name[0]}</span>
+                                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${BRAND.burgundy}15` }}>
+                                        <span className="font-bold text-lg" style={{ color: BRAND.burgundy }}>{story.name[0]}</span>
                                     </div>
                                     <div>
-                                        <p className="font-bold text-slate-900">{story.name}</p>
-                                        <p className="text-xs text-slate-500">{story.before}</p>
+                                        <p className="font-bold text-gray-900">{story.name}, {story.age}</p>
+                                        <p className="text-xs text-gray-500">{story.before}</p>
                                     </div>
                                 </div>
-                                <p className="text-slate-600 text-sm mb-4 italic">"{story.story}"</p>
-                                <div className="bg-emerald-50 rounded-xl px-4 py-3 text-center">
-                                    <p className="text-2xl font-black text-emerald-600">{story.income}</p>
-                                    <p className="text-xs text-emerald-700">Monthly Income</p>
+                                <p className="text-gray-600 text-sm mb-4 italic">"{story.story}"</p>
+                                <div className="rounded-xl px-4 py-3 text-center" style={{ background: BRAND.goldMetallic }}>
+                                    <p className="text-2xl font-black" style={{ color: BRAND.burgundyDark }}>{story.income}</p>
+                                    <p className="text-xs" style={{ color: BRAND.burgundyDark }}>Monthly Income</p>
                                 </div>
                             </div>
                         ))}
@@ -247,51 +259,49 @@ function FunctionalMedicineMiniDiplomaContent() {
                 </div>
             </section>
 
-            {/* THIS IS FOR YOU - Qualification Section */}
+            {/* THIS IS FOR YOU */}
             <section className="py-16 md:py-20 bg-white">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
-                            This Is For You If…
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                            This Is Perfect For You If…
                         </h2>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        {/* FOR YOU */}
-                        <div className="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
-                            <h3 className="font-bold text-emerald-800 mb-4 flex items-center gap-2">
-                                <CheckCircle2 className="w-5 h-5" /> Perfect For You If:
+                        <div className="rounded-2xl p-6 border" style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}20` }}>
+                            <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: BRAND.burgundy }}>
+                                <CheckCircle2 className="w-5 h-5" /> You'll Love This If:
                             </h3>
-                            <ul className="space-y-3 text-slate-700">
+                            <ul className="space-y-3 text-gray-700">
                                 {[
-                                    "You're tired of trading time for money",
-                                    "You've always wanted to help people heal",
-                                    "You want flexibility around family",
-                                    "You're ready for purpose-driven work",
-                                    "You can invest 60 minutes today"
+                                    "You're 35+ and ready for a meaningful second chapter",
+                                    "You want flexibility around kids or aging parents",
+                                    "You've struggled with your own health and want to help others",
+                                    "You're tired of trading your time for someone else's dream",
+                                    "You can invest just 60 minutes today"
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                        <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: BRAND.burgundy }} />
                                         <span className="text-sm">{item}</span>
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
-                        {/* NOT FOR YOU */}
-                        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
-                            <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                <X className="w-5 h-5" /> Not For You If:
+                        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                            <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+                                <X className="w-5 h-5" /> Maybe Not Right Now If:
                             </h3>
-                            <ul className="space-y-3 text-slate-600">
+                            <ul className="space-y-3 text-gray-600">
                                 {[
-                                    "You expect overnight results without effort",
-                                    "You're not willing to learn something new",
-                                    "You're happy in your current career",
-                                    "You prefer someone else to do the work"
+                                    "You want overnight results without any effort",
+                                    "You're completely happy in your current career",
+                                    "You're not open to learning something new",
+                                    "You'd rather wait for the 'perfect' time"
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-2">
-                                        <X className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                                        <X className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                                         <span className="text-sm">{item}</span>
                                     </li>
                                 ))}
@@ -302,13 +312,13 @@ function FunctionalMedicineMiniDiplomaContent() {
             </section>
 
             {/* WHAT YOU'LL LEARN */}
-            <section className="py-16 md:py-20 bg-slate-900 text-white">
+            <section className="py-16 md:py-20 text-white" style={{ backgroundColor: BRAND.burgundyDark }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
-                        <p className="text-emerald-400 font-bold text-sm uppercase mb-3">Inside Your Free Mini-Diploma</p>
+                        <p className="font-bold text-sm uppercase mb-3" style={{ color: BRAND.gold }}>Inside Your Free Mini-Diploma</p>
                         <h2 className="text-3xl md:text-4xl font-black">
                             9 Lessons That Could Change<br />
-                            <span className="text-emerald-400">Your Entire Career Path</span>
+                            <span style={{ color: BRAND.gold }}>Your Entire Career Path</span>
                         </h2>
                     </div>
 
@@ -318,20 +328,20 @@ function FunctionalMedicineMiniDiplomaContent() {
                             { num: 2, title: "The Gut Foundation", desc: "Where 80% of healing begins" },
                             { num: 3, title: "Inflammation Connection", desc: "The hidden driver of disease" },
                             { num: 4, title: "The Toxin Burden", desc: "Modern detox protocols" },
-                            { num: 5, title: "Stress & HPA Axis", desc: "Hormonal stress response" },
+                            { num: 5, title: "Stress & Hormones", desc: "HPA axis and adrenals" },
                             { num: 6, title: "Nutrient Deficiencies", desc: "Testing and correction" },
                             { num: 7, title: "Lab Interpretation", desc: "Reading functional labs" },
                             { num: 8, title: "Building Protocols", desc: "Client healing plans" },
-                            { num: 9, title: "Your Next Step", desc: "Career roadmap unlocked" }
+                            { num: 9, title: "Your Career Roadmap", desc: "Next steps unlocked" }
                         ].map((lesson) => (
-                            <div key={lesson.num} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                            <div key={lesson.num} className="rounded-xl p-4 border" style={{ backgroundColor: `${BRAND.burgundy}80`, borderColor: `${BRAND.gold}30` }}>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ backgroundColor: `${BRAND.gold}30`, color: BRAND.gold }}>
                                         {lesson.num}
                                     </div>
                                     <h4 className="font-bold text-white">{lesson.title}</h4>
                                 </div>
-                                <p className="text-slate-400 text-sm pl-11">{lesson.desc}</p>
+                                <p className="text-white/60 text-sm pl-11">{lesson.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -339,53 +349,55 @@ function FunctionalMedicineMiniDiplomaContent() {
                     <div className="text-center mt-10">
                         <Button
                             onClick={scrollToForm}
-                            className="h-14 px-10 text-lg font-bold bg-emerald-500 hover:bg-emerald-600"
+                            className="h-14 px-10 text-lg font-bold"
+                            style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                         >
                             Get Free Access Now
                             <ArrowRight className="ml-2 w-5 h-5" />
                         </Button>
-                        <p className="text-slate-500 text-sm mt-3">Takes 30 seconds • No credit card required</p>
+                        <p className="text-white/50 text-sm mt-3">Takes 30 seconds • No credit card required</p>
                     </div>
                 </div>
             </section>
 
-            {/* VALUE STACK - Hormozi Style */}
+            {/* VALUE STACK */}
             <section className="py-16 md:py-20 bg-white">
                 <div className="max-w-3xl mx-auto px-4">
                     <div className="text-center mb-10">
-                        <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
+                        <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
                             Everything You're Getting<br />
-                            <span className="text-emerald-600">100% Free Today</span>
+                            <span style={{ color: BRAND.burgundy }}>100% Free Today</span>
                         </h2>
                     </div>
 
-                    <div className="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
+                    <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
                         {[
                             { item: "9-Lesson Functional Medicine Mini-Diploma", value: "$97" },
                             { item: "ASI-Verified Certificate of Completion", value: "$47" },
-                            { item: "Access to Coach Sarah (Your Personal Guide)", value: "$197" },
-                            { item: "Career Roadmap & Next Steps Plan", value: "$27" },
-                            { item: "Exclusive Community Access", value: "$47" }
+                            { item: "Personal Guidance from Coach Sarah", value: "$197" },
+                            { item: "Career Roadmap & Income Blueprint", value: "$27" },
+                            { item: "Private Community Access", value: "$47" }
                         ].map((row, i) => (
-                            <div key={i} className={`flex items-center justify-between p-4 ${i < 4 ? "border-b border-slate-200" : ""}`}>
+                            <div key={i} className={`flex items-center justify-between p-4 ${i < 4 ? "border-b border-gray-200" : ""}`}>
                                 <div className="flex items-center gap-3">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                                    <span className="font-medium text-slate-800">{row.item}</span>
+                                    <CheckCircle2 className="w-5 h-5" style={{ color: BRAND.burgundy }} />
+                                    <span className="font-medium text-gray-800">{row.item}</span>
                                 </div>
-                                <span className="text-slate-400 line-through text-sm">{row.value}</span>
+                                <span className="text-gray-400 line-through text-sm">{row.value}</span>
                             </div>
                         ))}
-                        <div className="bg-emerald-600 p-6 text-center text-white">
+                        <div className="p-6 text-center text-white" style={{ background: BRAND.burgundyMetallic }}>
                             <p className="text-sm opacity-80 mb-1">Total Value: <span className="line-through">$415</span></p>
                             <p className="text-4xl font-black">FREE TODAY</p>
-                            <p className="text-sm opacity-80 mt-1">Limited Time • Normally $97</p>
+                            <p className="text-sm opacity-80 mt-1">Limited Time Only</p>
                         </div>
                     </div>
 
                     <div className="text-center mt-8">
                         <Button
                             onClick={scrollToForm}
-                            className="h-14 px-10 text-lg font-bold bg-emerald-600 hover:bg-emerald-700"
+                            className="h-14 px-10 text-lg font-bold text-white"
+                            style={{ background: BRAND.burgundyMetallic }}
                         >
                             Claim Your Free Diploma
                             <ArrowRight className="ml-2 w-5 h-5" />
@@ -395,34 +407,34 @@ function FunctionalMedicineMiniDiplomaContent() {
             </section>
 
             {/* FAQ */}
-            <section className="py-16 md:py-20 bg-slate-50">
+            <section className="py-16 md:py-20" style={{ backgroundColor: BRAND.cream }}>
                 <div className="max-w-3xl mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-10">
-                        Frequently Asked Questions
+                    <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-10">
+                        Questions? I've Got You.
                     </h2>
 
                     <div className="space-y-3">
                         {[
-                            { q: "Is this really free?", a: "Yes, 100% free. No credit card required. We offer this to help you experience what's possible in functional medicine." },
-                            { q: "How long does it take?", a: "About 60 minutes total. You can do all 9 lessons in one sitting, or spread them out over a few days." },
-                            { q: "What's the catch?", a: "No catch. After completing, you'll have the option to continue your education with our full certification — but there's no obligation." },
-                            { q: "Is the certificate real?", a: "Yes! It's issued by AccrediPro Standards Institute (ASI) and recognized by employers worldwide." },
-                            { q: "Do I need prior experience?", a: "Not at all. This mini-diploma is designed for complete beginners." }
+                            { q: "Is this really free, Sarah?", a: "100% free! No credit card, no hidden fees. I created this to help women like you discover what's possible in functional medicine." },
+                            { q: "How long does it take?", a: "About 60 minutes total for all 9 lessons. You can do them all at once or spread them out — whatever works for your schedule!" },
+                            { q: "Do I need any prior experience?", a: "Not at all! I designed this specifically for beginners. If you're curious about health and helping others, you're exactly who this is for." },
+                            { q: "Is the certificate legitimate?", a: "Yes! It's issued by AccrediPro Standards Institute (ASI) and recognized by employers and clients worldwide." },
+                            { q: "What happens after I finish?", a: "You'll get your certificate and unlock your personalized career roadmap. If you want to go deeper, I'll show you how — but there's no obligation." }
                         ].map((faq, i) => (
-                            <div key={i} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                            <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                                     className="w-full flex items-center justify-between p-4 text-left"
                                 >
-                                    <span className="font-semibold text-slate-800">{faq.q}</span>
+                                    <span className="font-semibold text-gray-800">{faq.q}</span>
                                     {openFaq === i ? (
-                                        <ChevronUp className="w-5 h-5 text-slate-400" />
+                                        <ChevronUp className="w-5 h-5 text-gray-400" />
                                     ) : (
-                                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                                        <ChevronDown className="w-5 h-5 text-gray-400" />
                                     )}
                                 </button>
                                 {openFaq === i && (
-                                    <div className="px-4 pb-4 text-slate-600 text-sm">
+                                    <div className="px-4 pb-4 text-gray-600 text-sm">
                                         {faq.a}
                                     </div>
                                 )}
@@ -433,28 +445,30 @@ function FunctionalMedicineMiniDiplomaContent() {
             </section>
 
             {/* FINAL CTA */}
-            <section className="py-16 md:py-20 bg-slate-900 text-white text-center">
+            <section className="py-16 md:py-20 text-white text-center" style={{ backgroundColor: BRAND.burgundyDark }}>
                 <div className="max-w-3xl mx-auto px-4">
                     <h2 className="text-3xl md:text-4xl font-black mb-6">
                         Your Next Chapter Starts<br />
-                        <span className="text-emerald-400">In 60 Minutes</span>
+                        <span style={{ color: BRAND.gold }}>In Just 60 Minutes</span>
                     </h2>
-                    <p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">
-                        Women just like you are already earning $3K-$8K/month as functional medicine practitioners. The only question is: will you join them?
+                    <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
+                        Women just like you — busy moms, career changers, empty nesters — are already earning $3K-$8K/month.
+                        The only question is: will you join them?
                     </p>
                     <Button
                         onClick={scrollToForm}
-                        className="h-16 px-12 text-xl font-bold bg-emerald-500 hover:bg-emerald-600"
+                        className="h-16 px-12 text-xl font-bold"
+                        style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}
                     >
                         Get My Free Diploma Now
                         <ArrowRight className="ml-2 w-6 h-6" />
                     </Button>
-                    <p className="text-slate-500 text-sm mt-4">⚡ Free for next 24 hours only</p>
+                    <p className="text-white/50 text-sm mt-4">⚡ Free today only</p>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="bg-slate-950 text-slate-400 py-10">
+            <footer className="py-10 text-gray-400" style={{ backgroundColor: "#2a1518" }}>
                 <div className="max-w-5xl mx-auto px-4 text-center">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <Image src="/logos/accredipro-logo-gold.svg" alt="AccrediPro" width={140} height={36} />
@@ -465,7 +479,6 @@ function FunctionalMedicineMiniDiplomaContent() {
                 </div>
             </footer>
 
-            {/* Floating Chat Widget */}
             <FloatingChatWidget />
         </div>
     );
@@ -474,8 +487,8 @@ function FunctionalMedicineMiniDiplomaContent() {
 export default function FunctionalMedicineMiniDiplomaPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-slate-900">
-                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#4e1f24" }}>
+                <Loader2 className="w-8 h-8 animate-spin" style={{ color: "#d4af37" }} />
             </div>
         }>
             <FunctionalMedicineMiniDiplomaContent />
