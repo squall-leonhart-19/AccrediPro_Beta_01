@@ -169,9 +169,9 @@ export async function GET(request: NextRequest) {
     };
 
     // Merge legacy tags with marketing tags for UI display
-    const formattedUsers = users.map((user) => ({
-      ...user,
-      tags: [
+    // Also calculate mini diploma progress from lesson completion tags
+    const formattedUsers = users.map((user) => {
+      const allTags = [
         ...user.tags,
         ...user.marketingTags.map((mt) => ({
           id: mt.id,
@@ -179,8 +179,50 @@ export async function GET(request: NextRequest) {
           value: null,
           createdAt: new Date(),
         })),
-      ],
-    }));
+      ];
+
+      // Calculate mini diploma progress from lesson-complete tags
+      // Pattern: {niche}-lesson-complete:{lessonNumber}
+      const miniDiplomaProgress: Record<string, number> = {};
+      const lessonTagPatterns = [
+        { pattern: /^functional-medicine-lesson-complete:(\d+)$/, niche: 'functional-medicine', total: 9 },
+        { pattern: /^womens-health-lesson-complete:(\d+)$/, niche: 'womens-health', total: 9 },
+        { pattern: /^gut-health-lesson-complete:(\d+)$/, niche: 'gut-health', total: 9 },
+        { pattern: /^hormone-health-lesson-complete:(\d+)$/, niche: 'hormone-health', total: 9 },
+        { pattern: /^holistic-nutrition-lesson-complete:(\d+)$/, niche: 'holistic-nutrition', total: 9 },
+        { pattern: /^nurse-coach-lesson-complete:(\d+)$/, niche: 'nurse-coach', total: 9 },
+        { pattern: /^health-coach-lesson-complete:(\d+)$/, niche: 'health-coach', total: 9 },
+      ];
+
+      for (const tag of allTags) {
+        for (const { pattern, niche, total } of lessonTagPatterns) {
+          if (pattern.test(tag.tag)) {
+            if (!miniDiplomaProgress[niche]) {
+              miniDiplomaProgress[niche] = 0;
+            }
+            miniDiplomaProgress[niche]++;
+          }
+        }
+      }
+
+      // Calculate overall mini diploma completion percentage
+      let miniDiplomaCompletedLessons = 0;
+      let miniDiplomaTotalLessons = 0;
+      for (const niche of Object.keys(miniDiplomaProgress)) {
+        miniDiplomaCompletedLessons += miniDiplomaProgress[niche];
+        miniDiplomaTotalLessons += 9; // Each mini diploma has 9 lessons
+      }
+      const miniDiplomaProgressPercent = miniDiplomaTotalLessons > 0
+        ? Math.round((miniDiplomaCompletedLessons / miniDiplomaTotalLessons) * 100)
+        : 0;
+
+      return {
+        ...user,
+        tags: allTags,
+        miniDiplomaProgress,
+        miniDiplomaProgressPercent,
+      };
+    });
 
     return NextResponse.json({
       users: formattedUsers,

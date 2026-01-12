@@ -115,6 +115,9 @@ interface User {
     receivedMessages: number;
     sentMessages: number;
   };
+  // Mini diploma progress (calculated from lesson completion tags)
+  miniDiplomaProgressPercent?: number;
+  miniDiplomaProgress?: Record<string, number>;
 }
 
 interface Course {
@@ -1297,6 +1300,19 @@ export function UsersClient({ courses }: UsersClientProps) {
                                     {completedCourses} done
                                   </span>
                                 </div>
+                              </>
+                            ) : user.miniDiplomaProgressPercent && user.miniDiplomaProgressPercent > 0 ? (
+                              <>
+                                <div className="flex items-center justify-between text-sm">
+                                  <span className="text-gray-500">Mini Diploma</span>
+                                  <span className="font-medium text-emerald-600">{user.miniDiplomaProgressPercent}%</span>
+                                </div>
+                                <Progress value={user.miniDiplomaProgressPercent} className="h-1.5" />
+                                {user.miniDiplomaProgress && Object.entries(user.miniDiplomaProgress).map(([niche, count]) => (
+                                  <div key={niche} className="text-xs text-gray-500">
+                                    {niche}: {count}/9 lessons
+                                  </div>
+                                ))}
                               </>
                             ) : (
                               <span className="text-sm text-gray-400">Not enrolled</span>
