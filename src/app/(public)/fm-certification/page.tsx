@@ -2,6 +2,9 @@
 
 import { useEffect } from "react";
 
+// FM Pixel ID
+const FM_PIXEL_ID = "1829815637745689";
+
 export default function FMCertificationPage() {
     useEffect(() => {
         // Load the full HTML page
@@ -10,16 +13,32 @@ export default function FMCertificationPage() {
             .then(html => {
                 // INJECT SCRIPTS BEFORE REPLACING DOCUMENT
 
-                // 1. Trustpilot Script (Ensure it loads)
+                // 1. Meta Pixel Base Code (FM Pixel)
+                const metaPixelScript = `
+                    <script>
+                        !function(f,b,e,v,n,t,s)
+                        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                        n.queue=[];t=b.createElement(e);t.async=!0;
+                        t.src=v;s=b.getElementsByTagName(e)[0];
+                        s.parentNode.insertBefore(t,s)}(window, document,'script',
+                        'https://connect.facebook.net/en_US/fbevents.js');
+                        fbq('init', '${FM_PIXEL_ID}');
+                        fbq('track', 'PageView');
+                    </script>
+                    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${FM_PIXEL_ID}&ev=PageView&noscript=1"/></noscript>
+                `;
+
+                // 2. Trustpilot Script
                 const trustpilotScript = `
                     <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
                 `;
 
-                // 2. Advanced Meta Tracking (3s Delay + ATC)
-                // We use standard 'fbq' calls since this runs in the context of the new HTML document
+                // 3. Advanced Meta Tracking (5s Delay + ATC) - Bot Filter
                 const trackingScript = `
                     <script>
-                        // A. Qualified ViewContent (3s Delay)
+                        // A. Qualified ViewContent (5s Delay - Filters Bots)
                         setTimeout(function() {
                             if(typeof fbq === 'function') {
                                 fbq('track', 'ViewContent', {
@@ -27,11 +46,11 @@ export default function FMCertificationPage() {
                                     content_category: 'Course',
                                     value: 97
                                 });
-                                console.log('AccrediPro Pixel: Fired Qualified ViewContent (3s)');
+                                console.log('AccrediPro Tracking: Qualified ViewContent (5s delay)');
                             }
-                        }, 3000);
+                        }, 5000);
 
-                        // B. Add To Cart on Keywords (checkout, enroll, etc.)
+                        // B. Add To Cart on checkout links
                         document.addEventListener('DOMContentLoaded', function() {
                             var buttons = document.querySelectorAll('a[href*="chk"], a[href*="checkout"]');
                             buttons.forEach(function(btn) {
@@ -42,7 +61,7 @@ export default function FMCertificationPage() {
                                             value: 97,
                                             currency: 'USD'
                                         });
-                                        console.log('AccrediPro Pixel: Fired AddToCart');
+                                        console.log('AccrediPro Tracking: AddToCart');
                                     }
                                 });
                             });
@@ -61,7 +80,10 @@ export default function FMCertificationPage() {
                 // Inject into HTML string
                 let finalHtml = html;
 
-                // Add Trustpilot to Head if missing (or strictly ensure it's there)
+                // Add Meta Pixel to Head
+                finalHtml = finalHtml.replace('</head>', metaPixelScript + '</head>');
+
+                // Add Trustpilot to Head if missing
                 if (!finalHtml.includes('tp.widget.bootstrap.min.js')) {
                     finalHtml = finalHtml.replace('</head>', trustpilotScript + '</head>');
                 }

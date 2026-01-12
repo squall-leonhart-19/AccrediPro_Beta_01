@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
+import MetaPixel, { PIXEL_CONFIG, trackViewContent, trackAddToCart } from "@/components/tracking/meta-pixel";
 
 // Sales page images in order
 const salesImages = [
@@ -41,6 +42,35 @@ export default function FMCourseCertificationPage() {
     const [showProactivePopup, setShowProactivePopup] = useState(false);
     const [visitorId, setVisitorId] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const viewContentFired = useRef(false);
+
+    // Delayed ViewContent tracking (5 seconds) to filter bots
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (!viewContentFired.current) {
+                viewContentFired.current = true;
+                trackViewContent({
+                    content_name: "Functional Medicine Certification",
+                    content_category: "Course",
+                    content_ids: ["fm-certification"],
+                    value: 97
+                });
+                console.log("AccrediPro Tracking: Qualified ViewContent (5s delay)");
+            }
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Track checkout clicks as AddToCart
+    const handleCheckoutClick = () => {
+        trackAddToCart({
+            content_name: "Functional Medicine Certification",
+            content_ids: ["fm-certification"],
+            value: 97
+        });
+        console.log("AccrediPro Tracking: AddToCart");
+    };
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -219,6 +249,11 @@ export default function FMCourseCertificationPage() {
 
     return (
         <>
+            {/* Meta Pixel for FM (wrapped in Suspense for SSR) */}
+            <Suspense fallback={null}>
+                <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
+            </Suspense>
+
             {/* Meta tags for SEO */}
             <head>
                 <title>Functional Medicine Practitioner Certification | AccrediPro Academy</title>
@@ -249,6 +284,7 @@ export default function FMCourseCertificationPage() {
                     </div>
                     <Link
                         href={CHECKOUT_URL}
+                        onClick={handleCheckoutClick}
                         className="bg-gradient-to-r from-[#D4AF37] to-[#AA8C2C] text-[#1a1a1a] 
               px-5 py-1.5 rounded-full font-bold text-sm
               shadow-[0_2px_10px_rgba(212,175,55,0.3)]
@@ -266,6 +302,7 @@ export default function FMCourseCertificationPage() {
                         <Link
                             key={index}
                             href={CHECKOUT_URL}
+                            onClick={handleCheckoutClick}
                             className="w-full block cursor-pointer hover:opacity-95 transition-opacity"
                         >
                             <Image
