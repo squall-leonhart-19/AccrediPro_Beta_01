@@ -222,6 +222,24 @@ export async function POST(request: NextRequest) {
             select: { id: true },
         });
 
+        // Add UserTags for mini diploma tracking
+        // Format: mini_diploma_{category} (e.g., mini_diploma_womens_health, mini_diploma_gut_health)
+        const categorySlug = course.replace(/-/g, "_"); // womens-health -> womens_health
+        const userTags = [
+            "mini_diploma_started",
+            `mini_diploma_${categorySlug}`, // e.g., mini_diploma_womens_health
+            `mini_diploma_category:${course}`,
+            `lead:${course}`,
+            "source:mini-diploma",
+            `source:${course}`,
+        ];
+        for (const tag of userTags) {
+            await prisma.userTag.create({
+                data: { userId: user.id, tag },
+            });
+        }
+        console.log(`🏷️ Created mini diploma UserTags for ${user.id}: ${userTags.join(", ")}`);
+
         // Send welcome message from the appropriate Sarah coach
         if (coach) {
             const welcomeContent = WELCOME_MESSAGES[course];

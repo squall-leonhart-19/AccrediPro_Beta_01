@@ -37,7 +37,6 @@ export async function GET() {
         const leads = await prisma.user.findMany({
             where: {
                 miniDiplomaOptinAt: { not: null },
-                leadSource: "mini-diploma-freebie",
                 isFakeProfile: { not: true },
                 email: { not: { contains: "@test" } },
             },
@@ -107,7 +106,6 @@ export async function GET() {
                 tag: { contains: "training_watched" },
                 user: {
                     miniDiplomaOptinAt: { not: null },
-                    leadSource: "mini-diploma-freebie",
                 },
             },
         });

@@ -123,7 +123,11 @@ export async function POST(request: NextRequest) {
             await addFreebieTag(existingUser.id);
 
             // Add source UserTags for marketing emails
+            // Format: mini_diploma_{category} (e.g., mini_diploma_womens_health, mini_diploma_gut_health)
+            const categorySlug = miniDiplomaCategory.replace(/-/g, "_");
             const sourceTags = [
+                "mini_diploma_started",
+                `mini_diploma_${categorySlug}`, // e.g., mini_diploma_womens_health
                 "source:mini-diploma-freebie",
                 `source:${miniDiplomaCategory}`,
                 `mini_diploma_category:${miniDiplomaCategory}`,
@@ -235,8 +239,11 @@ export async function POST(request: NextRequest) {
             });
 
             // Add UserTags for mini diploma tracking (for DMs/sequences/marketing)
+            // Format: mini_diploma_{category} (e.g., mini_diploma_womens_health, mini_diploma_gut_health)
+            const categorySlug = miniDiplomaCategory.replace(/-/g, "_"); // womens-health -> womens_health
             const userTags = [
                 "mini_diploma_started",
+                `mini_diploma_${categorySlug}`, // e.g., mini_diploma_womens_health
                 `enrolled_${miniDiplomaCourse.slug || miniDiplomaCourse.id}`,
                 `mini_diploma_category:${miniDiplomaCategory}`,
                 `lead:${miniDiplomaCategory}`,
