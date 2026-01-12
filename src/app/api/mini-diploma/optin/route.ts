@@ -78,12 +78,12 @@ Sarah ✨`,
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { firstName, lastName, email, course } = body;
+        const { firstName, lastName, email, phone, course, lifeStage, motivation, investment } = body;
 
         // Validate required fields
-        if (!firstName || !lastName || !email || !course) {
+        if (!firstName || !lastName || !email || !phone || !course) {
             return NextResponse.json(
-                { error: "All fields are required" },
+                { error: "All fields including phone are required" },
                 { status: 400 }
             );
         }
@@ -93,6 +93,16 @@ export async function POST(request: NextRequest) {
         if (!emailRegex.test(email)) {
             return NextResponse.json(
                 { error: "Please enter a valid email address" },
+                { status: 400 }
+            );
+        }
+
+        // Validate phone format (Basic +1 check)
+        // We strip non-digits and check length
+        const cleanPhone = phone.replace(/\D/g, '');
+        if (cleanPhone.length < 10) {
+            return NextResponse.json(
+                { error: "Please enter a valid US phone number" },
                 { status: 400 }
             );
         }
@@ -203,6 +213,7 @@ export async function POST(request: NextRequest) {
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
                 passwordHash,
+                phone: phone.trim(),
                 role: "STUDENT",
                 userType: "LEAD",
                 isActive: true,
@@ -232,6 +243,10 @@ export async function POST(request: NextRequest) {
             `lead:${course}-mini-diploma`, // Specific to mini diploma (not purchases)
             "source:mini-diploma",
             `source:${course}`,
+            // Qualification Data
+            `life_stage:${lifeStage}`,
+            `motivation:${motivation}`,
+            `investment:${investment}`
         ];
         for (const tag of userTags) {
             await prisma.userTag.create({
