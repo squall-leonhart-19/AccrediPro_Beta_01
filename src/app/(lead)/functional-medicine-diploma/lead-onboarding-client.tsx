@@ -45,14 +45,16 @@ export function LeadOnboardingClient({
     steps: initialSteps,
     currentStep: initialCurrentStep,
 }: LeadOnboardingClientProps) {
-    const [watchedVideo, setWatchedVideo] = useState(initialWatchedVideo);
-    const [completedQuestions, setCompletedQuestions] = useState(initialCompletedQuestions);
+    // Since we now collect qualification data in the opt-in funnel,
+    // skip video and questions steps - show lessons directly
+    const [watchedVideo, setWatchedVideo] = useState(true);
+    const [completedQuestions, setCompletedQuestions] = useState(true);
     const [currentStep, setCurrentStep] = useState(initialCurrentStep);
 
     // Recalculate steps and progress when state changes
     const steps = initialSteps.map((s, i) => {
-        if (s.id === 1) return { ...s, completed: watchedVideo };
-        if (s.id === 2) return { ...s, completed: completedQuestions };
+        if (s.id === 1) return { ...s, completed: true }; // Video always completed
+        if (s.id === 2) return { ...s, completed: true }; // Questions always completed
         return s;
     });
 

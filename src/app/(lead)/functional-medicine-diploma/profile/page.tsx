@@ -32,6 +32,7 @@ async function getProfileData(userId: string) {
                 firstName: true,
                 lastName: true,
                 email: true,
+                phone: true,
                 avatar: true,
                 createdAt: true,
             },
@@ -259,6 +260,7 @@ export default async function LeadProfilePage() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                         <input
                             type="tel"
+                            defaultValue={user.phone || ""}
                             placeholder="+1 (555) 000-0000"
                             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 transition-all text-sm md:text-base"
                         />

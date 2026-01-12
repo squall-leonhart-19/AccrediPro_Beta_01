@@ -80,9 +80,14 @@ export default async function FunctionalMedicineDiplomaPage() {
     const { user, watchedVideo, completedQuestions, completedLessons } = data;
     const firstName = user?.firstName || "there";
 
+    // Since we now collect qualification data in the opt-in funnel, 
+    // skip video and questions steps - go straight to lessons
+    const effectiveWatchedVideo = true;
+    const effectiveCompletedQuestions = true;
+
     const steps = [
-        { id: 1, title: "Watch Welcome Video", completed: watchedVideo },
-        { id: 2, title: "Tell Us About You", completed: completedQuestions },
+        { id: 1, title: "Watch Welcome Video", completed: effectiveWatchedVideo },
+        { id: 2, title: "Tell Us About You", completed: effectiveCompletedQuestions },
         ...LESSONS.map((l, i) => ({
             id: i + 3,
             title: `Lesson ${l.id}: ${l.title}`,
@@ -91,17 +96,15 @@ export default async function FunctionalMedicineDiplomaPage() {
         { id: 12, title: "Claim Certificate & Review", completed: completedLessons.length === 9 },
     ];
 
-    let currentStep = 1;
-    if (watchedVideo && !completedQuestions) currentStep = 2;
-    else if (watchedVideo && completedQuestions) {
-        for (let i = 1; i <= 9; i++) {
-            if (!completedLessons.includes(i)) {
-                currentStep = i + 2;
-                break;
-            }
+    // Start at Lesson 1 (step 3) since video/questions are now bypassed
+    let currentStep = 3;
+    for (let i = 1; i <= 9; i++) {
+        if (!completedLessons.includes(i)) {
+            currentStep = i + 2;
+            break;
         }
-        if (completedLessons.length === 9) currentStep = 12;
     }
+    if (completedLessons.length === 9) currentStep = 12;
 
     const stepsCompleted = steps.filter((s) => s.completed).length;
     const progress = Math.round((stepsCompleted / 12) * 100);
