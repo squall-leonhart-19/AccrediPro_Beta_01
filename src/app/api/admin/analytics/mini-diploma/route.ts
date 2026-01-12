@@ -34,11 +34,19 @@ export async function GET() {
 
         // Get all mini diploma leads (users with miniDiplomaOptinAt set)
         // Same filter as Leads API for consistency
+        // EXCLUDE users who came directly from ClickFunnels certification purchases
         const leads = await prisma.user.findMany({
             where: {
                 miniDiplomaOptinAt: { not: null },
                 isFakeProfile: { not: true },
                 email: { not: { contains: "@test" } },
+                // Exclude ClickFunnels certification purchasers (they have ClickFunnels as leadSource but NOT mini-diploma)
+                NOT: {
+                    AND: [
+                        { leadSource: "ClickFunnels" },
+                        { leadSourceDetail: { not: { contains: "mini" } } },
+                    ],
+                },
             },
             select: {
                 id: true,

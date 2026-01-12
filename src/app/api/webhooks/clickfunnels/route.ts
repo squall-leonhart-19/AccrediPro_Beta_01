@@ -497,6 +497,10 @@ export async function POST(request: NextRequest) {
       const defaultPassword = "Futurecoach2025";
       const passwordHash = await bcrypt.hash(defaultPassword, 12);
 
+      // Check if this is a mini diploma product (NOT certification/accelerator)
+      const isMiniDiplomaProduct = (productId?.includes("mini-diploma") || productId?.includes("mini_diploma")) ||
+        (productName?.toLowerCase().includes("mini diploma") || productName?.toLowerCase().includes("mini-diploma"));
+
       // Create user with only columns that definitely exist in production DB
       // TEMPORARILY DISABLED fields that may not exist: registrationIp, registrationUserAgent, tosAcceptedAt, tosVersion, refundPolicyAcceptedAt, refundPolicyVersion
       const newUser = await prisma.user.create({
@@ -510,11 +514,9 @@ export async function POST(request: NextRequest) {
           leadSource: "ClickFunnels",
           leadSourceDetail: productName || productId || "Purchase",
           phone: phone || null,
-          // Set mini diploma fields for FM products
-          miniDiplomaCategory: productId?.includes("fm") || productName?.toLowerCase().includes("functional")
-            ? "functional-medicine"
-            : null,
-          miniDiplomaOptinAt: new Date(),
+          // ONLY set mini diploma fields for actual mini diploma products (NOT certifications)
+          miniDiplomaCategory: isMiniDiplomaProduct ? "functional-medicine" : null,
+          miniDiplomaOptinAt: isMiniDiplomaProduct ? new Date() : null,
         },
         select: {
           id: true,
