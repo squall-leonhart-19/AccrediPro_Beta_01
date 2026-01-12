@@ -43,16 +43,16 @@ export async function GET(request: NextRequest) {
 
     // By default, exclude mini diploma leads (they have their own /admin/leads page)
     // Only show them if explicitly requested with includeLeads=true
-    if (!includeLeads) {
-      andConditions.push({
-        // Temporarily relaxed to ensure Admins/Purchasers aren't hidden
-        // AND: [
-        //   { miniDiplomaOptinAt: null },
-        //   { role: { not: "LEAD" } }
-        // ]
-        role: { not: "LEAD" }
-      });
-    }
+    // if (!includeLeads) {
+    //   andConditions.push({
+    //     // Temporarily relaxed to ensure Admins/Purchasers aren't hidden
+    //     // AND: [
+    //     //   { miniDiplomaOptinAt: null },
+    //     //   { role: { not: "LEAD" } }
+    //     // ]
+    //     role: { not: "LEAD" }
+    //   });
+    // }
 
     // Search filter (email, firstName, lastName)
     if (search) {
