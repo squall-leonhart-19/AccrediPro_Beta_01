@@ -276,6 +276,10 @@ src/
 ## Changelog
 
 ### January 2026 (Week 2)
+- **Fixed: ClickFunnels certification purchasers excluded from leads**
+  - ClickFunnels webhook was incorrectly setting `miniDiplomaOptinAt` for ALL products
+  - Now only sets for actual mini diploma products (containing "mini-diploma")
+  - Leads/Analytics APIs now exclude users where `leadSource=ClickFunnels` AND `leadSourceDetail` doesn't contain "mini"
 - **Converted FM mini diploma to classic text-based lessons**
   - Created `ClassicLessonBase` shared component
   - Created 9 classic lesson files for Functional Medicine
