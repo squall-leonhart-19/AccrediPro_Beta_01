@@ -1,0 +1,9 @@
+export { ClassicLessonRootCauseMedicine } from "./lesson-1-root-cause-medicine";
+export { ClassicLessonGutFoundation } from "./lesson-2-gut-foundation";
+export { ClassicLessonInflammationConnection } from "./lesson-3-inflammation-connection";
+export { ClassicLessonToxinBurden } from "./lesson-4-toxin-burden";
+export { ClassicLessonStressHPA } from "./lesson-5-stress-hpa-axis";
+export { ClassicLessonNutrientDeficiencies } from "./lesson-6-nutrient-deficiencies";
+export { ClassicLessonLabInterpretation } from "./lesson-7-lab-interpretation";
+export { ClassicLessonBuildingProtocols } from "./lesson-8-building-protocols";
+export { ClassicLessonYourNextStep } from "./lesson-9-your-next-step";

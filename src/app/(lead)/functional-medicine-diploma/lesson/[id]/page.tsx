@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { FunctionalMedicineLessonRouter } from "@/components/mini-diploma/lessons/functional-medicine/lesson-router";
+import { ClassicFunctionalMedicineLessonRouter } from "@/components/mini-diploma/lessons/functional-medicine/classic/lesson-router";
 
 export default function LessonPage() {
     const params = useParams();
@@ -66,27 +65,14 @@ export default function LessonPage() {
         }
     };
 
+    // Classic text-based lesson component handles its own header/navigation
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <Link href="/functional-medicine-diploma" className="flex items-center gap-2 text-gray-600 hover:text-burgundy-600">
-                        <ArrowLeft className="w-4 h-4" />
-                        <span className="text-sm font-medium">Back to Dashboard</span>
-                    </Link>
-                    <span className="text-sm text-gray-500">Lesson {lessonId} of 9</span>
-                </div>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-                <FunctionalMedicineLessonRouter
-                    lessonNumber={lessonId}
-                    firstName={firstName}
-                    onComplete={handleComplete}
-                    onNext={handleNext}
-                    isCompleted={isCompleted}
-                />
-            </div>
-        </div>
+        <ClassicFunctionalMedicineLessonRouter
+            lessonNumber={lessonId}
+            firstName={firstName}
+            onComplete={handleComplete}
+            onNext={handleNext}
+            isCompleted={isCompleted}
+        />
     );
 }
