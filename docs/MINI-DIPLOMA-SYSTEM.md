@@ -199,20 +199,36 @@ const progress = Math.round((lessonsCompleted / 9) * 100);
 
 ---
 
-## Current Lesson Format
+## Lesson Formats
 
-**Chat-based AI lessons** - Users interact with Coach Sarah through a chat interface.
+### Classic Text-Based Lessons (Current - FM)
+**Functional Medicine** now uses classic text-based lessons for better UX with 40+ demographic.
 
-### Known Issues
-- Low start rate (~8%) - users sign up but don't start
-- 40+ demographic may prefer traditional video/text format
+Features:
+- All content visible at once (no sequential reveals)
+- Clear section headers with organized content
+- Key takeaways section at end of each lesson
+- Reading time indicator (5-7 min per lesson)
+- Progress bar through curriculum
+- Sticky header with navigation
 
-### Future Consideration
-Convert to classic video/text lessons for better engagement:
-- Faster consumption
-- More familiar UX
-- Easier completion tracking
-- Better mobile experience
+Section types supported:
+- `intro` - Coach introduction with avatar
+- `heading` - Section headers
+- `text` - Body paragraphs
+- `list` - Bulleted lists
+- `quote` - Blockquotes
+- `callout` - Info/warning/success/tip boxes
+- `key-point` - Highlighted important points
+- `example` - Example scenarios
+
+### Chat-Based Lessons (Legacy)
+Other niches still use chat-based format where users interact with Coach Sarah through sequential messages.
+
+Known issues with chat format:
+- Low start rate (~8%)
+- 40+ demographic may find it confusing
+- Slower consumption
 
 ---
 
@@ -237,6 +253,18 @@ src/
 │       ├── leads/                        # Leads page
 │       └── mini-diploma/                 # Analytics page
 ├── components/
+│   ├── mini-diploma/lessons/
+│   │   ├── shared/
+│   │   │   ├── lesson-base.tsx           # Chat-based lesson component
+│   │   │   └── classic-lesson-base.tsx   # Text-based lesson component
+│   │   └── functional-medicine/
+│   │       ├── classic/                  # Classic text lessons (9 files)
+│   │       │   ├── lesson-1-root-cause-medicine.tsx
+│   │       │   ├── lesson-2-gut-foundation.tsx
+│   │       │   ├── ... (lessons 3-8)
+│   │       │   ├── lesson-9-your-next-step.tsx
+│   │       │   └── lesson-router.tsx
+│   │       └── *.tsx                     # Legacy chat-based lessons
 │   └── tracking/meta-pixel.tsx           # Client-side FB pixel
 └── lib/
     ├── meta-capi.ts                      # Server-side FB CAPI
@@ -247,7 +275,14 @@ src/
 
 ## Changelog
 
-### January 2026
+### January 2026 (Week 2)
+- **Converted FM mini diploma to classic text-based lessons**
+  - Created `ClassicLessonBase` shared component
+  - Created 9 classic lesson files for Functional Medicine
+  - Better UX for 40+ demographic (all content visible at once)
+  - Preserves existing completion tracking
+
+### January 2026 (Week 1)
 - Fixed leads API to use `miniDiplomaOptinAt` as source of truth
 - Added `mini_diploma_{category}` tags on optin
 - Added per-niche analytics to Mini Diploma page
