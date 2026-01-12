@@ -4,7 +4,12 @@ import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-const META_PIXEL_ID = '1829815637745689';
+const DEFAULT_PIXEL_ID = '1287915349067829'; // Royal Certified (Backend/Global)
+
+export const PIXEL_CONFIG = {
+    ROYAL_CERTIFIED: '1287915349067829',
+    FUNCTIONAL_MEDICINE: '1829815637745689',
+};
 
 // Extend window type for Facebook Pixel
 declare global {
@@ -118,7 +123,7 @@ export const trackInitiateCheckout = (params: { content_name: string; value: num
     });
 };
 
-export default function MetaPixel() {
+export default function MetaPixel({ pixelId = DEFAULT_PIXEL_ID }: { pixelId?: string }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const pageStartTime = useRef<number>(Date.now());
@@ -208,7 +213,7 @@ export default function MetaPixel() {
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '${META_PIXEL_ID}');
+            fbq('init', '${pixelId}');
             fbq('track', 'PageView');
           `,
                 }}
@@ -219,7 +224,7 @@ export default function MetaPixel() {
                     height="1"
                     width="1"
                     style={{ display: 'none' }}
-                    src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+                    src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
                     alt=""
                 />
             </noscript>

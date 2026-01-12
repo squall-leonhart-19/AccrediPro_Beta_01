@@ -13,6 +13,9 @@ import prisma from "@/lib/prisma";
  * - search: string (searches email, firstName, lastName)
  * - role: string (STUDENT, ADMIN, etc.)
  * - status: string (active, inactive)
+ * - includeLeads: boolean (default false) - includes mini diploma leads
+ *
+ * NOTE: Mini diploma leads are excluded by default (they have their own /admin/leads page)
  */
 export async function GET(request: NextRequest) {
   try {
@@ -30,38 +33,50 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get("userId") || "";
 
     const skip = (page - 1) * limit;
+    const includeLeads = searchParams.get("includeLeads") === "true";
 
-    // Build where clause
-    const where: any = {
-      isFakeProfile: false,
-      email: { not: null },
-    };
+    // Build where clause with AND conditions
+    const andConditions: any[] = [
+      { isFakeProfile: false },
+      { email: { not: null } },
+    ];
+
+    // By default, exclude mini diploma leads (they have their own /admin/leads page)
+    // Only show them if explicitly requested with includeLeads=true
+    if (!includeLeads) {
+      andConditions.push({ miniDiplomaOptinAt: null });
+    }
 
     // Search filter (email, firstName, lastName)
     if (search) {
-      where.OR = [
-        { email: { contains: search, mode: "insensitive" } },
-        { firstName: { contains: search, mode: "insensitive" } },
-        { lastName: { contains: search, mode: "insensitive" } },
-      ];
+      andConditions.push({
+        OR: [
+          { email: { contains: search, mode: "insensitive" } },
+          { firstName: { contains: search, mode: "insensitive" } },
+          { lastName: { contains: search, mode: "insensitive" } },
+        ],
+      });
     }
 
     // Role filter
     if (role && role !== "ALL") {
-      where.role = role;
+      andConditions.push({ role });
     }
 
     // Status filter
     if (status === "active") {
-      where.isActive = true;
+      andConditions.push({ isActive: true });
     } else if (status === "inactive") {
-      where.isActive = false;
+      andConditions.push({ isActive: false });
     }
 
     // ID filter (for direct links)
     if (userId) {
-      where.id = userId;
+      andConditions.push({ id: userId });
     }
+
+    // Build final where clause
+    const where: any = { AND: andConditions };
 
     // Get total count and role stats in parallel with users
     const [totalCount, users, roleStats] = await Promise.all([

@@ -229,7 +229,7 @@ export async function POST(request: NextRequest) {
             "mini_diploma_started",
             `mini_diploma_${categorySlug}`, // e.g., mini_diploma_womens_health
             `mini_diploma_category:${course}`,
-            `lead:${course}`,
+            `lead:${course}-mini-diploma`, // Specific to mini diploma (not purchases)
             "source:mini-diploma",
             `source:${course}`,
         ];

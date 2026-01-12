@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +13,9 @@ import {
     BookOpen, MessageCircle, Loader2, Shield,
     Globe, ChevronDown, ChevronUp, Zap,
 } from "lucide-react";
-import { FloatingChatWidget } from "@/components/lead-portal/floating-chat-widget";
+import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
+import { useMetaTracking } from "@/hooks/useMetaTracking";
+import MetaPixel from "@/components/tracking/meta-pixel";
 
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
@@ -91,6 +93,17 @@ export default function WomensHealthMiniDiplomaPage() {
     const [isVerifying, setIsVerifying] = useState(false);
     const [error, setError] = useState("");
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const { trackViewContent, trackLead } = useMetaTracking();
+
+    // Track ViewContent on mount
+    useEffect(() => {
+        // Track to Functional Medicine Pixel
+        trackViewContent(
+            "Functional Medicine Mini Diploma",
+            "fm-mini-diploma",
+            PIXEL_CONFIG.FUNCTIONAL_MEDICINE
+        );
+    }, [trackViewContent]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -129,9 +142,19 @@ export default function WomensHealthMiniDiplomaPage() {
 
             const data = await response.json();
 
+
             if (!response.ok) {
                 throw new Error(data.error || "Something went wrong");
             }
+
+            // Track Lead (Server-Side via CAPI)
+            // We pass the pixelId to ensure it goes to the FM pixel
+            trackLead(
+                "Functional Medicine Mini Diploma",
+                email,
+                firstName,
+                PIXEL_CONFIG.FUNCTIONAL_MEDICINE
+            );
 
             // Auto-login
             const result = await signIn("credentials", {
@@ -164,6 +187,9 @@ export default function WomensHealthMiniDiplomaPage() {
 
     return (
         <div className="min-h-screen bg-white">
+            {/* Functional Medicine Niche Pixel */}
+            <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
+
             {/* Sticky Header */}
             <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
                 <div className="max-w-6xl mx-auto px-4 py-3">

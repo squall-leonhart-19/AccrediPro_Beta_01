@@ -35,7 +35,9 @@ interface TrackRequest {
   userAgent?: string;
   clientIpAddress?: string;
   fbc?: string; // Facebook click ID
+  fbc?: string; // Facebook click ID
   fbp?: string; // Facebook browser ID
+  pixelId?: string; // Override pixel ID
 }
 
 async function sendEventToMeta(params: TrackRequest): Promise<{ success: boolean; eventId?: string; error?: string }> {
@@ -52,7 +54,11 @@ async function sendEventToMeta(params: TrackRequest): Promise<{ success: boolean
     clientIpAddress,
     fbc,
     fbp,
+    pixelId,
   } = params;
+
+  // Use override if provided, otherwise default to env var or fallback
+  const targetPixelId = pixelId || META_PIXEL_ID;
 
   const eventId = crypto.randomUUID();
 
@@ -93,7 +99,7 @@ async function sendEventToMeta(params: TrackRequest): Promise<{ success: boolean
     }
 
     const response = await fetch(
-      `https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`,
+      `https://graph.facebook.com/v18.0/${targetPixelId}/events?access_token=${META_ACCESS_TOKEN}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,7 +125,7 @@ async function sendEventToMeta(params: TrackRequest): Promise<{ success: boolean
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { eventType, sourceUrl, email, firstName, value, currency, contentName, contentId, fbc, fbp } = body;
+    const { eventType, sourceUrl, email, firstName, value, currency, contentName, contentId, fbc, fbp, pixelId } = body;
 
     // Validate required fields
     if (!eventType || !sourceUrl) {
@@ -156,6 +162,7 @@ export async function POST(request: NextRequest) {
       clientIpAddress,
       fbc,
       fbp,
+      pixelId,
     });
 
     return NextResponse.json(result);

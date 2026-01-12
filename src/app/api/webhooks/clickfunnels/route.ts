@@ -5,6 +5,7 @@ import { sendWelcomeEmail } from "@/lib/email";
 import crypto from "crypto";
 import { verifyEmail } from "@/lib/neverbounce";
 import { detectEmailTypo } from "@/lib/email-typo-detector";
+import { resolvePixelForProduct, resolveTagsForProduct } from "@/config/pixel-registry";
 
 /**
  * ClickFunnels Webhook Endpoint
@@ -43,9 +44,26 @@ async function sendPurchaseToMeta(params: {
   currency?: string;
   contentName: string;
   firstName?: string;
+  contentName: string;
+  firstName?: string;
   externalId?: string;
+  pixelId?: string;
+  phone?: string;
+  fbc?: string;
+  fbp?: string;
+  clientIp?: string;
+  clientUserAgent?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
 }): Promise<{ success: boolean; eventId?: string; error?: string }> {
-  const { email, value, currency = "USD", contentName, firstName, externalId } = params;
+  const {
+    email, value, currency = "USD",
+    contentName, firstName, externalId, pixelId,
+    phone, fbc, fbp, clientIp, clientUserAgent,
+    city, state, zip, country
+  } = params;
 
   const eventId = crypto.randomUUID();
 
@@ -54,6 +72,16 @@ async function sendPurchaseToMeta(params: {
   };
   if (firstName) userData.fn = [hashForMeta(firstName)];
   if (externalId) userData.external_id = [hashForMeta(externalId)];
+  // MAX TECH: High Match Quality Parameters
+  if (params.phone) userData.ph = [hashForMeta(params.phone)];
+  if (params.fbc) userData.fbc = params.fbc;
+  if (params.fbp) userData.fbp = params.fbp;
+  if (params.clientIp) userData.client_ip_address = params.clientIp;
+  if (params.clientUserAgent) userData.client_user_agent = params.clientUserAgent;
+  if (params.city) userData.ct = [hashForMeta(params.city)];
+  if (params.state) userData.st = [hashForMeta(params.state)];
+  if (params.zip) userData.zp = [hashForMeta(params.zip)];
+  if (params.country) userData.country = [hashForMeta(params.country)];
 
   const eventData = {
     event_name: "Purchase",
@@ -79,8 +107,11 @@ async function sendPurchaseToMeta(params: {
       console.log(`[Meta CAPI] Using test event code: ${META_TEST_EVENT_CODE}`);
     }
 
+    // Use the specific Niche Pixel ID if provided, otherwise default to global (which shouldn't happen with our registry)
+    const targetPixelId = pixelId || META_PIXEL_ID;
+
     const response = await fetch(
-      `https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`,
+      `https://graph.facebook.com/v18.0/${targetPixelId}/events?access_token=${META_ACCESS_TOKEN}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -211,7 +242,14 @@ interface ParsedPayload {
   productName?: string;
   transactionId?: string;
   amount?: number;
+  amount?: number;
   eventType: string;
+  ip?: string;
+  userAgent?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
 }
 
 function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload | null {
@@ -282,6 +320,12 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
         transactionId: String(data.id || data.public_id || ""),
         amount: finalAmount,
         eventType: String(body.event_type || "purchase"),
+        // Extract Advanced Signals
+        ip: (data.ip_address as string) || (contact?.ip_address as string),
+        city: (contact?.address?.city as string) || (data?.billing_address?.city as string),
+        state: (contact?.address?.state as string) || (data?.billing_address?.state as string),
+        zip: (contact?.address?.zip as string) || (data?.billing_address?.zip as string),
+        country: (contact?.address?.country_code as string) || (data?.billing_address?.country_code as string),
       };
     }
   }
@@ -306,6 +350,8 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
 
   // ClickFunnels legacy format / Webhook format
   if (body.email || body.contact_email) {
+    const contactProfile = body.contact_profile || {};
+    const shipping = body.shipping_address || {};
     return {
       email: (body.email as string) || (body.contact_email as string) || "",
       firstName: (body.first_name as string) || (body.firstName as string) || (body.contact_first_name as string) || "",
@@ -316,6 +362,11 @@ function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload 
       transactionId: (body.transaction_id as string) || (body.stripe_charge_id as string),
       amount: body.amount ? Number(body.amount) : undefined,
       eventType: (body.event as string) || (body.type as string) || "purchase",
+      ip: (body.ip as string) || (body.ip_address as string) || (contactProfile.ip as string),
+      city: (shipping.city as string) || (body.city as string),
+      state: (shipping.state as string) || (body.state as string),
+      zip: (shipping.zip as string) || (body.zip as string),
+      country: (shipping.country as string) || (body.country as string),
     };
   }
 
@@ -382,7 +433,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, firstName, lastName, phone, productId, productName, transactionId, amount, eventType } = parsed;
+    const {
+      email, firstName, lastName, phone, productId, productName, transactionId, amount, eventType,
+      ip, userAgent, city, state, zip, country
+    } = parsed;
     const normalizedEmail = email.toLowerCase().trim();
 
     console.log(`ClickFunnels webhook received: ${eventType} for ${normalizedEmail}, txn: ${transactionId}`);
@@ -487,6 +541,8 @@ export async function POST(request: NextRequest) {
         lastName: true,
         phone: true,
         leadSource: true,
+        fbc: true, // Fetch Meta Cookies
+        fbp: true, // Fetch Meta Cookies
       },
     });
 
@@ -581,6 +637,29 @@ export async function POST(request: NextRequest) {
           data: updates,
         });
       }
+    }
+
+    // APPLY MARKETING TAGS (From Pixel/Tag Registry)
+    try {
+      const resolution = resolveTagsForProduct(productId, productName);
+      const tagsToApply = Array.isArray(resolution) ? resolution : (resolution ? [resolution] : []);
+
+      // Always add generic tag
+      tagsToApply.push("clickfunnels_purchase");
+
+      for (const tag of tagsToApply) {
+        await prisma.userTag.create({
+          data: {
+            userId: user.id,
+            tag: tag,
+            value: new Date().toISOString(), // Purchased at
+          },
+        });
+        console.log(`[CF] Applied tag: ${tag} to ${normalizedEmail}`);
+      }
+    } catch (tagError) {
+      // Ignore if tag already exists (unique constraint)
+      console.log(`[CF] Tag application error (likely duplicate): ${tagError}`);
     }
 
     // Create EmailBounce record if email was flagged as invalid (now that user exists)
@@ -778,15 +857,30 @@ export async function POST(request: NextRequest) {
       const purchaseValue = amount || (productId ? PRODUCT_PRICES[productId] : undefined) || 27;
       const contentName = (productId ? PRODUCT_NAMES[productId] : undefined) || productName || "FM Mini Diploma";
 
+      // Resolve Niche Pixel ID
+      const nichePixelId = resolvePixelForProduct(productId, productName);
+
       metaResult = await sendPurchaseToMeta({
         email: normalizedEmail,
         value: purchaseValue,
         contentName,
         firstName: user.firstName || firstName,
         externalId: user.id,
+        pixelId: nichePixelId,
+        // MAX TECH: Pass all signals
+        phone: user.phone || phone || undefined,
+        fbc: (user as any).fbc, // Fetched from DB
+        fbp: (user as any).fbp, // Fetched from DB
+        // Prefer Payload IP/UA (Customer) > Header IP/UA (Likely CF Server)
+        clientIp: ip || purchaseIp || undefined,
+        clientUserAgent: userAgent || purchaseUserAgent || undefined,
+        city,
+        state,
+        zip,
+        country
       });
 
-      console.log(`[Meta CAPI] Purchase event sent: ${contentName} = $${purchaseValue}`);
+      console.log(`[Meta CAPI] Purchase event sent: ${contentName} = $${purchaseValue} (Pixel: ${nichePixelId})`);
     } catch (metaError) {
       console.error("Failed to send Meta CAPI event:", metaError);
     }

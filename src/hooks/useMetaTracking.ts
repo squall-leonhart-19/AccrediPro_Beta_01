@@ -10,7 +10,9 @@ interface TrackOptions {
   value?: number;
   currency?: string;
   contentName?: string;
+  contentName?: string;
   contentId?: string;
+  pixelId?: string;
 }
 
 // Get Facebook cookies if available
@@ -66,6 +68,10 @@ async function trackEvent(eventType: EventType, options: TrackOptions = {}): Pro
  * // On CTA click
  * <button onClick={() => trackAddToCart("FM Certification", 197)}>Enroll</button>
  */
+/**
+ * Hook for Meta CAPI tracking
+ * Supports optional pixelId override for multi-pixel setups.
+ */
 export function useMetaTracking() {
   const hasTrackedPageView = useRef(false);
 
@@ -82,8 +88,8 @@ export function useMetaTracking() {
   }, []);
 
   // Track ViewContent - when user views specific content (like curriculum section)
-  const trackViewContent = useCallback((contentName: string, contentId?: string) => {
-    trackEvent("ViewContent", { contentName, contentId });
+  const trackViewContent = useCallback((contentName: string, contentId?: string, pixelId?: string) => {
+    trackEvent("ViewContent", { contentName, contentId, pixelId });
   }, []);
 
   // Track InitiateCheckout - when user starts checkout process
@@ -92,8 +98,8 @@ export function useMetaTracking() {
   }, []);
 
   // Track Lead - when user provides contact info (exit popup, etc)
-  const trackLead = useCallback((contentName: string, email?: string, firstName?: string) => {
-    trackEvent("Lead", { contentName, email, firstName });
+  const trackLead = useCallback((contentName: string, email?: string, firstName?: string, pixelId?: string) => {
+    trackEvent("Lead", { contentName, email, firstName, pixelId });
   }, []);
 
   return {

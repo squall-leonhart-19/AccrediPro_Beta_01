@@ -57,7 +57,7 @@ When a user opts in, these tags are automatically created:
 | `mini_diploma_started` | `mini_diploma_started` | Indicates user started a mini diploma |
 | `mini_diploma_{category}` | `mini_diploma_functional_medicine` | Category-specific tag for filtering |
 | `mini_diploma_category:{category}` | `mini_diploma_category:gut-health` | Alternative category format |
-| `lead:{category}` | `lead:womens-health` | Lead source tracking |
+| `lead:{category}-mini-diploma` | `lead:functional-medicine-mini-diploma` | Lead source tracking (specific to mini diploma) |
 | `source:mini-diploma` | `source:mini-diploma` | General source tag |
 | `source:{category}` | `source:functional-medicine` | Category source tag |
 
@@ -276,6 +276,14 @@ src/
 ## Changelog
 
 ### January 2026 (Week 2)
+- **Fixed: Lead tags now specific to mini diploma**
+  - Changed `lead:functional-medicine` to `lead:functional-medicine-mini-diploma`
+  - Prevents confusion with certification purchase tracking
+  - Updated both `/api/auth/register-freebie` and `/api/mini-diploma/optin`
+- **Fixed: Mini diploma leads excluded from /admin/users by default**
+  - Users with `miniDiplomaOptinAt` now filtered out by default
+  - Use `?includeLeads=true` to show them
+  - Leads have their own dedicated page at `/admin/leads`
 - **Fixed: ClickFunnels certification purchasers excluded from leads**
   - ClickFunnels webhook was incorrectly setting `miniDiplomaOptinAt` for ALL products
   - Now only sets for actual mini diploma products (containing "mini-diploma")
