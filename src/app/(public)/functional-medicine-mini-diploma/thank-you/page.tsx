@@ -2,20 +2,23 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-    ArrowRight, Copy, Check,
-    GraduationCap, Lock, Clock, Sparkles, Loader2
+    ArrowRight, Copy, Check, Play, Clock, Loader2, Mail, Lock, Sparkles
 } from "lucide-react";
 import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
 import MetaPixel from "@/components/tracking/meta-pixel";
 
+// Google Fonts
+const FONTS = `
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+`;
 
 function ThankYouContent() {
-    const { trackPageView } = useMetaTracking();
-    const [copied, setCopied] = useState(false);
+    const { trackPageView, trackLead } = useMetaTracking();
+    const [copiedEmail, setCopiedEmail] = useState(false);
+    const [copiedPassword, setCopiedPassword] = useState(false);
     const [userData, setUserData] = useState<{
         firstName: string;
         lastName: string;
@@ -28,203 +31,251 @@ function ThankYouContent() {
         // Get user data from sessionStorage (set during optin)
         const storedData = sessionStorage.getItem("miniDiplomaUser");
         if (storedData) {
-            setUserData(JSON.parse(storedData));
+            try {
+                setUserData(JSON.parse(storedData));
+            } catch (e) {
+                console.error("Failed to parse user data", e);
+            }
         }
 
         // Track PageView for FM Pixel
         trackPageView("Functional Medicine Mini Diploma Thank You");
-    }, [trackPageView]);
 
-    const copyPassword = () => {
-        navigator.clipboard.writeText(password);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        // Track Lead event
+        trackLead(
+            "Functional Medicine Mini Diploma",
+            undefined,
+            undefined,
+            PIXEL_CONFIG.FUNCTIONAL_MEDICINE
+        );
+    }, [trackPageView, trackLead]);
+
+    const copyToClipboard = (text: string, type: "email" | "password") => {
+        navigator.clipboard.writeText(text);
+        if (type === "email") {
+            setCopiedEmail(true);
+            setTimeout(() => setCopiedEmail(false), 2000);
+        } else {
+            setCopiedPassword(true);
+            setTimeout(() => setCopiedPassword(false), 2000);
+        }
     };
 
-    const firstName = userData?.firstName || "there";
+    const firstName = userData?.firstName || "Friend";
+    const userEmail = userData?.email || "your email";
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-burgundy-50 via-white to-gray-50">
+        <div className="min-h-screen bg-[#FDF8F3]" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <style dangerouslySetInnerHTML={{ __html: FONTS }} />
             {/* Functional Medicine Niche Pixel */}
             <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
 
-            {/* Header */}
-            <header className="bg-white border-b border-gray-100">
-                <div className="max-w-6xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-center">
-                        <Link href="/" className="flex items-center gap-2">
-                            <Image
-                                src="/newlogo.webp"
-                                alt="AccrediPro Academy"
-                                width={48}
-                                height={48}
-                                className="rounded-lg"
-                            />
-                            <div>
-                                <span className="font-bold text-lg text-gray-900">AccrediPro</span>
-                                <span className="text-burgundy-600 font-medium ml-1">Academy</span>
-                            </div>
-                        </Link>
-                    </div>
-                </div>
-            </header>
-
             {/* Main Content */}
-            <main className="max-w-lg mx-auto px-4 py-8 md:py-12">
-                {/* Success Banner */}
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-6 mb-6 text-center text-white shadow-lg">
-                    <div className="w-14 h-14 mx-auto bg-white/20 rounded-full flex items-center justify-center mb-3">
-                        <Check className="h-7 w-7" />
+            <main className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+                {/* Sarah Welcome Section */}
+                <div className="text-center mb-8">
+                    {/* Sarah Avatar */}
+                    <div className="relative inline-block mb-4">
+                        <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-[#C4A77D] shadow-lg mx-auto">
+                            <Image
+                                src="/coaches/sarah-coach.webp"
+                                alt="Sarah - Your Coach"
+                                width={112}
+                                height={112}
+                                className="object-cover w-full h-full"
+                            />
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-3 border-white flex items-center justify-center">
+                            <Check className="w-3 h-3 text-white" />
+                        </div>
                     </div>
-                    <h1 className="text-2xl font-bold mb-1">
+
+                    {/* Welcome Message */}
+                    <h1
+                        className="text-3xl md:text-4xl font-bold text-[#4A6741] mb-2"
+                        style={{ fontFamily: "'Fraunces', serif" }}
+                    >
                         You're In, {firstName}! 🎉
                     </h1>
-                    <p className="text-green-100 text-sm">
-                        Your Functional Medicine Mini Diploma is ready
+                    <p className="text-lg text-[#6B7280] mb-2">
+                        I'm <span className="font-semibold text-[#4A6741]">Sarah</span>, your personal coach
+                    </p>
+                    <p className="text-[#9CA3AF] text-sm">
+                        Your Functional Medicine Mini Diploma is ready to begin
                     </p>
                 </div>
 
                 {/* Login Credentials Card */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
-                    <div className="bg-burgundy-600 px-4 py-3">
-                        <p className="text-white font-semibold text-center">📧 Your Login Details</p>
+                <div className="bg-white rounded-2xl shadow-xl border border-[#E5E1DB] overflow-hidden mb-6">
+                    {/* Card Header */}
+                    <div className="bg-gradient-to-r from-[#4A6741] to-[#5C7A52] px-6 py-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                <Lock className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-white font-bold text-lg">Your Login Details</h2>
+                                <p className="text-white/80 text-sm">Save these to access your lessons</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="p-5">
-                        {/* User Details */}
-                        {userData && (
-                            <div className="bg-burgundy-50 rounded-xl p-4 mb-4 border border-burgundy-100">
-                                <p className="text-xs text-burgundy-600 font-medium mb-1">Email</p>
-                                <p className="text-gray-900 font-semibold text-sm truncate">{userData.email}</p>
-                            </div>
-                        )}
-
-                        {/* Password Box */}
-                        <div className="bg-gray-50 rounded-xl p-4 mb-5 border border-gray-200">
-                            <p className="text-xs text-gray-500 mb-1">Password</p>
-                            <div className="flex items-center justify-between gap-3">
-                                <p className="text-2xl font-mono font-bold text-gray-900">{password}</p>
+                    <div className="p-6 space-y-4">
+                        {/* Email Field */}
+                        <div className="bg-[#F9F7F4] rounded-xl p-4 border border-[#E5E1DB]">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-[#4A6741]/10 rounded-full flex items-center justify-center">
+                                        <Mail className="w-5 h-5 text-[#4A6741]" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-medium">Email</p>
+                                        <p className="text-[#1F2937] font-semibold text-lg truncate max-w-[200px] md:max-w-none">
+                                            {userEmail}
+                                        </p>
+                                    </div>
+                                </div>
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    onClick={copyPassword}
-                                    className="border-gray-300 hover:bg-gray-100 flex-shrink-0"
+                                    onClick={() => userData?.email && copyToClipboard(userData.email, "email")}
+                                    className="border-[#4A6741]/30 hover:bg-[#4A6741]/10 text-[#4A6741]"
                                 >
-                                    {copied ? (
-                                        <Check className="h-4 w-4 mr-1 text-green-600" />
+                                    {copiedEmail ? (
+                                        <><Check className="w-4 h-4 mr-1" /> Copied!</>
                                     ) : (
-                                        <Copy className="h-4 w-4 mr-1" />
+                                        <><Copy className="w-4 h-4 mr-1" /> Copy</>
                                     )}
-                                    {copied ? "Copied!" : "Copy"}
                                 </Button>
                             </div>
                         </div>
 
-                        {/* 7-Day Notice */}
-                        <div className="bg-amber-50 rounded-xl p-3 mb-5 border border-amber-200 flex items-start gap-3">
-                            <Clock className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        {/* Password Field */}
+                        <div className="bg-[#F9F7F4] rounded-xl p-4 border border-[#E5E1DB]">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-[#C4A77D]/20 rounded-full flex items-center justify-center">
+                                        <Lock className="w-5 h-5 text-[#C4A77D]" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-medium">Password</p>
+                                        <p className="text-[#1F2937] font-mono font-bold text-xl tracking-wider">
+                                            {password}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => copyToClipboard(password, "password")}
+                                    className="border-[#C4A77D]/30 hover:bg-[#C4A77D]/10 text-[#C4A77D]"
+                                >
+                                    {copiedPassword ? (
+                                        <><Check className="w-4 h-4 mr-1" /> Copied!</>
+                                    ) : (
+                                        <><Copy className="w-4 h-4 mr-1" /> Copy</>
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* 7-Day Access Notice */}
+                        <div className="bg-amber-50 rounded-xl p-4 border border-amber-200 flex items-start gap-3">
+                            <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                             <div>
                                 <p className="font-semibold text-amber-800 text-sm">7-Day Access</p>
                                 <p className="text-xs text-amber-700">
-                                    Complete 9 lessons to get your certificate!
+                                    Complete all 9 lessons to earn your certificate!
                                 </p>
                             </div>
                         </div>
 
                         {/* CTA Button */}
-                        <a href="https://learn.accredipro.academy/login" target="_blank" rel="noopener noreferrer">
+                        <a href="https://learn.accredipro.academy/login" className="block">
                             <Button
                                 size="lg"
-                                className="w-full h-14 bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                                className="w-full h-14 bg-gradient-to-r from-[#C4A77D] to-[#B8956C] hover:from-[#B8956C] hover:to-[#A8855C] text-white text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all group"
                             >
-                                Start My Mini Diploma Now
-                                <ArrowRight className="h-5 w-5 ml-2" />
+                                <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                                Start Lesson 1 with Sarah
+                                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </a>
                     </div>
                 </div>
 
-                {/* What's Waiting */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 mb-6">
-                    <h3 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-burgundy-600" />
-                        What's Waiting Inside
-                    </h3>
-                    <div className="space-y-3 text-sm">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
-                                1
+                {/* What's Inside Section */}
+                <div className="bg-white rounded-2xl shadow-lg border border-[#E5E1DB] p-6 mb-6">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Sparkles className="w-5 h-5 text-[#C4A77D]" />
+                        <h3
+                            className="text-xl font-bold text-[#4A6741]"
+                            style={{ fontFamily: "'Fraunces', serif" }}
+                        >
+                            What's Waiting Inside
+                        </h3>
+                    </div>
+
+                    <div className="grid gap-4">
+                        {[
+                            { num: "1", title: "Welcome from Sarah", desc: "Your personal coaching intro" },
+                            { num: "2", title: "9 Interactive Lessons", desc: "~60 minutes total learning" },
+                            { num: "3", title: "Your Certificate", desc: "Unlocks after completion" },
+                        ].map((item) => (
+                            <div key={item.num} className="flex items-center gap-4 p-3 bg-[#F9F7F4] rounded-xl">
+                                <div className="w-10 h-10 rounded-full bg-[#4A6741] text-white font-bold flex items-center justify-center text-sm">
+                                    {item.num}
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-[#1F2937]">{item.title}</p>
+                                    <p className="text-sm text-[#6B7280]">{item.desc}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="font-medium text-gray-900">Welcome Video from Sarah</p>
-                                <p className="text-xs text-gray-500">Meet your personal coach</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
-                                2
-                            </div>
-                            <div>
-                                <p className="font-medium text-gray-900">9 Interactive Lessons</p>
-                                <p className="text-xs text-gray-500">~60 minutes total</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
-                                3
-                            </div>
-                            <div>
-                                <p className="font-medium text-gray-900">Certificate</p>
-                                <p className="text-xs text-gray-500">Unlocks after completion</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
 
-                {/* Certificate Preview */}
-                <div className="text-center">
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-5 max-w-xs mx-auto relative">
-                        {/* Blurred overlay */}
-                        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] rounded-2xl flex items-center justify-center z-10">
-                            <div className="bg-burgundy-600 text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5">
-                                <Lock className="h-3 w-3" />
-                                Complete to unlock
-                            </div>
-                        </div>
-
-                        <div className="border-4 border-double border-burgundy-200 rounded-xl p-4">
+                {/* Sarah's Message */}
+                <div className="bg-gradient-to-br from-[#4A6741] to-[#3D5635] rounded-2xl p-6 text-white shadow-lg">
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/30 flex-shrink-0">
                             <Image
-                                src="/newlogo.webp"
-                                alt="AccrediPro"
-                                width={36}
-                                height={36}
-                                className="mx-auto mb-2"
+                                src="/coaches/sarah-coach.webp"
+                                alt="Sarah"
+                                width={48}
+                                height={48}
+                                className="object-cover w-full h-full"
                             />
-                            <p className="text-[9px] text-gray-400 uppercase tracking-widest mb-1">Mini Diploma</p>
-                            <p className="text-xs font-bold text-burgundy-700 mb-1">Functional Medicine & Hormones</p>
-                            <p className="text-[10px] text-gray-400">
-                                {userData ? `${userData.firstName} ${userData.lastName}` : "Your Name Here"}
+                        </div>
+                        <div>
+                            <p className="font-semibold mb-2">A quick note from me...</p>
+                            <p className="text-white/90 text-sm leading-relaxed">
+                                Hey {firstName}! I'm SO excited you're here. I've helped thousands of women
+                                understand Functional Medicine, and I can't wait to guide you through this journey.
+                                See you inside Lesson 1! 💕
                             </p>
+                            <p className="mt-2 text-white/70 text-sm italic">— Sarah</p>
                         </div>
                     </div>
                 </div>
             </main>
 
             {/* Footer */}
-            <footer className="bg-gray-100 py-6 mt-8">
-                <div className="max-w-6xl mx-auto px-4 text-center text-xs text-gray-400">
-                    <p>This site is not a part of the Facebook website or Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.</p>
+            <footer className="bg-[#F3EFE9] py-6 mt-8">
+                <div className="max-w-6xl mx-auto px-4 text-center text-xs text-[#9CA3AF]">
+                    <p>This site is not a part of the Facebook website or Facebook Inc.</p>
+                    <p className="mt-1">© {new Date().getFullYear()} AccrediPro Academy. All rights reserved.</p>
                 </div>
             </footer>
         </div>
     );
 }
 
-export default function WomensHealthThankYouPage() {
+export default function FunctionalMedicineThankYouPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <Loader2 className="h-8 w-8 text-burgundy-600 animate-spin" />
+            <div className="min-h-screen bg-[#FDF8F3] flex items-center justify-center">
+                <Loader2 className="h-8 w-8 text-[#4A6741] animate-spin" />
             </div>
         }>
             <ThankYouContent />
