@@ -3,146 +3,133 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-// All mini diploma course slugs
-const MINI_DIPLOMA_SLUGS = [
-    "womens-health-mini-diploma",
-    "functional-medicine-mini-diploma",
-    "gut-health-mini-diploma",
-    "health-coach-mini-diploma",
-    "holistic-nutrition-mini-diploma",
-    "hormone-health-mini-diploma",
-    "nurse-coach-mini-diploma",
-];
-
-// Tag prefixes for lesson completion (maps slug to tag prefix)
-const SLUG_TO_TAG_PREFIX: Record<string, string> = {
-    "womens-health-mini-diploma": "wh-lesson-complete",
-    "functional-medicine-mini-diploma": "functional-medicine-lesson-complete",
-    "gut-health-mini-diploma": "gut-health-lesson-complete",
-    "health-coach-mini-diploma": "health-coach-lesson-complete",
-    "holistic-nutrition-mini-diploma": "holistic-nutrition-lesson-complete",
-    "hormone-health-mini-diploma": "hormone-health-lesson-complete",
-    "nurse-coach-mini-diploma": "nurse-coach-lesson-complete",
+// Tag prefixes for lesson completion (maps miniDiplomaCategory to tag prefix)
+const CATEGORY_TO_TAG_PREFIX: Record<string, string> = {
+    "womens-health": "wh-lesson-complete",
+    "functional-medicine": "functional-medicine-lesson-complete",
+    "gut-health": "gut-health-lesson-complete",
+    "health-coach": "health-coach-lesson-complete",
+    "holistic-nutrition": "holistic-nutrition-lesson-complete",
+    "hormone-health": "hormone-health-lesson-complete",
+    "nurse-coach": "nurse-coach-lesson-complete",
 };
+
+// All mini diploma categories
+const MINI_DIPLOMA_CATEGORIES = Object.keys(CATEGORY_TO_TAG_PREFIX);
 
 /**
  * GET /api/admin/analytics/mini-diploma
  * Get Mini Diploma funnel analytics
+ *
+ * Uses User.miniDiplomaOptinAt as source of truth (same as Leads API)
  */
 export async function GET() {
     try {
         const session = await getServerSession(authOptions);
-        if (!session?.user || session.user.role !== "ADMIN") {
+        if (!session?.user || !["ADMIN", "INSTRUCTOR", "MENTOR"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const now = new Date();
 
-        // Signups - users enrolled in any mini diploma course (exclude fake/test users)
-        const signups = await prisma.enrollment.count({
+        // Get all mini diploma leads (users with miniDiplomaOptinAt set)
+        // Same filter as Leads API for consistency
+        const leads = await prisma.user.findMany({
             where: {
-                course: { slug: { in: MINI_DIPLOMA_SLUGS } },
-                user: {
-                    isFakeProfile: { not: true },
-                    email: { not: { contains: "@test" } },
-                },
-            },
-        });
-
-        // Get all mini diploma enrollments with user tags to calculate real progress
-        const enrollments = await prisma.enrollment.findMany({
-            where: {
-                course: { slug: { in: MINI_DIPLOMA_SLUGS } },
-                user: {
-                    isFakeProfile: { not: true },
-                    email: { not: { contains: "@test" } },
-                },
+                miniDiplomaOptinAt: { not: null },
+                leadSource: "mini-diploma-freebie",
+                isFakeProfile: { not: true },
+                email: { not: { contains: "@test" } },
             },
             select: {
-                userId: true,
-                status: true,
-                enrolledAt: true,
-                completedAt: true,
-                course: { select: { slug: true } },
-                user: {
-                    select: {
-                        id: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        tags: {
-                            select: { tag: true },
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                miniDiplomaCategory: true,
+                miniDiplomaOptinAt: true,
+                createdAt: true,
+                tags: {
+                    select: { tag: true, createdAt: true },
+                },
+                enrollments: {
+                    where: {
+                        course: {
+                            OR: [
+                                { slug: { contains: "certification" } },
+                                { slug: { contains: "accelerator" } },
+                            ],
                         },
                     },
+                    select: { id: true },
                 },
             },
+            orderBy: { miniDiplomaOptinAt: "desc" },
         });
 
-        // Calculate progress for each enrollment based on UserTags
-        const enrollmentsWithProgress = enrollments.map((enrollment) => {
-            const tagPrefix = SLUG_TO_TAG_PREFIX[enrollment.course.slug];
-            if (!tagPrefix) {
-                return { ...enrollment, lessonsCompleted: 0, progress: 0 };
-            }
+        // Calculate progress for each lead based on their tags
+        const leadsWithProgress = leads.map((lead) => {
+            const category = lead.miniDiplomaCategory || "functional-medicine";
+            const tagPrefix = CATEGORY_TO_TAG_PREFIX[category] || "functional-medicine-lesson-complete";
 
-            // Count lesson completion tags for this niche
-            const lessonsCompleted = enrollment.user.tags.filter(
-                (t) => t.tag.startsWith(`${tagPrefix}:`)
-            ).length;
-
-            // Progress is lessons completed / 9 * 100
+            // Count lesson completion tags for their category
+            const lessonTags = lead.tags.filter((t) => t.tag.startsWith(`${tagPrefix}:`));
+            const lessonsCompleted = lessonTags.length;
             const progress = Math.round((lessonsCompleted / 9) * 100);
 
-            return { ...enrollment, lessonsCompleted, progress };
+            // Get last activity date
+            const lastLessonTag = lessonTags.sort(
+                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            )[0];
+
+            return {
+                ...lead,
+                category,
+                lessonsCompleted,
+                progress,
+                lastActivity: lastLessonTag?.createdAt || null,
+                hasConvertedToPurchase: lead.enrollments.length > 0,
+            };
         });
 
+        // Total signups
+        const signups = leadsWithProgress.length;
+
         // Started - users who have completed at least 1 lesson
-        const started = enrollmentsWithProgress.filter((e) => e.lessonsCompleted > 0).length;
+        const started = leadsWithProgress.filter((l) => l.lessonsCompleted > 0).length;
 
         // Completed - users who finished all 9 lessons
-        const completed = enrollmentsWithProgress.filter((e) => e.lessonsCompleted >= 9).length;
+        const completed = leadsWithProgress.filter((l) => l.lessonsCompleted >= 9).length;
 
         // Watched training - users with training_watched tag
         const watchedTraining = await prisma.userTag.count({
             where: {
                 tag: { contains: "training_watched" },
+                user: {
+                    miniDiplomaOptinAt: { not: null },
+                    leadSource: "mini-diploma-freebie",
+                },
             },
         });
 
-        // Enrolled in full cert
-        const fullCertCourse = await prisma.course.findFirst({
-            where: {
-                OR: [
-                    { slug: { contains: "certification" } },
-                    { slug: { contains: "full" } },
-                ],
-                certificateType: { not: "MINI_DIPLOMA" },
-            },
-        });
-
-        const enrolled = fullCertCourse
-            ? await prisma.enrollment.count({
-                where: { courseId: fullCertCourse.id },
-            })
-            : 0;
+        // Enrolled in full certification (converted)
+        const enrolled = leadsWithProgress.filter((l) => l.hasConvertedToPurchase).length;
 
         // Avg time to complete (for users with 9 lessons done)
-        const completedWithDates = enrollmentsWithProgress.filter(
-            (e) => e.lessonsCompleted >= 9 && e.completedAt
-        );
+        const completedLeads = leadsWithProgress.filter((l) => l.lessonsCompleted >= 9 && l.lastActivity);
         const avgTimeToComplete =
-            completedWithDates.length > 0
+            completedLeads.length > 0
                 ? Math.round(
-                    completedWithDates.reduce((acc, e) => {
+                    completedLeads.reduce((acc, l) => {
                         const days =
-                            (new Date(e.completedAt!).getTime() - new Date(e.enrolledAt).getTime()) /
+                            (new Date(l.lastActivity!).getTime() - new Date(l.miniDiplomaOptinAt!).getTime()) /
                             (1000 * 60 * 60 * 24);
-                        return acc + days;
-                    }, 0) / completedWithDates.length
+                        return acc + Math.max(0, days);
+                    }, 0) / completedLeads.length
                 )
                 : 0;
 
-        // Avg quiz score (placeholder)
+        // Avg quiz score (placeholder - would need quiz data)
         const avgScore = 78;
 
         // Drop-off points by lesson (1-9)
@@ -151,8 +138,8 @@ export async function GET() {
             lessonCounts[i] = 0;
         }
 
-        enrollmentsWithProgress.forEach((e) => {
-            for (let i = 1; i <= e.lessonsCompleted; i++) {
+        leadsWithProgress.forEach((l) => {
+            for (let i = 1; i <= l.lessonsCompleted; i++) {
                 lessonCounts[i]++;
             }
         });
@@ -172,54 +159,22 @@ export async function GET() {
             });
         }
 
-        // Recent signups (most recent enrollments, exclude fake/test)
-        const recentEnrollments = await prisma.enrollment.findMany({
-            where: {
-                course: { slug: { in: MINI_DIPLOMA_SLUGS } },
-                user: {
-                    isFakeProfile: { not: true },
-                    email: { not: { contains: "@test" } },
-                },
-            },
-            orderBy: { enrolledAt: "desc" },
-            take: 10,
-            select: {
-                userId: true,
-                enrolledAt: true,
-                status: true,
-                course: { select: { slug: true } },
-                user: {
-                    select: {
-                        id: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        tags: { select: { tag: true } },
-                    },
-                },
-            },
-        });
-
-        const formattedRecentSignups = recentEnrollments.map((enrollment) => {
-            const tagPrefix = SLUG_TO_TAG_PREFIX[enrollment.course.slug] || "";
-            const lessonsCompleted = enrollment.user.tags.filter(
-                (t) => t.tag.startsWith(`${tagPrefix}:`)
-            ).length;
-            const progress = Math.round((lessonsCompleted / 9) * 100);
-            const licenseTag = enrollment.user.tags.find((t) => t.tag.startsWith("license_type:"));
-
+        // Recent signups (last 10)
+        const formattedRecentSignups = leadsWithProgress.slice(0, 10).map((lead) => {
+            const licenseTag = lead.tags.find((t) => t.tag.startsWith("license_type:"));
             return {
-                id: enrollment.user.id,
-                name: `${enrollment.user.firstName || ""} ${enrollment.user.lastName || ""}`.trim() || "Unknown",
-                email: enrollment.user.email || "",
-                signupDate: enrollment.enrolledAt.toISOString(),
-                status: lessonsCompleted >= 9 ? "COMPLETED" : lessonsCompleted > 0 ? "IN_PROGRESS" : "NOT_STARTED",
-                progress,
+                id: lead.id,
+                name: `${lead.firstName || ""} ${lead.lastName || ""}`.trim() || "Unknown",
+                email: lead.email || "",
+                signupDate: lead.miniDiplomaOptinAt?.toISOString() || lead.createdAt.toISOString(),
+                status: lead.lessonsCompleted >= 9 ? "COMPLETED" : lead.lessonsCompleted > 0 ? "IN_PROGRESS" : "NOT_STARTED",
+                progress: lead.progress,
                 licenseType: licenseTag?.tag.replace("license_type:", "") || undefined,
+                category: lead.category,
             };
         });
 
-        // Daily signups for last 14 days (exclude fake/test)
+        // Daily signups for last 14 days
         const dailySignups = [];
         for (let i = 13; i >= 0; i--) {
             const dayStart = new Date(now);
@@ -229,16 +184,10 @@ export async function GET() {
             const dayEnd = new Date(dayStart);
             dayEnd.setHours(23, 59, 59, 999);
 
-            const count = await prisma.enrollment.count({
-                where: {
-                    course: { slug: { in: MINI_DIPLOMA_SLUGS } },
-                    enrolledAt: { gte: dayStart, lte: dayEnd },
-                    user: {
-                        isFakeProfile: { not: true },
-                        email: { not: { contains: "@test" } },
-                    },
-                },
-            });
+            const count = leadsWithProgress.filter((l) => {
+                const optinDate = new Date(l.miniDiplomaOptinAt!);
+                return optinDate >= dayStart && optinDate <= dayEnd;
+            }).length;
 
             dailySignups.push({
                 date: dayStart.toISOString(),
@@ -248,23 +197,24 @@ export async function GET() {
 
         // Per-niche breakdown
         const nicheStats = [];
-        for (const slug of MINI_DIPLOMA_SLUGS) {
-            const tagPrefix = SLUG_TO_TAG_PREFIX[slug];
-            const nicheEnrollments = enrollmentsWithProgress.filter(
-                (e) => e.course.slug === slug
+        for (const category of MINI_DIPLOMA_CATEGORIES) {
+            const tagPrefix = CATEGORY_TO_TAG_PREFIX[category];
+            const nicheLeads = leadsWithProgress.filter(
+                (l) => l.category === category
             );
 
-            const nicheSignups = nicheEnrollments.length;
-            const nicheStarted = nicheEnrollments.filter((e) => e.lessonsCompleted > 0).length;
-            const nicheCompleted = nicheEnrollments.filter((e) => e.lessonsCompleted >= 9).length;
+            const nicheSignups = nicheLeads.length;
+            const nicheStarted = nicheLeads.filter((l) => l.lessonsCompleted > 0).length;
+            const nicheCompleted = nicheLeads.filter((l) => l.lessonsCompleted >= 9).length;
+            const nicheConverted = nicheLeads.filter((l) => l.hasConvertedToPurchase).length;
 
             // Calculate niche-specific drop-off per lesson
             const nicheLessonCounts: Record<number, number> = {};
             for (let i = 1; i <= 9; i++) {
                 nicheLessonCounts[i] = 0;
             }
-            nicheEnrollments.forEach((e) => {
-                for (let i = 1; i <= e.lessonsCompleted; i++) {
+            nicheLeads.forEach((l) => {
+                for (let i = 1; i <= l.lessonsCompleted; i++) {
                     nicheLessonCounts[i]++;
                 }
             });
@@ -289,23 +239,25 @@ export async function GET() {
             const startRate = nicheSignups > 0 ? Math.round((nicheStarted / nicheSignups) * 100) : 0;
             const completionRate = nicheStarted > 0 ? Math.round((nicheCompleted / nicheStarted) * 100) : 0;
             const overallConversion = nicheSignups > 0 ? Math.round((nicheCompleted / nicheSignups) * 100) : 0;
+            const purchaseConversion = nicheSignups > 0 ? Math.round((nicheConverted / nicheSignups) * 100) : 0;
 
             // Format niche name nicely
-            const nicheName = slug
-                .replace("-mini-diploma", "")
+            const nicheName = category
                 .split("-")
                 .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
                 .join(" ");
 
             nicheStats.push({
-                slug,
+                slug: category,
                 name: nicheName,
                 signups: nicheSignups,
                 started: nicheStarted,
                 completed: nicheCompleted,
+                converted: nicheConverted,
                 startRate,
                 completionRate,
                 overallConversion,
+                purchaseConversion,
                 biggestDropoffLesson: biggestDropoff.lesson,
                 biggestDropoffRate: biggestDropoff.dropRate,
                 dropoffPoints: nicheDropoffPoints,
@@ -318,6 +270,9 @@ export async function GET() {
         const sortedByConversion = [...nicheStats].filter(n => n.signups >= 5).sort((a, b) => b.overallConversion - a.overallConversion);
         const bestConversion = sortedByConversion[0];
 
+        // Calculate overall conversion rate
+        const conversionRate = signups > 0 ? Math.round((enrolled / signups) * 100) : 0;
+
         return NextResponse.json({
             signups,
             started,
@@ -326,6 +281,7 @@ export async function GET() {
             enrolled,
             avgTimeToComplete,
             avgScore,
+            conversionRate,
             dropoffPoints,
             recentSignups: formattedRecentSignups,
             dailySignups,
