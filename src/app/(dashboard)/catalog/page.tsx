@@ -1,6 +1,18 @@
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+
+// Mini diploma slugs - users with ONLY these should go to messages instead
+const MINI_DIPLOMA_SLUGS = [
+  "womens-health-mini-diploma",
+  "functional-medicine-mini-diploma",
+  "gut-health-mini-diploma",
+  "health-coach-mini-diploma",
+  "holistic-nutrition-mini-diploma",
+  "hormone-health-mini-diploma",
+  "nurse-coach-mini-diploma",
+];
 import { CourseCatalogFilters } from "@/components/courses/course-catalog-filters";
 
 // Fallback Unsplash images for courses without thumbnails
@@ -191,6 +203,22 @@ async function getUserGraduateStatus(userId: string) {
 
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions);
+
+  // Redirect mini diploma only users to messages (they shouldn't see catalog)
+  if (session?.user?.id) {
+    const userEnrollments = await prisma.enrollment.findMany({
+      where: { userId: session.user.id },
+      select: { course: { select: { slug: true } }, status: true },
+    });
+
+    const allAreMiniDiploma = userEnrollments.length > 0 &&
+      userEnrollments.every(e => MINI_DIPLOMA_SLUGS.includes(e.course.slug));
+
+    if (allAreMiniDiploma) {
+      redirect("/messages");
+    }
+  }
+
   const [courses, categories, enrollments, specialOffers, wishlist, graduateStatus] = await Promise.all([
     getCourses(),
     getCategories(),
