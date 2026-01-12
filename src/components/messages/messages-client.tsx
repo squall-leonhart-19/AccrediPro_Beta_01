@@ -1237,10 +1237,10 @@ export function MessagesClient({
 
   // Render message content with attachments
   const renderMessageContent = (message: Message, isOwn: boolean) => {
-    // Voice message - clean, compact design
+    // Voice message - clean, wider design
     if (message.attachmentType === "voice" && message.attachmentUrl) {
       return (
-        <div className="w-full max-w-[220px]">
+        <div className="w-full min-w-[200px] max-w-[320px]">
           <div className="flex items-center gap-3">
             {/* Play/Pause Button - Compact */}
             <button
@@ -1277,11 +1277,11 @@ export function MessagesClient({
             </div>
           </div>
 
-          {/* Transcription/Caption */}
+          {/* Transcription/Caption - Full text, no cutoff */}
           {message.content && (
             <p className={cn(
-              "text-xs mt-2 line-clamp-2",
-              isOwn ? "text-white/70" : "text-gray-500"
+              "text-xs mt-2",
+              isOwn ? "text-white/80" : "text-gray-600"
             )}>
               {message.content}
             </p>
@@ -1910,10 +1910,10 @@ export function MessagesClient({
                               )}
                               <div
                                 className={cn(
-                                  "rounded-2xl px-3.5 py-2.5 relative text-sm transition-all duration-200 break-words overflow-hidden",
+                                  "rounded-2xl px-4 py-3 relative text-sm transition-all duration-200 break-words overflow-hidden shadow-sm",
                                   isOwn
-                                    ? "message-bubble-premium text-white rounded-br-md chat-bubble-own"
-                                    : "bg-white text-gray-900 rounded-bl-md border border-gray-100 chat-bubble-other"
+                                    ? "bg-gradient-to-br from-burgundy-600 to-burgundy-700 text-white rounded-br-md"
+                                    : "bg-white text-gray-900 rounded-bl-md border border-gray-100 shadow-sm"
                                 )}
                               >
                                 {renderMessageContent(message, isOwn)}
