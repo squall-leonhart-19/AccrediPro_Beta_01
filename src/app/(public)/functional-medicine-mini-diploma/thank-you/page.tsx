@@ -8,8 +8,12 @@ import {
     ArrowRight, Copy, Check,
     GraduationCap, Lock, Clock, Sparkles,
 } from "lucide-react";
+import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
+import { useMetaTracking } from "@/hooks/useMetaTracking";
+import MetaPixel from "@/components/tracking/meta-pixel";
 
 export default function WomensHealthThankYouPage() {
+    const { trackPageView } = useMetaTracking();
     const [copied, setCopied] = useState(false);
     const [userData, setUserData] = useState<{
         firstName: string;
@@ -25,7 +29,10 @@ export default function WomensHealthThankYouPage() {
         if (storedData) {
             setUserData(JSON.parse(storedData));
         }
-    }, []);
+
+        // Track PageView for FM Pixel
+        trackPageView("Functional Medicine Mini Diploma Thank You");
+    }, [trackPageView]);
 
     const copyPassword = () => {
         navigator.clipboard.writeText(password);
@@ -37,6 +44,9 @@ export default function WomensHealthThankYouPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-burgundy-50 via-white to-gray-50">
+            {/* Functional Medicine Niche Pixel */}
+            <MetaPixel pixelId={PIXEL_CONFIG.FUNCTIONAL_MEDICINE} />
+
             {/* Header */}
             <header className="bg-white border-b border-gray-100">
                 <div className="max-w-6xl mx-auto px-4 py-4">
