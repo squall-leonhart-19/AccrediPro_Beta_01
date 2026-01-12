@@ -6,13 +6,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
     ArrowRight, Copy, Check,
-    GraduationCap, Lock, Clock, Sparkles,
+    GraduationCap, Lock, Clock, Sparkles, Loader2
 } from "lucide-react";
 import { PIXEL_CONFIG } from "@/components/tracking/meta-pixel";
 import { useMetaTracking } from "@/hooks/useMetaTracking";
 import MetaPixel from "@/components/tracking/meta-pixel";
 
-export default function WomensHealthThankYouPage() {
+
+function ThankYouContent() {
     const { trackPageView } = useMetaTracking();
     const [copied, setCopied] = useState(false);
     const [userData, setUserData] = useState<{
@@ -216,5 +217,17 @@ export default function WomensHealthThankYouPage() {
                 </div>
             </footer>
         </div>
+    );
+}
+
+export default function WomensHealthThankYouPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <Loader2 className="h-8 w-8 text-burgundy-600 animate-spin" />
+            </div>
+        }>
+            <ThankYouContent />
+        </Suspense>
     );
 }
