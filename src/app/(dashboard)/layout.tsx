@@ -79,15 +79,22 @@ async function getUserOnboardingData(userId: string) {
     where: { userId, isCompleted: true },
   });
 
-  // Check if user is mini-diploma-only (single mini-diploma enrollment, not completed)
-  const firstEnrollmentSlug = enrollments[0]?.course?.slug || "";
-  const isMiniDiplomaOnly =
-    enrollments.length === 1 &&
-    MINI_DIPLOMA_SLUGS.includes(firstEnrollmentSlug) &&
-    enrollments[0].status !== "COMPLETED";
+  // Check if user ONLY has mini-diploma enrollments (no paid courses)
+  // This handles users with multiple mini diplomas (e.g., both womens-health AND functional-medicine)
+  const allEnrollmentsAreMiniDiploma = enrollments.length > 0 &&
+    enrollments.every(e => MINI_DIPLOMA_SLUGS.includes(e.course.slug));
 
-  // Get the mini diploma slug if user is a lead
-  const miniDiplomaSlug = isMiniDiplomaOnly ? firstEnrollmentSlug : null;
+  const hasAnyIncompleteMiniDiploma = enrollments.some(
+    e => MINI_DIPLOMA_SLUGS.includes(e.course.slug) && e.status !== "COMPLETED"
+  );
+
+  const isMiniDiplomaOnly = allEnrollmentsAreMiniDiploma && hasAnyIncompleteMiniDiploma;
+
+  // Get the most recent mini diploma enrollment for redirect
+  const mostRecentMiniDiploma = enrollments.find(
+    e => MINI_DIPLOMA_SLUGS.includes(e.course.slug) && e.status !== "COMPLETED"
+  );
+  const miniDiplomaSlug = isMiniDiplomaOnly && mostRecentMiniDiploma ? mostRecentMiniDiploma.course.slug : null;
   const miniDiplomaRoute = miniDiplomaSlug ? DIPLOMA_ROUTES[miniDiplomaSlug] : null;
 
   // Get completed lessons for diploma progress (check correct tag prefix)

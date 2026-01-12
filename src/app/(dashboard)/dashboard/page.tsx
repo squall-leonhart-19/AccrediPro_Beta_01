@@ -209,6 +209,16 @@ export default async function DashboardPage() {
   } = dashboardData;
 
   // Check for mini diploma only users - redirect them to their lead portal
+  const MINI_DIPLOMA_SLUGS = [
+    "womens-health-mini-diploma",
+    "functional-medicine-mini-diploma",
+    "gut-health-mini-diploma",
+    "health-coach-mini-diploma",
+    "holistic-nutrition-mini-diploma",
+    "hormone-health-mini-diploma",
+    "nurse-coach-mini-diploma",
+  ];
+
   const MINI_DIPLOMA_REDIRECTS: Record<string, string> = {
     "womens-health-mini-diploma": "/womens-health-diploma",
     "functional-medicine-mini-diploma": "/functional-medicine-diploma",
@@ -219,9 +229,17 @@ export default async function DashboardPage() {
     "nurse-coach-mini-diploma": "/nurse-coach-diploma",
   };
 
-  if (enrollments.length === 1 && enrollments[0].status !== "COMPLETED") {
-    const courseSlug = enrollments[0].course.slug;
-    const redirectPath = MINI_DIPLOMA_REDIRECTS[courseSlug];
+  // Check if user ONLY has mini diploma enrollments (no paid courses)
+  const allEnrollmentsAreMiniDiploma = enrollments.length > 0 &&
+    enrollments.every(e => MINI_DIPLOMA_SLUGS.includes(e.course.slug));
+
+  const incompleteMiniDiploma = enrollments.find(
+    e => MINI_DIPLOMA_SLUGS.includes(e.course.slug) && e.status !== "COMPLETED"
+  );
+
+  // If all enrollments are mini diplomas and at least one is incomplete, redirect
+  if (allEnrollmentsAreMiniDiploma && incompleteMiniDiploma) {
+    const redirectPath = MINI_DIPLOMA_REDIRECTS[incompleteMiniDiploma.course.slug];
     if (redirectPath) {
       const { redirect } = await import("next/navigation");
       redirect(redirectPath);

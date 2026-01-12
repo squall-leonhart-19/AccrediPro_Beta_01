@@ -34,7 +34,6 @@ interface LeadOnboardingClientProps {
     steps: Step[];
     currentStep: number;
     progress: number;
-    isTestUser: boolean;
 }
 
 export function LeadOnboardingClient({
@@ -45,8 +44,6 @@ export function LeadOnboardingClient({
     completedLessons,
     steps: initialSteps,
     currentStep: initialCurrentStep,
-    progress: initialProgress,
-    isTestUser,
 }: LeadOnboardingClientProps) {
     const [watchedVideo, setWatchedVideo] = useState(initialWatchedVideo);
     const [completedQuestions, setCompletedQuestions] = useState(initialCompletedQuestions);

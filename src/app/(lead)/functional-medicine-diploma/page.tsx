@@ -77,12 +77,8 @@ export default async function FunctionalMedicineDiplomaPage() {
     const data = await getLeadProgress(session.user.id);
     if (!data) redirect("/dashboard");
 
-    const { user, watchedVideo: rawWatchedVideo, completedQuestions: rawCompletedQuestions, completedLessons } = data;
+    const { user, watchedVideo, completedQuestions, completedLessons } = data;
     const firstName = user?.firstName || "there";
-    const isTestUser = user?.email === "at.seed019@gmail.com" || user?.email === "tortolialessio1997@gmail.com";
-
-    const watchedVideo = isTestUser || rawWatchedVideo;
-    const completedQuestions = isTestUser || rawCompletedQuestions;
 
     const steps = [
         { id: 1, title: "Watch Welcome Video", completed: watchedVideo },
@@ -120,7 +116,6 @@ export default async function FunctionalMedicineDiplomaPage() {
             steps={steps}
             currentStep={currentStep}
             progress={progress}
-            isTestUser={isTestUser}
         />
     );
 }
