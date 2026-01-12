@@ -21,7 +21,24 @@ import {
     RefreshCw,
     ChevronRight,
     ArrowRight,
+    Trophy,
+    Award,
+    BarChart3,
 } from "lucide-react";
+
+interface NicheStat {
+    slug: string;
+    name: string;
+    signups: number;
+    started: number;
+    completed: number;
+    startRate: number;
+    completionRate: number;
+    overallConversion: number;
+    biggestDropoffLesson: number;
+    biggestDropoffRate: number;
+    dropoffPoints: { lesson: number; dropRate: number }[];
+}
 
 interface FunnelData {
     signups: number;
@@ -42,6 +59,9 @@ interface FunnelData {
         licenseType?: string;
     }[];
     dailySignups: { date: string; count: number }[];
+    nicheStats?: NicheStat[];
+    bestPerformer?: { name: string; signups: number; completionRate: number } | null;
+    bestConversion?: { name: string; overallConversion: number; signups: number } | null;
 }
 
 interface AIAdvice {
@@ -141,6 +161,48 @@ export default function MiniDiplomaAnalyticsPage() {
                     </Button>
                 </div>
             </div>
+
+            {/* Best Performers Highlight */}
+            {(data.bestPerformer || data.bestConversion) && (
+                <div className="grid grid-cols-2 gap-4">
+                    {data.bestPerformer && (
+                        <Card className="border-2 border-amber-200 bg-amber-50/50">
+                            <CardContent className="pt-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                                        <Trophy className="w-6 h-6 text-amber-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-amber-600 font-medium">Most Popular Niche</p>
+                                        <p className="text-xl font-bold text-gray-900">{data.bestPerformer.name}</p>
+                                        <p className="text-sm text-gray-500">
+                                            {data.bestPerformer.signups} leads | {data.bestPerformer.completionRate}% completion
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+                    {data.bestConversion && (
+                        <Card className="border-2 border-green-200 bg-green-50/50">
+                            <CardContent className="pt-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                                        <Award className="w-6 h-6 text-green-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-green-600 font-medium">Best Conversion Rate</p>
+                                        <p className="text-xl font-bold text-gray-900">{data.bestConversion.name}</p>
+                                        <p className="text-sm text-gray-500">
+                                            {data.bestConversion.overallConversion}% conversion | {data.bestConversion.signups} leads
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+                </div>
+            )}
 
             {/* Main Funnel */}
             <Card>
@@ -330,12 +392,121 @@ export default function MiniDiplomaAnalyticsPage() {
             )}
 
             {/* Tabs for detailed views */}
-            <Tabs defaultValue="dropoff" className="space-y-4">
+            <Tabs defaultValue="niches" className="space-y-4">
                 <TabsList>
+                    <TabsTrigger value="niches">Per-Niche Performance</TabsTrigger>
                     <TabsTrigger value="dropoff">Drop-off Analysis</TabsTrigger>
                     <TabsTrigger value="leads">Recent Leads</TabsTrigger>
                     <TabsTrigger value="trends">Daily Trends</TabsTrigger>
                 </TabsList>
+
+                <TabsContent value="niches">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <BarChart3 className="w-5 h-5 text-burgundy-600" />
+                                Performance by Mini Diploma Niche
+                            </CardTitle>
+                            <CardDescription>Comparison of all mini diploma types</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {data.nicheStats && data.nicheStats.length > 0 ? (
+                                <div className="space-y-4">
+                                    {/* Niche comparison table */}
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="border-b">
+                                                    <th className="text-left py-3 px-2 font-semibold">Niche</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Leads</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Started</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Completed</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Start Rate</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Completion</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Overall Conv.</th>
+                                                    <th className="text-center py-3 px-2 font-semibold">Biggest Drop</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.nicheStats
+                                                    .sort((a, b) => b.signups - a.signups)
+                                                    .map((niche) => (
+                                                        <tr key={niche.slug} className="border-b hover:bg-gray-50">
+                                                            <td className="py-3 px-2 font-medium">{niche.name}</td>
+                                                            <td className="text-center py-3 px-2">
+                                                                <span className="font-bold">{niche.signups}</span>
+                                                            </td>
+                                                            <td className="text-center py-3 px-2">{niche.started}</td>
+                                                            <td className="text-center py-3 px-2">{niche.completed}</td>
+                                                            <td className="text-center py-3 px-2">
+                                                                <span className={niche.startRate >= 60 ? "text-green-600" : niche.startRate >= 40 ? "text-amber-600" : "text-red-600"}>
+                                                                    {niche.startRate}%
+                                                                </span>
+                                                            </td>
+                                                            <td className="text-center py-3 px-2">
+                                                                <span className={niche.completionRate >= 50 ? "text-green-600" : niche.completionRate >= 30 ? "text-amber-600" : "text-red-600"}>
+                                                                    {niche.completionRate}%
+                                                                </span>
+                                                            </td>
+                                                            <td className="text-center py-3 px-2">
+                                                                <Badge className={niche.overallConversion >= 20 ? "bg-green-500" : niche.overallConversion >= 10 ? "bg-amber-500" : "bg-red-500"}>
+                                                                    {niche.overallConversion}%
+                                                                </Badge>
+                                                            </td>
+                                                            <td className="text-center py-3 px-2">
+                                                                {niche.biggestDropoffLesson > 0 ? (
+                                                                    <span className="text-red-600">
+                                                                        L{niche.biggestDropoffLesson} ({niche.biggestDropoffRate}%)
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="text-gray-400">-</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Visual comparison */}
+                                    <div className="mt-6 pt-6 border-t">
+                                        <h4 className="font-semibold text-gray-700 mb-4">Lead Distribution by Niche</h4>
+                                        <div className="space-y-3">
+                                            {data.nicheStats
+                                                .sort((a, b) => b.signups - a.signups)
+                                                .map((niche) => {
+                                                    const maxSignups = Math.max(...data.nicheStats!.map(n => n.signups));
+                                                    const width = maxSignups > 0 ? (niche.signups / maxSignups) * 100 : 0;
+                                                    return (
+                                                        <div key={niche.slug} className="flex items-center gap-3">
+                                                            <div className="w-32 text-sm truncate">{niche.name}</div>
+                                                            <div className="flex-1">
+                                                                <div className="h-6 bg-gray-100 rounded overflow-hidden">
+                                                                    <div
+                                                                        className="h-full bg-burgundy-500 rounded transition-all flex items-center justify-end pr-2"
+                                                                        style={{ width: `${width}%` }}
+                                                                    >
+                                                                        {width > 20 && (
+                                                                            <span className="text-xs text-white font-medium">{niche.signups}</span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {width <= 20 && (
+                                                                <span className="text-sm font-medium w-10">{niche.signups}</span>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-gray-500 text-center py-8">No niche data available</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
 
                 <TabsContent value="dropoff">
                     <Card>

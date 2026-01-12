@@ -246,6 +246,78 @@ export async function GET() {
             });
         }
 
+        // Per-niche breakdown
+        const nicheStats = [];
+        for (const slug of MINI_DIPLOMA_SLUGS) {
+            const tagPrefix = SLUG_TO_TAG_PREFIX[slug];
+            const nicheEnrollments = enrollmentsWithProgress.filter(
+                (e) => e.course.slug === slug
+            );
+
+            const nicheSignups = nicheEnrollments.length;
+            const nicheStarted = nicheEnrollments.filter((e) => e.lessonsCompleted > 0).length;
+            const nicheCompleted = nicheEnrollments.filter((e) => e.lessonsCompleted >= 9).length;
+
+            // Calculate niche-specific drop-off per lesson
+            const nicheLessonCounts: Record<number, number> = {};
+            for (let i = 1; i <= 9; i++) {
+                nicheLessonCounts[i] = 0;
+            }
+            nicheEnrollments.forEach((e) => {
+                for (let i = 1; i <= e.lessonsCompleted; i++) {
+                    nicheLessonCounts[i]++;
+                }
+            });
+
+            const nicheDropoffPoints = [];
+            for (let i = 1; i <= 9; i++) {
+                const atThisLesson = nicheLessonCounts[i] || 0;
+                const atPreviousLesson = i === 1 ? nicheStarted : (nicheLessonCounts[i - 1] || 0);
+                const dropRate = atPreviousLesson > 0
+                    ? Math.round(((atPreviousLesson - atThisLesson) / atPreviousLesson) * 100)
+                    : 0;
+                nicheDropoffPoints.push({ lesson: i, dropRate: Math.max(0, dropRate) });
+            }
+
+            // Find biggest drop-off point for this niche
+            const biggestDropoff = nicheDropoffPoints.reduce(
+                (max, p) => (p.dropRate > max.dropRate ? p : max),
+                { lesson: 0, dropRate: 0 }
+            );
+
+            // Conversion rates
+            const startRate = nicheSignups > 0 ? Math.round((nicheStarted / nicheSignups) * 100) : 0;
+            const completionRate = nicheStarted > 0 ? Math.round((nicheCompleted / nicheStarted) * 100) : 0;
+            const overallConversion = nicheSignups > 0 ? Math.round((nicheCompleted / nicheSignups) * 100) : 0;
+
+            // Format niche name nicely
+            const nicheName = slug
+                .replace("-mini-diploma", "")
+                .split("-")
+                .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(" ");
+
+            nicheStats.push({
+                slug,
+                name: nicheName,
+                signups: nicheSignups,
+                started: nicheStarted,
+                completed: nicheCompleted,
+                startRate,
+                completionRate,
+                overallConversion,
+                biggestDropoffLesson: biggestDropoff.lesson,
+                biggestDropoffRate: biggestDropoff.dropRate,
+                dropoffPoints: nicheDropoffPoints,
+            });
+        }
+
+        // Sort by signups to find best performer
+        const sortedBySignups = [...nicheStats].sort((a, b) => b.signups - a.signups);
+        const bestPerformer = sortedBySignups[0];
+        const sortedByConversion = [...nicheStats].filter(n => n.signups >= 5).sort((a, b) => b.overallConversion - a.overallConversion);
+        const bestConversion = sortedByConversion[0];
+
         return NextResponse.json({
             signups,
             started,
@@ -257,6 +329,17 @@ export async function GET() {
             dropoffPoints,
             recentSignups: formattedRecentSignups,
             dailySignups,
+            nicheStats,
+            bestPerformer: bestPerformer ? {
+                name: bestPerformer.name,
+                signups: bestPerformer.signups,
+                completionRate: bestPerformer.completionRate,
+            } : null,
+            bestConversion: bestConversion ? {
+                name: bestConversion.name,
+                overallConversion: bestConversion.overallConversion,
+                signups: bestConversion.signups,
+            } : null,
         });
     } catch (error) {
         console.error("Error fetching mini diploma analytics:", error);

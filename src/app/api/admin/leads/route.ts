@@ -28,9 +28,11 @@ export async function GET() {
     }
 
     // Get all mini diploma leads (not purchases)
+    // Filter by leadSource to ensure only actual mini diploma optins
     const leads = await prisma.user.findMany({
         where: {
             miniDiplomaOptinAt: { not: null },
+            leadSource: "mini-diploma-freebie",
             isFakeProfile: { not: true },
             email: { not: { contains: "@test" } },
         },
