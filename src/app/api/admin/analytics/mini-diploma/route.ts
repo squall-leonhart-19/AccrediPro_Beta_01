@@ -38,10 +38,14 @@ export async function GET() {
 
         const now = new Date();
 
-        // Signups - users enrolled in any mini diploma course
+        // Signups - users enrolled in any mini diploma course (exclude fake/test users)
         const signups = await prisma.enrollment.count({
             where: {
                 course: { slug: { in: MINI_DIPLOMA_SLUGS } },
+                user: {
+                    isFakeProfile: { not: true },
+                    email: { not: { contains: "@test" } },
+                },
             },
         });
 
@@ -49,6 +53,10 @@ export async function GET() {
         const enrollments = await prisma.enrollment.findMany({
             where: {
                 course: { slug: { in: MINI_DIPLOMA_SLUGS } },
+                user: {
+                    isFakeProfile: { not: true },
+                    email: { not: { contains: "@test" } },
+                },
             },
             select: {
                 userId: true,
@@ -164,10 +172,14 @@ export async function GET() {
             });
         }
 
-        // Recent signups (most recent enrollments)
+        // Recent signups (most recent enrollments, exclude fake/test)
         const recentEnrollments = await prisma.enrollment.findMany({
             where: {
                 course: { slug: { in: MINI_DIPLOMA_SLUGS } },
+                user: {
+                    isFakeProfile: { not: true },
+                    email: { not: { contains: "@test" } },
+                },
             },
             orderBy: { enrolledAt: "desc" },
             take: 10,
@@ -207,7 +219,7 @@ export async function GET() {
             };
         });
 
-        // Daily signups for last 14 days
+        // Daily signups for last 14 days (exclude fake/test)
         const dailySignups = [];
         for (let i = 13; i >= 0; i--) {
             const dayStart = new Date(now);
@@ -221,6 +233,10 @@ export async function GET() {
                 where: {
                     course: { slug: { in: MINI_DIPLOMA_SLUGS } },
                     enrolledAt: { gte: dayStart, lte: dayEnd },
+                    user: {
+                        isFakeProfile: { not: true },
+                        email: { not: { contains: "@test" } },
+                    },
                 },
             });
 
