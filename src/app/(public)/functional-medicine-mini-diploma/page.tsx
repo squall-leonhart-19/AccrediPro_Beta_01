@@ -259,6 +259,79 @@ function FunctionalMedicineMiniDiplomaContent() {
                 </div>
             </section>
 
+            {/* CERTIFICATE PREVIEW - THE MONEY SHOT */}
+            <section className="py-16 md:py-20 bg-white">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-10 items-center">
+                        {/* Certificate Image */}
+                        <div className="relative">
+                            <div className="absolute -inset-4 rounded-3xl opacity-20 blur-2xl" style={{ backgroundColor: BRAND.gold }} />
+                            <div className="relative bg-white rounded-2xl shadow-2xl p-4 border border-gray-100 transform hover:scale-[1.02] transition-transform">
+                                <Image
+                                    src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
+                                    alt="Functional Medicine Foundation Certificate"
+                                    width={600}
+                                    height={450}
+                                    className="rounded-xl w-full h-auto"
+                                />
+                            </div>
+                            {/* Badge */}
+                            <div className="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-lg px-4 py-2 border border-gray-100">
+                                <div className="flex items-center gap-2">
+                                    <Shield className="w-5 h-5" style={{ color: BRAND.burgundy }} />
+                                    <span className="font-bold text-sm" style={{ color: BRAND.burgundy }}>ASI Verified</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Certificate Copy + Urgency */}
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                                <Award className="w-4 h-4" />
+                                YOUR CERTIFICATE AWAITS
+                            </div>
+
+                            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                                Your Name.<br />
+                                <span style={{ color: BRAND.burgundy }}>On This Certificate.</span><br />
+                                <span className="text-2xl text-gray-500">In 60 Minutes.</span>
+                            </h2>
+
+                            <p className="text-gray-600 mb-6 leading-relaxed">
+                                Complete all 9 lessons and receive your <strong>ASI-Verified Foundation Certificate</strong> —
+                                recognized by clients and employers worldwide. This isn't a participation trophy.
+                                It's proof you've mastered the fundamentals.
+                            </p>
+
+                            {/* Urgency Box */}
+                            <div className="rounded-2xl p-5 mb-6 border-2" style={{ backgroundColor: `${BRAND.burgundy}08`, borderColor: `${BRAND.burgundy}30` }}>
+                                <div className="flex items-start gap-3">
+                                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: BRAND.burgundyMetallic }}>
+                                        <Clock className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-gray-900 mb-1">⏰ 7-Day Access Window</p>
+                                        <p className="text-sm text-gray-600">
+                                            You have <strong>7 days</strong> to complete your mini diploma and claim your certificate.
+                                            After that, access closes for the next cohort. <strong>Don't let this slip!</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <Button
+                                onClick={scrollToForm}
+                                className="h-14 px-8 text-lg font-bold text-white"
+                                style={{ background: BRAND.burgundyMetallic }}
+                            >
+                                Claim My Free Certificate
+                                <ArrowRight className="ml-2 w-5 h-5" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* THIS IS FOR YOU */}
             <section className="py-16 md:py-20 bg-white">
                 <div className="max-w-4xl mx-auto px-4">
