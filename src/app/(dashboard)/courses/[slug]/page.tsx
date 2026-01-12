@@ -149,6 +149,10 @@ export default async function CourseDetailPage({
     ? await getEnrollment(session.user.id, course.id)
     : null;
 
+  // Check if user is staff (admin/instructor/mentor) - they get full access
+  const userRole = (session?.user?.role as string) || "";
+  const isStaff = ["ADMIN", "INSTRUCTOR", "MENTOR"].includes(userRole);
+
   const progressMap = session?.user?.id
     ? await getLessonProgress(session.user.id, course.id)
     : new Map();
@@ -311,8 +315,8 @@ export default async function CourseDetailPage({
                 isFree={course.isFree}
                 price={course.price ? Number(course.price) : null}
                 certificateType={course.certificateType}
-                isEnrolled={!!enrollment}
-                enrollmentStatus={enrollment?.status || null}
+                isEnrolled={!!enrollment || isStaff}
+                enrollmentStatus={enrollment?.status || (isStaff ? "ACTIVE" : null)}
                 nextLessonId={nextLesson?.id || null}
                 miniDiplomaCompletedAt={miniDiplomaCompletedAt?.toISOString() || null}
               />
@@ -339,7 +343,7 @@ export default async function CourseDetailPage({
               })),
             }))}
             courseSlug={course.slug}
-            isEnrolled={!!enrollment}
+            isEnrolled={!!enrollment || isStaff}
             progressMap={Object.fromEntries(
               Array.from(progressMap.entries()).map(([key, value]) => [
                 key,

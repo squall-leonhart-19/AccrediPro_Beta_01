@@ -139,8 +139,11 @@ export default async function LearnV2Page({
   const course = lesson.module.course;
   const enrollment = await getEnrollment(session.user.id, course.id);
 
-  // Check access
-  if (!enrollment && !lesson.isFreePreview) {
+  // Check access - Admin/Instructor/Mentor bypass enrollment requirement
+  const userRole = session.user.role as string;
+  const isStaff = ["ADMIN", "INSTRUCTOR", "MENTOR"].includes(userRole);
+
+  if (!enrollment && !lesson.isFreePreview && !isStaff) {
     redirect(`/courses/${slug}`);
   }
 
