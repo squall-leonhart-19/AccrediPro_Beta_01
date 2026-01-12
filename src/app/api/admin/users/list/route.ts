@@ -44,7 +44,12 @@ export async function GET(request: NextRequest) {
     // By default, exclude mini diploma leads (they have their own /admin/leads page)
     // Only show them if explicitly requested with includeLeads=true
     if (!includeLeads) {
-      andConditions.push({ miniDiplomaOptinAt: null });
+      andConditions.push({
+        AND: [
+          { miniDiplomaOptinAt: null },
+          { role: { not: "LEAD" } } // Also exclude explicit leads
+        ]
+      });
     }
 
     // Search filter (email, firstName, lastName)

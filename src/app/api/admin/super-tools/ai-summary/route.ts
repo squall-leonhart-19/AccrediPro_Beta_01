@@ -127,7 +127,7 @@ KEY METRICS:
 
         // Call Anthropic
         const response = await anthropic.messages.create({
-            model: "claude-haiku-4-5-20251001",
+            model: "claude-3-haiku-20240307",
             max_tokens: 800,
             system: `You are an expert customer success analyst for AccrediPro Academy, an online certification platform for health & wellness professionals. 
 

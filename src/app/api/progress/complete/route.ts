@@ -156,7 +156,12 @@ export async function POST(request: NextRequest) {
         const completedLessons = await tx.lessonProgress.count({
           where: { userId, lessonId: { in: lessonIds }, isCompleted: true },
         });
-        newProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+        // Fix 0% Bug: Ensure we don't divide by zero and handle unpublished lesson testing
+        // If totalLessons is 0 (e.g. unpublished course), use completedLessons as total to show 100% or just 1
+        const effectiveTotalLessons = totalLessons > 0 ? totalLessons : (completedLessons > 0 ? completedLessons : 1);
+
+        newProgress = (completedLessons / effectiveTotalLessons) * 100;
+        if (newProgress > 100) newProgress = 100; // Cap at 100%
 
         const enrollment = await tx.enrollment.findUnique({
           where: { userId_courseId: { userId, courseId: course.id } },
