@@ -141,56 +141,149 @@ interface LessonPageV3Props {
 function processLessonContent(htmlContent: string | null): string {
     if (!htmlContent) return '';
 
-    // CSS overrides to inject
+    // CSS overrides to inject - COMPREHENSIVE SCHOOL-QUALITY FIX
     const styleOverrides = `
     <style id="lesson-overrides">
         /* Hide duplicate brand header */
         .brand-header { display: none !important; }
+        .lesson-footer { display: none !important; }
         
-        /* Force full width layout - THE MAIN FIX */
+        /* Force full width layout */
         .lesson-container {
             max-width: 100% !important;
             width: 100% !important;
             margin: 0 !important;
-            padding: 24px !important;
+            padding: 0 !important;
             background: transparent !important;
             box-shadow: none !important;
             min-height: auto !important;
         }
         
-        /* Module header - full width */
+        /* =========================================== */
+        /* MODULE HEADER - School Quality Styling */
+        /* =========================================== */
         .module-header {
             max-width: 100% !important;
             width: 100% !important;
             border-radius: 16px !important;
             margin: 0 0 32px 0 !important;
+            padding: 32px !important;
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%) !important;
+            box-shadow: 0 10px 40px -10px rgba(114, 47, 55, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
-        /* TOC box (In This Lesson) - FULL WIDTH */
+        .module-header .module-label,
+        .module-header .lesson-meta,
+        .module-header .meta-item {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        .module-header .lesson-title,
+        .module-header h1 {
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* =========================================== */
+        /* WELCOME BOX - Fix Text Visibility */
+        /* =========================================== */
+        .welcome-box {
+            max-width: 100% !important;
+            width: 100% !important;
+            margin: 0 0 32px 0 !important;
+            padding: 28px 32px !important;
+            border-radius: 16px !important;
+            background: linear-gradient(135deg, #722F37 0%, #8B3D43 100%) !important;
+            box-shadow: 0 8px 32px -8px rgba(114, 47, 55, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        .welcome-box p,
+        .welcome-box p.quote,
+        .welcome-box p.author,
+        .welcome-box h2,
+        .welcome-box h3,
+        .welcome-box li,
+        .welcome-box a,
+        .welcome-box em,
+        .welcome-box strong,
+        .welcome-box span {
+            color: #ffffff !important;
+            opacity: 1 !important;
+        }
+        
+        .welcome-box p.author {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+        
+        /* =========================================== */
+        /* TOC BOX (In This Lesson) */
+        /* =========================================== */
         .toc-box {
             max-width: 100% !important;
             width: 100% !important;
-            margin: 0 0 24px 0 !important;
+            margin: 0 0 32px 0 !important;
+            background: #f8f8f8 !important;
+            border: 1px solid #e5e5e5 !important;
+            border-radius: 16px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
         }
         
-        /* Welcome, objectives, case study boxes - FULL WIDTH */
-        .welcome-box,
+        /* =========================================== */
+        /* ALERT BOXES - Rounded, School Style */
+        /* =========================================== */
+        .alert-box {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding: 24px 28px !important;
+            margin: 28px 0 !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        }
+        
+        .alert-box.success {
+            background: #f0fdf4 !important;
+            border: 1px solid #86efac !important;
+            border-left: 4px solid #22c55e !important;
+        }
+        
+        .alert-box.warning {
+            background: #fffbeb !important;
+            border: 1px solid #fcd34d !important;
+            border-left: 4px solid #f59e0b !important;
+        }
+        
+        /* =========================================== */
+        /* CONTENT BOXES - Full Width with Borders */
+        /* =========================================== */
         .objectives-box,
         .case-study,
-        .alert-box,
         .check-understanding,
         .key-terms-box,
         .comparison-grid,
         .principle-card,
         .toolkit-container,
-        .stats-box {
+        .stats-box,
+        .takeaways-box {
             max-width: 100% !important;
             width: 100% !important;
             margin-left: 0 !important;
             margin-right: 0 !important;
+            margin-bottom: 28px !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+            border: 1px solid #e5e5e5 !important;
         }
         
-        /* Only paragraphs, headings, and lists get centered for readability */
+        .takeaways-box {
+            background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%) !important;
+            border: 1px solid #fde047 !important;
+        }
+        
+        /* =========================================== */
+        /* TYPOGRAPHY - Clean Reading Experience */
+        /* =========================================== */
         .lesson-container > h2,
         .lesson-container > h3,
         .lesson-container > h4,
@@ -202,6 +295,37 @@ function processLessonContent(htmlContent: string | null): string {
             max-width: 900px !important;
             margin-left: auto !important;
             margin-right: auto !important;
+        }
+        
+        h2 {
+            color: #722F37 !important;
+            font-weight: 700 !important;
+            margin-top: 48px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        h2::after {
+            background: linear-gradient(90deg, #B8860B, #D4A84B) !important;
+            height: 3px !important;
+            border-radius: 2px !important;
+        }
+        
+        /* =========================================== */
+        /* LISTS - Better Formatting */
+        /* =========================================== */
+        .content-list {
+            max-width: 900px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        
+        .content-list li {
+            padding: 8px 0 !important;
+            border-bottom: 1px solid #f3f3f3 !important;
+        }
+        
+        .content-list li:last-child {
+            border-bottom: none !important;
         }
         
         /* Force inner wrapper to be full width */
