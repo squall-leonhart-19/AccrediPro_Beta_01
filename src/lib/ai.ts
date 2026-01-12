@@ -58,7 +58,7 @@ export async function streamChatResponse(
   }
 
   const stream = await anthropic.messages.stream({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 1024,
     system: SYSTEM_PROMPT + contextInfo,
     messages: messages.map((m) => ({
@@ -87,7 +87,7 @@ export async function getChatResponse(
   }
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 1024,
     system: SYSTEM_PROMPT + contextInfo,
     messages: messages.map((m) => ({

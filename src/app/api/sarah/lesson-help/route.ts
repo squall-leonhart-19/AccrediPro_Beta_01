@@ -61,7 +61,7 @@ YOUR PERSONALITY:
 Keep responses concise (2-3 paragraphs max). Use emojis sparingly (1-2 max).`;
 
         const response = await anthropic.messages.create({
-            model: "claude-sonnet-4-5-20250929",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: 400,
             system: systemPrompt,
             messages: [

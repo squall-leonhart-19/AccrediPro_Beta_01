@@ -104,7 +104,7 @@ Template: ${template || "general"}
 
     try {
         const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: type === "email" ? 400 : 200,
             messages: [
                 { role: "user", content: `${systemPrompt}\n\n${userPrompt}` },
@@ -193,7 +193,7 @@ export async function analyzeUser(userId: string): Promise<UserAnalysis> {
 
     try {
         const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: 600,
             messages: [
                 {
@@ -263,7 +263,7 @@ export async function generateMorningCheckIn(userId: string): Promise<string> {
 
     try {
         const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: 150,
             messages: [
                 {
@@ -350,7 +350,7 @@ export async function generateWeeklyReport(): Promise<WeeklyReport> {
 
     try {
         const response = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: 600,
             messages: [
                 {

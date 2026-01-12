@@ -146,7 +146,7 @@ Now respond to the student's latest message. Keep it short and natural like a re
 
     try {
         const response = await anthropic.messages.create({
-            model: "claude-3-haiku-20240307",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: 256,
             messages: [
                 { role: "user", content: message }

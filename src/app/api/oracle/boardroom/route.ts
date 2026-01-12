@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
         const responses = await Promise.all(
             Object.entries(BOARD_MEMBERS).map(async ([key, member]) => {
                 const response = await anthropic.messages.create({
-                    model: "claude-3-5-sonnet-20241022",
+                    model: "claude-haiku-4-5-20251001",
                     max_tokens: 200,
                     messages: [
                         {
@@ -114,7 +114,7 @@ The original problem was: "${problem}"
 Synthesize these perspectives into a single, actionable CONSENSUS recommendation. Be specific and practical. Start with "CONSENSUS:" and keep it to 2-3 sentences.`;
 
         const consensusResponse = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20241022",
+            model: "claude-haiku-4-5-20251001",
             max_tokens: 150,
             messages: [{ role: "user", content: consensusPrompt }],
         });
