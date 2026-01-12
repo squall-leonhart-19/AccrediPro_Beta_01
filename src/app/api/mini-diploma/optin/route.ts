@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
                 passwordHash,
-                phone: phone.trim(),
+                phone: cleanPhone, // Normalized: digits only
                 role: "STUDENT",
                 userType: "LEAD",
                 isActive: true,
@@ -351,7 +351,7 @@ export async function POST(request: NextRequest) {
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
                     email: email.toLowerCase(),
-                    phone: phone.trim(),
+                    phone: cleanPhone, // Normalized: digits only
                     // Source Tracking
                     source: "mini-diploma",
                     lead_source: course, // e.g., "functional-medicine"
