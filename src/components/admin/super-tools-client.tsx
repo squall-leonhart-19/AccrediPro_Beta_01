@@ -67,8 +67,8 @@ interface UserData {
     }[];
     podMemberships?: {
         id: string;
-        role: string;
-        joinedAt: string;
+        isCoach: boolean;
+        lastActiveAt: string | null;
         pod: { id: string; name: string };
     }[];
 }
@@ -391,7 +391,7 @@ export function SuperToolsClient({ courses }: SuperToolsClientProps) {
                                                     <div>
                                                         <p className="text-sm font-medium">{membership.pod.name}</p>
                                                         <p className="text-xs text-gray-500">
-                                                            Role: {membership.role}
+                                                            {membership.isCoach ? "Coach" : "Member"}
                                                         </p>
                                                     </div>
                                                     <Button

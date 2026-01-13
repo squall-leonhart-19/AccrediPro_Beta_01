@@ -68,8 +68,8 @@ export async function GET(req: NextRequest) {
                 podMemberships: {
                     select: {
                         id: true,
-                        role: true,
-                        joinedAt: true,
+                        isCoach: true,
+                        lastActiveAt: true,
                         pod: {
                             select: {
                                 id: true,
