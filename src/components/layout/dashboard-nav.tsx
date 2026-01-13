@@ -96,8 +96,8 @@ const fullNavItems: NavItem[] = [
   // 5. Coach Sarah - standalone (the differentiator)
   { href: "/messages", label: "Coach Sarah", icon: MessageSquare, notificationKey: "messages", tourId: "coach-sarah" },
 
-  // 6. My Pod - points to /my-circle (mastermind pod chat)
-  { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
+  // 6. My Pod - TEMPORARILY HIDDEN
+  // { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
 
   // 7. Community - EXPANDABLE GROUP with sub-items
   {

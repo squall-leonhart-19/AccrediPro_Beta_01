@@ -22,6 +22,7 @@ import {
     MessageCircle,
     Award,
     Flame,
+    List,
 } from "lucide-react";
 import { FloatingMentorChat } from "@/components/ai/floating-mentor-chat";
 import { SarahLessonBubble } from "@/components/courses/sarah-lesson-bubble";
@@ -636,9 +637,12 @@ export function LessonPageV3({
                             variant="outline"
                             size="sm"
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="gap-2 border-gray-200"
+                            className={cn(
+                                "gap-2 border-gray-200",
+                                sidebarOpen && "bg-[#722f37]/5 border-[#722f37]/30 text-[#722f37]"
+                            )}
                         >
-                            <Menu className="w-4 h-4" />
+                            <List className="w-4 h-4" />
                             <span className="hidden sm:inline text-sm">Content</span>
                         </Button>
 
@@ -801,7 +805,174 @@ export function LessonPageV3({
                     </div>
                 </main>
 
+                {/* ===== COURSE CONTENT SIDEBAR ===== */}
+                {/* Overlay for mobile */}
+                {sidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
 
+                {/* Sidebar */}
+                <aside
+                    className={cn(
+                        "fixed right-0 top-0 h-full z-50",
+                        "w-full max-w-md bg-white border-l border-gray-200",
+                        "transform transition-transform duration-200 ease-out",
+                        sidebarOpen ? "translate-x-0" : "translate-x-full"
+                    )}
+                >
+                    <div className="h-full flex flex-col">
+                        {/* Minimal Header */}
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                            <div>
+                                <h3 className="font-semibold text-gray-900">Course Content</h3>
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                    {progress.courseProgress.completed}/{progress.courseProgress.total} completed · {courseProgressPercent}%
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setSidebarOpen(false)}
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                                <X className="w-5 h-5 text-gray-500" />
+                            </button>
+                        </div>
+
+                        {/* Module List */}
+                        <div className="flex-1 overflow-y-auto py-2">
+                            {course.modules
+                                .sort((a, b) => a.order - b.order)
+                                .map((m) => {
+                                    const moduleCompleted = m.lessons.filter(
+                                        (l) => localProgressMap[l.id]?.isCompleted
+                                    ).length;
+                                    const moduleTotal = m.lessons.length;
+                                    const isCurrentModule = m.id === module.id;
+                                    const isExpanded = expandedModules.includes(m.id);
+                                    const modulePercent = moduleTotal > 0 ? Math.round((moduleCompleted / moduleTotal) * 100) : 0;
+
+                                    return (
+                                        <div key={m.id} className="mb-1">
+                                            {/* Module Header */}
+                                            <button
+                                                onClick={() => toggleModule(m.id)}
+                                                className={cn(
+                                                    "w-full text-left px-4 py-3 transition-colors",
+                                                    isCurrentModule
+                                                        ? "bg-[#722f37]/5"
+                                                        : "hover:bg-gray-50"
+                                                )}
+                                            >
+                                                {/* Module Label */}
+                                                <div className="flex items-center justify-between mb-1">
+                                                    <span className={cn(
+                                                        "text-xs font-semibold uppercase tracking-wide",
+                                                        isCurrentModule ? "text-[#722f37]" : "text-gray-400"
+                                                    )}>
+                                                        Module {m.order}
+                                                    </span>
+                                                    <ChevronDown className={cn(
+                                                        "w-4 h-4 text-gray-400 transition-transform",
+                                                        isExpanded && "rotate-180"
+                                                    )} />
+                                                </div>
+
+                                                {/* Module Title */}
+                                                <h4 className={cn(
+                                                    "font-semibold text-[15px] leading-snug mb-2",
+                                                    isCurrentModule ? "text-[#722f37]" : "text-gray-900"
+                                                )}>
+                                                    {m.title}
+                                                </h4>
+
+                                                {/* Progress Bar */}
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={cn(
+                                                                "h-full rounded-full transition-all",
+                                                                moduleCompleted === moduleTotal
+                                                                    ? "bg-green-500"
+                                                                    : "bg-[#722f37]"
+                                                            )}
+                                                            style={{ width: `${modulePercent}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs text-gray-500 tabular-nums">
+                                                        {moduleCompleted}/{moduleTotal}
+                                                    </span>
+                                                </div>
+                                            </button>
+
+                                            {/* Lessons */}
+                                            {isExpanded && (
+                                                <div className="px-4 pb-3">
+                                                    <div className="border-l-2 border-gray-200 ml-1">
+                                                        {m.lessons
+                                                            .sort((a, b) => a.order - b.order)
+                                                            .map((l) => {
+                                                                const isCurrentLesson = l.id === lesson.id;
+                                                                const isLessonCompleted = localProgressMap[l.id]?.isCompleted;
+                                                                const unlocked = isLessonUnlocked(l.id);
+
+                                                                return (
+                                                                    <Link
+                                                                        key={l.id}
+                                                                        href={unlocked ? `/learning/${course.slug}/${l.id}` : "#"}
+                                                                        onClick={(e) => {
+                                                                            if (!unlocked) {
+                                                                                e.preventDefault();
+                                                                                toast.error("Complete previous lessons first");
+                                                                            } else {
+                                                                                setSidebarOpen(false);
+                                                                            }
+                                                                        }}
+                                                                        className={cn(
+                                                                            "flex items-center gap-3 py-2 pl-4 -ml-[5px] transition-colors",
+                                                                            isCurrentLesson
+                                                                                ? "border-l-2 border-[#722f37] bg-[#722f37]/5"
+                                                                                : "border-l-2 border-transparent hover:bg-gray-50",
+                                                                            !unlocked && "opacity-50 cursor-not-allowed"
+                                                                        )}
+                                                                    >
+                                                                        {/* Status Icon */}
+                                                                        <span className="flex-shrink-0">
+                                                                            {isLessonCompleted ? (
+                                                                                <CheckCircle className="w-4 h-4 text-green-500" />
+                                                                            ) : !unlocked ? (
+                                                                                <Lock className="w-4 h-4 text-gray-300" />
+                                                                            ) : isCurrentLesson ? (
+                                                                                <Play className="w-4 h-4 text-[#722f37] fill-[#722f37]" />
+                                                                            ) : (
+                                                                                <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
+                                                                            )}
+                                                                        </span>
+
+                                                                        {/* Title */}
+                                                                        <span className={cn(
+                                                                            "flex-1 text-sm leading-snug",
+                                                                            isCurrentLesson
+                                                                                ? "text-[#722f37] font-medium"
+                                                                                : isLessonCompleted
+                                                                                    ? "text-gray-500"
+                                                                                    : "text-gray-700"
+                                                                        )}>
+                                                                            {l.title}
+                                                                        </span>
+                                                                    </Link>
+                                                                );
+                                                            })}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    </div>
+                </aside>
 
 
 

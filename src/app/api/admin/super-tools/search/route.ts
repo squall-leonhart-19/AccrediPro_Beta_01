@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
                 email: true,
                 firstName: true,
                 lastName: true,
-                avatar: true, // Note: This might be null based on auth.ts notes, but it's in schema
+                avatar: true,
                 role: true,
                 enrollments: {
                     select: {
@@ -87,3 +87,4 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
