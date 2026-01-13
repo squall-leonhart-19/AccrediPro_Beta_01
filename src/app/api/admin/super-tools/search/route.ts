@@ -65,6 +65,19 @@ export async function GET(req: NextRequest) {
                         },
                     },
                 },
+                podMemberships: {
+                    select: {
+                        id: true,
+                        role: true,
+                        joinedAt: true,
+                        pod: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
             },
         });
 

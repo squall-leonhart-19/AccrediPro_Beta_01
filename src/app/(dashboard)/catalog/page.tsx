@@ -202,8 +202,6 @@ async function getUserGraduateStatus(userId: string) {
 }
 
 export default async function CoursesPage() {
-  // Redirect ALL users from /catalog to /messages (catalog page deprecated)
-  redirect("/messages");
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const session = await getServerSession(authOptions);

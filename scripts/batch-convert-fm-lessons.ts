@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 4.5: Working with Healthcare Providers</title>
-    <style>
+/**
+ * Batch Convert FM Lessons to Card Layout
+ * ========================================
+ * This script:
+ * 1. Reads all HTML lesson files from FM/FM-Update
+ * 2. Transforms them to the new "Card Layout" structure
+ * 3. Overwrites the HTML files on disk
+ * 4. Syncs the content to the database
+ */
+
+import { prisma } from "../src/lib/prisma";
+import * as fs from "fs";
+import * as path from "path";
+
+const FM_UPDATE_PATH = path.join(process.cwd(), "FM/FM-Update");
+const COURSE_SLUG = "functional-medicine-complete-certification";
+
+// New Card Layout CSS (matches Lesson 0.1 - 1200px approved)
+const CARD_LAYOUT_CSS = `
 /* =========================================
            ACCREDIPRO SCHOOL-QUALITY STYLES (CARD LAYOUT)
            ========================================= */
@@ -241,6 +253,50 @@
         /* STATS BOX WRAPPER */
         .stats-box { background: #fffcee; padding: 32px; border-radius: 16px; border: 1px solid #fef3c7; margin: 32px 0; }
 
+        /* ANALOGY BOXES */
+        .analogy-box { display: flex; flex-direction: column; gap: 16px; margin: 32px 0; }
+        .analogy-item { display: flex; align-items: flex-start; gap: 16px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .analogy-icon { font-size: 28px; flex-shrink: 0; }
+        .analogy-item p { margin: 0; font-size: 16px; }
+
+        /* ICEBERG DIAGRAM */
+        .iceberg-box { margin: 32px 0; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .iceberg-above { background: #e0f2fe; padding: 24px; text-align: center; }
+        .iceberg-above h4 { margin: 0 0 8px 0; color: #0369a1; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .iceberg-above p { margin: 0; font-size: 18px; font-weight: 600; color: #0c4a6e; }
+        .iceberg-above .small { font-size: 13px; color: #64748b; font-weight: 400; margin-top: 4px; }
+        .iceberg-divider { height: 4px; background: linear-gradient(90deg, #0ea5e9, #38bdf8, #0ea5e9); }
+        .iceberg-below { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); padding: 32px; text-align: center; }
+        .iceberg-below h4 { margin: 0 0 8px 0; color: #7dd3fc; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .iceberg-below p { margin: 0; font-size: 18px; font-weight: 600; color: #ffffff; }
+        .iceberg-below .small { font-size: 13px; color: #94a3b8; font-weight: 400; margin-top: 4px; }
+
+        /* TAGS BOX (Grid) */
+        .tags-box { margin: 32px 0; }
+        .tags-title { font-weight: 700; color: #722F37; margin-bottom: 16px; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tags-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+        .tags-grid .tag { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; border: 1px solid; }
+
+        /* PRINCIPLES BOX */
+        .principles-box { margin: 32px 0; display: flex; flex-direction: column; gap: 16px; }
+        .principle-item { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .principle-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-bottom: 4px; }
+        .principle-item .principle-title { font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 8px 0; }
+        .principle-desc { font-size: 14px; color: #6b7280; margin: 0; }
+        .hl { background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%); padding: 0 4px; border-radius: 2px; }
+
+        /* STEPS BOX */
+        .steps-box { margin: 32px 0; display: flex; flex-direction: column; gap: 16px; }
+        .step-item { display: flex; align-items: flex-start; gap: 16px; background: #f8fafc; padding: 16px 20px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .step-num { width: 32px; height: 32px; background: #722F37; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+        .step-num.success { background: #22c55e; }
+        .step-item p { margin: 0; font-size: 15px; }
+
+        /* DIAGRAM RESULTS GRID */
+        .diagram-source { font-weight: 800; font-size: 18px; color: #b91c1c; text-transform: uppercase; letter-spacing: 1px; }
+        .diagram-results { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 16px; }
+        .diagram-result { background: white; padding: 12px 20px; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 600; color: #374151; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+
         /* CHECK YOUR UNDERSTANDING - INTERACTIVE */
         .check-understanding { background: #faf5ff; border: 1px solid #e9d5ff; border-left: 4px solid #a855f7; padding: 24px; border-radius: 12px; margin: 32px 0; }
         .check-understanding .box-label { color: #7e22ce; }
@@ -302,94 +358,231 @@
             .lesson-title { font-size: 28px; }
             .timeline-visual { flex-direction: column; }
         }
+`;
 
+function transformToCardLayout(htmlContent: string, filename: string): string {
+    // Extract title
+    const titleMatch = htmlContent.match(/<title>([^<]+)<\/title>/i);
+    const title = titleMatch ? titleMatch[1] : 'Lesson';
+
+    // Extract module label
+    const moduleLabelMatch = htmlContent.match(/<p class="module-label">([^<]+)<\/p>/i);
+    const moduleLabel = moduleLabelMatch ? moduleLabelMatch[1].trim() : 'Module';
+
+    // Extract lesson title
+    let lessonTitle = title;
+    // Try h1 with class first
+    const h1ClassMatch = htmlContent.match(/<h1 class="lesson-title">([^<]+)<\/h1>/i);
+    if (h1ClassMatch) {
+        lessonTitle = h1ClassMatch[1].trim();
+    } else {
+        // Fallback to any h1
+        const h1Match = htmlContent.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+        if (h1Match) lessonTitle = h1Match[1].trim();
+    }
+
+    // Extract meta items
+    const metaItems: string[] = [];
+    const metaMatches = htmlContent.matchAll(/<span class="meta-item">([^<]+)<\/span>/gi);
+    for (const match of metaMatches) {
+        metaItems.push(match[1].trim());
+    }
+
+    // Extract body content
+    let bodyContent = '';
+    const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    if (bodyMatch) {
+        bodyContent = bodyMatch[1];
+
+        // Remove brand-header (always empty placeholder)
+        bodyContent = bodyContent.replace(/<div class="brand-header">[\s\S]*?<\/div>/gi, '');
+
+        // Remove module/lesson headers (Legacy & Module 1 variants)
+        bodyContent = bodyContent.replace(/<header class="module-header">[\s\S]*?<\/header>/gi, '');
+        bodyContent = bodyContent.replace(/<div class="lesson-header">[\s\S]*?<\/div>/gi, '');
+
+        // Remove footer
+        bodyContent = bodyContent.replace(/<footer class="lesson-footer">[\s\S]*?<\/footer>/gi, '');
+        bodyContent = bodyContent.replace(/<div class="lesson-footer">[\s\S]*?<\/div>/gi, '');
+
+        // IDEMPOTENCY: Remove existing card-layout wrappers (from previous runs)
+        bodyContent = bodyContent.replace(/<div class="lesson-wrapper">/gi, '');
+        bodyContent = bodyContent.replace(/<div class="module-header-card">[\s\S]*?<\/div>\s*<\/div>/gi, ''); // Remove entire header card block
+
+        // Remove wrapper div (lesson-container)
+        bodyContent = bodyContent.replace(/<div class="lesson-container">/gi, '');
+
+        // Clean leading/trailing whitespace & lingering div tags
+        bodyContent = bodyContent.trim();
+        // Safe trailing div removal: only if it ends with /div and we suspect it's the wrapper
+        // Since we removed 'lesson-container', we probably have an extra </div> at the end.
+        // We will remove exactly ONE trailing </div> if present.
+        if (bodyContent.endsWith('</div>')) {
+            bodyContent = bodyContent.substring(0, bodyContent.length - 6).trim();
+        }
+    }
+
+    // SAFETY CHECK: If content is too short, we likely failed to extract.
+    // Throw error to NOT overwrite the file.
+    if (bodyContent.length < 50) {
+        throw new Error(`Extraction failed for ${filename}: Content too short (${bodyContent.length} chars). Aborting to prevent data loss.`);
+    }
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>${CARD_LAYOUT_CSS}
     </style>
 </head>
 <body>
     <div class="brand-header"></div>
     <div class="lesson-wrapper">
         <div class="module-header-card">
-            <span class="module-label">Module</span>
-            <h1 class="lesson-title">Working with Healthcare Providers</h1>
+            <span class="module-label">${moduleLabel}</span>
+            <h1 class="lesson-title">${lessonTitle}</h1>
             <div class="lesson-meta">
-                
+                ${metaItems.map(item => `<span class="meta-tag">${item}</span>`).join('\n                ')}
             </div>
         </div>
-        <div class="lesson-wrapper">
-        <div class="module-header-card">
-            <span class="module-label">Module</span>
-            <h1 class="lesson-title">Working with Healthcare Providers</h1>
-            <div class="lesson-meta">
-                
-            </div>
-        </div>
-        <div class="module-header">
-        <h1>Module 4: Ethics And Scope</h1>
-        <p class="subtitle">Professional Practice, Legal Foundations, and Ethical Excellence</p>
-    </div>
-    
-    
-    
-    <div class="reading-time">
-        <span>📚 Reading Time: 11 minutes</span>
-    </div>
-    
-    <div class="connection-box">
-        <p><strong>Connection to Your Journey:</strong> In the previous lesson, you learned about ethical guidelines and professional boundaries that protect both you and your clients. Now you'll discover how to build bridges with the medical community—transforming potential barriers into collaborative partnerships that expand what's possible for your clients' healing journeys.</p>
-    </div>
-    
-    <div class="objectives-box">
-        <h3>By the End of This Lesson, You Will Be Able To:</h3>
-        <ul>
-            <li>Understand the value and structure of collaborative healthcare relationships</li>
-            <li>Communicate effectively with physicians, specialists, and other providers</li>
-            <li>Position yourself as a valuable member of the client's care team</li>
-            <li>Navigate common challenges and overcome provider resistance</li>
-            <li>Create professional communication templates for referrals and updates</li>
-        </ul>
-    </div>
-    
-    <div class="story-box">
-        <p><em>"My doctor thinks supplements are a waste of money, and she's never even heard of functional medicine. How am I supposed to work with her?"</em></p>
-        <p>Jennifer, a health coach in training, sat in frustration. Her client Sarah had been making remarkable progress with dietary changes—reducing inflammation, improving energy, and finally sleeping through the night. But Sarah's primary care physician had dismissed these changes as "placebo effect" and insisted that Sarah's improvements had nothing to do with her new lifestyle protocols.</p>
-    </div>
-    
-    <p>The key lies not in convincing skeptical physicians that you're right—but in demonstrating your value through professional conduct, clear communication, and measurable results.</p>
-    
-    <h2>The Case for Collaboration</h2>
-    <p>When health coaches and healthcare providers work together effectively, <span class="highlight">client outcomes improve dramatically</span>. Chronic disease management becomes more effective. Patient adherence to medical recommendations increases. Healthcare costs decrease.</p>
-    
-    <h2>Understanding the Healthcare Landscape</h2>
-    <p>Each type of healthcare professional has distinct training, perspectives, and communication preferences. Your role as a health coach is to <em>complement</em> medical care, not replace it.</p>
-    
-    <h2>Positioning Yourself Professionally</h2>
-    <p>How you present yourself to healthcare providers significantly impacts their willingness to collaborate. Your goal is to be seen as a <span class="highlight">professional colleague</span>—not a competitor or an unqualified interloper.</p>
-    
-    <h2>Effective Communication Strategies</h2>
-    <p>Professional communication with healthcare providers requires a specific approach. Physicians are trained to process information efficiently, and they appreciate communication that respects their time while providing relevant clinical details.</p>
-    
-    <div class="key-takeaways">
-        <h3>🔑 Key Takeaways</h3>
-        <ul>
-            <li>Collaboration Improves Outcomes: Research consistently shows that combined physician-coach care produces better results</li>
-            <li>Professional Positioning Matters: Present yourself as a credentialed colleague who complements medical care</li>
-            <li>Use Structured Communication: The SBAR framework helps you communicate effectively with busy providers</li>
-            <li>Relationships Take Time: Building trust requires consistent professionalism and demonstrated results</li>
-            <li>Results Are Your Best Marketing: Positive client outcomes speak louder than credentials</li>
-        </ul>
-    </div>
-    
-    <div class="references">
-        <p><strong>References</strong></p>
-        <ol>
-            <li>Thom, D. H., et al. (2013). Impact of peer health coaching on glycemic control. <em>Annals of Family Medicine, 11</em>(2), 137-144.</li>
-            <li>Institute for Functional Medicine. (2023). <em>Collaborative care models in functional medicine</em>.</li>
-        </ol>
-    </div>
-    
-    <div class="footer">
-        <p>© 2024 AccrediPro Certification Program | Module 4: Ethics And Scope</p>
+        ${bodyContent}
     </div>
     <div class="lesson-footer"></div>
 </body>
-</html>
+</html>`;
+}
+
+// Parse lesson filename to get module and lesson order
+function parseFilename(filename: string): { moduleOrder: number; lessonOrder: number; title: string } | null {
+    // Pattern: Lesson_X.Y_Title.html
+    const match = filename.match(/Lesson_(\d+)\.(\d+)_(.+)\.html$/);
+    if (!match) return null;
+
+    const [, moduleNum, lessonNum, titleRaw] = match;
+    return {
+        moduleOrder: parseInt(moduleNum, 10),
+        lessonOrder: parseInt(lessonNum, 10),
+        title: titleRaw.replace(/_/g, ' ')
+    };
+}
+
+async function main() {
+    console.log("🚀 Batch Converting FM Lessons to Card Layout\n");
+    console.log("=".repeat(50) + "\n");
+
+    // Get the FM course
+    const course = await prisma.course.findFirst({
+        where: { slug: COURSE_SLUG },
+        include: {
+            modules: {
+                orderBy: { order: 'asc' },
+                include: {
+                    lessons: { orderBy: { order: 'asc' } }
+                }
+            }
+        }
+    });
+
+    if (!course) {
+        console.error("❌ Course not found!");
+        return;
+    }
+
+    console.log(`Found course: ${course.title}\n`);
+
+    // Get all module folders
+    const moduleFolders = fs.readdirSync(FM_UPDATE_PATH)
+        .filter(f => f.startsWith("Module_") && fs.statSync(path.join(FM_UPDATE_PATH, f)).isDirectory())
+        .sort((a, b) => {
+            const numA = parseInt(a.replace("Module_", ""), 10);
+            const numB = parseInt(b.replace("Module_", ""), 10);
+            return numA - numB;
+        });
+
+    console.log(`Found ${moduleFolders.length} module folders\n`);
+
+    let totalConverted = 0;
+    let totalSynced = 0;
+    let errors: string[] = [];
+
+    for (const moduleFolder of moduleFolders) {
+        const modulePath = path.join(FM_UPDATE_PATH, moduleFolder);
+        const moduleNum = parseInt(moduleFolder.replace("Module_", ""), 10);
+
+        console.log(`\n📁 Processing ${moduleFolder}...`);
+
+        // Find matching db module
+        const dbModule = course.modules.find(m => m.order === moduleNum);
+        if (!dbModule) {
+            console.log(`   ⚠️ No matching DB module for order ${moduleNum}`);
+            continue;
+        }
+
+        // Get all HTML files in the module
+        const htmlFiles = fs.readdirSync(modulePath)
+            .filter(f => f.endsWith('.html'))
+            .sort();
+
+        for (const htmlFile of htmlFiles) {
+            const filePath = path.join(modulePath, htmlFile);
+            const parsed = parseFilename(htmlFile);
+
+            if (!parsed) {
+                console.log(`   ⚠️ Could not parse: ${htmlFile}`);
+                continue;
+            }
+
+            try {
+                // Read original file
+                const originalContent = fs.readFileSync(filePath, 'utf-8');
+
+                // Transform to card layout
+                const cardContent = transformToCardLayout(originalContent, htmlFile);
+
+                // Overwrite file on disk
+                fs.writeFileSync(filePath, cardContent, 'utf-8');
+                totalConverted++;
+                console.log(`   ✅ Converted: ${htmlFile}`);
+
+                // Find matching lesson in DB
+                const dbLesson = dbModule.lessons.find(l => l.order === parsed.lessonOrder);
+
+                if (dbLesson) {
+                    // Update database
+                    await prisma.lesson.update({
+                        where: { id: dbLesson.id },
+                        data: { content: cardContent }
+                    });
+                    totalSynced++;
+                    console.log(`      📤 Synced to DB: ${dbLesson.id}`);
+                } else {
+                    console.log(`      ⚠️ No matching lesson in DB for order ${parsed.lessonOrder}`);
+                }
+
+            } catch (err) {
+                const error = `Error processing ${htmlFile}: ${err}`;
+                errors.push(error);
+                console.log(`   ❌ ${error}`);
+            }
+        }
+    }
+
+    console.log("\n" + "=".repeat(50));
+    console.log("\n📊 SUMMARY:");
+    console.log(`   Files converted: ${totalConverted}`);
+    console.log(`   Lessons synced to DB: ${totalSynced}`);
+    console.log(`   Errors: ${errors.length}`);
+
+    if (errors.length > 0) {
+        console.log("\n❌ ERRORS:");
+        errors.forEach(e => console.log(`   ${e}`));
+    }
+
+    console.log("\n🎉 Done! Restart the dev server and refresh the page.");
+}
+
+main()
+    .catch(console.error)
+    .finally(() => prisma.$disconnect());

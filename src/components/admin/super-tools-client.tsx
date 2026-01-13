@@ -19,7 +19,9 @@ import {
     BookOpen,
     Eye,
     ChevronDown,
-    Layers
+    Layers,
+    Users,
+    Trash2
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -62,6 +64,12 @@ interface UserData {
         completedLessons: number;
         totalLessons: number;
         status: string;
+    }[];
+    podMemberships?: {
+        id: string;
+        role: string;
+        joinedAt: string;
+        pod: { id: string; name: string };
     }[];
 }
 
@@ -244,6 +252,37 @@ export function SuperToolsClient({ courses }: SuperToolsClientProps) {
         }
     };
 
+    const handleRemoveFromPod = async (membershipId: string, podName: string) => {
+        if (!selectedUser) return;
+
+        setIsLoadingAction(true);
+        const toastId = toast.loading(`Removing from ${podName}...`);
+
+        try {
+            const res = await fetch("/api/admin/super-tools/pod", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: selectedUser.id,
+                    action: "remove_from_pod",
+                    membershipId
+                }),
+            });
+
+            if (res.ok) {
+                toast.success(`Removed from ${podName}!`, { id: toastId });
+                await refreshUserData(selectedUser.id);
+            } else {
+                const data = await res.json();
+                toast.error(data.error || "Failed to remove from pod", { id: toastId });
+            }
+        } catch (error) {
+            toast.error("Error removing from pod", { id: toastId });
+        } finally {
+            setIsLoadingAction(false);
+        }
+    };
+
     return (
         <div className="grid gap-8 grid-cols-1 lg:grid-cols-3">
             {/* Left Column: Search & Selection */}
@@ -335,6 +374,44 @@ export function SuperToolsClient({ courses }: SuperToolsClientProps) {
                                         </Button>
                                     </div>
                                 </div>
+
+                                {/* Pod Memberships Section */}
+                                {selectedUser.podMemberships && selectedUser.podMemberships.length > 0 && (
+                                    <div className="pt-4 border-t">
+                                        <Label className="mb-2 block flex items-center gap-2">
+                                            <Users className="w-4 h-4" />
+                                            Pod Memberships ({selectedUser.podMemberships.length})
+                                        </Label>
+                                        <div className="space-y-2">
+                                            {selectedUser.podMemberships.map((membership) => (
+                                                <div
+                                                    key={membership.id}
+                                                    className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
+                                                >
+                                                    <div>
+                                                        <p className="text-sm font-medium">{membership.pod.name}</p>
+                                                        <p className="text-xs text-gray-500">
+                                                            Role: {membership.role}
+                                                        </p>
+                                                    </div>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200"
+                                                        onClick={() => handleRemoveFromPod(membership.id, membership.pod.name)}
+                                                        disabled={isLoadingAction}
+                                                    >
+                                                        {isLoadingAction ? (
+                                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                                        ) : (
+                                                            <Trash2 className="w-3 h-3" />
+                                                        )}
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

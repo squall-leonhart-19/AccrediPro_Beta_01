@@ -631,15 +631,17 @@ export function LessonPageV3({
                             <span className="text-xs font-bold text-gray-700">{courseProgressPercent}%</span>
                         </div>
 
-                        {/* Sidebar Toggle */}
+                        {/* Course Content Toggle */}
                         <Button
-                            variant="ghost"
-                            size="icon"
+                            variant="outline"
+                            size="sm"
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 w-9 h-9"
+                            className="gap-2 border-gray-200"
                         >
-                            <Menu className="w-5 h-5" />
+                            <Menu className="w-4 h-4" />
+                            <span className="hidden sm:inline text-sm">Content</span>
                         </Button>
+
                     </div>
                 </div>
             </header>
@@ -647,10 +649,7 @@ export function LessonPageV3({
             {/* ===== MAIN LAYOUT ===== */}
             <div className="flex flex-1 relative">
                 {/* ===== CONTENT AREA ===== */}
-                <main className={cn(
-                    "flex-1 min-w-0 transition-all duration-300",
-                    sidebarOpen ? "lg:mr-80" : ""
-                )}>
+                <main className="flex-1 min-w-0">
                     {/* Video Section (if VIDEO lesson) */}
                     {lesson.lessonType === "VIDEO" && lesson.videoId && (
                         <div className="bg-black">
@@ -668,18 +667,7 @@ export function LessonPageV3({
 
                     {/* Content Container - Full Width */}
                     <div className="w-full px-0 sm:px-4 lg:px-8 py-6">
-                        {/* Reading Time Indicator */}
-                        <div className="max-w-4xl mx-auto mb-6">
-                            <div className="flex items-center gap-4 flex-wrap">
-                                <div className="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-2 border border-gray-100">
-                                    <Clock className="w-4 h-4 text-gray-400" />
-                                    <span className="text-sm font-medium text-gray-600">{getReadingTime(lesson.id)} min read</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-500">
-                                    <span>Lesson {progress.lessonIndexInModule + 1} of {course.modules.find(m => m.id === module.id)?.lessons.length || 0}</span>
-                                </div>
-                            </div>
-                        </div>
+
 
                         {/* Lesson Content - Full Width, CSS handles inner content width */}
                         {lesson.content && (
@@ -813,206 +801,10 @@ export function LessonPageV3({
                     </div>
                 </main>
 
-                {/* ===== SIDEBAR ===== */}
-                {/* Mobile: Full-screen overlay from right. Desktop: Fixed sidebar on right */}
 
-                {/* Backdrop for mobile only */}
-                {sidebarOpen && (
-                    <div
-                        className="fixed inset-0 bg-black/30 z-40 lg:hidden"
-                        onClick={() => setSidebarOpen(false)}
-                    />
-                )}
 
-                <aside
-                    className={cn(
-                        "bg-white z-50 flex flex-col shadow-2xl",
-                        "transition-transform duration-300 ease-out",
-                        // Fixed right positioning for both mobile and desktop
-                        "fixed top-0 right-0 bottom-0 w-full max-w-sm",
-                        // Desktop: below header, fixed width
-                        "lg:top-16 lg:w-80 lg:max-w-none lg:shadow-xl lg:border-l lg:border-gray-200",
-                        // Visibility - slide in from right
-                        sidebarOpen
-                            ? "translate-x-0"
-                            : "translate-x-full"
-                    )}
-                >
-                    {/* Sidebar Header */}
-                    <div className="p-4 border-b border-gray-200 flex-none bg-white">
-                        <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-bold text-gray-900">Course Content</h3>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setSidebarOpen(false)}
-                                className="text-gray-500 hover:bg-gray-100"
-                            >
-                                <X className="w-5 h-5" />
-                                <span className="sr-only">Close</span>
-                            </Button>
-                        </div>
 
-                        {/* Progress Bar */}
-                        <div className="bg-gray-100 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-gray-600">Overall Progress</span>
-                                <span className="text-sm font-bold text-gray-900">{courseProgressPercent}%</span>
-                            </div>
-                            <Progress value={courseProgressPercent} className="h-2" />
-                            <p className="text-xs text-gray-500 mt-2">
-                                {progress.courseProgress.completed} of {progress.courseProgress.total} lessons
-                            </p>
-                        </div>
-                    </div>
 
-                    {/* Module List */}
-                    <div className="flex-1 overflow-y-auto bg-white">
-                        {course.modules.map((mod, moduleIndex) => {
-                            const isExpanded = expandedModules.includes(mod.id);
-                            const isCurrentModule = mod.id === module.id;
-                            const completedInModule = mod.lessons.filter(
-                                (l) => localProgressMap[l.id]?.isCompleted
-                            ).length;
-                            const modProgress = mod.lessons.length > 0
-                                ? Math.round((completedInModule / mod.lessons.length) * 100)
-                                : 0;
-
-                            return (
-                                <div key={mod.id} className="border-b border-gray-100">
-                                    {/* Module Header */}
-                                    <button
-                                        onClick={() => toggleModule(mod.id)}
-                                        className={cn(
-                                            "w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left",
-                                            isCurrentModule && "bg-gray-50"
-                                        )}
-                                    >
-                                        <div
-                                            className={cn(
-                                                "w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0",
-                                                modProgress === 100
-                                                    ? "bg-green-100 text-green-600"
-                                                    : isCurrentModule
-                                                        ? "bg-[#722f37] text-white"
-                                                        : "bg-gray-100 text-gray-500"
-                                            )}
-                                        >
-                                            {modProgress === 100 ? (
-                                                <CheckCircle className="w-4 h-4" />
-                                            ) : (
-                                                moduleIndex + 1
-                                            )}
-                                        </div>
-
-                                        <div className="flex-1 min-w-0">
-                                            <p className={cn(
-                                                "text-sm font-medium truncate",
-                                                isCurrentModule ? "text-[#722f37]" : "text-gray-900"
-                                            )}>
-                                                {mod.title}
-                                            </p>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                                                    <div
-                                                        className={cn(
-                                                            "h-full rounded-full",
-                                                            modProgress === 100 ? "bg-green-500" : "bg-[#722f37]"
-                                                        )}
-                                                        style={{ width: `${modProgress}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-xs text-gray-500">
-                                                    {completedInModule}/{mod.lessons.length}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {isExpanded ? (
-                                            <ChevronUp className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                                        ) : (
-                                            <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                                        )}
-                                    </button>
-
-                                    {/* Lesson List */}
-                                    {isExpanded && (
-                                        <div className="pb-2 px-2">
-                                            {mod.lessons.map((les) => {
-                                                const isLesCompleted = localProgressMap[les.id]?.isCompleted;
-                                                const isCurrent = les.id === lesson.id;
-                                                const isUnlocked = isLessonUnlocked(les.id);
-
-                                                // Locked lesson
-                                                if (!isUnlocked && !isLesCompleted) {
-                                                    return (
-                                                        <div
-                                                            key={les.id}
-                                                            className="flex items-center gap-3 px-3 py-2 rounded-lg opacity-50"
-                                                        >
-                                                            <div className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                                                <Lock className="w-3 h-3 text-gray-400" />
-                                                            </div>
-                                                            <span className="text-sm text-gray-400 truncate">{les.title}</span>
-                                                        </div>
-                                                    );
-                                                }
-
-                                                return (
-                                                    <Link
-                                                        key={les.id}
-                                                        href={`/learning/${course.slug}/${les.id}`}
-                                                        onClick={() => window.innerWidth < 1024 && setSidebarOpen(false)}
-                                                        className={cn(
-                                                            "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                                                            isCurrent
-                                                                ? "bg-gray-100 border border-gray-200"
-                                                                : "hover:bg-gray-50"
-                                                        )}
-                                                    >
-                                                        <div
-                                                            className={cn(
-                                                                "w-6 h-6 rounded flex items-center justify-center flex-shrink-0",
-                                                                isLesCompleted
-                                                                    ? "bg-green-100"
-                                                                    : isCurrent
-                                                                        ? "bg-[#722f37]/10"
-                                                                        : "bg-gray-100"
-                                                            )}
-                                                        >
-                                                            {isLesCompleted ? (
-                                                                <CheckCircle className="w-3.5 h-3.5 text-green-600" />
-                                                            ) : isCurrent ? (
-                                                                <Play className="w-3 h-3 text-[#722f37]" />
-                                                            ) : (
-                                                                <BookOpen className="w-3 h-3 text-gray-400" />
-                                                            )}
-                                                        </div>
-                                                        <span
-                                                            className={cn(
-                                                                "text-sm truncate flex-1",
-                                                                isCurrent
-                                                                    ? "font-medium text-[#722f37]"
-                                                                    : isLesCompleted
-                                                                        ? "text-green-700"
-                                                                        : "text-gray-700"
-                                                            )}
-                                                        >
-                                                            {les.title}
-                                                        </span>
-                                                        {isCurrent && (
-                                                            <div className="w-2 h-2 rounded-full bg-[#722f37] animate-pulse flex-shrink-0" />
-                                                        )}
-                                                    </Link>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </aside>
 
                 {/* ===== COACH SARAH LESSON HELPER ===== */}
                 <SarahLessonBubble
