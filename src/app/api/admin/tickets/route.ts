@@ -108,7 +108,6 @@ export async function GET(request: NextRequest) {
           customerEmail: true,
           createdAt: true,
           updatedAt: true,
-          lastMessageAt: true,
           rating: true,
           ratingComment: true,
           userId: true,
