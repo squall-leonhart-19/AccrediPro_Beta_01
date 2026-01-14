@@ -74,99 +74,133 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const tickets = await prisma.supportTicket.findMany({
-      where,
-      orderBy: [
-        { status: "asc" }, // NEW first
-        { priority: "desc" }, // URGENT first
-        { createdAt: "desc" },
-      ],
-      include: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            avatar: true,
-            email: true,
-            createdAt: true,
-            payments: {
-              take: 5,
-              orderBy: { createdAt: "desc" },
-              select: {
-                id: true,
-                amount: true,
-                currency: true,
-                status: true,
-                productName: true,
-                createdAt: true,
-              }
-            },
-            submittedTickets: {
-              where: { status: { not: "CLOSED" } },
-              orderBy: { createdAt: "desc" },
-              select: {
-                id: true,
-                ticketNumber: true,
-                subject: true,
-                status: true,
-                createdAt: true,
-              }
-            },
-            // Marketing tags for quick context
-            marketingTags: {
-              include: {
-                tag: {
-                  select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    color: true,
-                    category: true,
-                  }
+    // Calculate 30 days ago once for reuse
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Run all queries in PARALLEL for maximum speed
+    const [
+      tickets,
+      statusGroups,
+      ratingAgg,
+      newTicketsLast30d,
+      resolvedTicketsLast30d,
+      recentFeedback,
+      ticketsWithResponse,
+    ] = await Promise.all([
+      // 1. Main tickets query - OPTIMIZED: lighter includes, load details on demand
+      prisma.supportTicket.findMany({
+        where,
+        orderBy: [
+          { status: "asc" },
+          { priority: "desc" },
+          { createdAt: "desc" },
+        ],
+        select: {
+          id: true,
+          ticketNumber: true,
+          subject: true,
+          status: true,
+          priority: true,
+          category: true,
+          department: true,
+          customerName: true,
+          customerEmail: true,
+          createdAt: true,
+          updatedAt: true,
+          lastMessageAt: true,
+          rating: true,
+          ratingComment: true,
+          userId: true,
+          assignedToId: true,
+          // Minimal user info for list view
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              avatar: true,
+              email: true,
+              createdAt: true,
+              // Only load counts, not full records
+              _count: {
+                select: {
+                  payments: true,
+                  submittedTickets: true,
+                  enrollments: true,
                 }
               }
-            },
-            // Enrollments for context (progress is already on enrollment)
-            enrollments: {
-              select: {
-                id: true,
-                status: true,
-                progress: true,
-                enrolledAt: true,
-                completedAt: true,
-                course: {
-                  select: {
-                    id: true,
-                    title: true,
-                    slug: true,
-                  }
-                }
-              },
-              orderBy: { enrolledAt: "desc" }
             }
-          }
-        },
-        assignedTo: { select: { firstName: true, lastName: true } },
-        messages: {
-          orderBy: { createdAt: "asc" },
-          include: {
-            sentBy: { select: { firstName: true, lastName: true } },
           },
+          assignedTo: { select: { firstName: true, lastName: true } },
+          // Only load latest 3 messages for preview
+          messages: {
+            orderBy: { createdAt: "desc" },
+            take: 3,
+            select: {
+              id: true,
+              content: true,
+              isFromCustomer: true,
+              isInternal: true,
+              createdAt: true,
+              sentBy: { select: { firstName: true, lastName: true } },
+            },
+          },
+          _count: { select: { messages: true } },
         },
-        _count: { select: { messages: true } },
-      },
-      take: 100,
-    });
+        take: 100,
+      }),
 
-    // --- ANALYTICS CALCULATIONS ---
+      // 2. Status counts
+      prisma.supportTicket.groupBy({
+        by: ["status"],
+        _count: { status: true },
+      }),
 
-    // 1. Status Counts
-    const statusGroups = await prisma.supportTicket.groupBy({
-      by: ["status"],
-      _count: { status: true },
-    });
+      // 3. Rating aggregate
+      prisma.supportTicket.aggregate({
+        where: { rating: { not: null } },
+        _avg: { rating: true },
+        _count: { rating: true },
+      }),
 
+      // 4. New tickets count (30 days)
+      prisma.supportTicket.count({
+        where: { createdAt: { gte: thirtyDaysAgo } },
+      }),
+
+      // 5. Resolved tickets count (30 days)
+      prisma.supportTicket.count({
+        where: {
+          status: { in: ["RESOLVED", "CLOSED"] },
+          updatedAt: { gte: thirtyDaysAgo }
+        },
+      }),
+
+      // 6. Recent feedback
+      prisma.supportTicket.findMany({
+        where: { rating: { not: null } },
+        select: {
+          rating: true,
+          ratingComment: true,
+          customerName: true,
+          ratedAt: true,
+        },
+        orderBy: { ratedAt: "desc" },
+        take: 5,
+      }),
+
+      // 7. Response time data
+      prisma.supportTicket.findMany({
+        where: {
+          firstResponseAt: { not: null },
+          createdAt: { gte: thirtyDaysAgo },
+        },
+        select: { createdAt: true, firstResponseAt: true },
+      }),
+    ]);
+
+    // Process status counts
     const statsMap: any = {
       total: 0,
       NEW: 0,
@@ -181,52 +215,7 @@ export async function GET(request: NextRequest) {
       statsMap.total += s._count.status;
     });
 
-    // 2. Average Rating (Customers)
-    const ratingAgg = await prisma.supportTicket.aggregate({
-      where: {
-        rating: { not: null },
-      },
-      _avg: { rating: true },
-      _count: { rating: true },
-    });
-
-    // 3. 30-Day Volume
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const newTicketsLast30d = await prisma.supportTicket.count({
-      where: { createdAt: { gte: thirtyDaysAgo } },
-    });
-
-    const resolvedTicketsLast30d = await prisma.supportTicket.count({
-      where: {
-        status: { in: ["RESOLVED", "CLOSED"] },
-        updatedAt: { gte: thirtyDaysAgo }
-      },
-    });
-
-    // 4. Recent Feedback
-    const recentFeedback = await prisma.supportTicket.findMany({
-      where: { rating: { not: null } },
-      select: {
-        rating: true,
-        ratingComment: true,
-        customerName: true,
-        ratedAt: true,
-      },
-      orderBy: { ratedAt: "desc" },
-      take: 5,
-    });
-
-    // 5. Avg Response Time (Last 30 days)
-    const ticketsWithResponse = await prisma.supportTicket.findMany({
-      where: {
-        firstResponseAt: { not: null },
-        createdAt: { gte: thirtyDaysAgo },
-      },
-      select: { createdAt: true, firstResponseAt: true },
-    });
-
+    // Calculate avg response time
     let totalResponseTime = 0;
     if (ticketsWithResponse.length > 0) {
       ticketsWithResponse.forEach(t => {
@@ -239,8 +228,14 @@ export async function GET(request: NextRequest) {
       ? (totalResponseTime / ticketsWithResponse.length / (1000 * 60 * 60))
       : 0;
 
+    // Reverse messages to show oldest first (we fetched newest first for efficiency)
+    const ticketsWithReversedMessages = tickets.map(t => ({
+      ...t,
+      messages: [...t.messages].reverse(),
+    }));
+
     return NextResponse.json({
-      tickets,
+      tickets: ticketsWithReversedMessages,
       stats: {
         ...statsMap,
         avgRating: ratingAgg._avg.rating || 0,

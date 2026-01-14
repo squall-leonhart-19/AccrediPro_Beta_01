@@ -28,10 +28,61 @@ export async function GET(
             lastName: true,
             email: true,
             avatar: true,
-            enrollments: {
-              include: { course: { select: { title: true } } },
+            createdAt: true,
+            // Full user details for detail panel
+            payments: {
               take: 5,
+              orderBy: { createdAt: "desc" },
+              select: {
+                id: true,
+                amount: true,
+                currency: true,
+                status: true,
+                productName: true,
+                createdAt: true,
+              }
             },
+            submittedTickets: {
+              where: { status: { not: "CLOSED" } },
+              orderBy: { createdAt: "desc" },
+              select: {
+                id: true,
+                ticketNumber: true,
+                subject: true,
+                status: true,
+                createdAt: true,
+              }
+            },
+            marketingTags: {
+              include: {
+                tag: {
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    color: true,
+                    category: true,
+                  }
+                }
+              }
+            },
+            enrollments: {
+              select: {
+                id: true,
+                status: true,
+                progress: true,
+                enrolledAt: true,
+                completedAt: true,
+                course: {
+                  select: {
+                    id: true,
+                    title: true,
+                    slug: true,
+                  }
+                }
+              },
+              orderBy: { enrolledAt: "desc" }
+            }
           },
         },
         assignedTo: { select: { id: true, firstName: true, lastName: true } },

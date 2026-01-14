@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useTickets, Ticket, useUpdateTicket, useReplyTicket } from "@/hooks/use-tickets";
+import { useTickets, Ticket, useUpdateTicket, useReplyTicket, useTicketDetails } from "@/hooks/use-tickets";
 import { formatDistanceToNow, format } from "date-fns";
 import {
   Search, RefreshCcw, CheckCircle2, XCircle, AlertTriangle,
@@ -318,8 +318,17 @@ export default function TicketsPage() {
   const updateTicket = useUpdateTicket();
   const replyTicket = useReplyTicket();
 
+  // Fetch full ticket details only when one is selected (lazy loading)
+  const { data: ticketDetails, isLoading: isLoadingDetails } = useTicketDetails(selectedTicketId);
+
   const tickets = data?.tickets || [];
-  const selectedTicket = useMemo(() => tickets.find(t => t.id === selectedTicketId), [tickets, selectedTicketId]);
+  // Use detailed ticket data when available, fall back to list data
+  const selectedTicket = useMemo(() => {
+    if (ticketDetails && ticketDetails.id === selectedTicketId) {
+      return ticketDetails as Ticket;
+    }
+    return tickets.find(t => t.id === selectedTicketId);
+  }, [tickets, selectedTicketId, ticketDetails]);
 
   // Stats
   const stats = useMemo(() => ({

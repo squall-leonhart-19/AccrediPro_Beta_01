@@ -87,8 +87,10 @@ export function useTickets(
             if (!res.ok) throw new Error("Failed to fetch tickets");
             return res.json();
         },
-        // Refresh every 5 seconds per user request
-        refetchInterval: 5000,
+        // Refresh every 30 seconds for performance (reduced from 5s)
+        refetchInterval: 30000,
+        // Keep previous data while fetching for instant UI
+        placeholderData: (previousData) => previousData,
     });
 }
 
@@ -119,6 +121,22 @@ export function useUpdateTicket() {
         onError: (error) => {
             toast.error(error.message);
         },
+    });
+}
+
+// Fetch single ticket with full details (for detail panel)
+export function useTicketDetails(ticketId: string | null) {
+    return useQuery({
+        queryKey: ["ticket-details", ticketId],
+        queryFn: async () => {
+            if (!ticketId) return null;
+            const res = await fetch(`/api/admin/tickets/${ticketId}`);
+            if (!res.ok) throw new Error("Failed to fetch ticket details");
+            const data = await res.json();
+            return data.ticket;
+        },
+        enabled: !!ticketId,
+        staleTime: 30000, // Cache for 30 seconds
     });
 }
 
