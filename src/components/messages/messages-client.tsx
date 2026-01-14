@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -433,11 +433,12 @@ export function MessagesClient({
         body: JSON.stringify({ senderId: selectedUser.id }),
       }).catch(console.error);
 
+      // Poll for new messages every 30 seconds (reduced from 5s for performance)
       const interval = setInterval(() => {
         fetchMessages(selectedUser.id, true); // isRefresh=true to not scroll
-      }, 5000);
+      }, 30000);
 
-      // Poll for typing indicator
+      // Poll for typing indicator every 10 seconds (reduced from 2s for performance)
       const typingInterval = setInterval(async () => {
         if (!isMountedRef.current) return;
         try {
@@ -449,7 +450,7 @@ export function MessagesClient({
         } catch (e) {
           console.error("Typing poll error:", e);
         }
-      }, 2000);
+      }, 10000);
 
       return () => {
         clearInterval(interval);
@@ -1204,11 +1205,15 @@ export function MessagesClient({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const filteredConversations = conversations.filter((conv) => {
-    if (!searchQuery) return true;
-    const fullName = `${conv.user?.firstName} ${conv.user?.lastName}`.toLowerCase();
-    return fullName.includes(searchQuery.toLowerCase()) || conv.user?.email.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  // Memoize filtered conversations to prevent re-filtering on every render
+  const filteredConversations = useMemo(() => {
+    if (!searchQuery) return conversations;
+    const query = searchQuery.toLowerCase();
+    return conversations.filter((conv) => {
+      const fullName = `${conv.user?.firstName} ${conv.user?.lastName}`.toLowerCase();
+      return fullName.includes(query) || conv.user?.email.toLowerCase().includes(query);
+    });
+  }, [conversations, searchQuery]);
 
   const roleConfig: Record<string, { color: string; bg: string; icon: React.ReactNode; label: string }> = {
     ADMIN: { color: "text-red-600", bg: "bg-red-50 border-red-200", icon: <Star className="w-3 h-3" />, label: "Admin" },
@@ -1217,9 +1222,11 @@ export function MessagesClient({
     STUDENT: { color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200", icon: <BookOpen className="w-3 h-3" />, label: "Student" },
   };
 
-  const avgProgress = selectedUser?.enrollments?.length
-    ? Math.round(selectedUser.enrollments.reduce((acc, e) => acc + e.progress, 0) / selectedUser.enrollments.length)
-    : 0;
+  // Memoize expensive progress calculation
+  const avgProgress = useMemo(() => {
+    if (!selectedUser?.enrollments?.length) return 0;
+    return Math.round(selectedUser.enrollments.reduce((acc, e) => acc + e.progress, 0) / selectedUser.enrollments.length);
+  }, [selectedUser?.enrollments]);
 
   // Group reactions by emoji
   const getGroupedReactions = (reactions: MessageReaction[] = []) => {
