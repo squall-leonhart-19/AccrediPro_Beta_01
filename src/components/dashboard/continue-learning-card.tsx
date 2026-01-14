@@ -71,7 +71,7 @@ export function ContinueLearningCard({
                         </div>
 
                         {/* CTA Button */}
-                        <Link href={`/courses/${nextLesson.courseSlug}/learn-v2/${nextLesson.lessonId}`}>
+                        <Link href={`/learning/${nextLesson.courseSlug}/${nextLesson.lessonId}`}>
                             <Button
                                 size="lg"
                                 className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg w-full sm:w-auto text-base sm:text-lg py-5 sm:py-6"
