@@ -1,15 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 5.1: Introduction to Functional Nutrition | AccrediPro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-/* ===========================================
+#!/usr/bin/env python3
+"""
+AccrediPro Lesson Transformer - COMPLETE WORKFLOW
+=================================================
+
+This script transforms FM lessons to Gold Standard format using Claude API.
+
+WORKFLOW:
+1. TRANSFORM: Convert lessons with Claude API (4 parallel workers)
+2. REVIEW: Check transformed files in FM-Transformed/
+3. APPLY: Copy approved files to FM-Update/ (or use --live)
+4. IMPORT: Push to database
+
+USAGE EXAMPLES:
+---------------
+
+# Step 1: Transform Module 6 (dry run - saves to FM-Transformed/)
+python scripts/transform-parallel.py --modules Module_06
+
+# Step 2: Transform ALL modules 2-20 (dry run)
+python scripts/transform-parallel.py
+
+# Step 3: After review, apply to originals
+python scripts/transform-parallel.py --apply
+
+# Step 4: Import to database
+python scripts/transform-parallel.py --import-db
+
+# Or do everything at once (transform + apply + import)
+python scripts/transform-parallel.py --live --import-db
+
+# Check status of transformed files
+python scripts/transform-parallel.py --status
+
+API KEYS:
+---------
+4 API keys are embedded in the script for parallel processing.
+
+OUTPUT FOLDERS:
+---------------
+- Dry run: FM/FM-Transformed/Module_XX/
+- Live/Apply: FM/FM-Update/Module_XX/
+- Database: PostgreSQL via Prisma
+"""
+
+import os
+import re
+import sys
+import time
+import shutil
+import argparse
+import subprocess
+import concurrent.futures
+from pathlib import Path
+from anthropic import Anthropic
+
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
+
+BASE_DIR = Path(__file__).parent.parent
+FM_UPDATE_DIR = BASE_DIR / "FM" / "FM-Update"
+TRANSFORMED_DIR = BASE_DIR / "FM" / "FM-Transformed"
+MODEL = "claude-sonnet-4-5-20250929"
+MAX_TOKENS = 16000
+
+# API Keys for parallel processing (4 workers)
+# Set these as environment variables or pass via --api-keys argument
+API_KEYS = [
+    os.environ.get("ANTHROPIC_API_KEY_1", ""),
+    os.environ.get("ANTHROPIC_API_KEY_2", ""),
+    os.environ.get("ANTHROPIC_API_KEY_3", ""),
+    os.environ.get("ANTHROPIC_API_KEY_4", ""),
+]
+
+# Modules to skip (already done)
+SKIP_MODULES = [0, 1, 5]  # Module 0, 1, 5 already transformed
+
+# =============================================================================
+# GOLD STANDARD CSS v5.0
+# =============================================================================
+
+GOLD_STANDARD_CSS = '''/* ===========================================
    ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
    School-Quality • ASI Certified • Premium UX
-   Module 5 - Functional Nutrition
    =========================================== */
 
 /* Reset & Base */
@@ -1026,11 +1099,34 @@ li strong {
         text-align: center;
     }
 }
+'''
 
-    </style>
-</head>
-<body>
+# =============================================================================
+# TOGGLE SCRIPT FOR QUIZ ANSWERS
+# =============================================================================
 
+TOGGLE_SCRIPT = '''
+<script>
+function toggleAnswer(btn) {
+    const answer = btn.nextElementSibling;
+    const isShowing = answer.classList.contains('show');
+
+    if (isShowing) {
+        answer.classList.remove('show');
+        btn.textContent = 'Reveal Answer';
+    } else {
+        answer.classList.add('show');
+        btn.textContent = 'Hide Answer';
+    }
+}
+</script>
+'''
+
+# =============================================================================
+# GOLD STANDARD HTML REFERENCE (from Lesson 5.1)
+# =============================================================================
+
+GOLD_STANDARD_HTML_REFERENCE = '''
     <div class="lesson-wrapper">
         <!-- Module Header -->
         <div class="module-header-card">
@@ -1113,13 +1209,14 @@ li strong {
 
         <p>Karen's story echoes through countless client conversations. The conventional approach to nutrition—counting calories, following standardized meal plans, eliminating entire food groups without understanding why—has left millions frustrated and often worse off than when they started.</p>
 
-        <!-- Main Content -->
+        <!-- Main Content Section with H2 -->
         <h2 id="food-information">Beyond Calories: Food as Information</h2>
 
         <p>The conventional nutrition paradigm treats the body like a combustion engine—put fuel in, burn energy out. This reductionist view ignores the remarkable complexity of human biology. Your body isn't a car engine; it's a living, adaptive, constantly communicating ecosystem.</p>
 
         <p><span class="highlight">Functional nutrition</span> takes a radically different view. It recognizes that every bite of food you eat carries far more than calories—it carries <strong>information</strong>. That information interacts with your unique biochemistry, your gut microbiome, your hormonal systems, your genetic expression, your immune function, and your mental health.</p>
 
+        <!-- Comparison Grid -->
         <div class="comparison-grid">
             <div class="comparison-card conventional">
                 <span class="card-label">Conventional Approach</span>
@@ -1127,9 +1224,6 @@ li strong {
                     <li>Food = Calories (fuel)</li>
                     <li>One-size-fits-all recommendations</li>
                     <li>Focus on weight as primary outcome</li>
-                    <li>Nutrients in isolation</li>
-                    <li>Ignores individual variation</li>
-                    <li>Short-term fixes</li>
                 </ul>
             </div>
             <div class="comparison-card functional">
@@ -1138,15 +1232,11 @@ li strong {
                     <li>Food = Information (signaling)</li>
                     <li>Personalized to individual biology</li>
                     <li>Focus on function and vitality</li>
-                    <li>Whole foods and food synergies</li>
-                    <li>Honors biochemical individuality</li>
-                    <li>Sustainable transformation</li>
                 </ul>
             </div>
         </div>
 
-        <p>When you eat an apple, you're not just consuming calories, fiber, and vitamin C. You're introducing thousands of phytonutrients—polyphenols, flavonoids, and antioxidants—that communicate with your cells. These compounds influence gene expression, modulate inflammation, feed beneficial gut bacteria, support detoxification pathways, and affect hormone signaling. The apple is literally "speaking" to your body, and your body is listening and responding.</p>
-
+        <!-- Coach Tip -->
         <div class="coach-tip">
             <span class="tip-label">Coach Tip</span>
             <p>When explaining this to clients, try: <em>"Think of food as a language your body understands. Every meal sends thousands of messages to your cells—telling them to heal or inflame, to store fat or burn it, to feel energized or exhausted. We're going to learn which messages support YOUR body best."</em></p>
@@ -1154,162 +1244,78 @@ li strong {
 
         <h2 id="core-principles">Core Principles of Functional Nutrition</h2>
 
-        <p>Functional nutrition is guided by several foundational principles that distinguish it from conventional dietary advice. These principles will inform everything you learn in this module.</p>
-
+        <!-- Principle Cards -->
         <div class="principles-grid">
             <div class="principle-card">
                 <div class="principle-number">1</div>
                 <div class="principle-content">
                     <p class="principle-title">Biochemical Individuality</p>
-                    <p class="principle-text">No two people have identical nutritional needs. Genetics, microbiome composition, current health status, life stage, stress levels, and environmental exposures all influence what nutrients an individual requires. <span class="highlight">Personalization isn't optional—it's essential.</span></p>
+                    <p class="principle-text">No two people have identical nutritional needs. <span class="highlight">Personalization isn't optional—it's essential.</span></p>
                 </div>
             </div>
             <div class="principle-card">
                 <div class="principle-number">2</div>
                 <div class="principle-content">
                     <p class="principle-title">Food Quality Matters</p>
-                    <p class="principle-text">A calorie is not just a calorie. 200 calories from wild salmon provides omega-3 fatty acids, complete protein, vitamin D, selenium, and astaxanthin. 200 calories from candy provides sugar, refined oils, and artificial additives. These "equal" caloric choices send entirely different messages to the body.</p>
-                </div>
-            </div>
-            <div class="principle-card">
-                <div class="principle-number">3</div>
-                <div class="principle-content">
-                    <p class="principle-title">The Gut-Centric View</p>
-                    <p class="principle-text">Digestion is the gateway. Even the most perfect diet fails if it isn't properly digested and absorbed. Functional nutrition pays careful attention to gut health—stomach acid, enzymes, intestinal permeability, and microbiome balance.</p>
-                </div>
-            </div>
-            <div class="principle-card">
-                <div class="principle-number">4</div>
-                <div class="principle-content">
-                    <p class="principle-title">Remove, Replace, Reinoculate, Repair</p>
-                    <p class="principle-text">The 4R approach (covered in depth in Module 6) guides therapeutic nutrition: Remove problematic foods and pathogens; Replace digestive factors; Reinoculate with beneficial bacteria; Repair the gut lining.</p>
-                </div>
-            </div>
-            <div class="principle-card">
-                <div class="principle-number">5</div>
-                <div class="principle-content">
-                    <p class="principle-title">Anti-Inflammatory Foundation</p>
-                    <p class="principle-text">Chronic inflammation underlies most modern diseases. Functional nutrition builds on an anti-inflammatory foundation—abundant vegetables, quality fats, adequate protein, minimal processed foods—while identifying individual inflammatory triggers.</p>
-                </div>
-            </div>
-            <div class="principle-card">
-                <div class="principle-number">6</div>
-                <div class="principle-content">
-                    <p class="principle-title">Blood Sugar Balance</p>
-                    <p class="principle-text">Stable blood sugar is foundational to energy, mood, hormones, and metabolic health. Functional nutrition emphasizes foods and eating patterns that prevent the glucose roller coaster—the spikes and crashes that drive cravings, fatigue, and chronic disease risk.</p>
+                    <p class="principle-text">A calorie is not just a calorie. 200 calories from wild salmon provides omega-3 fatty acids. 200 calories from candy provides sugar and artificial additives.</p>
                 </div>
             </div>
         </div>
 
+        <!-- Systems Box -->
         <h2 id="systems">Nutrition Across the Functional Medicine Systems</h2>
-
-        <p>Remember the seven interconnected systems of the Functional Medicine Matrix? Nutrition touches every single one. Understanding these connections helps you appreciate why dietary changes often produce wide-ranging benefits.</p>
 
         <div class="systems-box">
             <h3>How Nutrition Influences Each System</h3>
             <div class="systems-grid">
                 <div class="system-item">
                     <h4>🍽️ Assimilation</h4>
-                    <p>Food choices directly affect stomach acid, enzyme production, intestinal motility, and microbiome composition. Fiber, fermented foods, and bitter greens support optimal digestion.</p>
+                    <p>Food choices directly affect stomach acid, enzyme production, intestinal motility, and microbiome composition.</p>
                 </div>
                 <div class="system-item">
                     <h4>🛡️ Defense & Repair</h4>
-                    <p>70% of the immune system resides in the gut. Nutrients like vitamin D, zinc, vitamin C, and omega-3s modulate immune response. Food sensitivities can trigger chronic immune activation.</p>
-                </div>
-                <div class="system-item">
-                    <h4>⚡ Energy</h4>
-                    <p>Mitochondria require specific nutrients—B vitamins, magnesium, CoQ10, iron—to produce cellular energy. Blood sugar stability prevents energy crashes.</p>
-                </div>
-                <div class="system-item">
-                    <h4>🧪 Biotransformation</h4>
-                    <p>The liver requires amino acids, B vitamins, and sulfur compounds (from cruciferous vegetables) to neutralize and eliminate toxins. Fiber binds toxins for excretion.</p>
-                </div>
-                <div class="system-item">
-                    <h4>📡 Communication</h4>
-                    <p>Hormones require cholesterol and specific nutrients for synthesis. Neurotransmitters are built from amino acids. Blood sugar affects cortisol and insulin balance.</p>
-                </div>
-                <div class="system-item">
-                    <h4>❤️ Transport</h4>
-                    <p>Omega-3s protect blood vessels. Antioxidants prevent LDL oxidation. Fiber modulates cholesterol. Potassium and sodium balance affects blood pressure.</p>
-                </div>
-                <div class="system-item">
-                    <h4>🦴 Structural Integrity</h4>
-                    <p>Protein builds muscle. Calcium, vitamin D, and K2 maintain bones. Collagen-supporting nutrients (vitamin C, glycine) maintain connective tissue.</p>
+                    <p>70% of the immune system resides in the gut. Nutrients like vitamin D, zinc, vitamin C modulate immune response.</p>
                 </div>
             </div>
         </div>
 
+        <!-- Alert Box -->
         <div class="alert-box warning">
             <span class="alert-label">Key Insight</span>
-            <p>This systems-wide impact explains why clients often report improvements in multiple areas when they adopt therapeutic nutrition changes. It's not magic—it's the interconnected nature of human physiology responding to better information.</p>
+            <p>This systems-wide impact explains why clients often report improvements in multiple areas when they adopt therapeutic nutrition changes.</p>
         </div>
 
         <h2 id="nutrient-density">The Nutrient Density Priority</h2>
 
-        <p>At the heart of functional nutrition lies a simple but powerful concept: <span class="highlight">nutrient density</span>. Rather than counting calories or macros, we prioritize foods that deliver the most nutritional value per bite.</p>
-
+        <!-- Nutrient Box Positive -->
         <div class="nutrient-box positive">
             <h3>🌟 Nutrient Powerhouses</h3>
             <div class="nutrient-grid">
                 <div class="nutrient-item">
                     <h4>Vegetables</h4>
-                    <p>Leafy greens, cruciferous vegetables, colorful varieties—the foundation of nutrient density. Aim for 6-9+ servings daily.</p>
+                    <p>Leafy greens, cruciferous vegetables—the foundation of nutrient density.</p>
                 </div>
                 <div class="nutrient-item">
                     <h4>Quality Proteins</h4>
-                    <p>Pasture-raised eggs, wild fish, grass-fed meats, legumes—providing amino acids, B vitamins, and minerals.</p>
-                </div>
-                <div class="nutrient-item">
-                    <h4>Healthy Fats</h4>
-                    <p>Olive oil, avocados, nuts, seeds, fatty fish—essential for hormone production, brain function, and nutrient absorption.</p>
-                </div>
-                <div class="nutrient-item">
-                    <h4>Berries & Low-Glycemic Fruits</h4>
-                    <p>Blueberries, raspberries, blackberries—antioxidant-rich with modest blood sugar impact.</p>
-                </div>
-                <div class="nutrient-item">
-                    <h4>Fermented Foods</h4>
-                    <p>Sauerkraut, kimchi, yogurt, kefir—providing beneficial bacteria and enhanced nutrient bioavailability.</p>
-                </div>
-                <div class="nutrient-item">
-                    <h4>Herbs & Spices</h4>
-                    <p>Turmeric, ginger, garlic, oregano—concentrated sources of phytonutrients with therapeutic properties.</p>
+                    <p>Pasture-raised eggs, wild fish, grass-fed meats—providing amino acids, B vitamins.</p>
                 </div>
             </div>
         </div>
 
-        <div class="nutrient-box negative">
-            <h3>⚠️ Nutrient Depleting Foods</h3>
-            <p>These foods not only provide little nutritional value but actually create nutrient demands—requiring vitamins and minerals to metabolize them:</p>
-            <ul>
-                <li><strong>Refined sugars and sweeteners</strong> — spike blood sugar, promote inflammation, deplete B vitamins</li>
-                <li><strong>Processed seed oils</strong> — create inflammatory omega-6 imbalance, oxidize easily</li>
-                <li><strong>Refined grains</strong> — stripped of nutrients, spike blood sugar, can damage gut lining</li>
-                <li><strong>Ultra-processed foods</strong> — contain additives, preservatives, and minimal real nutrition</li>
-                <li><strong>Artificial sweeteners</strong> — disrupt microbiome and may affect metabolic signaling</li>
-            </ul>
+        <!-- Another Coach Tip -->
+        <div class="coach-tip">
+            <span class="tip-label">Coach Tip</span>
+            <p><strong>Focus on additions first.</strong> Rather than starting with restrictions, begin by adding nutrient-dense foods.</p>
         </div>
 
         <h2 id="coaching">Starting the Nutrition Conversation with Clients</h2>
 
-        <p>As a health coach, you'll guide clients toward better nutrition without prescribing specific therapeutic diets (which remains in medical/dietitian scope). Your role is to educate, explore, and support implementation.</p>
-
-        <div class="coach-tip">
-            <span class="tip-label">Coach Tip</span>
-            <p><strong>Focus on additions first.</strong> Rather than starting with restrictions, begin by adding nutrient-dense foods. "Can we add two more servings of vegetables daily?" feels more achievable and positive than "You need to eliminate..." This approach builds confidence and creates crowding-out effects naturally.</p>
-        </div>
-
-        <div class="alert-box success">
-            <span class="alert-label">Effective Coaching Approach</span>
-            <p><strong>Connect food to symptoms.</strong> Help clients notice correlations between what they eat and how they feel. Food journals and symptom tracking reveal individual patterns that generic advice can't capture. Ask: "How did you feel 2 hours after that meal? What about your energy the next morning?"</p>
-        </div>
-
         <div class="alert-box reflect">
             <span class="alert-label">Pause & Reflect</span>
-            <p>Think about your own relationship with food. What dietary changes have made the biggest difference in how you feel? What "healthy" advice have you followed that didn't work for you? This self-awareness will make you a more empathetic and effective coach.</p>
+            <p>Think about your own relationship with food. What dietary changes have made the biggest difference in how you feel?</p>
         </div>
 
-        <!-- Check Your Understanding -->
+        <!-- Check Your Understanding - EXACT STRUCTURE REQUIRED -->
         <h2 id="quiz">Check Your Understanding</h2>
 
         <div class="check-understanding">
@@ -1322,7 +1328,7 @@ li strong {
                 </div>
                 <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
                 <div class="answer-text">
-                    <p><strong>Answer:</strong> "Food as information" means that every bite of food carries signals that communicate with your cells beyond just calories. These signals—from phytonutrients, vitamins, minerals, and other compounds—influence gene expression, hormone production, immune function, inflammation levels, and microbiome composition. Unlike the conventional view of food as mere fuel, functional nutrition recognizes food as a powerful communication system that either promotes or undermines health.</p>
+                    <p><strong>Answer:</strong> "Food as information" means that every bite of food carries signals that communicate with your cells beyond just calories.</p>
                 </div>
             </div>
 
@@ -1333,7 +1339,7 @@ li strong {
                 </div>
                 <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
                 <div class="answer-text">
-                    <p><strong>Answer:</strong> This is due to <strong>biochemical individuality</strong>—no two people have identical nutritional needs or responses. Factors that create variation include: genetics (affecting how nutrients are processed), microbiome composition (affecting digestion and nutrient production), current health status, life stage, stress levels, environmental exposures, and personal health history. What works beautifully for one person may be problematic for another, which is why personalization is essential in functional nutrition.</p>
+                    <p><strong>Answer:</strong> This is due to <strong>biochemical individuality</strong>—no two people have identical nutritional needs.</p>
                 </div>
             </div>
 
@@ -1344,7 +1350,7 @@ li strong {
                 </div>
                 <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
                 <div class="answer-text">
-                    <p><strong>Answer:</strong> The six core principles are: (1) <strong>Biochemical Individuality</strong> – personalization is essential, not optional; (2) <strong>Food Quality Matters</strong> – a calorie is not just a calorie; (3) <strong>The Gut-Centric View</strong> – digestion is the gateway to health; (4) <strong>Remove, Replace, Reinoculate, Repair (4R)</strong> – systematic approach to gut healing; (5) <strong>Anti-Inflammatory Foundation</strong> – reducing chronic inflammation through food; (6) <strong>Blood Sugar Balance</strong> – preventing glucose spikes and crashes.</p>
+                    <p><strong>Answer:</strong> The six core principles are: (1) Biochemical Individuality, (2) Food Quality Matters, (3) The Gut-Centric View, (4) Remove/Replace/Reinoculate/Repair, (5) Anti-Inflammatory Foundation, (6) Blood Sugar Balance.</p>
                 </div>
             </div>
 
@@ -1355,7 +1361,7 @@ li strong {
                 </div>
                 <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
                 <div class="answer-text">
-                    <p><strong>Answer:</strong> <strong>Focus on additions first</strong>, rather than restrictions. Ask clients to add nutrient-dense foods (like "two more servings of vegetables daily") before discussing what to eliminate. This approach feels more achievable and positive, builds confidence, and creates natural crowding-out effects. Also help clients connect food to symptoms through food journals and symptom tracking to reveal their individual patterns.</p>
+                    <p><strong>Answer:</strong> <strong>Focus on additions first</strong>, rather than restrictions.</p>
                 </div>
             </div>
         </div>
@@ -1364,12 +1370,11 @@ li strong {
         <div class="takeaways-box">
             <span class="box-label">Key Takeaways</span>
             <ul>
-                <li><span class="highlight">Food is information</span> — every bite sends signals that influence gene expression, hormones, immunity, and more</li>
+                <li><span class="highlight">Food is information</span> — every bite sends signals that influence gene expression, hormones, immunity</li>
                 <li><span class="highlight">Biochemical individuality</span> means nutrition must be personalized, not standardized</li>
                 <li><span class="highlight">Nutrient density</span> — prioritize foods that deliver maximum nutrition per bite</li>
                 <li>Nutrition influences all <span class="highlight">seven functional medicine systems</span> simultaneously</li>
-                <li><span class="highlight">Anti-inflammatory eating</span> and blood sugar balance form the foundation of therapeutic nutrition</li>
-                <li>As a coach, focus on <span class="highlight">additions before restrictions</span> and help clients connect food to how they feel</li>
+                <li>As a coach, focus on <span class="highlight">additions before restrictions</span></li>
             </ul>
         </div>
 
@@ -1378,32 +1383,464 @@ li strong {
             <span class="box-label">References</span>
             <ol>
                 <li>Institute for Functional Medicine. (2023). <em>Functional nutrition: Food as medicine</em>. The Institute for Functional Medicine.</li>
-                <li>Bland, J. (2014). <em>The disease delusion: Conquering the causes of chronic illness for a healthier, longer, and happier life</em>. HarperOne.</li>
+                <li>Bland, J. (2014). <em>The disease delusion: Conquering the causes of chronic illness</em>. HarperOne.</li>
                 <li>Hyman, M. (2018). <em>Food: What the heck should I eat?</em> Little, Brown Spark.</li>
-                <li>Mayer, E. (2016). <em>The mind-gut connection: How the hidden conversation within our bodies impacts our mood, our choices, and our overall health</em>. Harper Wave.</li>
-                <li>Kresser, C. (2017). <em>Unconventional medicine: Join the revolution to reinvent healthcare, reverse chronic disease, and create a practice you love</em>. Lioncrest Publishing.</li>
+                <li>Mayer, E. (2016). <em>The mind-gut connection</em>. Harper Wave.</li>
+                <li>Kresser, C. (2017). <em>Unconventional medicine</em>. Lioncrest Publishing.</li>
                 <li>Pizzorno, J. E., & Murray, M. T. (2020). <em>Textbook of natural medicine</em> (5th ed.). Elsevier.</li>
-                <li>Minich, D. M. (2018). A review of the science of colorful, plant-based food and practical strategies for "eating the rainbow." <em>Journal of Nutrition and Metabolism</em>, 2019.</li>
-                <li>Sonnenburg, J., & Sonnenburg, E. (2015). <em>The good gut: Taking control of your weight, your mood, and your long-term health</em>. Penguin Books.</li>
             </ol>
         </div>
 
     </div>
+'''
 
-    <script>
-    function toggleAnswer(btn) {
-        const answer = btn.nextElementSibling;
-        const isShowing = answer.classList.contains('show');
+# =============================================================================
+# SYSTEM PROMPT FOR CLAUDE
+# =============================================================================
 
-        if (isShowing) {
-            answer.classList.remove('show');
-            btn.textContent = 'Reveal Answer';
-        } else {
-            answer.classList.add('show');
-            btn.textContent = 'Hide Answer';
-        }
+SYSTEM_PROMPT = """You are an expert HTML lesson formatter for AccrediPro's Functional Medicine certification program.
+
+## YOUR TASK
+Transform the provided lesson content into the EXACT Gold Standard HTML format shown in the reference example below.
+
+## CRITICAL INSTRUCTION
+You MUST copy the HTML structure EXACTLY from the reference. Do NOT improvise or create your own HTML classes/structure.
+The reference below is the PERFECT example - replicate its structure precisely for the new lesson content.
+
+## GOLD STANDARD HTML REFERENCE EXAMPLE (COPY THIS STRUCTURE EXACTLY):
+""" + GOLD_STANDARD_HTML_REFERENCE + """
+
+## STRUCTURE REQUIREMENTS (in exact order):
+1. **Module Header Card** - with .module-header-card, .module-label, .lesson-title, .lesson-meta, .meta-badge
+2. **ASI Credential Strip** - EXACTLY as shown: "ASI Accredited Content" + "Functional Medicine Health Coach Certification"
+3. **Table of Contents** - .toc-box with .toc-label "In This Lesson", .toc-list with .section-num (01, 02, etc.)
+4. **Module Connection** - .module-connection with .connection-icon 🔗 and .connection-text
+5. **Welcome Box** - .welcome-box with intro paragraph
+6. **Learning Objectives** - .objectives-box with .box-label "What You'll Learn" and ul/li items
+7. **Case Study** - .case-study with .case-study-header, .case-study-icon, .patient-profile, .patient-avatar, .patient-info
+8. **Main Content** - H2 sections with content, comparison grids, principle cards, systems boxes as needed
+9. **Coach Tips** - MINIMUM 4x .coach-tip boxes spread throughout (with .tip-label and practical advice)
+10. **Check Understanding** - .check-understanding with EXACTLY 4 .question-item divs using toggleAnswer(this)
+11. **Key Takeaways** - .takeaways-box with .box-label and ul/li items
+12. **References** - .references-box with .box-label and ol/li academic citations
+
+## CRITICAL HTML CLASSES TO USE (DO NOT INVENT NEW ONES):
+- .lesson-wrapper, .module-header-card, .module-label, .lesson-title, .lesson-meta, .meta-badge
+- .asi-credential-strip, .asi-logo, .asi-text (with child p.label and p.title)
+- .toc-box, .toc-label, .toc-list, .section-num
+- .module-connection, .connection-icon, .connection-text
+- .welcome-box
+- .objectives-box, .box-label
+- .case-study, .case-study-header, .case-study-icon, .case-study-content, .patient-profile, .patient-avatar, .patient-info
+- .comparison-grid, .comparison-card.conventional, .comparison-card.functional, .card-label
+- .principles-grid, .principle-card, .principle-number, .principle-content, .principle-title, .principle-text
+- .systems-box, .systems-grid, .system-item
+- .nutrient-box.positive, .nutrient-box.negative, .nutrient-grid, .nutrient-item
+- .alert-box.warning, .alert-box.success, .alert-box.reflect, .alert-label
+- .coach-tip, .tip-label
+- .check-understanding, .question-item, .question-header, .question-number, .question-text, .reveal-btn, .answer-text
+- .takeaways-box
+- .references-box
+- .highlight (for key terms)
+
+## OUTPUT RULES:
+1. Output ONLY the HTML from <div class="lesson-wrapper"> to </div>
+2. Do NOT include CSS, JavaScript, <!DOCTYPE>, <html>, <head>, or <body> tags
+3. Do NOT wrap in markdown code fences (no ```html)
+4. PRESERVE all educational content from the original
+5. PRESERVE all existing quiz questions
+6. ADD 4+ coach tips with practical health coaching advice
+7. Use <span class="highlight">term</span> for key concepts
+8. ASI Strip MUST say "ASI Accredited Content" and "Functional Medicine Health Coach Certification" - NOT anything else"""
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+def extract_module_info(filepath: Path) -> dict:
+    """Extract module number and lesson info from filepath"""
+    parts = filepath.parts
+    module_num = "XX"
+    for part in parts:
+        if part.startswith("Module_"):
+            module_num = part.replace("Module_", "")
+            break
+
+    filename = filepath.stem
+    # Try Lesson_X.Y_Title pattern
+    match = re.match(r"Lesson_(\d+)\.(\d+)_(.+)", filename)
+    if match:
+        lesson_num = f"{match.group(1)}.{match.group(2)}"
+        title = match.group(3).replace("_", " ")
+    else:
+        # Try X.Y_Title pattern (Module 13+)
+        match2 = re.match(r"(\d+)\.(\d+)_(.+)", filename)
+        if match2:
+            lesson_num = f"{match2.group(1)}.{match2.group(2)}"
+            title = match2.group(3).replace("_", " ")
+        else:
+            lesson_num = "X.X"
+            title = filename.replace("_", " ")
+
+    return {
+        "module_num": module_num,
+        "lesson_num": lesson_num,
+        "title": title,
+        "filename": filename
     }
-    </script>
+
+
+def extract_content(html: str) -> str:
+    """Extract the main content from existing HTML"""
+    body_match = re.search(r'<body[^>]*>(.*?)</body>', html, re.DOTALL | re.IGNORECASE)
+    if body_match:
+        content = body_match.group(1)
+    else:
+        content = html
+
+    content = re.sub(r'<style[^>]*>.*?</style>', '', content, flags=re.DOTALL | re.IGNORECASE)
+    content = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.DOTALL | re.IGNORECASE)
+
+    return content.strip()
+
+
+def transform_lesson(filepath: Path, api_key: str, dry_run: bool = True) -> tuple[bool, str]:
+    """Transform a single lesson file using Claude API"""
+    info = extract_module_info(filepath)
+    lesson_id = f"{info['module_num']}-{info['lesson_num']}"
+
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            original_html = f.read()
+
+        content = extract_content(original_html)
+
+        user_prompt = f"""Transform this lesson to Gold Standard format, copying the EXACT HTML structure from the reference example.
+
+## LESSON INFO:
+- Module: {info['module_num']}
+- Lesson: {info['lesson_num']}
+- Title: {info['title']}
+
+## ORIGINAL CONTENT TO TRANSFORM:
+{content}
+
+## CRITICAL INSTRUCTIONS:
+1. Copy the HTML structure EXACTLY like the Gold Standard reference example in the system prompt
+2. Change ONLY the text content to match this lesson's topic
+3. Keep the EXACT same HTML classes, structure, and formatting
+4. ASI Strip MUST say: "ASI Accredited Content" and "Functional Medicine Health Coach Certification"
+5. TOC must use .toc-box, .toc-label, .toc-list with .section-num spans (01, 02, etc.)
+6. Include MINIMUM 4 coach-tip boxes spread throughout
+7. Quiz section must use .check-understanding with .question-item, .reveal-btn onclick="toggleAnswer(this)"
+8. PRESERVE all educational content and quiz questions from the original
+9. Output ONLY <div class="lesson-wrapper">...</div> - no CSS, no JS, no markdown fences"""
+
+        client = Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model=MODEL,
+            max_tokens=MAX_TOKENS,
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}]
+        )
+
+        transformed_content = response.content[0].text
+
+        # Clean up markdown code fences
+        transformed_content = re.sub(r'^```html\s*', '', transformed_content, flags=re.MULTILINE)
+        transformed_content = re.sub(r'^```\s*$', '', transformed_content, flags=re.MULTILINE)
+        transformed_content = transformed_content.strip()
+
+        # Build complete HTML
+        complete_html = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson {info['lesson_num']}: {info['title']} | AccrediPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+{GOLD_STANDARD_CSS}
+    </style>
+</head>
+<body>
+
+{transformed_content}
+
+{TOGGLE_SCRIPT}
 
 </body>
 </html>
+'''
+
+        # Determine output path
+        if dry_run:
+            output_dir = TRANSFORMED_DIR / filepath.parent.name
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_path = output_dir / filepath.name
+        else:
+            output_path = filepath
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(complete_html)
+
+        return True, f"✅ {lesson_id}: {info['title']}"
+
+    except Exception as e:
+        return False, f"❌ {lesson_id}: {str(e)[:80]}"
+
+
+def get_lessons_to_process(modules: list[str] = None) -> list[Path]:
+    """Get list of lesson files to process"""
+    lessons = []
+
+    if modules is None:
+        # Default: Modules 2-20 (skip configured modules)
+        module_nums = [i for i in range(2, 21) if i not in SKIP_MODULES]
+        modules = [f"Module_{i:02d}" for i in module_nums]
+        # Also check non-padded names for Module 13+
+        modules += [f"Module_{i}" for i in range(13, 21) if i not in SKIP_MODULES]
+
+    for module in modules:
+        module_dir = FM_UPDATE_DIR / module
+        if module_dir.exists():
+            for lesson_file in sorted(module_dir.glob("*.html")):
+                if lesson_file not in lessons:
+                    lessons.append(lesson_file)
+
+    return lessons
+
+
+def show_status():
+    """Show status of transformed vs original files"""
+    print("=" * 60)
+    print("TRANSFORMATION STATUS")
+    print("=" * 60)
+
+    # Get all modules
+    original_modules = sorted([d for d in FM_UPDATE_DIR.iterdir() if d.is_dir()])
+    transformed_modules = sorted([d for d in TRANSFORMED_DIR.iterdir() if d.is_dir()]) if TRANSFORMED_DIR.exists() else []
+
+    print(f"\n📁 Original files: {FM_UPDATE_DIR}")
+    print(f"📁 Transformed files: {TRANSFORMED_DIR}")
+    print()
+
+    total_original = 0
+    total_transformed = 0
+
+    for mod_dir in original_modules:
+        mod_name = mod_dir.name
+        original_count = len(list(mod_dir.glob("*.html")))
+        total_original += original_count
+
+        transformed_dir = TRANSFORMED_DIR / mod_name
+        if transformed_dir.exists():
+            transformed_count = len(list(transformed_dir.glob("*.html")))
+            total_transformed += transformed_count
+            status = "✅" if transformed_count >= original_count else f"⏳ {transformed_count}/{original_count}"
+        else:
+            transformed_count = 0
+            status = "❌ Not started"
+
+        print(f"  {mod_name}: {original_count} lessons → {status}")
+
+    print()
+    print(f"Total: {total_transformed}/{total_original} lessons transformed")
+    print()
+
+
+def apply_transformed():
+    """Copy transformed files to FM-Update folder"""
+    print("=" * 60)
+    print("APPLYING TRANSFORMED FILES")
+    print("=" * 60)
+
+    if not TRANSFORMED_DIR.exists():
+        print("❌ No transformed files found!")
+        return False
+
+    copied = 0
+    for module_dir in TRANSFORMED_DIR.iterdir():
+        if module_dir.is_dir():
+            target_dir = FM_UPDATE_DIR / module_dir.name
+            if target_dir.exists():
+                for html_file in module_dir.glob("*.html"):
+                    target_file = target_dir / html_file.name
+                    shutil.copy2(html_file, target_file)
+                    print(f"  ✅ {module_dir.name}/{html_file.name}")
+                    copied += 1
+
+    print()
+    print(f"Copied {copied} files to FM-Update/")
+    return True
+
+
+def import_to_database():
+    """Run the import script to push lessons to database"""
+    print("=" * 60)
+    print("IMPORTING TO DATABASE")
+    print("=" * 60)
+
+    import_script = BASE_DIR / "scripts" / "import-all-fm-lessons.ts"
+
+    if not import_script.exists():
+        print(f"❌ Import script not found: {import_script}")
+        return False
+
+    print(f"Running: npx tsx {import_script}")
+    print()
+
+    try:
+        result = subprocess.run(
+            ["npx", "tsx", str(import_script)],
+            cwd=str(BASE_DIR),
+            capture_output=True,
+            text=True
+        )
+        print(result.stdout)
+        if result.stderr:
+            print(result.stderr)
+        return result.returncode == 0
+    except Exception as e:
+        print(f"❌ Error running import: {e}")
+        return False
+
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="AccrediPro Lesson Transformer - Complete Workflow",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+EXAMPLES:
+  # Transform Module 6 only (dry run)
+  python scripts/transform-parallel.py --modules Module_06
+
+  # Transform ALL modules 2-20 (dry run)
+  python scripts/transform-parallel.py
+
+  # Check transformation status
+  python scripts/transform-parallel.py --status
+
+  # Apply transformed files to FM-Update
+  python scripts/transform-parallel.py --apply
+
+  # Import to database
+  python scripts/transform-parallel.py --import-db
+
+  # Full workflow: transform + apply + import
+  python scripts/transform-parallel.py --live --import-db
+        """
+    )
+
+    # Transform options
+    parser.add_argument("--modules", type=str,
+                        help="Comma-separated modules (e.g., Module_06,Module_07)")
+    parser.add_argument("--workers", type=int, default=4,
+                        help="Number of parallel workers (default: 4)")
+    parser.add_argument("--live", action="store_true",
+                        help="Write directly to FM-Update (skip dry run)")
+
+    # Workflow options
+    parser.add_argument("--status", action="store_true",
+                        help="Show transformation status")
+    parser.add_argument("--apply", action="store_true",
+                        help="Copy FM-Transformed to FM-Update")
+    parser.add_argument("--import-db", action="store_true",
+                        help="Import lessons to database")
+
+    args = parser.parse_args()
+
+    # Handle status check
+    if args.status:
+        show_status()
+        return
+
+    # Handle apply only
+    if args.apply and not args.modules:
+        apply_transformed()
+        if args.import_db:
+            import_to_database()
+        return
+
+    # Handle import only
+    if args.import_db and not args.modules and not args.apply:
+        import_to_database()
+        return
+
+    # Transform workflow
+    dry_run = not args.live
+
+    print("=" * 60)
+    print("ACCREDIPRO LESSON TRANSFORMER")
+    print("=" * 60)
+    print(f"Mode: {'🔴 LIVE (FM-Update)' if not dry_run else '🟢 DRY RUN (FM-Transformed)'}")
+    print(f"Workers: {args.workers}")
+    print(f"API Keys: {len(API_KEYS)}")
+    print()
+
+    # Get lessons
+    if args.modules:
+        modules = args.modules.split(",")
+    else:
+        modules = None
+
+    lessons = get_lessons_to_process(modules)
+    print(f"Found {len(lessons)} lessons to process")
+    print()
+
+    if not lessons:
+        print("No lessons found!")
+        return
+
+    # Process in parallel
+    success = 0
+    failed = 0
+    start_time = time.time()
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
+        futures = {}
+        for i, lesson in enumerate(lessons):
+            api_key = API_KEYS[i % len(API_KEYS)]
+            future = executor.submit(transform_lesson, lesson, api_key, dry_run)
+            futures[future] = lesson
+
+        for future in concurrent.futures.as_completed(futures):
+            ok, msg = future.result()
+            print(msg)
+            if ok:
+                success += 1
+            else:
+                failed += 1
+
+    elapsed = time.time() - start_time
+
+    print()
+    print("=" * 60)
+    print("TRANSFORMATION COMPLETE")
+    print("=" * 60)
+    print(f"✅ Success: {success}")
+    print(f"❌ Failed: {failed}")
+    print(f"⏱️  Time: {elapsed:.1f}s ({elapsed/max(1,success+failed):.1f}s per lesson)")
+    print(f"📁 Output: {'FM-Update/' if not dry_run else 'FM-Transformed/'}")
+    print()
+
+    # If dry run, show next steps
+    if dry_run and success > 0:
+        print("NEXT STEPS:")
+        print("  1. Review files in FM-Transformed/")
+        print("  2. Run: python scripts/transform-parallel.py --apply")
+        print("  3. Run: python scripts/transform-parallel.py --import-db")
+        print()
+
+    # Auto-import if requested
+    if args.import_db and success > 0:
+        print()
+        import_to_database()
+
+
+if __name__ == "__main__":
+    main()

@@ -3,726 +3,1613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 19.3 - Nutrition Protocol Design</title>
+    <title>Lesson 19.3: Nutrition Protocol Design | AccrediPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-/* =========================================
-           ACCREDIPRO SCHOOL-QUALITY STYLES (CARD LAYOUT)
-           ========================================= */
-        
-        /* Reset & Base */
-        * { box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', Georgia, serif;
-            line-height: 1.8;
-            color: #2d2d2d;
-            background: #ffffff;
-            margin: 0;
-            padding: 40px 20px;
-            width: 100%;
-            overflow-x: hidden;
-        }
+/* ===========================================
+   ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+   School-Quality • ASI Certified • Premium UX
+   =========================================== */
 
-        /* MAIN WRAPPER - Centered Card Layout */
-        .lesson-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 0 20px;
-        }
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Utility: Text Colors */
-        .text-white { color: #ffffff !important; }
-        .text-burgundy { color: #722F37 !important; }
-        .text-gold { color: #B8860B !important; }
-        .highlight { background-color: #FFF59D; padding: 0 3px; border-radius: 2px; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.8;
+    color: #1f2937;
+    background: #ffffff;
+    font-size: 17px;
+}
 
-        /* HEADER CARD */
-        .module-header-card {
-            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
-            padding: 48px 40px;
-            margin-bottom: 32px;
-            border-radius: 20px;
-            box-shadow: 0 12px 48px -12px rgba(114, 47, 55, 0.35);
-            border: 1px solid rgba(255,255,255,0.15);
-            text-align: center;
-        }
+/* MAIN WRAPPER */
+.lesson-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        .module-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 12px;
-            font-weight: 600;
-            display: block;
-        }
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+    background: linear-gradient(135deg, #722F37 0%, #8B3A42 50%, #5a252b 100%);
+    padding: 48px 40px;
+    margin-bottom: 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+    border: none;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
 
-        .lesson-title {
-            font-size: 36px;
-            color: #ffffff;
-            font-weight: 700;
-            margin: 0 0 24px 0;
-            line-height: 1.2;
-        }
+.module-header-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
 
-        .lesson-subtitle {
-            font-size: 20px;
-            color: rgba(255,255,255,0.9);
-            font-weight: 400;
-            margin-top: -10px;
-            margin-bottom: 24px;
-        }
+.module-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 12px;
+    font-weight: 600;
+    display: block;
+}
 
-        .lesson-meta { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-        
-        .meta-tag, .reading-badge {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
-        }
+.lesson-title {
+    font-size: 38px;
+    color: #ffffff;
+    font-weight: 800;
+    margin: 0 0 20px 0;
+    line-height: 1.15;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-        /* CONTENT CONTAINERS */
-        .connection-box, .welcome-box {
-            background: #f8f5f0;
-            padding: 24px;
-            margin-bottom: 32px;
-            border-radius: 12px;
-            border-left: 4px solid #B8860B;
-        }
-        .connection-box p, .welcome-box p { margin: 0; font-size: 17px; color: #2d2d2d; line-height: 1.7; }
-        .welcome-box h3 { margin-top: 0; color: #722F37; }
+/* META BADGES */
+.lesson-meta {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
 
-        /* TYPOGRAPHY */
-        h2 {
-            color: #722F37;
-            font-size: 30px;
-            margin: 48px 0 24px 0;
-            font-weight: 700;
-            position: relative;
-            padding-bottom: 12px;
-            display: inline-block;
-        }
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: #B8860B;
-            border-radius: 2px;
-        }
+.meta-badge,
+.meta-tag {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
-        h3 { color: #722F37; font-size: 22px; margin: 32px 0 16px 0; font-weight: 600; }
-        p { font-size: 18px; line-height: 1.8; color: #374151; margin-bottom: 24px; }
-        ul, ol { margin: 24px 0; padding-left: 28px; }
-        li { font-size: 17px; line-height: 1.7; color: #374151; margin-bottom: 12px; }
-        li strong { color: #722F37; }
+.meta-badge .icon {
+    font-size: 14px;
+}
 
-        /* STORY & CASE STUDY BOXES */
-        .story-box, .case-study {
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-            padding: 32px;
-            border-radius: 16px;
-            margin: 32px 0;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .case-study { border-top: 4px solid #722F37; }
-        .story-box h3, .case-study h3, .case-study-header .box-label {
-            color: #722F37;
-            margin-top: 0;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-        .subtitle { font-size: 20px; font-weight: 600; color: #1f2937; margin: 8px 0 16px 0; }
-        .patient-info h4 { margin: 0; color: #722F37; font-size: 18px; }
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+    background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+    border: 1px solid #e5d9c3;
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
 
-        /* PHASE & OBJECTIVES BOXES */
-        .phase-box, .objectives-box, .info-box, .autoimmune-box {
-            background: #f0f9ff;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #b9e6fe;
-        }
-        .phase-box { background: #f8fafc; border-color: #e2e8f0; }
-        .autoimmune-box { background: #f0fdf4; border-color: #bbf7d0; }
-        .objectives-box { background: #faf5ff; border-color: #e9d5ff; }
-        
-        .phase-box h3, .objectives-box h3, .info-box h4, .autoimmune-box h4 { margin: 0 0 16px 0; color: #722F37; }
+.asi-logo {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #B8860B, #D4A813);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
 
-        /* GRIDS & CARDS (Comparison, Features, Disease, Principles) */
-        .comparison-grid, .feature-grid, .disease-grid, .stats-grid, .terms-grid, .toolkit-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin: 32px 0;
-        }
-        
-        .comparison-card, .feature-card, .disease-card, .principle-card, .toolkit-item, .stat-item, .term-item, .diagram-box {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
+.asi-text {
+    flex: 1;
+}
 
-        .comparison-card.conventional { border-top: 4px solid #ef4444; }
-        .comparison-card.functional { border-top: 4px solid #22c55e; }
-        
-        .card-label, .principle-title, .box-label { 
-            font-weight: 700; color: #722F37; text-transform: uppercase; letter-spacing: 0.5px; font-size: 13px; margin-bottom: 8px; display: block;
-        }
-        
-        .stat-number { font-size: 48px; font-weight: 800; color: #B8860B; margin: 0; line-height: 1; }
-        .stat-label { margin-top: 8px; font-size: 15px; font-weight: 600; }
+.asi-text .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #92400e;
+    font-weight: 700;
+}
 
-        /* TIMELINE VISUAL */
-        .timeline-visual {
-            display: flex;
-            gap: 24px;
-            margin: 40px 0;
-        }
-        .timeline-item { flex: 1; background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #cbd5e1; }
-        .timeline-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 12px; margin-bottom: 8px; }
-        .timeline-badge.then { background: #94a3b8; color: white; }
-        .timeline-badge.now { background: #B8860B; color: white; }
+.asi-text .title {
+    font-size: 15px;
+    color: #78350f;
+    font-weight: 600;
+    margin-top: 2px;
+}
 
-        /* ALERT BOXES */
-        .alert-box {
-            padding: 24px;
-            border-radius: 12px;
-            margin: 32px 0;
-            border-left: 4px solid;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-        .alert-box .alert-label {
-            font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; display: block;
-        }
-        .alert-box p { margin: 0; font-size: 16px; }
-        .alert-box.success, .coaching-box { background: #f0fdf4; border-color: #22c55e; border-left: 4px solid #22c55e; }
-        .alert-box.success .alert-label, .coaching-box h3 { color: #166534; }
-        
-        .alert-box.warning { background: #fffbeb; border-color: #f59e0b; }
-        .alert-box.warning .alert-label { color: #92400e; }
-        
-        .alert-box.info, .alert-box.reflect, .check-understanding { background: #faf5ff; border-color: #a855f7; border-left: 4px solid #a855f7; }
-        .alert-box.info .alert-label, .check-understanding .box-label { color: #7e22ce; }
+/* TABLE OF CONTENTS */
+.toc-box {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 40px;
+}
 
-        /* CASE STUDY DETAILS */
-        .case-study-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; }
-        .case-study-icon { width: 48px; height: 48px; background: #fdf2f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #722F37; }
-        .patient-profile { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb; }
-        .patient-avatar { font-size: 32px; background: #f3f4f6; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .patient-info h4 { margin: 0; color: #722F37; font-size: 16px; font-weight: 700; }
-        .patient-info p { margin: 0; font-size: 14px; color: #6b7280; }
+.toc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6b7280;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: block;
+}
 
-        /* DIAGRAMS */
-        .diagram-box { text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 32px; border-radius: 16px; margin: 32px 0; }
-        .diagram-title { font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; font-size: 14px; }
-        .diagram-content { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .diagram-arrow { font-size: 24px; color: #94a3b8; margin: 0; line-height: 1; }
-        .diagram-emphasis { color: #b91c1c; font-weight: 700; background: #fef2f2; padding: 4px 12px; border-radius: 4px; border: 1px solid #fecaca; }
-        .diagram-final { font-weight: 700; color: #1e293b; background: white; padding: 12px 24px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.toc-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+}
 
-        /* KEY TERMS SPECIFIC */
-        .key-terms-box { margin-top: 48px; }
-        .term { font-weight: 700; color: #722F37; margin-bottom: 8px; font-size: 16px; }
-        .definition { font-size: 14px; color: #4b5563; line-height: 1.6; margin: 0; }
-        
-        /* STATS BOX WRAPPER */
-        .stats-box { background: #fffcee; padding: 32px; border-radius: 16px; border: 1px solid #fef3c7; margin: 32px 0; }
+.toc-list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #f9fafb;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
 
-        /* CHECK YOUR UNDERSTANDING - INTERACTIVE */
-        .check-understanding { background: #faf5ff; border: 1px solid #e9d5ff; border-left: 4px solid #a855f7; padding: 24px; border-radius: 12px; margin: 32px 0; }
-        .check-understanding .box-label { color: #7e22ce; }
-        .question-item { background: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #f3e8ff; }
-        .question-number { display: inline-block; background: #a855f7; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 14px; margin-right: 8px; font-weight: 700; }
-        .question-text { font-weight: 600; color: #4b5563; margin: 0 0 12px 0; display: inline; }
-        
-        .reveal-btn {
-            background: white; border: 1px solid #d8b4fe; color: #7e22ce; padding: 8px 16px; border-radius: 20px;
-            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; display: block;
-        }
-        .reveal-btn:hover { background: #f3e8ff; }
-        
-        .answer-text { 
-            display: none; /* Hidden by default */
-            margin-top: 12px; padding-top: 12px; border-top: 1px solid #f3e8ff; color: #4b5563; font-size: 15px;
-        }
-        .answer-text.show { display: block !important; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+.toc-list li a:hover {
+    background: #f3f4f6;
+    color: #722F37;
+    transform: translateX(4px);
+}
 
-        /* TABLES */
-        table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 30px 0; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
-        thead tr { background: #722F37; color: white; }
-        th { padding: 16px 20px; text-align: left; font-weight: 600; font-size: 15px; }
-        td { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; font-size: 15px; }
-        tr:last-child td { border-bottom: none; }
-        tbody tr:nth-child(even) { background: #f9fafb; }
+.section-num {
+    background: #722F37;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
 
-        /* KEY TAKEAWAYS & REFS */
-        .takeaways-box, .key-takeaways {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 48px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-        .takeaways-box .box-label, .key-takeaways h3 {
-            color: #722F37; font-size: 18px; font-weight: 700; margin: 0 0 20px 0; display: block; text-transform: uppercase; letter-spacing: 1px;
-        }
-        
-        .tags-container .tags-wrapper { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag { background: #e5e7eb; padding: 4px 12px; border-radius: 16px; font-size: 14px; font-weight: 500; color: #374151; }
+/* WELCOME BOX */
+.welcome-box {
+    background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+    padding: 28px;
+    margin-bottom: 40px;
+    border-radius: 16px;
+    border-left: 5px solid #B8860B;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
 
-        /* REFERENCES */
-        .references-box, .references {
-            border-top: 1px solid #e5e7eb; margin-top: 60px; padding-top: 40px; color: #6b7280; font-size: 14px;
-        }
-        .references-box ol, .references ol { padding-left: 20px; margin: 0; }
-        .references-box h3, .references h3 { font-size: 16px; color: #9ca3af; text-transform: uppercase; margin-bottom: 16px; }
+.welcome-box h3 {
+    color: #92400e;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
 
-        /* HIDE LEGACY ELEMENTS */
-        .brand-header, .lesson-footer, .toc-box { display: none !important; }
+.welcome-box p {
+    margin: 0;
+    font-size: 16px;
+    color: #44403c;
+    line-height: 1.7;
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            body { padding: 20px 16px; }
-            .module-header-card { padding: 30px 20px; }
-            .lesson-title { font-size: 28px; }
-            .timeline-visual { flex-direction: column; }
-        }
+/* OBJECTIVES BOX */
+.objectives-box {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 40px;
+    border: 1px solid #e9d5ff;
+}
+
+.box-label {
+    font-weight: 700;
+    color: #7e22ce;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.objectives-box ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.objectives-box li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    font-size: 16px;
+    color: #4c1d95;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li:last-child {
+    border-bottom: none;
+}
+
+.objectives-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #7c3aed;
+    font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+    background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* TYPOGRAPHY */
+h2 {
+    color: #722F37;
+    font-size: 28px;
+    margin: 56px 0 24px 0;
+    font-weight: 800;
+    position: relative;
+    padding-bottom: 16px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #B8860B, #D4A813);
+    border-radius: 2px;
+}
+
+h3 {
+    color: #722F37;
+    font-size: 22px;
+    margin: 36px 0 16px 0;
+    font-weight: 700;
+}
+
+p {
+    font-size: 17px;
+    line-height: 1.85;
+    color: #374151;
+    margin-bottom: 20px;
+}
+
+ul, ol {
+    margin: 20px 0;
+    padding-left: 24px;
+}
+
+li {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 10px;
+}
+
+li strong {
+    color: #722F37;
+}
+
+/* CASE STUDY */
+.case-study {
+    background: white;
+    border-radius: 20px;
+    margin: 40px 0;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.case-study-header {
+    background: linear-gradient(90deg, #722F37, #8B3A42);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.case-study-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.case-study-header .title {
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+}
+
+.case-study-header .subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    margin: 4px 0 0 0;
+}
+
+.case-study-content {
+    padding: 28px;
+}
+
+.patient-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.patient-avatar {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #fecaca, #fca5a5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.patient-info h4 {
+    margin: 0;
+    color: #722F37;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.patient-info p {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* COMPARISON GRID */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 32px 0;
+}
+
+.comparison-card {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.comparison-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.comparison-card.conventional {
+    border-top: 4px solid #ef4444;
+}
+
+.comparison-card.functional {
+    border-top: 4px solid #22c55e;
+}
+
+.card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.conventional .card-label {
+    color: #dc2626;
+}
+
+.functional .card-label {
+    color: #16a34a;
+}
+
+.card-text {
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.5;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* CONTENT LIST */
+.content-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+}
+
+.content-list li {
+    padding: 12px 0 12px 36px;
+    position: relative;
+    font-size: 16px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.content-list li:last-child {
+    border-bottom: none;
+}
+
+.content-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #722F37;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.content-list li strong {
+    color: #722F37;
+}
+
+/* PRINCIPLE CARDS */
+.principles-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 32px 0;
+}
+
+.principle-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: all 0.2s;
+}
+
+.principle-card:hover {
+    border-color: #722F37;
+    box-shadow: 0 8px 24px rgba(114, 47, 55, 0.1);
+}
+
+.principle-number {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #722F37, #8B3A42);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.principle-content {
+    flex: 1;
+}
+
+.principle-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.principle-text {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* SYSTEMS BOX */
+.systems-box {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 32px;
+    margin: 40px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.systems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.system-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.system-item h4 {
+    color: #722F37;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.system-item p {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* NUTRIENT DENSITY BOX */
+.nutrient-box {
+    border-radius: 20px;
+    padding: 32px;
+    margin: 40px 0;
+}
+
+.nutrient-box.positive {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+}
+
+.nutrient-box.positive h3 {
+    color: #166534;
+    margin-top: 0;
+}
+
+.nutrient-box.negative {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 1px solid #fecaca;
+}
+
+.nutrient-box.negative h3 {
+    color: #991b1b;
+    margin-top: 0;
+}
+
+.nutrient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.nutrient-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(134, 239, 172, 0.5);
+}
+
+.nutrient-item h4 {
+    color: #16a34a;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.nutrient-item p {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ALERT BOXES */
+.alert-box {
+    padding: 24px;
+    border-radius: 16px;
+    margin: 32px 0;
+    border-left: 4px solid;
+}
+
+.alert-box .alert-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.alert-box p {
+    margin: 0;
+    font-size: 15px;
+}
+
+.alert-box.warning,
+.alert-box.gold {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.alert-box.warning .alert-label,
+.alert-box.gold .alert-label {
+    color: #92400e;
+}
+
+.alert-box.success {
+    background: #f0fdf4;
+    border-color: #22c55e;
+}
+
+.alert-box.success .alert-label {
+    color: #166534;
+}
+
+.alert-box.reflect,
+.alert-box.info {
+    background: #faf5ff;
+    border-color: #a855f7;
+}
+
+.alert-box.reflect .alert-label,
+.alert-box.info .alert-label {
+    color: #7e22ce;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+    background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+    border: 1px solid #fde047;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 32px 0;
+    position: relative;
+}
+
+.coach-tip::before {
+    content: '💡';
+    position: absolute;
+    top: -12px;
+    left: 24px;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #a16207;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.coach-tip p {
+    color: #713f12;
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.7;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #7dd3fc;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.module-connection .connection-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.module-connection .connection-text {
+    flex: 1;
+}
+
+.module-connection .connection-text p {
+    margin: 0;
+    font-size: 15px;
+    color: #0c4a6e;
+    line-height: 1.5;
+}
+
+.module-connection .connection-text strong {
+    color: #075985;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border: 1px solid #e9d5ff;
+    border-radius: 20px;
+    padding: 32px;
+    margin: 48px 0;
+}
+
+.question-item {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #e9d5ff;
+}
+
+.question-item:last-child {
+    margin-bottom: 0;
+}
+
+.question-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.question-number {
+    background: #a855f7;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.question-text {
+    font-weight: 600;
+    color: #4b5563;
+    font-size: 15px;
+    margin: 0;
+    flex: 1;
+}
+
+.reveal-btn {
+    background: white;
+    border: 2px solid #d8b4fe;
+    color: #7e22ce;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+}
+
+.reveal-btn:hover {
+    background: #7e22ce;
+    color: white;
+    border-color: #7e22ce;
+}
+
+.answer-text {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e9d5ff;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.answer-text.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 20px;
+    padding: 32px;
+    margin: 48px 0;
+}
+
+.takeaways-box .box-label {
+    color: #166534;
+}
+
+.takeaways-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.takeaways-box li {
+    padding: 12px 0 12px 32px;
+    position: relative;
+    font-size: 16px;
+    color: #166534;
+    border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.takeaways-box li:last-child {
+    border-bottom: none;
+}
+
+.takeaways-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #22c55e;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* REFERENCES - Premium Academic Style */
+.references-box {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-top: 48px;
+}
+
+.references-box .box-label {
+    color: #64748b;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.references-box .box-label::before {
+    content: '📚';
+}
+
+.references-box ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: ref-counter;
+}
+
+.references-box li {
+    counter-increment: ref-counter;
+    padding: 12px 16px 12px 48px;
+    position: relative;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.7;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.references-box li:last-child {
+    margin-bottom: 0;
+}
+
+.references-box li::before {
+    content: counter(ref-counter);
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    width: 22px;
+    height: 22px;
+    background: #722F37;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.references-box li em {
+    color: #722F37;
+    font-weight: 500;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .lesson-wrapper {
+        padding: 24px 16px 60px;
+    }
+
+    .module-header-card {
+        padding: 32px 24px;
+        border-radius: 20px;
+    }
+
+    .lesson-title {
+        font-size: 28px;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .systems-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nutrient-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .toc-list {
+        grid-template-columns: 1fr;
+    }
+
+    .asi-credential-strip {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .module-connection {
+        flex-direction: column;
+        text-align: center;
+    }
+}
 
     </style>
 </head>
 <body>
-    <div class="brand-header"></div>
-    <div class="lesson-wrapper">
+
+<div class="lesson-wrapper">
+        <!-- Module Header -->
         <div class="module-header-card">
-            <span class="module-label">Module</span>
-            <h1 class="lesson-title">Nutrition Protocol Design</h1>
+            <span class="module-label">Module 19: Protocol Building And Program Design</span>
+            <h1 class="lesson-title">Lesson 19.3: Nutrition Protocol Design</h1>
             <div class="lesson-meta">
-                
+                <span class="meta-badge"><span class="icon">⏱️</span> 14 min read</span>
+                <span class="meta-badge"><span class="icon">🛠️</span> Practical Skills</span>
             </div>
         </div>
-        <div class="lesson-wrapper">
-        <div class="module-header-card">
-            <span class="module-label">Module 19: Protocol Building And Program Design • Lesson 3</span>
-            <h1 class="lesson-title">Nutrition Protocol Design</h1>
-            <div class="lesson-meta">
-                
+
+        <!-- ASI Credential Strip -->
+        <div class="asi-credential-strip">
+            <div class="asi-logo">🏅</div>
+            <div class="asi-text">
+                <p class="label">ASI Accredited Content</p>
+                <p class="title">Functional Medicine Health Coach Certification</p>
             </div>
         </div>
-        <div class="reading-time">
-        <span class="badge">📚 Reading Time: 11 minutes</span>
-    </div>
 
+        <!-- Table of Contents -->
+        <nav class="toc-box">
+            <span class="toc-label">In This Lesson</span>
+            <ul class="toc-list">
+                <li><a href="#foundation"><span class="section-num">01</span>Protocol Design Foundation</a></li>
+                <li><a href="#elimination"><span class="section-num">02</span>Elimination Diet Protocols</a></li>
+                <li><a href="#therapeutic"><span class="section-num">03</span>Therapeutic Approaches</a></li>
+                <li><a href="#sustainable"><span class="section-num">04</span>Sustainable Eating Patterns</a></li>
+                <li><a href="#adequacy"><span class="section-num">05</span>Nutritional Adequacy</a></li>
+                <li><a href="#quiz"><span class="section-num">06</span>Check Your Understanding</a></li>
+            </ul>
+        </nav>
 
-    <!-- Lesson Header -->
-    
+        <!-- Module Connection -->
+        <div class="module-connection">
+            <div class="connection-icon">🔗</div>
+            <div class="connection-text">
+                <p><strong>Connection to Your Practice:</strong> In our previous lesson, you learned how to conduct comprehensive assessments and set meaningful goals with clients. Now we transform those insights into action through <span class="highlight">nutrition protocol design</span>—the art of creating personalized food-based programs that address root causes while being sustainable for real life. This is where assessment findings become plate-level recommendations.</p>
+            </div>
+        </div>
 
-    <!-- Reading Time Badge -->
-    <div>
-        <span class="highlight">
-            📖 Reading Time: 11 minutes
-        </span>
-    </div>
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <p>This lesson will teach you how to design <span class="highlight">effective, personalized nutrition protocols</span> that balance therapeutic power with real-world sustainability. You'll learn when to use elimination diets, how to create therapeutic nutrition approaches for common conditions, and how to ensure your protocols support rather than overwhelm your clients.</p>
+        </div>
 
-    <!-- Connection Box -->
-    <div class="connection-box">
-        <h3>🔗 Connection to Your Practice</h3>
-        <p>In our previous lesson, you learned how to conduct comprehensive assessments and set meaningful goals with clients. Now we transform those insights into action through <span class="highlight">nutrition protocol design</span>—the art of creating personalized food-based programs that address root causes while being sustainable for real life. This is where assessment findings become plate-level recommendations.</p>
-    </div>
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <span class="box-label">What You'll Learn</span>
+            <ul>
+                <li>Design elimination diet protocols appropriate for different client presentations</li>
+                <li>Create therapeutic nutrition approaches for common functional medicine conditions</li>
+                <li>Build sustainable eating patterns that clients can maintain long-term</li>
+                <li>Develop phased nutrition protocols that progressively expand food choices</li>
+                <li>Navigate dietary restrictions while ensuring nutritional adequacy</li>
+            </ul>
+        </div>
 
-    <!-- Learning Objectives -->
-    <div>
-        <h3>🎯 Learning Objectives</h3>
-        <p>By the end of this lesson, you will be able to:</p>
-        <ul>
-            <li>Design elimination diet protocols appropriate for different client presentations</li>
-            <li>Create therapeutic nutrition approaches for common functional medicine conditions</li>
-            <li>Build sustainable eating patterns that clients can maintain long-term</li>
-            <li>Develop phased nutrition protocols that progressively expand food choices</li>
-            <li>Navigate dietary restrictions while ensuring nutritional adequacy</li>
-        </ul>
-    </div>
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="title">Case Study: Diane's Diet Dilemma</p>
+                    <p class="subtitle">When More Restriction Isn't the Answer</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👩</div>
+                    <div class="patient-info">
+                        <h4>Diane, Age 47</h4>
+                        <p>Suspected food sensitivities • Digestive complaints • Chronic fatigue • Multiple failed diet attempts</p>
+                    </div>
+                </div>
+                <p><em>"I've tried keto, paleo, Whole30, vegetarian—I always feel great for two weeks then crash. I don't know what to eat anymore."</em></p>
+                <p>Diane arrived with a stack of diet books and a history of failed approaches. Her previous experiences revealed a common pattern: jumping into restrictive diets without proper assessment, eliminating too much too fast, lacking reintroduction structure, and eventually burning out.</p>
+                <p>Through collaborative nutrition protocol design, we created a <span class="highlight">phased elimination approach</span> that identified her specific triggers (dairy and eggs), maintained nutritional adequacy, and established sustainable eating patterns she's followed successfully for two years.</p>
+            </div>
+        </div>
 
-    <!-- Opening Story -->
-    <div>
-        <h3>📖 Coaching Story: Diane's Diet Dilemma</h3>
-        <p>Diane, a 47-year-old with suspected food sensitivities, digestive complaints, and chronic fatigue, arrived with a stack of diet books and a history of failed approaches. "I've tried keto, paleo, Whole30, vegetarian—I always feel great for two weeks then crash. I don't know what to eat anymore."</p>
-        <p>Her previous experiences revealed a common pattern: jumping into restrictive diets without proper assessment, eliminating too much too fast, lacking reintroduction structure, and eventually burning out. Through collaborative nutrition protocol design, we created a <span class="highlight">phased elimination approach</span> that identified her specific triggers (dairy and eggs), maintained nutritional adequacy, and established sustainable eating patterns she's followed successfully for two years.</p>
         <p>Diane's story illustrates that effective nutrition protocols aren't about finding the "perfect diet"—they're about systematic discovery and personalized sustainability.</p>
-    </div>
 
-    <h2>The Foundation of Nutrition Protocol Design</h2>
+        <!-- Main Content Section -->
+        <h2 id="foundation">The Foundation of Nutrition Protocol Design</h2>
 
-    <p>Before designing any nutrition protocol, we must understand what makes dietary interventions succeed or fail. Research consistently shows that <span class="highlight">dietary adherence</span> is the strongest predictor of outcomes—the "best" diet is one the client will actually follow (Dansinger et al., 2005).</p>
+        <p>Before designing any nutrition protocol, we must understand what makes dietary interventions succeed or fail. Research consistently shows that <span class="highlight">dietary adherence</span> is the strongest predictor of outcomes—the "best" diet is one the client will actually follow (Dansinger et al., 2005).</p>
 
-    <h3>Core Principles of Effective Nutrition Protocols</h3>
+        <h3>Core Principles of Effective Nutrition Protocols</h3>
 
-    <div class="warning-box">
-        <h4>The Five Pillars of Protocol Success</h4>
-        <ol>
-            <li><strong>Personalization:</strong> Protocols must match the individual's assessment findings, preferences, lifestyle, and cultural background</li>
-            <li><strong>Sustainability:</strong> Changes should be maintainable for life, not temporary fixes</li>
-            <li><strong>Nutritional Adequacy:</strong> Even therapeutic restrictions must meet essential nutrient needs</li>
-            <li><strong>Progressive Design:</strong> Phases that start restrictive should expand over time</li>
-            <li><strong>Clear Structure:</strong> Specific guidelines balanced with flexibility for real life</li>
-        </ol>
-    </div>
-
-    <h3>Understanding Client Readiness for Dietary Change</h3>
-
-    <p>Not every client is ready for the same level of dietary intervention. Assessing readiness helps match protocol intensity to capacity:</p>
-
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Readiness Level</th>
-                    <th>Signs & Indicators</th>
-                    <th>Appropriate Intervention</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>High Readiness</strong></td>
-                    <td>Strong motivation, prior success, stable life circumstances, good support</td>
-                    <td>Comprehensive elimination protocols, significant changes</td>
-                </tr>
-                <tr>
-                    <td><strong>Moderate Readiness</strong></td>
-                    <td>Interested but uncertain, some barriers, moderate life stress</td>
-                    <td>Modified protocols, phased approach, fewer simultaneous changes</td>
-                </tr>
-                <tr>
-                    <td><strong>Low Readiness</strong></td>
-                    <td>Ambivalent, major life stressors, history of disordered eating</td>
-                    <td>Foundational changes only, crowding-out approach, habit stacking</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <h2>Elimination Diet Protocols</h2>
-
-    <p><span class="highlight">Elimination diets</span> remain the gold standard for identifying food sensitivities and reactions. These protocols temporarily remove suspected trigger foods, then systematically reintroduce them to identify specific reactions (Mullin et al., 2010).</p>
-
-    <h3>Types of Elimination Protocols</h3>
-
-    <div>
-
-        <div>
-            <h4>Comprehensive Elimination</h4>
-            <p><strong>Duration:</strong> 3-6 weeks elimination, 6-8 weeks reintroduction</p>
-            <p><strong>Foods Removed:</strong> Gluten, dairy, eggs, soy, corn, peanuts, tree nuts, shellfish, nightshades, processed foods, sugar, alcohol, caffeine</p>
-            <p><strong>Best For:</strong> Complex presentations, autoimmune conditions, multiple suspected triggers, clients with high motivation and support</p>
-            <p><strong>Considerations:</strong> Requires significant commitment; ensure nutritional adequacy; not appropriate for those with eating disorder history</p>
-        </div>
-
-        <div>
-            <h4>Modified Elimination</h4>
-            <p><strong>Duration:</strong> 2-4 weeks elimination, 4-6 weeks reintroduction</p>
-            <p><strong>Foods Removed:</strong> Gluten, dairy, refined sugar, processed foods (fewer categories than comprehensive)</p>
-            <p><strong>Best For:</strong> Moderate symptoms, clients new to elimination diets, those with moderate readiness</p>
-            <p><strong>Considerations:</strong> Easier to maintain; may miss some triggers; good starting point with option to expand</p>
-        </div>
-
-        <div>
-            <h4>Targeted Elimination</h4>
-            <p><strong>Duration:</strong> 2-3 weeks elimination, 2-3 weeks reintroduction</p>
-            <p><strong>Foods Removed:</strong> 1-2 specific suspected foods based on symptoms, history, or testing</p>
-            <p><strong>Best For:</strong> Clear symptom-food correlation, follow-up after testing, clients with lower readiness</p>
-            <p><strong>Considerations:</strong> Less disruptive; may need to expand if initial targets aren't triggers</p>
-        </div>
-
-    </div>
-
-    <h3>The Elimination Diet Process</h3>
-
-    <div>
-        <h4>Phase 1: Preparation (1-2 weeks before)</h4>
-        <ul>
-            <li>Educate client on process, expectations, and timeline</li>
-            <li>Create allowed foods list and meal ideas together</li>
-            <li>Identify replacement strategies for eliminated favorites</li>
-            <li>Establish baseline symptom tracking</li>
-            <li>Plan for social situations and potential challenges</li>
-            <li>Ensure kitchen is stocked with approved foods</li>
-        </ul>
-    </div>
-
-    <div>
-        <h4>Phase 2: Elimination (2-6 weeks)</h4>
-        <ul>
-            <li>Strict avoidance of all eliminated foods</li>
-            <li>Daily symptom and food journal</li>
-            <li>Weekly check-ins to troubleshoot and support</li>
-            <li>Watch for hidden sources in packaged foods</li>
-            <li>Monitor for improvement patterns</li>
-            <li>Prepare for reintroduction when symptoms stabilize</li>
-        </ul>
-    </div>
-
-    <div>
-        <h4>Phase 3: Reintroduction (4-8 weeks)</h4>
-        <ul>
-            <li>Introduce one food group at a time</li>
-            <li>Consume test food 2-3 times on day one</li>
-            <li>Monitor for 2-3 days before next introduction</li>
-            <li>Document all reactions (immediate and delayed)</li>
-            <li>If reaction occurs, wait until symptoms clear before next food</li>
-            <li>Categorize foods: safe, limit, or avoid</li>
-        </ul>
-    </div>
-
-    <h2>Therapeutic Nutrition Approaches</h2>
-
-    <p>Beyond elimination diets, various <span class="highlight">therapeutic nutrition approaches</span> can support specific health conditions. As health coaches, we guide implementation of approaches recommended by healthcare providers.</p>
-
-    <h3>Anti-Inflammatory Nutrition</h3>
-
-    <p>Chronic inflammation underlies many conditions your clients experience. Anti-inflammatory nutrition focuses on foods that reduce inflammatory markers while minimizing pro-inflammatory triggers (Calder et al., 2017).</p>
-
-    <div class="warning-box">
-        <h4>Anti-Inflammatory Framework</h4>
-        <div>
-            <div>
-                <strong>Include Abundantly:</strong>
-                <p>Fatty fish (salmon, sardines, mackerel), colorful vegetables, berries, leafy greens, olive oil, nuts, turmeric, ginger, green tea</p>
+        <!-- Principles Grid -->
+        <div class="principles-grid">
+            <div class="principle-card">
+                <div class="principle-number">1</div>
+                <div class="principle-content">
+                    <p class="principle-title">Personalization</p>
+                    <p class="principle-text">Protocols must match the individual's assessment findings, preferences, lifestyle, and cultural background</p>
+                </div>
             </div>
-            <div>
-                <strong>Include Moderately:</strong>
-                <p>Whole grains (if tolerated), legumes, poultry, eggs, dark chocolate</p>
+            <div class="principle-card">
+                <div class="principle-number">2</div>
+                <div class="principle-content">
+                    <p class="principle-title">Sustainability</p>
+                    <p class="principle-text">Changes should be maintainable for life, not temporary fixes</p>
+                </div>
             </div>
-            <div>
-                <strong>Minimize or Avoid:</strong>
-                <p>Refined sugars, processed foods, refined seed oils, trans fats, excessive alcohol, processed meats</p>
+            <div class="principle-card">
+                <div class="principle-number">3</div>
+                <div class="principle-content">
+                    <p class="principle-title">Nutritional Adequacy</p>
+                    <p class="principle-text">Even therapeutic restrictions must meet essential nutrient needs</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-number">4</div>
+                <div class="principle-content">
+                    <p class="principle-title">Progressive Design</p>
+                    <p class="principle-text">Phases that start restrictive should expand over time</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-number">5</div>
+                <div class="principle-content">
+                    <p class="principle-title">Clear Structure</p>
+                    <p class="principle-text">Specific guidelines balanced with flexibility for real life</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <h3>Gut-Healing Protocols</h3>
-
-    <p>Many clients require nutrition support for <span class="highlight">gut healing</span>. These protocols often follow a phased approach:</p>
-
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Phase</th>
-                    <th>Focus</th>
-                    <th>Key Foods</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Remove</strong></td>
-                    <td>Eliminate irritants and triggers</td>
-                    <td>Avoid: processed foods, sugar, alcohol, identified triggers</td>
-                </tr>
-                <tr>
-                    <td><strong>Replace</strong></td>
-                    <td>Support digestive function</td>
-                    <td>Bitter foods, apple cider vinegar, digestive-supporting herbs</td>
-                </tr>
-                <tr>
-                    <td><strong>Repair</strong></td>
-                    <td>Nourish gut lining</td>
-                    <td>Bone broth, collagen, zinc-rich foods, vitamin A foods</td>
-                </tr>
-                <tr>
-                    <td><strong>Reinoculate</strong></td>
-                    <td>Restore beneficial bacteria</td>
-                    <td>Fermented foods, prebiotic fibers, diverse plant foods</td>
-                </tr>
-                <tr>
-                    <td><strong>Rebalance</strong></td>
-                    <td>Sustainable maintenance</td>
-                    <td>Personalized whole foods approach, lifestyle factors</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <h3>Blood Sugar Balancing Protocols</h3>
-
-    <p>For clients with metabolic concerns, <span class="highlight">blood sugar balancing</span> nutrition provides structure for stable energy and improved insulin sensitivity.</p>
-
-    <div>
-        <h4>Blood Sugar Balancing Principles</h4>
-        <ul>
-            <li><strong>Protein at every meal:</strong> 20-30g to slow glucose absorption</li>
-            <li><strong>Fiber-rich foods:</strong> Aim for 25-35g daily from vegetables, legumes, whole grains</li>
-            <li><strong>Healthy fats:</strong> Include at each meal for satiety and glucose modulation</li>
-            <li><strong>Strategic carbohydrates:</strong> Focus on low-glycemic, paired with protein and fat</li>
-            <li><strong>Meal timing:</strong> Regular meals to prevent glucose swings</li>
-            <li><strong>Food sequence:</strong> Vegetables first, then protein, then starches</li>
-            <li><strong>Movement after meals:</strong> 10-15 minute walks to improve glucose response</li>
-        </ul>
-    </div>
-
-    <h2>Building Sustainable Eating Patterns</h2>
-
-    <p>The ultimate goal of any nutrition protocol is transitioning to sustainable eating patterns the client can maintain independently. This requires balancing therapeutic benefits with real-life practicality.</p>
-
-    <h3>The Sustainable Nutrition Framework</h3>
-
-    <div>
-
-        <div>
-            <h4>1. Personalized "Always" Foods</h4>
-            <p>Help clients identify 10-15 nutrient-dense foods they genuinely enjoy and can build meals around. These become the foundation of their eating pattern—not foods they "should" eat, but foods they want to eat.</p>
+        <!-- Coach Tip -->
+        <div class="coach-tip">
+            <span class="tip-label">Coach Tip</span>
+            <p>Before designing any nutrition protocol, ask yourself: <em>"Could this person realistically follow this approach six months from now while managing work, family, and social life?"</em> If the answer is no, scale it back. Sustainability beats perfection every time.</p>
         </div>
 
-        <div>
-            <h4>2. Flexible Structure</h4>
-            <p>Create guidelines rather than rigid rules. For example: "Include protein and vegetables at each meal" rather than "Eat exactly 4 oz chicken with 1 cup broccoli at 12:00 PM." Structure provides direction; flexibility allows life.</p>
+        <h3>Understanding Client Readiness for Dietary Change</h3>
+
+        <p>Not every client is ready for the same level of dietary intervention. Assessing readiness helps match protocol intensity to capacity:</p>
+
+        <!-- Comparison Grid for Readiness Levels -->
+        <div class="comparison-grid">
+            <div class="comparison-card functional">
+                <span class="card-label">High Readiness</span>
+                <ul>
+                    <li><strong>Signs:</strong> Strong motivation, prior success, stable life circumstances, good support</li>
+                    <li><strong>Intervention:</strong> Comprehensive elimination protocols, significant changes</li>
+                </ul>
+            </div>
+            <div class="comparison-card conventional">
+                <span class="card-label">Moderate Readiness</span>
+                <ul>
+                    <li><strong>Signs:</strong> Interested but uncertain, some barriers, moderate life stress</li>
+                    <li><strong>Intervention:</strong> Modified protocols, phased approach, fewer simultaneous changes</li>
+                </ul>
+            </div>
+            <div class="comparison-card conventional">
+                <span class="card-label">Low Readiness</span>
+                <ul>
+                    <li><strong>Signs:</strong> Ambivalent, major life stressors, history of disordered eating</li>
+                    <li><strong>Intervention:</strong> Foundational changes only, crowding-out approach, habit stacking</li>
+                </ul>
+            </div>
         </div>
 
-        <div>
-            <h4>3. Built-In Buffer</h4>
-            <p>Design protocols with room for imperfection. The 80/20 or 90/10 approach—eating according to plan most of the time while allowing flexibility—reduces the all-or-nothing thinking that derails long-term success.</p>
+        <h2 id="elimination">Elimination Diet Protocols</h2>
+
+        <p><span class="highlight">Elimination diets</span> remain the gold standard for identifying food sensitivities and reactions. These protocols temporarily remove suspected trigger foods, then systematically reintroduce them to identify specific reactions (Mullin et al., 2010).</p>
+
+        <h3>Types of Elimination Protocols</h3>
+
+        <!-- Systems Box for Protocol Types -->
+        <div class="systems-box">
+            <h3>Three Levels of Elimination</h3>
+            <div class="systems-grid">
+                <div class="system-item">
+                    <h4>🔴 Comprehensive Elimination</h4>
+                    <p><strong>Duration:</strong> 3-6 weeks elimination, 6-8 weeks reintroduction</p>
+                    <p><strong>Foods Removed:</strong> Gluten, dairy, eggs, soy, corn, peanuts, tree nuts, shellfish, nightshades, processed foods, sugar, alcohol, caffeine</p>
+                    <p><strong>Best For:</strong> Complex presentations, autoimmune conditions, multiple suspected triggers, clients with high motivation and support</p>
+                </div>
+                <div class="system-item">
+                    <h4>🟡 Modified Elimination</h4>
+                    <p><strong>Duration:</strong> 2-4 weeks elimination, 4-6 weeks reintroduction</p>
+                    <p><strong>Foods Removed:</strong> Gluten, dairy, refined sugar, processed foods (fewer categories than comprehensive)</p>
+                    <p><strong>Best For:</strong> Moderate symptoms, clients new to elimination diets, those with moderate readiness</p>
+                </div>
+                <div class="system-item">
+                    <h4>🟢 Targeted Elimination</h4>
+                    <p><strong>Duration:</strong> 2-3 weeks elimination, 2-3 weeks reintroduction</p>
+                    <p><strong>Foods Removed:</strong> 1-2 specific suspected foods based on symptoms, history, or testing</p>
+                    <p><strong>Best For:</strong> Clear symptom-food correlation, follow-up after testing, clients with lower readiness</p>
+                </div>
+            </div>
         </div>
 
-        <div>
-            <h4>4. Practical Integration</h4>
-            <p>Consider real-life factors: work schedule, family meals, social events, travel, budget, cooking skills, and time availability. A protocol that ignores these realities will fail regardless of its therapeutic merit.</p>
+        <!-- Coach Tip -->
+        <div class="coach-tip">
+            <span class="tip-label">Coach Tip</span>
+            <p>When a client seems overwhelmed by a comprehensive elimination protocol, consider starting with a modified or targeted approach. You can always expand later. Success with a smaller elimination builds confidence and skills for future protocols. Remember: <em>"Start where the client is, not where you wish they were."</em></p>
+        </div>
+
+        <h3>The Elimination Diet Process</h3>
+
+        <div class="alert-box success">
+            <span class="alert-label">Phase 1: Preparation (1-2 weeks before)</span>
+            <ul>
+                <li>Educate client on process, expectations, and timeline</li>
+                <li>Create allowed foods list and meal ideas together</li>
+                <li>Identify replacement strategies for eliminated favorites</li>
+                <li>Establish baseline symptom tracking</li>
+                <li>Plan for social situations and potential challenges</li>
+                <li>Ensure kitchen is stocked with approved foods</li>
+            </ul>
+        </div>
+
+        <div class="alert-box warning">
+            <span class="alert-label">Phase 2: Elimination (2-6 weeks)</span>
+            <ul>
+                <li>Strict avoidance of all eliminated foods</li>
+                <li>Daily symptom and food journal</li>
+                <li>Weekly check-ins to troubleshoot and support</li>
+                <li>Watch for hidden sources in packaged foods</li>
+                <li>Monitor for improvement patterns</li>
+                <li>Prepare for reintroduction when symptoms stabilize</li>
+            </ul>
+        </div>
+
+        <div class="alert-box success">
+            <span class="alert-label">Phase 3: Reintroduction (4-8 weeks)</span>
+            <ul>
+                <li>Introduce one food group at a time</li>
+                <li>Consume test food 2-3 times on day one</li>
+                <li>Monitor for 2-3 days before next introduction</li>
+                <li>Document all reactions (immediate and delayed)</li>
+                <li>If reaction occurs, wait until symptoms clear before next food</li>
+                <li>Categorize foods: safe, limit, or avoid</li>
+            </ul>
+        </div>
+
+        <h2 id="therapeutic">Therapeutic Nutrition Approaches</h2>
+
+        <p>Beyond elimination diets, various <span class="highlight">therapeutic nutrition approaches</span> can support specific health conditions. As health coaches, we guide implementation of approaches recommended by healthcare providers.</p>
+
+        <h3>Anti-Inflammatory Nutrition</h3>
+
+        <p>Chronic inflammation underlies many conditions your clients experience. Anti-inflammatory nutrition focuses on foods that reduce inflammatory markers while minimizing pro-inflammatory triggers (Calder et al., 2017).</p>
+
+        <!-- Nutrient Box -->
+        <div class="nutrient-box positive">
+            <h3>🌟 Anti-Inflammatory Framework</h3>
+            <div class="nutrient-grid">
+                <div class="nutrient-item">
+                    <h4>Include Abundantly</h4>
+                    <p>Fatty fish (salmon, sardines, mackerel), colorful vegetables, berries, leafy greens, olive oil, nuts, turmeric, ginger, green tea</p>
+                </div>
+                <div class="nutrient-item">
+                    <h4>Include Moderately</h4>
+                    <p>Whole grains (if tolerated), legumes, poultry, eggs, dark chocolate</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="nutrient-box negative">
+            <h3>⚠️ Minimize or Avoid</h3>
+            <div class="nutrient-grid">
+                <div class="nutrient-item">
+                    <h4>Pro-Inflammatory Foods</h4>
+                    <p>Refined sugars, processed foods, refined seed oils, trans fats, excessive alcohol, processed meats</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coach Tip -->
+        <div class="coach-tip">
+            <span class="tip-label">Coach Tip</span>
+            <p>Frame anti-inflammatory nutrition as <em>"adding in the good stuff"</em> before talking about removing inflammatory foods. Start by helping clients increase colorful vegetables, fatty fish, and olive oil. Once they experience benefits from additions, they're often more motivated to reduce inflammatory foods. Addition before subtraction builds momentum.</p>
+        </div>
+
+        <h3>Gut-Healing Protocols</h3>
+
+        <p>Many clients require nutrition support for <span class="highlight">gut healing</span>. These protocols often follow a phased approach known as the "5 R's":</p>
+
+        <!-- Systems Box for 5 R's -->
+        <div class="systems-box">
+            <h3>The 5 R Protocol for Gut Health</h3>
+            <div class="systems-grid">
+                <div class="system-item">
+                    <h4>🔴 Remove</h4>
+                    <p><strong>Focus:</strong> Eliminate irritants and triggers</p>
+                    <p><strong>Foods:</strong> Avoid processed foods, sugar, alcohol, identified triggers</p>
+                </div>
+                <div class="system-item">
+                    <h4>🔄 Replace</h4>
+                    <p><strong>Focus:</strong> Support digestive function</p>
+                    <p><strong>Foods:</strong> Bitter foods, apple cider vinegar, digestive-supporting herbs</p>
+                </div>
+                <div class="system-item">
+                    <h4>🩹 Repair</h4>
+                    <p><strong>Focus:</strong> Nourish gut lining</p>
+                    <p><strong>Foods:</strong> Bone broth, collagen, zinc-rich foods, vitamin A foods</p>
+                </div>
+                <div class="system-item">
+                    <h4>🦠 Reinoculate</h4>
+                    <p><strong>Focus:</strong> Restore beneficial bacteria</p>
+                    <p><strong>Foods:</strong> Fermented foods, prebiotic fibers, diverse plant foods</p>
+                </div>
+                <div class="system-item">
+                    <h4>⚖️ Rebalance</h4>
+                    <p><strong>Focus:</strong> Sustainable maintenance</p>
+                    <p><strong>Foods:</strong> Personalized whole foods approach, lifestyle factors</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Blood Sugar Balancing Protocols</h3>
+
+        <p>For clients with metabolic concerns, <span class="highlight">blood sugar balancing</span> nutrition provides structure for stable energy and improved insulin sensitivity.</p>
+
+        <div class="alert-box success">
+            <span class="alert-label">Blood Sugar Balancing Principles</span>
+            <ul>
+                <li><strong>Protein at every meal:</strong> 20-30g to slow glucose absorption</li>
+                <li><strong>Fiber-rich foods:</strong> Aim for 25-35g daily from vegetables, legumes, whole grains</li>
+                <li><strong>Healthy fats:</strong> Include at each meal for satiety and glucose modulation</li>
+                <li><strong>Strategic carbohydrates:</strong> Focus on low-glycemic, paired with protein and fat</li>
+                <li><strong>Meal timing:</strong> Regular meals to prevent glucose swings</li>
+                <li><strong>Food sequence:</strong> Vegetables first, then protein, then starches</li>
+                <li><strong>Movement after meals:</strong> 10-15 minute walks to improve glucose response</li>
+            </ul>
+        </div>
+
+        <h2 id="sustainable">Building Sustainable Eating Patterns</h2>
+
+        <p>The ultimate goal of any nutrition protocol is transitioning to sustainable eating patterns the client can maintain independently. This requires balancing therapeutic benefits with real-life practicality.</p>
+
+        <h3>The Sustainable Nutrition Framework</h3>
+
+        <!-- Principles Grid for Sustainability -->
+        <div class="principles-grid">
+            <div class="principle-card">
+                <div class="principle-number">1</div>
+                <div class="principle-content">
+                    <p class="principle-title">Personalized "Always" Foods</p>
+                    <p class="principle-text">Help clients identify 10-15 nutrient-dense foods they genuinely enjoy and can build meals around. These become the foundation—not foods they "should" eat, but foods they <em>want</em> to eat.</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-number">2</div>
+                <div class="principle-content">
+                    <p class="principle-title">Flexible Structure</p>
+                    <p class="principle-text">Create guidelines rather than rigid rules. For example: "Include protein and vegetables at each meal" rather than "Eat exactly 4 oz chicken with 1 cup broccoli at 12:00 PM." Structure provides direction; flexibility allows life.</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-number">3</div>
+                <div class="principle-content">
+                    <p class="principle-title">Built-In Buffer</p>
+                    <p class="principle-text">Design protocols with room for imperfection. The 80/20 or 90/10 approach—eating according to plan most of the time while allowing flexibility—reduces the all-or-nothing thinking that derails long-term success.</p>
+                </div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-number">4</div>
+                <div class="principle-content">
+                    <p class="principle-title">Practical Integration</p>
+                    <p class="principle-text">Consider real-life factors: work schedule, family meals, social events, travel, budget, cooking skills, and time availability. A protocol that ignores these realities will fail regardless of its therapeutic merit.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coach Tip -->
+        <div class="coach-tip">
+            <span class="tip-label">Coach Tip</span>
+            <p>Help clients develop "minimum effective dose" strategies for challenging situations. For example: <em>"When traveling, my baseline is protein at every meal and two vegetables per day. That's my non-negotiable minimum. Everything else is bonus."</em> This prevents all-or-nothing thinking and maintains momentum during disruptions.</p>
+        </div>
+
+        <h3>Navigating Special Situations</h3>
+
+        <div class="alert-box warning">
+            <span class="alert-label">Restaurant and Social Eating Strategies</span>
+            <ul>
+                <li>Review menus in advance when possible</li>
+                <li>Identify "safe" restaurant options and cuisines</li>
+                <li>Practice language for communicating dietary needs</li>
+                <li>Plan for social pressure and develop responses</li>
+                <li>Decide in advance about alcohol and dessert</li>
+            </ul>
+        </div>
+
+        <div class="alert-box success">
+            <span class="alert-label">Travel and Disruption Planning</span>
+            <ul>
+                <li>Identify non-perishable "anchor" foods to bring</li>
+                <li>Research food options at destination</li>
+                <li>Establish minimum standards versus ideal approach</li>
+                <li>Create recovery protocols for returning to routine</li>
+                <li>Accept that travel eating may differ from home eating</li>
+            </ul>
+        </div>
+
+        <h2 id="adequacy">Ensuring Nutritional Adequacy</h2>
+
+        <p>Therapeutic diets that restrict foods carry risk of nutritional deficiency. As coaches, we must ensure that even restricted protocols meet essential nutrient needs.</p>
+
+        <h3>Common Concerns with Restricted Diets</h3>
+
+        <!-- Systems Box for Restrictions -->
+        <div class="systems-box">
+            <h3>Restriction Risks & Alternative Sources</h3>
+            <div class="systems-grid">
+                <div class="system-item">
+                    <h4>🥛 Dairy-Free</h4>
+                    <p><strong>Risks:</strong> Calcium, vitamin D, protein</p>
+                    <p><strong>Alternatives:</strong> Leafy greens, sardines, fortified alternatives, sunlight</p>
+                </div>
+                <div class="system-item">
+                    <h4>🌾 Grain-Free</h4>
+                    <p><strong>Risks:</strong> B vitamins, fiber, iron</p>
+                    <p><strong>Alternatives:</strong> Meat, eggs, vegetables, nuts, seeds</p>
+                </div>
+                <div class="system-item">
+                    <h4>🥦 Low-FODMAP</h4>
+                    <p><strong>Risks:</strong> Fiber, prebiotics</p>
+                    <p><strong>Alternatives:</strong> Low-FODMAP vegetables, allowed fruits</p>
+                </div>
+                <div class="system-item">
+                    <h4>🍅 Nightshade-Free</h4>
+                    <p><strong>Risks:</strong> Vitamin C, potassium, lycopene</p>
+                    <p><strong>Alternatives:</strong> Citrus, berries, sweet potatoes, beets</p>
+                </div>
+                <div class="system-item">
+                    <h4>🥚 Egg-Free</h4>
+                    <p><strong>Risks:</strong> Choline, B vitamins, protein</p>
+                    <p><strong>Alternatives:</strong> Liver, fish, meat, cruciferous vegetables</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-box warning">
+            <span class="alert-label">⚠️ Red Flag: When to Refer</span>
+            <p>If a client requires <strong>multiple major food group restrictions</strong>, has signs of malnutrition, is pregnant or breastfeeding, has an eating disorder history, or needs clinical supplementation, refer to a registered dietitian or their healthcare provider for specialized nutritional assessment and management.</p>
+        </div>
+
+        <h3>Practical Protocol Templates</h3>
+
+        <div class="comparison-grid">
+            <div class="comparison-card functional">
+                <span class="card-label">Basic Anti-Inflammatory Protocol</span>
+                <ul>
+                    <li><strong>Morning:</strong> Protein + healthy fat + vegetables or low-glycemic fruit</li>
+                    <li><strong>Midday:</strong> Protein + 2+ cups vegetables + healthy fat + optional starch</li>
+                    <li><strong>Evening:</strong> Protein + 2+ cups vegetables + healthy fat + optional starch</li>
+                    <li><strong>Daily Targets:</strong> 8+ cups vegetables, 2-3 servings fatty fish/week, 2+ tablespoons olive oil, 1/4 cup nuts, minimal sugar</li>
+                    <li><strong>Avoid:</strong> Processed foods, refined sugars, seed oils, trans fats, excessive alcohol</li>
+                </ul>
+            </div>
+            <div class="comparison-card functional">
+                <span class="card-label">Blood Sugar Balancing Protocol</span>
+                <ul>
+                    <li><strong>Meal Structure:</strong> Always combine protein (20-30g) + fat + fiber at each eating occasion</li>
+                    <li><strong>Eating Pattern:</strong> 3 meals, 0-2 snacks, 12+ hours overnight fast</li>
+                    <li><strong>Carbohydrate Approach:</strong> Low-glycemic sources only, paired with protein/fat, vegetables first</li>
+                    <li><strong>Movement:</strong> 10-15 minute walk after meals when possible</li>
+                    <li><strong>Avoid:</strong> Isolated carbohydrates, sugary drinks, frequent snacking, eating within 3 hours of bed</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert-box reflect">
+            <span class="alert-label">Pause & Reflect</span>
+            <p>Think about your own eating patterns. What structures help you stay on track? What allowances do you need for flexibility? How can you apply your personal experience to better understand your clients' needs?</p>
+        </div>
+
+        <!-- Check Your Understanding - EXACT STRUCTURE REQUIRED -->
+        <h2 id="quiz">Check Your Understanding</h2>
+
+        <div class="check-understanding">
+            <span class="box-label">Test Your Knowledge</span>
+
+            <div class="question-item">
+                <div class="question-header">
+                    <span class="question-number">1</span>
+                    <p class="question-text">What is the most important predictor of nutrition protocol success, and why does this matter for protocol design?</p>
+                </div>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <div class="answer-text">
+                    <p><strong>Answer:</strong> <span class="highlight">Dietary adherence</span> is the strongest predictor of outcomes. This matters because it means the "best" diet is one the client will actually follow, not necessarily the most restrictive or theoretically optimal approach. Protocol design must balance therapeutic value with practical sustainability.</p>
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-header">
+                    <span class="question-number">2</span>
+                    <p class="question-text">Describe the three phases of an elimination diet protocol and the key activities in each phase.</p>
+                </div>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <div class="answer-text">
+                    <p><strong>Answer:</strong> The three phases are:</p>
+                    <ul>
+                        <li><strong>Phase 1 - Preparation (1-2 weeks):</strong> Education, meal planning, baseline symptom tracking, kitchen preparation</li>
+                        <li><strong>Phase 2 - Elimination (2-6 weeks):</strong> Strict avoidance of trigger foods, daily journaling, weekly check-ins, monitoring for improvement</li>
+                        <li><strong>Phase 3 - Reintroduction (4-8 weeks):</strong> Systematic testing of one food at a time, 2-3 day monitoring periods, documenting reactions, categorizing foods as safe/limit/avoid</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-header">
+                    <span class="question-number">3</span>
+                    <p class="question-text">What are the five core principles of effective nutrition protocol design?</p>
+                </div>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <div class="answer-text">
+                    <p><strong>Answer:</strong> The five core principles are:</p>
+                    <ol>
+                        <li><strong>Personalization:</strong> Match protocols to individual assessment findings, preferences, and lifestyle</li>
+                        <li><strong>Sustainability:</strong> Design for long-term maintenance, not temporary restriction</li>
+                        <li><strong>Nutritional Adequacy:</strong> Ensure essential nutrient needs are met even with restrictions</li>
+                        <li><strong>Progressive Design:</strong> Start restrictive and expand over time</li>
+                        <li><strong>Clear Structure:</strong> Balance specific guidelines with real-life flexibility</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-header">
+                    <span class="question-number">4</span>
+                    <p class="question-text">When should a health coach refer a client to a registered dietitian or healthcare provider for nutrition support?</p>
+                </div>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <div class="answer-text">
+                    <p><strong>Answer:</strong> Refer when a client requires multiple major food group restrictions, shows signs of malnutrition, is pregnant or breastfeeding, has an eating disorder history, or needs clinical supplementation. These situations require specialized medical nutrition therapy beyond the health coach scope of practice.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li>Match protocol intensity to <span class="highlight">client readiness</span>—not everyone needs comprehensive elimination</li>
+                <li>Elimination diets require proper <span class="highlight">preparation, strict elimination, and systematic reintroduction</span> phases</li>
+                <li>Therapeutic nutrition approaches should be <span class="highlight">personalized to assessment findings</span> and practitioner recommendations</li>
+                <li><span class="highlight">Sustainability trumps perfection</span>—design protocols clients can actually follow long-term</li>
+                <li>Always ensure <span class="highlight">nutritional adequacy</span> when restricting foods; refer when restrictions are extensive</li>
+                <li>Build <span class="highlight">flexibility into every protocol</span> for real-life situations like travel, restaurants, and social events</li>
+                <li>The <span class="highlight">80/20 approach</span> prevents all-or-nothing thinking and supports long-term adherence</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <span class="box-label">References</span>
+            <ol>
+                <li>Calder, P. C., Ahluwalia, N., Brouns, F., Buetler, T., Clement, K., Cunningham, K., ... & Watzl, B. (2017). Dietary factors and low-grade inflammation in relation to overweight and obesity. <em>British Journal of Nutrition</em>, 106(S3), S5-S78.</li>
+                <li>Dansinger, M. L., Gleason, J. A., Griffith, J. L., Selker, H. P., & Schaefer, E. J. (2005). Comparison of the Atkins, Ornish, Weight Watchers, and Zone diets for weight loss and heart disease risk reduction. <em>JAMA</em>, 293(1), 43-53.</li>
+                <li>Estruch, R., Ros, E., Salas-Salvadó, J., Covas, M. I., Corella, D., Arós, F., ... & Martínez-González, M. A. (2018). Primary prevention of cardiovascular disease with a Mediterranean diet supplemented with extra-virgin olive oil or nuts. <em>New England Journal of Medicine</em>, 378(25), e34.</li>
+                <li>Minich, D. M., & Bland, J. S. (2013). Personalized lifestyle medicine: relevance for nutrition and lifestyle recommendations. <em>The Scientific World Journal</em>, 2013.</li>
+                <li>Mullin, G. E., Swift, K. M., Lipski, L., Turnbull, L. K., & Rampertab, S. D. (2010). Testing for food reactions: the good, the bad, and the ugly. <em>Nutrition in Clinical Practice</em>, 25(2), 192-198.</li>
+                <li>Vickery, C. E., & Hodges, P. A. (2020). Counseling patients about diet and nutrition. In <em>Nutrition in the Prevention and Treatment of Disease</em> (pp. 71-91). Academic Press.</li>
+            </ol>
         </div>
 
     </div>
 
-    <h3>Navigating Special Situations</h3>
 
-    <div>
-        <h4>Restaurant and Social Eating</h4>
-        <ul>
-            <li>Review menus in advance when possible</li>
-            <li>Identify "safe" restaurant options and cuisines</li>
-            <li>Practice language for communicating dietary needs</li>
-            <li>Plan for social pressure and develop responses</li>
-            <li>Decide in advance about alcohol and dessert</li>
-        </ul>
-    </div>
+<script>
+function toggleAnswer(btn) {
+    const answer = btn.nextElementSibling;
+    const isShowing = answer.classList.contains('show');
 
-    <div>
-        <h4>Travel and Disruption</h4>
-        <ul>
-            <li>Identify non-perishable "anchor" foods to bring</li>
-            <li>Research food options at destination</li>
-            <li>Establish minimum standards versus ideal approach</li>
-            <li>Create recovery protocols for returning to routine</li>
-            <li>Accept that travel eating may differ from home eating</li>
-        </ul>
-    </div>
+    if (isShowing) {
+        answer.classList.remove('show');
+        btn.textContent = 'Reveal Answer';
+    } else {
+        answer.classList.add('show');
+        btn.textContent = 'Hide Answer';
+    }
+}
+</script>
 
-    <h2>Ensuring Nutritional Adequacy</h2>
 
-    <p>Therapeutic diets that restrict foods carry risk of nutritional deficiency. As coaches, we must ensure that even restricted protocols meet essential nutrient needs.</p>
-
-    <h3>Common Concerns with Restricted Diets</h3>
-
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Restriction</th>
-                    <th>Potential Deficiency Risks</th>
-                    <th>Alternative Sources</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Dairy-Free</strong></td>
-                    <td>Calcium, vitamin D, protein</td>
-                    <td>Leafy greens, sardines, fortified alternatives, sunlight</td>
-                </tr>
-                <tr>
-                    <td><strong>Grain-Free</strong></td>
-                    <td>B vitamins, fiber, iron</td>
-                    <td>Meat, eggs, vegetables, nuts, seeds</td>
-                </tr>
-                <tr>
-                    <td><strong>Low-FODMAP</strong></td>
-                    <td>Fiber, prebiotics</td>
-                    <td>Low-FODMAP vegetables, allowed fruits</td>
-                </tr>
-                <tr>
-                    <td><strong>Nightshade-Free</strong></td>
-                    <td>Vitamin C, potassium, lycopene</td>
-                    <td>Citrus, berries, sweet potatoes, beets</td>
-                </tr>
-                <tr>
-                    <td><strong>Egg-Free</strong></td>
-                    <td>Choline, B vitamins, protein</td>
-                    <td>Liver, fish, meat, cruciferous vegetables</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="caution-box">
-        <h4>⚠️ Red Flag: When to Refer</h4>
-        <p>If a client requires multiple major food group restrictions, has signs of malnutrition, is pregnant or breastfeeding, has an eating disorder history, or needs clinical supplementation, refer to a registered dietitian or their healthcare provider for specialized nutritional assessment and management.</p>
-    </div>
-
-    <h2>Practical Protocol Templates</h2>
-
-    <p>Here are coaching-friendly templates for common nutrition protocols:</p>
-
-    <div>
-        <h4>Basic Anti-Inflammatory Protocol</h4>
-        <p><strong>Morning:</strong> Protein + healthy fat + vegetables or low-glycemic fruit</p>
-        <p><strong>Midday:</strong> Protein + 2+ cups vegetables + healthy fat + optional starch</p>
-        <p><strong>Evening:</strong> Protein + 2+ cups vegetables + healthy fat + optional starch</p>
-        <p><strong>Daily Targets:</strong> 8+ cups vegetables, 2-3 servings fatty fish/week, 2+ tablespoons olive oil, 1/4 cup nuts, minimal sugar</p>
-        <p><strong>Avoid:</strong> Processed foods, refined sugars, seed oils, trans fats, excessive alcohol</p>
-    </div>
-
-    <div>
-        <h4>Blood Sugar Balancing Protocol</h4>
-        <p><strong>Meal Structure:</strong> Always combine protein (20-30g) + fat + fiber at each eating occasion</p>
-        <p><strong>Eating Pattern:</strong> 3 meals, 0-2 snacks, 12+ hours overnight fast</p>
-        <p><strong>Carbohydrate Approach:</strong> Low-glycemic sources only, paired with protein/fat, vegetables first</p>
-        <p><strong>Movement:</strong> 10-15 minute walk after meals when possible</p>
-        <p><strong>Avoid:</strong> Isolated carbohydrates, sugary drinks, frequent snacking, eating within 3 hours of bed</p>
-    </div>
-
-    <!-- Key Takeaways -->
-    <div class="warning-box">
-        <h3>🔑 Key Takeaways</h3>
-        <ul>
-            <li>Match protocol intensity to client readiness—not everyone needs comprehensive elimination</li>
-            <li>Elimination diets require proper preparation, strict elimination, and systematic reintroduction phases</li>
-            <li>Therapeutic nutrition approaches should be personalized to assessment findings and practitioner recommendations</li>
-            <li>Sustainability trumps perfection—design protocols clients can actually follow long-term</li>
-            <li>Always ensure nutritional adequacy when restricting foods; refer when restrictions are extensive</li>
-            <li>Build flexibility into every protocol for real-life situations</li>
-        </ul>
-    </div>
-<!-- References -->
-    <div>
-        <h3>📚 References</h3>
-        <ol>
-            <li>Calder, P. C., Ahluwalia, N., Brouns, F., Buetler, T., Clement, K., Cunningham, K., ... & Watzl, B. (2017). Dietary factors and low-grade inflammation in relation to overweight and obesity. <em>British Journal of Nutrition</em>, 106(S3), S5-S78.</li>
-            <li>Dansinger, M. L., Gleason, J. A., Griffith, J. L., Selker, H. P., & Schaefer, E. J. (2005). Comparison of the Atkins, Ornish, Weight Watchers, and Zone diets for weight loss and heart disease risk reduction. <em>JAMA</em>, 293(1), 43-53.</li>
-            <li>Estruch, R., Ros, E., Salas-Salvadó, J., Covas, M. I., Corella, D., Arós, F., ... & Martínez-González, M. A. (2018). Primary prevention of cardiovascular disease with a Mediterranean diet supplemented with extra-virgin olive oil or nuts. <em>New England Journal of Medicine</em>, 378(25), e34.</li>
-            <li>Minich, D. M., & Bland, J. S. (2013). Personalized lifestyle medicine: relevance for nutrition and lifestyle recommendations. <em>The Scientific World Journal</em>, 2013.</li>
-            <li>Mullin, G. E., Swift, K. M., Lipski, L., Turnbull, L. K., & Rampertab, S. D. (2010). Testing for food reactions: the good, the bad, and the ugly. <em>Nutrition in Clinical Practice</em>, 25(2), 192-198.</li>
-            <li>Vickery, C. E., & Hodges, P. A. (2020). Counseling patients about diet and nutrition. In <em>Nutrition in the Prevention and Treatment of Disease</em> (pp. 71-91). Academic Press.</li>
-        </ol>
-    </div>
-    <div class="lesson-footer"></div>
 </body>
 </html>

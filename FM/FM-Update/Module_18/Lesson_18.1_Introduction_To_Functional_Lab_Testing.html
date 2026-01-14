@@ -3,338 +3,1082 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 18.1: Introduction to Functional Lab Testing - Module 18: Functional Lab Interpretation</title>
+    <title>Lesson 18.1: Introduction To Functional Lab Testing | AccrediPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-/* =========================================
-           ACCREDIPRO SCHOOL-QUALITY STYLES (CARD LAYOUT)
-           ========================================= */
-        
-        /* Reset & Base */
-        * { box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', Georgia, serif;
-            line-height: 1.8;
-            color: #2d2d2d;
-            background: #ffffff;
-            margin: 0;
-            padding: 40px 20px;
-            width: 100%;
-            overflow-x: hidden;
-        }
+/* ===========================================
+   ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+   School-Quality • ASI Certified • Premium UX
+   =========================================== */
 
-        /* MAIN WRAPPER - Centered Card Layout */
-        .lesson-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 0 20px;
-        }
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Utility: Text Colors */
-        .text-white { color: #ffffff !important; }
-        .text-burgundy { color: #722F37 !important; }
-        .text-gold { color: #B8860B !important; }
-        .highlight { background-color: #FFF59D; padding: 0 3px; border-radius: 2px; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.8;
+    color: #1f2937;
+    background: #ffffff;
+    font-size: 17px;
+}
 
-        /* HEADER CARD */
-        .module-header-card {
-            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
-            padding: 48px 40px;
-            margin-bottom: 32px;
-            border-radius: 20px;
-            box-shadow: 0 12px 48px -12px rgba(114, 47, 55, 0.35);
-            border: 1px solid rgba(255,255,255,0.15);
-            text-align: center;
-        }
+/* MAIN WRAPPER */
+.lesson-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        .module-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 12px;
-            font-weight: 600;
-            display: block;
-        }
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+    background: linear-gradient(135deg, #722F37 0%, #8B3A42 50%, #5a252b 100%);
+    padding: 48px 40px;
+    margin-bottom: 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+    border: none;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
 
-        .lesson-title {
-            font-size: 36px;
-            color: #ffffff;
-            font-weight: 700;
-            margin: 0 0 24px 0;
-            line-height: 1.2;
-        }
+.module-header-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
 
-        .lesson-subtitle {
-            font-size: 20px;
-            color: rgba(255,255,255,0.9);
-            font-weight: 400;
-            margin-top: -10px;
-            margin-bottom: 24px;
-        }
+.module-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 12px;
+    font-weight: 600;
+    display: block;
+}
 
-        .lesson-meta { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-        
-        .meta-tag, .reading-badge {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
-        }
+.lesson-title {
+    font-size: 38px;
+    color: #ffffff;
+    font-weight: 800;
+    margin: 0 0 20px 0;
+    line-height: 1.15;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-        /* CONTENT CONTAINERS */
-        .connection-box, .welcome-box {
-            background: #f8f5f0;
-            padding: 24px;
-            margin-bottom: 32px;
-            border-radius: 12px;
-            border-left: 4px solid #B8860B;
-        }
-        .connection-box p, .welcome-box p { margin: 0; font-size: 17px; color: #2d2d2d; line-height: 1.7; }
-        .welcome-box h3 { margin-top: 0; color: #722F37; }
+/* META BADGES */
+.lesson-meta {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
 
-        /* TYPOGRAPHY */
-        h2 {
-            color: #722F37;
-            font-size: 30px;
-            margin: 48px 0 24px 0;
-            font-weight: 700;
-            position: relative;
-            padding-bottom: 12px;
-            display: inline-block;
-        }
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: #B8860B;
-            border-radius: 2px;
-        }
+.meta-badge,
+.meta-tag {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
-        h3 { color: #722F37; font-size: 22px; margin: 32px 0 16px 0; font-weight: 600; }
-        p { font-size: 18px; line-height: 1.8; color: #374151; margin-bottom: 24px; }
-        ul, ol { margin: 24px 0; padding-left: 28px; }
-        li { font-size: 17px; line-height: 1.7; color: #374151; margin-bottom: 12px; }
-        li strong { color: #722F37; }
+.meta-badge .icon {
+    font-size: 14px;
+}
 
-        /* STORY & CASE STUDY BOXES */
-        .story-box, .case-study {
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-            padding: 32px;
-            border-radius: 16px;
-            margin: 32px 0;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .case-study { border-top: 4px solid #722F37; }
-        .story-box h3, .case-study h3, .case-study-header .box-label {
-            color: #722F37;
-            margin-top: 0;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-        .subtitle { font-size: 20px; font-weight: 600; color: #1f2937; margin: 8px 0 16px 0; }
-        .patient-info h4 { margin: 0; color: #722F37; font-size: 18px; }
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+    background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+    border: 1px solid #e5d9c3;
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
 
-        /* PHASE & OBJECTIVES BOXES */
-        .phase-box, .objectives-box, .info-box, .autoimmune-box {
-            background: #f0f9ff;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #b9e6fe;
-        }
-        .phase-box { background: #f8fafc; border-color: #e2e8f0; }
-        .autoimmune-box { background: #f0fdf4; border-color: #bbf7d0; }
-        .objectives-box { background: #faf5ff; border-color: #e9d5ff; }
-        
-        .phase-box h3, .objectives-box h3, .info-box h4, .autoimmune-box h4 { margin: 0 0 16px 0; color: #722F37; }
+.asi-logo {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #B8860B, #D4A813);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
 
-        /* GRIDS & CARDS (Comparison, Features, Disease, Principles) */
-        .comparison-grid, .feature-grid, .disease-grid, .stats-grid, .terms-grid, .toolkit-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin: 32px 0;
-        }
-        
-        .comparison-card, .feature-card, .disease-card, .principle-card, .toolkit-item, .stat-item, .term-item, .diagram-box {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
+.asi-text {
+    flex: 1;
+}
 
-        .comparison-card.conventional { border-top: 4px solid #ef4444; }
-        .comparison-card.functional { border-top: 4px solid #22c55e; }
-        
-        .card-label, .principle-title, .box-label { 
-            font-weight: 700; color: #722F37; text-transform: uppercase; letter-spacing: 0.5px; font-size: 13px; margin-bottom: 8px; display: block;
-        }
-        
-        .stat-number { font-size: 48px; font-weight: 800; color: #B8860B; margin: 0; line-height: 1; }
-        .stat-label { margin-top: 8px; font-size: 15px; font-weight: 600; }
+.asi-text .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #92400e;
+    font-weight: 700;
+}
 
-        /* TIMELINE VISUAL */
-        .timeline-visual {
-            display: flex;
-            gap: 24px;
-            margin: 40px 0;
-        }
-        .timeline-item { flex: 1; background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #cbd5e1; }
-        .timeline-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 12px; margin-bottom: 8px; }
-        .timeline-badge.then { background: #94a3b8; color: white; }
-        .timeline-badge.now { background: #B8860B; color: white; }
+.asi-text .title {
+    font-size: 15px;
+    color: #78350f;
+    font-weight: 600;
+    margin-top: 2px;
+}
 
-        /* ALERT BOXES */
-        .alert-box {
-            padding: 24px;
-            border-radius: 12px;
-            margin: 32px 0;
-            border-left: 4px solid;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-        .alert-box .alert-label {
-            font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; display: block;
-        }
-        .alert-box p { margin: 0; font-size: 16px; }
-        .alert-box.success, .coaching-box { background: #f0fdf4; border-color: #22c55e; border-left: 4px solid #22c55e; }
-        .alert-box.success .alert-label, .coaching-box h3 { color: #166534; }
-        
-        .alert-box.warning { background: #fffbeb; border-color: #f59e0b; }
-        .alert-box.warning .alert-label { color: #92400e; }
-        
-        .alert-box.info, .alert-box.reflect, .check-understanding { background: #faf5ff; border-color: #a855f7; border-left: 4px solid #a855f7; }
-        .alert-box.info .alert-label, .check-understanding .box-label { color: #7e22ce; }
+/* TABLE OF CONTENTS */
+.toc-box {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 40px;
+}
 
-        /* CASE STUDY DETAILS */
-        .case-study-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; }
-        .case-study-icon { width: 48px; height: 48px; background: #fdf2f8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #722F37; }
-        .patient-profile { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; background: #fff; padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb; }
-        .patient-avatar { font-size: 32px; background: #f3f4f6; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .patient-info h4 { margin: 0; color: #722F37; font-size: 16px; font-weight: 700; }
-        .patient-info p { margin: 0; font-size: 14px; color: #6b7280; }
+.toc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #6b7280;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: block;
+}
 
-        /* DIAGRAMS */
-        .diagram-box { text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 32px; border-radius: 16px; margin: 32px 0; }
-        .diagram-title { font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; font-size: 14px; }
-        .diagram-content { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .diagram-arrow { font-size: 24px; color: #94a3b8; margin: 0; line-height: 1; }
-        .diagram-emphasis { color: #b91c1c; font-weight: 700; background: #fef2f2; padding: 4px 12px; border-radius: 4px; border: 1px solid #fecaca; }
-        .diagram-final { font-weight: 700; color: #1e293b; background: white; padding: 12px 24px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.toc-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+}
 
-        /* KEY TERMS SPECIFIC */
-        .key-terms-box { margin-top: 48px; }
-        .term { font-weight: 700; color: #722F37; margin-bottom: 8px; font-size: 16px; }
-        .definition { font-size: 14px; color: #4b5563; line-height: 1.6; margin: 0; }
-        
-        /* STATS BOX WRAPPER */
-        .stats-box { background: #fffcee; padding: 32px; border-radius: 16px; border: 1px solid #fef3c7; margin: 32px 0; }
+.toc-list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #f9fafb;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
 
-        /* CHECK YOUR UNDERSTANDING - INTERACTIVE */
-        .check-understanding { background: #faf5ff; border: 1px solid #e9d5ff; border-left: 4px solid #a855f7; padding: 24px; border-radius: 12px; margin: 32px 0; }
-        .check-understanding .box-label { color: #7e22ce; }
-        .question-item { background: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #f3e8ff; }
-        .question-number { display: inline-block; background: #a855f7; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 14px; margin-right: 8px; font-weight: 700; }
-        .question-text { font-weight: 600; color: #4b5563; margin: 0 0 12px 0; display: inline; }
-        
-        .reveal-btn {
-            background: white; border: 1px solid #d8b4fe; color: #7e22ce; padding: 8px 16px; border-radius: 20px;
-            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; display: block;
-        }
-        .reveal-btn:hover { background: #f3e8ff; }
-        
-        .answer-text { 
-            display: none; /* Hidden by default */
-            margin-top: 12px; padding-top: 12px; border-top: 1px solid #f3e8ff; color: #4b5563; font-size: 15px;
-        }
-        .answer-text.show { display: block !important; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+.toc-list li a:hover {
+    background: #f3f4f6;
+    color: #722F37;
+    transform: translateX(4px);
+}
 
-        /* TABLES */
-        table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 30px 0; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
-        thead tr { background: #722F37; color: white; }
-        th { padding: 16px 20px; text-align: left; font-weight: 600; font-size: 15px; }
-        td { padding: 16px 20px; border-bottom: 1px solid #e5e7eb; font-size: 15px; }
-        tr:last-child td { border-bottom: none; }
-        tbody tr:nth-child(even) { background: #f9fafb; }
+.section-num {
+    background: #722F37;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
 
-        /* KEY TAKEAWAYS & REFS */
-        .takeaways-box, .key-takeaways {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 48px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-        .takeaways-box .box-label, .key-takeaways h3 {
-            color: #722F37; font-size: 18px; font-weight: 700; margin: 0 0 20px 0; display: block; text-transform: uppercase; letter-spacing: 1px;
-        }
-        
-        .tags-container .tags-wrapper { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag { background: #e5e7eb; padding: 4px 12px; border-radius: 16px; font-size: 14px; font-weight: 500; color: #374151; }
+/* WELCOME BOX */
+.welcome-box {
+    background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+    padding: 28px;
+    margin-bottom: 40px;
+    border-radius: 16px;
+    border-left: 5px solid #B8860B;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
 
-        /* REFERENCES */
-        .references-box, .references {
-            border-top: 1px solid #e5e7eb; margin-top: 60px; padding-top: 40px; color: #6b7280; font-size: 14px;
-        }
-        .references-box ol, .references ol { padding-left: 20px; margin: 0; }
-        .references-box h3, .references h3 { font-size: 16px; color: #9ca3af; text-transform: uppercase; margin-bottom: 16px; }
+.welcome-box h3 {
+    color: #92400e;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
 
-        /* HIDE LEGACY ELEMENTS */
-        .brand-header, .lesson-footer, .toc-box { display: none !important; }
+.welcome-box p {
+    margin: 0;
+    font-size: 16px;
+    color: #44403c;
+    line-height: 1.7;
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            body { padding: 20px 16px; }
-            .module-header-card { padding: 30px 20px; }
-            .lesson-title { font-size: 28px; }
-            .timeline-visual { flex-direction: column; }
-        }
+/* OBJECTIVES BOX */
+.objectives-box {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 40px;
+    border: 1px solid #e9d5ff;
+}
+
+.box-label {
+    font-weight: 700;
+    color: #7e22ce;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.objectives-box ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.objectives-box li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    font-size: 16px;
+    color: #4c1d95;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li:last-child {
+    border-bottom: none;
+}
+
+.objectives-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #7c3aed;
+    font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+    background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* TYPOGRAPHY */
+h2 {
+    color: #722F37;
+    font-size: 28px;
+    margin: 56px 0 24px 0;
+    font-weight: 800;
+    position: relative;
+    padding-bottom: 16px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #B8860B, #D4A813);
+    border-radius: 2px;
+}
+
+h3 {
+    color: #722F37;
+    font-size: 22px;
+    margin: 36px 0 16px 0;
+    font-weight: 700;
+}
+
+p {
+    font-size: 17px;
+    line-height: 1.85;
+    color: #374151;
+    margin-bottom: 20px;
+}
+
+ul, ol {
+    margin: 20px 0;
+    padding-left: 24px;
+}
+
+li {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 10px;
+}
+
+li strong {
+    color: #722F37;
+}
+
+/* CASE STUDY */
+.case-study {
+    background: white;
+    border-radius: 20px;
+    margin: 40px 0;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.case-study-header {
+    background: linear-gradient(90deg, #722F37, #8B3A42);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.case-study-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.case-study-header .title {
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+}
+
+.case-study-header .subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    margin: 4px 0 0 0;
+}
+
+.case-study-content {
+    padding: 28px;
+}
+
+.patient-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.patient-avatar {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #fecaca, #fca5a5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.patient-info h4 {
+    margin: 0;
+    color: #722F37;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.patient-info p {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* COMPARISON GRID */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 32px 0;
+}
+
+.comparison-card {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    border: 2px solid #e5e7eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.comparison-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.comparison-card.conventional {
+    border-top: 4px solid #ef4444;
+}
+
+.comparison-card.functional {
+    border-top: 4px solid #22c55e;
+}
+
+.card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.conventional .card-label {
+    color: #dc2626;
+}
+
+.functional .card-label {
+    color: #16a34a;
+}
+
+.card-text {
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.5;
+    color: #1f2937;
+    margin: 0;
+}
+
+/* CONTENT LIST */
+.content-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+}
+
+.content-list li {
+    padding: 12px 0 12px 36px;
+    position: relative;
+    font-size: 16px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.content-list li:last-child {
+    border-bottom: none;
+}
+
+.content-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #722F37;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.content-list li strong {
+    color: #722F37;
+}
+
+/* PRINCIPLE CARDS */
+.principles-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 32px 0;
+}
+
+.principle-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: all 0.2s;
+}
+
+.principle-card:hover {
+    border-color: #722F37;
+    box-shadow: 0 8px 24px rgba(114, 47, 55, 0.1);
+}
+
+.principle-number {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #722F37, #8B3A42);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.principle-content {
+    flex: 1;
+}
+
+.principle-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.principle-text {
+    font-size: 15px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* SYSTEMS BOX */
+.systems-box {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 32px;
+    margin: 40px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.systems-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.system-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.system-item h4 {
+    color: #722F37;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.system-item p {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* NUTRIENT DENSITY BOX */
+.nutrient-box {
+    border-radius: 20px;
+    padding: 32px;
+    margin: 40px 0;
+}
+
+.nutrient-box.positive {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+}
+
+.nutrient-box.positive h3 {
+    color: #166534;
+    margin-top: 0;
+}
+
+.nutrient-box.negative {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 1px solid #fecaca;
+}
+
+.nutrient-box.negative h3 {
+    color: #991b1b;
+    margin-top: 0;
+}
+
+.nutrient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.nutrient-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(134, 239, 172, 0.5);
+}
+
+.nutrient-item h4 {
+    color: #16a34a;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.nutrient-item p {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ALERT BOXES */
+.alert-box {
+    padding: 24px;
+    border-radius: 16px;
+    margin: 32px 0;
+    border-left: 4px solid;
+}
+
+.alert-box .alert-label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.alert-box p {
+    margin: 0;
+    font-size: 15px;
+}
+
+.alert-box.warning,
+.alert-box.gold {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.alert-box.warning .alert-label,
+.alert-box.gold .alert-label {
+    color: #92400e;
+}
+
+.alert-box.success {
+    background: #f0fdf4;
+    border-color: #22c55e;
+}
+
+.alert-box.success .alert-label {
+    color: #166534;
+}
+
+.alert-box.reflect,
+.alert-box.info {
+    background: #faf5ff;
+    border-color: #a855f7;
+}
+
+.alert-box.reflect .alert-label,
+.alert-box.info .alert-label {
+    color: #7e22ce;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+    background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+    border: 1px solid #fde047;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 32px 0;
+    position: relative;
+}
+
+.coach-tip::before {
+    content: '💡';
+    position: absolute;
+    top: -12px;
+    left: 24px;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #a16207;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.coach-tip p {
+    color: #713f12;
+    font-size: 15px;
+    margin: 0;
+    line-height: 1.7;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #7dd3fc;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.module-connection .connection-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.module-connection .connection-text {
+    flex: 1;
+}
+
+.module-connection .connection-text p {
+    margin: 0;
+    font-size: 15px;
+    color: #0c4a6e;
+    line-height: 1.5;
+}
+
+.module-connection .connection-text strong {
+    color: #075985;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+    border: 1px solid #e9d5ff;
+    border-radius: 20px;
+    padding: 32px;
+    margin: 48px 0;
+}
+
+.question-item {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #e9d5ff;
+}
+
+.question-item:last-child {
+    margin-bottom: 0;
+}
+
+.question-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.question-number {
+    background: #a855f7;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.question-text {
+    font-weight: 600;
+    color: #4b5563;
+    font-size: 15px;
+    margin: 0;
+    flex: 1;
+}
+
+.reveal-btn {
+    background: white;
+    border: 2px solid #d8b4fe;
+    color: #7e22ce;
+    padding: 10px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+}
+
+.reveal-btn:hover {
+    background: #7e22ce;
+    color: white;
+    border-color: #7e22ce;
+}
+
+.answer-text {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e9d5ff;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.answer-text.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1px solid #86efac;
+    border-radius: 20px;
+    padding: 32px;
+    margin: 48px 0;
+}
+
+.takeaways-box .box-label {
+    color: #166534;
+}
+
+.takeaways-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.takeaways-box li {
+    padding: 12px 0 12px 32px;
+    position: relative;
+    font-size: 16px;
+    color: #166534;
+    border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.takeaways-box li:last-child {
+    border-bottom: none;
+}
+
+.takeaways-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #22c55e;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* REFERENCES - Premium Academic Style */
+.references-box {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-top: 48px;
+}
+
+.references-box .box-label {
+    color: #64748b;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.references-box .box-label::before {
+    content: '📚';
+}
+
+.references-box ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: ref-counter;
+}
+
+.references-box li {
+    counter-increment: ref-counter;
+    padding: 12px 16px 12px 48px;
+    position: relative;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.7;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.references-box li:last-child {
+    margin-bottom: 0;
+}
+
+.references-box li::before {
+    content: counter(ref-counter);
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    width: 22px;
+    height: 22px;
+    background: #722F37;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.references-box li em {
+    color: #722F37;
+    font-weight: 500;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .lesson-wrapper {
+        padding: 24px 16px 60px;
+    }
+
+    .module-header-card {
+        padding: 32px 24px;
+        border-radius: 20px;
+    }
+
+    .lesson-title {
+        font-size: 28px;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .systems-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nutrient-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .toc-list {
+        grid-template-columns: 1fr;
+    }
+
+    .asi-credential-strip {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .module-connection {
+        flex-direction: column;
+        text-align: center;
+    }
+}
 
     </style>
 </head>
 <body>
-    <div class="brand-header"></div>
-    <div class="lesson-wrapper">
-        <div class="module-header-card">
-            <span class="module-label">Module</span>
-            <h1 class="lesson-title">Introduction to Functional Lab Testing</h1>
-            <div class="lesson-meta">
-                
-            </div>
+
+<div class="lesson-wrapper">
+    <!-- Module Header -->
+    <div class="module-header-card">
+        <span class="module-label">Module 18: Functional Lab Testing</span>
+        <h1 class="lesson-title">Lesson 18.1: Introduction to Functional Lab Testing</h1>
+        <div class="lesson-meta">
+            <span class="meta-badge"><span class="icon">⏱️</span> 12 min read</span>
+            <span class="meta-badge"><span class="icon">💡</span> Core Concept</span>
         </div>
-        <div class="lesson-wrapper">
-        <div class="module-header-card">
-            <span class="module-label">MODULE 18 • LESSON 1</span>
-            <h1 class="lesson-title">Introduction to Functional Lab Testing</h1>
-            <div class="lesson-meta">
-                
-            </div>
-        </div>
-        <div class="reading-time">
-        <span class="reading-badge">Reading Time: 11 minutes</span>
     </div>
 
-    <div class="connection-box">
-        <h4>Your Journey Continues</h4>
-        <p>Throughout this certification, you've learned about numerous body systems—gut health, hormones, thyroid, metabolic function, and more. Now we explore how <span class="highlight">functional laboratory testing</span> provides objective data to assess these systems. Understanding lab work helps you better support clients as they navigate their health journey alongside their practitioners.</p>
+    <!-- ASI Credential Strip -->
+    <div class="asi-credential-strip">
+        <div class="asi-logo">🏅</div>
+        <div class="asi-text">
+            <p class="label">ASI Accredited Content</p>
+            <p class="title">Functional Medicine Health Coach Certification</p>
+        </div>
     </div>
 
+    <!-- Table of Contents -->
+    <nav class="toc-box">
+        <span class="toc-label">In This Lesson</span>
+        <ul class="toc-list">
+            <li><a href="#philosophies"><span class="section-num">01</span>Two Philosophies of Lab Interpretation</a></li>
+            <li><a href="#reference-ranges"><span class="section-num">02</span>Understanding Reference Ranges</a></li>
+            <li><a href="#limitations"><span class="section-num">03</span>Why Standard Labs Miss the Picture</a></li>
+            <li><a href="#categories"><span class="section-num">04</span>Categories of Functional Tests</a></li>
+            <li><a href="#scope"><span class="section-num">05</span>Your Scope of Practice</a></li>
+            <li><a href="#quiz"><span class="section-num">06</span>Check Your Understanding</a></li>
+        </ul>
+    </nav>
+
+    <!-- Module Connection -->
+    <div class="module-connection">
+        <div class="connection-icon">🔗</div>
+        <div class="connection-text">
+            <p><strong>Your Journey Continues:</strong> Throughout this certification, you've learned about numerous body systems—gut health, hormones, thyroid, metabolic function, and more. Now we explore how <span class="highlight">functional laboratory testing</span> provides objective data to assess these systems. Understanding lab work helps you better support clients as they navigate their health journey alongside their practitioners.</p>
+        </div>
+    </div>
+
+    <!-- Welcome Box -->
+    <div class="welcome-box">
+        <p>Laboratory testing serves as a powerful window into the body's internal environment, revealing patterns invisible from the outside. In this lesson, you'll discover why <span class="highlight">"normal" isn't the same as "optimal"</span> and how functional medicine uses labs to identify opportunities for intervention long before disease develops.</p>
+    </div>
+
+    <!-- Learning Objectives -->
     <div class="objectives-box">
-        <h3>Learning Objectives</h3>
-        <p>By the end of this lesson, you will be able to:</p>
+        <span class="box-label">What You'll Learn</span>
         <ul>
             <li>Differentiate between conventional and functional approaches to lab testing</li>
             <li>Understand the concept of optimal vs. pathological reference ranges</li>
@@ -344,44 +1088,73 @@
         </ul>
     </div>
 
-    <div class="story-box">
-        <h4>Karen's "Normal" Results</h4>
-        <p>Karen, 48, sat in my office looking frustrated. "I've been to three doctors with the same complaints—fatigue, weight gain, brain fog, dry skin, and feeling cold all the time. Every single one ran blood work and told me everything was 'normal.' They all suggested I was just stressed or getting older."</p>
-        <p>When Karen showed me her labs, I noticed her TSH was 3.8 mIU/L—technically within the conventional reference range of 0.5-4.5, but far from optimal. Her ferritin was 18 ng/mL—again "normal" but suboptimal. Her vitamin D was 28 ng/mL—sufficient by some standards, but not optimal.</p>
-        <p>Karen's story illustrates a fundamental principle: <span class="highlight">"normal" isn't the same as "optimal."</span> Understanding this distinction is essential for appreciating the functional medicine approach to laboratory testing.</p>
+    <!-- Case Study -->
+    <div class="case-study">
+        <div class="case-study-header">
+            <div class="case-study-icon">📋</div>
+            <div>
+                <p class="title">Case Study: Karen's "Normal" Results</p>
+                <p class="subtitle">When Everything Looks Fine But Nothing Feels Right</p>
+            </div>
+        </div>
+        <div class="case-study-content">
+            <div class="patient-profile">
+                <div class="patient-avatar">👩</div>
+                <div class="patient-info">
+                    <h4>Karen, Age 48</h4>
+                    <p>Persistent fatigue • Weight gain • Brain fog • Dry skin • Cold intolerance</p>
+                </div>
+            </div>
+            <p><em>"I've been to three doctors with the same complaints. Every single one ran blood work and told me everything was 'normal.' They all suggested I was just stressed or getting older."</em></p>
+            <p>When Karen showed me her labs, I noticed her TSH was 3.8 mIU/L—technically within the conventional reference range of 0.5-4.5, but far from optimal. Her ferritin was 18 ng/mL—again "normal" but suboptimal. Her vitamin D was 28 ng/mL—sufficient by some standards, but not optimal.</p>
+            <p>Karen's story illustrates a fundamental principle: <strong>"normal" isn't the same as "optimal."</strong> Understanding this distinction is essential for appreciating the functional medicine approach to laboratory testing.</p>
+        </div>
     </div>
-
-    <h2>Two Philosophies of Lab Interpretation</h2>
 
     <p>Laboratory testing serves different purposes depending on the philosophical approach. Understanding these differences helps you appreciate why functional medicine practitioners may interpret labs differently than conventional physicians.</p>
 
-    <div class="comparison-grid">
-        <div class="comparison-item conventional">
-            <h3>Conventional Approach</h3>
-            <p><strong>Purpose:</strong> Rule out pathology and diagnose disease</p>
-            <p><strong>Focus:</strong> Is there something seriously wrong?</p>
-            <p><strong>Reference ranges:</strong> Based on statistical averages of the tested population (often including unhealthy individuals)</p>
-            <p><strong>Action threshold:</strong> Typically only when values fall outside reference range</p>
-            <p><strong>Limitation:</strong> By the time values become "abnormal," significant dysfunction has often already developed</p>
-        </div>
+    <!-- Main Content Section with H2 -->
+    <h2 id="philosophies">Two Philosophies of Lab Interpretation</h2>
 
-        <div class="comparison-item functional">
-            <h3>Functional Approach</h3>
-            <p><strong>Purpose:</strong> Assess physiological function and identify imbalances before disease develops</p>
-            <p><strong>Focus:</strong> How well is the body functioning? Where are opportunities for optimization?</p>
-            <p><strong>Reference ranges:</strong> Based on optimal physiological function and research correlating values with health outcomes</p>
-            <p><strong>Action threshold:</strong> When values deviate from optimal, even if "normal"</p>
-            <p><strong>Strength:</strong> Enables early intervention and prevention</p>
+    <p>The way we view and interpret laboratory data fundamentally shapes the type of care delivered. Conventional and functional medicine approaches use the same tests but ask different questions and set different thresholds for action.</p>
+
+    <!-- Comparison Grid -->
+    <div class="comparison-grid">
+        <div class="comparison-card conventional">
+            <span class="card-label">Conventional Approach</span>
+            <ul>
+                <li><strong>Purpose:</strong> Rule out pathology and diagnose disease</li>
+                <li><strong>Focus:</strong> Is there something seriously wrong?</li>
+                <li><strong>Reference ranges:</strong> Based on statistical averages of the tested population (often including unhealthy individuals)</li>
+                <li><strong>Action threshold:</strong> Typically only when values fall outside reference range</li>
+                <li><strong>Limitation:</strong> By the time values become "abnormal," significant dysfunction has often already developed</li>
+            </ul>
+        </div>
+        <div class="comparison-card functional">
+            <span class="card-label">Functional Approach</span>
+            <ul>
+                <li><strong>Purpose:</strong> Assess physiological function and identify imbalances before disease develops</li>
+                <li><strong>Focus:</strong> How well is the body functioning? Where are opportunities for optimization?</li>
+                <li><strong>Reference ranges:</strong> Based on optimal physiological function and research correlating values with health outcomes</li>
+                <li><strong>Action threshold:</strong> When values deviate from optimal, even if "normal"</li>
+                <li><strong>Strength:</strong> Enables early intervention and prevention</li>
+            </ul>
         </div>
     </div>
 
-    <h2>Understanding Reference Ranges</h2>
+    <!-- Coach Tip -->
+    <div class="coach-tip">
+        <span class="tip-label">Coach Tip</span>
+        <p>When clients ask why their functional practitioner ordered different tests than their conventional doctor, explain: <em>"Conventional medicine excels at diagnosing disease. Functional medicine aims to identify dysfunction before it becomes disease. Think of it like maintaining your car—you wouldn't wait until the engine fails to check the oil. Functional labs look at those early warning signs."</em></p>
+    </div>
+
+    <h2 id="reference-ranges">Understanding Reference Ranges</h2>
 
     <p><span class="highlight">Reference ranges</span> on lab reports represent the statistical distribution of values in the tested population—typically the middle 95%. This means 2.5% of "healthy" people will fall above and 2.5% below the range, even without pathology.</p>
 
-    <div class="warning-box">
-        <h4>The Problem with "Normal"</h4>
-        <p>Reference ranges are created from the population being tested—which increasingly includes people with chronic disease, obesity, metabolic dysfunction, and suboptimal health. "Normal" represents the average of a not-so-healthy population, not the range associated with optimal health and longevity.</p>
+    <div class="alert-box warning">
+        <span class="alert-label">The Problem with "Normal"</span>
+        <p>Reference ranges are created from the population being tested—which increasingly includes people with chronic disease, obesity, metabolic dysfunction, and suboptimal health. <strong>"Normal" represents the average of a not-so-healthy population</strong>, not the range associated with optimal health and longevity.</p>
     </div>
 
     <h3>Optimal vs. Pathological Ranges</h3>
@@ -430,41 +1203,50 @@
         </tbody>
     </table>
 
-    <div class="note-box">
-        <h4>Important Note</h4>
-        <p>Optimal ranges aren't universally agreed upon, and they may vary based on the source. Different functional medicine practitioners may use slightly different optimal ranges based on their training and the research they follow. The key concept is that these ranges are narrower than conventional ranges and based on health optimization rather than pathology detection.</p>
+    <div class="alert-box success">
+        <span class="alert-label">Important Note</span>
+        <p>Optimal ranges aren't universally agreed upon, and they may vary based on the source. Different functional medicine practitioners may use slightly different optimal ranges based on their training and the research they follow. The key concept is that these ranges are narrower than conventional ranges and based on <span class="highlight">health optimization</span> rather than pathology detection.</p>
     </div>
 
-    <h2>Why Standard Labs Often Miss the Whole Picture</h2>
+    <!-- Coach Tip -->
+    <div class="coach-tip">
+        <span class="tip-label">Coach Tip</span>
+        <p>Help clients understand optimal ranges with this analogy: <em>"Imagine your car's oil level. The minimum line on the dipstick is like the conventional range—your car will run, but not optimally. The full line is the optimal range—where your engine performs best and lasts longest. Functional medicine aims to keep your body's markers in that 'full' zone."</em></p>
+    </div>
 
-    <p>Conventional lab panels, while valuable, have significant limitations that can lead to missed opportunities for early intervention:</p>
+    <h2 id="limitations">Why Standard Labs Often Miss the Whole Picture</h2>
 
-    <div class="limitation-grid">
-        <div class="limitation-item">
-            <h4>Limited Thyroid Testing</h4>
-            <p>Standard panels often only test TSH, missing Free T4, Free T3, Reverse T3, and thyroid antibodies—all essential for understanding thyroid function fully.</p>
-        </div>
-        <div class="limitation-item">
-            <h4>Basic Lipid Panels</h4>
-            <p>Total cholesterol, LDL, and HDL don't reveal particle size, particle number, or oxidized LDL—more predictive markers for cardiovascular risk.</p>
-        </div>
-        <div class="limitation-item">
-            <h4>Glucose Only</h4>
-            <p>Fasting glucose alone misses insulin resistance that develops years before glucose elevations. Fasting insulin and HOMA-IR provide earlier warning.</p>
-        </div>
-        <div class="limitation-item">
-            <h4>Iron Without Context</h4>
-            <p>Hemoglobin/hematocrit without ferritin, serum iron, TIBC, and iron saturation miss early iron deficiency or overload states.</p>
-        </div>
-        <div class="limitation-item">
-            <h4>Missing Inflammation Markers</h4>
-            <p>Standard panels often omit hs-CRP, homocysteine, and other markers that indicate systemic inflammation and disease risk.</p>
+    <p>Conventional lab panels, while valuable, have significant limitations that can lead to missed opportunities for early intervention. Understanding these gaps helps you appreciate why functional practitioners order more comprehensive testing.</p>
+
+    <div class="systems-box">
+        <h3>Common Limitations of Standard Testing</h3>
+        <div class="systems-grid">
+            <div class="system-item">
+                <h4>🦋 Limited Thyroid Testing</h4>
+                <p>Standard panels often only test TSH, missing Free T4, Free T3, Reverse T3, and thyroid antibodies—all essential for understanding thyroid function fully.</p>
+            </div>
+            <div class="system-item">
+                <h4>❤️ Basic Lipid Panels</h4>
+                <p>Total cholesterol, LDL, and HDL don't reveal particle size, particle number, or oxidized LDL—more predictive markers for cardiovascular risk.</p>
+            </div>
+            <div class="system-item">
+                <h4>🍬 Glucose Only</h4>
+                <p>Fasting glucose alone misses insulin resistance that develops years before glucose elevations. Fasting insulin and HOMA-IR provide earlier warning.</p>
+            </div>
+            <div class="system-item">
+                <h4>🩸 Iron Without Context</h4>
+                <p>Hemoglobin/hematocrit without ferritin, serum iron, TIBC, and iron saturation miss early iron deficiency or overload states.</p>
+            </div>
+            <div class="system-item">
+                <h4>🔥 Missing Inflammation Markers</h4>
+                <p>Standard panels often omit hs-CRP, homocysteine, and other markers that indicate systemic inflammation and disease risk.</p>
+            </div>
         </div>
     </div>
 
-    <h2>Categories of Functional Lab Tests</h2>
+    <h2 id="categories">Categories of Functional Lab Tests</h2>
 
-    <p>Functional medicine utilizes a wide array of laboratory assessments beyond standard blood work:</p>
+    <p>Functional medicine utilizes a wide array of laboratory assessments beyond standard blood work. Understanding these categories helps you appreciate the comprehensive nature of functional assessment.</p>
 
     <table>
         <thead>
@@ -518,87 +1300,95 @@
         </tbody>
     </table>
 
-    <h2>The Functional Medicine Lab Panel</h2>
+    <h3>The Comprehensive Functional Medicine Blood Panel</h3>
 
-    <p>A comprehensive functional medicine blood panel typically includes much more than standard testing. Here's what a thorough assessment might include:</p>
+    <p>A thorough functional medicine blood assessment typically includes far more markers than standard testing. Here's what a comprehensive panel might include:</p>
 
-    <div class="panel-box">
-        <h4>Comprehensive Blood Chemistry Panel Components</h4>
-
-        <p><strong>Complete Blood Count (CBC) with Differential:</strong> RBC, WBC, hemoglobin, hematocrit, MCV, MCH, MCHC, RDW, platelets, neutrophils, lymphocytes, monocytes, eosinophils, basophils</p>
-
-        <p><strong>Comprehensive Metabolic Panel:</strong> Glucose, BUN, creatinine, eGFR, sodium, potassium, chloride, CO2, calcium, total protein, albumin, globulin, A/G ratio, bilirubin, alkaline phosphatase, AST, ALT</p>
-
-        <p><strong>Full Thyroid Panel:</strong> TSH, Free T4, Free T3, Reverse T3, TPO antibodies, thyroglobulin antibodies</p>
-
-        <p><strong>Advanced Lipid Panel:</strong> Total cholesterol, LDL-C, HDL-C, triglycerides, VLDL, LDL particle number, LDL particle size, Lp(a), ApoB</p>
-
-        <p><strong>Inflammation Markers:</strong> hs-CRP, homocysteine, fibrinogen, ESR</p>
-
-        <p><strong>Iron Panel:</strong> Serum iron, ferritin, TIBC, iron saturation</p>
-
-        <p><strong>Nutrient Markers:</strong> Vitamin D (25-OH), B12, folate (RBC folate preferred), magnesium (RBC magnesium if available)</p>
-
-        <p><strong>Metabolic Markers:</strong> Fasting insulin, HbA1c, uric acid</p>
-
-        <p><strong>Additional Markers as Indicated:</strong> Sex hormones, cortisol, DHEA-S, IGF-1, and others based on clinical presentation</p>
+    <div class="alert-box success">
+        <span class="alert-label">Complete Blood Count (CBC) with Differential</span>
+        <p>RBC, WBC, hemoglobin, hematocrit, MCV, MCH, MCHC, RDW, platelets, neutrophils, lymphocytes, monocytes, eosinophils, basophils</p>
     </div>
 
-    <h2>Your Scope of Practice with Lab Interpretation</h2>
+    <div class="alert-box success">
+        <span class="alert-label">Comprehensive Metabolic Panel</span>
+        <p>Glucose, BUN, creatinine, eGFR, sodium, potassium, chloride, CO2, calcium, total protein, albumin, globulin, A/G ratio, bilirubin, alkaline phosphatase, AST, ALT</p>
+    </div>
 
-    <div class="warning-box">
-        <h4>Critical Scope Boundaries</h4>
-        <p>As health coaches, we do <strong>not</strong> diagnose conditions based on lab work, order laboratory tests (in most states), or create treatment protocols based on lab findings. Lab interpretation for diagnostic purposes falls within the scope of licensed healthcare providers. Our role is educational and supportive.</p>
+    <div class="alert-box success">
+        <span class="alert-label">Full Thyroid Panel</span>
+        <p>TSH, Free T4, Free T3, Reverse T3, TPO antibodies, thyroglobulin antibodies</p>
+    </div>
+
+    <div class="alert-box success">
+        <span class="alert-label">Advanced Lipid Panel</span>
+        <p>Total cholesterol, LDL-C, HDL-C, triglycerides, VLDL, LDL particle number, LDL particle size, Lp(a), ApoB</p>
+    </div>
+
+    <div class="alert-box success">
+        <span class="alert-label">Inflammation Markers</span>
+        <p>hs-CRP, homocysteine, fibrinogen, ESR</p>
+    </div>
+
+    <div class="alert-box success">
+        <span class="alert-label">Iron Panel</span>
+        <p>Serum iron, ferritin, TIBC, iron saturation</p>
+    </div>
+
+    <div class="alert-box success">
+        <span class="alert-label">Nutrient Markers</span>
+        <p>Vitamin D (25-OH), B12, folate (RBC folate preferred), magnesium (RBC magnesium if available)</p>
+    </div>
+
+    <div class="alert-box success">
+        <span class="alert-label">Metabolic Markers</span>
+        <p>Fasting insulin, HbA1c, uric acid</p>
+    </div>
+
+    <!-- Coach Tip -->
+    <div class="coach-tip">
+        <span class="tip-label">Coach Tip</span>
+        <p>When clients feel overwhelmed by comprehensive testing, reassure them: <em>"Think of this as getting a complete picture rather than just a snapshot. Yes, it's more markers, but it gives your practitioner so much more information to work with. You're investing in understanding your body deeply, which means more precise, personalized support."</em></p>
+    </div>
+
+    <h2 id="scope">Your Scope of Practice with Lab Interpretation</h2>
+
+    <div class="alert-box warning">
+        <span class="alert-label">Critical Scope Boundaries</span>
+        <p>As health coaches, we do <strong>not</strong> diagnose conditions based on lab work, order laboratory tests (in most states), or create treatment protocols based on lab findings. Lab interpretation for diagnostic purposes falls within the scope of licensed healthcare providers. <span class="highlight">Our role is educational and supportive.</span></p>
     </div>
 
     <h3>What You CAN Do</h3>
 
-    <div class="can-do-grid">
-        <div class="can-do-item">
-            <p><strong>Educate clients</strong> about what different lab tests measure and why their practitioner may have ordered them</p>
+    <div class="comparison-grid">
+        <div class="comparison-card functional">
+            <span class="card-label">Within Your Scope</span>
+            <ul>
+                <li><strong>Educate clients</strong> about what different lab tests measure and why their practitioner may have ordered them</li>
+                <li><strong>Explain concepts</strong> like optimal vs. pathological ranges in general educational terms</li>
+                <li><strong>Help clients prepare questions</strong> for their practitioner appointments</li>
+                <li><strong>Support implementation</strong> of practitioner recommendations based on lab findings</li>
+                <li><strong>Encourage appropriate follow-up</strong> testing as recommended by their healthcare team</li>
+                <li><strong>Notice patterns</strong> that warrant discussion with their practitioner</li>
+            </ul>
         </div>
-        <div class="can-do-item">
-            <p><strong>Explain concepts</strong> like optimal vs. pathological ranges in general educational terms</p>
-        </div>
-        <div class="can-do-item">
-            <p><strong>Help clients prepare questions</strong> for their practitioner appointments</p>
-        </div>
-        <div class="can-do-item">
-            <p><strong>Support implementation</strong> of practitioner recommendations based on lab findings</p>
-        </div>
-        <div class="can-do-item">
-            <p><strong>Encourage appropriate follow-up</strong> testing as recommended by their healthcare team</p>
-        </div>
-        <div class="can-do-item">
-            <p><strong>Notice patterns</strong> that warrant discussion with their practitioner</p>
-        </div>
-    </div>
-
-    <h3>What You Should AVOID</h3>
-
-    <div class="avoid-grid">
-        <div class="avoid-item">
-            <p>Telling clients they "have" a condition based on lab values</p>
-        </div>
-        <div class="avoid-item">
-            <p>Recommending specific supplements or dosages based on lab results</p>
-        </div>
-        <div class="avoid-item">
-            <p>Contradicting or second-guessing their practitioner's interpretation</p>
-        </div>
-        <div class="avoid-item">
-            <p>Ordering labs yourself (unless specifically authorized in your jurisdiction)</p>
-        </div>
-        <div class="avoid-item">
-            <p>Making definitive statements about what lab values mean for their health</p>
+        <div class="comparison-card conventional">
+            <span class="card-label">Outside Your Scope</span>
+            <ul>
+                <li>Telling clients they "have" a condition based on lab values</li>
+                <li>Recommending specific supplements or dosages based on lab results</li>
+                <li>Contradicting or second-guessing their practitioner's interpretation</li>
+                <li>Ordering labs yourself (unless specifically authorized in your jurisdiction)</li>
+                <li>Making definitive statements about what lab values mean for their health</li>
+            </ul>
         </div>
     </div>
 
-    <h2>Why Lab Literacy Matters for Coaches</h2>
+    <h3>Why Lab Literacy Matters for Coaches</h3>
 
-    <p>Even though interpretation is outside your scope, understanding labs provides tremendous value:</p>
+    <p>Even though interpretation is outside your scope, understanding labs provides tremendous value to your coaching practice and your clients:</p>
 
-    <div class="value-box">
+    <div class="objectives-box">
+        <span class="box-label">Value of Lab Literacy</span>
         <ul>
             <li><strong>Better client communication:</strong> You can discuss lab work more intelligently and answer basic questions</li>
             <li><strong>Enhanced credibility:</strong> Clients appreciate coaches who understand the medical side of their care</li>
@@ -609,45 +1399,129 @@
         </ul>
     </div>
 
-    <h2>Communicating About Labs with Clients</h2>
+    <!-- Coach Tip -->
+    <div class="coach-tip">
+        <span class="tip-label">Coach Tip</span>
+        <p>Maintain clear boundaries with this language: <em>"I can help you understand what these tests generally measure and support you in implementing your practitioner's recommendations. What I can't do is tell you what your specific results mean for you—that's your practitioner's expertise. But I'm here to help you make sense of the big picture and follow through on the plan."</em></p>
+    </div>
 
-    <p>How you discuss lab work matters. Here are some appropriate ways to frame conversations:</p>
+    <h3>Communicating About Labs with Clients</h3>
 
-    <div class="language-box">
-        <h4>Helpful Language</h4>
+    <p>How you discuss lab work matters. Here are appropriate ways to frame conversations that maintain professional boundaries while adding value:</p>
+
+    <div class="alert-box success">
+        <span class="alert-label">Helpful Language Examples</span>
         <ul>
-            <li>"Your practitioner would be the best person to explain what these results mean for you specifically."</li>
-            <li>"In general, functional medicine practitioners often look at narrower optimal ranges—you might ask your practitioner about that."</li>
-            <li>"This marker can indicate various things—what did your practitioner say about it?"</li>
-            <li>"I'd encourage you to bring up [concern] at your next appointment."</li>
-            <li>"Understanding your labs can help us work together more effectively on your health goals."</li>
+            <li><em>"Your practitioner would be the best person to explain what these results mean for you specifically."</em></li>
+            <li><em>"In general, functional medicine practitioners often look at narrower optimal ranges—you might ask your practitioner about that."</em></li>
+            <li><em>"This marker can indicate various things—what did your practitioner say about it?"</em></li>
+            <li><em>"I'd encourage you to bring up [concern] at your next appointment."</em></li>
+            <li><em>"Understanding your labs can help us work together more effectively on your health goals."</em></li>
         </ul>
     </div>
 
+    <div class="alert-box reflect">
+        <span class="alert-label">Pause & Reflect</span>
+        <p>Consider how you currently discuss lab results with clients (or would discuss them in the future). What boundaries do you need to establish? What value can you add within your scope?</p>
+    </div>
+
+    <!-- Check Your Understanding - EXACT STRUCTURE REQUIRED -->
+    <h2 id="quiz">Check Your Understanding</h2>
+
+    <div class="check-understanding">
+        <span class="box-label">Test Your Knowledge</span>
+
+        <div class="question-item">
+            <div class="question-header">
+                <span class="question-number">1</span>
+                <p class="question-text">What is the fundamental difference between conventional and functional medicine approaches to lab interpretation?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+            <div class="answer-text">
+                <p><strong>Answer:</strong> Conventional medicine uses labs to <strong>rule out pathology and diagnose disease</strong>, focusing on whether values fall outside reference ranges. Functional medicine uses labs to <strong>assess physiological function and identify imbalances before disease develops</strong>, looking at optimal ranges rather than just pathological ones. Conventional medicine asks "Is something seriously wrong?" while functional medicine asks "How well is the body functioning and where can we optimize?"</p>
+            </div>
+        </div>
+
+        <div class="question-item">
+            <div class="question-header">
+                <span class="question-number">2</span>
+                <p class="question-text">Why might a client's TSH of 3.8 mIU/L be considered "normal" by one doctor but concerning by a functional medicine practitioner?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+            <div class="answer-text">
+                <p><strong>Answer:</strong> A TSH of 3.8 falls within the conventional reference range of 0.5-4.5 mIU/L, so it would be labeled "normal." However, functional medicine uses an <strong>optimal range of 1.0-2.0 mIU/L</strong>, based on research correlating these tighter ranges with better thyroid function and health outcomes. At 3.8, the thyroid may be starting to struggle, even though it hasn't failed enough to trigger a conventional diagnosis. This illustrates the key principle: <strong>"normal" isn't the same as "optimal."</strong></p>
+            </div>
+        </div>
+
+        <div class="question-item">
+            <div class="question-header">
+                <span class="question-number">3</span>
+                <p class="question-text">What are three limitations of standard lab panels that functional testing addresses?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+            <div class="answer-text">
+                <p><strong>Answer:</strong> Three major limitations include: (1) <strong>Limited thyroid testing</strong>—standard panels often only test TSH, missing Free T4, Free T3, Reverse T3, and antibodies essential for full thyroid assessment; (2) <strong>Glucose-only testing</strong>—fasting glucose alone misses insulin resistance developing years before glucose elevations, whereas fasting insulin and HOMA-IR provide earlier warnings; (3) <strong>Missing inflammation markers</strong>—standard panels often omit hs-CRP, homocysteine, and other markers indicating systemic inflammation and disease risk. Other valid answers include basic lipid panels missing particle size/number and iron testing without ferritin context.</p>
+            </div>
+        </div>
+
+        <div class="question-item">
+            <div class="question-header">
+                <span class="question-number">4</span>
+                <p class="question-text">A client shows you their lab results and asks what their elevated homocysteine means. What's an appropriate response within your scope as a health coach?</p>
+            </div>
+            <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+            <div class="answer-text">
+                <p><strong>Answer:</strong> An appropriate response would be: <em>"Homocysteine is a marker that can indicate various things—it's influenced by B vitamin status, methylation, and other factors. Your practitioner would be the best person to explain what your specific result means for you and whether any intervention is needed. What did they say about it? I can support you in implementing their recommendations once you discuss it with them."</em> This response maintains professional boundaries, acknowledges the marker's complexity, defers diagnostic interpretation to the practitioner, and offers support within your scope.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Takeaways -->
     <div class="takeaways-box">
-        <h3>Key Takeaways</h3>
+        <span class="box-label">Key Takeaways</span>
         <ul>
-            <li>Functional medicine uses optimal ranges, not just pathological ranges, to assess health</li>
-            <li>"Normal" lab results don't necessarily mean optimal function</li>
-            <li>Comprehensive testing provides a more complete picture than standard panels</li>
-            <li>Lab interpretation for diagnosis is outside health coach scope of practice</li>
-            <li>Lab literacy helps you better support clients and collaborate with practitioners</li>
-            <li>Appropriate communication about labs maintains professional boundaries while adding value</li>
+            <li>Functional medicine uses <span class="highlight">optimal ranges</span>, not just pathological ranges, to assess health and identify dysfunction before disease develops</li>
+            <li><span class="highlight">"Normal" lab results don't necessarily mean optimal function</span>—reference ranges are based on statistical averages of often-unhealthy populations</li>
+            <li>Comprehensive testing provides a more complete picture than standard panels, addressing limitations like incomplete thyroid panels, basic lipids, and missing inflammation markers</li>
+            <li><span class="highlight">Lab interpretation for diagnosis is outside health coach scope of practice</span>—our role is educational support, not diagnostic interpretation</li>
+            <li>Lab literacy helps you better support clients and collaborate with practitioners, even though you don't interpret results diagnostically</li>
+            <li>Appropriate communication about labs maintains professional boundaries while adding value—<span class="highlight">defer interpretation to practitioners while supporting implementation</span></li>
         </ul>
     </div>
-<div class="references-box">
-        <h3>References</h3>
+
+    <!-- References -->
+    <div class="references-box">
+        <span class="box-label">References</span>
         <ol>
-            <li>Weatherby, D., & Ferguson, S. (2002). Blood chemistry and CBC analysis: Clinical laboratory testing from a functional perspective. Bear Mountain Publishing.</li>
-            <li>Lord, R. S., & Bralley, J. A. (2012). Laboratory evaluations for integrative and functional medicine (2nd ed.). Metametrix Institute.</li>
-            <li>Vasquez, A. (2014). Inflammation mastery (4th ed.). CreateSpace Independent Publishing.</li>
-            <li>Kresser, C. (2017). Unconventional medicine: Join the revolution to reinvent healthcare, reverse chronic disease, and create a practice you love. Lioncrest Publishing.</li>
-            <li>Institute for Functional Medicine. (2020). Applying functional medicine in clinical practice. IFM Clinical Training Program.</li>
-            <li>Pagana, K. D., & Pagana, T. J. (2018). Mosby's manual of diagnostic and laboratory tests (6th ed.). Elsevier.</li>
-            <li>Guilliams, T. G. (2014). The role of stress and the HPA axis in chronic disease management. Point Institute.</li>
-            <li>Bland, J. S. (2014). The disease delusion: Conquering the causes of chronic illness for a healthier, longer, and happier life. Harper Wave.</li>
+            <li>Weatherby, D., & Ferguson, S. (2002). <em>Blood chemistry and CBC analysis: Clinical laboratory testing from a functional perspective</em>. Bear Mountain Publishing.</li>
+            <li>Lord, R. S., & Bralley, J. A. (2012). <em>Laboratory evaluations for integrative and functional medicine</em> (2nd ed.). Metametrix Institute.</li>
+            <li>Vasquez, A. (2014). <em>Inflammation mastery</em> (4th ed.). CreateSpace Independent Publishing.</li>
+            <li>Kresser, C. (2017). <em>Unconventional medicine: Join the revolution to reinvent healthcare, reverse chronic disease, and create a practice you love</em>. Lioncrest Publishing.</li>
+            <li>Institute for Functional Medicine. (2020). <em>Applying functional medicine in clinical practice</em>. IFM Clinical Training Program.</li>
+            <li>Pagana, K. D., & Pagana, T. J. (2018). <em>Mosby's manual of diagnostic and laboratory tests</em> (6th ed.). Elsevier.</li>
+            <li>Guilliams, T. G. (2014). <em>The role of stress and the HPA axis in chronic disease management</em>. Point Institute.</li>
+            <li>Bland, J. S. (2014). <em>The disease delusion: Conquering the causes of chronic illness for a healthier, longer, and happier life</em>. Harper Wave.</li>
         </ol>
     </div>
-    <div class="lesson-footer"></div>
+
+</div>
+
+
+<script>
+function toggleAnswer(btn) {
+    const answer = btn.nextElementSibling;
+    const isShowing = answer.classList.contains('show');
+
+    if (isShowing) {
+        answer.classList.remove('show');
+        btn.textContent = 'Reveal Answer';
+    } else {
+        answer.classList.add('show');
+        btn.textContent = 'Hide Answer';
+    }
+}
+</script>
+
+
 </body>
 </html>
