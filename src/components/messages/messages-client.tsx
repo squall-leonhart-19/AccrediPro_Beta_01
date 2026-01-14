@@ -1542,6 +1542,15 @@ export function MessagesClient({
                           </p>
                         </div>
                       )}
+                      {/* Enrollment badge for coaches viewing student conversations */}
+                      {isCoach && conv.user.enrollments && conv.user.enrollments.length > 0 && (
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <Badge className="text-[10px] bg-burgundy-100 text-burgundy-700 border-0 gap-0.5 py-0">
+                            <BookOpen className="w-2.5 h-2.5" />
+                            {conv.user.enrollments.length} course{conv.user.enrollments.length > 1 ? "s" : ""}
+                          </Badge>
+                        </div>
+                      )}
                     </div>
                   </button>
                 );

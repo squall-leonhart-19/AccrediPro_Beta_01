@@ -54,15 +54,44 @@ export async function GET(request: NextRequest) {
     //   });
     // }
 
-    // Search filter (email, firstName, lastName)
+    // Search filter (email, firstName, lastName, or full name)
     if (search) {
-      andConditions.push({
-        OR: [
-          { email: { contains: search, mode: "insensitive" } },
-          { firstName: { contains: search, mode: "insensitive" } },
-          { lastName: { contains: search, mode: "insensitive" } },
-        ],
-      });
+      const searchTerms = search.trim().split(/\s+/);
+
+      if (searchTerms.length >= 2) {
+        // Multi-word search: try matching first + last name combination
+        andConditions.push({
+          OR: [
+            { email: { contains: search, mode: "insensitive" } },
+            // Match "John Smith" as firstName=John, lastName=Smith
+            {
+              AND: [
+                { firstName: { contains: searchTerms[0], mode: "insensitive" } },
+                { lastName: { contains: searchTerms.slice(1).join(" "), mode: "insensitive" } },
+              ],
+            },
+            // Also try reverse: lastName first, firstName second
+            {
+              AND: [
+                { lastName: { contains: searchTerms[0], mode: "insensitive" } },
+                { firstName: { contains: searchTerms.slice(1).join(" "), mode: "insensitive" } },
+              ],
+            },
+            // Fallback: any word matches either field
+            { firstName: { contains: search, mode: "insensitive" } },
+            { lastName: { contains: search, mode: "insensitive" } },
+          ],
+        });
+      } else {
+        // Single word search
+        andConditions.push({
+          OR: [
+            { email: { contains: search, mode: "insensitive" } },
+            { firstName: { contains: search, mode: "insensitive" } },
+            { lastName: { contains: search, mode: "insensitive" } },
+          ],
+        });
+      }
     }
 
     // Role filter

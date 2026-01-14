@@ -140,6 +140,7 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="today">Today</SelectItem>
+                            <SelectItem value="yesterday">Yesterday</SelectItem>
                             <SelectItem value="7days">Last 7 Days</SelectItem>
                             <SelectItem value="30days">Last 30 Days</SelectItem>
                             <SelectItem value="month">This Month</SelectItem>
