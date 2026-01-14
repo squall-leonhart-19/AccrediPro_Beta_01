@@ -22,8 +22,8 @@ export default async function LessonLayout({
             <SWRProvider>
                 <NotificationProvider>
                     <AchievementProvider>
-                        {/* Minimal layout - no sidebar or header, just content */}
-                        <div className="min-h-screen bg-gray-50">
+                        {/* Minimal layout - fullscreen lesson player */}
+                        <div className="h-dvh w-full overflow-hidden">
                             {children}
                         </div>
                     </AchievementProvider>
