@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import {
     Clock, CheckCircle2, ArrowRight, ArrowLeft,
     GraduationCap, BookOpen, Target, Lightbulb,
-    Award, ChevronRight, Quote,
+    Award, ChevronRight, Quote, DollarSign, Sparkles,
 } from "lucide-react";
 
 const SARAH_AVATAR = "/coaches/sarah-coach.webp";
@@ -209,7 +209,7 @@ export function ClassicLessonBase({
                 </div>
 
                 {/* Key Takeaways */}
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200 p-6 mb-8">
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200 p-6 mb-6">
                     <h3 className="font-bold text-emerald-800 mb-4 flex items-center gap-2">
                         <Award className="w-5 h-5" />
                         Key Takeaways from Lesson {lessonNumber}
@@ -223,6 +223,42 @@ export function ClassicLessonBase({
                         ))}
                     </ul>
                 </div>
+
+                {/* Earning Potential Callout - Phase 3-4 Enhancement */}
+                <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 rounded-2xl border-2 border-amber-300 p-5 mb-6">
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <DollarSign className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-amber-900 mb-1 flex items-center gap-2">
+                                <Sparkles className="w-4 h-4" />
+                                Why This Matters For Your Income
+                            </h4>
+                            <p className="text-amber-800 text-sm leading-relaxed">
+                                Practitioners who master {lessonTitle.toLowerCase()} can charge
+                                <strong className="text-amber-900"> $150-$300 per consultation</strong>.
+                                With just 5-10 clients per week, that's
+                                <strong className="text-amber-900"> $3,000-$8,000/month</strong> working from home.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Certificate Progress Reminder - Phase 3-4 Enhancement */}
+                {lessonNumber < totalLessons && (
+                    <div className="bg-burgundy-50 rounded-xl p-4 mb-8 border border-burgundy-200">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <GraduationCap className="w-5 h-5 text-burgundy-600" />
+                                <span className="text-sm text-burgundy-700">
+                                    <strong>{totalLessons - lessonNumber} more lesson{totalLessons - lessonNumber > 1 ? 's' : ''}</strong> until your certificate is ready!
+                                </span>
+                            </div>
+                            <Progress value={progressPercent} className="w-24 h-2" />
+                        </div>
+                    </div>
+                )}
 
                 {/* Completion Card */}
                 <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
