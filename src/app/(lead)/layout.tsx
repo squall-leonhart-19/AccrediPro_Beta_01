@@ -94,8 +94,8 @@ export default async function LeadLayout({ children }: LeadLayoutProps) {
                 certificateClaimed={leadOnboarding?.claimedCertificate || false}
             />
 
-            {/* Main Content */}
-            <main className="pl-64">
+            {/* Main Content - responsive padding */}
+            <main className="pt-14 lg:pt-0 lg:pl-64">
                 <div className="min-h-screen">
                     {children}
                 </div>

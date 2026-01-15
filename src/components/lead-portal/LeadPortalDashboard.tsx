@@ -125,24 +125,24 @@ function SarahFloatingMentor({
 
     return (
         <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2">
-            {/* Speech Bubble */}
+            {/* Speech Bubble - hidden on very small screens, shown on tap */}
             {showBubble && (
-                <div className="relative bg-white rounded-2xl shadow-lg p-3 max-w-[220px] animate-in slide-in-from-right duration-300">
+                <div className="relative bg-white rounded-2xl shadow-lg p-3 max-w-[180px] sm:max-w-[220px] animate-in slide-in-from-right duration-300">
                     <button
                         onClick={() => setShowBubble(false)}
                         className="absolute -top-1 -right-1 w-5 h-5 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-300 text-xs"
                     >
                         ×
                     </button>
-                    <p className="text-sm text-slate-700">{messages[messageIndex]}</p>
+                    <p className="text-xs sm:text-sm text-slate-700">{messages[messageIndex]}</p>
                     <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white transform rotate-45" />
                 </div>
             )}
 
-            {/* Sarah Avatar */}
+            {/* Sarah Avatar - smaller on mobile */}
             <button
                 onClick={() => setShowBubble(!showBubble)}
-                className="w-14 h-14 rounded-full bg-burgundy-600 border-4 border-white shadow-lg overflow-hidden hover:scale-105 transition-transform flex-shrink-0"
+                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-burgundy-600 border-3 sm:border-4 border-white shadow-lg overflow-hidden hover:scale-105 transition-transform flex-shrink-0"
             >
                 <Image
                     src={coachImage}

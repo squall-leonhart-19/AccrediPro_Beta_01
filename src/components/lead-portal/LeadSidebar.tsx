@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -17,6 +17,8 @@ import {
     Home,
     Hand,
     Megaphone,
+    Menu,
+    X,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -50,6 +52,24 @@ export function LeadSidebar({
     const [communityOpen, setCommunityOpen] = useState(
         pathname?.startsWith("/community") || false
     );
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    // Close sidebar on route change (mobile)
+    useEffect(() => {
+        setMobileOpen(false);
+    }, [pathname]);
+
+    // Prevent body scroll when mobile sidebar is open
+    useEffect(() => {
+        if (mobileOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [mobileOpen]);
 
     // Dynamic base path for diploma
     // If pathname starts with one of our known diploma routes, use that as base
@@ -70,9 +90,45 @@ export function LeadSidebar({
         pathname === href || pathname?.startsWith(href + "/");
 
     return (
-        <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-burgundy-800 text-white flex flex-col">
-            {/* Logo */}
-            <div className="p-4 border-b border-burgundy-700">
+        <>
+            {/* Mobile Header Bar with Hamburger */}
+            <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-burgundy-800 text-white px-4 py-3 flex items-center justify-between shadow-lg">
+                <Link href={basePath} className="flex items-center gap-2">
+                    <Image
+                        src="/newlogo.webp"
+                        alt="AccrediPro"
+                        width={32}
+                        height={32}
+                        className="rounded-lg"
+                    />
+                    <span className="font-bold">AccrediPro</span>
+                </Link>
+                <button
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    className="p-2 rounded-lg hover:bg-burgundy-700 transition-colors"
+                    aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                >
+                    {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+            </div>
+
+            {/* Mobile Overlay */}
+            {mobileOpen && (
+                <div
+                    className="lg:hidden fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setMobileOpen(false)}
+                />
+            )}
+
+            {/* Sidebar */}
+            <aside className={`
+                fixed left-0 top-0 z-40 h-screen w-64 bg-burgundy-800 text-white flex flex-col
+                transition-transform duration-300 ease-in-out
+                lg:translate-x-0
+                ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+            `}>
+            {/* Logo - hidden on mobile (shown in header instead) */}
+            <div className="p-4 border-b border-burgundy-700 hidden lg:block">
                 <Link href={basePath} className="flex items-center gap-2">
                     <Image
                         src="/newlogo.webp"
@@ -87,6 +143,9 @@ export function LeadSidebar({
                     </div>
                 </Link>
             </div>
+
+            {/* Spacer for mobile header */}
+            <div className="h-14 lg:hidden" />
 
             {/* User Info */}
             <div className="p-4 border-b border-burgundy-700">
@@ -283,5 +342,6 @@ export function LeadSidebar({
                 </button>
             </div>
         </aside>
+        </>
     );
 }

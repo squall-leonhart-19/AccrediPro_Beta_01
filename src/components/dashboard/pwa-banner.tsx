@@ -177,43 +177,43 @@ export function DashboardPWABanner() {
                     <X className="w-4 h-4" />
                 </button>
 
-                <div className="relative p-5 sm:p-6">
+                <div className="relative p-4 sm:p-6">
                     {/* Header */}
-                    <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#c9a227] flex items-center justify-center flex-shrink-0 shadow-lg">
-                            <Zap className="w-6 h-6 text-white" />
+                    <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#c9a227] flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                         </div>
-                        <div className="flex-1 pr-8">
-                            <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                        <div className="flex-1 pr-6 sm:pr-8">
+                            <h3 className="text-base sm:text-xl font-bold text-white mb-0.5 sm:mb-1">
                                 🚀 Game Changer!
                             </h3>
-                            <p className="text-sm text-white/80">
+                            <p className="text-xs sm:text-sm text-white/80">
                                 Get the full AccrediPro experience on your device
                             </p>
                         </div>
                     </div>
 
-                    {/* Benefits grid */}
-                    <div className="grid sm:grid-cols-2 gap-2 sm:gap-3 mb-5">
-                        <div className="flex items-center gap-2 text-sm text-white/90">
+                    {/* Benefits grid - 2 columns on mobile, hidden extra on smallest screens */}
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-5">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-white/90">
                             <div className="w-5 h-5 rounded-full bg-[#d4af37]/20 flex items-center justify-center flex-shrink-0">
                                 <Wifi className="w-3 h-3 text-[#d4af37]" />
                             </div>
                             <span>Learn offline anywhere</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-white/90">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-white/90">
                             <div className="w-5 h-5 rounded-full bg-[#d4af37]/20 flex items-center justify-center flex-shrink-0">
                                 <Bell className="w-3 h-3 text-[#d4af37]" />
                             </div>
                             <span>Get certificate alerts</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-white/90">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-white/90">
                             <div className="w-5 h-5 rounded-full bg-[#d4af37]/20 flex items-center justify-center flex-shrink-0">
                                 <Smartphone className="w-3 h-3 text-[#d4af37]" />
                             </div>
                             <span>One-tap from home screen</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-white/90">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm text-white/90">
                             <div className="w-5 h-5 rounded-full bg-[#d4af37]/20 flex items-center justify-center flex-shrink-0">
                                 <Bell className="w-3 h-3 text-[#d4af37]" />
                             </div>
