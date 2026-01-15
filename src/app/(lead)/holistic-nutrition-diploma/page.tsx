@@ -22,10 +22,11 @@ async function getLeadProgress(userId: string) {
     const [user, enrollment, leadOnboarding, completionTags] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
-            select: { firstName: true, lastName: true, email: true, avatar: true, accessExpiresAt: true },
+            select: { firstName: true, lastName: true, email: true, avatar: true, accessExpiresAt: true, createdAt: true },
         }),
         prisma.enrollment.findFirst({
             where: { userId, course: { slug: "holistic-nutrition-mini-diploma" } },
+            select: { id: true, createdAt: true },
         }),
         prisma.leadOnboarding.findUnique({ where: { userId }, select: { watchedVideo: true, completedQuestions: true } }).catch(() => null),
         prisma.userTag.findMany({ where: { userId, tag: { startsWith: "holistic-nutrition-lesson-complete:" } } }),
@@ -33,7 +34,7 @@ async function getLeadProgress(userId: string) {
 
     if (!enrollment) return null;
     const completedLessons = new Set(completionTags.map((t) => parseInt(t.tag.replace("holistic-nutrition-lesson-complete:", ""))));
-    return { user, leadOnboarding, completedLessons: Array.from(completedLessons) };
+    return { user, leadOnboarding, completedLessons: Array.from(completedLessons), enrolledAt: enrollment?.createdAt || user?.createdAt };
 }
 
 export default async function HolisticNutritionDiplomaPage() {
@@ -43,7 +44,7 @@ export default async function HolisticNutritionDiplomaPage() {
     const data = await getLeadProgress(session.user.id);
     if (!data) redirect("/dashboard");
 
-    const { user, leadOnboarding, completedLessons } = data;
+    const { user, leadOnboarding, completedLessons, enrolledAt } = data;
     const firstName = user?.firstName || "there";
     const isTestUser = user?.email === "at.seed019@gmail.com" || user?.email === "tortolialessio1997@gmail.com";
 
@@ -66,6 +67,6 @@ export default async function HolisticNutritionDiplomaPage() {
 
     return (
         <LeadOnboardingClient firstName={firstName} userAvatar={user?.avatar} watchedVideo={watchedVideo} completedQuestions={completedQuestions}
-            completedLessons={completedLessons} steps={steps} currentStep={currentStep} progress={Math.round((steps.filter((s) => s.completed).length / 12) * 100)} isTestUser={isTestUser} />
+            completedLessons={completedLessons} steps={steps} currentStep={currentStep} progress={Math.round((steps.filter((s) => s.completed).length / 12) * 100)} isTestUser={isTestUser} enrolledAt={enrolledAt?.toISOString()} />
     );
 }

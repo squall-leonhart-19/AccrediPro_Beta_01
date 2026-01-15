@@ -47,12 +47,17 @@ async function getLeadProgress(userId: string) {
         email: true,
         avatar: true,
         accessExpiresAt: true,
+        createdAt: true,
       },
     }),
     prisma.enrollment.findFirst({
       where: {
         userId,
         course: { slug: "womens-health-mini-diploma" },
+      },
+      select: {
+        id: true,
+        createdAt: true,
       },
     }),
     prisma.leadOnboarding.findUnique({
@@ -80,6 +85,7 @@ async function getLeadProgress(userId: string) {
     user,
     leadOnboarding,
     completedLessons: Array.from(completedLessons),
+    enrolledAt: enrollment?.createdAt || user?.createdAt,
   };
 }
 
@@ -94,7 +100,7 @@ export default async function WomensHealthDiplomaPage() {
     redirect("/dashboard");
   }
 
-  const { user, leadOnboarding, completedLessons } = data;
+  const { user, leadOnboarding, completedLessons, enrolledAt } = data;
   const firstName = user?.firstName || "there";
   const isTestUser = user?.email === "at.seed019@gmail.com" || user?.email === "tortolialessio1997@gmail.com";
 
@@ -141,6 +147,7 @@ export default async function WomensHealthDiplomaPage() {
       currentStep={currentStep}
       progress={progress}
       isTestUser={isTestUser}
+      enrolledAt={enrolledAt?.toISOString()}
     />
   );
 }

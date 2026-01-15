@@ -28,12 +28,17 @@ async function getLeadProgress(userId: string) {
                 email: true,
                 avatar: true,
                 accessExpiresAt: true,
+                createdAt: true,
             },
         }),
         prisma.enrollment.findFirst({
             where: {
                 userId,
                 course: { slug: "functional-medicine-mini-diploma" },
+            },
+            select: {
+                id: true,
+                createdAt: true,
             },
         }),
         // Use niche-specific tags for onboarding instead of shared LeadOnboarding table
@@ -67,6 +72,7 @@ async function getLeadProgress(userId: string) {
         watchedVideo,
         completedQuestions,
         completedLessons: Array.from(completedLessons),
+        enrolledAt: enrollment?.createdAt || user?.createdAt,
     };
 }
 
@@ -77,7 +83,7 @@ export default async function FunctionalMedicineDiplomaPage() {
     const data = await getLeadProgress(session.user.id);
     if (!data) redirect("/dashboard");
 
-    const { user, watchedVideo, completedQuestions, completedLessons } = data;
+    const { user, watchedVideo, completedQuestions, completedLessons, enrolledAt } = data;
     const firstName = user?.firstName || "there";
 
     // Since we now collect qualification data in the opt-in funnel, 
@@ -119,6 +125,7 @@ export default async function FunctionalMedicineDiplomaPage() {
             steps={steps}
             currentStep={currentStep}
             progress={progress}
+            enrolledAt={enrolledAt?.toISOString()}
         />
     );
 }

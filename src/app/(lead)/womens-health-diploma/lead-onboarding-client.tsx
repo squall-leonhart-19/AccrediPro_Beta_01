@@ -13,11 +13,13 @@ interface LeadOnboardingClientProps {
     currentStep: number;
     progress: number;
     isTestUser?: boolean;
+    enrolledAt?: string | null;
 }
 
 export function LeadOnboardingClient({
     firstName,
     completedLessons,
+    enrolledAt,
 }: LeadOnboardingClientProps) {
     const config = DIPLOMA_CONFIGS["womens-health-diploma"];
 
@@ -26,6 +28,7 @@ export function LeadOnboardingClient({
             firstName={firstName}
             completedLessons={completedLessons}
             config={config}
+            enrolledAt={enrolledAt}
         />
     );
 }

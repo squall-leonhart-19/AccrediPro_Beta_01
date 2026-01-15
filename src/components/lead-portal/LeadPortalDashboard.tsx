@@ -24,12 +24,14 @@ import {
 import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
 
 // Countdown component for cohort expiry
-function CohortCountdown() {
+function CohortCountdown({ enrolledAt }: { enrolledAt?: Date | string | null }) {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const [isExpired, setIsExpired] = useState(false);
 
     useEffect(() => {
-        // Calculate expiry date (7 days from now for demo - in production, use user.createdAt + 7 days)
-        const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        // Calculate expiry date (7 days from enrollment)
+        const startDate = enrolledAt ? new Date(enrolledAt) : new Date();
+        const expiryDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
         const updateTimer = () => {
             const now = new Date();
@@ -41,13 +43,20 @@ function CohortCountdown() {
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
                 setTimeLeft({ days, hours, minutes, seconds });
+                setIsExpired(false);
+            } else {
+                setIsExpired(true);
             }
         };
 
         updateTimer();
         const interval = setInterval(updateTimer, 1000);
         return () => clearInterval(interval);
-    }, []);
+    }, [enrolledAt]);
+
+    if (isExpired) {
+        return <span className="font-mono font-bold text-red-200">Expired</span>;
+    }
 
     return (
         <span className="font-mono font-bold">
@@ -79,6 +88,7 @@ interface LeadPortalDashboardProps {
     firstName: string;
     completedLessons: number[];
     config: DiplomaConfig;
+    enrolledAt?: Date | string | null;
 }
 
 // Sarah AI Floating Mentor Component
@@ -166,6 +176,7 @@ export function LeadPortalDashboard({
     firstName,
     completedLessons,
     config,
+    enrolledAt,
 }: LeadPortalDashboardProps) {
     // Calculate progress
     const totalLessons = config.modules.reduce((acc, m) => acc + m.lessons.length, 0);
@@ -223,7 +234,7 @@ export function LeadPortalDashboard({
                             <GraduationCap className="w-5 h-5" />
                             <span className="font-bold">COHORT #{Math.floor((Date.now() - new Date("2024-01-01").getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1}</span>
                             <span className="text-white/80">•</span>
-                            <span className="text-sm">Your access expires in <CohortCountdown /></span>
+                            <span className="text-sm">Your access expires in <CohortCountdown enrolledAt={enrolledAt} /></span>
                         </div>
                         <div className="text-sm text-white/90">
                             Complete all {totalLessons} lessons to claim your certificate 🎓
@@ -274,30 +285,83 @@ export function LeadPortalDashboard({
                         </CardContent>
                     </Card>
 
-                    {/* Stats Card */}
-                    <Card className="border-0 shadow-md">
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="text-sm font-medium text-slate-600">Your Progress</span>
-                                <span className="text-lg font-bold text-burgundy-600">{progressPercent}%</span>
-                            </div>
-                            <Progress value={progressPercent} className="h-2 mb-4" />
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-slate-50 rounded-lg p-3 text-center">
-                                    <div className="flex items-center justify-center gap-1 text-emerald-600 mb-1">
-                                        <CheckCircle className="w-4 h-4" />
-                                        <span className="font-bold">{lessonsCompleted}/{totalLessons}</span>
+                    {/* Enhanced Progress Card */}
+                    <Card className="border-0 shadow-md bg-white overflow-hidden">
+                        <CardContent className="p-0">
+                            {/* Progress Header */}
+                            <div className="p-4 pb-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-sm font-semibold text-slate-700">Your Progress</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Trophy className="w-4 h-4 text-amber-500" />
+                                        <span className="text-lg font-bold text-burgundy-600">{progressPercent}%</span>
                                     </div>
-                                    <p className="text-xs text-slate-500">Completed</p>
                                 </div>
-                                <div className="bg-slate-50 rounded-lg p-3 text-center">
-                                    <div className="flex items-center justify-center gap-1 text-blue-600 mb-1">
-                                        <Clock className="w-4 h-4" />
-                                        <span className="font-bold">{timeRemaining}m</span>
-                                    </div>
-                                    <p className="text-xs text-slate-500">Remaining</p>
+
+                                {/* Segmented Progress Bar */}
+                                <div className="flex gap-1 mb-3">
+                                    {Array.from({ length: totalLessons }, (_, i) => (
+                                        <div
+                                            key={i}
+                                            className={`h-2 flex-1 rounded-full transition-all ${
+                                                completedLessons.includes(i + 1)
+                                                    ? "bg-emerald-500"
+                                                    : i + 1 === nextLessonId
+                                                    ? "bg-burgundy-300 animate-pulse"
+                                                    : "bg-slate-200"
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+
+                                {/* Stats Row */}
+                                <div className="flex items-center justify-between text-xs text-slate-500">
+                                    <span className="flex items-center gap-1">
+                                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                                        {lessonsCompleted} of {totalLessons} complete
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <Clock className="w-3.5 h-3.5 text-blue-500" />
+                                        ~{timeRemaining} min left
+                                    </span>
                                 </div>
                             </div>
+
+                            {/* Continue CTA - Only show if not complete */}
+                            {!isAllComplete && nextLessonId <= totalLessons && (
+                                <Link href={`${basePath}/lesson/${nextLessonId}`} className="block">
+                                    <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 px-4 py-3 flex items-center justify-between group hover:from-burgundy-700 hover:to-burgundy-800 transition-all">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                                                <Play className="w-4 h-4 text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-semibold text-sm">Continue Learning</p>
+                                                <p className="text-burgundy-200 text-xs">Lesson {nextLessonId} • {allLessons.find(l => l.id === nextLessonId)?.duration || "7 min"}</p>
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                                    </div>
+                                </Link>
+                            )}
+
+                            {/* Completed State */}
+                            {isAllComplete && (
+                                <Link href={`${basePath}/complete`} className="block">
+                                    <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3 flex items-center justify-between group hover:from-emerald-600 hover:to-emerald-700 transition-all">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                                                <Award className="w-4 h-4 text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-semibold text-sm">All Lessons Complete!</p>
+                                                <p className="text-emerald-100 text-xs">Claim your certificate now</p>
+                                            </div>
+                                        </div>
+                                        <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                                    </div>
+                                </Link>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
