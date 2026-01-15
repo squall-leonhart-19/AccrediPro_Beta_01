@@ -130,6 +130,25 @@ function FunctionalMedicineMiniDiplomaContent() {
                 PIXEL_CONFIG.FUNCTIONAL_MEDICINE
             );
 
+            // Track optin event for funnel analytics
+            fetch("/api/track/mini-diploma", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    event: "optin_completed",
+                    properties: {
+                        qualification_answer: formData.motivation,
+                        life_stage: formData.timeCommitment || formData.lifeStage,
+                        income_goal: formData.incomeGoal || formData.investment,
+                        utm_source: searchParams.get("utm_source"),
+                        utm_medium: searchParams.get("utm_medium"),
+                        utm_campaign: searchParams.get("utm_campaign"),
+                        segment: segment,
+                        device: typeof window !== "undefined" && window.innerWidth < 768 ? "mobile" : "desktop"
+                    }
+                })
+            }).catch(console.error);
+
             sessionStorage.setItem("miniDiplomaUser", JSON.stringify({
                 firstName: formData.firstName.trim(),
                 lastName: formData.lastName.trim(),
@@ -140,10 +159,11 @@ function FunctionalMedicineMiniDiplomaContent() {
                 email: formData.email.toLowerCase(),
                 password: LEAD_PASSWORD,
                 redirect: false,
-                callbackUrl: "/functional-medicine-mini-diploma/thank-you",
+                callbackUrl: "/functional-medicine-diploma/qualification",
             });
 
-            window.location.href = "/functional-medicine-mini-diploma/thank-you";
+            // Redirect to qualification interstitial with name for personalization
+            window.location.href = `/functional-medicine-diploma/qualification?name=${encodeURIComponent(formData.firstName.trim())}`;
 
         } catch (err: any) {
             alert(err.message || "Failed to register. Please try again.");
