@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +22,39 @@ import {
     Timer,
 } from "lucide-react";
 import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
+
+// Countdown component for cohort expiry
+function CohortCountdown() {
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+    useEffect(() => {
+        // Calculate expiry date (7 days from now for demo - in production, use user.createdAt + 7 days)
+        const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+        const updateTimer = () => {
+            const now = new Date();
+            const diff = expiryDate.getTime() - now.getTime();
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                setTimeLeft({ days, hours, minutes, seconds });
+            }
+        };
+
+        updateTimer();
+        const interval = setInterval(updateTimer, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <span className="font-mono font-bold">
+            {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+        </span>
+    );
+}
 
 // Module structure type
 interface ModuleConfig {
@@ -106,6 +139,23 @@ export function LeadPortalDashboard({
 
             {/* PWA Install Banner */}
             <DashboardPWABanner />
+
+            {/* FOMO Cohort Banner */}
+            {!isAllComplete && (
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3">
+                    <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                            <GraduationCap className="w-5 h-5" />
+                            <span className="font-bold">COHORT #{Math.floor((Date.now() - new Date("2024-01-01").getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1}</span>
+                            <span className="text-white/80">•</span>
+                            <span className="text-sm">Your access expires in <CohortCountdown /></span>
+                        </div>
+                        <div className="text-sm text-white/90">
+                            Complete all {totalLessons} lessons to claim your certificate 🎓
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
                 {/* Welcome + Progress Section */}
