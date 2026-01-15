@@ -37,6 +37,7 @@ import {
   ChevronDown,
   Gift,
 } from "lucide-react";
+import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { useState } from "react";
 
 // GROUPED NAV: 7 sections with expandable sub-items
@@ -523,6 +524,11 @@ export function DashboardNav() {
           )}
         </nav>
 
+        {/* Install App Button */}
+        <div className="px-3 pb-2">
+          <InstallAppButton variant="sidebar" />
+        </div>
+
         {/* User section */}
         <div className="flex-shrink-0 p-4 border-t border-burgundy-600/30 bg-burgundy-900/50">
           <div className="flex items-center gap-3 mb-3">
@@ -765,6 +771,11 @@ export function DashboardNav() {
                 })}
               </>
             )}
+
+            {/* Install App Button - Mobile */}
+            <div className="pt-4 mt-4 border-t border-burgundy-700 px-4">
+              <InstallAppButton variant="sidebar" />
+            </div>
 
             <div className="pt-4 mt-4 border-t border-burgundy-700">
               <div className="flex items-center gap-3 px-4 py-3">
