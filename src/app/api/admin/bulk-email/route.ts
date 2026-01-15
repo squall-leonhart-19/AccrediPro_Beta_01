@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { subject, content, recipientType } = await request.json();
+    const { subject, content, recipientType, singleUserId } = await request.json();
 
     if (!subject || !content || !recipientType) {
       return NextResponse.json(
@@ -25,38 +25,54 @@ export async function POST(request: NextRequest) {
     }
 
     // Get recipients based on type
-    let recipients: { id: string; email: string; firstName: string | null }[] = [];
+    let recipients: { id: string; email: string; firstName: string | null; lastName: string | null }[] = [];
 
     // Base filter: exclude fake profiles and users without email
     const baseFilter = { isFakeProfile: false, email: { not: null } };
 
-    if (recipientType === "all") {
+    if (recipientType === "single" && singleUserId) {
+      // Single student test
+      const student = await prisma.user.findUnique({
+        where: { id: singleUserId },
+        select: { id: true, email: true, firstName: true, lastName: true },
+      });
+      if (student && student.email) {
+        recipients = [student as { id: string; email: string; firstName: string | null; lastName: string | null }];
+      }
+    } else if (recipientType === "all") {
       recipients = await prisma.user.findMany({
         where: { ...baseFilter, isActive: true, role: "STUDENT" },
-        select: { id: true, email: true, firstName: true },
-      });
+        select: { id: true, email: true, firstName: true, lastName: true },
+      }) as { id: string; email: string; firstName: string | null; lastName: string | null }[];
     } else if (recipientType === "enrolled") {
       const enrollments = await prisma.enrollment.findMany({
         where: { status: "ACTIVE", user: baseFilter },
         select: {
           user: {
-            select: { id: true, email: true, firstName: true },
+            select: { id: true, email: true, firstName: true, lastName: true },
           },
         },
         distinct: ["userId"],
       });
-      recipients = enrollments.map((e) => e.user);
+      recipients = enrollments.map((e) => e.user) as { id: string; email: string; firstName: string | null; lastName: string | null }[];
     } else if (recipientType === "completed") {
       const completions = await prisma.enrollment.findMany({
         where: { status: "COMPLETED", user: baseFilter },
         select: {
           user: {
-            select: { id: true, email: true, firstName: true },
+            select: { id: true, email: true, firstName: true, lastName: true },
           },
         },
         distinct: ["userId"],
       });
-      recipients = completions.map((e) => e.user);
+      recipients = completions.map((e) => e.user) as { id: string; email: string; firstName: string | null; lastName: string | null }[];
+    }
+
+    if (recipients.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "No recipients found" },
+        { status: 400 }
+      );
     }
 
     // Create bulk email record
@@ -75,11 +91,14 @@ export async function POST(request: NextRequest) {
 
     for (const recipient of recipients) {
       try {
-        // Replace placeholders in content
-        const personalizedContent = content.replace(
-          /{firstName}/g,
-          recipient.firstName || "there"
-        );
+        // Replace placeholders in content - handle various bracket styles
+        const personalizedContent = content
+          .replace(/\{firstName\}/gi, recipient.firstName || "there")
+          .replace(/\{lastName\}/gi, recipient.lastName || "")
+          .replace(/\{email\}/gi, recipient.email || "")
+          .replace(/\{\{firstName\}\}/gi, recipient.firstName || "there")
+          .replace(/\{\{lastName\}\}/gi, recipient.lastName || "")
+          .replace(/\{\{email\}\}/gi, recipient.email || "");
 
         const html = `
           <!DOCTYPE html>
