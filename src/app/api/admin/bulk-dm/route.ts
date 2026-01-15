@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sendPushToUser } from "@/lib/push-notifications";
 
 export async function POST(request: Request) {
   try {
@@ -88,11 +89,17 @@ export async function POST(request: Request) {
 
     for (const recipient of recipients) {
       try {
-        // Personalize message
+        // Personalize message - handle various bracket styles
         let personalizedContent = content
-          .replace(/{firstName}/g, recipient.firstName || "there")
-          .replace(/{lastName}/g, recipient.lastName || "")
-          .replace(/{email}/g, recipient.email || "");
+          // Standard brackets
+          .replace(/\{firstName\}/gi, recipient.firstName || "there")
+          .replace(/\{lastName\}/gi, recipient.lastName || "")
+          .replace(/\{email\}/gi, recipient.email || "")
+          // Double brackets (if used)
+          .replace(/\{\{firstName\}\}/gi, recipient.firstName || "there")
+          .replace(/\{\{lastName\}\}/gi, recipient.lastName || "")
+          .replace(/\{\{email\}\}/gi, recipient.email || "");
+
 
         // Create message directly (using senderId as sender, recipient as receiver)
         await prisma.message.create({
@@ -101,6 +108,18 @@ export async function POST(request: Request) {
             receiverId: recipient.id,
             content: personalizedContent.trim(),
           },
+        });
+
+        // Send push notification (non-blocking)
+        sendPushToUser(recipient.id, {
+          title: "New Message from Coach",
+          body: personalizedContent.length > 80
+            ? personalizedContent.substring(0, 80) + "..."
+            : personalizedContent,
+          tag: "new-message",
+          data: { url: "/messages", type: "message" },
+        }, "messages").catch((err) => {
+          console.error(`Push notification failed for ${recipient.id}:`, err);
         });
 
         sentCount++;
