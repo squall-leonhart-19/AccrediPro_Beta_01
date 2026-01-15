@@ -248,10 +248,10 @@ export async function POST(request: NextRequest) {
             `lead:${course}-mini-diploma`, // Specific to mini diploma (not purchases)
             "source:mini-diploma",
             `source:${course}`,
-            // Qualification Data
-            `life_stage:${lifeStage}`,
-            `motivation:${motivation}`,
-            `investment:${investment}`
+            // Qualification Data (Questions: income_goal, time_commitment, motivation)
+            `income_goal:${investment}`,
+            `time_commitment:${lifeStage}`,
+            `motivation:${motivation}`
         ];
         for (const tag of userTags) {
             await prisma.userTag.create({

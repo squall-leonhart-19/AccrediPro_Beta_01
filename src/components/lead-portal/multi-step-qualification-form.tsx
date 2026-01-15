@@ -245,9 +245,9 @@ export function MultiStepQualificationForm({
                             </Label>
                             <div className="grid grid-cols-1 gap-2">
                                 {[
-                                    { id: "side-income", label: "Just a side income ($500-1K/mo)", emoji: "💰" },
-                                    { id: "replace-job", label: "Replace my job ($3-5K/mo)", emoji: "🎯" },
-                                    { id: "build-business", label: "Build a real business ($5K+/mo)", emoji: "🚀" }
+                                    { id: "side-income-500-1k", label: "Just a side income ($500-1K/mo)", emoji: "💰" },
+                                    { id: "replace-job-3-5k", label: "Replace my job ($3-5K/mo)", emoji: "🎯" },
+                                    { id: "build-business-5k-plus", label: "Build a real business ($5K+/mo)", emoji: "🚀" }
                                 ].map((option) => (
                                     <button
                                         key={option.id}
@@ -278,9 +278,9 @@ export function MultiStepQualificationForm({
                             </Label>
                             <div className="grid grid-cols-1 gap-2">
                                 {[
-                                    { id: "few-hours", label: "A few hours (fitting around life)", emoji: "⏰" },
-                                    { id: "part-time", label: "Part-time (10-15 hours/week)", emoji: "📅" },
-                                    { id: "all-in", label: "Ready to go all-in", emoji: "💪" }
+                                    { id: "few-hours-flexible", label: "A few hours (fitting around life)", emoji: "⏰" },
+                                    { id: "part-time-10-15h", label: "Part-time (10-15 hours/week)", emoji: "📅" },
+                                    { id: "all-in-full-commitment", label: "Ready to go all-in", emoji: "💪" }
                                 ].map((option) => (
                                     <button
                                         key={option.id}
@@ -311,10 +311,10 @@ export function MultiStepQualificationForm({
                             </Label>
                             <div className="grid grid-cols-1 gap-2">
                                 {[
-                                    { id: "more-time-family", label: "I want more time with my kids/family", emoji: "👨‍👩‍👧‍👦" },
-                                    { id: "burned-out", label: "I'm burned out and need something new", emoji: "😮‍💨" },
-                                    { id: "meaningful-work", label: "I want work that actually matters", emoji: "✨" },
-                                    { id: "bet-on-myself", label: "I'm finally ready to bet on myself", emoji: "🦋" }
+                                    { id: "time-with-family", label: "I want more time with my kids/family", emoji: "👨‍👩‍👧‍👦" },
+                                    { id: "burned-out-need-change", label: "I'm burned out and need something new", emoji: "😮‍💨" },
+                                    { id: "meaningful-work-matters", label: "I want work that actually matters", emoji: "✨" },
+                                    { id: "ready-to-bet-on-myself", label: "I'm finally ready to bet on myself", emoji: "🦋" }
                                 ].map((option) => (
                                     <button
                                         key={option.id}
