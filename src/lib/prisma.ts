@@ -8,9 +8,7 @@ const globalForPrisma = globalThis as unknown as {
 
 // Prisma 7 requires driver adapters
 const prismaClientSingleton = () => {
-  // Limit connections to prevent pool exhaustion in serverless
-  const connectionString = process.env.DATABASE_URL + "&connection_limit=5";
-  const adapter = new PrismaPg({ connectionString });
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
   return new PrismaClient({ adapter });
 };
 
