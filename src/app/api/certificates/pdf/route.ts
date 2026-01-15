@@ -1,16 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const PDFBOLT_API_KEY = "d83d7165-f7ab-48ec-9828-98fdd4ff4f42";
+const PDFBOLT_API_KEY = process.env.PDFBOLT_API_KEY || "";
 const PDFBOLT_API_URL = "https://api.pdfbolt.com/v1/direct";
 
 export async function POST(request: NextRequest) {
   try {
+    // Security: Require authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Unauthorized - Please log in to generate certificates" },
+        { status: 401 }
+      );
+    }
+
     const { studentName, moduleTitle, courseName, completedDate, certificateId, type = "module", diplomaTitle } = await request.json();
 
     if (!studentName || !certificateId) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
+      );
+    }
+
+    if (!PDFBOLT_API_KEY) {
+      console.error("PDFBOLT_API_KEY not configured");
+      return NextResponse.json(
+        { error: "PDF service not configured" },
+        { status: 500 }
       );
     }
 

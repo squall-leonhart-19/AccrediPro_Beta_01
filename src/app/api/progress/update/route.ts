@@ -24,18 +24,23 @@ export async function POST(request: NextRequest) {
       incrementVisit  // New: whether to increment visit count
     } = await request.json();
 
-    // Get existing progress to calculate increments
-    const existingProgress = await prisma.lessonProgress.findUnique({
-      where: {
-        userId_lessonId: {
-          userId: session.user.id,
-          lessonId,
+    // PERFORMANCE: Run independent queries in parallel
+    const [existingProgress, userStreak] = await Promise.all([
+      prisma.lessonProgress.findUnique({
+        where: {
+          userId_lessonId: {
+            userId: session.user.id,
+            lessonId,
+          },
         },
-      },
-    });
+      }),
+      prisma.userStreak.findUnique({
+        where: { userId: session.user.id },
+      }),
+    ]);
 
     // Update or create progress with analytics
-    await prisma.lessonProgress.upsert({
+    const progressPromise = prisma.lessonProgress.upsert({
       where: {
         userId_lessonId: {
           userId: session.user.id,
@@ -73,7 +78,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Update enrollment last accessed
-    await prisma.enrollment.update({
+    const enrollmentPromise = prisma.enrollment.update({
       where: {
         userId_courseId: {
           userId: session.user.id,
@@ -85,13 +90,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Update user streak (if they haven't logged activity today)
+    // Calculate streak update
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const userStreak = await prisma.userStreak.findUnique({
-      where: { userId: session.user.id },
-    });
+    let streakPromise: Promise<unknown>;
 
     if (userStreak) {
       const lastActive = new Date(userStreak.lastActiveAt);
@@ -103,7 +106,7 @@ export async function POST(request: NextRequest) {
 
       if (diffDays === 1) {
         // Consecutive day - increment streak
-        await prisma.userStreak.update({
+        streakPromise = prisma.userStreak.update({
           where: { userId: session.user.id },
           data: {
             currentStreak: userStreak.currentStreak + 1,
@@ -116,23 +119,23 @@ export async function POST(request: NextRequest) {
         });
       } else if (diffDays > 1) {
         // Streak broken - reset to 1
-        await prisma.userStreak.update({
+        streakPromise = prisma.userStreak.update({
           where: { userId: session.user.id },
           data: {
             currentStreak: 1,
             lastActiveAt: new Date(),
           },
         });
-      } else if (diffDays === 0) {
+      } else {
         // Same day - just update timestamp
-        await prisma.userStreak.update({
+        streakPromise = prisma.userStreak.update({
           where: { userId: session.user.id },
           data: { lastActiveAt: new Date() },
         });
       }
     } else {
       // Create new streak record using upsert to avoid race condition
-      await prisma.userStreak.upsert({
+      streakPromise = prisma.userStreak.upsert({
         where: { userId: session.user.id },
         update: {
           lastActiveAt: new Date(),
@@ -145,6 +148,9 @@ export async function POST(request: NextRequest) {
         },
       });
     }
+
+    // PERFORMANCE: Run all updates in parallel
+    await Promise.all([progressPromise, enrollmentPromise, streakPromise]);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -21,7 +21,7 @@ const courseSchema = z.object({
     duration: z.number().optional().nullable(),
 });
 
-// GET - List all courses
+// GET - List all courses with pagination
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
@@ -29,27 +29,59 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const courses = await prisma.course.findMany({
-            include: {
-                category: true,
-                _count: {
-                    select: {
-                        enrollments: true,
-                        modules: true,
-                        certificates: true,
-                    },
-                },
-                modules: {
-                    include: {
-                        _count: { select: { lessons: true } },
-                    },
-                    orderBy: { order: "asc" },
-                },
-            },
-            orderBy: { createdAt: "desc" },
-        });
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "20");
+        const search = searchParams.get("search") || "";
+        const skip = (page - 1) * limit;
 
-        return NextResponse.json({ courses });
+        // Build where clause for search
+        const where = search
+            ? {
+                OR: [
+                    { title: { contains: search, mode: "insensitive" as const } },
+                    { slug: { contains: search, mode: "insensitive" as const } },
+                ],
+            }
+            : {};
+
+        // PERFORMANCE: Run count and fetch in parallel
+        const [total, courses] = await Promise.all([
+            prisma.course.count({ where }),
+            prisma.course.findMany({
+                where,
+                include: {
+                    category: true,
+                    _count: {
+                        select: {
+                            enrollments: true,
+                            modules: true,
+                            certificates: true,
+                        },
+                    },
+                    modules: {
+                        include: {
+                            _count: { select: { lessons: true } },
+                        },
+                        orderBy: { order: "asc" },
+                    },
+                },
+                orderBy: { createdAt: "desc" },
+                skip,
+                take: limit,
+            }),
+        ]);
+
+        return NextResponse.json({
+            courses,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+                hasMore: skip + courses.length < total,
+            },
+        });
     } catch (error) {
         console.error("Get courses error:", error);
         return NextResponse.json({ error: "Failed to fetch courses" }, { status: 500 });

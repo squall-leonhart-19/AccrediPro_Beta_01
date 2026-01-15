@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+// Cache help center articles for 10 minutes (content rarely changes)
+export const revalidate = 600;
+
 // GET - Public help center search/browse
 export async function GET(request: NextRequest) {
   try {
@@ -53,13 +56,21 @@ export async function GET(request: NextRequest) {
       _count: { category: true },
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       articles,
       categories: categories.map(c => ({
         name: c.category,
         count: c._count.category,
       })),
     });
+
+    // Add edge cache headers for public content
+    response.headers.set(
+      "Cache-Control",
+      "public, s-maxage=600, stale-while-revalidate=1200"
+    );
+
+    return response;
   } catch (error) {
     console.error("Failed to fetch help center:", error);
     return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });

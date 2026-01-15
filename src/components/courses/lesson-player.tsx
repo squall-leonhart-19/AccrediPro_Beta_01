@@ -103,6 +103,16 @@ export function LessonPlayer({
         setIsCompleted(progress.isCompleted);
     }, [progress.isCompleted]);
 
+    // Prefetch next lesson for instant navigation
+    useEffect(() => {
+        if (navigation.nextLesson) {
+            router.prefetch(`/learning/${course.slug}/${navigation.nextLesson.id}`);
+        }
+        if (navigation.prevLesson) {
+            router.prefetch(`/learning/${course.slug}/${navigation.prevLesson.id}`);
+        }
+    }, [navigation, course.slug, router]);
+
     // Load saved note
     useEffect(() => {
         const savedNote = localStorage.getItem(`lesson-note-${lesson.id}`);

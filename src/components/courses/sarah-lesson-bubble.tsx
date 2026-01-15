@@ -91,11 +91,11 @@ export function SarahLessonBubble({
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+                    className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-[#722f37] to-[#8b3a42] text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
                 >
                     <Avatar className="w-8 h-8 border-2 border-white">
-                        <AvatarImage src="/coaches/sarah-avatar.png" />
-                        <AvatarFallback className="bg-gold-500 text-white text-xs font-bold">SM</AvatarFallback>
+                        <AvatarImage src="/coaches/sarah-mitchell.webp" />
+                        <AvatarFallback className="bg-[#B8860B] text-white text-xs font-bold">SM</AvatarFallback>
                     </Avatar>
                     <span className="font-medium text-sm">Ask Sarah</span>
                     <MessageCircle className="w-4 h-4 group-hover:animate-pulse" />
@@ -104,17 +104,17 @@ export function SarahLessonBubble({
 
             {/* Chat Window */}
             {isOpen && (
-                <Card className="fixed bottom-6 right-6 z-50 w-[380px] max-h-[500px] shadow-2xl border-burgundy-200 overflow-hidden flex flex-col">
+                <Card className="fixed bottom-6 right-6 z-50 w-[380px] max-h-[500px] shadow-2xl border-[#722f37]/20 overflow-hidden flex flex-col">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white p-3 flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-[#722f37] to-[#8b3a42] text-white p-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Avatar className="w-8 h-8 border-2 border-white/30">
-                                <AvatarImage src="/coaches/sarah-avatar.png" />
-                                <AvatarFallback className="bg-gold-500 text-white text-xs font-bold">SM</AvatarFallback>
+                                <AvatarImage src="/coaches/sarah-mitchell.webp" />
+                                <AvatarFallback className="bg-[#B8860B] text-white text-xs font-bold">SM</AvatarFallback>
                             </Avatar>
                             <div>
                                 <p className="font-semibold text-sm">Coach Sarah</p>
-                                <p className="text-xs text-burgundy-200">Here to help 💚</p>
+                                <p className="text-xs text-white/80">Here to help 💚</p>
                             </div>
                         </div>
                         <button
@@ -127,7 +127,7 @@ export function SarahLessonBubble({
 
                     {/* Lesson Context */}
                     {lessonTitle && (
-                        <div className="px-3 py-2 bg-burgundy-50 text-xs text-burgundy-700 border-b">
+                        <div className="px-3 py-2 bg-[#722f37]/5 text-xs text-[#722f37] border-b border-[#722f37]/10">
                             📚 Helping with: <strong>{lessonTitle}</strong>
                         </div>
                     )}
@@ -141,8 +141,8 @@ export function SarahLessonBubble({
                             >
                                 <div
                                     className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${msg.role === "user"
-                                            ? "bg-burgundy-600 text-white rounded-br-md"
-                                            : "bg-gray-100 text-gray-800 rounded-bl-md"
+                                        ? "bg-[#722f37] text-white rounded-br-md"
+                                        : "bg-gray-100 text-gray-800 rounded-bl-md"
                                         }`}
                                 >
                                     {msg.content}
@@ -152,7 +152,7 @@ export function SarahLessonBubble({
                         {loading && (
                             <div className="flex justify-start">
                                 <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-2">
-                                    <Loader2 className="w-4 h-4 animate-spin text-burgundy-600" />
+                                    <Loader2 className="w-4 h-4 animate-spin text-[#722f37]" />
                                 </div>
                             </div>
                         )}
@@ -169,14 +169,14 @@ export function SarahLessonBubble({
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder="Ask me anything..."
-                                className="flex-1 text-sm"
+                                className="flex-1 text-sm focus-visible:ring-[#722f37]"
                                 disabled={loading}
                             />
                             <Button
                                 type="submit"
                                 size="sm"
                                 disabled={loading || !input.trim()}
-                                className="bg-burgundy-600 hover:bg-burgundy-700"
+                                className="bg-[#722f37] hover:bg-[#8b3a42]"
                             >
                                 <Send className="w-4 h-4" />
                             </Button>

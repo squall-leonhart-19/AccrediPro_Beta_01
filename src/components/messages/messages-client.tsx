@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import {
   MessageSquare,
   Send,
@@ -377,6 +378,21 @@ export function MessagesClient({
       const response = await fetch(`/api/messages?userId=${userId}&limit=50`);
       const data = await response.json();
       if (data.success && isMountedRef.current) {
+        // Check for new incoming messages (on refresh only)
+        if (isRefresh && data.data?.length > 0) {
+          const latestMessage = data.data[data.data.length - 1];
+          const currentLatestId = messages[messages.length - 1]?.id;
+
+          // If there's a new message from the other user, show toast
+          if (latestMessage.id !== currentLatestId && latestMessage.senderId === userId) {
+            const senderName = selectedUser?.firstName || "Someone";
+            toast.info(`New message from ${senderName}`, {
+              description: latestMessage.content?.slice(0, 50) + (latestMessage.content?.length > 50 ? "..." : ""),
+              duration: 4000,
+            });
+          }
+        }
+
         setMessages(data.data);
         setHasMoreMessages(data.hasMore || false);
         setNextCursor(data.nextCursor || null);
@@ -387,7 +403,7 @@ export function MessagesClient({
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     }
-  }, []);
+  }, [messages, selectedUser]);
 
   // Load more older messages
   const loadMoreMessages = useCallback(async () => {
@@ -550,9 +566,34 @@ export function MessagesClient({
     }
   };
 
-  // Send message
+  // Send message with optimistic updates for instant feel
   const sendMessage = async (content: string, attachment?: { url: string; type: string; name: string; duration?: number; transcription?: string }) => {
     if (!selectedUser || (!content.trim() && !attachment)) return;
+
+    // Create optimistic message for instant UI feedback
+    const tempId = `temp-${Date.now()}`;
+    const optimisticMessage: Message = {
+      id: tempId,
+      content: content || "",
+      senderId: currentUserId,
+      receiverId: selectedUser.id,
+      createdAt: new Date().toISOString(),
+      isRead: false,
+      attachmentUrl: attachment?.url,
+      attachmentType: attachment?.type,
+      attachmentName: attachment?.name,
+      voiceDuration: attachment?.duration,
+      transcription: attachment?.transcription,
+    };
+
+    // Immediately add to UI (optimistic update)
+    setMessages((prev) => [...prev, optimisticMessage]);
+    setNewMessage("");
+    setReplyingTo(null);
+    setShowTemplates(false);
+    setShowQuickActions(false);
+    setAiSuggestion(null);
+    scrollToBottom(true);
 
     setLoading(true);
 
@@ -575,12 +616,8 @@ export function MessagesClient({
       const data = await response.json();
 
       if (data.success) {
-        setMessages((prev) => [...prev, data.data]);
-        setNewMessage("");
-        setReplyingTo(null);
-        setShowTemplates(false);
-        setShowQuickActions(false);
-        setAiSuggestion(null);
+        // Replace optimistic message with real one
+        setMessages((prev) => prev.map((m) => (m.id === tempId ? data.data : m)));
 
         setConversations((prev) => {
           const existingIndex = prev.findIndex((c) => c.user?.id === selectedUser.id);
@@ -602,9 +639,16 @@ export function MessagesClient({
 
           return [updatedConversation, ...prev];
         });
+      } else {
+        // Remove optimistic message on failure
+        setMessages((prev) => prev.filter((m) => m.id !== tempId));
+        toast.error("Failed to send message");
       }
     } catch (error) {
       console.error("Failed to send message:", error);
+      // Remove optimistic message on error
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
+      toast.error("Failed to send message");
     } finally {
       setLoading(false);
     }
@@ -1214,6 +1258,66 @@ export function MessagesClient({
       return fullName.includes(query) || conv.user?.email.toLowerCase().includes(query);
     });
   }, [conversations, searchQuery]);
+
+  // Keyboard shortcuts for power users
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle shortcuts when not typing in an input
+      const target = e.target as HTMLElement;
+      const isInputFocused = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+
+      // Escape to close panels
+      if (e.key === "Escape") {
+        if (showMentors) setShowMentors(false);
+        if (showNewDmModal) setShowNewDmModal(false);
+        if (showEmojiPicker) setShowEmojiPicker(false);
+        if (showScheduleModal) setShowScheduleModal(false);
+        return;
+      }
+
+      // Skip other shortcuts if typing
+      if (isInputFocused) return;
+
+      // Cmd/Ctrl + K to focus search
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
+        if (searchInput) searchInput.focus();
+        return;
+      }
+
+      // Cmd/Ctrl + N for new message (coaches only)
+      if ((e.metaKey || e.ctrlKey) && e.key === "n" && isCoach) {
+        e.preventDefault();
+        setShowNewDmModal(true);
+        return;
+      }
+
+      // Arrow up/down to navigate conversations
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        if (filteredConversations.length === 0) return;
+
+        const currentIndex = selectedUser
+          ? filteredConversations.findIndex((c) => c.user?.id === selectedUser.id)
+          : -1;
+
+        let newIndex: number;
+        if (e.key === "ArrowUp") {
+          newIndex = currentIndex <= 0 ? filteredConversations.length - 1 : currentIndex - 1;
+        } else {
+          newIndex = currentIndex >= filteredConversations.length - 1 ? 0 : currentIndex + 1;
+        }
+
+        const newConv = filteredConversations[newIndex];
+        if (newConv?.user) {
+          setSelectedUser(newConv.user);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showMentors, showNewDmModal, showEmojiPicker, showScheduleModal, filteredConversations, selectedUser, isCoach]);
 
   const roleConfig: Record<string, { color: string; bg: string; icon: React.ReactNode; label: string }> = {
     ADMIN: { color: "text-red-600", bg: "bg-red-50 border-red-200", icon: <Star className="w-3 h-3" />, label: "Admin" },

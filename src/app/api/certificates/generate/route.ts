@@ -2,9 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { createCanvas, loadImage } from "canvas";
 import { join } from "path";
 import jsPDF from "jspdf";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
     try {
+        // Security: Require authentication
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json(
+                { error: "Unauthorized - Please log in to generate certificates" },
+                { status: 401 }
+            );
+        }
+
         const { studentName, certificateId, date, courseTitle, format = "pdf" } = await request.json();
 
         if (!studentName || !certificateId || !date) {
@@ -111,21 +122,4 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function GET(request: NextRequest) {
-    // Test endpoint
-    const url = new URL(request.url);
-    const studentName = url.searchParams.get("name") || "Test Student";
-    const certificateId = url.searchParams.get("id") || "AP-FMCC-2025-TEST123";
-    const date = url.searchParams.get("date") || new Date().toLocaleDateString("en-GB");
-    const courseTitle = url.searchParams.get("course") || "Functional Medicine Coach Certification";
-    const format = url.searchParams.get("format") || "pdf";
-
-    const response = await POST(
-        new NextRequest(request.url, {
-            method: "POST",
-            body: JSON.stringify({ studentName, certificateId, date, courseTitle, format }),
-        })
-    );
-
-    return response;
-}
+// GET endpoint removed for security - use POST with authentication instead

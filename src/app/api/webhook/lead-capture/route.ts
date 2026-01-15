@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth";
 import { sendLeadWelcomeEmail } from "@/lib/email";
 import { assignCoachByTag } from "@/lib/niche-coach";
+import { verifyEmail } from "@/lib/neverbounce";
 import { z } from "zod";
 
 // Valid specializations that map to tags
@@ -57,9 +58,23 @@ export async function POST(request: NextRequest) {
         const validatedData = leadCaptureSchema.parse(data);
         const { email, firstName, lastName, specialization, redirectUrl } = validatedData;
 
+        // Verify email with NeverBounce (reject invalid/disposable)
+        const emailVerification = await verifyEmail(email.toLowerCase());
+        if (!emailVerification.isValid) {
+            console.log(`[LEAD-CAPTURE] Rejected invalid email: ${email} (${emailVerification.result})`);
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: emailVerification.reason || "Please use a valid email address",
+                    suggestedEmail: emailVerification.suggestedEmail,
+                },
+                { status: 400 }
+            );
+        }
+
         // Check if user already exists
         let user = await prisma.user.findUnique({
-            where: { email },
+            where: { email: email.toLowerCase() },
         });
 
         let isNewUser = false;

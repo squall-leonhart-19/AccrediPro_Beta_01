@@ -59,6 +59,16 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        // Security: Check if user is a coach (same as GET)
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: { role: true },
+        });
+
+        if (!user || !["ADMIN", "INSTRUCTOR", "MENTOR"].includes(user.role)) {
+            return NextResponse.json({ error: "Not authorized - Coach access required" }, { status: 403 });
+        }
+
         const { name, email, phone, notes, tags } = await req.json();
 
         if (!name) {

@@ -63,7 +63,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     }
 
     try {
-      const response = await fetch("/api/push/preferences");
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      const response = await fetch("/api/push/preferences", {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
       if (response.ok) {
         const data = await response.json();
         setIsSubscribed(data.subscribed);

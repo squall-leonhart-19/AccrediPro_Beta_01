@@ -17,6 +17,7 @@ import {
     ImageIcon,
     FileText,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Message {
     id: string;
@@ -111,7 +112,10 @@ export function FloatingCoachWidget({
                         setCoachId(mentor.id);
                     }
                 })
-                .catch(console.error);
+                .catch((error) => {
+                    console.error("Failed to fetch mentors:", error);
+                    toast.error("Could not connect to coach. Please try again.");
+                });
         }
     }, [isChatMode, coachId]);
 
@@ -125,9 +129,12 @@ export function FloatingCoachWidget({
             const data = await res.json();
             if (data.success && data.data) {
                 setMessages(data.data);
+            } else {
+                toast.error("Failed to load messages");
             }
         } catch (error) {
             console.error("Failed to fetch messages:", error);
+            toast.error("Could not load messages. Please check your connection.");
         } finally {
             setIsLoading(false);
         }
@@ -209,6 +216,7 @@ export function FloatingCoachWidget({
             console.error("Failed to send message:", error);
             // Remove temp message on error
             setMessages(prev => prev.filter(m => m.id !== tempMessage.id));
+            toast.error("Failed to send message. Please try again.");
         } finally {
             setIsSending(false);
         }
@@ -341,6 +349,7 @@ export function FloatingCoachWidget({
                                             onClick={() => setIsChatMode(false)}
                                             className="text-white/70 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
                                             title="Minimize chat"
+                                            aria-label="Minimize chat"
                                         >
                                             <Minimize2 className="w-4 h-4" />
                                         </button>
@@ -348,6 +357,7 @@ export function FloatingCoachWidget({
                                     <button
                                         onClick={() => { setIsExpanded(false); setIsChatMode(false); }}
                                         className="text-white/70 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
+                                        aria-label="Close coach widget"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -461,6 +471,8 @@ export function FloatingCoachWidget({
             {/* Floating Button */}
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
+                aria-label={isExpanded ? "Close coach chat" : "Open Coach Sarah chat"}
+                aria-expanded={isExpanded}
                 className={`
                     group relative flex items-center gap-2 shadow-lg transition-all duration-200 hover:scale-105
                     ${isExpanded

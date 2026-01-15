@@ -13,6 +13,7 @@ import { CoursesList } from "@/components/dashboard/courses-list";
 import { CommunityWins } from "@/components/dashboard/community-wins";
 import { PodLeaderboardPreview } from "@/components/dashboard/pod-leaderboard-preview";
 import { ReferralCard } from "@/components/dashboard/referral-card";
+import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
 import { generateZombieSuccessEvents } from "@/lib/success-events";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import { getSocialProofStats } from "@/lib/social-proof";
@@ -329,6 +330,9 @@ export default async function DashboardPage() {
 
         {/* ========== ANNOUNCEMENT BANNER ========== */}
         <AnnouncementBanner announcements={announcements} />
+
+        {/* ========== PWA INSTALL BANNER ========== */}
+        <DashboardPWABanner />
 
         {/* ========== SECTION 1: HERO WITH AVATAR ========== */}
         <HeroCard

@@ -32,13 +32,25 @@ interface MultiStepQualificationFormProps {
     isSubmitting: boolean;
     isVerifying?: boolean;
     error?: string;
+    /** Optional custom text for step 1 continue button */
+    step1ButtonText?: string;
+    /** Optional custom text for final submit button */
+    submitButtonText?: string;
+    /** Optional custom subtext under step 1 button */
+    step1SubText?: string;
+    /** If true, hide "FREE" badge and use paid messaging */
+    isPaid?: boolean;
 }
 
 export function MultiStepQualificationForm({
     onSubmit,
     isSubmitting,
     isVerifying = false,
-    error
+    error,
+    step1ButtonText = "Continue — It's Free",
+    submitButtonText = "Start My Free Diploma",
+    step1SubText = "No credit card required",
+    isPaid = false
 }: MultiStepQualificationFormProps) {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<QualificationData>({
@@ -91,7 +103,7 @@ export function MultiStepQualificationForm({
             >
                 <p className="text-sm font-bold text-[#4e1f24] flex items-center justify-center gap-2">
                     <Gift className="w-4 h-4" />
-                    <span>FREE Today Only • Normally $97</span>
+                    <span>{isPaid ? "Just $7 Today • Save 93%" : "FREE Today Only • Normally $97"}</span>
                 </p>
             </div>
 
@@ -199,14 +211,14 @@ export function MultiStepQualificationForm({
                             className="w-full h-14 text-lg font-bold text-white rounded-xl shadow-lg"
                             style={{ background: "linear-gradient(135deg, #722f37 0%, #9a4a54 50%, #722f37 100%)" }}
                         >
-                            Continue — It's Free
+                            {step1ButtonText}
                             <ArrowRight className="w-5 h-5 ml-2" />
                         </Button>
 
                         <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
                             <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> 256-bit SSL</span>
                             <span>•</span>
-                            <span>No credit card required</span>
+                            <span>{step1SubText}</span>
                         </div>
                     </div>
                 )}
@@ -350,7 +362,7 @@ export function MultiStepQualificationForm({
                                 </span>
                             ) : (
                                 <span className="flex items-center gap-2">
-                                    Start My Free Diploma
+                                    {submitButtonText}
                                     <ArrowRight className="w-5 h-5" />
                                 </span>
                             )}

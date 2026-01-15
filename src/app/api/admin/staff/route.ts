@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+// Cache staff list for 5 minutes (rarely changes)
+export const revalidate = 300;
+
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
@@ -26,7 +29,12 @@ export async function GET(request: NextRequest) {
             orderBy: { firstName: "asc" },
         });
 
-        return NextResponse.json({ staff });
+        const response = NextResponse.json({ staff });
+        response.headers.set(
+            "Cache-Control",
+            "private, s-maxage=300, stale-while-revalidate=600"
+        );
+        return response;
     } catch (error) {
         console.error("Failed to fetch staff:", error);
         return NextResponse.json({ error: "Failed to fetch staff" }, { status: 500 });
