@@ -8,7 +8,7 @@ import {
     MessageSquare, User, Clock, Zap, Send, ChevronDown,
     Mail, LifeBuoy, Sparkles, Tag as TagIcon, Plus, X,
     Inbox, CheckCheck, Archive, Circle, Calendar, BookOpen,
-    Loader2, Brain, LogOut
+    Loader2, Brain, LogOut, UserCircle, GraduationCap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -237,6 +237,9 @@ export default function SupportPortalPage() {
     const [isInternalNote, setIsInternalNote] = useState(false);
     const [expandedMessages, setExpandedMessages] = useState<Set<string>>(new Set());
     const [showAIPanel, setShowAIPanel] = useState(false);
+    const [showCustomerPanel, setShowCustomerPanel] = useState(false);
+    const [customerContext, setCustomerContext] = useState<any>(null);
+    const [loadingContext, setLoadingContext] = useState(false);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -308,6 +311,32 @@ export default function SupportPortalPage() {
             return next;
         });
     };
+
+    // Fetch customer context (tags + courses)
+    const fetchCustomerContext = async (userId: string) => {
+        if (customerContext?.userId === userId) return;
+        setLoadingContext(true);
+        try {
+            const res = await fetch(`/api/admin/users/${userId}`);
+            const data = await res.json();
+            setCustomerContext({
+                userId,
+                tags: data.user?.tags || [],
+                enrollments: data.user?.enrollments || [],
+                createdAt: data.user?.createdAt,
+            });
+        } catch {
+            toast.error("Failed to load customer context");
+        } finally {
+            setLoadingContext(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showCustomerPanel && selectedTicket?.user?.id) {
+            fetchCustomerContext(selectedTicket.user.id);
+        }
+    }, [showCustomerPanel, selectedTicket?.user?.id]);
 
     return (
         <div className="flex h-screen bg-slate-100 overflow-hidden">
@@ -453,9 +482,14 @@ export default function SupportPortalPage() {
                                             </div>
 
                                             <p className="text-sm font-medium text-slate-800 line-clamp-1">{ticket.subject}</p>
-                                            <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                                                {ticket.messages?.[ticket.messages.length - 1]?.content || "No messages"}
-                                            </p>
+                                            <div className="flex items-center justify-between mt-1">
+                                                <p className="text-xs text-slate-500 line-clamp-1 flex-1">
+                                                    {ticket.messages?.[ticket.messages.length - 1]?.content || "No messages"}
+                                                </p>
+                                                <span className="text-[10px] text-slate-400 ml-2 whitespace-nowrap">
+                                                    {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: false })}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -537,6 +571,16 @@ export default function SupportPortalPage() {
                                     <Brain className="w-4 h-4 mr-1" />
                                     AI
                                 </Button>
+
+                                <Button
+                                    variant={showCustomerPanel ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => setShowCustomerPanel(!showCustomerPanel)}
+                                    className={showCustomerPanel ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+                                >
+                                    <UserCircle className="w-4 h-4 mr-1" />
+                                    Customer
+                                </Button>
                             </div>
                         </div>
 
@@ -582,6 +626,78 @@ export default function SupportPortalPage() {
 
                             {showAIPanel && (
                                 <AITriagePanel ticketId={selectedTicket.id} onClose={() => setShowAIPanel(false)} />
+                            )}
+
+                            {showCustomerPanel && (
+                                <div className="w-80 border-l bg-gradient-to-br from-emerald-50 to-teal-50 flex-shrink-0 p-4">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                            <UserCircle className="w-5 h-5 text-emerald-600" />
+                                            Customer Info
+                                        </h3>
+                                        <Button variant="ghost" size="icon" onClick={() => setShowCustomerPanel(false)} className="h-7 w-7">
+                                            <X className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+
+                                    {loadingContext ? (
+                                        <div className="flex items-center justify-center py-8">
+                                            <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+                                        </div>
+                                    ) : customerContext ? (
+                                        <div className="space-y-4">
+                                            {/* Tags */}
+                                            <div>
+                                                <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
+                                                    <TagIcon className="w-3 h-3" />
+                                                    Marketing Tags
+                                                </div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {customerContext.tags?.length > 0 ? (
+                                                        customerContext.tags.map((tag: any) => (
+                                                            <span key={tag.id} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                                                {tag.name}
+                                                            </span>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400">No tags</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Enrolled Courses */}
+                                            <div>
+                                                <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
+                                                    <GraduationCap className="w-3 h-3" />
+                                                    Enrolled Courses
+                                                </div>
+                                                <div className="space-y-1">
+                                                    {customerContext.enrollments?.length > 0 ? (
+                                                        customerContext.enrollments.map((e: any) => (
+                                                            <div key={e.id} className="text-xs p-2 rounded bg-white border border-emerald-200">
+                                                                <div className="font-medium text-slate-800">{e.course?.title || 'Unknown Course'}</div>
+                                                                <div className="text-slate-500">{e.progress || 0}% complete</div>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400">No enrollments</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Member Since */}
+                                            {customerContext.createdAt && (
+                                                <div className="text-xs text-slate-500">
+                                                    Member since {format(new Date(customerContext.createdAt), "MMM d, yyyy")}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center text-slate-400 py-8">
+                                            Click to load customer info
+                                        </div>
+                                    )}
+                                </div>
                             )}
                         </div>
 
