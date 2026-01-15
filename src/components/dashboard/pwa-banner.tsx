@@ -31,6 +31,7 @@ export function DashboardPWABanner() {
 
     const [isSubscribing, setIsSubscribing] = useState(false);
     const [justSubscribed, setJustSubscribed] = useState(false);
+    const [subscriptionFailed, setSubscriptionFailed] = useState(false);
 
     // Banner visibility state
     const [isDismissed, setIsDismissed] = useState(false);
@@ -103,6 +104,7 @@ export function DashboardPWABanner() {
     // Handle notifications click
     const handleEnableNotifications = async () => {
         setIsSubscribing(true);
+        setSubscriptionFailed(false); // Reset failed state on retry
 
         // Create a timeout promise to prevent infinite hang
         const timeoutPromise = new Promise<boolean>((_, reject) =>
@@ -118,10 +120,13 @@ export function DashboardPWABanner() {
 
             if (success) {
                 setJustSubscribed(true);
+            } else {
+                // Subscribe returned false (failed but didn't throw)
+                setSubscriptionFailed(true);
             }
         } catch (error) {
             console.error("Notification error:", error);
-            // Even on error/timeout, stop the loading state
+            setSubscriptionFailed(true);
         } finally {
             setIsSubscribing(false);
         }
@@ -252,12 +257,20 @@ export function DashboardPWABanner() {
                             <Button
                                 onClick={handleEnableNotifications}
                                 disabled={isSubscribing}
-                                className="flex-1 bg-[#d4af37] hover:bg-[#c9a227] text-white font-semibold h-11 shadow-lg"
+                                className={`flex-1 font-semibold h-11 shadow-lg ${subscriptionFailed
+                                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                                        : "bg-[#d4af37] hover:bg-[#c9a227] text-white"
+                                    }`}
                             >
                                 {isSubscribing ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                                         Enabling...
+                                    </>
+                                ) : subscriptionFailed ? (
+                                    <>
+                                        <Bell className="w-4 h-4 mr-2" />
+                                        Try Again
                                     </>
                                 ) : (
                                     <>
