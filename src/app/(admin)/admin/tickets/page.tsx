@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useTickets, Ticket, useUpdateTicket, useReplyTicket, useTicketDetails } from "@/hooks/use-tickets";
 import { formatDistanceToNow, format } from "date-fns";
 import {
   Search, RefreshCcw, CheckCircle2, XCircle, AlertTriangle,
   MessageSquare, User, Clock, Zap, Send, ChevronDown, ChevronRight,
-  MoreHorizontal, Mail, LifeBuoy, Sparkles, Trash2, UserPlus,
+  MoreHorizontal, Mail, LifeBuoy, Sparkles, Trash2, UserPlus, Maximize2,
   DollarSign, CreditCard, Copy, ExternalLink, Tag as TagIcon, Plus, X,
   Inbox, CheckCheck, Archive, Filter, SlidersHorizontal, Star,
   AlertCircle, Circle, Phone, Globe, Calendar, Hash, BookOpen, GraduationCap,
@@ -295,6 +296,7 @@ function TagAutocomplete({
 export default function TicketsPage() {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
@@ -727,6 +729,17 @@ export default function TicketsPage() {
                     })()}
                   </div>
                 </div>
+
+                {/* Open Full View Button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 flex-shrink-0"
+                  onClick={() => router.push(`/admin/tickets/${selectedTicket.id}`)}
+                  title="Open full view"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </Button>
 
                 {/* Customer Panel Toggle */}
                 <Button
