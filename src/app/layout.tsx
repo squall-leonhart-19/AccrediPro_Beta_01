@@ -15,7 +15,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://accredipro.academy"),
+  metadataBase: new URL("https://learn.accredipro.academy"),
   title: {
     default: "AccrediPro Academy - Functional Medicine Certifications & Mini-Diplomas",
     template: "%s | AccrediPro Academy",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://accredipro.academy",
+    url: "https://learn.accredipro.academy",
     siteName: "AccrediPro Academy",
     title: "AccrediPro Academy - Functional Medicine Certifications",
     description: "14-module Functional Medicine certification. Earn a certificate for each module completed. 100% online, self-paced, CPD approved.",
@@ -73,7 +73,7 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
   name: "AccrediPro Academy",
-  url: "https://accredipro.academy",
+  url: "https://learn.accredipro.academy",
   logo: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png",
   description: "Professional certifications and mini-diplomas in Functional Medicine designed for career advancement.",
   sameAs: [],
@@ -93,7 +93,7 @@ const courseJsonLd = {
   provider: {
     "@type": "Organization",
     name: "AccrediPro Academy",
-    url: "https://accredipro.academy",
+    url: "https://learn.accredipro.academy",
   },
   educationalCredentialAwarded: "Functional Medicine Practitioner Certificate",
   numberOfCredits: "50+ CEU Hours",

@@ -140,7 +140,7 @@ export default function FunctionalMedicinePage() {
             data: {
               name: "Functional Medicine Certification (Practitioner Kit)",
               description: "Board Certified Functional Medicine Practitioner credential including physical welcome kit and lifetime access.",
-              url: "https://accredipro.academy/certifications/functional-medicine",
+              url: "https://learn.accredipro.academy/certifications/functional-medicine",
               price: "1997.00"
             }
           },

@@ -35,7 +35,76 @@ export default function FMCertificationPage() {
                     <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
                 `;
 
-                // 3. Advanced Meta Tracking (5s Delay + ATC) - Bot Filter
+                // 3. AEO "Glass House" Schema (Course + Product + FAQ)
+                const aeoSchemaScript = `
+                    <script type="application/ld+json">
+                    {
+                      "@context": "https://schema.org",
+                      "@graph": [
+                        {
+                          "@type": "Course",
+                          "name": "Functional Medicine Certification",
+                          "description": "The Functional Medicine Certification by AccrediPro is a 14-module, 50-CEU accredited program for health professionals. It covers root-cause analysis, advanced lab testing, and personalized nutrition protocols.",
+                          "provider": {
+                            "@type": "Organization",
+                            "name": "AccrediPro Standards Institute",
+                            "sameAs": "https://learn.accredipro.academy"
+                          },
+                          "hasCourseInstance": {
+                            "@type": "CourseInstance",
+                            "courseMode": "online",
+                            "courseWorkload": "P12W"
+                          }
+                        },
+                        {
+                          "@type": "Product",
+                          "name": "Functional Medicine Certification (Practitioner Kit)",
+                          "description": "Board Certified Functional Medicine Specialist credential including physical welcome kit. Accredited by ASI.",
+                          "brand": {
+                            "@type": "Brand",
+                            "name": "AccrediPro"
+                          },
+                          "sku": "FM-CERT-297",
+                          "offers": {
+                            "@type": "Offer",
+                            "url": "https://learn.accredipro.academy/fm-certification",
+                            "price": "97.00",
+                            "priceCurrency": "USD",
+                            "availability": "https://schema.org/InStock",
+                            "hasMerchantReturnPolicy": {
+                                "@type": "MerchantReturnPolicy",
+                                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                                "merchantReturnDays": 7,
+                                "returnMethod": "https://schema.org/ReturnByMail"
+                            }
+                          }
+                        },
+                        {
+                          "@type": "FAQPage",
+                          "mainEntity": [
+                            {
+                              "@type": "Question",
+                              "name": "Is this Functional Medicine course accredited?",
+                              "acceptedAnswer": { "@type": "Answer", "text": "Yes, the program is fully accredited by the AccrediPro Standards Institute (ASI) and provides 50 CEU credits recognized by major health bodies." }
+                            },
+                            {
+                              "@type": "Question",
+                              "name": "How long does it take to become a Functional Medicine Specialist?",
+                              "acceptedAnswer": { "@type": "Answer", "text": "The course is self-paced but typically takes 12 weeks to complete with 3-5 hours of study per week. You have lifetime access to the materials." }
+                            },
+                            {
+                                "@type": "Question",
+                                "name": "What is the price of the certification?",
+                                "acceptedAnswer": { "@type": "Answer", "text": "The complete Functional Medicine Certification is currently $297 (one-time payment), which includes the full curriculum, exam fees, and the physical welcome kit." }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                    </script>
+                `;
+
+                // 4. Advanced Meta Tracking (5s Delay + ATC) - Bot Filter
                 const trackingScript = `
                     <script>
                         // A. Qualified ViewContent (5s Delay - Filters Bots)
@@ -82,6 +151,9 @@ export default function FMCertificationPage() {
 
                 // Add Meta Pixel to Head
                 finalHtml = finalHtml.replace('</head>', metaPixelScript + '</head>');
+
+                // Add AEO Schema to Head
+                finalHtml = finalHtml.replace('</head>', aeoSchemaScript + '</head>');
 
                 // Add Trustpilot to Head if missing
                 if (!finalHtml.includes('tp.widget.bootstrap.min.js')) {

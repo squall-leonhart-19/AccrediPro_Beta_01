@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "https://accredipro.academy";
+const BASE_URL = "https://learn.accredipro.academy";
 
 /**
  * Public sitemap - Marketing pages only
