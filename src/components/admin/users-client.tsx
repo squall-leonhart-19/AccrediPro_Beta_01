@@ -185,6 +185,12 @@ export function UsersClient({ courses }: UsersClientProps) {
   const [newUserEmail, setNewUserEmail] = useState("");
   const [changingEmail, setChangingEmail] = useState(false);
 
+  // Change Name Dialog state
+  const [nameChangeDialogOpen, setNameChangeDialogOpen] = useState(false);
+  const [newFirstName, setNewFirstName] = useState("");
+  const [newLastName, setNewLastName] = useState("");
+  const [changingName, setChangingName] = useState(false);
+
   // Activity tab states for dispute resolution
   const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity" | "ai">("overview");
   const [activityData, setActivityData] = useState<any>(null);
@@ -723,6 +729,50 @@ export function UsersClient({ courses }: UsersClientProps) {
       alert("An error occurred while updating the email");
     } finally {
       setChangingEmail(false);
+    }
+  };
+
+  const openNameChangeDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewFirstName(user.firstName || "");
+    setNewLastName(user.lastName || "");
+    setNameChangeDialogOpen(true);
+  };
+
+  const handleNameChange = async () => {
+    if (!selectedUser) return;
+    if (!newFirstName.trim() && !newLastName.trim()) {
+      alert("Please enter at least a first or last name");
+      return;
+    }
+
+    setChangingName(true);
+    try {
+      const response = await fetch("/api/admin/users/name", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          firstName: newFirstName.trim(),
+          lastName: newLastName.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Name updated successfully");
+        setNameChangeDialogOpen(false);
+        setSelectedUser(null);
+        fetchUsers(1, true); // Refresh user list
+      } else {
+        alert(data.error || "Failed to update name");
+      }
+    } catch (error) {
+      console.error("Failed to update name:", error);
+      alert("An error occurred while updating the name");
+    } finally {
+      setChangingName(false);
     }
   };
 
@@ -1425,6 +1475,13 @@ export function UsersClient({ courses }: UsersClientProps) {
                                 >
                                   <Mail className="w-4 h-4 mr-2 text-blue-600" />
                                   Change Email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => openNameChangeDialog(user)}
+                                  className="cursor-pointer"
+                                >
+                                  <Users className="w-4 h-4 mr-2 text-teal-600" />
+                                  Change Name
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => openRoleDialog(user)}
@@ -3646,6 +3703,54 @@ Terms: https://learn.accredipro.academy/terms-of-service
               disabled={changingEmail || !newUserEmail.trim() || newUserEmail === selectedUser?.email}
             >
               {changingEmail ? "Updating..." : "Update Email"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Name Change Dialog */}
+      <Dialog open={nameChangeDialogOpen} onOpenChange={setNameChangeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Name</DialogTitle>
+            <DialogDescription>
+              Update name for {selectedUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="newFirstName">First Name</Label>
+              <Input
+                id="newFirstName"
+                placeholder="First name"
+                value={newFirstName}
+                onChange={(e) => setNewFirstName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="newLastName">Last Name</Label>
+              <Input
+                id="newLastName"
+                placeholder="Last name"
+                value={newLastName}
+                onChange={(e) => setNewLastName(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setNameChangeDialogOpen(false)}
+              disabled={changingName}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleNameChange}
+              className="bg-teal-600 hover:bg-teal-700"
+              disabled={changingName || (!newFirstName.trim() && !newLastName.trim())}
+            >
+              {changingName ? "Updating..." : "Update Name"}
             </Button>
           </DialogFooter>
         </DialogContent>
