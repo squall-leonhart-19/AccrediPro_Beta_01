@@ -306,15 +306,7 @@ export default async function DashboardPage() {
   const specialtyAbbrev = SPECIALTY_ABBREVIATIONS[specialization.slug] || "FM";
 
   // Announcements (could come from DB in future)
-  const announcements = hasCompletedOnboarding ? [
-    {
-      id: "new-feature-pod",
-      message: "🚀 NEW: My Pod is now live! Connect with your accountability group.",
-      link: "/my-circle",
-      linkText: "View Pod",
-      type: "new" as const,
-    },
-  ] : [
+  const announcements = hasCompletedOnboarding ? [] : [
     {
       id: "complete-onboarding",
       message: "🎯 Complete your profile to unlock personalized recommendations!",
