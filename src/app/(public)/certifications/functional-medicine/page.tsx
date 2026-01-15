@@ -19,6 +19,8 @@ import {
   Play,
 } from "lucide-react";
 
+import { SchemaOrchestrator } from "@/components/seo/schema/SchemaOrchestrator";
+
 export const metadata = {
   title: "Functional Medicine Certification | ASI",
   description: "Become a certified Functional Medicine Practitioner. Learn root-cause medicine, systems biology, and evidence-based protocols. Start free with our Mini-Diploma.",
@@ -122,8 +124,53 @@ export default function FunctionalMedicinePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Top Bar */}
+    <>
+      <SchemaOrchestrator
+        schemas={[
+          {
+            type: "Course",
+            data: {
+              name: "Certified Functional Medicine Practitioner",
+              description: "Comprehensive 14-module functional medicine certification covering root-cause analysis, systems biology, and evidence-based protocols. Accredited by ASI with 50+ CEU credits.",
+              duration: "P12W"
+            }
+          },
+          {
+            type: "Product",
+            data: {
+              name: "Functional Medicine Certification (Practitioner Kit)",
+              description: "Board Certified Functional Medicine Practitioner credential including physical welcome kit and lifetime access.",
+              url: "https://accredipro.academy/certifications/functional-medicine",
+              price: "1997.00"
+            }
+          },
+          {
+            type: "FAQPage",
+            data: {
+              questions: [
+                {
+                  question: "What is the Functional Medicine certification?",
+                  answer: "It is a comprehensive 14-module certification program covering root-cause medicine, systems biology, clinical assessment, and therapeutic interventions. Accredited by ASI with 50+ CEU credits."
+                },
+                {
+                  question: "How long does it take to complete?",
+                  answer: "The course is self-paced but typically takes 12 weeks with 3-5 hours of study per week. You have lifetime access to all materials."
+                },
+                {
+                  question: "Is this certification accredited?",
+                  answer: "Yes, the program is fully accredited by the AccrediPro Standards Institute (ASI) and provides 50+ CEU credits recognized by major health organizations."
+                },
+                {
+                  question: "Can I start for free?",
+                  answer: "Yes! Start with our free Mini-Diploma to experience the curriculum before committing to the full certification."
+                }
+              ]
+            }
+          }
+        ]}
+      />
+      <div className="min-h-screen bg-white">
+        {/* Top Bar */}
       <div style={{ backgroundColor: BRAND.burgundyDark }} className="text-white py-2 px-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-6">
@@ -462,6 +509,7 @@ export default function FunctionalMedicinePage() {
           </div>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

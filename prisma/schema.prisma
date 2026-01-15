@@ -8,6 +8,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  // URLs configured in prisma.config.ts for Prisma 7+
 }
 
 // ==================== USER & AUTH ====================
@@ -178,6 +179,14 @@ model User {
   @@index([role])
   @@index([assignedCoachId])
   @@index([leadSource])
+  // Performance indexes added 2026-01-15
+  @@index([lastLoginAt])
+  @@index([lastLoginAt, isFakeProfile])
+  @@index([isActive])
+  @@index([userType])
+  @@index([miniDiplomaCategory])
+  @@index([miniDiplomaCompletedAt])
+  @@index([createdAt])
 }
 
 enum UserRole {
@@ -445,6 +454,9 @@ model Lesson {
 
   @@index([moduleId])
   @@index([order])
+  // Performance indexes added 2026-01-15
+  @@index([moduleId, order])
+  @@index([isPublished, moduleId])
 }
 
 enum LessonType {
@@ -503,6 +515,11 @@ model Enrollment {
   @@index([userId])
   @@index([courseId])
   @@index([status])
+  // Performance indexes added 2026-01-15
+  @@index([status, enrolledAt])
+  @@index([status, lastAccessedAt])
+  @@index([courseId, status])
+  @@index([completedAt])
 }
 
 enum EnrollmentStatus {
@@ -535,6 +552,8 @@ model LessonProgress {
   @@unique([userId, lessonId])
   @@index([userId])
   @@index([lessonId])
+  // Performance indexes added 2026-01-15
+  @@index([userId, isCompleted])
 }
 
 // ==================== LESSON NOTES & HIGHLIGHTS ====================
@@ -2716,6 +2735,10 @@ model Payment {
   @@index([transactionId])
   @@index([createdAt])
   @@index([status])
+  // Performance indexes added 2026-01-15
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
+  @@index([courseId, status])
 }
 
 enum PaymentStatus {

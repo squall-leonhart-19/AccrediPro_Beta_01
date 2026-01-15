@@ -62,9 +62,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code",
-  },
+  // Add Google Search Console verification code here once obtained
+  // verification: {
+  //   google: "YOUR_ACTUAL_VERIFICATION_CODE",
+  // },
 };
 
 // JSON-LD structured data for organization
