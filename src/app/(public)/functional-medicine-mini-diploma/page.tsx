@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +22,35 @@ import { MultiStepQualificationForm, QualificationData } from "@/components/lead
 // Same default password as backend
 const LEAD_PASSWORD = "coach2026";
 
+// Segmentation Headlines for A/B Testing
+const SEGMENT_HEADLINES: Record<string, { line1: string; line2: string; line3: string }> = {
+    escape: {
+        line1: "Attention Nurses:",
+        line2: "Escape the Hospital.",
+        line3: "Keep the Healing."
+    },
+    purpose: {
+        line1: "Your Health Journey",
+        line2: "Changed You.",
+        line3: "Now Change Others."
+    },
+    income: {
+        line1: "Add",
+        line2: "$5K/Month",
+        line3: "Without Another 12-Hour Shift."
+    },
+    freedom: {
+        line1: "Work From Home.",
+        line2: "Be There for Your Kids.",
+        line3: "Heal People."
+    },
+    default: {
+        line1: "What If You Could Earn",
+        line2: "$3,000-$5,000/month",
+        line3: "Helping People Heal?"
+    }
+};
+
 // Brand Colors
 const BRAND = {
     burgundy: "#722f37",
@@ -35,6 +65,10 @@ const BRAND = {
 };
 
 function FunctionalMedicineMiniDiplomaContent() {
+    const searchParams = useSearchParams();
+    const segment = searchParams.get('s') || 'default';
+    const headlines = SEGMENT_HEADLINES[segment] || SEGMENT_HEADLINES.default;
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVerifying, setIsVerifying] = useState(false);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -157,9 +191,9 @@ function FunctionalMedicineMiniDiplomaContent() {
                             </div>
 
                             <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-6">
-                                <span style={{ color: BRAND.goldLight }}>What If You Could Earn</span><br />
-                                <span className="text-white">$3,000-$5,000/month</span><br />
-                                <span className="text-white/80 text-2xl md:text-3xl">Helping People Heal?</span>
+                                <span style={{ color: BRAND.goldLight }}>{headlines.line1}</span><br />
+                                <span className="text-white">{headlines.line2}</span><br />
+                                <span className="text-white/80 text-2xl md:text-3xl">{headlines.line3}</span>
                             </h1>
 
                             <p className="text-lg md:text-xl text-white/80 mb-8 max-w-lg leading-relaxed">

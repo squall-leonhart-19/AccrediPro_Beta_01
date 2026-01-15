@@ -8,7 +8,8 @@ import {
     MessageSquare, User, Clock, Zap, Send, ChevronDown,
     Mail, LifeBuoy, Sparkles, Tag as TagIcon, Plus, X,
     Inbox, CheckCheck, Archive, Circle, Calendar, BookOpen,
-    Loader2, Brain, LogOut, UserCircle, GraduationCap
+    Loader2, Brain, LogOut, UserCircle, GraduationCap, TrendingUp,
+    ChevronUp, AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -241,6 +242,9 @@ export default function SupportPortalPage() {
     const [customerContext, setCustomerContext] = useState<any>(null);
     const [loadingContext, setLoadingContext] = useState(false);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+    const [showDigest, setShowDigest] = useState(true);
+    const [digestData, setDigestData] = useState<any>(null);
+    const [loadingDigest, setLoadingDigest] = useState(false);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -338,6 +342,23 @@ export default function SupportPortalPage() {
         }
     }, [showCustomerPanel, selectedTicket?.user?.id]);
 
+    // Fetch AI Digest on mount
+    useEffect(() => {
+        const fetchDigest = async () => {
+            setLoadingDigest(true);
+            try {
+                const res = await fetch('/api/tickets/ai-digest');
+                const data = await res.json();
+                if (data.success) setDigestData(data);
+            } catch {
+                console.error('Failed to fetch AI digest');
+            } finally {
+                setLoadingDigest(false);
+            }
+        };
+        fetchDigest();
+    }, []);
+
     return (
         <div className="flex h-screen bg-slate-100 overflow-hidden">
             {/* LEFT: Ticket List */}
@@ -376,6 +397,64 @@ export default function SupportPortalPage() {
                             </div>
                         ))}
                     </div>
+
+                    {/* AI Daily Digest Widget */}
+                    {showDigest && (
+                        <div className="mt-3 bg-white/10 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2 text-white/90">
+                                    <TrendingUp className="w-4 h-4" />
+                                    <span className="text-xs font-semibold">AI Insights</span>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setShowDigest(false)}
+                                    className="w-5 h-5 text-white/60 hover:text-white hover:bg-white/10"
+                                >
+                                    <ChevronUp className="w-3 h-3" />
+                                </Button>
+                            </div>
+                            {loadingDigest ? (
+                                <div className="flex items-center gap-2 text-xs text-white/60">
+                                    <Loader2 className="w-3 h-3 animate-spin" /> Loading insights...
+                                </div>
+                            ) : digestData ? (
+                                <div className="space-y-2 text-xs">
+                                    {digestData.overdue24h?.length > 0 && (
+                                        <div className="flex items-center gap-2 text-red-300">
+                                            <AlertCircle className="w-3 h-3" />
+                                            <span><strong>{digestData.overdue24h.length}</strong> waiting &gt;24h</span>
+                                        </div>
+                                    )}
+                                    {digestData.overdue4h?.length > 0 && (
+                                        <div className="flex items-center gap-2 text-amber-300">
+                                            <Clock className="w-3 h-3" />
+                                            <span><strong>{digestData.overdue4h.length}</strong> waiting &gt;4h</span>
+                                        </div>
+                                    )}
+                                    {digestData.topCategories?.slice(0, 2).map(([cat, count]: [string, number]) => (
+                                        <div key={cat} className="flex items-center gap-2 text-white/70">
+                                            <TagIcon className="w-3 h-3" />
+                                            <span>{cat} ({count})</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-xs text-white/60">No insights available</div>
+                            )}
+                        </div>
+                    )}
+                    {!showDigest && (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowDigest(true)}
+                            className="mt-2 w-full text-white/60 hover:text-white hover:bg-white/10 text-xs"
+                        >
+                            <TrendingUp className="w-3 h-3 mr-1" /> Show AI Insights
+                        </Button>
+                    )}
                 </div>
 
                 {/* Status Tabs */}
