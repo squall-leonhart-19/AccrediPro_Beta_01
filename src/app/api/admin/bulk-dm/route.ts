@@ -15,85 +15,115 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { userIds, message } = await request.json();
+    const { content, recipientType, senderId, singleUserId } = await request.json();
 
-    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-      return NextResponse.json({ error: "No users specified" }, { status: 400 });
-    }
-
-    if (!message || typeof message !== "string" || message.trim() === "") {
+    if (!content || typeof content !== "string" || content.trim() === "") {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    // Get or create coach user (Sarah) for sending DMs
-    let coachUser = await prisma.user.findFirst({
-      where: { role: "MENTOR" },
-      select: { id: true },
-    });
-
-    if (!coachUser) {
-      // Fallback to admin sender
-      coachUser = { id: session.user.id };
+    if (!senderId) {
+      return NextResponse.json({ error: "Sender is required" }, { status: 400 });
     }
 
-    // Create DM conversations and messages for each user
+    // Get recipients based on type
+    let recipients: { id: string; firstName: string | null; lastName: string | null; email: string | null }[] = [];
+
+    if (recipientType === "single" && singleUserId) {
+      // Single student test
+      const student = await prisma.user.findUnique({
+        where: { id: singleUserId },
+        select: { id: true, firstName: true, lastName: true, email: true },
+      });
+      if (student) {
+        recipients = [student];
+      }
+    } else if (recipientType === "all") {
+      recipients = await prisma.user.findMany({
+        where: {
+          role: "STUDENT",
+          isActive: true,
+          isFakeProfile: false,
+        },
+        select: { id: true, firstName: true, lastName: true, email: true },
+      });
+    } else if (recipientType === "enrolled") {
+      const enrollments = await prisma.enrollment.findMany({
+        where: { status: "ACTIVE" },
+        select: { userId: true },
+        distinct: ["userId"],
+      });
+      const userIds = enrollments.map((e) => e.userId);
+      recipients = await prisma.user.findMany({
+        where: {
+          id: { in: userIds },
+          isActive: true,
+          isFakeProfile: false,
+        },
+        select: { id: true, firstName: true, lastName: true, email: true },
+      });
+    } else if (recipientType === "completed") {
+      const completedEnrollments = await prisma.enrollment.findMany({
+        where: { status: "COMPLETED" },
+        select: { userId: true },
+        distinct: ["userId"],
+      });
+      const userIds = completedEnrollments.map((e) => e.userId);
+      recipients = await prisma.user.findMany({
+        where: {
+          id: { in: userIds },
+          isActive: true,
+          isFakeProfile: false,
+        },
+        select: { id: true, firstName: true, lastName: true, email: true },
+      });
+    }
+
+    if (recipients.length === 0) {
+      return NextResponse.json({ error: "No recipients found" }, { status: 400 });
+    }
+
+    // Create DM messages for each recipient
     let sentCount = 0;
     const errors: string[] = [];
 
-    for (const userId of userIds) {
+    for (const recipient of recipients) {
       try {
-        // Find or create conversation between coach and user
-        let conversation = await prisma.conversation.findFirst({
-          where: {
-            participants: {
-              every: {
-                userId: { in: [coachUser.id, userId] }
-              }
-            }
-          },
-          select: { id: true },
-        });
+        // Personalize message
+        let personalizedContent = content
+          .replace(/{firstName}/g, recipient.firstName || "there")
+          .replace(/{lastName}/g, recipient.lastName || "")
+          .replace(/{email}/g, recipient.email || "");
 
-        if (!conversation) {
-          // Create new conversation
-          conversation = await prisma.conversation.create({
-            data: {
-              participants: {
-                create: [
-                  { userId: coachUser.id },
-                  { userId: userId },
-                ],
-              },
-            },
-            select: { id: true },
-          });
-        }
-
-        // Create the message
+        // Create message directly (using senderId as sender, recipient as receiver)
         await prisma.message.create({
           data: {
-            conversationId: conversation.id,
-            senderId: coachUser.id,
-            content: message.trim(),
+            senderId: senderId,
+            receiverId: recipient.id,
+            content: personalizedContent.trim(),
           },
-        });
-
-        // Update conversation timestamp
-        await prisma.conversation.update({
-          where: { id: conversation.id },
-          data: { updatedAt: new Date() },
         });
 
         sentCount++;
       } catch (err) {
-        console.error(`Failed to send DM to user ${userId}:`, err);
-        errors.push(userId);
+        console.error(`Failed to send DM to user ${recipient.id}:`, err);
+        errors.push(recipient.id);
       }
     }
 
+    // Log the bulk DM
+    await prisma.bulkDM.create({
+      data: {
+        senderId: session.user.id,
+        content: content.substring(0, 500),
+        recipientType: recipientType === "single" ? "SINGLE" : recipientType.toUpperCase(),
+        sentCount,
+        status: "SENT",
+      },
+    });
+
     return NextResponse.json({
       success: true,
-      sent: sentCount,
+      sentCount,
       failed: errors.length,
       errors: errors.length > 0 ? errors : undefined,
     });
