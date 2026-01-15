@@ -2434,7 +2434,7 @@ export default function MarketingPage() {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <p className="text-xs text-gray-500">From</p>
-                    <p className="font-medium">Sarah &lt;sarah@accredipro.academy&gt;</p>
+                    <p className="font-medium">Sarah &lt;sarah@accredipro-certificate.com&gt;</p>
                   </div>
                   <Badge variant="outline">Day {selectedNurtureEmail.day}</Badge>
                 </div>

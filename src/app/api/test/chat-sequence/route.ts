@@ -106,7 +106,7 @@ AccrediPro Academy`
             to: email,
             subject,
             html: wrapper(content),
-            replyTo: "sarah@accredipro.academy"
+            replyTo: "sarah@accredipro-certificate.com"
         });
 
         return NextResponse.json({

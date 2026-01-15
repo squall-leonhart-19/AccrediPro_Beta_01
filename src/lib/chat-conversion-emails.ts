@@ -285,7 +285,7 @@ Either way, thanks for letting me into your inbox for a while.
 
 Sarah
 
-P.S. If you ever want to chat, I'm at sarah@accredipro.academy. Real person. Real replies.`,
+P.S. If you ever want to chat, I'm at sarah@accredipro-certificate.com. Real person. Real replies.`,
     },
 ];
 

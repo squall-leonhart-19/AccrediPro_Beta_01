@@ -274,7 +274,7 @@ export default function ThankYouPage() {
 
                 {/* Footer */}
                 <div className="text-center mt-12 text-slate-500 text-sm">
-                    <p>Questions? Email us at <a href="mailto:sarah@accredipro.academy" className="text-burgundy-600 hover:underline">sarah@accredipro.academy</a></p>
+                    <p>Questions? Email us at <a href="mailto:sarah@accredipro-certificate.com" className="text-burgundy-600 hover:underline">sarah@accredipro-certificate.com</a></p>
                     <p className="mt-2">© 2025 AccrediPro Academy. All rights reserved.</p>
                 </div>
             </div>

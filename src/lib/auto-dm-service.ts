@@ -51,7 +51,7 @@ export async function sendPurchaseDMs(options: SendPurchaseDMsOptions): Promise<
             where: {
                 OR: [
                     { email: coachInfo.email },
-                    { email: "sarah@accredipro.academy" }, // Fallback to Sarah
+                    { email: "sarah@accredipro-certificate.com" }, // Fallback to Sarah
                     { role: "ADMIN" }, // Fallback to any admin
                 ],
             },

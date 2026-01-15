@@ -44,7 +44,7 @@ export const COACH_INFO: Record<CoachId, { name: string; specialty: string; emai
     sarah: {
         name: "Sarah M.",
         specialty: "functional medicine, root cause healing, and building thriving wellness practices",
-        email: "sarah@accredipro.academy",
+        email: "sarah@accredipro-certificate.com",
     },
     olivia: {
         name: "Olivia",
