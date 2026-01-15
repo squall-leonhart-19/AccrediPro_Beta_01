@@ -1,20 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { withAccelerate } from "@prisma/extension-accelerate";
 import "dotenv/config";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
 };
 
-// Prisma 7 requires driver adapters
-const prismaClientSingleton = () => {
-  // Limit connections to prevent pool exhaustion in serverless
-  const connectionString = process.env.DATABASE_URL + "&connection_limit=5";
-  const adapter = new PrismaPg({ connectionString });
-  return new PrismaClient({ adapter });
+// Create Prisma Client with Accelerate extension for connection pooling
+const createPrismaClient = () => {
+  return new PrismaClient().$extends(withAccelerate());
 };
 
-export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
