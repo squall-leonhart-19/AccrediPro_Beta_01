@@ -70,7 +70,7 @@ export function DailyFocusCard({
                     <div className="flex flex-col sm:items-end gap-2">
                         <Link
                             href={lesson.courseSlug !== "#"
-                                ? `/courses/${lesson.courseSlug}/lessons/${lesson.lessonSlug}`
+                                ? `/learning/${lesson.courseSlug}/${lesson.lessonSlug}`
                                 : "/my-learning"
                             }
                         >
