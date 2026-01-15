@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface PushPreferences {
   messagesEnabled: boolean;
@@ -28,6 +28,7 @@ interface UsePushNotificationsReturn {
   unsubscribe: () => Promise<boolean>;
   updatePreferences: (prefs: Partial<PushPreferences>) => Promise<boolean>;
   requestPermission: () => Promise<NotificationPermission>;
+  autoSubscribe: () => Promise<boolean>;
 }
 
 export function usePushNotifications(): UsePushNotificationsReturn {
@@ -38,14 +39,19 @@ export function usePushNotifications(): UsePushNotificationsReturn {
   const [deviceCount, setDeviceCount] = useState(0);
   const [devices, setDevices] = useState<PushDevice[]>([]);
   const [preferences, setPreferences] = useState<PushPreferences | null>(null);
+  const hasInitialized = useRef(false);
 
   // Check if push is supported
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const supported = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
     setIsSupported(supported);
 
     if (supported) {
       setPermission(Notification.permission);
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -73,8 +79,11 @@ export function usePushNotifications(): UsePushNotificationsReturn {
   }, [isSupported]);
 
   useEffect(() => {
-    fetchStatus();
-  }, [fetchStatus]);
+    if (isSupported && !hasInitialized.current) {
+      hasInitialized.current = true;
+      fetchStatus();
+    }
+  }, [isSupported, fetchStatus]);
 
   // Request notification permission
   const requestPermission = useCallback(async (): Promise<NotificationPermission> => {
@@ -91,50 +100,99 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
   // Subscribe to push notifications
   const subscribe = useCallback(async (): Promise<boolean> => {
-    if (!isSupported) return false;
+    if (!isSupported) {
+      console.log("[Push] Not supported");
+      return false;
+    }
 
     try {
       // Request permission if not granted
       if (Notification.permission !== "granted") {
         const result = await requestPermission();
-        if (result !== "granted") return false;
+        if (result !== "granted") {
+          console.log("[Push] Permission denied");
+          return false;
+        }
       }
 
       // Get service worker registration
-      const registration = await navigator.serviceWorker.ready;
-
-      // Get VAPID public key from server
-      const keyResponse = await fetch("/api/push/subscribe");
-      if (!keyResponse.ok) return false;
-
-      const { vapidPublicKey } = await keyResponse.json();
-      if (!vapidPublicKey) return false;
-
-      // Subscribe to push service
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
-      });
-
-      // Send subscription to server
-      const response = await fetch("/api/push/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subscription: subscription.toJSON() }),
-      });
-
-      if (response.ok) {
-        setIsSubscribed(true);
-        await fetchStatus();
-        return true;
+      let registration;
+      try {
+        registration = await navigator.serviceWorker.ready;
+      } catch (swError) {
+        console.error("[Push] Service worker not ready:", swError);
+        return false;
       }
 
-      return false;
+      // Get VAPID public key from server
+      let vapidPublicKey;
+      try {
+        const keyResponse = await fetch("/api/push/subscribe");
+        if (!keyResponse.ok) {
+          console.error("[Push] Failed to get VAPID key:", keyResponse.status);
+          return false;
+        }
+        const keyData = await keyResponse.json();
+        vapidPublicKey = keyData.vapidPublicKey;
+
+        if (!vapidPublicKey) {
+          console.error("[Push] No VAPID key returned - check env vars");
+          return false;
+        }
+      } catch (keyError) {
+        console.error("[Push] Error fetching VAPID key:", keyError);
+        return false;
+      }
+
+      // Subscribe to push service
+      let subscription;
+      try {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+        });
+      } catch (subError) {
+        console.error("[Push] Failed to subscribe to push manager:", subError);
+        return false;
+      }
+
+      // Send subscription to server
+      try {
+        const response = await fetch("/api/push/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subscription: subscription.toJSON() }),
+        });
+
+        if (response.ok) {
+          setIsSubscribed(true);
+          await fetchStatus();
+          return true;
+        } else {
+          console.error("[Push] Failed to save subscription:", response.status);
+          return false;
+        }
+      } catch (saveError) {
+        console.error("[Push] Error saving subscription:", saveError);
+        return false;
+      }
     } catch (error) {
-      console.error("Failed to subscribe to push:", error);
+      console.error("[Push] Unexpected error:", error);
       return false;
     }
   }, [isSupported, requestPermission, fetchStatus]);
+
+  // Auto-subscribe if permission already granted
+  const autoSubscribe = useCallback(async (): Promise<boolean> => {
+    if (!isSupported || isSubscribed || isLoading) return false;
+
+    // Only auto-subscribe if permission is already granted
+    if (Notification.permission === "granted") {
+      return subscribe();
+    }
+
+    return false;
+  }, [isSupported, isSubscribed, isLoading, subscribe]);
 
   // Unsubscribe from push notifications
   const unsubscribe = useCallback(async (): Promise<boolean> => {
@@ -203,6 +261,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     unsubscribe,
     updatePreferences,
     requestPermission,
+    autoSubscribe,
   };
 }
 
