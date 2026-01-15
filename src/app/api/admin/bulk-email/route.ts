@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, emailWrapper, personalEmailWrapper } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { subject, content, recipientType, singleUserId } = await request.json();
+    const { subject, content, recipientType, templateStyle, singleUserId } = await request.json();
 
     if (!subject || !content || !recipientType) {
       return NextResponse.json(
@@ -100,29 +100,18 @@ export async function POST(request: NextRequest) {
           .replace(/\{\{lastName\}\}/gi, recipient.lastName || "")
           .replace(/\{\{email\}\}/gi, recipient.email || "");
 
-        const html = `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            </head>
-            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-              <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="color: #722F37; margin: 0;">AccrediPro</h1>
-                <p style="color: #666; margin: 5px 0;">Educational Excellence</p>
-              </div>
+        // Convert newlines to <br> for HTML
+        const htmlContent = personalizedContent.replace(/\n/g, "<br>");
 
-              <div style="background: #f8f9fa; border-radius: 10px; padding: 30px; margin-bottom: 20px;">
-                ${personalizedContent.replace(/\n/g, "<br>")}
-              </div>
-
-              <div style="text-align: center; color: #999; font-size: 12px;">
-                <p>AccrediPro - Veritas Et Excellentia</p>
-              </div>
-            </body>
-          </html>
-        `;
+        // Apply template style
+        let html: string;
+        if (templateStyle === "personal") {
+          // Personal style - plain text look, no images
+          html = personalEmailWrapper(htmlContent);
+        } else {
+          // Branded style - full AccrediPro branding
+          html = emailWrapper(htmlContent);
+        }
 
         await sendEmail({
           to: recipient.email,

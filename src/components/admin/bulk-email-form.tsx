@@ -26,6 +26,7 @@ export function BulkEmailForm({ userStats }: BulkEmailFormProps) {
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
   const [recipientType, setRecipientType] = useState("all");
+  const [templateStyle, setTemplateStyle] = useState("branded");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
@@ -115,6 +116,7 @@ export function BulkEmailForm({ userStats }: BulkEmailFormProps) {
           subject,
           content,
           recipientType,
+          templateStyle,
           singleUserId: recipientType === "single" ? singleStudentId : undefined,
         }),
       });
@@ -172,6 +174,26 @@ export function BulkEmailForm({ userStats }: BulkEmailFormProps) {
           <option value="enrolled">Currently Enrolled ({userStats.enrolledUsers})</option>
           <option value="completed">Completed Course ({userStats.completedUsers})</option>
         </select>
+      </div>
+
+      {/* Email Template Style */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Email Style
+        </label>
+        <select
+          value={templateStyle}
+          onChange={(e) => setTemplateStyle(e.target.value)}
+          className="w-full h-10 rounded-md border border-gray-300 px-3 text-sm focus:border-burgundy-500 focus:outline-none focus:ring-2 focus:ring-burgundy-500/20 bg-white"
+        >
+          <option value="branded">🏛️ Branded (Official - with logo & header)</option>
+          <option value="personal">💬 Personal (Sarah style - plain text look)</option>
+        </select>
+        <p className="text-xs text-gray-400 mt-1">
+          {templateStyle === "branded"
+            ? "Professional look with burgundy header, logo, and footer"
+            : "Simple text style for higher inbox delivery"}
+        </p>
       </div>
 
       {/* Single Student Search */}
