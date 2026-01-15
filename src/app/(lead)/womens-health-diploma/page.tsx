@@ -57,7 +57,7 @@ async function getLeadProgress(userId: string) {
       },
       select: {
         id: true,
-        createdAt: true,
+        enrolledAt: true,
       },
     }),
     prisma.leadOnboarding.findUnique({
@@ -85,7 +85,7 @@ async function getLeadProgress(userId: string) {
     user,
     leadOnboarding,
     completedLessons: Array.from(completedLessons),
-    enrolledAt: enrollment?.createdAt || user?.createdAt,
+    enrolledAt: enrollment?.enrolledAt || user?.createdAt,
   };
 }
 

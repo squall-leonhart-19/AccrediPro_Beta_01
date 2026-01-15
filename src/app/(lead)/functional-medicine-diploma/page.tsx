@@ -38,7 +38,7 @@ async function getLeadProgress(userId: string) {
             },
             select: {
                 id: true,
-                createdAt: true,
+                enrolledAt: true,
             },
         }),
         // Use niche-specific tags for onboarding instead of shared LeadOnboarding table
@@ -72,7 +72,7 @@ async function getLeadProgress(userId: string) {
         watchedVideo,
         completedQuestions,
         completedLessons: Array.from(completedLessons),
-        enrolledAt: enrollment?.createdAt || user?.createdAt,
+        enrolledAt: enrollment?.enrolledAt || user?.createdAt,
     };
 }
 

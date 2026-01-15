@@ -26,7 +26,7 @@ async function getLeadProgress(userId: string) {
         }),
         prisma.enrollment.findFirst({
             where: { userId, course: { slug: "gut-health-mini-diploma" } },
-            select: { id: true, createdAt: true },
+            select: { id: true, enrolledAt: true },
         }),
         prisma.leadOnboarding.findUnique({ where: { userId }, select: { watchedVideo: true, completedQuestions: true } }).catch(() => null),
         prisma.userTag.findMany({ where: { userId, tag: { startsWith: "gut-health-lesson-complete:" } } }),
@@ -34,7 +34,7 @@ async function getLeadProgress(userId: string) {
 
     if (!enrollment) return null;
     const completedLessons = new Set(completionTags.map((t) => parseInt(t.tag.replace("gut-health-lesson-complete:", ""))));
-    return { user, leadOnboarding, completedLessons: Array.from(completedLessons), enrolledAt: enrollment?.createdAt || user?.createdAt };
+    return { user, leadOnboarding, completedLessons: Array.from(completedLessons), enrolledAt: enrollment?.enrolledAt || user?.createdAt };
 }
 
 export default async function GutHealthDiplomaPage() {
