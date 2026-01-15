@@ -232,7 +232,7 @@ export default function SupportPortalPage() {
     const queryClient = useQueryClient();
 
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [statusFilter, setStatusFilter] = useState<string>("NEW");
     const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
     const [replyText, setReplyText] = useState("");
     const [isInternalNote, setIsInternalNote] = useState(false);
@@ -460,11 +460,11 @@ export default function SupportPortalPage() {
                 {/* Status Tabs */}
                 <div className="border-b flex overflow-x-auto bg-slate-50">
                     {[
-                        { id: "all", label: "All", icon: Inbox },
                         { id: "NEW", label: "New", icon: Circle },
                         { id: "OPEN", label: "Open", icon: MessageSquare },
                         { id: "PENDING", label: "Pending", icon: Clock },
                         { id: "RESOLVED", label: "Resolved", icon: CheckCheck },
+                        { id: "all", label: "All", icon: Inbox },
                     ].map(tab => (
                         <button
                             key={tab.id}
