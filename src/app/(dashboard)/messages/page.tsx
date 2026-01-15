@@ -6,7 +6,7 @@ import { MessagesClientWrapper } from "./messages-client-wrapper";
 
 export default function MessagesPage() {
   return (
-    <div className="-m-4 lg:-m-8 h-[calc(100vh-4rem)] lg:h-screen">
+    <div className="-m-4 lg:-m-8 h-[calc(100vh-3.5rem)] lg:h-[calc(100vh-2rem)]">
       <Suspense fallback={<MessagesLoadingSkeleton />}>
         <MessagesClientWrapper />
       </Suspense>

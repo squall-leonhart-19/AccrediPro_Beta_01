@@ -187,8 +187,8 @@ export default async function DashboardLayout({
                   certificateClaimed={certificateClaimed}
                 />
 
-                {/* Main content - adjusted for lead sidebar */}
-                <main className="pl-64 pt-0 overflow-x-hidden">
+                {/* Main content - responsive padding for mobile */}
+                <main className="pt-14 lg:pt-0 lg:pl-64 overflow-x-hidden">
                   <div className="p-4 lg:p-8 max-w-full overflow-x-hidden">
                     {children}
                   </div>

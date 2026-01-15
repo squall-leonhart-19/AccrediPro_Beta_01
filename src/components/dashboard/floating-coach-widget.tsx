@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -468,46 +469,31 @@ export function FloatingCoachWidget({
                 </Card>
             )}
 
-            {/* Floating Button */}
-            <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                aria-label={isExpanded ? "Close coach chat" : "Open Coach Sarah chat"}
-                aria-expanded={isExpanded}
-                className={`
-                    group relative flex items-center gap-2 shadow-lg transition-all duration-200 hover:scale-105
-                    ${isExpanded
-                        ? 'p-3 rounded-full bg-burgundy-600 text-white'
-                        : 'pl-1.5 pr-4 py-1.5 rounded-full bg-white border border-gray-200 hover:border-burgundy-300 hover:shadow-xl'
-                    }
-                `}
+            {/* Floating Button - navigates to /messages */}
+            <Link
+                href="/messages"
+                aria-label="Open messages with Coach Sarah"
+                className="group relative flex items-center gap-2 shadow-lg transition-all duration-200 hover:scale-105 pl-1.5 pr-4 py-1.5 rounded-full bg-white border border-gray-200 hover:border-burgundy-300 hover:shadow-xl"
             >
                 {/* Notification Pulse */}
-                {!isExpanded && (
-                    <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-gold-500"></span>
-                    </span>
-                )}
+                <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-gold-500"></span>
+                </span>
 
-                {/* Coach Avatar or Close */}
-                {isExpanded ? (
-                    <X className="w-6 h-6" />
-                ) : (
-                    <>
-                        <div className="relative">
-                            <Image
-                                src="/coaches/sarah-coach.webp"
-                                alt="Coach Sarah"
-                                width={36}
-                                height={36}
-                                className="rounded-full border-2 border-burgundy-100 group-hover:border-burgundy-300 transition-colors"
-                            />
-                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></span>
-                        </div>
-                        <span className="font-medium text-sm text-gray-700 hidden sm:inline">Ask Sarah</span>
-                    </>
-                )}
-            </button>
+                {/* Coach Avatar */}
+                <div className="relative">
+                    <Image
+                        src="/coaches/sarah-coach.webp"
+                        alt="Coach Sarah"
+                        width={36}
+                        height={36}
+                        className="rounded-full border-2 border-burgundy-100 group-hover:border-burgundy-300 transition-colors"
+                    />
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></span>
+                </div>
+                <span className="font-medium text-sm text-gray-700 hidden sm:inline">Ask Sarah</span>
+            </Link>
         </div>
     );
 }
