@@ -46,7 +46,7 @@ export default function AuthLayout({
                 <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-2xl p-4">
                   <Image
                     src="/ASI_LOGO-removebg-preview.png"
-                    alt="Accreditation Standards Institute"
+                    alt="AccrediPro Standards Institute"
                     width={160}
                     height={160}
                     className="w-full h-auto object-contain"
@@ -59,7 +59,7 @@ export default function AuthLayout({
             </div>
 
             <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3 tracking-tight">
-              Accreditation Standards Institute
+              AccrediPro Standards Institute
             </h1>
             <p className="text-xl font-medium mb-2" style={{ color: BRAND.gold }}>
               The Global Authority in Health Certification
@@ -171,7 +171,7 @@ export default function AuthLayout({
             </Link>
           </p>
           <p className="mt-2 text-xs text-gray-400">
-            © {new Date().getFullYear()} Accreditation Standards Institute. All rights reserved.
+            © {new Date().getFullYear()} AccrediPro Standards Institute. All rights reserved.
           </p>
         </div>
       </div>
