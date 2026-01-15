@@ -567,13 +567,14 @@ export default function SupportPortalPage() {
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <h2 className="text-xl font-bold text-slate-900">{selectedTicket.subject}</h2>
-                                    <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
-                                        <span className="font-mono text-xs">#{selectedTicket.ticketNumber}</span>
-                                        <span>•</span>
-                                        <span>{selectedTicket.customerName}</span>
-                                        <span>•</span>
-                                        <span className="text-xs">{selectedTicket.customerEmail}</span>
+                                    {/* Customer Name - PROMINENT */}
+                                    <h2 className="text-lg font-bold text-slate-900">{selectedTicket.customerName}</h2>
+                                    {/* Email - Clear and readable */}
+                                    <p className="text-sm text-slate-600 font-medium">{selectedTicket.customerEmail}</p>
+                                    {/* Subject + Ticket # */}
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <span className="font-mono text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">#{selectedTicket.ticketNumber}</span>
+                                        <span className="text-sm text-slate-700 font-medium truncate max-w-[300px]">{selectedTicket.subject}</span>
                                     </div>
                                 </div>
                             </div>
