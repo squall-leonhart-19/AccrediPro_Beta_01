@@ -937,10 +937,11 @@ export async function triggerAutoMessage({
     let coachId = user.assignedCoachId;
 
     if (!coachId) {
-      // Try to find a coach - prioritize specific coach emails first
+      // Try to find a coach - prioritize mini diploma Sarah first
       const defaultCoach = await prisma.user.findFirst({
         where: {
           OR: [
+            { email: "sarah_womenhealth@accredipro-certificate.com" }, // Mini diploma Sarah
             { email: "coach@accredipro-certificate.com" },
             { email: "sarah@accredipro-certificate.com" },
             { role: "ADMIN" },
@@ -1184,10 +1185,13 @@ async function sendFirstLoginWelcome(userId: string, firstName: string, coachId:
 
     const adminId = adminUser?.id || coachId;
 
-    // Get Sarah's coach account specifically for the personal message
+    // Get Sarah's coach account specifically for the personal message (mini diploma Sarah)
     const sarahCoach = await prisma.user.findFirst({
       where: {
-        email: "sarah@accredipro-certificate.com",
+        OR: [
+          { email: "sarah_womenhealth@accredipro-certificate.com" },
+          { email: "sarah@accredipro-certificate.com" },
+        ],
       },
       select: { id: true },
     });

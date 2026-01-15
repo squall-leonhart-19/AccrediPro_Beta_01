@@ -46,12 +46,12 @@ export async function sendPurchaseDMs(options: SendPurchaseDMsOptions): Promise<
         // Get coach user ID from database (find Sarah or the assigned coach)
         const coachInfo = COACH_INFO[niche.coach];
 
-        // Find coach by role COACH or ADMIN
+        // Find coach - prioritize mini diploma Sarah, then coach info, then admin
         const coachUser = await prisma.user.findFirst({
             where: {
                 OR: [
+                    { email: "sarah_womenhealth@accredipro-certificate.com" }, // Mini diploma Sarah
                     { email: coachInfo.email },
-                    { email: "sarah@accredipro-certificate.com" }, // Fallback to Sarah
                     { role: "ADMIN" }, // Fallback to any admin
                 ],
             },

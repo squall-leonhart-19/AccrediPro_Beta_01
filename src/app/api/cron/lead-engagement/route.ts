@@ -27,13 +27,19 @@ const NUDGES = {
 
 async function sendLeadDM(userId: string, message: string) {
     try {
+        // Use Sarah (mini diploma) account for lead DMs
         const coachUser = await prisma.user.findFirst({
-            where: { role: "MENTOR" },
+            where: {
+                OR: [
+                    { email: "sarah_womenhealth@accredipro-certificate.com" },
+                    { role: "MENTOR" }, // Fallback
+                ],
+            },
             select: { id: true },
         });
 
         if (!coachUser) {
-            console.log("[LEAD-ENGAGEMENT] No mentor found, skipping DM");
+            console.log("[LEAD-ENGAGEMENT] No coach found, skipping DM");
             return false;
         }
 
