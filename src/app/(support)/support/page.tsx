@@ -743,16 +743,12 @@ export default function SupportPortalPage() {
                                                 </Button>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
-                                                {selectedTicket.user?.marketingTags && selectedTicket.user.marketingTags.length > 0 ? (
-                                                    selectedTicket.user.marketingTags.map((mt: any, i: number) => {
-                                                        // Handle both formats: {tag: {name, slug}} or {tag: string}
-                                                        const tagName = mt.tag?.name || mt.tag?.slug || (typeof mt.tag === 'string' ? mt.tag : 'Unknown');
-                                                        return (
-                                                            <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                                                {tagName.replace(/_/g, ' ').replace(/-/g, ' ')}
-                                                            </span>
-                                                        );
-                                                    })
+                                                {selectedTicket.user?.tags && selectedTicket.user.tags.length > 0 ? (
+                                                    selectedTicket.user.tags.map((t: { id: string; tag: string }, i: number) => (
+                                                        <span key={t.id || i} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                                            {t.tag.replace(/_/g, ' ').replace(/-/g, ' ')}
+                                                        </span>
+                                                    ))
                                                 ) : (
                                                     <span className="text-xs text-slate-400">No tags</span>
                                                 )}

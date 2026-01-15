@@ -53,18 +53,14 @@ export async function GET(
                 createdAt: true,
               }
             },
-            marketingTags: {
-              include: {
-                tag: {
-                  select: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    color: true,
-                    category: true,
-                  }
-                }
-              }
+            tags: {
+              select: {
+                id: true,
+                tag: true,
+                createdAt: true,
+              },
+              orderBy: { createdAt: 'desc' },
+              take: 20,
             },
             enrollments: {
               select: {
