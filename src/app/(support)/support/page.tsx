@@ -238,7 +238,7 @@ export default function SupportPortalPage() {
     const [isInternalNote, setIsInternalNote] = useState(false);
     const [expandedMessages, setExpandedMessages] = useState<Set<string>>(new Set());
     const [showAIPanel, setShowAIPanel] = useState(false);
-    const [showCustomerPanel, setShowCustomerPanel] = useState(false);
+    const [showCustomerPanel, setShowCustomerPanel] = useState(true);
     const [customerContext, setCustomerContext] = useState<any>(null);
     const [loadingContext, setLoadingContext] = useState(false);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
@@ -519,57 +519,29 @@ export default function SupportPortalPage() {
                                     key={ticket.id}
                                     onClick={() => setSelectedTicketId(ticket.id)}
                                     className={cn(
-                                        "p-4 border-b cursor-pointer transition-all hover:bg-slate-50",
+                                        "px-3 py-2.5 border-b cursor-pointer transition-all hover:bg-slate-50",
                                         isSelected && "bg-[#722F37]/5 border-l-4 border-l-[#722F37]",
                                         isUrgent && !isSelected && "bg-red-50/50"
                                     )}
                                 >
-                                    <div className="flex items-start gap-3">
-                                        <Avatar className="w-10 h-10 flex-shrink-0">
-                                            <AvatarImage src={ticket.user?.avatar || undefined} />
-                                            <AvatarFallback className={cn(
-                                                "text-sm font-bold",
-                                                isUrgent ? "bg-red-100 text-red-700" : "bg-[#722F37]/10 text-[#722F37]"
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="font-medium text-sm text-slate-900 truncate max-w-[180px]">
+                                            {ticket.customerName}
+                                        </span>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className={cn(
+                                                "text-[9px] px-1.5 py-0.5 rounded",
+                                                categoryStyle.bg, categoryStyle.text
                                             )}>
-                                                {ticket.customerName.charAt(0).toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
-
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="font-semibold text-sm text-slate-900 truncate">
-                                                    {ticket.customerName}
-                                                </span>
-                                                <SLABadge ticket={ticket} />
-                                            </div>
-
-                                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                <span className="text-[10px] font-mono text-slate-400">#{ticket.ticketNumber}</span>
-                                                <span className={cn(
-                                                    "text-[10px] px-1.5 py-0.5 rounded border",
-                                                    categoryStyle.bg, categoryStyle.text, categoryStyle.border
-                                                )}>
-                                                    {category}
-                                                </span>
-                                                <span className={cn(
-                                                    "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium",
-                                                    statusConfig.bgLight, statusConfig.textColor
-                                                )}>
-                                                    <span className={cn("w-1.5 h-1.5 rounded-full", statusConfig.color)} />
-                                                    {statusConfig.label}
-                                                </span>
-                                            </div>
-
-                                            <p className="text-sm font-medium text-slate-800 line-clamp-1">{ticket.subject}</p>
-                                            <div className="flex items-center justify-between mt-1">
-                                                <p className="text-xs text-slate-500 line-clamp-1 flex-1">
-                                                    {ticket.messages?.[ticket.messages.length - 1]?.content || "No messages"}
-                                                </p>
-                                                <span className="text-[10px] text-slate-400 ml-2 whitespace-nowrap">
-                                                    {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: false })}
-                                                </span>
-                                            </div>
+                                                {category}
+                                            </span>
+                                            <span className={cn("w-2 h-2 rounded-full", statusConfig.color)} title={statusConfig.label} />
                                         </div>
+                                    </div>
+                                    <p className="text-xs text-slate-700 line-clamp-1 mb-1">{ticket.subject}</p>
+                                    <div className="flex items-center justify-between text-[10px] text-slate-400">
+                                        <span>#{ticket.ticketNumber}</span>
+                                        <span>{formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: false })}</span>
                                     </div>
                                 </div>
                             );
@@ -772,11 +744,15 @@ export default function SupportPortalPage() {
                                             </div>
                                             <div className="flex flex-wrap gap-1">
                                                 {selectedTicket.user?.marketingTags && selectedTicket.user.marketingTags.length > 0 ? (
-                                                    selectedTicket.user.marketingTags.map((t: { tag: string }, i: number) => (
-                                                        <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                                            {t.tag.replace(/_/g, ' ').replace(/-/g, ' ')}
-                                                        </span>
-                                                    ))
+                                                    selectedTicket.user.marketingTags.map((mt: any, i: number) => {
+                                                        // Handle both formats: {tag: {name, slug}} or {tag: string}
+                                                        const tagName = mt.tag?.name || mt.tag?.slug || (typeof mt.tag === 'string' ? mt.tag : 'Unknown');
+                                                        return (
+                                                            <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                                                {tagName.replace(/_/g, ' ').replace(/-/g, ' ')}
+                                                            </span>
+                                                        );
+                                                    })
                                                 ) : (
                                                     <span className="text-xs text-slate-400">No tags</span>
                                                 )}
