@@ -175,6 +175,9 @@ model User {
   oracleActions     OracleAction[]
   oracleSegment     OracleSegment?
 
+  // Push Notifications
+  pushSubscriptions PushSubscription[]
+
   @@index([email])
   @@index([role])
   @@index([assignedCoachId])
@@ -2922,8 +2925,40 @@ model OracleInsight {
   metadata    Json?
   status      String   @default("new") // new, reviewed, implemented, rejected
   createdAt   DateTime @default(now())
-  
+
   @@index([type, status])
   @@index([createdAt])
+}
+
+// ==================== PUSH NOTIFICATIONS ====================
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique // Push service endpoint URL
+  p256dh    String   // Client public key
+  auth      String   // Auth secret
+
+  // Device/browser info
+  userAgent String?
+  deviceType String? // mobile, desktop, tablet
+
+  // Notification preferences
+  messagesEnabled  Boolean @default(true)
+  coursesEnabled   Boolean @default(true)
+  remindersEnabled Boolean @default(true)
+  marketingEnabled Boolean @default(false)
+
+  // Stats
+  lastPushAt    DateTime?
+  failureCount  Int       @default(0) // Track failed pushes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([endpoint])
 }
 

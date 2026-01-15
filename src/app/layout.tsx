@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
+import { PushNotificationPrompt } from "@/components/pwa/push-notification-prompt";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -126,7 +127,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="AccrediPro" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
 
         <script
           type="application/ld+json"
@@ -151,6 +152,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors position="top-right" />
           <PWAInstallPrompt />
+          <PushNotificationPrompt />
           <Analytics />
           <SpeedInsights />
         </QueryProvider>

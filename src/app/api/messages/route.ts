@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { sendEmail, emailWrapper } from "@/lib/email";
+import { notifyNewMessage } from "@/lib/push-notifications";
 
 // Track last email sent per conversation (in-memory, reset on server restart)
 const lastEmailSent: Map<string, number> = new Map();
@@ -166,6 +167,26 @@ export async function POST(request: NextRequest) {
         data: { messageId: message.id, senderId: session.user.id },
       },
     });
+
+    // ===== SEND PUSH NOTIFICATION =====
+    try {
+      const senderName = session.user.firstName || "Someone";
+      const messagePreview = content
+        ? content
+        : attachmentType === "voice" ? "Sent you a voice message"
+          : attachmentType === "image" ? "Sent you an image"
+            : "Sent you a message";
+
+      await notifyNewMessage(
+        receiverId,
+        senderName,
+        messagePreview,
+        `/messages?user=${session.user.id}`
+      );
+    } catch (pushError) {
+      console.error("[DM] Push notification error:", pushError);
+      // Don't fail the request if push fails
+    }
 
     // ===== SEND EMAIL NOTIFICATION (with rate limiting) =====
     const conversationKey = [session.user.id, receiverId].sort().join("-");

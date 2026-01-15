@@ -12,6 +12,11 @@ const withPWA = require("next-pwa")({
   register: true,
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
+  // Import custom service worker for push notifications
+  importScripts: ["/sw-push.js"],
+  fallbacks: {
+    document: "/offline",
+  },
   runtimeCaching: [
     {
       // Cache lesson pages for offline access
