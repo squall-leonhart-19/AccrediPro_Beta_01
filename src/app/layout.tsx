@@ -9,6 +9,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 import { PushNotificationPrompt } from "@/components/pwa/push-notification-prompt";
+import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -153,6 +154,7 @@ export default function RootLayout({
           <Toaster richColors position="top-right" />
           <PWAInstallPrompt />
           <PushNotificationPrompt />
+          <ServiceWorkerRegistration />
           <Analytics />
           <SpeedInsights />
         </QueryProvider>
