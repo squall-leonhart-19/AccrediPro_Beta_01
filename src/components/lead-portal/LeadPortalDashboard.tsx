@@ -81,6 +81,81 @@ interface LeadPortalDashboardProps {
     config: DiplomaConfig;
 }
 
+// Sarah AI Floating Mentor Component
+function SarahFloatingMentor({
+    firstName,
+    lessonsCompleted,
+    totalLessons,
+    coachImage
+}: {
+    firstName: string;
+    lessonsCompleted: number;
+    totalLessons: number;
+    coachImage: string;
+}) {
+    const [isVisible, setIsVisible] = useState(false);
+    const [showBubble, setShowBubble] = useState(true);
+
+    // Progress-based messages
+    const messages = lessonsCompleted === 0
+        ? [`Hey ${firstName}! Ready to start? Your first lesson is just 7 minutes! 🚀`, `Welcome ${firstName}! I'm here to help you every step of the way 💪`]
+        : lessonsCompleted < totalLessons / 2
+            ? [`Great start ${firstName}! You're making progress! 🌟`, `Keep going ${firstName}! You've got this! 💪`]
+            : lessonsCompleted < totalLessons
+                ? [`Almost there ${firstName}! Just ${totalLessons - lessonsCompleted} lessons to go! 🔥`, `So close to your certificate ${firstName}! Finish strong! 🎯`]
+                : [`Congratulations ${firstName}! You did it! 🎉`, `Time to claim your certificate ${firstName}! 🎓`];
+
+    const [messageIndex, setMessageIndex] = useState(0);
+
+    useEffect(() => {
+        // Show after 3 seconds
+        const timer = setTimeout(() => setIsVisible(true), 3000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        // Rotate messages every 10 seconds
+        const interval = setInterval(() => {
+            setMessageIndex(prev => (prev + 1) % messages.length);
+        }, 10000);
+        return () => clearInterval(interval);
+    }, [messages.length]);
+
+    if (!isVisible) return null;
+
+    return (
+        <div className="fixed bottom-4 right-4 z-50 flex items-end gap-2">
+            {/* Speech Bubble */}
+            {showBubble && (
+                <div className="relative bg-white rounded-2xl shadow-lg p-3 max-w-[220px] animate-in slide-in-from-right duration-300">
+                    <button
+                        onClick={() => setShowBubble(false)}
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-300 text-xs"
+                    >
+                        ×
+                    </button>
+                    <p className="text-sm text-slate-700">{messages[messageIndex]}</p>
+                    <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white transform rotate-45" />
+                </div>
+            )}
+
+            {/* Sarah Avatar */}
+            <button
+                onClick={() => setShowBubble(!showBubble)}
+                className="w-14 h-14 rounded-full bg-burgundy-600 border-4 border-white shadow-lg overflow-hidden hover:scale-105 transition-transform flex-shrink-0"
+            >
+                <Image
+                    src={coachImage}
+                    alt="Coach Sarah"
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-cover"
+                />
+            </button>
+        </div>
+    );
+}
+
 const ICONS = {
     BookOpen,
     Target,
@@ -226,6 +301,37 @@ export function LeadPortalDashboard({
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Certificate Preview (Locked) - Shows their name! */}
+                {!isAllComplete && (
+                    <Card className="border-0 shadow-lg overflow-hidden relative group">
+                        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-slate-800/40 to-slate-900/60 z-10 flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 backdrop-blur flex items-center justify-center border-2 border-white/20">
+                                    <Lock className="w-8 h-8 text-white" />
+                                </div>
+                                <p className="text-white font-bold text-lg mb-1">Complete {totalLessons - lessonsCompleted} more lessons</p>
+                                <p className="text-white/70 text-sm">to unlock your certificate</p>
+                            </div>
+                        </div>
+                        <CardContent className="p-4">
+                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200/50">
+                                <div className="text-center">
+                                    <div className="flex items-center justify-center gap-2 mb-3">
+                                        <Award className="w-5 h-5 text-amber-600" />
+                                        <span className="text-xs font-bold uppercase tracking-wider text-amber-700">ASI Foundation Certificate</span>
+                                    </div>
+                                    <p className="text-3xl font-serif font-bold text-slate-800 mb-2">{firstName}</p>
+                                    <p className="text-sm text-slate-600">has successfully completed the</p>
+                                    <p className="text-lg font-bold text-burgundy-700 mt-1">{config.name}</p>
+                                    <div className="mt-4 pt-4 border-t border-amber-200/50">
+                                        <p className="text-xs text-slate-500">AccrediPro Standards Institute</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Completion CTA */}
                 {isAllComplete && (
@@ -426,6 +532,14 @@ export function LeadPortalDashboard({
                     </Card>
                 )}
             </div>
+
+            {/* Sarah AI Floating Mentor */}
+            <SarahFloatingMentor
+                firstName={firstName}
+                lessonsCompleted={lessonsCompleted}
+                totalLessons={totalLessons}
+                coachImage={config.coachImage}
+            />
         </div>
     );
 }
