@@ -8,7 +8,7 @@ const FM_PIXEL_ID = "1829815637745689";
 export default function FMCertificationPage() {
     useEffect(() => {
         // Load the full HTML page
-        fetch('/winning_sp.html')
+        fetch('/fm-certifications.html')
             .then(res => res.text())
             .then(html => {
                 // INJECT SCRIPTS BEFORE REPLACING DOCUMENT
