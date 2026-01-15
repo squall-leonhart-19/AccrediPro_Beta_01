@@ -7,6 +7,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { PWAInstallPrompt } from "@/components/pwa/install-prompt";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -119,6 +120,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* PWA Meta Tags */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#722f37" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="AccrediPro" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -141,6 +150,7 @@ export default function RootLayout({
           </Suspense>
           {children}
           <Toaster richColors position="top-right" />
+          <PWAInstallPrompt />
           <Analytics />
           <SpeedInsights />
         </QueryProvider>

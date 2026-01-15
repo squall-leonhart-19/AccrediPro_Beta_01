@@ -6,6 +6,76 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
 
+// PWA configuration
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+  runtimeCaching: [
+    {
+      // Cache lesson pages for offline access
+      urlPattern: /^https:\/\/learn\.accredipro\.academy\/learning\/.*/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "lesson-cache",
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+      },
+    },
+    {
+      // Cache images
+      urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "image-cache",
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+      },
+    },
+    {
+      // Cache fonts
+      urlPattern: /\.(?:woff|woff2|ttf|otf|eot)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "font-cache",
+        expiration: {
+          maxEntries: 20,
+          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+        },
+      },
+    },
+    {
+      // Cache API responses (stale-while-revalidate)
+      urlPattern: /^https:\/\/learn\.accredipro\.academy\/api\/.*/i,
+      handler: "StaleWhileRevalidate",
+      options: {
+        cacheName: "api-cache",
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 5, // 5 minutes
+        },
+      },
+    },
+    {
+      // Cache static assets
+      urlPattern: /^https:\/\/learn\.accredipro\.academy\/_next\/static\/.*/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "static-cache",
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+        },
+      },
+    },
+  ],
+});
+
 const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
@@ -79,7 +149,7 @@ const nextConfig: NextConfig = {
   // },
 };
 
-export default withSentryConfig(withBundleAnalyzer(nextConfig), {
+export default withSentryConfig(withPWA(withBundleAnalyzer(nextConfig)), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
