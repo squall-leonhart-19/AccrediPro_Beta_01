@@ -519,28 +519,31 @@ export default function SupportPortalPage() {
                                     key={ticket.id}
                                     onClick={() => setSelectedTicketId(ticket.id)}
                                     className={cn(
-                                        "px-3 py-2.5 border-b cursor-pointer transition-all hover:bg-slate-50",
+                                        "px-4 py-3 border-b cursor-pointer transition-all hover:bg-slate-50",
                                         isSelected && "bg-[#722F37]/5 border-l-4 border-l-[#722F37]",
                                         isUrgent && !isSelected && "bg-red-50/50"
                                     )}
                                 >
-                                    <div className="flex items-center justify-between mb-1">
-                                        <span className="font-medium text-sm text-slate-900 truncate max-w-[180px]">
+                                    {/* Name + Status Row */}
+                                    <div className="flex items-center justify-between mb-1.5">
+                                        <span className="font-semibold text-base text-slate-900 truncate max-w-[200px]">
                                             {ticket.customerName}
                                         </span>
                                         <div className="flex items-center gap-1.5">
                                             <span className={cn(
-                                                "text-[9px] px-1.5 py-0.5 rounded",
+                                                "text-[10px] px-2 py-0.5 rounded font-medium",
                                                 categoryStyle.bg, categoryStyle.text
                                             )}>
                                                 {category}
                                             </span>
-                                            <span className={cn("w-2 h-2 rounded-full", statusConfig.color)} title={statusConfig.label} />
+                                            <span className={cn("w-2.5 h-2.5 rounded-full", statusConfig.color)} title={statusConfig.label} />
                                         </div>
                                     </div>
-                                    <p className="text-xs text-slate-700 line-clamp-1 mb-1">{ticket.subject}</p>
-                                    <div className="flex items-center justify-between text-[10px] text-slate-400">
-                                        <span>#{ticket.ticketNumber}</span>
+                                    {/* Subject */}
+                                    <p className="text-sm text-slate-700 line-clamp-1 mb-1.5 font-medium">{ticket.subject}</p>
+                                    {/* Ticket # + Time */}
+                                    <div className="flex items-center justify-between text-xs text-slate-500">
+                                        <span className="font-mono">#{ticket.ticketNumber}</span>
                                         <span>{formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: false })}</span>
                                     </div>
                                 </div>
