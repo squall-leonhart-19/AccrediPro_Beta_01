@@ -708,74 +708,152 @@ export default function SupportPortalPage() {
                             )}
 
                             {showCustomerPanel && (
-                                <div className="w-80 border-l bg-gradient-to-br from-emerald-50 to-teal-50 flex-shrink-0 p-4">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                                            <UserCircle className="w-5 h-5 text-emerald-600" />
-                                            Customer Info
-                                        </h3>
-                                        <Button variant="ghost" size="icon" onClick={() => setShowCustomerPanel(false)} className="h-7 w-7">
-                                            <X className="w-4 h-4" />
-                                        </Button>
-                                    </div>
-
-                                    {loadingContext ? (
-                                        <div className="flex items-center justify-center py-8">
-                                            <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+                                <div className="w-80 border-l bg-gradient-to-br from-emerald-50 to-teal-50 flex-shrink-0 overflow-y-auto">
+                                    <div className="p-4">
+                                        {/* Header */}
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                                <UserCircle className="w-5 h-5 text-emerald-600" />
+                                                Customer Info
+                                            </h3>
+                                            <Button variant="ghost" size="icon" onClick={() => setShowCustomerPanel(false)} className="h-7 w-7">
+                                                <X className="w-4 h-4" />
+                                            </Button>
                                         </div>
-                                    ) : customerContext ? (
-                                        <div className="space-y-4">
-                                            {/* Tags */}
-                                            <div>
-                                                <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
-                                                    <TagIcon className="w-3 h-3" />
-                                                    Marketing Tags
-                                                </div>
-                                                <div className="flex flex-wrap gap-1">
-                                                    {customerContext.tags?.length > 0 ? (
-                                                        customerContext.tags.map((tag: any) => (
-                                                            <span key={tag.id} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                                                {tag.name}
-                                                            </span>
-                                                        ))
-                                                    ) : (
-                                                        <span className="text-xs text-slate-400">No tags</span>
-                                                    )}
+
+                                        {/* Customer Basic Info */}
+                                        <div className="bg-white rounded-lg p-3 border border-emerald-200 mb-4">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <Avatar className="w-10 h-10">
+                                                    <AvatarImage src={selectedTicket.user?.avatar || undefined} />
+                                                    <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm font-bold">
+                                                        {selectedTicket.customerName.charAt(0).toUpperCase()}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <div className="font-semibold text-slate-800">{selectedTicket.customerName}</div>
+                                                    <div className="text-xs text-slate-500">{selectedTicket.customerEmail}</div>
                                                 </div>
                                             </div>
-
-                                            {/* Enrolled Courses */}
-                                            <div>
-                                                <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
-                                                    <GraduationCap className="w-3 h-3" />
-                                                    Enrolled Courses
-                                                </div>
-                                                <div className="space-y-1">
-                                                    {customerContext.enrollments?.length > 0 ? (
-                                                        customerContext.enrollments.map((e: any) => (
-                                                            <div key={e.id} className="text-xs p-2 rounded bg-white border border-emerald-200">
-                                                                <div className="font-medium text-slate-800">{e.course?.title || 'Unknown Course'}</div>
-                                                                <div className="text-slate-500">{e.progress || 0}% complete</div>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <span className="text-xs text-slate-400">No enrollments</span>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {/* Member Since */}
-                                            {customerContext.createdAt && (
-                                                <div className="text-xs text-slate-500">
-                                                    Member since {format(new Date(customerContext.createdAt), "MMM d, yyyy")}
+                                            {selectedTicket.user?.createdAt && (
+                                                <div className="text-xs text-slate-400">
+                                                    Member since {format(new Date(selectedTicket.user.createdAt), "MMM d, yyyy")}
                                                 </div>
                                             )}
                                         </div>
-                                    ) : (
-                                        <div className="text-center text-slate-400 py-8">
-                                            Click to load customer info
+
+                                        {/* Quick Stats */}
+                                        <div className="grid grid-cols-2 gap-2 mb-4">
+                                            <div className="bg-white rounded-lg p-2 border border-emerald-200 text-center">
+                                                <div className="text-lg font-bold text-emerald-600">
+                                                    {selectedTicket.user?.payments?.length || 0}
+                                                </div>
+                                                <div className="text-[10px] text-slate-500">Payments</div>
+                                            </div>
+                                            <div className="bg-white rounded-lg p-2 border border-emerald-200 text-center">
+                                                <div className="text-lg font-bold text-blue-600">
+                                                    {selectedTicket.user?.submittedTickets?.length || 0}
+                                                </div>
+                                                <div className="text-[10px] text-slate-500">Tickets</div>
+                                            </div>
                                         </div>
-                                    )}
+
+                                        {/* Marketing Tags */}
+                                        <div className="mb-4">
+                                            <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center justify-between">
+                                                <span className="flex items-center gap-1">
+                                                    <TagIcon className="w-3 h-3" />
+                                                    Marketing Tags
+                                                </span>
+                                                <Button variant="ghost" size="sm" className="h-5 px-2 text-[10px] text-emerald-600 hover:text-emerald-700"
+                                                    onClick={() => selectedTicket.user?.id && window.open(`/admin/users?user=${selectedTicket.user.id}`, '_blank')}>
+                                                    <Plus className="w-3 h-3 mr-1" /> Add
+                                                </Button>
+                                            </div>
+                                            <div className="flex flex-wrap gap-1">
+                                                {selectedTicket.user?.marketingTags && selectedTicket.user.marketingTags.length > 0 ? (
+                                                    selectedTicket.user.marketingTags.map((t: { tag: string }, i: number) => (
+                                                        <span key={i} className="text-[10px] px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                                            {t.tag.replace(/_/g, ' ').replace(/-/g, ' ')}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-xs text-slate-400">No tags</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Recent Payments */}
+                                        <div className="mb-4">
+                                            <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
+                                                <GraduationCap className="w-3 h-3" />
+                                                Recent Payments
+                                            </div>
+                                            <div className="space-y-1">
+                                                {selectedTicket.user?.payments && selectedTicket.user.payments.length > 0 ? (
+                                                    selectedTicket.user.payments.slice(0, 3).map((p: any) => (
+                                                        <div key={p.id} className="text-xs p-2 rounded bg-white border border-emerald-200">
+                                                            <div className="flex justify-between">
+                                                                <span className="font-medium text-slate-800">{p.productName || 'Unknown'}</span>
+                                                                <span className="text-emerald-600 font-bold">${Number(p.amount).toFixed(0)}</span>
+                                                            </div>
+                                                            <div className="text-slate-400">{format(new Date(p.createdAt), "MMM d, yyyy")}</div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-xs text-slate-400">No payments</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Previous Tickets */}
+                                        <div className="mb-4">
+                                            <div className="text-xs font-semibold text-slate-600 mb-2 flex items-center gap-1">
+                                                <LifeBuoy className="w-3 h-3" />
+                                                Previous Tickets
+                                            </div>
+                                            <div className="space-y-1">
+                                                {selectedTicket.user?.submittedTickets && selectedTicket.user.submittedTickets.length > 1 ? (
+                                                    selectedTicket.user.submittedTickets
+                                                        .filter((t: any) => t.id !== selectedTicket.id)
+                                                        .slice(0, 3)
+                                                        .map((t: any) => (
+                                                            <div key={t.id} className="text-xs p-2 rounded bg-white border border-emerald-200 cursor-pointer hover:bg-emerald-50"
+                                                                onClick={() => setSelectedTicketId(t.id)}>
+                                                                <div className="font-medium text-slate-800 truncate">#{t.ticketNumber}: {t.subject}</div>
+                                                                <div className="flex justify-between text-slate-400">
+                                                                    <span className={t.status === 'RESOLVED' ? 'text-emerald-500' : 'text-amber-500'}>{t.status}</span>
+                                                                    <span>{format(new Date(t.createdAt), "MMM d")}</span>
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                ) : (
+                                                    <span className="text-xs text-slate-400">First ticket</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Quick Actions */}
+                                        <div className="space-y-2">
+                                            <div className="text-xs font-semibold text-slate-600 mb-1">Quick Actions</div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full text-xs justify-start"
+                                                onClick={() => selectedTicket.user?.id && window.open(`/admin/users?user=${selectedTicket.user.id}`, '_blank')}
+                                            >
+                                                <User className="w-3 h-3 mr-2" /> View Full Profile
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full text-xs justify-start"
+                                                onClick={() => selectedTicket.customerEmail && window.open(`mailto:${selectedTicket.customerEmail}`, '_blank')}
+                                            >
+                                                <Mail className="w-3 h-3 mr-2" /> Send Email
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
