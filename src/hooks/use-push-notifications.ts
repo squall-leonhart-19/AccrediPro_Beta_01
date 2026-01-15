@@ -105,31 +105,55 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       return false;
     }
 
+    // Helper to wrap promises with timeout
+    const withTimeout = <T,>(promise: Promise<T>, ms: number, errorMsg: string): Promise<T> => {
+      return Promise.race([
+        promise,
+        new Promise<T>((_, reject) =>
+          setTimeout(() => reject(new Error(errorMsg)), ms)
+        ),
+      ]);
+    };
+
     try {
       // Request permission if not granted
       if (Notification.permission !== "granted") {
+        console.log("[Push] Requesting permission...");
         const result = await requestPermission();
+        console.log("[Push] Permission result:", result);
         if (result !== "granted") {
           console.log("[Push] Permission denied");
           return false;
         }
       }
 
-      // Get service worker registration
+      // Get service worker registration with timeout
+      console.log("[Push] Getting service worker...");
       let registration;
       try {
-        registration = await navigator.serviceWorker.ready;
+        registration = await withTimeout(
+          navigator.serviceWorker.ready,
+          10000,
+          "Service worker timeout"
+        );
+        console.log("[Push] Service worker ready");
       } catch (swError) {
         console.error("[Push] Service worker not ready:", swError);
         return false;
       }
 
-      // Get VAPID public key from server
+      // Get VAPID public key from server with timeout
+      console.log("[Push] Fetching VAPID key...");
       let vapidPublicKey;
       try {
-        const keyResponse = await fetch("/api/push/subscribe");
+        const keyResponse = await withTimeout(
+          fetch("/api/push/subscribe"),
+          10000,
+          "VAPID key fetch timeout"
+        );
         if (!keyResponse.ok) {
-          console.error("[Push] Failed to get VAPID key:", keyResponse.status);
+          const errorData = await keyResponse.json().catch(() => ({}));
+          console.error("[Push] Failed to get VAPID key:", keyResponse.status, errorData);
           return false;
         }
         const keyData = await keyResponse.json();
@@ -139,37 +163,51 @@ export function usePushNotifications(): UsePushNotificationsReturn {
           console.error("[Push] No VAPID key returned - check env vars");
           return false;
         }
+        console.log("[Push] Got VAPID key");
       } catch (keyError) {
         console.error("[Push] Error fetching VAPID key:", keyError);
         return false;
       }
 
-      // Subscribe to push service
+      // Subscribe to push service with timeout
+      console.log("[Push] Subscribing to push manager...");
       let subscription;
       try {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
-        });
+        subscription = await withTimeout(
+          registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+          }),
+          10000,
+          "Push manager subscribe timeout"
+        );
+        console.log("[Push] Subscribed to push manager");
       } catch (subError) {
         console.error("[Push] Failed to subscribe to push manager:", subError);
         return false;
       }
 
-      // Send subscription to server
+      // Send subscription to server with timeout
+      console.log("[Push] Saving subscription to server...");
       try {
-        const response = await fetch("/api/push/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subscription: subscription.toJSON() }),
-        });
+        const response = await withTimeout(
+          fetch("/api/push/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subscription: subscription.toJSON() }),
+          }),
+          10000,
+          "Save subscription timeout"
+        );
 
         if (response.ok) {
+          console.log("[Push] Subscription saved successfully");
           setIsSubscribed(true);
           await fetchStatus();
           return true;
         } else {
-          console.error("[Push] Failed to save subscription:", response.status);
+          const errorData = await response.json().catch(() => ({}));
+          console.error("[Push] Failed to save subscription:", response.status, errorData);
           return false;
         }
       } catch (saveError) {

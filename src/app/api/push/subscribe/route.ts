@@ -12,8 +12,9 @@ export async function GET() {
   const vapidPublicKey = getVapidPublicKey();
 
   if (!vapidPublicKey) {
+    console.error("[Push API] VAPID public key not configured - check NEXT_PUBLIC_VAPID_PUBLIC_KEY env var");
     return NextResponse.json(
-      { error: "Push notifications not configured" },
+      { error: "Push notifications not configured - VAPID keys missing" },
       { status: 503 }
     );
   }
