@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
             if (hoursSinceSignup >= 4 && hoursSinceSignup < 5 && !sentNudges.has("nudge:hour-4-email")) {
                 try {
                     await resend.emails.send({
-                        from: "Coach Sarah <sarah@accredipro-certificate.com>",
+                        from: "Sarah <sarah_womenhealth@accredipro-certificate.com>",
                         to: lead.email,
                         subject: "Quick reminder: Your 7-day access has started 🔥",
                         html: `
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
             if (hoursSinceSignup >= 48 && hoursSinceSignup < 49 && !sentNudges.has("nudge:day-2-email")) {
                 try {
                     await resend.emails.send({
-                        from: "Coach Sarah <sarah@accredipro-certificate.com>",
+                        from: "Sarah <sarah_womenhealth@accredipro-certificate.com>",
                         to: lead.email,
                         subject: "Day 2: Still waiting for you! 👀",
                         html: `
@@ -185,7 +185,7 @@ export async function GET(request: NextRequest) {
             if (hoursSinceSignup >= 120 && hoursSinceSignup < 121 && !sentNudges.has("nudge:day-5-email")) {
                 try {
                     await resend.emails.send({
-                        from: "Coach Sarah <sarah@accredipro-certificate.com>",
+                        from: "Sarah <sarah_womenhealth@accredipro-certificate.com>",
                         to: lead.email,
                         subject: "⚠️ Only 2 days left! Your certificate is waiting...",
                         html: `
@@ -217,7 +217,7 @@ export async function GET(request: NextRequest) {
             if (hoursSinceSignup >= 168 && hoursSinceSignup < 169 && !sentNudges.has("nudge:day-7-email")) {
                 try {
                     await resend.emails.send({
-                        from: "Coach Sarah <sarah@accredipro-certificate.com>",
+                        from: "Sarah <sarah_womenhealth@accredipro-certificate.com>",
                         to: lead.email,
                         subject: "Your access expired — but I extended it 48h for you 🎁",
                         html: `

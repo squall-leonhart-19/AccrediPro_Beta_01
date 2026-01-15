@@ -20,7 +20,12 @@ const COURSE_SLUGS: Record<string, string> = {
 // Coach emails by mini diploma type
 const COACH_EMAILS: Record<string, string> = {
     "womens-health": "sarah_womenhealth@accredipro-certificate.com",
-    "functional-medicine": "sarah@accredipro-certificate.com",
+    "functional-medicine": "sarah_womenhealth@accredipro-certificate.com",
+    "gut-health": "sarah_womenhealth@accredipro-certificate.com",
+    "hormone-health": "sarah_womenhealth@accredipro-certificate.com",
+    "holistic-nutrition": "sarah_womenhealth@accredipro-certificate.com",
+    "nurse-coach": "sarah_womenhealth@accredipro-certificate.com",
+    "health-coach": "sarah_womenhealth@accredipro-certificate.com",
 };
 
 // Welcome messages by mini diploma type
