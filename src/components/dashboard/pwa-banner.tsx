@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Smartphone, Bell, Download, Zap, Wifi, Share, Plus, ChevronDown, CheckCircle } from "lucide-react";
+import { X, Smartphone, Bell, Download, Zap, Wifi, Share, Plus, ChevronDown, CheckCircle, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 
@@ -258,8 +258,8 @@ export function DashboardPWABanner() {
                                 onClick={handleEnableNotifications}
                                 disabled={isSubscribing}
                                 className={`flex-1 font-semibold h-11 shadow-lg ${subscriptionFailed
-                                        ? "bg-orange-500 hover:bg-orange-600 text-white"
-                                        : "bg-[#d4af37] hover:bg-[#c9a227] text-white"
+                                    ? "bg-orange-500 hover:bg-orange-600 text-white"
+                                    : "bg-[#d4af37] hover:bg-[#c9a227] text-white"
                                     }`}
                             >
                                 {isSubscribing ? (
@@ -291,25 +291,36 @@ export function DashboardPWABanner() {
                     </div>
 
                     {/* Maybe later link */}
-                    <div className="mt-3 text-center">
+                    <div className="mt-3 flex items-center justify-center gap-4">
                         <button
                             onClick={handleDismiss}
                             className="text-xs text-white/50 hover:text-white/70 transition-colors"
                         >
                             Maybe later
                         </button>
+                        {needsInstall && !justInstalled && (
+                            <>
+                                <span className="text-white/30">•</span>
+                                <button
+                                    onClick={() => setShowIOSGuide(true)}
+                                    className="text-xs text-[#d4af37]/80 hover:text-[#d4af37] transition-colors underline underline-offset-2"
+                                >
+                                    How to install?
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {/* iOS Install Guide Modal */}
-            {showIOSGuide && <IOSInstallGuide onClose={() => setShowIOSGuide(false)} />}
+            {/* Install Guide Modal (works for iOS, Android shows simpler message) */}
+            {showIOSGuide && <InstallGuide isIOS={isIOS} onClose={() => setShowIOSGuide(false)} />}
         </>
     );
 }
 
-// iOS Install Guide Overlay
-function IOSInstallGuide({ onClose }: { onClose: () => void }) {
+// Unified Install Guide - shows iOS or Android instructions
+function InstallGuide({ isIOS, onClose }: { isIOS: boolean; onClose: () => void }) {
     return (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-200">
             <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl animate-in slide-in-from-bottom-4 duration-300 overflow-hidden">
@@ -322,7 +333,9 @@ function IOSInstallGuide({ onClose }: { onClose: () => void }) {
                             </div>
                             <div>
                                 <h3 className="font-bold">Install AccrediPro</h3>
-                                <p className="text-xs text-white/80">3 quick steps</p>
+                                <p className="text-xs text-white/80">
+                                    {isIOS ? "iPhone/iPad" : "Android/Chrome"}
+                                </p>
                             </div>
                         </div>
                         <button
@@ -336,53 +349,102 @@ function IOSInstallGuide({ onClose }: { onClose: () => void }) {
 
                 {/* Steps */}
                 <div className="p-5 space-y-4">
-                    {/* Step 1 */}
-                    <div className="flex items-start gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
-                            1
-                        </div>
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-900 mb-1">Tap the Share button</p>
-                            <div className="flex items-center gap-2 text-sm text-gray-500">
-                                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <Share className="w-4 h-4 text-blue-500" />
+                    {isIOS ? (
+                        <>
+                            {/* iOS Step 1 */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
+                                    1
                                 </div>
-                                <span>At the bottom of Safari</span>
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-900 mb-1">Tap the Share button</p>
+                                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                                        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <Share className="w-4 h-4 text-blue-500" />
+                                        </div>
+                                        <span>At the bottom of Safari</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Step 2 */}
-                    <div className="flex items-start gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
-                            2
-                        </div>
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-900 mb-1">Scroll down and tap</p>
-                            <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm">
-                                <Plus className="w-4 h-4 text-gray-600" />
-                                <span className="font-medium text-gray-700">Add to Home Screen</span>
+                            {/* iOS Step 2 */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
+                                    2
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-900 mb-1">Scroll down and tap</p>
+                                    <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                                        <Plus className="w-4 h-4 text-gray-600" />
+                                        <span className="font-medium text-gray-700">Add to Home Screen</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Step 3 */}
-                    <div className="flex items-start gap-4">
-                        <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
-                            3
-                        </div>
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-900 mb-1">Tap &ldquo;Add&rdquo; to confirm</p>
-                            <p className="text-sm text-gray-500">The app will appear on your home screen</p>
-                        </div>
-                    </div>
+                            {/* iOS Step 3 */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
+                                    3
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-900 mb-1">Tap &ldquo;Add&rdquo; to confirm</p>
+                                    <p className="text-sm text-gray-500">The app will appear on your home screen</p>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* Android Step 1 */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
+                                    1
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-900 mb-1">Tap the menu button</p>
+                                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                                        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <MoreVertical className="w-4 h-4 text-gray-600" />
+                                        </div>
+                                        <span>Three dots at top right of Chrome</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Android Step 2 */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
+                                    2
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-900 mb-1">Tap &ldquo;Add to Home screen&rdquo;</p>
+                                    <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                                        <Plus className="w-4 h-4 text-gray-600" />
+                                        <span className="font-medium text-gray-700">Add to Home screen</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Android Step 3 */}
+                            <div className="flex items-start gap-4">
+                                <div className="w-8 h-8 rounded-full bg-[#722f37]/10 flex items-center justify-center flex-shrink-0 text-[#722f37] font-bold text-sm">
+                                    3
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-900 mb-1">Tap &ldquo;Install&rdquo; or &ldquo;Add&rdquo;</p>
+                                    <p className="text-sm text-gray-500">The app icon will appear on your home screen</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
-                {/* Arrow pointing down */}
-                <div className="pb-4 flex flex-col items-center">
-                    <p className="text-xs text-gray-400 mb-2">Share button is below</p>
-                    <ChevronDown className="w-6 h-6 text-[#722f37]/50 animate-bounce" />
-                </div>
+                {/* Arrow pointing (for iOS) */}
+                {isIOS && (
+                    <div className="pb-4 flex flex-col items-center">
+                        <p className="text-xs text-gray-400 mb-2">Share button is below</p>
+                        <ChevronDown className="w-6 h-6 text-[#722f37]/50 animate-bounce" />
+                    </div>
+                )}
 
                 {/* Footer */}
                 <div className="px-5 pb-5">
@@ -394,3 +456,4 @@ function IOSInstallGuide({ onClose }: { onClose: () => void }) {
         </div>
     );
 }
+
