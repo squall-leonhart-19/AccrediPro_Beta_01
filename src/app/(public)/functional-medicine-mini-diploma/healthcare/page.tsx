@@ -283,6 +283,66 @@ function HealthcareWorkersMiniDiplomaContent() {
                 </div>
             </section>
 
+            {/* YOUR PATH: FUNCTIONAL MEDICINE PRACTITIONER */}
+            <section className="py-12 md:py-16 bg-white">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="rounded-2xl overflow-hidden border-2" style={{ borderColor: BRAND.gold }}>
+                        <div className="grid md:grid-cols-2">
+                            {/* Left: Career Path */}
+                            <div className="p-8" style={{ backgroundColor: BRAND.burgundyDark }}>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: BRAND.goldMetallic, color: BRAND.burgundyDark }}>
+                                    <Sparkles className="w-3 h-3" />
+                                    YOUR NEW CAREER PATH
+                                </div>
+                                <h3 className="text-2xl md:text-3xl font-black text-white mb-4">
+                                    Become a<br />
+                                    <span style={{ color: BRAND.gold }}>Functional Medicine Practitioner</span>
+                                </h3>
+                                <p className="text-white/70 mb-6">
+                                    Help clients find the root cause of their health issues. Work from home. Set your own hours. Earn what you're worth.
+                                </p>
+                                <div className="space-y-3">
+                                    {[
+                                        "Work with clients 1-on-1 (virtual or in-person)",
+                                        "Help people actually heal (not just manage symptoms)",
+                                        "Be your own boss with flexible hours",
+                                        "Use your clinical skills in a new way"
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-2 text-white/90">
+                                            <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: BRAND.gold }} />
+                                            <span className="text-sm">{item}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Right: Income */}
+                            <div className="p-8 flex flex-col justify-center" style={{ backgroundColor: "#faf5eb" }}>
+                                <div className="text-center">
+                                    <p className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: BRAND.burgundy }}>Average Practitioner Income</p>
+                                    <div className="text-5xl md:text-6xl font-black mb-2" style={{ color: BRAND.burgundy }}>$4K-$8K</div>
+                                    <p className="text-gray-500 text-sm mb-6">per month (part-time)</p>
+
+                                    <div className="grid grid-cols-3 gap-4 text-center">
+                                        <div>
+                                            <p className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>$150</p>
+                                            <p className="text-xs text-gray-500">per session</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>10-15</p>
+                                            <p className="text-xs text-gray-500">clients/month</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-bold" style={{ color: BRAND.burgundy }}>Flexible</p>
+                                            <p className="text-xs text-gray-500">your schedule</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* YOUR CLINICAL BACKGROUND IS YOUR ADVANTAGE */}
             <section className="py-16 md:py-20 bg-white">
                 <div className="max-w-5xl mx-auto px-4">

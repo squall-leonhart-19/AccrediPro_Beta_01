@@ -245,9 +245,9 @@ export function MultiStepQualificationForm({
                             </Label>
                             <div className="grid grid-cols-1 gap-2">
                                 {[
-                                    { id: "side-income-500-1k", label: "Just a side income ($500-1K/mo)", emoji: "💰" },
-                                    { id: "replace-job-3-5k", label: "Replace my job ($3-5K/mo)", emoji: "🎯" },
-                                    { id: "build-business-5k-plus", label: "Build a real business ($5K+/mo)", emoji: "🚀" }
+                                    { id: "starter-3-5k", label: "Getting started ($3-5K/mo)", emoji: "💰" },
+                                    { id: "replace-job-5-10k", label: "Replace my income ($5-10K/mo)", emoji: "🎯" },
+                                    { id: "scale-business-10k-plus", label: "Build a real practice ($10K+/mo)", emoji: "🚀" }
                                 ].map((option) => (
                                     <button
                                         key={option.id}
