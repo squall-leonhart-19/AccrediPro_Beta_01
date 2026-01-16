@@ -83,7 +83,7 @@ Sarah ✨`,
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { firstName, lastName, email, phone, course, lifeStage, motivation, investment } = body;
+        const { firstName, lastName, email, phone, course, lifeStage, motivation, investment, segment } = body;
 
         // Validate required fields
         if (!firstName || !lastName || !email || !phone || !course) {
@@ -171,8 +171,9 @@ export async function POST(request: NextRequest) {
                     miniDiplomaCategory: course,
                     miniDiplomaOptinAt: new Date(),
                     // Don't override accessExpiresAt if they're already a paid user
+                    // 48-hour access window for urgency (was 7 days)
                     ...(existingUser.userType === "LEAD" && {
-                        accessExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                        accessExpiresAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
                     }),
                 },
             });
@@ -200,9 +201,9 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Calculate 7-day access expiry
+        // Calculate 48-hour access expiry (was 7 days)
         const accessExpiresAt = new Date();
-        accessExpiresAt.setDate(accessExpiresAt.getDate() + 7);
+        accessExpiresAt.setDate(accessExpiresAt.getDate() + 2);
 
         // Find the appropriate coach for this mini diploma
         const coachEmail = COACH_EMAILS[course];
@@ -251,7 +252,10 @@ export async function POST(request: NextRequest) {
             // Qualification Data (Questions: income_goal, time_commitment, motivation)
             `income_goal:${investment}`,
             `time_commitment:${lifeStage}`,
-            `motivation:${motivation}`
+            `motivation:${motivation}`,
+            // Segment tag for different landing page variants (e.g., healthcare-workers, general)
+            // Used for GHL workflow routing
+            ...(segment ? [`segment:${segment}`] : [])
         ];
         for (const tag of userTags) {
             await prisma.userTag.create({
@@ -361,6 +365,8 @@ export async function POST(request: NextRequest) {
                     source: "mini-diploma",
                     lead_source: course, // e.g., "functional-medicine"
                     lead_source_detail: `${course}-mini-diploma`,
+                    // Segment for GHL workflow routing (healthcare-workers, general, etc.)
+                    segment: segment || "general",
                     // Qualification Answers
                     life_stage: lifeStage || "",
                     motivation: motivation || "",

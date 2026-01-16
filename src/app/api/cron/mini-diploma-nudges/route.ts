@@ -51,14 +51,18 @@ function getPersonalizedHook(qual: ReturnType<typeof getQualificationData>, firs
     }
 
     // Income-based hooks (fallback)
+    // Supports both old (side-income-500-1k) and new (starter-3-5k) income goal formats
     if (qual.incomeGoal === "side-income-500-1k") {
         return `${firstName}, even just 2-3 clients a month can add $500-1,000 to your income. Let's start building that today.`;
     }
-    if (qual.incomeGoal === "replace-income-3-5k") {
-        return `${firstName}, replacing your income is totally achievable. Our grads average $4,200/month. Let's get you there!`;
+    if (qual.incomeGoal === "starter-3-5k" || qual.incomeGoal === "replace-income-3-5k") {
+        return `${firstName}, $3-5K/month is totally achievable. Our grads average $4,200/month. Let's get you there!`;
     }
-    if (qual.incomeGoal === "build-business-10k-plus") {
-        return `${firstName}, building a $10k+/month business starts with mastering these fundamentals. You've got what it takes!`;
+    if (qual.incomeGoal === "replace-job-5-10k") {
+        return `${firstName}, replacing your income at $5-10K/month? Absolutely doable. Our top grads are doing exactly that!`;
+    }
+    if (qual.incomeGoal === "scale-business-10k-plus" || qual.incomeGoal === "build-business-10k-plus") {
+        return `${firstName}, building a $10k+/month practice starts with mastering these fundamentals. You've got what it takes!`;
     }
 
     // Time-based hooks (fallback)
@@ -85,10 +89,11 @@ export async function GET(request: NextRequest) {
         const results: NudgeResult[] = [];
 
         // Find all FM mini diploma leads who haven't started
+        // Tag format from optin: lead:{course}-mini-diploma (e.g., lead:functional-medicine-mini-diploma)
         const leads = await prisma.user.findMany({
             where: {
                 tags: {
-                    some: { tag: "lead:functional-medicine" }
+                    some: { tag: "lead:functional-medicine-mini-diploma" }
                 },
                 // Exclude those who have completed lesson 1
                 NOT: {
@@ -149,18 +154,18 @@ export async function GET(request: NextRequest) {
                     await resend.emails.send({
                         from: "Sarah M. <sarah@accredipro-certificate.com>",
                         to: lead.email,
-                        subject: "Quick reminder: Your 7-day access has started 🔥",
+                        subject: "Quick reminder: Your 48-hour access is running ⏰",
                         html: `
                             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
                                 <p>Hey ${firstName}! 👋</p>
-                                <p>Just a quick reminder — your 7-day access to the ASI Functional Medicine Foundation started a few hours ago.</p>
-                                <p><strong>847 students started today.</strong> Don't fall behind!</p>
+                                <p>Just a quick reminder — your <strong>48-hour access</strong> to the ASI Functional Medicine Foundation started a few hours ago.</p>
+                                <p><strong>89% of students complete it in one sitting.</strong> Don't fall behind!</p>
                                 <p style="margin: 30px 0;">
                                     <a href="${dashboardLink}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
                                         Start Lesson 1 Now →
                                     </a>
                                 </p>
-                                <p>Lesson 1 takes just 7 minutes. You've got this! 💪</p>
+                                <p>The whole course takes just 1 hour. You've got this! 💪</p>
                                 <p>— Coach Sarah</p>
                             </div>
                         `
@@ -171,6 +176,43 @@ export async function GET(request: NextRequest) {
                     results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "hour-4" });
                 } catch (err) {
                     console.error(`Failed to send hour-4 email to ${lead.email}:`, err);
+                }
+            }
+
+            // Hour 24 Email nudge - URGENT (24 hours left!)
+            if (hoursSinceSignup >= 24 && hoursSinceSignup < 25 && !sentNudges.has("nudge:hour-24-email")) {
+                try {
+                    await resend.emails.send({
+                        from: "Sarah M. <sarah@accredipro-certificate.com>",
+                        to: lead.email,
+                        subject: "⚠️ 24 Hours Left! Your certification access expires tomorrow",
+                        html: `
+                            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                                <p>Hey ${firstName}! 👋</p>
+                                <p style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                                    ⚠️ <strong>You have exactly 24 hours left</strong> to complete your ASI Functional Medicine Foundation certification.
+                                </p>
+                                <p style="background: #f8f4f0; padding: 15px; border-radius: 8px; border-left: 4px solid #722F37;">
+                                    ${personalizedHook}
+                                </p>
+                                <p>Here's the good news: <strong>The entire certification takes just 1 hour.</strong></p>
+                                <p>9 lessons × 7 minutes each = Your certificate by tonight!</p>
+                                <p style="margin: 30px 0;">
+                                    <a href="${dashboardLink}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                                        Start Now - Get Certified Today →
+                                    </a>
+                                </p>
+                                <p>Don't let this opportunity expire. I believe in you! 💪</p>
+                                <p>— Coach Sarah</p>
+                            </div>
+                        `
+                    });
+                    await prisma.userTag.create({
+                        data: { userId: lead.id, tag: "nudge:hour-24-email" }
+                    });
+                    results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "hour-24" });
+                } catch (err) {
+                    console.error(`Failed to send hour-24 email to ${lead.email}:`, err);
                 }
             }
 
@@ -200,119 +242,61 @@ export async function GET(request: NextRequest) {
                 }
             }
 
-            // Day 2 Email nudge - PERSONALIZED based on qualification
-            if (hoursSinceSignup >= 48 && hoursSinceSignup < 49 && !sentNudges.has("nudge:day-2-email")) {
+            // Hour 36 SMS nudge - FINAL WARNING (12 hours left!)
+            if (hoursSinceSignup >= 36 && hoursSinceSignup < 37 && !sentNudges.has("nudge:hour-36-sms")) {
+                if (lead.phone) {
+                    let smsMessage = `🚨 ${firstName}, only 12 HOURS left! Your certification expires tonight. 1 hour to complete, certificate for life. Go now: ${dashboardLink}`;
+                    if (qualData.motivation === "time-with-family") {
+                        smsMessage = `🚨 ${firstName}, 12 hours left! This certification = more time with family. Don't miss out: ${dashboardLink}`;
+                    } else if (qualData.motivation === "financial-freedom") {
+                        smsMessage = `🚨 ${firstName}, 12 hours to change your income! Complete your certification now: ${dashboardLink}`;
+                    }
+
+                    const success = await sendSMS(lead.phone, smsMessage);
+                    if (success) {
+                        await prisma.userTag.create({
+                            data: { userId: lead.id, tag: "nudge:hour-36-sms" }
+                        });
+                        results.push({ userId: lead.id, channel: "sms", success: true, nudgeType: "hour-36" });
+                    }
+                }
+            }
+
+            // Hour 48 Email nudge (EXPIRED - with 24h extension offer)
+            if (hoursSinceSignup >= 48 && hoursSinceSignup < 49 && !sentNudges.has("nudge:hour-48-email")) {
                 try {
                     // Generate income message based on their goal
-                    let incomeMessage = "How to command $150-300/hour with this knowledge";
-                    if (qualData.incomeGoal === "side-income-500-1k") {
-                        incomeMessage = "How to earn an extra $500-1,000/month on the side";
-                    } else if (qualData.incomeGoal === "replace-income-3-5k") {
-                        incomeMessage = "How practitioners replace their income ($3,000-5,000/month)";
-                    } else if (qualData.incomeGoal === "build-business-10k-plus") {
-                        incomeMessage = "How top practitioners build $10k+/month businesses";
+                    let incomeMessage = "practitioners earning $150-300/hour";
+                    if (qualData.incomeGoal === "starter-3-5k" || qualData.incomeGoal === "side-income-500-1k") {
+                        incomeMessage = "practitioners starting at $3,000-5,000/month";
+                    } else if (qualData.incomeGoal === "replace-job-5-10k" || qualData.incomeGoal === "replace-income-3-5k") {
+                        incomeMessage = "practitioners replacing their income at $5,000-10,000/month";
+                    } else if (qualData.incomeGoal === "scale-business-10k-plus" || qualData.incomeGoal === "build-business-10k-plus") {
+                        incomeMessage = "top practitioners building $10k+/month practices";
                     }
 
                     await resend.emails.send({
                         from: "Sarah M. <sarah@accredipro-certificate.com>",
                         to: lead.email,
-                        subject: "Day 2: Still waiting for you! 👀",
+                        subject: "Your access expired — but I'm giving you 24 more hours 🎁",
                         html: `
                             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
                                 <p>Hey ${firstName}!</p>
+                                <p>Your 48-hour access to the ASI Functional Medicine Foundation just expired.</p>
+                                <p>But I don't want you to miss out, so <strong>I've extended your access by 24 hours.</strong></p>
                                 <p style="background: #f8f4f0; padding: 15px; border-radius: 8px; border-left: 4px solid #722F37;">
                                     ${personalizedHook}
                                 </p>
-                                <p>It's Day 2 and I'm still waiting for you in Lesson 1. 😊</p>
-                                <p>Here's what you'll learn:</p>
+                                <p>This is your <strong>FINAL chance</strong> to:</p>
                                 <ul>
-                                    <li>✅ Why root cause medicine is the future</li>
-                                    <li>✅ The 5 hidden dysfunctions most practitioners miss</li>
-                                    <li>✅ ${incomeMessage}</li>
+                                    <li>✅ Complete your 1-hour certification</li>
+                                    <li>✅ Get your ASI Foundation Certificate</li>
+                                    <li>✅ Join ${incomeMessage}</li>
                                 </ul>
+                                <p>After 24 hours, your spot will be released to the next cohort.</p>
                                 <p style="margin: 30px 0;">
                                     <a href="${dashboardLink}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                                        Start Now (7 min) →
-                                    </a>
-                                </p>
-                                <p>Your access expires in 5 days. Don't miss out!</p>
-                                <p>— Coach Sarah</p>
-                            </div>
-                        `
-                    });
-                    await prisma.userTag.create({
-                        data: { userId: lead.id, tag: "nudge:day-2-email" }
-                    });
-                    results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "day-2" });
-                } catch (err) {
-                    console.error(`Failed to send day-2 email to ${lead.email}:`, err);
-                }
-            }
-
-            // Day 3 SMS nudge
-            if (hoursSinceSignup >= 72 && hoursSinceSignup < 73 && !sentNudges.has("nudge:day-3-sms")) {
-                if (lead.phone) {
-                    const success = await sendSMS(
-                        lead.phone,
-                        `3 days in, ${firstName}. Your access expires in 4 days. That's okay - everyone moves at their pace. Start now? ${dashboardLink}`
-                    );
-                    if (success) {
-                        await prisma.userTag.create({
-                            data: { userId: lead.id, tag: "nudge:day-3-sms" }
-                        });
-                        results.push({ userId: lead.id, channel: "sms", success: true, nudgeType: "day-3" });
-                    }
-                }
-            }
-
-            // Day 5 Email nudge (URGENT)
-            if (hoursSinceSignup >= 120 && hoursSinceSignup < 121 && !sentNudges.has("nudge:day-5-email")) {
-                try {
-                    await resend.emails.send({
-                        from: "Sarah M. <sarah@accredipro-certificate.com>",
-                        to: lead.email,
-                        subject: "⚠️ Only 2 days left! Your certificate is waiting...",
-                        html: `
-                            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                                <p>Hey ${firstName}!</p>
-                                <p><strong>⚠️ Your 7-day access expires in just 2 days.</strong></p>
-                                <p>You can still complete the entire course and claim your ASI Foundation Certificate. The 9 lessons average just 7 minutes each.</p>
-                                <p>That's less than an hour of learning for a <strong>credential that can change your career.</strong></p>
-                                <p style="margin: 30px 0;">
-                                    <a href="${dashboardLink}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                                        Start Before Time Runs Out →
-                                    </a>
-                                </p>
-                                <p>I believe in you! 💪</p>
-                                <p>— Coach Sarah</p>
-                            </div>
-                        `
-                    });
-                    await prisma.userTag.create({
-                        data: { userId: lead.id, tag: "nudge:day-5-email" }
-                    });
-                    results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "day-5" });
-                } catch (err) {
-                    console.error(`Failed to send day-5 email to ${lead.email}:`, err);
-                }
-            }
-
-            // Day 7 Email nudge (EXPIRED - with 48h extension)
-            if (hoursSinceSignup >= 168 && hoursSinceSignup < 169 && !sentNudges.has("nudge:day-7-email")) {
-                try {
-                    await resend.emails.send({
-                        from: "Sarah M. <sarah@accredipro-certificate.com>",
-                        to: lead.email,
-                        subject: "Your access expired — but I extended it 48h for you 🎁",
-                        html: `
-                            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                                <p>Hey ${firstName}!</p>
-                                <p>Your 7-day access to the ASI Functional Medicine Foundation expired today.</p>
-                                <p>But I don't want you to miss out, so <strong>I've extended your access by 48 hours.</strong></p>
-                                <p>This is your <strong>last chance</strong> to complete the course and claim your certificate. After 48 hours, your spot will be released to the next cohort.</p>
-                                <p style="margin: 30px 0;">
-                                    <a href="${dashboardLink}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                                        Use My 48h Extension →
+                                        Use My 24h Extension →
                                     </a>
                                 </p>
                                 <p>You've got this. I know life gets busy, but this is worth it.</p>
@@ -321,11 +305,41 @@ export async function GET(request: NextRequest) {
                         `
                     });
                     await prisma.userTag.create({
-                        data: { userId: lead.id, tag: "nudge:day-7-email" }
+                        data: { userId: lead.id, tag: "nudge:hour-48-email" }
                     });
-                    results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "day-7" });
+                    results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "hour-48" });
                 } catch (err) {
-                    console.error(`Failed to send day-7 email to ${lead.email}:`, err);
+                    console.error(`Failed to send hour-48 email to ${lead.email}:`, err);
+                }
+            }
+
+            // Hour 72 Email nudge (FINAL - 24h extension expired)
+            if (hoursSinceSignup >= 72 && hoursSinceSignup < 73 && !sentNudges.has("nudge:hour-72-email")) {
+                try {
+                    await resend.emails.send({
+                        from: "Sarah M. <sarah@accredipro-certificate.com>",
+                        to: lead.email,
+                        subject: "Final goodbye (unless you want back in) 👋",
+                        html: `
+                            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                                <p>Hey ${firstName},</p>
+                                <p>Your extension has expired, and I've had to release your spot.</p>
+                                <p>I know life gets crazy. No judgment here at all.</p>
+                                <p>If you ever want to come back and complete your Functional Medicine certification, just reply to this email and I'll see what I can do.</p>
+                                <p>Wishing you all the best on your journey! 💕</p>
+                                <p>— Coach Sarah</p>
+                                <p style="font-size: 12px; color: #666; margin-top: 30px;">
+                                    P.S. Many of our most successful practitioners started exactly where you are. When you're ready, we'll be here.
+                                </p>
+                            </div>
+                        `
+                    });
+                    await prisma.userTag.create({
+                        data: { userId: lead.id, tag: "nudge:hour-72-email" }
+                    });
+                    results.push({ userId: lead.id, channel: "email", success: true, nudgeType: "hour-72" });
+                } catch (err) {
+                    console.error(`Failed to send hour-72 email to ${lead.email}:`, err);
                 }
             }
         }
