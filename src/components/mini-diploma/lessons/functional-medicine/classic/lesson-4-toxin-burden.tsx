@@ -22,113 +22,220 @@ export function ClassicLessonToxinBurden({
     const sections: LessonSection[] = [
         {
             type: 'intro',
-            content: `{name}! Ready to learn about something most doctors completely ignore? Toxin burden. We're exposed to more toxins than any generation in history, and our bodies weren't designed for this level of chemical exposure.`,
+            content: `{name}, I need to share something uncomfortable with you. It might make you angry. By the time you finished your morning routine today, you were exposed to over 200 synthetic chemicals. Before breakfast. Shampoo. Toothpaste. Deodorant. Makeup. Cleaning products. Plastics. The water from your tap. We're all carrying a toxic burden. The question is: how much? This isn't paranoia. It's the explanation for why so many people feel terrible despite "doing everything right."`,
         },
         {
             type: 'heading',
-            content: 'The Modern Toxic Load',
-        },
-        {
-            type: 'list',
-            content: 'The reality we face:',
-            items: [
-                'Over 80,000 synthetic chemicals are currently in commerce',
-                'The average person is exposed to 200+ chemicals before breakfast',
-                'Many are "endocrine disruptors" that interfere with hormones',
-                'Our body\'s detoxification systems can become overwhelmed',
-            ],
-        },
-        {
-            type: 'text',
-            content: `The key is understanding that toxins ACCUMULATE over time. It's the total burden that matters, not just individual exposures. This cumulative effect is why people can suddenly develop symptoms after years of seemingly fine health.`,
-        },
-        {
-            type: 'heading',
-            content: 'Major Toxin Categories',
-        },
-        {
-            type: 'list',
-            content: 'Primary sources to assess:',
-            items: [
-                'Heavy metals - Mercury (fish, dental amalgams), Lead (old paint), Arsenic (rice, water)',
-                'Mold/Mycotoxins - From water-damaged buildings',
-                'Pesticides - Found in non-organic produce',
-                'Plastics/BPA - Food containers, thermal receipts',
-                'Household chemicals - Personal care products, cleaning supplies',
-            ],
-        },
-        {
-            type: 'heading',
-            content: 'Understanding Liver Detoxification',
-        },
-        {
-            type: 'text',
-            content: `The liver is your main detox organ, but it works in two phases. Many people have a sluggish Phase 2, which creates problems:`,
+            content: 'The Toxic Reality',
         },
         {
             type: 'key-point',
-            content: `Phase 1 breaks down toxins but creates reactive intermediates. Phase 2 conjugates and neutralizes these intermediates (requires specific nutrients!). If Phase 2 is slow, you have MORE toxic intermediates circulating in your body.`,
+            content: `80,000+ synthetic chemicals in our environment. Only 200 have been tested for human safety. Average person: 200+ chemical exposures before breakfast. Newborns: 287 chemicals detected in umbilical cord blood. 50% of US buildings have mold problems.`,
         },
         {
             type: 'heading',
-            content: 'Symptoms of Toxin Overload',
+            content: 'Legal Clarity: Your Scope with Detox',
         },
         {
             type: 'list',
-            content: 'Common presentations:',
+            content: 'What You CAN Do:',
             items: [
-                'Persistent fatigue',
-                'Brain fog and cognitive issues',
-                'Headaches',
-                'Skin problems',
-                'Hormonal imbalances',
-                'Weight loss resistance',
-                'Chemical sensitivities',
+                'Educate on toxin sources in home/environment',
+                'Suggest safer product alternatives',
+                'Recommend foods that support natural detox',
+                'Guide on lifestyle changes to reduce exposure',
+                'Suggest supplements (as education, not prescription)',
             ],
         },
         {
-            type: 'heading',
-            content: 'Supporting Detoxification',
-        },
-        {
             type: 'list',
-            content: 'A comprehensive approach:',
+            content: 'What Doctors Handle:',
             items: [
-                'Reduce exposure - Clean up your environment first',
-                'Support liver function - Cruciferous vegetables, milk thistle',
-                'Bind toxins - Activated charcoal, fiber',
-                'Promote elimination - Through sweat and regular bowel movements',
-                'Ensure adequate hydration',
+                'Order or interpret medical detox tests',
+                'Diagnose mold illness or heavy metal toxicity',
+                'Create medical detox protocols',
+                'Prescribe chelation therapy',
             ],
         },
         {
             type: 'callout',
-            content: `Remember: Detox without reducing exposure is like mopping the floor while the faucet is running! Always address the source first.`,
+            content: `The partnership model: You educate and support. Doctors diagnose and treat. Client suspects mold issue → You support lifestyle changes → Doctor orders testing if needed → You help implement recovery protocol. This is environmental health education. It's legal in all 50 states.`,
+            style: 'info',
+        },
+        {
+            type: 'heading',
+            content: 'Real Story: Christine, 46 - Former Real Estate Agent',
+        },
+        {
+            type: 'quote',
+            content: `"I got severely sick from mold in my own home. Doctors had no clue - I saw 11 specialists. When I finally figured it out, I became obsessed with environmental health. Now I specialize in helping people identify hidden toxin sources and clean up their environment. My clients: people with 'mystery' symptoms (often mold), new moms wanting to 'detox' their homes, cancer survivors reducing future risk. My numbers (18 months in): 9 clients currently, $225/session (specialized = premium), monthly $4,050. I'm not a doctor. I'm a 'toxin detective.' And people are desperate for someone like me." - Christine A., Georgia | ASI Graduate 2023`,
+        },
+        {
+            type: 'heading',
+            content: 'The 5 Major Toxin Categories',
+        },
+        {
+            type: 'list',
+            content: '1. HEAVY METALS:',
+            items: [
+                'Lead, mercury, arsenic, cadmium, aluminum',
+                'Sources: Fish, dental fillings, old paint, water pipes, cookware',
+                'Symptoms: Brain fog, fatigue, mood issues, nerve problems',
+            ],
+        },
+        {
+            type: 'list',
+            content: '2. MOLD & MYCOTOXINS:',
+            items: [
+                'From water-damaged buildings (50% of US buildings!)',
+                'Invisible and often undetected',
+                'Symptoms: Fatigue, brain fog, respiratory issues, anxiety',
+            ],
+        },
+        {
+            type: 'list',
+            content: '3. PESTICIDES & HERBICIDES:',
+            items: [
+                'Glyphosate in 80% of food supply',
+                'Stored in fat tissue for years',
+                'Symptoms: Gut issues, hormone disruption, fatigue',
+            ],
+        },
+        {
+            type: 'list',
+            content: '4. PLASTICS & ENDOCRINE DISRUPTORS:',
+            items: [
+                'BPA, phthalates in containers, receipts, cosmetics',
+                'Mimic hormones (especially estrogen)',
+                'Symptoms: Weight gain, hormone issues, fertility problems',
+            ],
+        },
+        {
+            type: 'list',
+            content: '5. HOUSEHOLD CHEMICALS:',
+            items: [
+                'Average home: 62 toxic chemicals',
+                'Cleaning products, air fresheners, cosmetics, candles',
+                'Symptoms: Headaches, respiratory issues, skin problems',
+            ],
+        },
+        {
+            type: 'heading',
+            content: 'Why Most Detox Programs Are Dangerous',
+        },
+        {
+            type: 'text',
+            content: `Your liver detoxifies in 2 phases:`,
+        },
+        {
+            type: 'list',
+            content: 'PHASE 1 - Activation:',
+            items: [
+                'Toxins get "activated" (made water-soluble)',
+                'Requires B vitamins, glutathione, antioxidants',
+                'PROBLEM: Activated toxins are temporarily MORE harmful',
+            ],
+        },
+        {
+            type: 'list',
+            content: 'PHASE 2 - Conjugation:',
+            items: [
+                'Activated toxins get "packaged" for removal',
+                'Requires amino acids, sulfur compounds',
+                'Toxins exit via bile, urine, sweat',
+            ],
+        },
+        {
+            type: 'callout',
+            content: `THE DANGER: Most juice cleanses and "detox teas" speed up Phase 1 WITHOUT supporting Phase 2. Result: Activated toxins build up, making you feel WORSE. It's like mopping the floor while the faucet is still running. This is why clients need an educated coach - not a trendy Instagram detox.`,
+            style: 'warning',
+        },
+        {
+            type: 'heading',
+            content: 'The Detox Market: Massive Opportunity',
+        },
+        {
+            type: 'list',
+            content: 'The Market:',
+            items: [
+                'Detox industry: $50+ BILLION globally',
+                'Most programs are ineffective or dangerous',
+                'Educated practitioners are RARE',
+            ],
+        },
+        {
+            type: 'list',
+            content: 'Specialized Niches Within Detox:',
+            items: [
+                'Mold Illness Support - Clients stay 6-12 months, programs $1,500-3,000',
+                'Home Environment Detox - Popular with new moms, 4-6 sessions $600-800',
+                'Heavy Metal Support - Monthly programs $200-300/month ongoing',
+            ],
+        },
+        {
+            type: 'key-point',
+            content: `Graduate Quote: "I did $2,800 last month from just 6 detox clients. One client has been with me 8 months for mold recovery. She refers everyone." - Michelle T., ASI Graduate`,
+        },
+        {
+            type: 'heading',
+            content: 'Real Story: Angela, 50 - Cancer Survivor',
+        },
+        {
+            type: 'quote',
+            content: `"After breast cancer at 47, I became obsessed with reducing my toxic load. When I got certified, I knew my niche: helping cancer survivors create healthier environments. It's deeply personal work. My clients cry. I cry. We're doing something meaningful. My focus: post-cancer environmental cleanup, reducing exposure for prevention, supporting detox pathways naturally. The numbers: 7 clients currently, $250/session (premium niche), monthly $3,500. Yes, oncologists refer to me. They don't have time to talk about plastics and cleaning products. I do. Cancer gave me purpose." - Angela P., California | ASI Graduate 2024`,
+        },
+        {
+            type: 'heading',
+            content: 'Your 3 Immediate Toxin Swaps',
+        },
+        {
+            type: 'list',
+            content: 'Start TODAY:',
+            items: [
+                'WATER - Filter your drinking water (reverse osmosis or carbon filter)',
+                'FOOD STORAGE - Replace plastic containers with glass, never heat in plastic',
+                'PERSONAL CARE - Check products on EWG.org Skin Deep database, swap highest-use first',
+            ],
+        },
+        {
+            type: 'callout',
+            content: `This is exactly what you'll walk clients through. Start with yourself - you'll speak from experience.`,
             style: 'tip',
         },
         {
             type: 'heading',
-            content: 'Looking Ahead',
+            content: 'Coming Up: Stress & Hormones Decoded',
         },
         {
             type: 'text',
-            content: `Next lesson, we'll explore chronic stress and how it destroys health from the inside out. You're halfway through - amazing progress!`,
+            content: `You now understand toxins better than most healthcare providers. This knowledge is genuinely valuable. Next up: STRESS & HORMONES - the burnout epidemic and why cortisol is secretly destroying your clients' health.`,
+        },
+        {
+            type: 'list',
+            content: 'What you\'ll learn:',
+            items: [
+                'Why 77% of workers are burned out',
+                'The 3 stages of adrenal dysfunction',
+                'Your next case study to solve',
+                'Why burnout coaching for women 40+ is a goldmine',
+            ],
         },
     ];
 
     const keyTakeaways = [
-        'We\'re exposed to more toxins than any previous generation',
-        'Toxins accumulate over time - it\'s the total burden that matters',
-        'The liver detoxifies in two phases, and Phase 2 often needs support',
-        'Toxin overload can cause fatigue, brain fog, hormonal issues, and more',
-        'Always reduce exposure before attempting detox protocols',
+        '80,000+ synthetic chemicals exist, only 200 tested for safety',
+        '5 toxin categories: Heavy metals, Mold, Pesticides, Plastics, Household chemicals',
+        'Most detox programs are dangerous - they speed Phase 1 without supporting Phase 2',
+        'You can legally educate on toxins and recommend lifestyle changes',
+        'The detox industry is $50B+ but most practitioners are uneducated',
+        'Specialized niches (mold, cancer survivors) command $200-250/session',
     ];
 
     return (
         <ClassicLessonBase
             lessonNumber={lessonNumber}
-            lessonTitle="The Toxin Burden"
-            lessonSubtitle="Understanding environmental health threats"
+            lessonTitle="The Toxin Reality"
+            lessonSubtitle="The $50B detox market needs educated coaches"
             totalLessons={totalLessons}
             sections={sections}
             keyTakeaways={keyTakeaways}
