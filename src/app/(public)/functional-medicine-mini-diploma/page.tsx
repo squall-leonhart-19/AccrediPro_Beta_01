@@ -82,7 +82,7 @@ function HealthcareWorkersMiniDiplomaContent() {
                     lifeStage: formData.timeCommitment || formData.lifeStage,
                     motivation: formData.motivation,
                     investment: formData.incomeGoal || formData.investment,
-                    course: "functional-medicine",
+                    course: "fm-healthcare",
                     segment: "healthcare-workers",
                 }),
             });

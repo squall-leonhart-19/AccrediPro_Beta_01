@@ -85,10 +85,27 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
         }
     }, [isOpen, fetchMentorAndMessages]);
 
-    // Scroll to bottom when messages change
+    // Track if user is manually scrolling
+    const isUserScrollingRef = useRef(false);
+    const prevMessagesLengthRef = useRef(messages.length);
+
+    // Scroll to bottom only when new messages are added (not when scrolling up)
     useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        if (scrollRef.current && messages.length > 0) {
+            // Only auto-scroll if:
+            // 1. New messages were added (not initial load of old messages)
+            // 2. User is not currently scrolling up (near bottom)
+            const container = scrollRef.current;
+            const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+
+            if (messages.length > prevMessagesLengthRef.current && isNearBottom) {
+                container.scrollTop = container.scrollHeight;
+            } else if (messages.length > prevMessagesLengthRef.current && prevMessagesLengthRef.current === 0) {
+                // Initial load - scroll to bottom
+                container.scrollTop = container.scrollHeight;
+            }
+
+            prevMessagesLengthRef.current = messages.length;
         }
     }, [messages]);
 

@@ -7,6 +7,7 @@ import prisma from "@/lib/prisma";
 const CATEGORY_TO_TAG_PREFIX: Record<string, string> = {
     "womens-health": "wh-lesson-complete",
     "functional-medicine": "functional-medicine-lesson-complete",
+    "fm-healthcare": "functional-medicine-lesson-complete", // Healthcare workers variant (same lessons, separate tracking)
     "gut-health": "gut-health-lesson-complete",
     "health-coach": "health-coach-lesson-complete",
     "holistic-nutrition": "holistic-nutrition-lesson-complete",

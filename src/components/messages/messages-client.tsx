@@ -384,15 +384,15 @@ export function MessagesClient({
           const latestMessage = data.data[data.data.length - 1];
           const currentLatestId = messages[messages.length - 1]?.id;
 
-          // If there's a new message from the other user, show toast and scroll
+          // If there's a new message from the other user, show toast and scroll only if near bottom
           if (latestMessage.id !== currentLatestId && latestMessage.senderId === userId) {
             const senderName = selectedUser?.firstName || "Someone";
             toast.info(`New message from ${senderName}`, {
               description: latestMessage.content?.slice(0, 50) + (latestMessage.content?.length > 50 ? "..." : ""),
               duration: 4000,
             });
-            // Auto-scroll to new incoming message
-            setTimeout(() => scrollToBottom(true, true), 100);
+            // Only auto-scroll if user is near bottom - don't force scroll when reading history
+            setTimeout(() => scrollToBottom(false, true), 100);
           }
         }
 

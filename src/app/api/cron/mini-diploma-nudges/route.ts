@@ -89,11 +89,17 @@ export async function GET(request: NextRequest) {
         const results: NudgeResult[] = [];
 
         // Find all FM mini diploma leads who haven't started
-        // Tag format from optin: lead:{course}-mini-diploma (e.g., lead:functional-medicine-mini-diploma)
+        // Tag format from optin: lead:{course}-mini-diploma
+        // Includes both functional-medicine and fm-healthcare variants
         const leads = await prisma.user.findMany({
             where: {
                 tags: {
-                    some: { tag: "lead:functional-medicine-mini-diploma" }
+                    some: {
+                        OR: [
+                            { tag: "lead:functional-medicine-mini-diploma" },
+                            { tag: "lead:fm-healthcare-mini-diploma" }
+                        ]
+                    }
                 },
                 // Exclude those who have completed lesson 1
                 NOT: {

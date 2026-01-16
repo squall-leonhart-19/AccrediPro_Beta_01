@@ -137,6 +137,7 @@ function getTagPrefixForCategory(category: string): string {
     const prefixMap: Record<string, string> = {
         "womens-health": "wh-lesson-complete:",
         "functional-medicine": "functional-medicine-lesson-complete:",
+        "fm-healthcare": "functional-medicine-lesson-complete:", // Healthcare workers variant
         "gut-health": "gut-health-lesson-complete:",
         "hormone-health": "hormone-health-lesson-complete:",
         "holistic-nutrition": "holistic-nutrition-lesson-complete:",
