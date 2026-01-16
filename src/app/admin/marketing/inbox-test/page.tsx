@@ -33,7 +33,7 @@ export default function InboxTestPage() {
   const [sendAllProgress, setSendAllProgress] = useState<{ current: number; total: number } | null>(null);
   const [results, setResults] = useState<TestResult[]>([]);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [activeSection, setActiveSection] = useState<"all" | "nurture" | "mini_diploma" | "mini_diploma_nurturing" | "wh_nurture_v2">("all");
+  const [activeSection, setActiveSection] = useState<"all" | "nurture" | "mini_diploma" | "mini_diploma_nurturing" | "wh_nurture_v2" | "fm_completion" | "fm_nurture_v4">("all");
 
   // Modal state
   const [modalVariant, setModalVariant] = useState<FullVariant | null>(null);
@@ -45,7 +45,9 @@ export default function InboxTestPage() {
     if (activeSection === "all") return true;
     if (activeSection === "mini_diploma") return v.section === "mini_diploma" || (v.id >= 100 && v.id <= 108);
     if (activeSection === "mini_diploma_nurturing") return v.section === "mini_diploma_nurturing" || (v.id >= 200 && v.id <= 220);
-    if (activeSection === "wh_nurture_v2") return v.section === "wh_nurture_v2" || (v.id >= 300 && v.id <= 325);
+    if (activeSection === "wh_nurture_v2") return v.section === "wh_nurture_v2" || (v.id >= 300 && v.id < 400);
+    if (activeSection === "fm_completion") return v.section === "fm_completion" || (v.id >= 400 && v.id < 500);
+    if (activeSection === "fm_nurture_v4") return v.section === "fm_nurture_v4" || (v.id >= 500);
     if (activeSection === "nurture") return !v.section && v.id < 100;
     return true;
   });
@@ -266,7 +268,25 @@ export default function InboxTestPage() {
               : "bg-green-100 text-green-700 hover:bg-green-200"
               }`}
           >
-            WH v2 60-Day ({variants.filter(v => v.section === "wh_nurture_v2" || (v.id >= 300 && v.id <= 325)).length})
+            WH v2 60-Day ({variants.filter(v => v.section === "wh_nurture_v2" || (v.id >= 300 && v.id < 400)).length})
+          </button>
+          <button
+            onClick={() => setActiveSection("fm_completion")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "fm_completion"
+              ? "bg-rose-600 text-white"
+              : "bg-rose-100 text-rose-700 hover:bg-rose-200"
+              }`}
+          >
+            FM Completion ({variants.filter(v => v.section === "fm_completion" || (v.id >= 400 && v.id < 500)).length})
+          </button>
+          <button
+            onClick={() => setActiveSection("fm_nurture_v4")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeSection === "fm_nurture_v4"
+              ? "bg-orange-600 text-white"
+              : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+              }`}
+          >
+            FM Nurture v4 ({variants.filter(v => v.section === "fm_nurture_v4" || (v.id >= 500)).length})
           </button>
         </div>
       </div>

@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Resend } from "resend";
 import { WH_NURTURE_60_DAY_V3 } from "@/lib/wh-nurture-60-day-v3";
+import { FM_COMPLETION_SEQUENCE } from "@/lib/fm-completion-sequence";
+import { FM_NURTURE_SEQUENCE_V4 } from "@/lib/fm-nurture-sequence-v4";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -4778,7 +4780,7 @@ ${personalizedContent.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')}
       });
     }
 
-    // Return list of all variants (including WH Nurture v2)
+    // Return list of all variants (including WH Nurture v2 and FM sequences)
     // Convert WH v2 emails to the expected format with IDs 300+
     const whV2Emails = WH_NURTURE_60_DAY_V3.map((email, index) => ({
       id: 300 + index,
@@ -4790,7 +4792,29 @@ ${personalizedContent.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')}
       section: "wh_nurture_v2",
     }));
 
-    const allVariants = [...EMAIL_VARIANTS, ...whV2Emails];
+    // Convert FM Completion emails to the expected format with IDs 400+
+    const fmCompletionEmails = FM_COMPLETION_SEQUENCE.map((email, index) => ({
+      id: 400 + index,
+      name: `FM Completion ${email.id}: Day ${email.day} (${email.phase})`,
+      day: email.day,
+      originalSubject: email.subject,
+      subject: email.subject,
+      content: email.content,
+      section: "fm_completion",
+    }));
+
+    // Convert FM Nurture v4 emails to the expected format with IDs 500+
+    const fmNurtureEmails = FM_NURTURE_SEQUENCE_V4.map((email, index) => ({
+      id: 500 + index,
+      name: `FM Nurture ${email.id}: Day ${email.day} (${email.phase})`,
+      day: email.day,
+      originalSubject: email.subject,
+      subject: email.subject,
+      content: email.content,
+      section: "fm_nurture_v4",
+    }));
+
+    const allVariants = [...EMAIL_VARIANTS, ...whV2Emails, ...fmCompletionEmails, ...fmNurtureEmails];
 
     return NextResponse.json({
       variants: allVariants.map(v => ({
@@ -4824,9 +4848,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Test email is required" }, { status: 400 });
     }
 
-    // Check both EMAIL_VARIANTS and WH v2 emails
+    // Check EMAIL_VARIANTS, WH v2 emails, and FM sequences
     let variant: any = EMAIL_VARIANTS.find(v => v.id === variantId);
-    if (!variant && variantId >= 300) {
+
+    // WH v2 emails (300-399)
+    if (!variant && variantId >= 300 && variantId < 400) {
       const whIndex = variantId - 300;
       const whEmail = WH_NURTURE_60_DAY_V3[whIndex];
       if (whEmail) {
@@ -4838,6 +4864,40 @@ export async function POST(request: NextRequest) {
           subject: whEmail.subject,
           content: whEmail.content,
           section: "wh_nurture_v2",
+        };
+      }
+    }
+
+    // FM Completion emails (400-499)
+    if (!variant && variantId >= 400 && variantId < 500) {
+      const fmIndex = variantId - 400;
+      const fmEmail = FM_COMPLETION_SEQUENCE[fmIndex];
+      if (fmEmail) {
+        variant = {
+          id: variantId,
+          name: `FM Completion ${fmEmail.id}: Day ${fmEmail.day}`,
+          day: fmEmail.day,
+          originalSubject: fmEmail.subject,
+          subject: fmEmail.subject,
+          content: fmEmail.content,
+          section: "fm_completion",
+        };
+      }
+    }
+
+    // FM Nurture v4 emails (500+)
+    if (!variant && variantId >= 500) {
+      const fmIndex = variantId - 500;
+      const fmEmail = FM_NURTURE_SEQUENCE_V4[fmIndex];
+      if (fmEmail) {
+        variant = {
+          id: variantId,
+          name: `FM Nurture ${fmEmail.id}: Day ${fmEmail.day}`,
+          day: fmEmail.day,
+          originalSubject: fmEmail.subject,
+          subject: fmEmail.subject,
+          content: fmEmail.content,
+          section: "fm_nurture_v4",
         };
       }
     }

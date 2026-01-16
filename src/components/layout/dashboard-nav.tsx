@@ -58,10 +58,7 @@ interface NavItem {
 }
 
 const fullNavItems: NavItem[] = [
-  // 1. Your Mentor - the differentiator (top priority!)
-  { href: "/messages", label: "🔴 Your Mentor", icon: MessageSquare, notificationKey: "messages", tourId: "coach-sarah" },
-
-  // 2. Dashboard - standalone
+  // 1. Dashboard - standalone
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
 
   // 2. Start Here - for onboarding (conditionally shown - filtered in getFullNavItems)
