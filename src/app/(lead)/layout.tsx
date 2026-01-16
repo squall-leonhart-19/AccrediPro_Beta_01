@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { LeadSidebar } from "@/components/lead-portal/LeadSidebar";
+import { FloatingMentorChatWrapper } from "@/components/ai/floating-mentor-chat-wrapper";
 
 interface LeadLayoutProps {
     children: React.ReactNode;
@@ -100,6 +101,9 @@ export default async function LeadLayout({ children }: LeadLayoutProps) {
                     {children}
                 </div>
             </main>
+
+            {/* Floating Mentor Chat Widget */}
+            <FloatingMentorChatWrapper />
         </div>
     );
 }

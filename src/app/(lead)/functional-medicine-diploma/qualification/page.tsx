@@ -207,7 +207,7 @@ export default function QualificationPage() {
                                 {/* Sarah Welcome */}
                                 <div className="mt-6 bg-slate-50 rounded-xl p-4 flex items-start gap-3">
                                     <Image
-                                        src="/coaches/sarah-avatar.png"
+                                        src="/coaches/sarah-coach.webp"
                                         alt="Coach Sarah"
                                         width={48}
                                         height={48}

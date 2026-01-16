@@ -258,19 +258,19 @@ export function LeadSidebar({
                     )}
                 </div>
 
-                {/* Chat with Sarah */}
+                {/* Ask Coach Sarah - with notification indicator */}
                 <Link
                     href="/messages"
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive("/messages")
-                        ? "bg-burgundy-700 text-white"
-                        : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors border ${isActive("/messages")
+                        ? "bg-burgundy-700 text-white border-gold-400/50"
+                        : "text-burgundy-200 hover:bg-burgundy-700/50 hover:text-white border-transparent hover:border-gold-400/30"
                         }`}
                 >
                     <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
-                    <span className="font-medium">Chat with Sarah</span>
-                    <span className="ml-auto w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                    <span className="font-medium">Ask Coach Sarah</span>
+                    <span className="ml-auto w-2 h-2 bg-emerald-400 rounded-full animate-pulse" title="Online now" />
                 </Link>
 
                 {/* Certificate - Only show after completion */}

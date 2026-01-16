@@ -159,7 +159,7 @@ const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) =
   return [
     { href: lessonPath, label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
     { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
-    { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+    { href: "/messages", label: "Ask Coach Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
     // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
   ];
 };
@@ -169,7 +169,7 @@ const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) =
 // Shows: Lessons, Chat, and locked full certification CTA
 const getFMPreviewNavItems = () => [
   { href: "/fm-preview", label: "My Lessons", icon: GraduationCap, tourId: "fm-preview" },
-  { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+  { href: "/messages", label: "Ask Coach Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
   { href: "/fm-certification", label: "Full Certification", icon: Award, tourId: "certification", locked: true, external: true },
 ];
 

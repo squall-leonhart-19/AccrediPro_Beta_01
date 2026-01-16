@@ -359,17 +359,18 @@ export function MessagesClient({
     }
   };
 
-  const scrollToBottom = (force = false) => {
+  const scrollToBottom = (force = false, instant = false) => {
     const container = messagesContainerRef.current;
     if (!container) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
       return;
     }
 
-    // Only auto-scroll if user is near bottom (within 150px) or force is true
-    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+    // Only auto-scroll if user is near bottom (within 200px) or force is true
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 200;
     if (force || isNearBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      // Use instant scroll for initial load and new messages, smooth for manual
+      messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
     }
   };
 
@@ -383,13 +384,15 @@ export function MessagesClient({
           const latestMessage = data.data[data.data.length - 1];
           const currentLatestId = messages[messages.length - 1]?.id;
 
-          // If there's a new message from the other user, show toast
+          // If there's a new message from the other user, show toast and scroll
           if (latestMessage.id !== currentLatestId && latestMessage.senderId === userId) {
             const senderName = selectedUser?.firstName || "Someone";
             toast.info(`New message from ${senderName}`, {
               description: latestMessage.content?.slice(0, 50) + (latestMessage.content?.length > 50 ? "..." : ""),
               duration: 4000,
             });
+            // Auto-scroll to new incoming message
+            setTimeout(() => scrollToBottom(true, true), 100);
           }
         }
 
@@ -397,7 +400,8 @@ export function MessagesClient({
         setHasMoreMessages(data.hasMore || false);
         setNextCursor(data.nextCursor || null);
         if (!isRefresh) {
-          scrollToBottom(true); // Force scroll on initial load
+          // Force instant scroll on initial load
+          setTimeout(() => scrollToBottom(true, true), 100);
         }
       }
     } catch (error) {
@@ -449,12 +453,12 @@ export function MessagesClient({
         body: JSON.stringify({ senderId: selectedUser.id }),
       }).catch(console.error);
 
-      // Poll for new messages every 30 seconds (reduced from 5s for performance)
+      // Poll for new messages every 5 seconds for real-time feel (like WhatsApp)
       const interval = setInterval(() => {
-        fetchMessages(selectedUser.id, true); // isRefresh=true to not scroll
-      }, 30000);
+        fetchMessages(selectedUser.id, true); // isRefresh=true to check for new messages
+      }, 5000);
 
-      // Poll for typing indicator every 10 seconds (reduced from 2s for performance)
+      // Poll for typing indicator every 3 seconds for responsive typing status
       const typingInterval = setInterval(async () => {
         if (!isMountedRef.current) return;
         try {
@@ -466,7 +470,7 @@ export function MessagesClient({
         } catch (e) {
           console.error("Typing poll error:", e);
         }
-      }, 10000);
+      }, 3000);
 
       return () => {
         clearInterval(interval);
@@ -475,8 +479,18 @@ export function MessagesClient({
     }
   }, [selectedUser, fetchMessages]);
 
+  // Track previous message count to detect new messages
+  const prevMessagesLengthRef = useRef(messages.length);
+
   useEffect(() => {
-    scrollToBottom();
+    // Only auto-scroll if messages were added (not on initial empty state)
+    if (messages.length > 0 && messages.length !== prevMessagesLengthRef.current) {
+      // If new messages were added (not loaded older ones), scroll to bottom
+      if (messages.length > prevMessagesLengthRef.current) {
+        scrollToBottom(false, true); // instant scroll for smoother UX
+      }
+      prevMessagesLengthRef.current = messages.length;
+    }
   }, [messages]);
 
   // Handle typing indicator

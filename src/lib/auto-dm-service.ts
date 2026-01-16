@@ -1,11 +1,12 @@
 /**
  * Automated DM Service
  * Sends Sarah intro immediately, coach follow-up after 5 minutes
+ * Now with PERSONALIZATION based on qualification tags!
  */
 
 import prisma from "@/lib/prisma";
 import { getNicheByTag, getNicheBySlug, COACH_INFO, NicheConfig, getNicheConfig } from "@/config/niches";
-import { getSarahIntroDM, getCoachFollowupDM } from "@/lib/dm-templates";
+import { getSarahIntroDM, getCoachFollowupDM, getPersonalizedCoachFollowup } from "@/lib/dm-templates";
 
 const COACH_FOLLOWUP_DELAY_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -15,6 +16,38 @@ interface SendPurchaseDMsOptions {
     nicheCode?: string;
     purchaseTag?: string;
     courseSlug?: string;
+}
+
+// Qualification data from tags
+export interface QualificationData {
+    motivation: string | null;      // time-with-family, help-others, financial-freedom, career-change, personal-growth
+    timeCommitment: string | null;  // few-hours-flexible, part-time-10-20, full-time-30-plus
+    incomeGoal: string | null;      // side-income-500-1k, replace-income-3-5k, build-business-10k-plus
+}
+
+/**
+ * Extract qualification data from user tags
+ */
+export async function getUserQualificationData(userId: string): Promise<QualificationData> {
+    const tags = await prisma.userTag.findMany({
+        where: {
+            userId,
+            OR: [
+                { tag: { startsWith: "motivation:" } },
+                { tag: { startsWith: "time_commitment:" } },
+                { tag: { startsWith: "income_goal:" } },
+            ]
+        },
+        select: { tag: true }
+    });
+
+    const tagSet = tags.map(t => t.tag);
+
+    return {
+        motivation: tagSet.find(t => t.startsWith("motivation:"))?.replace("motivation:", "") || null,
+        timeCommitment: tagSet.find(t => t.startsWith("time_commitment:"))?.replace("time_commitment:", "") || null,
+        incomeGoal: tagSet.find(t => t.startsWith("income_goal:"))?.replace("income_goal:", "") || null,
+    };
 }
 
 /**
@@ -68,13 +101,22 @@ export async function sendPurchaseDMs(options: SendPurchaseDMsOptions): Promise<
         await sendDirectMessage(coachUser.id, userId, sarahMessage, "sarah_intro");
         console.log(`[AUTO-DM] ✅ Sent Sarah intro to ${firstName}`);
 
-        // Step 2: Schedule coach follow-up after 5 minutes
+        // Step 2: Schedule PERSONALIZED coach follow-up after 5 minutes
         const nicheForClosure = niche; // Capture for closure
+        const userIdForClosure = userId;
         setTimeout(async () => {
             try {
-                const coachMessage = getCoachFollowupDM(nicheForClosure, firstName);
-                await sendDirectMessage(coachUser.id, userId, coachMessage, "coach_followup");
-                console.log(`[AUTO-DM] ✅ Sent coach follow-up to ${firstName} after 5 min`);
+                // Fetch qualification data for personalization
+                const qualData = await getUserQualificationData(userIdForClosure);
+                console.log(`[AUTO-DM] Qualification data for ${firstName}:`, qualData);
+
+                // Use personalized template if we have qualification data
+                const coachMessage = qualData.motivation || qualData.incomeGoal
+                    ? getPersonalizedCoachFollowup(nicheForClosure, firstName, qualData)
+                    : getCoachFollowupDM(nicheForClosure, firstName);
+
+                await sendDirectMessage(coachUser.id, userIdForClosure, coachMessage, "coach_followup_personalized");
+                console.log(`[AUTO-DM] ✅ Sent PERSONALIZED coach follow-up to ${firstName} after 5 min`);
             } catch (error) {
                 console.error(`[AUTO-DM] Failed to send coach follow-up:`, error);
             }

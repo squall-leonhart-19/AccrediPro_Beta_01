@@ -436,3 +436,120 @@ export function getCoachFollowupDM(
 export function getCoachForNiche(niche: NicheConfig): CoachId {
     return niche.coach;
 }
+
+// ============================================================
+// PERSONALIZED COACH DM (Based on Qualification Tags)
+// ============================================================
+
+interface QualificationData {
+    motivation: string | null;
+    timeCommitment: string | null;
+    incomeGoal: string | null;
+}
+
+/**
+ * Generate a HIGHLY PERSONALIZED coach follow-up based on qualification data
+ * Uses their stated motivation and income goals for maximum relevance
+ */
+export function getPersonalizedCoachFollowup(
+    niche: NicheConfig,
+    firstName: string,
+    qualData: QualificationData
+): string {
+    const coachInfo = COACH_INFO[niche.coach];
+    const coachName = coachInfo.name;
+
+    // Build personalized opening based on motivation
+    let personalizedOpening = "";
+    switch (qualData.motivation) {
+        case "time-with-family":
+            personalizedOpening = `I saw that you want MORE TIME WITH YOUR FAMILY. I get it - that's my WHY too! This certification is perfect for building income around YOUR schedule, not the other way around.
+
+Imagine dropping the kids at school, working with clients online for a few hours, then being there for pickup. That's the reality for many of our graduates!`;
+            break;
+        case "help-others":
+            personalizedOpening = `I noticed you're driven by HELPING OTHERS. That's beautiful - and honestly, the best practitioners are the ones who lead with heart, not just strategy.
+
+You're going to transform so many lives with this knowledge. I can already feel your compassion, and your future clients need exactly that energy!`;
+            break;
+        case "financial-freedom":
+            personalizedOpening = `You mentioned FINANCIAL FREEDOM as your goal. Let me be real with you: this is 100% achievable. I've seen graduates go from $0 to $10K/month within 6 months.
+
+The demand is MASSIVE and growing. People are tired of conventional approaches that don't work. You're getting in at the perfect time!`;
+            break;
+        case "career-change":
+            personalizedOpening = `A CAREER CHANGE takes courage - and you've already shown that by enrolling. I want you to know: you've made the right decision.
+
+So many of our graduates were in your shoes - stuck in unfulfilling work, knowing they were meant for more. Now they wake up excited to help people every single day!`;
+            break;
+        case "personal-growth":
+            personalizedOpening = `I love that you're here for PERSONAL GROWTH. Here's a secret: the best practitioners are the ones who never stop learning and healing themselves.
+
+This journey will transform YOU first - and that transformation is what makes you magnetic to the clients who need you most!`;
+            break;
+        default:
+            personalizedOpening = `I'm SO excited you're here! Sarah told me about your enrollment and I knew we'd be a great match.
+
+This certification is going to open doors you didn't even know existed. I've seen it happen hundreds of times, and you're next!`;
+    }
+
+    // Build income-specific questions
+    let incomeQuestion = "";
+    switch (qualData.incomeGoal) {
+        case "side-income-500-1k":
+            incomeQuestion = `You mentioned wanting $500-1,000/month as side income. That's totally achievable with just 2-3 clients!
+
+Here's my question: How quickly do you want to hit that goal?
+→ 30 days? 60 days? 90 days?
+
+Let me know and I'll give you a specific roadmap!`;
+            break;
+        case "replace-income-3-5k":
+            incomeQuestion = `You want to REPLACE YOUR INCOME with $3,000-5,000/month. I love that goal because it's exactly what I did!
+
+Here's what I need to know:
+→ Are you looking to transition gradually or make a full switch?
+→ How many hours/week can you dedicate right now?
+
+Reply and I'll create a custom plan for you!`;
+            break;
+        case "build-business-10k-plus":
+            incomeQuestion = `You're thinking BIG - $10K+/month! I LOVE that energy. Let's build an empire!
+
+Here's what separates $10K earners from everyone else:
+→ Premium pricing ($200-500/session)
+→ Group programs ($997-2,497)
+→ Leveraged offerings (courses, memberships)
+
+Which of these excites you most? Tell me and let's map it out!`;
+            break;
+        default:
+            incomeQuestion = `I'd love to know your specific goals:
+
+💰 What income would change your life?
+→ $3K/month? $5K? $10K+?
+
+🎯 What's your dream scenario?
+→ Leave your job? Add to existing income? Build a full practice?
+
+Reply here - I read every message and tailor my support to YOUR goals!`;
+    }
+
+    // Build time commitment note
+    let timeNote = "";
+    if (qualData.timeCommitment === "few-hours-flexible") {
+        timeNote = `\n\nP.S. I know you mentioned you have limited time right now. That's PERFECT for this - even a few focused hours/week can build something real. Quality over quantity!`;
+    } else if (qualData.timeCommitment === "full-time-30-plus") {
+        timeNote = `\n\nP.S. With the time you're ready to invest, you could be earning full-time income within 90 days. Let's make every hour count!`;
+    }
+
+    return `Hi ${firstName}! 👋
+
+${personalizedOpening}
+
+${incomeQuestion}
+
+Start Module 1 when you're ready - it's going to click for you immediately! 🔥${timeNote}
+
+— ${coachName}`;
+}

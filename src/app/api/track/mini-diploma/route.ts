@@ -100,10 +100,79 @@ export async function POST(request: NextRequest) {
 
                 case "certificate_downloaded":
                     await prisma.userTag.upsert({
-                        where: { userId_tag: { userId: finalUserId, tag: "functional-medicine-certifi cate-downloaded" } },
+                        where: { userId_tag: { userId: finalUserId, tag: "functional-medicine-certificate-downloaded" } },
                         update: {},
                         create: { userId: finalUserId, tag: "functional-medicine-certificate-downloaded" }
                     });
+                    break;
+
+                case "assessment_completed":
+                    const assessmentType = properties.assessment_type;
+                    if (assessmentType) {
+                        await prisma.userTag.upsert({
+                            where: { userId_tag: { userId: finalUserId, tag: `fm-assessment:${assessmentType}` } },
+                            update: {},
+                            create: { userId: finalUserId, tag: `fm-assessment:${assessmentType}` }
+                        });
+                    }
+                    break;
+
+                case "quiz_completed":
+                    const quizLessonId = properties.lesson_id;
+                    const quizScore = properties.score;
+                    const quizTotal = properties.total;
+                    if (quizLessonId) {
+                        await prisma.userTag.upsert({
+                            where: { userId_tag: { userId: finalUserId, tag: `fm-quiz-complete:${quizLessonId}` } },
+                            update: {},
+                            create: { userId: finalUserId, tag: `fm-quiz-complete:${quizLessonId}` }
+                        });
+                        // Track score
+                        if (quizScore !== undefined && quizTotal) {
+                            await prisma.userTag.upsert({
+                                where: { userId_tag: { userId: finalUserId, tag: `fm-quiz-score:${quizLessonId}:${quizScore}/${quizTotal}` } },
+                                update: {},
+                                create: { userId: finalUserId, tag: `fm-quiz-score:${quizLessonId}:${quizScore}/${quizTotal}` }
+                            });
+                        }
+                    }
+                    break;
+
+                case "case_study_completed":
+                    const caseLessonId = properties.lesson_id;
+                    const isCorrect = properties.is_correct;
+                    if (caseLessonId) {
+                        await prisma.userTag.upsert({
+                            where: { userId_tag: { userId: finalUserId, tag: `fm-case-study:${caseLessonId}:${isCorrect ? 'correct' : 'incorrect'}` } },
+                            update: {},
+                            create: { userId: finalUserId, tag: `fm-case-study:${caseLessonId}:${isCorrect ? 'correct' : 'incorrect'}` }
+                        });
+                    }
+                    break;
+
+                case "income_calculated":
+                    const monthlyIncome = properties.monthly_income;
+                    const yearlyIncome = properties.yearly_income;
+                    // Categorize income level for segmentation
+                    let incomeLevel = "low";
+                    if (yearlyIncome >= 100000) incomeLevel = "high";
+                    else if (yearlyIncome >= 50000) incomeLevel = "medium";
+                    await prisma.userTag.upsert({
+                        where: { userId_tag: { userId: finalUserId, tag: `fm-income-goal:${incomeLevel}` } },
+                        update: {},
+                        create: { userId: finalUserId, tag: `fm-income-goal:${incomeLevel}` }
+                    });
+                    break;
+
+                case "resource_downloaded":
+                    const resourceName = properties.resource_name;
+                    if (resourceName) {
+                        await prisma.userTag.upsert({
+                            where: { userId_tag: { userId: finalUserId, tag: `fm-resource:${resourceName.replace(/\s+/g, '-').toLowerCase()}` } },
+                            update: {},
+                            create: { userId: finalUserId, tag: `fm-resource:${resourceName.replace(/\s+/g, '-').toLowerCase()}` }
+                        });
+                    }
                     break;
             }
         }

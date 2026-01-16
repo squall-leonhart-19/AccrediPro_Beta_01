@@ -18,6 +18,58 @@ interface NudgeResult {
     nudgeType: string;
 }
 
+// Helper to extract qualification data from tags
+function getQualificationData(tags: { tag: string }[]) {
+    const tagSet = tags.map(t => t.tag);
+
+    // Extract motivation (time-with-family, help-others, financial-freedom, career-change, personal-growth)
+    const motivation = tagSet.find(t => t.startsWith("motivation:"))?.replace("motivation:", "") || null;
+
+    // Extract time commitment (few-hours-flexible, part-time-10-20, full-time-30-plus)
+    const timeCommitment = tagSet.find(t => t.startsWith("time_commitment:"))?.replace("time_commitment:", "") || null;
+
+    // Extract income goal (side-income-500-1k, replace-income-3-5k, build-business-10k-plus)
+    const incomeGoal = tagSet.find(t => t.startsWith("income_goal:"))?.replace("income_goal:", "") || null;
+
+    return { motivation, timeCommitment, incomeGoal };
+}
+
+// Generate personalized hook based on qualification data
+function getPersonalizedHook(qual: ReturnType<typeof getQualificationData>, firstName: string): string {
+    // Motivation-based hooks
+    if (qual.motivation === "time-with-family") {
+        return `${firstName}, imagine working from home on YOUR schedule, while the kids are at school. That's what this certification can unlock.`;
+    }
+    if (qual.motivation === "help-others") {
+        return `${firstName}, there are people in your community who need exactly what you'll learn here. Let's help them together.`;
+    }
+    if (qual.motivation === "financial-freedom") {
+        return `${firstName}, financial freedom is just a few lessons away. Our graduates earn $3,000-10,000/month. Your turn!`;
+    }
+    if (qual.motivation === "career-change") {
+        return `${firstName}, ready for that career change? This is your first step toward a fulfilling new path.`;
+    }
+
+    // Income-based hooks (fallback)
+    if (qual.incomeGoal === "side-income-500-1k") {
+        return `${firstName}, even just 2-3 clients a month can add $500-1,000 to your income. Let's start building that today.`;
+    }
+    if (qual.incomeGoal === "replace-income-3-5k") {
+        return `${firstName}, replacing your income is totally achievable. Our grads average $4,200/month. Let's get you there!`;
+    }
+    if (qual.incomeGoal === "build-business-10k-plus") {
+        return `${firstName}, building a $10k+/month business starts with mastering these fundamentals. You've got what it takes!`;
+    }
+
+    // Time-based hooks (fallback)
+    if (qual.timeCommitment === "few-hours-flexible") {
+        return `${firstName}, just a few flexible hours can change everything. Lesson 1 is only 7 minutes!`;
+    }
+
+    // Default hook
+    return `${firstName}, you're so close to starting something amazing. Lesson 1 takes just 7 minutes!`;
+}
+
 // This cron runs hourly to send nudges to non-starters
 export async function GET(request: NextRequest) {
     try {
@@ -53,7 +105,12 @@ export async function GET(request: NextRequest) {
                 createdAt: true,
                 tags: {
                     where: {
-                        tag: { startsWith: "nudge:" }
+                        OR: [
+                            { tag: { startsWith: "nudge:" } },
+                            { tag: { startsWith: "motivation:" } },
+                            { tag: { startsWith: "time_commitment:" } },
+                            { tag: { startsWith: "income_goal:" } },
+                        ]
                     },
                     select: { tag: true, createdAt: true }
                 }
@@ -65,6 +122,10 @@ export async function GET(request: NextRequest) {
             const sentNudges = new Set(lead.tags.map(t => t.tag));
             const firstName = lead.firstName || "there";
             const dashboardLink = `https://learn.accredipro.academy/functional-medicine-diploma`;
+
+            // Get personalized hook based on qualification answers
+            const qualData = getQualificationData(lead.tags);
+            const personalizedHook = getPersonalizedHook(qualData, firstName);
 
             // Hour 1 SMS nudge
             if (hoursSinceSignup >= 1 && hoursSinceSignup < 2 && !sentNudges.has("nudge:hour-1-sms")) {
@@ -113,12 +174,22 @@ export async function GET(request: NextRequest) {
                 }
             }
 
-            // Hour 12 SMS nudge
+            // Hour 12 SMS nudge - PERSONALIZED
             if (hoursSinceSignup >= 12 && hoursSinceSignup < 13 && !sentNudges.has("nudge:hour-12-sms")) {
                 if (lead.phone) {
+                    // Short personalized SMS based on motivation
+                    let smsMessage = `Last check-in for today! ${firstName}, most students finish Lesson 1 in under 10 min. Ready? ${dashboardLink}`;
+                    if (qualData.motivation === "time-with-family") {
+                        smsMessage = `${firstName}, 10 min now = more time with family later. Your first step to freedom is waiting: ${dashboardLink}`;
+                    } else if (qualData.motivation === "financial-freedom") {
+                        smsMessage = `${firstName}, your path to $3k-10k/month starts with 10 min. Let's go! ${dashboardLink}`;
+                    } else if (qualData.motivation === "help-others") {
+                        smsMessage = `${firstName}, there's someone out there who needs your help. Start learning how: ${dashboardLink}`;
+                    }
+
                     const success = await sendSMS(
                         lead.phone,
-                        `Last check-in for today! ${firstName}, most students finish Lesson 1 in under 10 min. Ready? ${dashboardLink}`
+                        smsMessage
                     );
                     if (success) {
                         await prisma.userTag.create({
@@ -129,9 +200,19 @@ export async function GET(request: NextRequest) {
                 }
             }
 
-            // Day 2 Email nudge
+            // Day 2 Email nudge - PERSONALIZED based on qualification
             if (hoursSinceSignup >= 48 && hoursSinceSignup < 49 && !sentNudges.has("nudge:day-2-email")) {
                 try {
+                    // Generate income message based on their goal
+                    let incomeMessage = "How to command $150-300/hour with this knowledge";
+                    if (qualData.incomeGoal === "side-income-500-1k") {
+                        incomeMessage = "How to earn an extra $500-1,000/month on the side";
+                    } else if (qualData.incomeGoal === "replace-income-3-5k") {
+                        incomeMessage = "How practitioners replace their income ($3,000-5,000/month)";
+                    } else if (qualData.incomeGoal === "build-business-10k-plus") {
+                        incomeMessage = "How top practitioners build $10k+/month businesses";
+                    }
+
                     await resend.emails.send({
                         from: "Sarah M. <sarah@accredipro-certificate.com>",
                         to: lead.email,
@@ -139,12 +220,15 @@ export async function GET(request: NextRequest) {
                         html: `
                             <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
                                 <p>Hey ${firstName}!</p>
+                                <p style="background: #f8f4f0; padding: 15px; border-radius: 8px; border-left: 4px solid #722F37;">
+                                    ${personalizedHook}
+                                </p>
                                 <p>It's Day 2 and I'm still waiting for you in Lesson 1. 😊</p>
                                 <p>Here's what you'll learn:</p>
                                 <ul>
                                     <li>✅ Why root cause medicine is the future</li>
                                     <li>✅ The 5 hidden dysfunctions most practitioners miss</li>
-                                    <li>✅ How to command $150-300/hour with this knowledge</li>
+                                    <li>✅ ${incomeMessage}</li>
                                 </ul>
                                 <p style="margin: 30px 0;">
                                     <a href="${dashboardLink}" style="background: #722F37; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">

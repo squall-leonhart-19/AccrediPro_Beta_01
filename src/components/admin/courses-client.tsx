@@ -125,26 +125,36 @@ export function CoursesClient({
     const draftCount = courses.filter(c => !c.isPublished).length;
     const totalLessons = courses.reduce((acc, c) => acc + (c.modules?.reduce((m, mod) => m + mod.lessons.length, 0) || 0), 0);
 
+    // Separate Mini Diplomas from Main Courses
+    const miniDiplomaCourses = courses.filter(c => c.certificateType === "MINI_DIPLOMA");
+    const mainCourses = courses.filter(c => c.certificateType !== "MINI_DIPLOMA");
+
     // Get unique categories from courses
     const courseCategories = Array.from(new Set(courses.filter(c => c.category).map(c => c.category!.name)));
 
-    // Filter & sort
-    const filteredCourses = courses
-        .filter(course => {
-            const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                course.slug.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesStatus = filterStatus === "all" ||
-                (filterStatus === "published" && course.isPublished) ||
-                (filterStatus === "draft" && !course.isPublished);
-            const matchesType = filterType === "all" || course.certificateType === filterType;
-            const matchesCategory = filterCategory === "all" || course.category?.name === filterCategory;
-            return matchesSearch && matchesStatus && matchesType && matchesCategory;
-        })
-        .sort((a, b) => {
-            if (sortBy === "enrollments") return b._count.enrollments - a._count.enrollments;
-            if (sortBy === "title") return a.title.localeCompare(b.title);
-            return 0; // recent - maintain original order
-        });
+    // Filter function
+    const filterCourse = (course: Course) => {
+        const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.slug.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = filterStatus === "all" ||
+            (filterStatus === "published" && course.isPublished) ||
+            (filterStatus === "draft" && !course.isPublished);
+        const matchesType = filterType === "all" || course.certificateType === filterType;
+        const matchesCategory = filterCategory === "all" || course.category?.name === filterCategory;
+        return matchesSearch && matchesStatus && matchesType && matchesCategory;
+    };
+
+    // Sort function
+    const sortCourses = (a: Course, b: Course) => {
+        if (sortBy === "enrollments") return b._count.enrollments - a._count.enrollments;
+        if (sortBy === "title") return a.title.localeCompare(b.title);
+        return 0; // recent - maintain original order
+    };
+
+    // Filter & sort both groups
+    const filteredMainCourses = mainCourses.filter(filterCourse).sort(sortCourses);
+    const filteredMiniDiplomas = miniDiplomaCourses.filter(filterCourse).sort(sortCourses);
+    const filteredCourses = courses.filter(filterCourse).sort(sortCourses);
 
     // API calls
     const handleCreateCourse = async () => {
@@ -711,25 +721,76 @@ export function CoursesClient({
             <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-500">
                     Showing {filteredCourses.length} of {courses.length} courses
+                    ({filteredMainCourses.length} certifications, {filteredMiniDiplomas.length} mini diplomas)
                 </p>
             </div>
 
-            {/* Course Grid/List */}
-            {filteredCourses.length > 0 ? (
-                viewMode === "grid" ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredCourses.map(course => (
-                            <CourseCard key={course.id} course={course} />
-                        ))}
+            {/* Mini Diplomas Section */}
+            {filteredMiniDiplomas.length > 0 && (
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center">
+                            <GraduationCap className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Mini Diplomas</h2>
+                            <p className="text-sm text-gray-500">Free lead magnets - {filteredMiniDiplomas.length} courses</p>
+                        </div>
+                        <a
+                            href="/functional-medicine-diploma/lesson/1"
+                            target="_blank"
+                            className="ml-auto text-sm text-burgundy-600 hover:text-burgundy-700 flex items-center gap-1"
+                        >
+                            <ExternalLink className="w-4 h-4" />
+                            Preview FM V2
+                        </a>
                     </div>
-                ) : (
-                    <div className="space-y-3">
-                        {filteredCourses.map(course => (
-                            <CourseListItem key={course.id} course={course} />
-                        ))}
+                    {viewMode === "grid" ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredMiniDiplomas.map(course => (
+                                <CourseCard key={course.id} course={course} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {filteredMiniDiplomas.map(course => (
+                                <CourseListItem key={course.id} course={course} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Main Certifications Section */}
+            {filteredMainCourses.length > 0 && (
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-burgundy-500 to-burgundy-600 flex items-center justify-center">
+                            <Award className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Main Certifications</h2>
+                            <p className="text-sm text-gray-500">Paid courses - {filteredMainCourses.length} courses</p>
+                        </div>
                     </div>
-                )
-            ) : (
+                    {viewMode === "grid" ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredMainCourses.map(course => (
+                                <CourseCard key={course.id} course={course} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {filteredMainCourses.map(course => (
+                                <CourseListItem key={course.id} course={course} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Empty state */}
+            {filteredCourses.length === 0 && (
                 <Card className="border-dashed">
                     <CardContent className="py-16 text-center">
                         <BookOpen className="w-16 h-16 text-gray-200 mx-auto mb-4" />
