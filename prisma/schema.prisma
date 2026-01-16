@@ -178,6 +178,9 @@ model User {
   // Push Notifications
   pushSubscriptions PushSubscription[]
 
+  // Live Lesson Chat
+  lessonChatMessages LessonChatMessage[] @relation("LessonChatMessages")
+
   @@index([email])
   @@index([role])
   @@index([assignedCoachId])
@@ -351,6 +354,7 @@ model Course {
   offers       OfferCourse[]
   wishlist     Wishlist[]
   payments     Payment[] // Dispute evidence - payment records
+  lessonChatMessages LessonChatMessage[] // Live chat messages
 
   @@index([slug])
   @@index([categoryId])
@@ -2962,3 +2966,33 @@ model PushSubscription {
   @@index([endpoint])
 }
 
+// ==================== LIVE LESSON CHAT ====================
+
+model LessonChatMessage {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  courseId  String   // Chat is per-course, not per-lesson
+  userId    String?  // Null for zombie messages
+  isZombie  Boolean  @default(false) // True for simulated messages
+  zombieName String? // Display name for zombie (from library)
+  zombieAvatar String? // Avatar URL for zombie
+
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User?  @relation("LessonChatMessages", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([courseId, createdAt])
+  @@index([isZombie])
+}
+
+model ZombieChatTemplate {
+  id       String @id @default(cuid())
+  content  String @db.Text
+  category String // celebration, question, motivation, tip, reaction
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@index([category, isActive])
+}

@@ -7,6 +7,7 @@ import Link from "next/link";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { CourseSidebar } from "./course-sidebar";
+import { LiveChatPanel } from "./live-chat-panel";
 
 // =============================================================================
 // TYPES
@@ -81,6 +82,7 @@ export function LessonPlayer({
     const [isCompleted, setIsCompleted] = useState(progress.isCompleted);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
+    const [chatMode, setChatMode] = useState<"live" | "mentor">("live"); // Toggle between live chat and mentor
 
     // Notes state
     const [note, setNote] = useState("");
@@ -816,9 +818,63 @@ export function LessonPlayer({
                 width: "340px",
                 flexShrink: 0,
                 borderLeft: "1px solid #eee",
-                height: "100vh"
+                height: "100vh",
+                display: "flex",
+                flexDirection: "column"
             }}>
-                <ChatPanel />
+                {/* Toggle Tabs */}
+                <div style={{
+                    display: "flex",
+                    borderBottom: "1px solid #eee",
+                    flexShrink: 0
+                }}>
+                    <button
+                        onClick={() => setChatMode("live")}
+                        style={{
+                            flex: 1,
+                            padding: "14px 16px",
+                            background: chatMode === "live" ? "#16a34a" : "#f5f5f5",
+                            color: chatMode === "live" ? "#fff" : "#666",
+                            border: "none",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px"
+                        }}
+                    >
+                        🔴 Live Chat
+                    </button>
+                    <button
+                        onClick={() => setChatMode("mentor")}
+                        style={{
+                            flex: 1,
+                            padding: "14px 16px",
+                            background: chatMode === "mentor" ? "#722f37" : "#f5f5f5",
+                            color: chatMode === "mentor" ? "#fff" : "#666",
+                            border: "none",
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px"
+                        }}
+                    >
+                        💬 Mentor
+                    </button>
+                </div>
+                {/* Chat Content */}
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                    {chatMode === "live" ? (
+                        <LiveChatPanel courseId={course.id} />
+                    ) : (
+                        <ChatPanel />
+                    )}
+                </div>
             </aside>
 
             {/* Mobile Chat Overlay */}
@@ -841,11 +897,67 @@ export function LessonPlayer({
                             bottom: 0,
                             width: "100%",
                             maxWidth: "400px",
-                            background: "#fff"
+                            background: "#fff",
+                            display: "flex",
+                            flexDirection: "column"
                         }}
                         onClick={e => e.stopPropagation()}
                     >
-                        <ChatPanel isMobile />
+                        {/* Mobile Toggle */}
+                        <div style={{
+                            display: "flex",
+                            borderBottom: "1px solid #eee",
+                            flexShrink: 0
+                        }}>
+                            <button
+                                onClick={() => setChatMode("live")}
+                                style={{
+                                    flex: 1,
+                                    padding: "14px 16px",
+                                    background: chatMode === "live" ? "#16a34a" : "#f5f5f5",
+                                    color: chatMode === "live" ? "#fff" : "#666",
+                                    border: "none",
+                                    fontSize: "13px",
+                                    fontWeight: 600,
+                                    cursor: "pointer"
+                                }}
+                            >
+                                🔴 Live
+                            </button>
+                            <button
+                                onClick={() => setChatMode("mentor")}
+                                style={{
+                                    flex: 1,
+                                    padding: "14px 16px",
+                                    background: chatMode === "mentor" ? "#722f37" : "#f5f5f5",
+                                    color: chatMode === "mentor" ? "#fff" : "#666",
+                                    border: "none",
+                                    fontSize: "13px",
+                                    fontWeight: 600,
+                                    cursor: "pointer"
+                                }}
+                            >
+                                💬 Mentor
+                            </button>
+                            <button
+                                onClick={() => setChatOpen(false)}
+                                style={{
+                                    padding: "14px 16px",
+                                    background: "#f5f5f5",
+                                    border: "none",
+                                    fontSize: "16px",
+                                    cursor: "pointer"
+                                }}
+                            >✕</button>
+                        </div>
+                        {/* Mobile Chat Content */}
+                        <div style={{ flex: 1, overflow: "hidden" }}>
+                            {chatMode === "live" ? (
+                                <LiveChatPanel courseId={course.id} onClose={() => setChatOpen(false)} />
+                            ) : (
+                                <ChatPanel isMobile />
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
