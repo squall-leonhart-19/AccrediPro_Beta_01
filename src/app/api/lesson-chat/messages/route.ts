@@ -54,9 +54,15 @@ export async function GET(request: NextRequest) {
             }
         }));
 
-        // Generate simulated online count (realistic range)
-        const baseOnline = 12 + Math.floor(Math.random() * 35);
-        const onlineCount = baseOnline + (messages.length > 10 ? 5 : 0);
+        // Generate simulated online count (time-based for realism)
+        // Day (8AM-10PM): 300-500, Night: 150-250
+        const hour = new Date().getHours();
+        const isDaytime = hour >= 8 && hour <= 22;
+        const baseOnline = isDaytime
+            ? 300 + Math.floor(Math.random() * 200)  // 300-500 during day
+            : 150 + Math.floor(Math.random() * 100); // 150-250 at night
+        // Add slight variation based on message activity
+        const onlineCount = baseOnline + (messages.length > 20 ? 15 : 0);
 
         return NextResponse.json({
             success: true,
