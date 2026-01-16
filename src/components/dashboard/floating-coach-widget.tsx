@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -248,8 +247,8 @@ export function FloatingCoachWidget({
                         <button
                             onClick={() => toggleAudio(msg.id, msg.attachmentUrl!)}
                             className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-md ${isUser
-                                    ? "bg-white/20 hover:bg-white/30"
-                                    : "bg-gradient-to-br from-burgundy-500 to-burgundy-600 hover:from-burgundy-600 hover:to-burgundy-700"
+                                ? "bg-white/20 hover:bg-white/30"
+                                : "bg-gradient-to-br from-burgundy-500 to-burgundy-600 hover:from-burgundy-600 hover:to-burgundy-700"
                                 }`}
                         >
                             {playingAudio === msg.id ? (
@@ -392,8 +391,8 @@ export function FloatingCoachWidget({
                                                         className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
                                                     >
                                                         <div className={`max-w-[85%] rounded-2xl px-3 py-2 ${isUser
-                                                                ? 'bg-burgundy-600 text-white rounded-br-sm'
-                                                                : 'bg-white text-gray-800 rounded-bl-sm shadow-sm border'
+                                                            ? 'bg-burgundy-600 text-white rounded-br-sm'
+                                                            : 'bg-white text-gray-800 rounded-bl-sm shadow-sm border'
                                                             }`}>
                                                             {renderMessageContent(msg, isUser)}
                                                             <p className={`text-[10px] mt-1 ${isUser ? 'text-burgundy-200' : 'text-gray-400'
@@ -469,11 +468,11 @@ export function FloatingCoachWidget({
                 </Card>
             )}
 
-            {/* Floating Button - navigates to /messages */}
-            <Link
-                href="/messages"
-                aria-label="Open messages with Coach Sarah"
-                className="group relative flex items-center gap-2 shadow-lg transition-all duration-200 hover:scale-105 pl-1.5 pr-4 py-1.5 rounded-full bg-white border border-gray-200 hover:border-burgundy-300 hover:shadow-xl"
+            {/* Floating Button - opens chat popup */}
+            <button
+                onClick={() => { setIsExpanded(true); setIsChatMode(true); }}
+                aria-label="Open chat with Coach Sarah"
+                className="group relative flex items-center gap-2 shadow-lg transition-all duration-200 hover:scale-105 pl-1.5 pr-4 py-1.5 rounded-full bg-white border border-gray-200 hover:border-burgundy-300 hover:shadow-xl cursor-pointer"
             >
                 {/* Notification Pulse */}
                 <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">
@@ -493,7 +492,7 @@ export function FloatingCoachWidget({
                     <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></span>
                 </div>
                 <span className="font-medium text-sm text-gray-700 hidden sm:inline">Ask Sarah</span>
-            </Link>
+            </button>
         </div>
     );
 }
