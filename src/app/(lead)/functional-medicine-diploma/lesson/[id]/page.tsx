@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { FunctionalMedicineLessonRouter } from "@/components/mini-diploma/lessons/functional-medicine/lesson-router";
+import { ClassicFunctionalMedicineLessonRouter } from "@/components/mini-diploma/lessons/functional-medicine/classic/lesson-router";
 
 export default function LessonPage() {
     const params = useParams();
@@ -13,7 +13,6 @@ export default function LessonPage() {
 
     const [firstName, setFirstName] = useState("friend");
     const [isCompleted, setIsCompleted] = useState(false);
-    const [totalScore, setTotalScore] = useState(0);
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -23,7 +22,6 @@ export default function LessonPage() {
                     const data = await res.json();
                     setFirstName(data.firstName || "friend");
                     setIsCompleted(data.completed || false);
-                    setTotalScore(data.totalScore || 0);
                 }
             } catch (e) {
                 console.error("Failed to check lesson status");
@@ -67,9 +65,9 @@ export default function LessonPage() {
         }
     };
 
-    // Original lesson router with classic chat UI
+    // Classic text-based lesson component handles its own header/navigation
     return (
-        <FunctionalMedicineLessonRouter
+        <ClassicFunctionalMedicineLessonRouter
             lessonNumber={lessonId}
             firstName={firstName}
             onComplete={handleComplete}
