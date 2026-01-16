@@ -24,6 +24,8 @@ interface Message {
 interface FloatingCoachWidgetProps {
     userName?: string;
     userId?: string;
+    currentLessonCount?: number;
+    nextMilestone?: number;
 }
 
 // Dynamic greetings based on time of day

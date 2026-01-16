@@ -140,8 +140,8 @@ export async function POST(request: NextRequest) {
                 });
             }
 
-            // Enroll in nurture sequence
-            await enrollInNurtureSequence(existingUser.id);
+            // Enroll in nurture sequence (category-specific)
+            await enrollInNurtureSequence(existingUser.id, miniDiplomaCategory);
 
             // Send welcome email for existing user
             await sendFreebieWelcomeEmail({
@@ -284,8 +284,8 @@ export async function POST(request: NextRequest) {
         // Add marketing tags
         await addFreebieTag(user.id);
 
-        // Enroll in nurture sequence
-        await enrollInNurtureSequence(user.id);
+        // Enroll in nurture sequence (category-specific)
+        await enrollInNurtureSequence(user.id, miniDiplomaCategory);
 
         // Send welcome DM with voice message for first login
         console.log(`[FREEBIE] New user registered: ${user.id} (${emailLower})`);
@@ -408,20 +408,21 @@ async function addFreebieTag(userId: string) {
     }
 }
 
-async function enrollInNurtureSequence(userId: string) {
+async function enrollInNurtureSequence(userId: string, category?: string) {
     try {
-        // STEP 1: Tag user with nurture-30-day (for UI count)
+        // STEP 1: Tag user with nurture tag (for UI count)
+        const tagSlug = category ? `${category}-nurture` : "nurture-30-day";
         const nurtureTag = await prisma.marketingTag.findFirst({
             where: {
                 OR: [
+                    { slug: tagSlug },
+                    { name: tagSlug },
                     { slug: "nurture-30-day" },
-                    { name: "nurture-30-day" },
                 ],
             },
         });
 
         if (nurtureTag) {
-            // Check if already tagged
             const existingTag = await prisma.userMarketingTag.findUnique({
                 where: {
                     userId_tagId: {
@@ -444,17 +445,16 @@ async function enrollInNurtureSequence(userId: string) {
                     data: { userCount: { increment: 1 } },
                 });
 
-                console.log(`[NURTURE] ✅ Tagged user ${userId} with nurture-30-day`);
+                console.log(`[NURTURE] ✅ Tagged user ${userId} with ${tagSlug}`);
             }
         } else {
-            console.log(`[NURTURE] ⚠️ nurture-30-day tag not found - creating...`);
-            // Create the tag if it doesn't exist
+            console.log(`[NURTURE] ⚠️ ${tagSlug} tag not found - creating...`);
             const newTag = await prisma.marketingTag.create({
                 data: {
-                    name: "nurture-30-day",
-                    slug: "nurture-30-day",
+                    name: tagSlug,
+                    slug: tagSlug,
                     category: "STAGE",
-                    description: "Users enrolled in 30-day nurture sequence",
+                    description: `Users enrolled in ${category || "30-day"} nurture sequence`,
                     color: "#722F37",
                     userCount: 1,
                 },
@@ -466,26 +466,42 @@ async function enrollInNurtureSequence(userId: string) {
                     tagId: newTag.id,
                 },
             });
-            console.log(`[NURTURE] ✅ Created nurture-30-day tag and tagged user`);
+            console.log(`[NURTURE] ✅ Created ${tagSlug} tag and tagged user`);
         }
 
-        // STEP 2: Find and enroll in database sequence
+        // STEP 2: Find category-specific sequence first, then fallback to generic
+        // Priority: fm-nurture-sequence-v4 > wh-nurture > generic mini-diploma
+        const sequenceSlugs: string[] = [];
+
+        // Add category-specific slugs
+        if (category === "functional-medicine" || category === "fm-healthcare") {
+            sequenceSlugs.push("fm-nurture-sequence-v4");
+        } else if (category === "womens-health") {
+            sequenceSlugs.push("wh-nurture-sequence");
+        }
+
+        // Add generic fallbacks
+        sequenceSlugs.push(
+            "mini-diploma-to-certification-30d",
+            "mini-diploma-nurture"
+        );
+
+        console.log(`[NURTURE] Looking for sequences: ${sequenceSlugs.join(", ")}`);
+
         const sequence = await prisma.sequence.findFirst({
             where: {
                 OR: [
-                    { slug: "mini-diploma-to-certification-30d" },
-                    { slug: "mini-diploma-nurture" },
-                    { name: { contains: "Mini Diploma" } },
+                    { slug: { in: sequenceSlugs } },
                     { triggerType: "MINI_DIPLOMA_STARTED" },
                 ],
                 isActive: true,
             },
+            orderBy: { priority: "desc" }, // Higher priority sequences first
         });
 
         if (sequence) {
-            console.log(`[NURTURE] Found sequence: ${sequence.name} (${sequence.id})`);
+            console.log(`[NURTURE] Found sequence: ${sequence.name} (${sequence.slug})`);
 
-            // Check if already enrolled
             const existingEnrollment = await prisma.sequenceEnrollment.findUnique({
                 where: {
                     userId_sequenceId: {
@@ -496,9 +512,9 @@ async function enrollInNurtureSequence(userId: string) {
             });
 
             if (!existingEnrollment) {
-                // Schedule first email
+                // Schedule first email - 1 hour after signup
                 const nextSendAt = new Date();
-                nextSendAt.setHours(nextSendAt.getHours() + 1); // First email 1 hour after signup
+                nextSendAt.setHours(nextSendAt.getHours() + 1);
 
                 await prisma.sequenceEnrollment.create({
                     data: {
@@ -510,18 +526,17 @@ async function enrollInNurtureSequence(userId: string) {
                     },
                 });
 
-                // Update sequence stats
                 await prisma.sequence.update({
                     where: { id: sequence.id },
                     data: { totalEnrolled: { increment: 1 } },
                 });
 
-                console.log(`[NURTURE] ✅ Enrolled user ${userId} in nurture sequence`);
+                console.log(`[NURTURE] ✅ Enrolled user ${userId} in ${sequence.slug}`);
             } else {
-                console.log(`[NURTURE] User ${userId} already enrolled`);
+                console.log(`[NURTURE] User ${userId} already enrolled in ${sequence.slug}`);
             }
         } else {
-            console.log(`[NURTURE] ⚠️ No active nurture sequence found in database`);
+            console.log(`[NURTURE] ⚠️ No active nurture sequence found for category: ${category || "generic"}`);
         }
     } catch (error) {
         console.error("Error enrolling in nurture sequence:", error);
