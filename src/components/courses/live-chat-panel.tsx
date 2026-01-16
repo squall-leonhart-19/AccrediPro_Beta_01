@@ -100,10 +100,14 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
         };
     }, []);
 
-    // Smart scroll
+    // Smart scroll - only scroll WITHIN chat panel (Twitch/YouTube style)
+    // Does NOT affect page scroll
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
-        if (isNearBottomRef.current && messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        if (isNearBottomRef.current && scrollContainerRef.current) {
+            // Only scroll the chat container, not the page
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
         }
     }, [messages]);
 
@@ -205,6 +209,7 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
 
             {/* Messages */}
             <div
+                ref={scrollContainerRef}
                 style={{ flex: 1, overflowY: "auto", padding: "12px", background: "#fafafa" }}
                 onScroll={handleScroll}
             >

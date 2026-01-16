@@ -94,7 +94,8 @@ const fullNavItems: NavItem[] = [
     ]
   },
 
-  // 5. (Moved to top - Your Mentor)
+  // 5. Messages - for admin access to mentor chat
+  { href: "/messages", label: "Messages", icon: MessageSquare, notificationKey: "messages", tourId: "messages" },
 
   // 6. My Pod - TEMPORARILY HIDDEN
   // { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
