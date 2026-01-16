@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LessonRouterV2 } from "@/components/mini-diploma/lessons/functional-medicine/v2/lesson-router";
+import { FunctionalMedicineLessonRouter } from "@/components/mini-diploma/lessons/functional-medicine/lesson-router";
 
 export default function LessonPage() {
     const params = useParams();
@@ -67,15 +67,14 @@ export default function LessonPage() {
         }
     };
 
-    // V2 High-Intent Curriculum with interactive elements
+    // Original lesson router with classic chat UI
     return (
-        <LessonRouterV2
-            lessonId={lessonId}
+        <FunctionalMedicineLessonRouter
+            lessonNumber={lessonId}
             firstName={firstName}
             onComplete={handleComplete}
             onNext={handleNext}
             isCompleted={isCompleted}
-            totalScore={totalScore}
         />
     );
 }
