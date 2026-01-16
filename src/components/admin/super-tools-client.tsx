@@ -21,7 +21,8 @@ import {
     ChevronDown,
     Layers,
     Users,
-    Trash2
+    Trash2,
+    Award
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -283,6 +284,42 @@ export function SuperToolsClient({ courses }: SuperToolsClientProps) {
         }
     };
 
+    const handleUnlockAllCertificates = async (courseId: string, courseTitle: string) => {
+        if (!selectedUser) return;
+
+        setIsLoadingAction(true);
+        const toastId = toast.loading(`Unlocking all certificates for ${courseTitle}...`);
+
+        try {
+            const res = await fetch("/api/admin/super-tools/unlock-certificates", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: selectedUser.id,
+                    courseId
+                }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                const createdCount = data.created?.length || 0;
+                const skippedCount = data.skipped?.length || 0;
+                toast.success(
+                    `Created ${createdCount} certificates! (${skippedCount} already existed)`,
+                    { id: toastId, duration: 5000 }
+                );
+                await refreshUserData(selectedUser.id);
+            } else {
+                toast.error(data.error || "Failed to unlock certificates", { id: toastId });
+            }
+        } catch (error) {
+            toast.error("Error unlocking certificates", { id: toastId });
+        } finally {
+            setIsLoadingAction(false);
+        }
+    };
+
     return (
         <div className="grid gap-8 grid-cols-1 lg:grid-cols-3">
             {/* Left Column: Search & Selection */}
@@ -516,6 +553,39 @@ export function SuperToolsClient({ courses }: SuperToolsClientProps) {
                                                             className="bg-green-600 hover:bg-green-700"
                                                         >
                                                             Force Complete
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+
+                                            {/* Unlock All Certificates Button */}
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        variant="default"
+                                                        size="sm"
+                                                        className="bg-gold-500 hover:bg-gold-600 text-burgundy-900"
+                                                    >
+                                                        <Award className="w-4 h-4 mr-2" />
+                                                        Unlock All Certificates
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Unlock All Certificates?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This will create certificates for ALL modules in this course plus the final course certificate.
+                                                            All certificates will appear in the user's "My Credentials" page immediately.
+                                                            Existing certificates will be skipped.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() => handleUnlockAllCertificates(enrollment.courseId, enrollment.course.title)}
+                                                            className="bg-gold-500 hover:bg-gold-600 text-burgundy-900"
+                                                        >
+                                                            Unlock All Certificates
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
