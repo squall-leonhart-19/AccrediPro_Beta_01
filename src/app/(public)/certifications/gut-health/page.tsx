@@ -236,7 +236,7 @@ export default function GutHealthPage() {
                     </Button>
                   </Link>
                   <Link href="/apply">
-                    <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 h-auto border-white text-white hover:bg-white/10">
+                    <Button size="lg" variant="outline" className="font-bold text-lg px-8 py-6 h-auto border-2 border-white/80 text-white bg-white/10 hover:bg-white/20">
                       Apply for Full Certification
                     </Button>
                   </Link>

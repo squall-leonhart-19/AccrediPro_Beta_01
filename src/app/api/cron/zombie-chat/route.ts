@@ -1,115 +1,152 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// Zombie names library (realistic women's names for 40+ demographic)
-const ZOMBIE_NAMES = [
-    "Jennifer M.", "Lisa K.", "Michelle R.", "Sandra T.", "Patricia W.",
-    "Nancy L.", "Karen B.", "Susan H.", "Linda G.", "Stephanie P.",
-    "Rebecca J.", "Donna S.", "Deborah C.", "Carol A.", "Sharon N.",
-    "Julie F.", "Christina V.", "Melissa D.", "Amy Z.", "Angela Q.",
-    "Heather M.", "Diane K.", "Kimberly R.", "Tammy T.", "Laura W.",
-    "Brenda L.", "Tracy B.", "Denise H.", "Catherine G.", "Janet P.",
-];
-
-// Zombie avatar URLs (from your zombie-avatars folder)
-const ZOMBIE_AVATARS = [
-    "/zombie-avatars/zombie-1.jpg", "/zombie-avatars/zombie-2.jpg",
-    "/zombie-avatars/zombie-3.jpg", "/zombie-avatars/zombie-4.jpg",
-    "/zombie-avatars/zombie-5.jpg", "/zombie-avatars/zombie-6.jpg",
-    "/zombie-avatars/zombie-7.jpg", "/zombie-avatars/zombie-8.jpg",
-    "/zombie-avatars/zombie-9.jpg", "/zombie-avatars/zombie-10.jpg",
-];
-
-// Fallback messages if no templates in DB
-const FALLBACK_MESSAGES = [
-    "This is exactly what I needed! 🙌",
-    "Just finished this lesson - so good!",
-    "Taking notes like crazy 📝",
-    "Love how practical this is!",
-    "Can't wait to apply this with my clients",
-    "So grateful for this program 💕",
-    "Anyone else loving this module?",
-    "This is game-changing info!",
-    "Sarah explains things so clearly",
-    "Finally understanding this concept!",
-    "Just had an aha moment! 💡",
-    "This is worth every penny",
-    "Keep going ladies! We got this 💪",
-    "So excited to be learning this!",
-    "Amazing content as always",
-];
-
 /**
- * Cron API to inject zombie messages into lesson chat
- * Should be called every 30-60 seconds by Vercel Cron or external service
+ * Cron API to inject zombie messages into FM course chat
+ * Uses templates from ZombieChatTemplate table and real zombie profiles
+ * 
+ * Features:
+ * - Pulls random template from 500+ in database
+ * - Uses real zombie profile from 328 in database  
+ * - Avoids duplicates within 24 hours
+ * - Only targets FM certification course
  */
 export async function GET(request: NextRequest) {
     try {
-        // Verify cron secret (basic auth for cron jobs)
+        // Verify cron secret in production
         const authHeader = request.headers.get("authorization");
         const cronSecret = process.env.CRON_SECRET;
 
         if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-            // Allow without auth in development
             if (process.env.NODE_ENV === "production") {
                 return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
             }
         }
 
-        // Get active courses (those with recent enrollments)
-        const activeCourses = await prisma.course.findMany({
-            where: { isPublished: true },
-            select: { id: true },
-            take: 10,
+        // Get FM Certification course (the one we're scaling)
+        const fmCourse = await prisma.course.findFirst({
+            where: {
+                OR: [
+                    { slug: { contains: "functional-medicine" } },
+                    { title: { contains: "Functional Medicine" } },
+                ],
+                isPublished: true,
+            },
+            select: { id: true, title: true },
         });
 
-        if (activeCourses.length === 0) {
-            return NextResponse.json({ success: true, message: "No active courses" });
+        if (!fmCourse) {
+            return NextResponse.json({ success: false, error: "FM course not found" });
         }
 
-        // Pick a random course
-        const randomCourse = activeCourses[Math.floor(Math.random() * activeCourses.length)];
+        // Get random active template that hasn't been used in 24h
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
-        // Try to get a message template from DB
-        let messageContent: string;
-        const template = await prisma.zombieChatTemplate.findFirst({
+        // Get messages sent in last 24h to avoid duplicates
+        const recentMessages = await prisma.lessonChatMessage.findMany({
+            where: {
+                courseId: fmCourse.id,
+                isZombie: true,
+                createdAt: { gte: twentyFourHoursAgo },
+            },
+            select: { content: true },
+        });
+        const recentContents = new Set(recentMessages.map(m => m.content));
+
+        // Get random template that's not in recent
+        const templateCount = await prisma.zombieChatTemplate.count({
             where: { isActive: true },
-            orderBy: { id: "asc" },
-            skip: Math.floor(Math.random() * 50), // Random template
         });
 
-        if (template) {
-            messageContent = template.content;
-        } else {
-            messageContent = FALLBACK_MESSAGES[Math.floor(Math.random() * FALLBACK_MESSAGES.length)];
+        if (templateCount === 0) {
+            return NextResponse.json({ success: false, error: "No templates found" });
         }
 
-        // Pick random zombie identity
-        const zombieName = ZOMBIE_NAMES[Math.floor(Math.random() * ZOMBIE_NAMES.length)];
-        const zombieAvatar = ZOMBIE_AVATARS[Math.floor(Math.random() * ZOMBIE_AVATARS.length)];
+        // Try up to 10 times to find a non-duplicate
+        let template = null;
+        for (let i = 0; i < 10; i++) {
+            const randomSkip = Math.floor(Math.random() * templateCount);
+            const candidate = await prisma.zombieChatTemplate.findFirst({
+                where: { isActive: true },
+                skip: randomSkip,
+            });
 
-        // Create zombie message
+            if (candidate && !recentContents.has(candidate.content)) {
+                template = candidate;
+                break;
+            }
+        }
+
+        if (!template) {
+            // Fallback: just use any template
+            const randomSkip = Math.floor(Math.random() * templateCount);
+            template = await prisma.zombieChatTemplate.findFirst({
+                where: { isActive: true },
+                skip: randomSkip,
+            });
+        }
+
+        if (!template) {
+            return NextResponse.json({ success: false, error: "No template available" });
+        }
+
+        // Get random zombie profile
+        const zombieCount = await prisma.user.count({
+            where: { isFakeProfile: true },
+        });
+
+        if (zombieCount === 0) {
+            return NextResponse.json({ success: false, error: "No zombie profiles" });
+        }
+
+        const zombieSkip = Math.floor(Math.random() * zombieCount);
+        const zombie = await prisma.user.findFirst({
+            where: { isFakeProfile: true },
+            skip: zombieSkip,
+            select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                avatar: true,
+            },
+        });
+
+        if (!zombie) {
+            return NextResponse.json({ success: false, error: "Zombie not found" });
+        }
+
+        // Create zombie name (First + Last Initial)
+        const zombieName = `${zombie.firstName || "Student"} ${(zombie.lastName || "S")[0]}.`;
+
+        // Create the message
         const message = await prisma.lessonChatMessage.create({
             data: {
-                courseId: randomCourse.id,
-                content: messageContent,
+                courseId: fmCourse.id,
+                userId: zombie.id,
+                content: template.content,
                 isZombie: true,
                 zombieName,
-                zombieAvatar,
-            }
+                zombieAvatar: zombie.avatar,
+            },
         });
 
         return NextResponse.json({
             success: true,
             data: {
-                courseId: randomCourse.id,
+                courseId: fmCourse.id,
+                courseName: fmCourse.title,
                 messageId: message.id,
-                content: messageContent,
+                content: template.content,
+                category: template.category,
                 zombieName,
-            }
+                templateId: template.id,
+            },
         });
     } catch (error) {
         console.error("Zombie chat cron error:", error);
-        return NextResponse.json({ success: false, error: "Cron failed" }, { status: 500 });
+        return NextResponse.json(
+            { success: false, error: "Cron failed" },
+            { status: 500 }
+        );
     }
 }

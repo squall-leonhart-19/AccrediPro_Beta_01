@@ -21,6 +21,14 @@ interface LiveChatPanelProps {
     onClose?: () => void;
 }
 
+// Zombie names for "join" notifications
+const ZOMBIE_JOIN_NAMES = [
+    "Jennifer M.", "Lisa K.", "Michelle R.", "Sandra T.", "Patricia W.",
+    "Nancy L.", "Karen B.", "Susan H.", "Linda G.", "Stephanie P.",
+    "Rebecca J.", "Donna S.", "Deborah C.", "Carol A.", "Sharon N.",
+    "Julie F.", "Christina V.", "Melissa D.", "Amy Z.", "Angela Q.",
+];
+
 export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatPanelProps) {
     const { data: session } = useSession();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -28,8 +36,11 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [onlineCount, setOnlineCount] = useState(0);
+    const [typingName, setTypingName] = useState<string | null>(null);
+    const [joinNotification, setJoinNotification] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const isNearBottomRef = useRef(true);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // Fetch messages
     const fetchMessages = useCallback(async () => {
@@ -50,18 +61,52 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
     // Initial fetch + polling
     useEffect(() => {
         fetchMessages();
-        const interval = setInterval(fetchMessages, 10000); // Poll every 10s
+        const interval = setInterval(fetchMessages, 10000);
         return () => clearInterval(interval);
     }, [fetchMessages]);
 
-    // Smart scroll - only scroll when near bottom
+    // Simulate typing indicator randomly
+    useEffect(() => {
+        const showTyping = () => {
+            const name = ZOMBIE_JOIN_NAMES[Math.floor(Math.random() * ZOMBIE_JOIN_NAMES.length)];
+            setTypingName(name);
+            setTimeout(() => setTypingName(null), 2000 + Math.random() * 2000);
+        };
+
+        const interval = setInterval(() => {
+            if (Math.random() > 0.6) showTyping();
+        }, 15000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Simulate join notifications
+    useEffect(() => {
+        const showJoin = () => {
+            const name = ZOMBIE_JOIN_NAMES[Math.floor(Math.random() * ZOMBIE_JOIN_NAMES.length)];
+            setJoinNotification(name);
+            setTimeout(() => setJoinNotification(null), 3000);
+        };
+
+        // Show first join after 5s
+        const timeout = setTimeout(showJoin, 5000);
+        const interval = setInterval(() => {
+            if (Math.random() > 0.5) showJoin();
+        }, 45000);
+
+        return () => {
+            clearTimeout(timeout);
+            clearInterval(interval);
+        };
+    }, []);
+
+    // Smart scroll
     useEffect(() => {
         if (isNearBottomRef.current && messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages]);
 
-    // Track scroll position
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const el = e.target as HTMLDivElement;
         isNearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
@@ -74,8 +119,8 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
         const content = input.trim();
         setInput("");
         setSending(true);
+        isNearBottomRef.current = true;
 
-        // Optimistic update
         const tempId = `temp-${Date.now()}`;
         const optimisticMsg: ChatMessage = {
             id: tempId,
@@ -83,13 +128,9 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
             createdAt: new Date().toISOString(),
             isZombie: false,
             isMe: true,
-            user: {
-                name: "You",
-                avatar: session?.user?.image || null,
-            }
+            user: { name: "You", avatar: session?.user?.image || null }
         };
         setMessages(prev => [...prev, optimisticMsg]);
-        isNearBottomRef.current = true; // Scroll to see own message
 
         try {
             const res = await fetch("/api/lesson-chat/messages", {
@@ -106,6 +147,8 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
             setMessages(prev => prev.filter(m => m.id !== tempId));
         } finally {
             setSending(false);
+            // Re-focus input after sending
+            inputRef.current?.focus();
         }
     };
 
@@ -113,46 +156,56 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
         <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#fff" }}>
             {/* Header */}
             <div style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid #eee",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
+                padding: "12px 16px",
                 background: "linear-gradient(135deg, #16a34a 0%, #15803d 100%)",
                 color: "#fff",
                 flexShrink: 0
             }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{
-                        width: "10px",
-                        height: "10px",
-                        background: "#86efac",
-                        borderRadius: "50%",
-                        animation: "pulse 2s infinite"
-                    }} />
-                    <div>
-                        <div style={{ fontWeight: 600, fontSize: "15px" }}>🔴 Live Chat</div>
-                        <div style={{ fontSize: "12px", opacity: 0.9 }}>
-                            {onlineCount} students online
-                        </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{
+                            width: "8px", height: "8px",
+                            background: "#86efac", borderRadius: "50%",
+                            animation: "pulse 2s infinite"
+                        }} />
+                        <span style={{ fontWeight: 600, fontSize: "14px" }}>Student Lounge</span>
+                    </div>
+                    <div style={{ fontSize: "12px", opacity: 0.9 }}>
+                        🟢 {onlineCount} online
                     </div>
                 </div>
-                {isMobile && onClose && (
-                    <button
-                        onClick={onClose}
-                        style={{
-                            width: "32px", height: "32px",
-                            background: "rgba(255,255,255,0.2)",
-                            border: "none", borderRadius: "50%",
-                            color: "#fff", fontSize: "18px", cursor: "pointer"
-                        }}
-                    >✕</button>
-                )}
             </div>
+
+            {/* Pinned Welcome Message */}
+            <div style={{
+                padding: "10px 14px",
+                background: "#f0fdf4",
+                borderBottom: "1px solid #bbf7d0",
+                fontSize: "13px",
+                color: "#166534",
+                flexShrink: 0
+            }}>
+                👋 Welcome! Share your wins, ask questions, cheer each other on!
+            </div>
+
+            {/* Join Notification */}
+            {joinNotification && (
+                <div style={{
+                    padding: "8px 14px",
+                    background: "#fef3c7",
+                    borderBottom: "1px solid #fde68a",
+                    fontSize: "12px",
+                    color: "#92400e",
+                    textAlign: "center",
+                    animation: "fadeIn 0.3s ease"
+                }}>
+                    ✨ {joinNotification} just joined the chat
+                </div>
+            )}
 
             {/* Messages */}
             <div
-                style={{ flex: 1, overflowY: "auto", padding: "16px", background: "#fafafa" }}
+                style={{ flex: 1, overflowY: "auto", padding: "12px", background: "#fafafa" }}
                 onScroll={handleScroll}
             >
                 {loading ? (
@@ -161,87 +214,96 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
                     </div>
                 ) : messages.length === 0 ? (
                     <div style={{ textAlign: "center", color: "#999", padding: "40px 0" }}>
-                        <div style={{ fontSize: "48px", marginBottom: "16px" }}>👋</div>
-                        <div style={{ fontSize: "14px" }}>Be the first to say hi!</div>
-                        <div style={{ fontSize: "13px", color: "#bbb" }}>Join the conversation with fellow students</div>
+                        <div style={{ fontSize: "40px", marginBottom: "12px" }}>👋</div>
+                        <div style={{ fontSize: "13px" }}>Be the first to say hi!</div>
                     </div>
                 ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                         {messages.map((msg) => (
                             <div
                                 key={msg.id}
                                 style={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    alignItems: "flex-start",
+                                    display: "flex", gap: "8px", alignItems: "flex-start",
                                     opacity: msg.id.startsWith("temp-") ? 0.6 : 1,
                                 }}
                             >
-                                {/* Avatar */}
                                 <div style={{
-                                    width: "36px", height: "36px", borderRadius: "50%",
+                                    width: "32px", height: "32px", borderRadius: "50%",
                                     background: msg.user.avatar ? `url(${msg.user.avatar}) center/cover` : "#722f37",
                                     display: "flex", alignItems: "center", justifyContent: "center",
-                                    color: "#fff", fontSize: "14px", fontWeight: 600, flexShrink: 0
+                                    color: "#fff", fontSize: "12px", fontWeight: 600, flexShrink: 0
                                 }}>
                                     {!msg.user.avatar && (msg.user.name?.[0] || "?")}
                                 </div>
-                                {/* Message */}
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
                                         <span style={{
-                                            fontWeight: 600,
-                                            fontSize: "13px",
+                                            fontWeight: 600, fontSize: "12px",
                                             color: msg.isMe ? "#722f37" : "#333"
                                         }}>
                                             {msg.isMe ? "You" : msg.user.name}
                                         </span>
-                                        <span style={{ fontSize: "11px", color: "#999" }}>
+                                        <span style={{ fontSize: "10px", color: "#999" }}>
                                             {formatTime(msg.createdAt)}
                                         </span>
                                     </div>
                                     <div style={{
-                                        fontSize: "14px",
-                                        color: "#444",
-                                        lineHeight: 1.5,
+                                        fontSize: "13px", color: "#444", lineHeight: 1.4,
                                         background: msg.isMe ? "#f0e6e7" : "#fff",
-                                        padding: "10px 14px",
-                                        borderRadius: "12px",
-                                        border: "1px solid #eee"
+                                        padding: "8px 12px", borderRadius: "12px",
+                                        border: "1px solid #eee", wordBreak: "break-word"
                                     }}>
                                         {msg.content}
                                     </div>
                                 </div>
                             </div>
                         ))}
+
+                        {/* Typing Indicator */}
+                        {typingName && (
+                            <div style={{
+                                display: "flex", gap: "8px", alignItems: "center",
+                                padding: "4px 0", color: "#666", fontSize: "12px"
+                            }}>
+                                <div style={{ display: "flex", gap: "3px" }}>
+                                    <span style={{ animation: "bounce 1s infinite 0s" }}>•</span>
+                                    <span style={{ animation: "bounce 1s infinite 0.2s" }}>•</span>
+                                    <span style={{ animation: "bounce 1s infinite 0.4s" }}>•</span>
+                                </div>
+                                <span>{typingName} is typing...</span>
+                            </div>
+                        )}
+
                         <div ref={messagesEndRef} />
                     </div>
                 )}
             </div>
 
             {/* Input */}
-            <div style={{ borderTop: "1px solid #eee", padding: "16px", flexShrink: 0 }}>
+            <div style={{ borderTop: "1px solid #eee", padding: "12px", flexShrink: 0 }}>
                 <div style={{ display: "flex", gap: "8px" }}>
                     <input
+                        ref={inputRef}
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                        placeholder="Say something to the class..."
+                        onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
+                        placeholder="Say something nice..."
                         style={{
-                            flex: 1, padding: "12px 16px",
-                            border: "1px solid #ddd", borderRadius: "24px",
-                            fontSize: "14px", outline: "none"
+                            flex: 1, padding: "10px 14px",
+                            border: "1px solid #ddd", borderRadius: "20px",
+                            fontSize: "13px", outline: "none"
                         }}
                     />
                     <button
                         onClick={sendMessage}
                         disabled={sending || !input.trim()}
                         style={{
-                            padding: "12px 20px",
+                            padding: "10px 16px",
                             background: sending ? "#999" : "#16a34a",
-                            color: "#fff", border: "none", borderRadius: "24px",
-                            cursor: sending ? "wait" : "pointer", fontSize: "14px"
+                            color: "#fff", border: "none", borderRadius: "20px",
+                            cursor: sending ? "wait" : "pointer", fontSize: "13px",
+                            fontWeight: 500
                         }}
                     >
                         Send
@@ -249,11 +311,19 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
                 </div>
             </div>
 
-            {/* Pulse animation */}
+            {/* Animations */}
             <style>{`
                 @keyframes pulse {
                     0%, 100% { opacity: 1; }
                     50% { opacity: 0.5; }
+                }
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-3px); }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(-10px); }
+                    to { opacity: 1; transform: translateY(0); }
                 }
             `}</style>
         </div>
@@ -266,8 +336,8 @@ function formatTime(dateStr: string): string {
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 
-    if (diffMins < 1) return "just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
+    if (diffMins < 1) return "now";
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h`;
     return date.toLocaleDateString();
 }

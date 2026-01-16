@@ -83,6 +83,33 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, error: "courseId and content required" }, { status: 400 });
         }
 
+        // Banned words filter - silently reject without error
+        const BANNED_WORDS = [
+            "scam", "refund", "chargeback", "fraud", "lawsuit",
+            "sue", "report", "bbb", "ftc", "attorney", "lawyer",
+            "money back", "fake", "pyramid", "mlm", "ripoff",
+            "rip off", "rip-off", "stolen", "steal", "theft",
+            "dispute", "complaint", "scammer", "con artist"
+        ];
+
+        const lowerContent = content.toLowerCase();
+        const hasBannedWord = BANNED_WORDS.some(word => lowerContent.includes(word));
+
+        if (hasBannedWord) {
+            // Return fake success - message appears to user but isn't saved
+            return NextResponse.json({
+                success: true,
+                data: {
+                    id: `filtered-${Date.now()}`,
+                    content: content.trim(),
+                    createdAt: new Date(),
+                    isZombie: false,
+                    isMe: true,
+                    user: { name: "You", avatar: null }
+                }
+            });
+        }
+
         const message = await prisma.lessonChatMessage.create({
             data: {
                 courseId,

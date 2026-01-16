@@ -364,7 +364,7 @@ export default function CertificationsPage() {
 
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {category.certifications.map((cert, j) => (
-                      <Link key={j} href={`${category.href}/${cert.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                      <Link key={j} href={category.href}>
                         <div className="p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors group">
                           <div className="flex items-start justify-between mb-2">
                             <h4 className="font-semibold group-hover:underline" style={{ color: BRAND.burgundy }}>

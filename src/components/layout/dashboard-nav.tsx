@@ -94,8 +94,8 @@ const fullNavItems: NavItem[] = [
     ]
   },
 
-  // 5. Coach Sarah - standalone (the differentiator)
-  { href: "/messages", label: "Coach Sarah", icon: MessageSquare, notificationKey: "messages", tourId: "coach-sarah" },
+  // 5. Your Mentor - standalone (the differentiator)
+  { href: "/messages", label: "🔴 Your Mentor", icon: MessageSquare, notificationKey: "messages", tourId: "coach-sarah" },
 
   // 6. My Pod - TEMPORARILY HIDDEN
   // { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
