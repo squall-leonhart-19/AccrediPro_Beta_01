@@ -10,6 +10,7 @@ const LEAD_PASSWORD = "coach2026";
 const COURSE_SLUGS: Record<string, string> = {
     "womens-health": "womens-health-mini-diploma",
     "functional-medicine": "functional-medicine-mini-diploma",
+    "fm-healthcare": "functional-medicine-mini-diploma", // Healthcare workers variant (same course, separate tracking)
     "gut-health": "gut-health-mini-diploma",
     "hormone-health": "hormone-health-mini-diploma",
     "holistic-nutrition": "holistic-nutrition-mini-diploma",
@@ -21,6 +22,7 @@ const COURSE_SLUGS: Record<string, string> = {
 const COACH_EMAILS: Record<string, string> = {
     "womens-health": "sarah_womenhealth@accredipro-certificate.com",
     "functional-medicine": "sarah_womenhealth@accredipro-certificate.com",
+    "fm-healthcare": "sarah_womenhealth@accredipro-certificate.com", // Healthcare workers variant
     "gut-health": "sarah_womenhealth@accredipro-certificate.com",
     "hormone-health": "sarah_womenhealth@accredipro-certificate.com",
     "holistic-nutrition": "sarah_womenhealth@accredipro-certificate.com",
@@ -54,6 +56,32 @@ Sarah 🌸`,
         voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah! Welcome to your Women's Health Mini Diploma! I'm so excited you're here. Over the next 9 lessons, I'm going to teach you everything about women's hormones and health. Head to Lesson 1 when you're ready and let's get started! Talk soon!`,
     },
     "functional-medicine": {
+        text: (firstName: string) => `Hey ${firstName}! 💕
+
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
+
+Welcome! This is the start of something special, and I'm SO excited you're here!
+
+Inside your dashboard you'll find:
+
+✨ Your certification ready to start
+✨ Your Roadmap showing where you're headed
+✨ Direct access to message me anytime
+
+I know you might be wondering if this is really for you... maybe feeling a mix of excited and nervous? I felt the exact same way when I started!
+
+But here's what I know: you signed up for a reason. Something inside you said YES to this. Let's find out what that is together.
+
+Hit reply anytime - tell me a little about yourself! What brought you here? What's your "why"?
+
+I'm here for you every step of the way!
+
+Talk soon,
+Sarah ✨`,
+        voiceScript: (firstName: string) => `Hey ${firstName}! It's Sarah. I just saw you signed up and wanted to personally welcome you. I'm so excited you're here! Check your dashboard to get started, and message me anytime if you have questions - - Talk soon ${firstName}!.`,
+    },
+    // fm-healthcare uses the same welcome message as functional-medicine
+    "fm-healthcare": {
         text: (firstName: string) => `Hey ${firstName}! 💕
 
 I'm Sarah, your coach for this entire journey - and I just saw your name come through!
