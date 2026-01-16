@@ -29,9 +29,9 @@ function CohortCountdown({ enrolledAt }: { enrolledAt?: Date | string | null }) 
     const [isExpired, setIsExpired] = useState(false);
 
     useEffect(() => {
-        // Calculate expiry date (7 days from enrollment)
+        // Calculate expiry date (48 hours from enrollment)
         const startDate = enrolledAt ? new Date(enrolledAt) : new Date();
-        const expiryDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const expiryDate = new Date(startDate.getTime() + 2 * 24 * 60 * 60 * 1000);
 
         const updateTimer = () => {
             const now = new Date();
@@ -215,9 +215,9 @@ export function LeadPortalDashboard({
                         </div>
                     </div>
                     {!isAllComplete && (
-                        <Badge className="bg-amber-100 text-amber-800 border-amber-300">
+                        <Badge className="bg-red-100 text-red-800 border-red-300">
                             <Timer className="w-3 h-3 mr-1" />
-                            7 Days Access
+                            48h Access
                         </Badge>
                     )}
                 </div>

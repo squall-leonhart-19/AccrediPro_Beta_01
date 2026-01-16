@@ -273,11 +273,11 @@ export function LearningClient({
   // Determine if this is the Final Exam module (no next module = final exam)
   const isFinalExam = !nextModule && navigation.isLastLessonInModule && navigation.moduleHasQuiz;
 
-  // Calculate countdown for mini diploma (7 days from optin)
+  // Calculate countdown for mini diploma (48 hours from optin)
   const getCountdown = () => {
     if (!miniDiplomaData?.optinAt) return null;
     const optinDate = new Date(miniDiplomaData.optinAt);
-    const expiryDate = new Date(optinDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    const expiryDate = new Date(optinDate.getTime() + 2 * 24 * 60 * 60 * 1000); // 48 hours
     const now = new Date();
     const diff = expiryDate.getTime() - now.getTime();
 

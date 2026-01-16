@@ -263,13 +263,13 @@ function ThankYouContent() {
                                     </div>
                                 </div>
 
-                                {/* 7-Day Access Notice */}
-                                <div className="bg-amber-50 rounded-xl p-4 border border-amber-200 flex items-start gap-3">
-                                    <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                                {/* 48-Hour Access Notice */}
+                                <div className="bg-red-50 rounded-xl p-4 border border-red-200 flex items-start gap-3">
+                                    <Clock className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="font-semibold text-amber-800 text-sm">7-Day Access</p>
-                                        <p className="text-xs text-amber-700">
-                                            Complete all 9 lessons to earn your certificate!
+                                        <p className="font-semibold text-red-800 text-sm">⏰ 48-Hour Access Window</p>
+                                        <p className="text-xs text-red-700">
+                                            Complete all 9 lessons within 48 hours to earn your certificate! Most finish in one sitting.
                                         </p>
                                     </div>
                                 </div>
