@@ -85,29 +85,35 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
         }
     }, [isOpen, fetchMentorAndMessages]);
 
-    // Track if user is manually scrolling
-    const isUserScrollingRef = useRef(false);
+    // Track if user is near bottom for smart auto-scroll
+    const isNearBottomRef = useRef(true);
     const prevMessagesLengthRef = useRef(messages.length);
 
-    // Scroll to bottom only when new messages are added (not when scrolling up)
+    // Scroll to bottom only when appropriate
     useEffect(() => {
         if (scrollRef.current && messages.length > 0) {
-            // Only auto-scroll if:
-            // 1. New messages were added (not initial load of old messages)
-            // 2. User is not currently scrolling up (near bottom)
             const container = scrollRef.current;
-            const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+            const lastMsg = messages[messages.length - 1];
+            const isUserMessage = lastMsg?.senderId === session?.user?.id;
+            const isInitialLoad = prevMessagesLengthRef.current === 0;
 
-            if (messages.length > prevMessagesLengthRef.current && isNearBottom) {
-                container.scrollTop = container.scrollHeight;
-            } else if (messages.length > prevMessagesLengthRef.current && prevMessagesLengthRef.current === 0) {
-                // Initial load - scroll to bottom
+            // Auto-scroll if:
+            // 1. User is near bottom, OR
+            // 2. It's initial load, OR
+            // 3. User just sent a message
+            if (isNearBottomRef.current || isInitialLoad || isUserMessage) {
                 container.scrollTop = container.scrollHeight;
             }
 
             prevMessagesLengthRef.current = messages.length;
         }
-    }, [messages]);
+    }, [messages, session?.user?.id]);
+
+    // Handle scroll to track if user is near bottom
+    const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+        const el = e.target as HTMLDivElement;
+        isNearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+    }, []);
 
     // Focus input when opened
     useEffect(() => {
@@ -138,7 +144,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
         }
     }, [isOpen, unreadCount, markAsRead]);
 
-    // Send message
+    // Send message with AI auto-response
     const handleSend = async () => {
         if (!input.trim() || !selectedMentorId || isSending) return;
 
@@ -146,7 +152,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
         setInput("");
         setIsSending(true);
 
-        // Optimistic update
+        // Optimistic update for user message
         const tempMessage: Message = {
             id: `temp-${Date.now()}`,
             content: messageContent,
@@ -158,6 +164,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
         setMessages(prev => [...prev, tempMessage]);
 
         try {
+            // Send message to real mentor (for record keeping)
             const res = await fetch("/api/messages/send", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -174,6 +181,87 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
                 setMessages(prev =>
                     prev.map(m => m.id === tempMessage.id ? data.message : m)
                 );
+            }
+
+            // Generate AI response from Sarah
+            const aiPlaceholderId = `ai-${Date.now()}`;
+            const aiPlaceholder: Message = {
+                id: aiPlaceholderId,
+                content: "",
+                senderId: selectedMentorId,
+                receiverId: session?.user?.id || "",
+                createdAt: new Date(),
+                isRead: true,
+            };
+            setMessages(prev => [...prev, aiPlaceholder]);
+
+            // Prepare chat history for AI (last 10 messages)
+            const chatHistory = messages.slice(-10).map(m => ({
+                role: m.senderId === session?.user?.id ? "user" as const : "assistant" as const,
+                content: m.content
+            }));
+            chatHistory.push({ role: "user" as const, content: messageContent });
+
+            // Call AI chat API for Sarah's response
+            const aiRes = await fetch("/api/ai/mentor-chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    messages: chatHistory,
+                    context: { currentLesson: lessonContext },
+                }),
+            });
+
+            if (aiRes.ok) {
+                const reader = aiRes.body?.getReader();
+                if (reader) {
+                    const decoder = new TextDecoder();
+                    let accumulatedContent = "";
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split("\n");
+
+                        for (const line of lines) {
+                            if (line.startsWith("data: ")) {
+                                const data = line.slice(6);
+                                if (data === "[DONE]") continue;
+
+                                try {
+                                    const parsed = JSON.parse(data);
+                                    if (parsed.text) {
+                                        accumulatedContent += parsed.text;
+                                        setMessages(prev =>
+                                            prev.map(m =>
+                                                m.id === aiPlaceholderId
+                                                    ? { ...m, content: accumulatedContent }
+                                                    : m
+                                            )
+                                        );
+                                    }
+                                } catch {
+                                    // Ignore JSON parse errors for incomplete chunks
+                                }
+                            }
+                        }
+                    }
+
+                    // Save AI response as a real message from Sarah
+                    if (accumulatedContent) {
+                        await fetch("/api/messages/ai-response", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                receiverId: session?.user?.id,
+                                senderId: selectedMentorId,
+                                content: accumulatedContent,
+                            }),
+                        });
+                    }
+                }
             }
         } catch (error) {
             console.error("Failed to send message:", error);
@@ -246,7 +334,11 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
             </div>
 
             {/* Messages */}
-            <ScrollArea className="flex-1 p-4 bg-gray-50" ref={scrollRef}>
+            <div
+                className="flex-1 p-4 bg-gray-50 overflow-y-auto"
+                ref={scrollRef}
+                onScroll={handleScroll}
+            >
                 {isLoading ? (
                     <div className="flex items-center justify-center h-full text-gray-400">
                         <Loader2 className="h-6 w-6 animate-spin" />
@@ -296,7 +388,7 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
                         })}
                     </div>
                 )}
-            </ScrollArea>
+            </div>
 
             {/* Input */}
             <div className="p-3 bg-white border-t border-gray-100 flex gap-2 flex-none">

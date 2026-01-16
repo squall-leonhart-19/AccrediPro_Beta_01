@@ -131,8 +131,8 @@ export function LessonPlayer({
             try {
                 const res = await fetch(`/api/messages?userId=${coachId}`);
                 const data = await res.json();
-                if (data.success && data.data?.messages) {
-                    setMessages(data.data.messages);
+                if (data.success && data.data) {
+                    setMessages(data.data);
                 }
             } catch (error) {
                 console.error("Failed to fetch messages:", error);
@@ -147,10 +147,29 @@ export function LessonPlayer({
         return () => clearInterval(interval);
     }, [coachId, session?.user?.id]);
 
-    // Scroll to bottom when messages change
+    // Smart scroll - only scroll to bottom when near bottom or initial load
+    const isNearBottomRef = useRef(true);
+    const prevMessageCountRef = useRef(0);
+
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+        if (!messagesEndRef.current) return;
+        const container = messagesEndRef.current.parentElement;
+        if (!container) return;
+
+        // Check if we should auto-scroll:
+        // 1. User is already near bottom (within 150px)
+        // 2. OR it's initial load (going from 0 to some messages)
+        // 3. OR user just sent a message (last message is from current user)
+        const lastMsg = messages[messages.length - 1];
+        const isUserMessage = lastMsg?.senderId === session?.user?.id;
+        const isInitialLoad = prevMessageCountRef.current === 0 && messages.length > 0;
+
+        if (isNearBottomRef.current || isInitialLoad || isUserMessage) {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+
+        prevMessageCountRef.current = messages.length;
+    }, [messages, session?.user?.id]);
 
     const handleCompleteAndNext = async () => {
         if (isCompleting) return;
@@ -226,6 +245,86 @@ export function LessonPlayer({
                 setMessages(prev => prev.map(m =>
                     m.id === tempId ? { ...data.data, createdAt: data.data.createdAt } : m
                 ));
+
+                // Generate AI response from Sarah
+                const aiPlaceholderId = `ai-${Date.now()}`;
+                const aiPlaceholder: Message = {
+                    id: aiPlaceholderId,
+                    content: "",
+                    senderId: coachId,
+                    createdAt: new Date().toISOString(),
+                    isRead: true,
+                };
+                setMessages(prev => [...prev, aiPlaceholder]);
+
+                // Prepare chat history for AI (last 10 messages)
+                const chatHistory = messages.slice(-10).map(m => ({
+                    role: m.senderId === session?.user?.id ? "user" as const : "assistant" as const,
+                    content: m.content
+                }));
+                chatHistory.push({ role: "user" as const, content: content });
+
+                // Call AI chat API for Sarah's response
+                const aiRes = await fetch("/api/ai/mentor-chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        messages: chatHistory,
+                        context: { currentLesson: `${module.title} - ${lesson.title}` },
+                    }),
+                });
+
+                if (aiRes.ok) {
+                    const reader = aiRes.body?.getReader();
+                    if (reader) {
+                        const decoder = new TextDecoder();
+                        let accumulatedContent = "";
+
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
+
+                            const chunk = decoder.decode(value);
+                            const lines = chunk.split("\n");
+
+                            for (const line of lines) {
+                                if (line.startsWith("data: ")) {
+                                    const lineData = line.slice(6);
+                                    if (lineData === "[DONE]") continue;
+
+                                    try {
+                                        const parsed = JSON.parse(lineData);
+                                        if (parsed.text) {
+                                            accumulatedContent += parsed.text;
+                                            setMessages(prev =>
+                                                prev.map(m =>
+                                                    m.id === aiPlaceholderId
+                                                        ? { ...m, content: accumulatedContent }
+                                                        : m
+                                                )
+                                            );
+                                        }
+                                    } catch {
+                                        // Ignore JSON parse errors for incomplete chunks
+                                    }
+                                }
+                            }
+                        }
+
+                        // Save AI response as a real message from Sarah
+                        if (accumulatedContent) {
+                            await fetch("/api/messages/ai-response", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    receiverId: session?.user?.id,
+                                    senderId: coachId,
+                                    content: accumulatedContent,
+                                }),
+                            });
+                        }
+                    }
+                }
             } else {
                 toast.error("Failed to send message");
                 setMessages(prev => prev.filter(m => m.id !== tempId));
@@ -295,7 +394,14 @@ export function LessonPlayer({
             </div>
 
             {/* Chat Messages */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
+            <div
+                style={{ flex: 1, overflowY: "auto", padding: "16px" }}
+                onScroll={(e) => {
+                    const el = e.target as HTMLDivElement;
+                    // User is "near bottom" if within 150px of the bottom
+                    isNearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+                }}
+            >
                 {chatLoading ? (
                     <div style={{ textAlign: "center", color: "#999", padding: "40px 0" }}>
                         Loading messages...
