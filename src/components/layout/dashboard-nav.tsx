@@ -277,22 +277,28 @@ export function DashboardNav() {
     <>
       {/* Desktop Sidebar - Burgundy/Gold Theme */}
       <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-gradient-to-b from-burgundy-700 via-burgundy-800 to-burgundy-900 shadow-2xl">
-        {/* Logo */}
+        {/* Logo - Premium ASI Branding */}
         <div className="flex items-center gap-3 px-6 py-6 border-b border-burgundy-600/30">
-          <div className="p-1.5 bg-white rounded-xl shadow-lg">
+          <div className="p-1.5 bg-white rounded-xl shadow-lg relative">
             <Image
               src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
-              alt="AccrediPro Academy"
+              alt="AccrediPro Standards Institute"
               width={40}
               height={40}
               className="rounded-lg"
               priority
               unoptimized
             />
+            <div
+              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
+            >
+              <Shield className="w-3 h-3 text-burgundy-900" />
+            </div>
           </div>
           <div>
             <span className="text-xl font-bold text-white">AccrediPro</span>
-            <p className="text-xs text-white/70">Academy <span className="text-gold-400 font-mono text-[10px] ml-1">v2.0</span></p>
+            <p className="text-[9px] font-bold tracking-wider text-gold-400">STANDARDS INSTITUTE</p>
           </div>
         </div>
 
@@ -570,7 +576,7 @@ export function DashboardNav() {
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
 
-          {/* Center: Logo */}
+          {/* Center: Logo - ASI Branding */}
           <Link href="/dashboard" className="flex items-center gap-2">
             <div className="p-1 bg-white rounded-lg shadow-md">
               <Image
@@ -582,7 +588,10 @@ export function DashboardNav() {
                 unoptimized
               />
             </div>
-            <span className="font-bold text-white">AccrediPro</span>
+            <div>
+              <span className="font-bold text-white">AccrediPro</span>
+              <span className="text-[8px] block font-bold tracking-wider text-gold-400">STANDARDS INSTITUTE</span>
+            </div>
           </Link>
 
           {/* Right: Notification Bell */}
