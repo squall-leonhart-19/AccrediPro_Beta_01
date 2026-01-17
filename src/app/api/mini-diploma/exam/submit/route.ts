@@ -115,12 +115,16 @@ async function sendCompletionNotifications(
             });
         }
 
-        // Check if DM already sent (avoid duplicates)
+        // Check if DM already sent (avoid duplicates) - check for both old and new format
         const existingDM = await prisma.message.findFirst({
             where: {
                 senderId: sarah.id,
                 receiverId: userId,
-                content: { contains: "You did it!" },
+                OR: [
+                    { content: { contains: "You did it!" } },
+                    { content: { contains: "YOU DID IT!" } },
+                    { content: { contains: "ASI Foundation certification" } },
+                ],
             },
         });
 
@@ -413,12 +417,11 @@ export async function POST(request: NextRequest) {
         console.log(`[EXAM] ${user.email} completed exam: ${score}% (${correct}/${total}), passed: ${passed}, scholarship: ${scholarshipQualified}`);
 
         // Send completion email and DM (non-blocking - don't await)
-        // Only send on first successful attempt
-        if (attemptNumber === 1) {
-            sendCompletionNotifications(userId, user.email, user.firstName || "there", score, couponCode).catch(err => {
-                console.error("[EXAM] Failed to send completion notifications:", err);
-            });
-        }
+        // Always try - the function has its own duplicate checks for DM
+        // Email is idempotent (ok to send again if user retakes)
+        sendCompletionNotifications(userId, user.email, user.firstName || "there", score, couponCode).catch(err => {
+            console.error("[EXAM] Failed to send completion notifications:", err);
+        });
 
         // ALWAYS return success
         return NextResponse.json({
