@@ -23,7 +23,6 @@ import {
     MessageCircle,
     X,
 } from "lucide-react";
-import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
 import { LiveChatPanel } from "@/components/courses/live-chat-panel";
 
 // Countdown component for cohort expiry
@@ -251,9 +250,6 @@ export function LeadPortalDashboard({
                     )}
                 </div>
             </div>
-
-            {/* PWA Install Banner */}
-            <DashboardPWABanner />
 
             {/* FOMO Cohort Banner - Premium Gold */}
             {!isAllComplete && (

@@ -1132,68 +1132,65 @@ interface FreebieWelcomeEmailOptions {
 }
 
 export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser, nicheName = "Functional Medicine", password = "coach2026", diplomaSlug = "functional-medicine-diploma" }: FreebieWelcomeEmailOptions) {
-  const dashboardUrl = `${BASE_URL}/${diplomaSlug}`;
+  // Direct link to Lesson 1
+  const lesson1Url = `${BASE_URL}/${diplomaSlug}/lesson/1`;
 
-  // Simple, plain-text style email to avoid Promotions tab
   const content = isExistingUser ? `
-    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-      <p style="margin: 0 0 20px 0; font-size: 16px; color: #333;">Hey ${firstName}!</p>
-      
-      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
-        Great news — your free <strong>${nicheName} Mini Diploma</strong> is ready!
-      </p>
-      
-      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
-        Since you already have an account, just log in to start your 9 lessons with me.
-      </p>
-      
-      <p style="margin: 20px 0; font-size: 15px;">
-        <a href="${BASE_URL}/login" style="color: #722f37; font-weight: bold;">👉 Click here to login</a>
-      </p>
-      
-      <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-        You have 7 days to complete all lessons and get your certificate.
-      </p>
-      
-      <p style="margin: 25px 0 0 0; font-size: 15px; color: #444;">
-        See you inside!<br/>
-        <strong>Sarah</strong>
-      </p>
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome Back, ${firstName}!</h2>
+
+    <p style="color: #555; font-size: 16px;">Great news — your free <strong>${nicheName} Mini Diploma</strong> is ready!</p>
+
+    <p style="color: #555; font-size: 16px;">Since you already have an account, just log in to start your 9 interactive lessons with me.</p>
+
+    <div style="background: linear-gradient(135deg, #f8f4f0 0%, #fff 100%); border-left: 4px solid #722F37; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">What's Waiting For You:</p>
+      <ul style="margin: 0; padding-left: 20px; color: #555;">
+        <li style="margin: 5px 0;">9 chat-style lessons (~60 min total)</li>
+        <li style="margin: 5px 0;">${nicheName} certificate upon completion</li>
+        <li style="margin: 5px 0;">Personal voice message from me</li>
+      </ul>
     </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${lesson1Url}" style="display: inline-block; background: linear-gradient(135deg, #722F37 0%, #8B3A44 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Start Lesson 1 Now</a>
+    </div>
+
+    <p style="color: #888; font-size: 14px; text-align: center;">
+      You have 7 days to complete all lessons and earn your certificate.
+    </p>
+
+    <p style="color: #555; font-size: 16px; margin-top: 25px;">
+      I'll be chatting with you inside the lessons!<br/>
+      <strong>Sarah</strong>
+    </p>
   ` : `
-    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-      <p style="margin: 0 0 20px 0; font-size: 16px; color: #333;">Hey ${firstName}!</p>
-      
-      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
-        I'm SO excited you're here! Your <strong>${nicheName} Mini Diploma</strong> is ready.
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome, ${firstName}!</h2>
+
+    <p style="color: #555; font-size: 16px;">I'm SO excited you're here! Your <strong>${nicheName} Mini Diploma</strong> is ready.</p>
+
+    <p style="color: #555; font-size: 16px;">Here's how to log in:</p>
+
+    <div style="background: linear-gradient(135deg, #f8f4f0 0%, #fff 100%); border-left: 4px solid #722F37; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+      <p style="margin: 0 0 10px 0; font-size: 15px; color: #333;">
+        <strong>Email:</strong> ${to}
       </p>
-      
-      <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
-        Here's how to log in:
-      </p>
-      
-      <div style="background: #f9f9f9; border-left: 3px solid #722f37; padding: 15px; margin: 20px 0;">
-        <p style="margin: 0 0 8px 0; font-size: 14px; color: #333;">
-          <strong>Email:</strong> ${to}
-        </p>
-        <p style="margin: 0; font-size: 14px; color: #333;">
-          <strong>Password:</strong> ${password}
-        </p>
-      </div>
-      
-      <p style="margin: 20px 0; font-size: 15px;">
-        <a href="${dashboardUrl}" style="color: #722f37; font-weight: bold;">👉 Start Lesson 1 Now</a>
-      </p>
-      
-      <p style="margin: 0 0 5px 0; font-size: 13px; color: #888;">
-        You have 7 days to complete all 9 lessons and earn your certificate.
-      </p>
-      
-      <p style="margin: 25px 0 0 0; font-size: 15px; color: #444;">
-        I'll be chatting with you inside the lessons!<br/>
-        <strong>Sarah</strong>
+      <p style="margin: 0; font-size: 15px; color: #333;">
+        <strong>Password:</strong> ${password}
       </p>
     </div>
+
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${lesson1Url}" style="display: inline-block; background: linear-gradient(135deg, #722F37 0%, #8B3A44 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Start Lesson 1 Now</a>
+    </div>
+
+    <p style="color: #888; font-size: 14px; text-align: center;">
+      You have 7 days to complete all 9 lessons and earn your certificate.
+    </p>
+
+    <p style="color: #555; font-size: 16px; margin-top: 25px;">
+      I'll be chatting with you inside the lessons!<br/>
+      <strong>Sarah</strong>
+    </p>
   `;
 
   return sendEmail({
@@ -1201,7 +1198,7 @@ export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser, n
     subject: isExistingUser
       ? `${firstName}, your ${nicheName} Mini Diploma is ready!`
       : `${firstName}, here's your login for AccrediPro`,
-    html: content, // Skip the heavy wrapper for cleaner delivery
+    html: emailWrapper(content, `Your free ${nicheName} Mini Diploma with Sarah is ready!`),
   });
 }
 

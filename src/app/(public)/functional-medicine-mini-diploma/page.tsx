@@ -242,33 +242,30 @@ function HealthcareWorkersMiniDiplomaContent() {
                                 </div>
                             </div>
 
-                            {/* Testimonial Avatar Circle - Social Proof */}
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="flex -space-x-3">
+                            {/* Testimonial Avatar Circle - Social Proof - Mobile Optimized */}
+                            <div className="flex flex-wrap items-center gap-3 mb-8">
+                                <div className="flex -space-x-2 flex-shrink-0">
                                     {[
                                         "/zombie-avatars/user_47_backyard_bbq_1767801467.png",
                                         "/zombie-avatars/user_52_bedroom_morning_1767801467.png",
                                         "/zombie-avatars/user_44_bathroom_mirror_1767801533.png",
                                         "/zombie-avatars/user_55_cooking_class_1767801442.png",
                                         "/zombie-avatars/user_41_coffee_shop_working_1768611487.png",
-                                        "/zombie-avatars/user_49_restaurant_birthday_1767801048.png",
-                                        "/zombie-avatars/user_38_nail_salon_1767801440.png",
-                                        "/zombie-avatars/user_60_cooking_class_1767800849.png",
                                     ].map((src, i) => (
                                         <Image
                                             key={i}
                                             src={src}
                                             alt={`Graduate ${i + 1}`}
-                                            width={44}
-                                            height={44}
-                                            className="rounded-full border-2 border-white object-cover w-11 h-11"
+                                            width={36}
+                                            height={36}
+                                            className="rounded-full border-2 border-white object-cover w-9 h-9"
                                         />
                                     ))}
-                                    <div className="w-11 h-11 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold" style={{ backgroundColor: BRAND.gold, color: BRAND.burgundyDark }}>
+                                    <div className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ backgroundColor: BRAND.gold, color: BRAND.burgundyDark }}>
                                         +4K
                                     </div>
                                 </div>
-                                <div>
+                                <div className="min-w-0">
                                     <p className="text-white text-sm font-semibold">4,247 healthcare pros certified</p>
                                     <p className="text-white/60 text-xs">Join them today — it's free</p>
                                 </div>
@@ -301,21 +298,19 @@ function HealthcareWorkersMiniDiplomaContent() {
             <section className="py-16 md:py-20" style={{ backgroundColor: '#fff' }}>
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="grid lg:grid-cols-[300px_1fr] gap-10 items-start">
-                        {/* Sarah Photo */}
-                        <div className="text-center lg:text-left">
-                            <div className="relative inline-block">
+                        {/* Sarah Photo - Small Testimonial Circle Style */}
+                        <div className="flex items-start gap-4 lg:block">
+                            <div className="relative inline-block flex-shrink-0">
                                 <Image
                                     src="/coach-sarah.webp"
                                     alt="Sarah Mitchell, Your Functional Medicine Coach"
-                                    width={280}
-                                    height={280}
-                                    className="rounded-2xl shadow-lg mx-auto lg:mx-0"
+                                    width={80}
+                                    height={80}
+                                    className="rounded-full shadow-lg w-16 h-16 md:w-20 md:h-20 object-cover border-3"
+                                    style={{ borderColor: BRAND.gold }}
                                 />
-                                <div className="absolute -bottom-3 -right-3 bg-white rounded-lg shadow-lg px-3 py-1.5 border border-gray-100">
-                                    <div className="flex items-center gap-1.5">
-                                        <Shield className="w-4 h-4" style={{ color: BRAND.burgundy }} />
-                                        <span className="text-xs font-bold" style={{ color: BRAND.burgundy }}>ASI Certified</span>
-                                    </div>
+                                <div className="absolute -bottom-1 -right-1 bg-white rounded-full shadow-lg p-1 border border-gray-100">
+                                    <Shield className="w-3 h-3" style={{ color: BRAND.burgundy }} />
                                 </div>
                             </div>
                         </div>
