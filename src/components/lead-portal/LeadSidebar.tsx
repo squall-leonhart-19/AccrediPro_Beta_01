@@ -112,14 +112,14 @@ export function LeadSidebar({
                 <Link href={basePath} className="flex items-center gap-2">
                     <Image
                         src="/newlogo.webp"
-                        alt="AccrediPro"
+                        alt="ASI"
                         width={32}
                         height={32}
                         className="rounded-lg"
                     />
                     <div>
                         <span className="font-bold text-white">AccrediPro</span>
-                        <span className="text-[10px] block" style={{ color: BRAND.gold }}>ACADEMY</span>
+                        <span className="text-[10px] block" style={{ color: BRAND.gold }}>STANDARDS INSTITUTE</span>
                     </div>
                 </Link>
                 <button
@@ -170,16 +170,10 @@ export function LeadSidebar({
                             <span className="font-bold text-lg text-white tracking-tight">AccrediPro</span>
                             <div className="flex items-center gap-1.5">
                                 <span
-                                    className="text-[10px] font-bold tracking-widest"
+                                    className="text-[9px] font-bold tracking-wider"
                                     style={{ color: BRAND.gold }}
                                 >
-                                    ACADEMY
-                                </span>
-                                <span
-                                    className="text-[8px] px-1.5 py-0.5 rounded font-medium"
-                                    style={{ background: `${BRAND.gold}20`, color: BRAND.gold }}
-                                >
-                                    ASI
+                                    STANDARDS INSTITUTE
                                 </span>
                             </div>
                         </div>
@@ -247,7 +241,7 @@ export function LeadSidebar({
                 <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
                     {/* Section Label */}
                     <p className="text-[10px] font-bold tracking-widest px-3 mb-2" style={{ color: `${BRAND.gold}80` }}>
-                        LEARNING
+                        YOUR JOURNEY
                     </p>
 
                     {/* My Profile */}
@@ -260,7 +254,7 @@ export function LeadSidebar({
                         style={isActive(`${basePath}/profile`) ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
                     >
                         <User className="w-5 h-5 flex-shrink-0" />
-                        <span className="font-medium">My Profile</span>
+                        <span className="font-medium">My Progress</span>
                     </Link>
 
                     {/* My Mini Diploma */}
@@ -273,7 +267,7 @@ export function LeadSidebar({
                         style={pathname === basePath ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
                     >
                         <GraduationCap className="w-5 h-5 flex-shrink-0" />
-                        <span className="font-medium">My Certification</span>
+                        <span className="font-medium">Start Lessons</span>
                         {pathname === basePath && (
                             <ChevronRight className="w-4 h-4 ml-auto" />
                         )}
@@ -290,7 +284,7 @@ export function LeadSidebar({
                             style={pathname?.startsWith("/community") ? { background: BRAND.goldMetallic, color: BRAND.burgundyDark } : {}}
                         >
                             <Users className="w-5 h-5 flex-shrink-0" />
-                            <span className="font-medium">Community</span>
+                            <span className="font-medium">Student Lounge</span>
                             {communityOpen ? (
                                 <ChevronDown className="w-4 h-4 ml-auto" />
                             ) : (
@@ -343,7 +337,7 @@ export function LeadSidebar({
                         <svg className="w-5 h-5 flex-shrink-0 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={isActive("/messages") ? { color: BRAND.burgundyDark } : {}}>
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
-                        <span className="font-medium relative z-10" style={isActive("/messages") ? { color: BRAND.burgundyDark } : {}}>Ask Coach Sarah</span>
+                        <span className="font-medium relative z-10" style={isActive("/messages") ? { color: BRAND.burgundyDark } : {}}>💬 Get Help from Sarah</span>
                         <span className="ml-auto w-2.5 h-2.5 rounded-full animate-pulse relative z-10" style={{ backgroundColor: '#22c55e' }} title="Online now" />
                     </Link>
 

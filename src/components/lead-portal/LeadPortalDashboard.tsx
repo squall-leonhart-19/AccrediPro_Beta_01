@@ -675,28 +675,28 @@ export function LeadPortalDashboard({
                 )}
             </div>
 
-            {/* Sarah AI Floating Mentor - Hidden when chat is open */}
-            {!showChat && (
-                <SarahFloatingMentor
-                    firstName={firstName}
-                    lessonsCompleted={lessonsCompleted}
-                    totalLessons={totalLessons}
-                    coachImage={config.coachImage}
-                />
-            )}
-
-            {/* Floating Chat Button */}
+            {/* Floating Chat Button - USE SARAH IMAGE */}
             <button
                 onClick={() => setShowChat(!showChat)}
-                className={`fixed bottom-4 left-4 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${showChat
+                className={`fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden ${showChat
                     ? "bg-slate-600 hover:bg-slate-700"
-                    : "bg-burgundy-600 hover:bg-burgundy-700 animate-pulse"
+                    : "hover:scale-105"
                     }`}
+                style={!showChat ? { border: '3px solid #d4af37' } : {}}
             >
                 {showChat ? (
                     <X className="w-6 h-6 text-white" />
                 ) : (
-                    <MessageCircle className="w-6 h-6 text-white" />
+                    <Image
+                        src={config.coachImage}
+                        alt="Coach Sarah"
+                        width={56}
+                        height={56}
+                        className="w-full h-full object-cover"
+                    />
+                )}
+                {!showChat && (
+                    <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white animate-pulse" />
                 )}
             </button>
 
