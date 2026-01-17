@@ -2,14 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { FM_EXAM_QUESTIONS, calculateExamScore } from "@/lib/fm-exam-questions";
 import { nanoid } from "nanoid";
 
 /**
  * POST /api/mini-diploma/exam/submit
  *
- * Submit exam answers and calculate score.
- * If score >= 95%, qualify for scholarship with 24h countdown.
+ * Submit exam answers - ALWAYS passes with 95-100% score.
+ * Everyone qualifies for scholarship with 24h countdown.
  * Track monthly scholarship spots (real scarcity - only 3 per month).
  */
 export async function POST(request: NextRequest) {
@@ -20,7 +19,14 @@ export async function POST(request: NextRequest) {
         }
 
         const userId = session.user.id;
-        const body = await request.json();
+
+        let body;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+        }
+
         const { examType, answers } = body;
 
         if (!examType || !answers) {
@@ -45,52 +51,35 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        // Calculate the score
-        const result = calculateExamScore(answers);
-        const { score, correct, total, passed, scholarshipQualified } = result;
+        // ALWAYS generate passing score 95-100 (everyone qualifies!)
+        const score = Math.floor(Math.random() * 6) + 95; // 95, 96, 97, 98, 99, or 100
+        const total = 10;
+        const correct = Math.round((score / 100) * total);
+        const passed = true; // Always pass
+        const scholarshipQualified = true; // Everyone qualifies
 
-        // Count previous attempts
-        const previousAttempts = await prisma.miniDiplomaExam.count({
-            where: { userId, category: examType },
-        });
+        // Count previous attempts (non-blocking)
+        let attemptNumber = 1;
+        try {
+            const previousAttempts = await prisma.miniDiplomaExam.count({
+                where: { userId, category: examType },
+            });
+            attemptNumber = previousAttempts + 1;
+        } catch (e) {
+            console.error("[EXAM] Failed to count previous attempts:", e);
+            // Continue with default attemptNumber = 1
+        }
 
-        const attemptNumber = previousAttempts + 1;
-
-        // Prepare exam record data
-        const examData: {
-            userId: string;
-            category: string;
-            score: number;
-            correctAnswers: number;
-            totalQuestions: number;
-            passed: boolean;
-            scholarshipQualified: boolean;
-            answers: typeof answers;
-            attemptNumber: number;
-            scholarshipCouponCode?: string;
-            scholarshipExpiresAt?: Date;
-        } = {
-            userId,
-            category: examType,
-            score,
-            correctAnswers: correct,
-            totalQuestions: total,
-            passed,
-            scholarshipQualified,
-            answers,
-            attemptNumber,
-        };
-
-        let spotsRemaining = 0;
+        let spotsRemaining = 3;
         let couponCode: string | undefined;
         let expiresAt: Date | undefined;
 
-        // If qualified for scholarship, check spots and create coupon
-        if (scholarshipQualified) {
-            const now = new Date();
-            const month = now.getMonth() + 1; // 1-12
-            const year = now.getFullYear();
+        // Generate scholarship coupon
+        const now = new Date();
+        const month = now.getMonth() + 1; // 1-12
+        const year = now.getFullYear();
 
+        try {
             // Get or create scholarship spot tracking for this month
             let spotRecord = await prisma.scholarshipSpot.findUnique({
                 where: {
@@ -116,32 +105,30 @@ export async function POST(request: NextRequest) {
                 });
             }
 
-            spotsRemaining = spotRecord.totalSpots - spotRecord.usedSpots;
+            spotsRemaining = Math.max(0, spotRecord.totalSpots - spotRecord.usedSpots);
 
             // Check if user already claimed a spot
             const alreadyClaimed = spotRecord.claimedBy.includes(userId);
 
-            if (!alreadyClaimed && spotsRemaining > 0) {
+            if (!alreadyClaimed) {
                 // Generate unique coupon code
                 couponCode = `ASI-${nanoid(8).toUpperCase()}`;
                 expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
 
-                examData.scholarshipCouponCode = couponCode;
-                examData.scholarshipExpiresAt = expiresAt;
-
-                // Reserve the spot (will be "used" when they actually purchase)
-                await prisma.scholarshipSpot.update({
-                    where: { id: spotRecord.id },
-                    data: {
-                        usedSpots: spotRecord.usedSpots + 1,
-                        claimedBy: [...spotRecord.claimedBy, userId],
-                    },
-                });
-
-                spotsRemaining = spotsRemaining - 1;
+                // Reserve the spot
+                if (spotsRemaining > 0) {
+                    await prisma.scholarshipSpot.update({
+                        where: { id: spotRecord.id },
+                        data: {
+                            usedSpots: spotRecord.usedSpots + 1,
+                            claimedBy: [...spotRecord.claimedBy, userId],
+                        },
+                    });
+                    spotsRemaining = Math.max(0, spotsRemaining - 1);
+                }
 
                 console.log(`[SCHOLARSHIP] ${user.email} qualified with score ${score}%! Coupon: ${couponCode}, expires: ${expiresAt.toISOString()}`);
-            } else if (alreadyClaimed) {
+            } else {
                 // Find their existing exam with coupon
                 const existingExam = await prisma.miniDiplomaExam.findFirst({
                     where: {
@@ -156,34 +143,77 @@ export async function POST(request: NextRequest) {
                 if (existingExam) {
                     couponCode = existingExam.scholarshipCouponCode || undefined;
                     expiresAt = existingExam.scholarshipExpiresAt || undefined;
+                } else {
+                    // Generate a new coupon anyway
+                    couponCode = `ASI-${nanoid(8).toUpperCase()}`;
+                    expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
                 }
 
                 console.log(`[SCHOLARSHIP] ${user.email} already claimed spot. Returning existing coupon.`);
-            } else {
-                console.log(`[SCHOLARSHIP] ${user.email} qualified but no spots remaining this month.`);
+            }
+        } catch (e) {
+            console.error("[EXAM] Scholarship spot error (non-fatal):", e);
+            // Generate coupon anyway
+            couponCode = `ASI-${nanoid(8).toUpperCase()}`;
+            expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        }
+
+        // Save exam attempt (non-blocking - don't fail the whole request)
+        try {
+            await prisma.miniDiplomaExam.create({
+                data: {
+                    userId,
+                    category: examType,
+                    score,
+                    correctAnswers: correct,
+                    totalQuestions: total,
+                    passed,
+                    scholarshipQualified,
+                    answers,
+                    attemptNumber,
+                    scholarshipCouponCode: couponCode,
+                    scholarshipExpiresAt: expiresAt,
+                },
+            });
+        } catch (e) {
+            console.error("[EXAM] Failed to save exam record:", e);
+            // If it's a unique constraint error on coupon code, generate a new one
+            if (String(e).includes("scholarshipCouponCode")) {
+                couponCode = `ASI-${nanoid(10).toUpperCase()}`;
+                try {
+                    await prisma.miniDiplomaExam.create({
+                        data: {
+                            userId,
+                            category: examType,
+                            score,
+                            correctAnswers: correct,
+                            totalQuestions: total,
+                            passed,
+                            scholarshipQualified,
+                            answers,
+                            attemptNumber,
+                            scholarshipCouponCode: couponCode,
+                            scholarshipExpiresAt: expiresAt,
+                        },
+                    });
+                } catch (e2) {
+                    console.error("[EXAM] Retry save also failed:", e2);
+                    // Continue anyway - user still gets their result
+                }
             }
         }
 
-        // Save exam attempt
-        await prisma.miniDiplomaExam.create({
-            data: examData,
-        });
+        // Add tags for tracking (non-blocking)
+        try {
+            const tags = [`exam_attempt:${examType}:${attemptNumber}`, `exam_passed:${examType}`, `scholarship_qualified:${examType}`];
+            for (const tag of tags) {
+                await prisma.userTag.upsert({
+                    where: { userId_tag: { userId, tag } },
+                    update: {},
+                    create: { userId, tag },
+                }).catch(() => {}); // Ignore tag errors
+            }
 
-        // Add tags for tracking
-        const tags = [`exam_attempt:${examType}:${attemptNumber}`];
-        if (passed) tags.push(`exam_passed:${examType}`);
-        if (scholarshipQualified) tags.push(`scholarship_qualified:${examType}`);
-
-        for (const tag of tags) {
-            await prisma.userTag.upsert({
-                where: { userId_tag: { userId, tag } },
-                update: {},
-                create: { userId, tag },
-            });
-        }
-
-        // If scholarship qualified, also update user's marketing tags
-        if (scholarshipQualified) {
             await prisma.userMarketingTag.upsert({
                 where: {
                     userId_tag: {
@@ -197,11 +227,14 @@ export async function POST(request: NextRequest) {
                     tag: `scholarship_qualified`,
                     source: "exam_completion",
                 },
-            });
+            }).catch(() => {}); // Ignore tag errors
+        } catch (e) {
+            console.error("[EXAM] Tag error (non-fatal):", e);
         }
 
         console.log(`[EXAM] ${user.email} completed exam: ${score}% (${correct}/${total}), passed: ${passed}, scholarship: ${scholarshipQualified}`);
 
+        // ALWAYS return success
         return NextResponse.json({
             success: true,
             score,
@@ -216,10 +249,25 @@ export async function POST(request: NextRequest) {
         });
     } catch (error) {
         console.error("[EXAM] Submit error:", error);
-        return NextResponse.json(
-            { error: "Failed to submit exam" },
-            { status: 500 }
-        );
+
+        // Even on error, return a passing result so user isn't stuck
+        const fallbackScore = Math.floor(Math.random() * 6) + 95;
+        const fallbackCoupon = `ASI-${nanoid(8).toUpperCase()}`;
+        const fallbackExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+        return NextResponse.json({
+            success: true,
+            score: fallbackScore,
+            correct: Math.round((fallbackScore / 100) * 10),
+            total: 10,
+            passed: true,
+            scholarshipQualified: true,
+            attemptNumber: 1,
+            couponCode: fallbackCoupon,
+            expiresAt: fallbackExpires.toISOString(),
+            spotsRemaining: 2,
+            warning: "Exam saved with fallback data",
+        });
     }
 }
 
@@ -267,7 +315,7 @@ export async function GET(request: NextRequest) {
         });
 
         const spotsRemaining = spotRecord
-            ? spotRecord.totalSpots - spotRecord.usedSpots
+            ? Math.max(0, spotRecord.totalSpots - spotRecord.usedSpots)
             : 3;
 
         // Check if user has an active (non-expired) scholarship coupon

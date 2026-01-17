@@ -4,7 +4,7 @@
  * This script creates zombie User profiles from the AI-generated images
  * in /docs/User_Profile_img/
  * 
- * Run with: npx ts-node scripts/seed-zombies-from-images.ts
+ * Run with: npx tsx scripts/seed-zombies-from-images.ts
  */
 
 import { PrismaClient } from '@prisma/client';
