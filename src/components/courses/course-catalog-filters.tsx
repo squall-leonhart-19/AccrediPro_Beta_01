@@ -489,26 +489,39 @@ export function CourseCatalogFilters({
 
     return (
         <div className="space-y-6">
-            {/* Compact Hero Header - Variant 2 Style */}
-            <div className="relative bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+            {/* Compact Hero Header - Premium Gold/Burgundy */}
+            <div
+                className="relative rounded-xl overflow-hidden shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+            >
+                <div
+                    className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-20"
+                    style={{ backgroundColor: '#d4af37' }}
+                />
                 <div className="relative z-10 px-5 py-4">
                     {/* Main Row */}
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                         {/* Left: Icon + Title + Subtitle */}
                         <div className="flex items-start gap-4">
-                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
-                                <Sparkles className="w-5 h-5 text-gold-400" />
+                            <div
+                                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
+                            >
+                                <Sparkles className="w-5 h-5" style={{ color: '#4e1f24' }} />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                    <Badge
+                                        className="border-0 text-[10px] font-bold"
+                                        style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}
+                                    >
                                         Accredited Professional Training
                                     </Badge>
                                 </div>
-                                <h1 className="text-xl font-bold text-white">
-                                    Build Your Career in <span className="text-gold-400">Health & Wellness</span>
+                                <h1 className="text-xl font-black text-white tracking-tight">
+                                    Build Your Career in <span style={{ color: '#d4af37' }}>Health & Wellness</span>
                                 </h1>
-                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                <p className="text-xs mt-0.5 max-w-md hidden sm:block" style={{ color: '#d4af37' }}>
                                     Industry-recognized certifications for a thriving practice.
                                 </p>
                             </div>
@@ -518,22 +531,35 @@ export function CourseCatalogFilters({
                         <div className="flex flex-wrap items-center gap-3">
                             {/* Stats as pills */}
                             <div className="hidden md:flex items-center gap-2">
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Users className="w-3 h-3 mr-1.5 text-gold-400" />
+                                <Badge
+                                    className="border-0 px-3 py-1.5 font-bold"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', color: 'white' }}
+                                >
+                                    <Users className="w-3 h-3 mr-1.5" style={{ color: '#d4af37' }} />
                                     {totalEnrolled.toLocaleString()}+ Students
                                 </Badge>
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Star className="w-3 h-3 mr-1.5 text-gold-400 fill-gold-400" />
+                                <Badge
+                                    className="border-0 px-3 py-1.5 font-bold"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', color: 'white' }}
+                                >
+                                    <Star className="w-3 h-3 mr-1.5" style={{ color: '#d4af37', fill: '#d4af37' }} />
                                     {avgRating} • {totalReviews.toLocaleString()}+ Reviews
                                 </Badge>
-                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                                    <Shield className="w-3 h-3 mr-1.5 text-gold-400" />
+                                <Badge
+                                    className="border-0 px-3 py-1.5 font-bold"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', color: 'white' }}
+                                >
+                                    <Shield className="w-3 h-3 mr-1.5" style={{ color: '#d4af37' }} />
                                     Accredited
                                 </Badge>
                             </div>
                             {/* CTA */}
                             <Link href="/my-personal-roadmap-by-coach-sarah">
-                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                <Button
+                                    size="sm"
+                                    className="font-bold h-9 border-0"
+                                    style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)', color: '#4e1f24' }}
+                                >
                                     <Target className="w-4 h-4 mr-1.5" />
                                     View Roadmap
                                 </Button>

@@ -280,19 +280,31 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
 
     return (
         <div className="space-y-8 animate-fade-in pb-12">
-            {/* ========== HERO: Coach Sarah Personal Greeting ========== */}
-            <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800">
+            {/* ========== HERO: Coach Sarah Personal Greeting - Premium Gold/Burgundy ========== */}
+            <Card
+                className="relative overflow-hidden border-0 shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+            >
                 {/* Background decorations */}
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl" />
-                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-burgundy-900/40 rounded-full blur-3xl" />
+                    <div
+                        className="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-30"
+                        style={{ backgroundColor: '#d4af37' }}
+                    />
+                    <div
+                        className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full blur-3xl opacity-20"
+                        style={{ backgroundColor: '#722f37' }}
+                    />
                 </div>
 
                 <CardContent className="relative p-6 md:p-8">
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                         {/* Sarah's Photo */}
                         <div className="relative flex-shrink-0">
-                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-gold-400/30 shadow-xl">
+                            <div
+                                className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl"
+                                style={{ border: '4px solid rgba(212, 175, 55, 0.4)' }}
+                            >
                                 <img
                                     src="/coaches/sarah-coach.webp"
                                     alt="Coach Sarah"
@@ -306,20 +318,23 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
 
                         {/* Personal Greeting */}
                         <div className="flex-1">
-                            <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 mb-3">
+                            <Badge
+                                className="border-0 mb-3 font-bold"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}
+                            >
                                 <Sparkles className="w-3 h-3 mr-1" />
                                 Your Personal Journey
                             </Badge>
 
-                            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                            <h1 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">
                                 Hi {data.userName}! 👋
                             </h1>
 
-                            <p className="text-burgundy-100 text-lg mb-4 max-w-xl">
+                            <p className="text-lg mb-4 max-w-xl" style={{ color: '#d4af37' }}>
                                 {cta.sarahQuote}
                             </p>
 
-                            <div className="flex flex-wrap items-center gap-3 text-sm text-burgundy-200">
+                            <div className="flex flex-wrap items-center gap-3 text-sm" style={{ color: '#d4af37' }}>
                                 {data.enrolledAt && (
                                     <span className="flex items-center gap-1">
                                         <Clock className="w-4 h-4" />
@@ -333,13 +348,16 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                                     </span>
                                 )}
                                 <span className="flex items-center gap-1">
-                                    <Target className="w-4 h-4 text-gold-400" />
+                                    <Target className="w-4 h-4" style={{ color: '#d4af37' }} />
                                     Step {Math.max(data.currentStep, 1)} of 4
                                 </span>
                                 {data.daysToCompletion !== null && data.daysToCompletion > 0 && (
-                                    <span className="flex items-center gap-1 bg-green-500/20 px-2 py-0.5 rounded-full">
-                                        <Zap className="w-4 h-4 text-green-300" />
-                                        <span className="text-green-200 font-medium">Cert by {data.targetDate}</span>
+                                    <span
+                                        className="flex items-center gap-1 px-2 py-0.5 rounded-full"
+                                        style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+                                    >
+                                        <Zap className="w-4 h-4" style={{ color: '#86efac' }} />
+                                        <span className="font-medium" style={{ color: '#86efac' }}>Cert by {data.targetDate}</span>
                                     </span>
                                 )}
                             </div>
@@ -348,19 +366,28 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                         {/* Quick Stats */}
                         <div className="hidden lg:flex flex-col gap-2 text-right">
                             {data.daysToCompletion !== null && data.daysToCompletion > 0 && (
-                                <div className="px-4 py-2 bg-green-500/20 rounded-lg backdrop-blur-sm border border-green-400/30">
-                                    <p className="text-2xl font-bold text-green-300">{data.daysToCompletion} days</p>
-                                    <p className="text-xs text-green-200">to certification • {data.targetDate}</p>
+                                <div
+                                    className="px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)', border: '1px solid rgba(34, 197, 94, 0.3)' }}
+                                >
+                                    <p className="text-2xl font-black" style={{ color: '#86efac' }}>{data.daysToCompletion} days</p>
+                                    <p className="text-xs" style={{ color: '#86efac' }}>to certification • {data.targetDate}</p>
                                 </div>
                             )}
-                            <div className="px-4 py-2 bg-white/10 rounded-lg backdrop-blur-sm">
-                                <p className="text-2xl font-bold text-gold-400">{data.totalProgress}%</p>
-                                <p className="text-xs text-burgundy-200">Overall Progress</p>
+                            <div
+                                className="px-4 py-2 rounded-lg backdrop-blur-sm"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)' }}
+                            >
+                                <p className="text-2xl font-black" style={{ color: '#d4af37' }}>{data.totalProgress}%</p>
+                                <p className="text-xs" style={{ color: '#d4af37' }}>Overall Progress</p>
                             </div>
                             {data.currentStep > 0 && currentStepData && (
-                                <div className="px-4 py-2 bg-green-500/20 rounded-lg backdrop-blur-sm">
-                                    <p className="text-lg font-bold text-green-300">{currentStepData.incomeVision}</p>
-                                    <p className="text-xs text-green-200">Income Potential</p>
+                                <div
+                                    className="px-4 py-2 rounded-lg backdrop-blur-sm"
+                                    style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+                                >
+                                    <p className="text-lg font-black" style={{ color: '#86efac' }}>{currentStepData.incomeVision}</p>
+                                    <p className="text-xs" style={{ color: '#86efac' }}>Income Potential</p>
                                 </div>
                             )}
                         </div>
