@@ -8,7 +8,7 @@ import { ClassicLessonStressHPA } from "./lesson-5-stress-hpa-axis";
 import { ClassicLessonNutrientDeficiencies } from "./lesson-6-nutrient-deficiencies";
 import { ClassicLessonLabInterpretation } from "./lesson-7-lab-interpretation";
 import { ClassicLessonBuildingProtocols } from "./lesson-8-building-protocols";
-import { ClassicLessonYourNextStep } from "./lesson-9-your-next-step";
+import { ClassicLessonYourNextStepWithExam } from "./lesson-9-with-exam";
 
 interface LessonRouterProps {
     lessonNumber: number;
@@ -58,7 +58,7 @@ export function ClassicFunctionalMedicineLessonRouter({
         case 8:
             return <ClassicLessonBuildingProtocols {...commonProps} />;
         case 9:
-            return <ClassicLessonYourNextStep {...commonProps} />;
+            return <ClassicLessonYourNextStepWithExam {...commonProps} />;
         default:
             return <ClassicLessonRootCauseMedicine {...commonProps} />;
     }

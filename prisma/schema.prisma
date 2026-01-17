@@ -181,6 +181,9 @@ model User {
   // Live Lesson Chat
   lessonChatMessages LessonChatMessage[] @relation("LessonChatMessages")
 
+  // Mini Diploma Exams
+  miniDiplomaExams MiniDiplomaExam[]
+
   @@index([email])
   @@index([role])
   @@index([assignedCoachId])
@@ -2995,4 +2998,52 @@ model ZombieChatTemplate {
   createdAt DateTime @default(now())
 
   @@index([category, isActive])
+}
+
+// ==================== MINI DIPLOMA EXAM & SCHOLARSHIP ====================
+
+model MiniDiplomaExam {
+  id                    String    @id @default(cuid())
+  userId                String
+  category              String    // fm-healthcare, womens-health, gut-health
+  score                 Int       // Percentage score 0-100
+  correctAnswers        Int       // Number of correct answers
+  totalQuestions        Int       // Total questions
+  passed                Boolean   @default(false) // 70% to pass
+  scholarshipQualified  Boolean   @default(false) // 95+ to qualify
+  answers               Json      // Record of all answers given
+  attemptNumber         Int       @default(1) // Which attempt this is
+
+  // Scholarship coupon if qualified
+  scholarshipCouponCode String?   @unique // Unique coupon for this user
+  scholarshipExpiresAt  DateTime? // 24h from qualification
+  scholarshipClaimedAt  DateTime? // When they used the coupon
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@index([scholarshipQualified])
+  @@index([scholarshipCouponCode])
+}
+
+// Track monthly scholarship spots (real scarcity)
+model ScholarshipSpot {
+  id        String   @id @default(cuid())
+  month     Int      // 1-12
+  year      Int      // 2024, 2025, etc.
+  category  String   // fm-healthcare, womens-health, etc.
+  totalSpots Int     @default(3) // 3 spots per month
+  usedSpots Int      @default(0) // How many have been claimed
+
+  // Track who claimed spots
+  claimedBy String[] // Array of user IDs who claimed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([month, year, category])
+  @@index([month, year])
 }

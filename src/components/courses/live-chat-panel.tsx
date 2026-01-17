@@ -224,7 +224,8 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
                     </div>
                 ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                        {messages.map((msg) => (
+                        {/* Show only 25 most recent messages - users can scroll up for more */}
+                        {messages.slice(-25).map((msg) => (
                             <div
                                 key={msg.id}
                                 style={{
