@@ -59,20 +59,14 @@ async function sendCompletionNotifications(
     // 2. Send private DM from Coach Sarah
     console.log(`[EXAM] Sending completion DM to userId ${userId}...`);
     try {
-        // Find or create Sarah's user (the AI coach)
-        let sarah = await prisma.user.findFirst({
-            where: { email: "sarah@accredipro.academy" },
+        // Find the real Sarah coach (same one used in optin and welcome messages)
+        const sarah = await prisma.user.findFirst({
+            where: { email: "sarah_womenhealth@accredipro-certificate.com" },
         });
 
         if (!sarah) {
-            sarah = await prisma.user.create({
-                data: {
-                    email: "sarah@accredipro.academy",
-                    firstName: "Sarah",
-                    lastName: "M.",
-                    role: "MENTOR",
-                },
-            });
+            console.error(`[EXAM] Sarah coach not found! Cannot send DM.`);
+            return;
         }
 
         // Check if DM already sent (avoid duplicates) - check for both old and new format
