@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 async function getCertificateData(userId: string) {
-    const [user, completionTags] = await Promise.all([
+    const [user, examData] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -18,17 +18,24 @@ async function getCertificateData(userId: string) {
                 email: true,
             },
         }),
-        prisma.userTag.findMany({
+        // Check if exam is passed - this is the real requirement for certificate
+        prisma.miniDiplomaExam.findFirst({
             where: {
                 userId,
-                tag: { startsWith: "functional-medicine-lesson-complete:" },
+                passed: true,
+            },
+            select: {
+                id: true,
+                passed: true,
+                score: true,
+                createdAt: true,
             },
         }),
     ]);
 
     return {
         user,
-        completedLessons: completionTags.length,
+        examData,
     };
 }
 
@@ -36,16 +43,19 @@ export default async function CertificatePage() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) redirect("/login");
 
-    const { user, completedLessons } = await getCertificateData(session.user.id);
+    const { user, examData } = await getCertificateData(session.user.id);
     if (!user) redirect("/login");
 
-    const isComplete = completedLessons >= 9;
-    const studentName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Student";
-    const certificateId = `FM-${session.user.id.slice(0, 8).toUpperCase()}`;
-
-    if (!isComplete) {
+    // Must have passed exam to view certificate
+    if (!examData?.passed) {
         redirect("/functional-medicine-diploma");
     }
+
+    const studentName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Student";
+    // Use exam date for certificate, not current date
+    const completedDate = examData.createdAt.toISOString();
+    // Generate certificate ID based on exam
+    const certificateId = `FM-${examData.createdAt.toISOString().slice(0, 10).replace(/-/g, '')}-${examData.id.slice(-6).toUpperCase()}`;
 
     return (
         <div className="min-h-screen bg-gray-100 p-4 md:p-8">
@@ -59,8 +69,8 @@ export default async function CertificatePage() {
                 {/* Use existing certificate component */}
                 <MiniDiplomaCertificate
                     studentName={studentName}
-                    diplomaTitle="Functional Medicine"
-                    completedDate={new Date().toISOString()}
+                    diplomaTitle="ASI Functional Medicine Foundation"
+                    completedDate={completedDate}
                     certificateId={certificateId}
                 />
             </div>

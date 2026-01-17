@@ -121,11 +121,20 @@ function getIncomeMessage(incomeGoal: string | null): string {
 // This cron runs hourly to send nudges to non-starters
 export async function GET(request: NextRequest) {
     try {
+        console.log("[CRON mini-diploma-nudges] Starting at", new Date().toISOString());
+
         // Verify cron secret
         const authHeader = request.headers.get("authorization");
         const cronSecret = process.env.CRON_SECRET;
 
+        console.log("[CRON mini-diploma-nudges] Auth check:", {
+            hasAuthHeader: !!authHeader,
+            hasCronSecret: !!cronSecret,
+            matches: authHeader === `Bearer ${cronSecret}`
+        });
+
         if (authHeader !== `Bearer ${cronSecret}`) {
+            console.log("[CRON mini-diploma-nudges] Unauthorized - auth mismatch");
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -172,11 +181,15 @@ export async function GET(request: NextRequest) {
             }
         });
 
+        console.log(`[CRON mini-diploma-nudges] Found ${leads.length} leads to process`);
+
         for (const lead of leads) {
             const hoursSinceSignup = (now.getTime() - new Date(lead.createdAt).getTime()) / (1000 * 60 * 60);
             const sentNudges = new Set(lead.tags.map(t => t.tag));
             const firstName = lead.firstName || "there";
             const dashboardLink = `https://learn.accredipro.academy/functional-medicine-diploma`;
+
+            console.log(`[CRON mini-diploma-nudges] Processing ${lead.email}: ${hoursSinceSignup.toFixed(1)}h since signup, sent nudges:`, Array.from(sentNudges).filter(t => t.startsWith("nudge:")));
 
             // Get personalized hook based on qualification answers
             const qualData = getQualificationData(lead.tags);

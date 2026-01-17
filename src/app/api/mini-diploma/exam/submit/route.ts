@@ -125,31 +125,48 @@ async function sendCompletionNotifications(
         });
 
         if (!existingDM) {
+            const roadmapUrl = "https://learn.accredipro.academy/functional-medicine-diploma/career-roadmap";
             const dmContent = couponCode
-                ? `${firstName}, you did it!
+                ? `${firstName}, YOU DID IT! 🎉
+
+Congratulations on completing your ASI Foundation certification with an amazing score of ${score}/100!
+
+I'm SO proud of you! This is a huge milestone.
+
+📜 YOUR CERTIFICATE IS READY:
+Download it now, add it to LinkedIn, and show the world you're certified!
+
+🎁 HUGE NEWS - YOU QUALIFIED FOR THE SCHOLARSHIP!
+Because you scored so well, you've earned our exclusive Graduate Scholarship:
+
+✨ $2,000 OFF the full BC-FMP™ Board Certification
+✨ Includes $10K/mo income guarantee
+✨ 1-on-1 mentorship with me
+
+Your coupon code: ${couponCode}
+⏰ EXPIRES IN 24 HOURS
+
+👉 Claim it here: ${roadmapUrl}
+
+This is your moment, ${firstName}. Don't let it slip away!
+
+Questions? Just reply - I'm here for you every step of the way.
+
+— Coach Sarah 💕`
+                : `${firstName}, YOU DID IT! 🎉
 
 Congratulations on completing your ASI Foundation certification with a score of ${score}/100!
 
-Your certificate is ready to download. Add it to your LinkedIn, share it on social media, and start attracting your first clients!
+I'm SO proud of you! This is a huge milestone.
 
-Since you scored so well, you've also qualified for our exclusive Graduate Scholarship - $2,000 off the full Board Certification program. Your coupon code is ${couponCode} and it expires in 24 hours.
+📜 YOUR CERTIFICATE IS READY:
+Download it now, add it to LinkedIn, and show the world you're certified!
 
-I'm so proud of you. This is just the beginning of your journey to $3-10K/month as a certified practitioner.
+This is just the beginning of your journey to a fulfilling career in functional medicine. When you're ready to take the next step toward $3-10K/month, let's chat about the full Board Certification program.
 
-Any questions? I'm here for you!
+Questions? Just reply - I'm here for you!
 
-- Coach Sarah`
-                : `${firstName}, you did it!
-
-Congratulations on completing your ASI Foundation certification with a score of ${score}/100!
-
-Your certificate is ready to download. Add it to your LinkedIn, share it on social media, and start attracting your first clients!
-
-I'm so proud of you. This is just the beginning of your journey to a fulfilling career in functional medicine.
-
-Any questions? I'm here for you!
-
-- Coach Sarah`;
+— Coach Sarah 💕`;
 
             await prisma.message.create({
                 data: {

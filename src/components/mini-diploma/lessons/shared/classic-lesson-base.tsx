@@ -340,9 +340,9 @@ export function ClassicLessonBase({
                 </div>
             </div>
 
-            {/* RIGHT SIDEBAR - Student Lounge - Desktop XL only */}
+            {/* RIGHT SIDEBAR - Student Lounge - Desktop LG+ */}
             {courseSlug && (
-                <aside className="hidden xl:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
+                <aside className="hidden lg:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
                     <LiveChatPanel courseSlug={courseSlug} />
                 </aside>
             )}
@@ -351,7 +351,7 @@ export function ClassicLessonBase({
             {courseSlug && (
                 <button
                     onClick={() => setChatOpen(true)}
-                    className="xl:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                    className="lg:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
                     style={{ display: chatOpen ? "none" : "flex" }}
                 >
                     <MessageCircle className="w-6 h-6" />
@@ -364,7 +364,7 @@ export function ClassicLessonBase({
             {/* MOBILE: Chat Overlay */}
             {courseSlug && chatOpen && (
                 <div
-                    className="xl:hidden fixed inset-0 z-50 bg-black/50"
+                    className="lg:hidden fixed inset-0 z-50 bg-black/50"
                     onClick={() => setChatOpen(false)}
                 >
                     <div
