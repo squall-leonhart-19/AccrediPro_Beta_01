@@ -2262,8 +2262,7 @@
 
             <!-- Certificate Preview -->
             <div style="margin-bottom: 32px;">
-                <img src="https://learn.accredipro.academy/blank_v2_1768613500114.png"
-                    alt="ASI Board Certification Certificate"
+                <img src="/certificate-preview.png" alt="ASI Board Certification Certificate"
                     style="max-width: 400px; width: 100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(78, 31, 36, 0.2); border: 3px solid #d4af37;">
                 <p style="font-size: 0.9rem; color: #6b6b6b; margin-top: 12px;">Your personalized Board Certification —
                     verified worldwide</p>
@@ -3948,6 +3947,328 @@
         document.getElementById('exitPopup').addEventListener('click', function (e) {
             if (e.target === this) closeExitPopup();
         });
+    </script>
+
+    <!-- Live Chat Widget -->
+    <style>
+        .chat-widget-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4e1f24 0%, #722f37 100%);
+            border: 3px solid #d4af37;
+            box-shadow: 0 8px 25px rgba(78, 31, 36, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chat-widget-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(78, 31, 36, 0.5);
+        }
+
+        .chat-widget-btn img {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-widget-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #22c55e;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-widget-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 380px;
+            max-width: calc(100vw - 48px);
+            height: 500px;
+            max-height: 70vh;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            border: 2px solid #d4af37;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-widget-panel.open {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #4e1f24 0%, #722f37 100%);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #d4af37;
+        }
+
+        .chat-header-info h4 {
+            color: white;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .chat-header-info p {
+            color: #d4af37;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        .chat-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #d4af37;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: #faf8f3;
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+            max-width: 85%;
+        }
+
+        .chat-message.sarah {
+            margin-right: auto;
+        }
+
+        .chat-message.user {
+            margin-left: auto;
+        }
+
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chat-message.sarah .chat-bubble {
+            background: white;
+            color: #1a1a1a;
+            border: 1px solid #e5e5e5;
+            border-radius: 16px 16px 16px 4px;
+        }
+
+        .chat-message.user .chat-bubble {
+            background: linear-gradient(135deg, #4e1f24 0%, #722f37 100%);
+            color: white;
+            border-radius: 16px 16px 4px 16px;
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #d4af37;
+            border-radius: 24px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #4e1f24;
+        }
+
+        .chat-send {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4af37 0%, #f7e7a0 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4e1f24;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .chat-widget-panel {
+                bottom: 80px;
+                right: 12px;
+                left: 12px;
+                width: auto;
+                height: 60vh;
+            }
+
+            .chat-widget-btn {
+                bottom: 80px;
+                right: 16px;
+                width: 56px;
+                height: 56px;
+            }
+
+            .chat-widget-btn img {
+                width: 46px;
+                height: 46px;
+            }
+        }
+    </style>
+
+    <!-- Chat Button -->
+    <div class="chat-widget-btn" id="chatButton" onclick="toggleChat()">
+        <img src="https://learn.accredipro.academy/coach-sarah.webp" alt="Chat with Sarah">
+        <div class="chat-widget-badge">1</div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-widget-panel" id="chatPanel">
+        <div class="chat-header">
+            <img src="https://learn.accredipro.academy/coach-sarah.webp" alt="Sarah">
+            <div class="chat-header-info">
+                <h4>Sarah Mitchell</h4>
+                <p>🟢 Online now</p>
+            </div>
+            <button class="chat-close" onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message sarah">
+                <div class="chat-bubble">
+                    Hi there! 👋 I'm Sarah. I noticed you're checking out the certification program. Do you have any
+                    questions I can help with?
+                </div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..."
+                onkeypress="if(event.key==='Enter')sendChatMessage()">
+            <button class="chat-send" onclick="sendChatMessage()">→</button>
+        </div>
+    </div>
+
+    <script>
+        // Live Chat Widget
+        let chatOpen = false;
+        let visitorId = localStorage.getItem('visitor_id') || 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('visitor_id', visitorId);
+
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            const panel = document.getElementById('chatPanel');
+            const btn = document.getElementById('chatButton');
+            if (chatOpen) {
+                panel.classList.add('open');
+                btn.style.display = 'none';
+                document.querySelector('.chat-widget-badge').style.display = 'none';
+            } else {
+                panel.classList.remove('open');
+                btn.style.display = 'flex';
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message to UI
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML += `
+                <div class="chat-message user">
+                    <div class="chat-bubble">${message}</div>
+                </div>
+            `;
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Send to API
+            try {
+                await fetch('/api/sarah-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        visitorId: visitorId,
+                        page: 'fm-certification-sales',
+                        type: 'lead'
+                    })
+                });
+
+                // Show typing indicator
+                messagesDiv.innerHTML += `
+                    <div class="chat-message sarah" id="typingIndicator">
+                        <div class="chat-bubble">Sarah is typing...</div>
+                    </div>
+                `;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+                // Simulate response (in production, poll for real response)
+                setTimeout(() => {
+                    document.getElementById('typingIndicator')?.remove();
+                    const responses = [
+                        "Great question! The certification takes about 90 days to complete with 10-15 hours per week. Would you like to know more about what's included?",
+                        "I totally understand that concern! That's exactly why we offer a 30-day guarantee. If it's not right for you, full refund — no questions asked.",
+                        "Yes! You get lifetime access to everything, including future updates. Plus 12 months of live mentorship calls with me personally.",
+                        "The price is $297 one-time (or 3 payments of $99). This includes everything — certifications, website, templates, and ongoing support!"
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    messagesDiv.innerHTML += `
+                        <div class="chat-message sarah">
+                            <div class="chat-bubble">${randomResponse}</div>
+                        </div>
+                    `;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }, 2000);
+            } catch (err) {
+                console.error('Chat error:', err);
+            }
+        }
+
+        // Auto-open chat after 30 seconds
+        setTimeout(() => {
+            if (!chatOpen && !sessionStorage.getItem('chatOpened')) {
+                document.querySelector('.chat-widget-badge').style.animation = 'pulse 1s infinite';
+            }
+        }, 30000);
     </script>
 
 </body>
