@@ -240,6 +240,38 @@ function HealthcareWorkersMiniDiplomaContent() {
                                 </div>
                             </div>
 
+                            {/* Testimonial Avatar Circle - Social Proof */}
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="flex -space-x-3">
+                                    {[
+                                        "/zombie-avatars/user_47_backyard_bbq_1767801467.png",
+                                        "/zombie-avatars/user_52_bedroom_morning_1767801467.png",
+                                        "/zombie-avatars/user_44_bathroom_mirror_1767801533.png",
+                                        "/zombie-avatars/user_55_cooking_class_1767801442.png",
+                                        "/zombie-avatars/user_41_coffee_shop_working_1768611487.png",
+                                        "/zombie-avatars/user_49_restaurant_birthday_1767801048.png",
+                                        "/zombie-avatars/user_38_nail_salon_1767801440.png",
+                                        "/zombie-avatars/user_60_cooking_class_1767800849.png",
+                                    ].map((src, i) => (
+                                        <Image
+                                            key={i}
+                                            src={src}
+                                            alt={`Graduate ${i + 1}`}
+                                            width={44}
+                                            height={44}
+                                            className="rounded-full border-2 border-white object-cover w-11 h-11"
+                                        />
+                                    ))}
+                                    <div className="w-11 h-11 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold" style={{ backgroundColor: BRAND.gold, color: BRAND.burgundyDark }}>
+                                        +4K
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-white text-sm font-semibold">4,247 healthcare pros certified</p>
+                                    <p className="text-white/60 text-xs">Join them today — it's free</p>
+                                </div>
+                            </div>
+
                             {/* Mobile CTA */}
                             <Button
                                 onClick={scrollToForm}
