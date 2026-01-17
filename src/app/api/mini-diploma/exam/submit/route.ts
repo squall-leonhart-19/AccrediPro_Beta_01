@@ -21,6 +21,7 @@ async function sendCompletionNotifications(
         : "https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw";
 
     // 1. Send completion email
+    console.log(`[EXAM] Sending completion email to ${email}...`);
     try {
         await resend.emails.send({
             from: "Sarah M. <sarah@accredipro-certificate.com>",
@@ -98,6 +99,7 @@ async function sendCompletionNotifications(
     }
 
     // 2. Send private DM from Coach Sarah
+    console.log(`[EXAM] Sending completion DM to userId ${userId}...`);
     try {
         // Find or create Sarah's user (the AI coach)
         let sarah = await prisma.user.findFirst({
@@ -128,7 +130,10 @@ async function sendCompletionNotifications(
             },
         });
 
-        if (!existingDM) {
+        if (existingDM) {
+            console.log(`[EXAM] DM already exists for user ${userId}, skipping`);
+        } else {
+            console.log(`[EXAM] Creating new DM for user ${userId}`);
             const roadmapUrl = "https://learn.accredipro.academy/functional-medicine-diploma/career-roadmap";
             const dmContent = couponCode
                 ? `${firstName}, YOU DID IT! 🎉
