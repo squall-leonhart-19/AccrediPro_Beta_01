@@ -12,6 +12,7 @@ export default function LessonPage() {
     const lessonId = parseInt(params.id as string);
 
     const [firstName, setFirstName] = useState("friend");
+    const [userId, setUserId] = useState<string | undefined>();
     const [isCompleted, setIsCompleted] = useState(false);
 
     useEffect(() => {
@@ -21,6 +22,7 @@ export default function LessonPage() {
                 if (res.ok) {
                     const data = await res.json();
                     setFirstName(data.firstName || "friend");
+                    setUserId(data.userId);
                     setIsCompleted(data.completed || false);
                 }
             } catch (e) {
@@ -70,6 +72,7 @@ export default function LessonPage() {
         <ClassicFunctionalMedicineLessonRouter
             lessonNumber={lessonId}
             firstName={firstName}
+            userId={userId}
             onComplete={handleComplete}
             onNext={handleNext}
             isCompleted={isCompleted}

@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
             success: true,
             firstName: user?.firstName || "friend",
+            userId: session.user.id,
             completed: !!lessonTag,
             lessonId,
         });

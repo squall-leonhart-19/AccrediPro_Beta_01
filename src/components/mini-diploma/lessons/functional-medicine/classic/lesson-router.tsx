@@ -28,12 +28,14 @@ interface LessonRouterProps {
 export function ClassicFunctionalMedicineLessonRouter({
     lessonNumber,
     firstName,
+    userId,
     onComplete,
     onNext,
     isCompleted,
 }: LessonRouterProps) {
     const commonProps = {
         firstName,
+        userId,
         onComplete,
         onNext,
         isCompleted,
