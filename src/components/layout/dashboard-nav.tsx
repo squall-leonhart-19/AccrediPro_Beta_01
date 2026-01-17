@@ -279,15 +279,14 @@ export function DashboardNav() {
       <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-gradient-to-b from-burgundy-700 via-burgundy-800 to-burgundy-900 shadow-2xl">
         {/* Logo - Premium ASI Branding */}
         <div className="flex items-center gap-3 px-6 py-6 border-b border-burgundy-600/30">
-          <div className="p-1.5 bg-white rounded-xl shadow-lg relative">
+          <div className="relative">
             <Image
-              src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+              src="/asi-logo.png"
               alt="AccrediPro Standards Institute"
-              width={40}
-              height={40}
+              width={48}
+              height={48}
               className="rounded-lg"
               priority
-              unoptimized
             />
             <div
               className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
@@ -297,8 +296,8 @@ export function DashboardNav() {
             </div>
           </div>
           <div>
-            <span className="text-xl font-bold text-white">AccrediPro</span>
-            <p className="text-[9px] font-bold tracking-wider text-gold-400">STANDARDS INSTITUTE</p>
+            <span className="text-xl font-black text-white tracking-tight">AccrediPro</span>
+            <p className="text-[9px] font-bold tracking-widest" style={{ color: '#d4af37' }}>STANDARDS INSTITUTE</p>
           </div>
         </div>
 
@@ -578,19 +577,16 @@ export function DashboardNav() {
 
           {/* Center: Logo - ASI Branding */}
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="p-1 bg-white rounded-lg shadow-md">
-              <Image
-                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
-                alt="AccrediPro"
-                width={28}
-                height={28}
-                className="rounded"
-                unoptimized
-              />
-            </div>
+            <Image
+              src="/asi-logo.png"
+              alt="AccrediPro"
+              width={36}
+              height={36}
+              className="rounded-lg"
+            />
             <div>
-              <span className="font-bold text-white">AccrediPro</span>
-              <span className="text-[8px] block font-bold tracking-wider text-gold-400">STANDARDS INSTITUTE</span>
+              <span className="font-black text-white tracking-tight">AccrediPro</span>
+              <span className="text-[7px] block font-bold tracking-widest" style={{ color: '#d4af37' }}>STANDARDS INSTITUTE</span>
             </div>
           </Link>
 
