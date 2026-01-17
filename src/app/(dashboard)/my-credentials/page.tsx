@@ -377,25 +377,34 @@ export default async function CertificatesPage() {
       {/* Mark certificate notifications as read when visiting this page */}
       <MarkCertificatesRead />
 
-      {/* Compact Hero Header - Matching Catalog Style */}
-      <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden relative">
+      {/* Compact Hero Header - Premium Gold/Burgundy Style */}
+      <Card
+        className="border-0 overflow-hidden relative shadow-2xl"
+        style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+      >
         <CardContent className="px-5 py-4 relative">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Left: Icon + Title + Subtitle */}
             <div className="flex items-start gap-4">
-              <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
-                <Award className="w-5 h-5 text-gold-400" />
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
+              >
+                <Award className="w-5 h-5" style={{ color: '#4e1f24' }} />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                  <Badge
+                    className="border-0 text-[10px] font-bold"
+                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}
+                  >
                     Professional Credentials
                   </Badge>
                 </div>
-                <h1 className="text-xl font-bold text-white">
-                  My <span className="text-gold-400">Certificates</span>
+                <h1 className="text-xl font-black text-white tracking-tight">
+                  My <span style={{ color: '#d4af37' }}>Certificates</span>
                 </h1>
-                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                <p className="text-xs mt-0.5 max-w-md hidden sm:block" style={{ color: '#d4af37' }}>
                   Track progress, download certificates, and showcase your expertise.
                 </p>
               </div>
@@ -405,22 +414,35 @@ export default async function CertificatesPage() {
             <div className="flex flex-wrap items-center gap-3">
               {/* Stats as pills */}
               <div className="hidden md:flex items-center gap-2">
-                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                  <Award className="w-3 h-3 mr-1.5 text-gold-400" />
+                <Badge
+                  className="border-0 px-3 py-1.5 font-bold"
+                  style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', color: 'white' }}
+                >
+                  <Award className="w-3 h-3 mr-1.5" style={{ color: '#d4af37' }} />
                   {totalCertificates} Earned
                 </Badge>
-                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                  <GraduationCap className="w-3 h-3 mr-1.5 text-gold-400" />
+                <Badge
+                  className="border-0 px-3 py-1.5 font-bold"
+                  style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', color: 'white' }}
+                >
+                  <GraduationCap className="w-3 h-3 mr-1.5" style={{ color: '#d4af37' }} />
                   {practitionerLevel} Practitioner
                 </Badge>
-                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                  <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                <Badge
+                  className="border-0 px-3 py-1.5 font-bold"
+                  style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', color: 'white' }}
+                >
+                  <Star className="w-3 h-3 mr-1.5" style={{ color: '#d4af37' }} />
                   {stats.badges} Badges
                 </Badge>
               </div>
               {/* CTA */}
               <Link href="/catalog">
-                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                <Button
+                  size="sm"
+                  className="font-bold h-9 border-0"
+                  style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)', color: '#4e1f24' }}
+                >
                   <Target className="w-4 h-4 mr-1.5" />
                   Get More
                 </Button>

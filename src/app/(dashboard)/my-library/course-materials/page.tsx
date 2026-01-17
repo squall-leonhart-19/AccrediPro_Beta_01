@@ -263,19 +263,29 @@ export default function CourseMaterialsPage() {
                         )}
                     </div>
 
-                    {/* Hero Banner */}
-                    <div className="bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-burgundy-800 rounded-2xl p-8 text-white mb-6 relative overflow-hidden">
+                    {/* Hero Banner - Premium Gold/Burgundy */}
+                    <div
+                        className="rounded-2xl p-8 text-white mb-6 relative overflow-hidden shadow-2xl"
+                        style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+                    >
                         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PC9zdmc+')] opacity-30" />
+                        <div
+                            className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-30"
+                            style={{ backgroundColor: '#d4af37' }}
+                        />
                         <div className="relative z-10">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                                    <FolderOpen className="w-6 h-6" />
+                                <div
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-sm"
+                                    style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
+                                >
+                                    <FolderOpen className="w-6 h-6" style={{ color: '#4e1f24' }} />
                                 </div>
                                 <div>
-                                    <h1 className="text-2xl md:text-3xl font-bold">
+                                    <h1 className="text-2xl md:text-3xl font-black tracking-tight">
                                         {selectedCourse ? selectedCourseData?.title || 'Course Materials' : 'Course Materials'}
                                     </h1>
-                                    <p className="text-burgundy-100">
+                                    <p style={{ color: '#d4af37' }}>
                                         {selectedCourse
                                             ? `${searchFilteredResources.length} downloadable resources`
                                             : 'Select a course to view its resources'}

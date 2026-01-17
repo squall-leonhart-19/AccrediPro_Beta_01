@@ -146,38 +146,55 @@ export default function ThisWeekPage() {
     const progress = Math.round((weekData.lessonsCompleted / weekData.lessonsPlanned) * 100);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-burgundy-50 via-white to-gold-50/30 p-6 lg:p-8">
+        <div className="min-h-screen p-6 lg:p-8" style={{ background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, #ffffff 50%, rgba(78, 31, 36, 0.05) 100%)' }}>
             {/* Header */}
             <div className="max-w-3xl mx-auto mb-8">
                 <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-gradient-to-br from-burgundy-500 to-burgundy-600 rounded-xl text-white">
+                    <div
+                        className="p-2 rounded-xl text-white"
+                        style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 100%)' }}
+                    >
                         <Calendar className="w-6 h-6" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-burgundy-900">This Week</h1>
+                        <h1 className="text-2xl font-black tracking-tight" style={{ color: '#4e1f24' }}>This Week</h1>
                         <p className="text-gray-500 text-sm">{weekData.startDate} - {weekData.endDate}</p>
                     </div>
                 </div>
             </div>
 
-            {/* Weekly Goal Card */}
+            {/* Weekly Goal Card - Premium */}
             <div className="max-w-3xl mx-auto mb-6">
-                <Card className="p-6 bg-gradient-to-r from-burgundy-600 to-burgundy-800 text-white overflow-hidden relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <Card
+                    className="p-6 text-white overflow-hidden relative shadow-2xl border-0"
+                    style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+                >
+                    <div
+                        className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-20"
+                        style={{ backgroundColor: '#d4af37' }}
+                    />
                     <div className="relative z-10">
                         <div className="flex items-center gap-2 mb-3">
-                            <Target className="w-5 h-5 text-gold-400" />
-                            <span className="text-sm text-white/70">WEEKLY GOAL</span>
+                            <Target className="w-5 h-5" style={{ color: '#d4af37' }} />
+                            <span className="text-sm" style={{ color: '#d4af37' }}>WEEKLY GOAL</span>
                         </div>
-                        <h2 className="text-xl font-semibold mb-4">{weekData.goal}</h2>
+                        <h2 className="text-xl font-black mb-4 tracking-tight">{weekData.goal}</h2>
 
                         <div className="flex items-center gap-4 mb-2">
                             <div className="flex-1">
-                                <Progress value={progress} className="h-3 bg-white/20" />
+                                <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }}>
+                                    <div
+                                        className="h-full rounded-full"
+                                        style={{
+                                            width: `${progress}%`,
+                                            background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)'
+                                        }}
+                                    />
+                                </div>
                             </div>
-                            <span className="font-bold text-gold-400">{weekData.lessonsCompleted}/{weekData.lessonsPlanned}</span>
+                            <span className="font-black" style={{ color: '#d4af37' }}>{weekData.lessonsCompleted}/{weekData.lessonsPlanned}</span>
                         </div>
-                        <p className="text-sm text-white/70">
+                        <p className="text-sm" style={{ color: '#d4af37' }}>
                             {weekData.lessonsPlanned - weekData.lessonsCompleted} lessons left this week
                         </p>
                     </div>

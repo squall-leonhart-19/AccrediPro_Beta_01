@@ -314,12 +314,21 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
 
     return (
         <div className="space-y-6 animate-fade-in">
-            {/* Enhanced Profile Header */}
-            <Card className="bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 overflow-hidden relative">
+            {/* Enhanced Profile Header - Premium Gold/Burgundy */}
+            <Card
+                className="border-0 overflow-hidden relative shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+            >
                 {/* Background decoration */}
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+                <div className="absolute inset-0 opacity-20">
+                    <div
+                        className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"
+                        style={{ backgroundColor: '#d4af37' }}
+                    />
+                    <div
+                        className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"
+                        style={{ backgroundColor: '#722f37' }}
+                    />
                 </div>
                 <CardContent className="px-6 py-6 relative">
                     <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -338,33 +347,45 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
                         {/* User Info */}
                         <div className="flex-1 min-w-0">
                             <div className="flex flex-wrap items-center gap-2 mb-2">
-                                <h1 className="text-2xl md:text-3xl font-bold text-white">
+                                <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
                                     {user.firstName} {user.lastName}
                                 </h1>
-                                <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs font-semibold">
+                                <Badge
+                                    className="border-0 text-xs font-bold"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}
+                                >
                                     {user.role}
                                 </Badge>
                             </div>
-                            <p className="text-burgundy-200 text-sm mb-3">{user.email}</p>
+                            <p className="text-sm mb-3" style={{ color: '#d4af37' }}>{user.email}</p>
 
                             {/* Level Progress */}
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full border border-white/20">
+                                <div
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                                >
                                     <span className="text-lg">{currentLevel.icon}</span>
-                                    <span className="text-white font-semibold text-sm">Level {currentLevel.level}</span>
-                                    <span className="text-burgundy-200 text-sm">• {currentLevel.name}</span>
+                                    <span className="text-white font-bold text-sm">Level {currentLevel.level}</span>
+                                    <span className="text-sm" style={{ color: '#d4af37' }}>• {currentLevel.name}</span>
                                 </div>
                                 {nextLevel && (
-                                    <span className="text-burgundy-300 text-xs">{xpToNextLevel.toLocaleString()} XP to Level {nextLevel.level}</span>
+                                    <span className="text-xs" style={{ color: '#d4af37' }}>{xpToNextLevel.toLocaleString()} XP to Level {nextLevel.level}</span>
                                 )}
                             </div>
 
                             {/* Level Progress Bar */}
                             <div className="max-w-md">
-                                <div className="h-2 bg-burgundy-900/50 rounded-full overflow-hidden border border-white/10">
+                                <div
+                                    className="h-2 rounded-full overflow-hidden"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }}
+                                >
                                     <div
-                                        className="h-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 rounded-full transition-all duration-500"
-                                        style={{ width: `${levelProgress}%` }}
+                                        className="h-full rounded-full transition-all duration-500"
+                                        style={{
+                                            width: `${levelProgress}%`,
+                                            background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)'
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -372,25 +393,34 @@ export function ProfileTabs({ user, allBadges, goals }: ProfileTabsProps) {
 
                         {/* Stats */}
                         <div className="flex flex-wrap md:flex-col gap-3">
-                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                                <Star className="w-4 h-4 text-gold-400" />
+                            <div
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <Star className="w-4 h-4" style={{ color: '#d4af37' }} />
                                 <div>
-                                    <p className="text-white font-bold text-lg leading-none">{totalPoints.toLocaleString()}</p>
-                                    <p className="text-burgundy-200 text-[10px]">Total XP</p>
+                                    <p className="text-white font-black text-lg leading-none">{totalPoints.toLocaleString()}</p>
+                                    <p className="text-[10px]" style={{ color: '#d4af37' }}>Total XP</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                                <Flame className="w-4 h-4 text-orange-400" />
+                            <div
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <Flame className="w-4 h-4" style={{ color: '#f97316' }} />
                                 <div>
-                                    <p className="text-white font-bold text-lg leading-none">{currentStreak}</p>
-                                    <p className="text-burgundy-200 text-[10px]">Day Streak</p>
+                                    <p className="text-white font-black text-lg leading-none">{currentStreak}</p>
+                                    <p className="text-[10px]" style={{ color: '#d4af37' }}>Day Streak</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-                                <Trophy className="w-4 h-4 text-purple-400" />
+                            <div
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <Trophy className="w-4 h-4" style={{ color: '#a855f7' }} />
                                 <div>
-                                    <p className="text-white font-bold text-lg leading-none">{user.badges.length}</p>
-                                    <p className="text-burgundy-200 text-[10px]">Badges</p>
+                                    <p className="text-white font-black text-lg leading-none">{user.badges.length}</p>
+                                    <p className="text-[10px]" style={{ color: '#d4af37' }}>Badges</p>
                                 </div>
                             </div>
                         </div>

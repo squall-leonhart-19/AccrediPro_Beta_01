@@ -123,56 +123,77 @@ export default async function MyCoursesPage() {
 
     return (
         <div className="min-h-[80vh] space-y-6 animate-fade-in">
-            {/* Hero Header with Stats */}
-            <Card className="bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 overflow-hidden relative">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+            {/* Hero Header with Stats - Premium Gold/Burgundy */}
+            <Card
+                className="border-0 overflow-hidden relative shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)' }}
+            >
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" style={{ backgroundColor: '#d4af37' }} />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" style={{ backgroundColor: '#722f37' }} />
                 </div>
                 <CardContent className="p-6 md:p-8 relative">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                         {/* Welcome Text */}
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                                <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center">
-                                    <GraduationCap className="w-5 h-5 text-gold-400" />
+                                <div
+                                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                    style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
+                                >
+                                    <GraduationCap className="w-5 h-5" style={{ color: '#4e1f24' }} />
                                 </div>
-                                <Badge className="bg-gold-500/20 text-gold-300 border-gold-400/30 text-xs">
+                                <Badge
+                                    className="border-0 font-bold"
+                                    style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}
+                                >
                                     <Sparkles className="w-3 h-3 mr-1" />
                                     {sortedEnrollments.length} Certification{sortedEnrollments.length !== 1 ? 's' : ''}
                                 </Badge>
                             </div>
-                            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                            <h1 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight">
                                 {inProgress.length > 0 ? `Keep Going, ${firstName}!` : `Your Learning Journey`}
                             </h1>
-                            <p className="text-burgundy-200 text-sm md:text-base">
+                            <p className="text-sm md:text-base" style={{ color: '#d4af37' }}>
                                 {totalProgress > 0
                                     ? `You're ${totalProgress}% through your certifications. Every lesson brings you closer to your goals!`
                                     : "Start your first lesson today and begin your transformation."}
                             </p>
                         </div>
 
-                        {/* Stats Grid */}
+                        {/* Stats Grid - Gold Metallic */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
-                                <Flame className="w-5 h-5 text-orange-400 mx-auto mb-1" />
-                                <p className="text-xl font-bold text-white">{stats.streak?.currentStreak || 0}</p>
-                                <p className="text-[10px] text-burgundy-200 uppercase tracking-wide">Day Streak</p>
+                            <div
+                                className="rounded-xl p-3 text-center"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <Flame className="w-5 h-5 mx-auto mb-1" style={{ color: '#f97316' }} />
+                                <p className="text-xl font-black text-white">{stats.streak?.currentStreak || 0}</p>
+                                <p className="text-[10px] uppercase tracking-wide" style={{ color: '#d4af37' }}>Day Streak</p>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
-                                <BookOpen className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                                <p className="text-xl font-bold text-white">{stats.completedLessons}</p>
-                                <p className="text-[10px] text-burgundy-200 uppercase tracking-wide">Lessons Done</p>
+                            <div
+                                className="rounded-xl p-3 text-center"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <BookOpen className="w-5 h-5 mx-auto mb-1" style={{ color: '#d4af37' }} />
+                                <p className="text-xl font-black text-white">{stats.completedLessons}</p>
+                                <p className="text-[10px] uppercase tracking-wide" style={{ color: '#d4af37' }}>Lessons Done</p>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
-                                <Trophy className="w-5 h-5 text-gold-400 mx-auto mb-1" />
-                                <p className="text-xl font-bold text-white">{stats.streak?.totalPoints || 0}</p>
-                                <p className="text-[10px] text-burgundy-200 uppercase tracking-wide">XP Points</p>
+                            <div
+                                className="rounded-xl p-3 text-center"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <Trophy className="w-5 h-5 mx-auto mb-1" style={{ color: '#d4af37' }} />
+                                <p className="text-xl font-black text-white">{stats.streak?.totalPoints || 0}</p>
+                                <p className="text-[10px] uppercase tracking-wide" style={{ color: '#d4af37' }}>XP Points</p>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
-                                <Award className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
-                                <p className="text-xl font-bold text-white">{stats.certificates}</p>
-                                <p className="text-[10px] text-burgundy-200 uppercase tracking-wide">Certificates</p>
+                            <div
+                                className="rounded-xl p-3 text-center"
+                                style={{ backgroundColor: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.3)' }}
+                            >
+                                <Award className="w-5 h-5 mx-auto mb-1" style={{ color: '#22c55e' }} />
+                                <p className="text-xl font-black text-white">{stats.certificates}</p>
+                                <p className="text-[10px] uppercase tracking-wide" style={{ color: '#d4af37' }}>Certificates</p>
                             </div>
                         </div>
                     </div>
@@ -287,8 +308,8 @@ function CourseCard({
     return (
         <Link href={`/courses/${enrollment.course.slug}`}>
             <Card className={`group overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${featured ? 'border-2 border-burgundy-200 bg-gradient-to-br from-white to-burgundy-50/30' :
-                    isCompleted ? 'border-2 border-emerald-200 bg-gradient-to-br from-white to-emerald-50/30' :
-                        'border border-gray-100 hover:border-burgundy-200'
+                isCompleted ? 'border-2 border-emerald-200 bg-gradient-to-br from-white to-emerald-50/30' :
+                    'border border-gray-100 hover:border-burgundy-200'
                 }`}>
                 <CardContent className="p-0">
                     {/* Thumbnail */}

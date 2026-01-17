@@ -97,15 +97,18 @@ export default function NotesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-burgundy-50 via-white to-gold-50/30 p-6 lg:p-8">
+        <div className="min-h-screen p-6 lg:p-8" style={{ background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, #ffffff 50%, rgba(78, 31, 36, 0.05) 100%)' }}>
             {/* Header */}
             <div className="max-w-3xl mx-auto mb-8">
                 <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-gradient-to-br from-burgundy-500 to-burgundy-600 rounded-xl text-white">
+                    <div
+                        className="p-2 rounded-xl text-white"
+                        style={{ background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 100%)' }}
+                    >
                         <FileText className="w-6 h-6" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-burgundy-900">My Notes</h1>
+                        <h1 className="text-2xl font-black tracking-tight" style={{ color: '#4e1f24' }}>My Notes</h1>
                         <p className="text-gray-500 text-sm">{notesData.length} notes saved</p>
                     </div>
                 </div>

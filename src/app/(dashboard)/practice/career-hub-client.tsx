@@ -113,20 +113,32 @@ export default function CareerHubClient() {
 
     return (
         <div className="space-y-8">
-            {/* HERO */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-burgundy-950 to-gray-900 p-8 md:p-12">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400/20 rounded-full blur-[120px] -translate-y-1/2" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-burgundy-500/20 rounded-full blur-[100px] translate-y-1/2" />
+            {/* HERO - Premium Gold/Burgundy */}
+            <div
+                className="relative overflow-hidden rounded-3xl p-8 md:p-12 shadow-2xl"
+                style={{ background: 'linear-gradient(135deg, #1e1e1e 0%, #4e1f24 50%, #1e1e1e 100%)' }}
+            >
+                <div
+                    className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[120px] -translate-y-1/2 opacity-30"
+                    style={{ backgroundColor: '#d4af37' }}
+                />
+                <div
+                    className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-[100px] translate-y-1/2 opacity-20"
+                    style={{ backgroundColor: '#722f37' }}
+                />
 
                 <div className="relative z-10 text-center max-w-3xl mx-auto">
-                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 mb-6 px-4 py-1.5">
+                    <Badge
+                        className="mb-6 px-4 py-1.5 border-0 font-bold"
+                        style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}
+                    >
                         <Award className="w-4 h-4 mr-2" />
                         AccrediPro Standards Institute
                     </Badge>
 
                     <h1 className="text-4xl md:text-6xl font-black text-white mb-4 tracking-tight">
                         Choose Your
-                        <span className="block text-gold-400">Career Path</span>
+                        <span className="block" style={{ color: '#d4af37' }}>Career Path</span>
                     </h1>
 
                     <p className="text-lg text-white/60 mb-8 max-w-xl mx-auto">
