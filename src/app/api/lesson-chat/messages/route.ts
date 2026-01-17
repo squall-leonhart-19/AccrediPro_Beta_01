@@ -12,11 +12,23 @@ export async function GET(request: NextRequest) {
         }
 
         const { searchParams } = new URL(request.url);
-        const courseId = searchParams.get("courseId");
+        let courseId = searchParams.get("courseId");
+        const courseSlug = searchParams.get("courseSlug");
         const limit = parseInt(searchParams.get("limit") || "50");
 
+        // Support courseSlug for mini diplomas
+        if (!courseId && courseSlug) {
+            const course = await prisma.course.findFirst({
+                where: { slug: courseSlug },
+                select: { id: true }
+            });
+            if (course) {
+                courseId = course.id;
+            }
+        }
+
         if (!courseId) {
-            return NextResponse.json({ success: false, error: "courseId required" }, { status: 400 });
+            return NextResponse.json({ success: false, error: "courseId or courseSlug required" }, { status: 400 });
         }
 
         const messages = await prisma.lessonChatMessage.findMany({
@@ -83,10 +95,23 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         }
 
-        const { courseId, content } = await request.json();
+        const { courseId: rawCourseId, courseSlug, content } = await request.json();
+
+        let courseId = rawCourseId;
+
+        // Support courseSlug for mini diplomas
+        if (!courseId && courseSlug) {
+            const course = await prisma.course.findFirst({
+                where: { slug: courseSlug },
+                select: { id: true }
+            });
+            if (course) {
+                courseId = course.id;
+            }
+        }
 
         if (!courseId || !content?.trim()) {
-            return NextResponse.json({ success: false, error: "courseId and content required" }, { status: 400 });
+            return NextResponse.json({ success: false, error: "courseId/courseSlug and content required" }, { status: 400 });
         }
 
         // Banned words filter - silently reject without error

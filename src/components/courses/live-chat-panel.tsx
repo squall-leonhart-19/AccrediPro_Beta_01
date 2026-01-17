@@ -16,7 +16,8 @@ interface ChatMessage {
 }
 
 interface LiveChatPanelProps {
-    courseId: string;
+    courseId?: string;
+    courseSlug?: string; // Alternative: for mini diplomas
     isMobile?: boolean;
     onClose?: () => void;
 }
@@ -29,7 +30,7 @@ const ZOMBIE_JOIN_NAMES = [
     "Julie F.", "Christina V.", "Melissa D.", "Amy Z.", "Angela Q.",
 ];
 
-export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatPanelProps) {
+export function LiveChatPanel({ courseId, courseSlug, isMobile = false, onClose }: LiveChatPanelProps) {
     const { data: session } = useSession();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState("");
@@ -45,7 +46,8 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
     // Fetch messages
     const fetchMessages = useCallback(async () => {
         try {
-            const res = await fetch(`/api/lesson-chat/messages?courseId=${courseId}`);
+            const param = courseId ? `courseId=${courseId}` : `courseSlug=${courseSlug}`;
+            const res = await fetch(`/api/lesson-chat/messages?${param}`);
             const data = await res.json();
             if (data.success) {
                 setMessages(data.data);
@@ -140,7 +142,7 @@ export function LiveChatPanel({ courseId, isMobile = false, onClose }: LiveChatP
             const res = await fetch("/api/lesson-chat/messages", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ courseId, content }),
+                body: JSON.stringify({ courseId, courseSlug, content }),
             });
             const data = await res.json();
             if (data.success) {

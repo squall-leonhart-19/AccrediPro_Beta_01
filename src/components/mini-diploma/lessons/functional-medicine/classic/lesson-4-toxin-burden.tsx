@@ -246,6 +246,7 @@ export function ClassicLessonToxinBurden({
             niche="functional-medicine"
             nicheLabel="Functional Medicine Diploma"
             baseUrl="/functional-medicine-diploma"
+            courseSlug="functional-medicine-complete-certification"
         />
     );
 }
