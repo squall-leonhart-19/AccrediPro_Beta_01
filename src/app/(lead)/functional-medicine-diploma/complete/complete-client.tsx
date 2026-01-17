@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -21,6 +21,44 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+// Confetti celebration function
+function fireConfetti() {
+    const duration = 4000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    function randomInRange(min: number, max: number) {
+        return Math.random() * (max - min) + min;
+    }
+
+    const interval: ReturnType<typeof setInterval> = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+
+        // Create confetti from different origins
+        const confetti = (window as unknown as { confetti?: (opts: object) => void }).confetti;
+        if (confetti) {
+            confetti({
+                ...defaults,
+                particleCount,
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                colors: ['#722F37', '#f59e0b', '#16a34a', '#fff'],
+            });
+            confetti({
+                ...defaults,
+                particleCount,
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                colors: ['#722F37', '#f59e0b', '#16a34a', '#fff'],
+            });
+        }
+    }, 250);
+}
 
 interface CompleteClientProps {
     firstName: string;
@@ -111,6 +149,23 @@ export function CompleteClient({
     spotsRemaining = 3,
     skipped = false,
 }: CompleteClientProps) {
+    const confettiFired = useRef(false);
+
+    // Fire confetti on mount (celebration!)
+    useEffect(() => {
+        if (!confettiFired.current) {
+            confettiFired.current = true;
+            // Load confetti library dynamically
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+            script.onload = () => {
+                // Fire confetti after script loads
+                setTimeout(fireConfetti, 300);
+            };
+            document.body.appendChild(script);
+        }
+    }, []);
+
     // Build checkout URL with coupon if available
     const checkoutUrl = couponCode
         ? `${CHECKOUT_URL}?coupon=${couponCode}`

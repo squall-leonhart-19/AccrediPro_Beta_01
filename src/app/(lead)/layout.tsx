@@ -22,7 +22,7 @@ const DIPLOMA_TAG_PREFIX: Record<string, string> = {
 };
 
 async function getLeadData(userId: string, diplomaSlug: string) {
-    const [user, leadOnboarding] = await Promise.all([
+    const [user, leadOnboarding, examData] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -41,6 +41,14 @@ async function getLeadData(userId: string, diplomaSlug: string) {
                 watchedVideo: true,
             },
         }).catch(() => null), // Handle if table doesn't exist yet
+        // Check if user has passed an exam (for FM diploma)
+        prisma.miniDiplomaExam.findFirst({
+            where: {
+                userId,
+                passed: true,
+            },
+            select: { passed: true },
+        }).catch(() => null),
     ]);
 
     // Get tag prefix for this diploma (default to womens-health)
@@ -54,7 +62,8 @@ async function getLeadData(userId: string, diplomaSlug: string) {
         },
     });
 
-    const diplomaCompleted = completedLessons >= 9;
+    // Diploma is completed if either: 9 lessons done OR exam passed
+    const diplomaCompleted = completedLessons >= 9 || !!examData?.passed;
 
     return {
         user,

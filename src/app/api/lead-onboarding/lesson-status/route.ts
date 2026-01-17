@@ -29,25 +29,35 @@ export async function GET(request: NextRequest) {
         // Get tag prefix for this niche (default to womens-health)
         const tagPrefix = NICHE_TAG_PREFIX[niche] || "wh-lesson-complete";
 
-        // Get user info
-        const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            select: { firstName: true },
-        });
-
-        // Check if lesson is completed
-        const lessonTag = await prisma.userTag.findFirst({
-            where: {
-                userId: session.user.id,
-                tag: `${tagPrefix}:${lessonId}`,
-            },
-        });
+        // Get user info and check if exam is passed
+        const [user, lessonTag, examData] = await Promise.all([
+            prisma.user.findUnique({
+                where: { id: session.user.id },
+                select: { firstName: true },
+            }),
+            // Check if lesson is completed
+            prisma.userTag.findFirst({
+                where: {
+                    userId: session.user.id,
+                    tag: `${tagPrefix}:${lessonId}`,
+                },
+            }),
+            // Check if exam is passed (for redirect on lesson 9)
+            prisma.miniDiplomaExam.findFirst({
+                where: {
+                    userId: session.user.id,
+                    passed: true,
+                },
+                select: { passed: true },
+            }),
+        ]);
 
         return NextResponse.json({
             success: true,
             firstName: user?.firstName || "friend",
             userId: session.user.id,
             completed: !!lessonTag,
+            examPassed: !!examData?.passed,
             lessonId,
         });
     } catch (error) {

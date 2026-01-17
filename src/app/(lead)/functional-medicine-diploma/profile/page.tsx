@@ -423,6 +423,48 @@ export default async function LeadProfilePage() {
                 </CardContent>
             </Card>
 
+            {/* Certificate Download Card - Show if exam passed */}
+            {examData?.passed && (
+                <Card className="border-0 shadow-lg mb-6 md:mb-8 overflow-hidden bg-gradient-to-br from-gold-50 via-white to-burgundy-50">
+                    <CardHeader className="pb-2 px-4 md:px-6 border-b border-gold-100">
+                        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                            <Award className="w-5 h-5 text-gold-600" />
+                            Your ASI Foundation Certificate
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 md:p-6">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="w-20 h-20 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <GraduationCap className="w-10 h-10 text-white" />
+                            </div>
+                            <div className="flex-1 text-center sm:text-left">
+                                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                                    Congratulations! You&apos;re Certified!
+                                </h3>
+                                <p className="text-gray-600 text-sm mb-3">
+                                    You scored <span className="font-bold text-gold-600">{examData.score}/100</span> on your final assessment.
+                                    Download your official ASI Foundation Certificate below.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-2">
+                                    <Link href="/functional-medicine-diploma/certificate">
+                                        <Button className="bg-gold-600 hover:bg-gold-700 text-white w-full sm:w-auto">
+                                            <Award className="w-4 h-4 mr-2" />
+                                            View & Download Certificate
+                                        </Button>
+                                    </Link>
+                                    <Link href="/functional-medicine-diploma/complete">
+                                        <Button variant="outline" className="border-burgundy-300 text-burgundy-700 hover:bg-burgundy-50 w-full sm:w-auto">
+                                            <Sparkles className="w-4 h-4 mr-2" />
+                                            Claim Scholarship
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
             {/* Career Potential Card */}
             <Card className="border-0 shadow-lg bg-gradient-to-r from-burgundy-50 to-gold-50 mb-6 md:mb-8">
                 <CardContent className="p-4 md:p-6">

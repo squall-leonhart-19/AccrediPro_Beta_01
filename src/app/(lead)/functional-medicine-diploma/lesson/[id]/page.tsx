@@ -24,13 +24,18 @@ export default function LessonPage() {
                     setFirstName(data.firstName || "friend");
                     setUserId(data.userId);
                     setIsCompleted(data.completed || false);
+
+                    // If this is lesson 9 and already completed + exam passed, redirect to complete page
+                    if (lessonId === 9 && data.completed && data.examPassed) {
+                        router.replace("/functional-medicine-diploma/complete");
+                    }
                 }
             } catch (e) {
                 console.error("Failed to check lesson status");
             }
         };
         fetchStatus();
-    }, [lessonId]);
+    }, [lessonId, router]);
 
     if (lessonId < 1 || lessonId > 9 || isNaN(lessonId)) {
         return (
