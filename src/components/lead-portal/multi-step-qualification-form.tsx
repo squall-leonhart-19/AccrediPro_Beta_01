@@ -49,9 +49,9 @@ export function MultiStepQualificationForm({
     isSubmitting,
     isVerifying = false,
     error,
-    step1ButtonText = "Continue — It's Free",
-    submitButtonText = "Start My Free Diploma",
-    step1SubText = "No credit card required",
+    step1ButtonText = "See If You Qualify →",
+    submitButtonText = "Complete My Application →",
+    step1SubText = "Free for accepted healthcare professionals • 312 applied this week • 47 spots left",
     isPaid = false
 }: MultiStepQualificationFormProps) {
     const [step, setStep] = useState(1);
@@ -107,7 +107,7 @@ export function MultiStepQualificationForm({
             >
                 <p className="text-sm font-bold text-[#4e1f24] flex items-center justify-center gap-2">
                     <Gift className="w-4 h-4" />
-                    <span>{isPaid ? "Just $7 Today • Save 93%" : "FREE Today Only • Normally $97"}</span>
+                    <span>{isPaid ? "Just $7 Today • Save 93%" : "🔥 47 Spots Left This Week • Free for Accepted Applicants"}</span>
                 </p>
             </div>
 
