@@ -817,8 +817,9 @@ function HealthcareWorkersMiniDiplomaContent() {
             {/* Footer */}
             <footer className="py-10 text-gray-400" style={{ backgroundColor: "#2a1518" }}>
                 <div className="max-w-5xl mx-auto px-4 text-center">
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                        <Image src="/logos/accredipro-logo-gold.svg" alt="AccrediPro" width={140} height={36} />
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <Image src="/asi-logo.png" alt="ASI" width={44} height={44} className="rounded-lg" />
+                        <span className="text-white font-bold">AccrediPro Standards Institute</span>
                     </div>
                     <p className="text-sm">
                         © {new Date().getFullYear()} AccrediPro Standards Institute. All rights reserved.

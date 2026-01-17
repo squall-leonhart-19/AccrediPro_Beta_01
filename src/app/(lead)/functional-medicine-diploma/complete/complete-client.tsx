@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
     Award,
     CheckCircle2,
-    Clock,
     Gift,
     Shield,
     Users,
@@ -18,6 +16,8 @@ import {
     Sparkles,
     GraduationCap,
     Heart,
+    Download,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -62,6 +62,7 @@ function fireConfetti() {
 
 interface CompleteClientProps {
     firstName: string;
+    lastName?: string;
     diplomaName: string;
     examScore?: number;
     scholarshipQualified?: boolean;
@@ -69,6 +70,7 @@ interface CompleteClientProps {
     couponExpiresAt?: string;
     spotsRemaining?: number;
     skipped?: boolean;
+    certificateId?: string;
 }
 
 const CHECKOUT_URL = "https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw";
@@ -141,6 +143,7 @@ function CountdownTimer({ expiresAt }: { expiresAt: string }) {
 
 export function CompleteClient({
     firstName,
+    lastName = "",
     diplomaName,
     examScore = 0,
     scholarshipQualified = false,
@@ -148,8 +151,11 @@ export function CompleteClient({
     couponExpiresAt,
     spotsRemaining = 3,
     skipped = false,
+    certificateId,
 }: CompleteClientProps) {
     const confettiFired = useRef(false);
+    const [downloading, setDownloading] = useState(false);
+    const [downloadError, setDownloadError] = useState<string | null>(null);
 
     // Fire confetti on mount (celebration!)
     useEffect(() => {
@@ -165,6 +171,54 @@ export function CompleteClient({
             document.body.appendChild(script);
         }
     }, []);
+
+    // Download certificate function
+    const handleDownloadCertificate = async (format: "pdf" | "png" = "pdf") => {
+        setDownloading(true);
+        setDownloadError(null);
+
+        try {
+            const certId = certificateId || `FM-MD-${Date.now().toString(36).toUpperCase()}`;
+            const studentName = `${firstName} ${lastName}`.trim();
+            const date = new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            });
+
+            const response = await fetch("/api/certificates/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    studentName,
+                    certificateId: certId,
+                    date,
+                    courseTitle: `${diplomaName} Mini Diploma`,
+                    format,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to generate certificate");
+            }
+
+            // Download the file
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${diplomaName.replace(/\s+/g, "-")}-Mini-Diploma-Certificate.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error("Certificate download error:", error);
+            setDownloadError("Failed to download certificate. Please try again.");
+        } finally {
+            setDownloading(false);
+        }
+    };
 
     // Build checkout URL with coupon if available
     const checkoutUrl = couponCode
@@ -211,6 +265,31 @@ export function CompleteClient({
                                 <p className="text-lg text-gray-700">
                                     You scored in the <span className="font-bold text-gold-600">top 5%</span> of all exam takers!
                                 </p>
+                            </div>
+
+                            {/* Certificate Download */}
+                            <div className="bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl p-4 mb-4 border border-gold-200">
+                                <div className="flex items-center justify-between flex-wrap gap-3">
+                                    <div className="flex items-center gap-2">
+                                        <Award className="w-5 h-5 text-gold-600" />
+                                        <span className="font-semibold text-gold-800">Your Foundation Certificate is Ready!</span>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDownloadCertificate("pdf")}
+                                        disabled={downloading}
+                                        className="inline-flex items-center gap-2 bg-gold-600 hover:bg-gold-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors text-sm disabled:opacity-50"
+                                    >
+                                        {downloading ? (
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                        ) : (
+                                            <Download className="w-4 h-4" />
+                                        )}
+                                        {downloading ? "Generating..." : "Download PDF"}
+                                    </button>
+                                </div>
+                                {downloadError && (
+                                    <p className="text-red-600 text-sm mt-2">{downloadError}</p>
+                                )}
                             </div>
 
                             {/* Countdown */}
@@ -409,18 +488,36 @@ export function CompleteClient({
                         <div className="bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl p-5 mb-6 border-2 border-gold-200">
                             <h2 className="text-lg font-bold text-gold-800 mb-2 flex items-center gap-2">
                                 <Award className="w-5 h-5" />
-                                Your Certificate is Ready!
+                                Your Certificate is Ready! 🎓
                             </h2>
                             <p className="text-gold-700 text-sm mb-4">
-                                Your {diplomaName} Mini Diploma certificate has been generated. Check your email or download it from your dashboard.
+                                Download your ASI-verified {diplomaName} Mini Diploma foundation certificate.
                             </p>
-                            <Link
-                                href="/dashboard/certificates"
-                                className="inline-flex items-center gap-2 bg-gold-600 hover:bg-gold-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
-                            >
-                                <CheckCircle2 className="w-4 h-4" />
-                                View Certificate
-                            </Link>
+                            <div className="flex flex-wrap gap-3">
+                                <button
+                                    onClick={() => handleDownloadCertificate("pdf")}
+                                    disabled={downloading}
+                                    className="inline-flex items-center gap-2 bg-gradient-to-r from-gold-600 to-amber-600 hover:from-gold-700 hover:to-amber-700 text-white font-semibold px-5 py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg disabled:opacity-50"
+                                >
+                                    {downloading ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Download className="w-4 h-4" />
+                                    )}
+                                    {downloading ? "Generating..." : "Download PDF"}
+                                </button>
+                                <button
+                                    onClick={() => handleDownloadCertificate("png")}
+                                    disabled={downloading}
+                                    className="inline-flex items-center gap-2 bg-white border-2 border-gold-300 hover:border-gold-400 text-gold-700 font-semibold px-5 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    Download PNG
+                                </button>
+                            </div>
+                            {downloadError && (
+                                <p className="text-red-600 text-sm mt-3">{downloadError}</p>
+                            )}
                         </div>
 
                         {/* Upgrade CTA */}

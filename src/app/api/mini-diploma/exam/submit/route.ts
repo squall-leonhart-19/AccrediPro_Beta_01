@@ -15,81 +15,39 @@ async function sendCompletionNotifications(
     score: number,
     couponCode: string | undefined
 ) {
-    const certificateUrl = "https://learn.accredipro.academy/functional-medicine-diploma/certificate";
-    const scholarshipUrl = couponCode
-        ? `https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw?coupon=${couponCode}`
-        : "https://www.fanbasis.com/agency-checkout/AccrediPro/wmoqw";
+    const completeUrl = "https://learn.accredipro.academy/functional-medicine-diploma/complete";
 
-    // 1. Send completion email
+    // 1. Send completion email - PERSONAL STYLE to avoid Promotions tab
     console.log(`[EXAM] Sending completion email to ${email}...`);
     try {
         await resend.emails.send({
-            from: "Sarah M. <sarah@accredipro-certificate.com>",
+            from: "Sarah <sarah@accredipro-certificate.com>",
             to: email,
-            subject: `Congratulations ${firstName}! You're ASI Certified!`,
+            subject: `${firstName}, your certificate is ready to download`,
             html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                    <div style="background: linear-gradient(135deg, #722F37 0%, #5a252c 100%); color: white; padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-                        <h1 style="margin: 0; font-size: 28px;">Congratulations, ${firstName}!</h1>
-                        <p style="margin: 10px 0 0; opacity: 0.9;">You're Now ASI Certified!</p>
-                    </div>
+                <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+                    <p style="margin: 0 0 20px 0; font-size: 16px; color: #333;">Hey ${firstName}!</p>
 
-                    <div style="padding: 30px; background: #fff;">
-                        <div style="text-align: center; margin-bottom: 25px;">
-                            <div style="display: inline-block; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; font-size: 48px; font-weight: bold; padding: 20px 40px; border-radius: 12px;">
-                                ${score}/100
-                            </div>
-                            <p style="margin: 10px 0 0; color: #666;">Your Final Score</p>
-                        </div>
+                    <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+                        You did it! You scored <strong>${score}%</strong> on your exam and your ASI Foundation Certificate is ready.
+                    </p>
 
-                        <p style="color: #333; font-size: 16px; line-height: 1.6;">
-                            ${firstName}, you did it! You've completed the ASI Functional Medicine Foundation and earned your certificate.
-                        </p>
+                    <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+                        I'm SO proud of you. This is a huge first step!
+                    </p>
 
-                        <div style="background: #f8f4f0; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                            <h3 style="margin: 0 0 10px; color: #722F37;">What's Next:</h3>
-                            <ul style="margin: 0; padding-left: 20px; color: #444;">
-                                <li style="margin-bottom: 8px;">Download your official certificate</li>
-                                <li style="margin-bottom: 8px;">Add it to your LinkedIn profile</li>
-                                <li style="margin-bottom: 8px;">Start your journey to $3-10K/month</li>
-                            </ul>
-                        </div>
+                    <p style="margin: 20px 0; font-size: 15px;">
+                        <a href="${completeUrl}" style="color: #722f37; font-weight: bold;">👉 Download your certificate here</a>
+                    </p>
 
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="${certificateUrl}" style="display: inline-block; background: #722F37; color: white; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
-                                Download Your Certificate
-                            </a>
-                        </div>
+                    <p style="margin: 0 0 15px 0; font-size: 15px; color: #444; line-height: 1.6;">
+                        I've also sent you a voice message in the portal - check your messages when you log in!
+                    </p>
 
-                        ${couponCode ? `
-                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border: 2px solid #f59e0b; margin-top: 25px;">
-                            <h3 style="margin: 0 0 10px; color: #92400e; text-align: center;">Your Exclusive Graduate Scholarship</h3>
-                            <p style="text-align: center; margin: 0 0 15px; color: #78350f;">
-                                You qualified for $2,000 OFF the full Board Certification!
-                            </p>
-                            <div style="text-align: center;">
-                                <code style="display: inline-block; background: white; padding: 10px 20px; border-radius: 8px; font-size: 20px; font-weight: bold; color: #722F37; border: 2px dashed #f59e0b;">
-                                    ${couponCode}
-                                </code>
-                            </div>
-                            <p style="text-align: center; margin: 15px 0 0; font-size: 14px; color: #92400e;">
-                                Expires in 24 hours
-                            </p>
-                            <div style="text-align: center; margin-top: 15px;">
-                                <a href="${scholarshipUrl}" style="display: inline-block; background: #f59e0b; color: #78350f; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">
-                                    Claim Your Scholarship
-                                </a>
-                            </div>
-                        </div>
-                        ` : ''}
-
-                        <p style="color: #666; font-size: 14px; margin-top: 25px;">
-                            I'm so proud of you! Welcome to the ASI family.
-                        </p>
-                        <p style="color: #333; font-weight: bold; margin: 0;">
-                            — Coach Sarah
-                        </p>
-                    </div>
+                    <p style="margin: 25px 0 0 0; font-size: 15px; color: #444;">
+                        Talk soon,<br/>
+                        <strong>Sarah</strong>
+                    </p>
                 </div>
             `
         });

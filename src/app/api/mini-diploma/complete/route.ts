@@ -9,7 +9,13 @@ import { sendMilestoneToGHL } from "@/lib/ghl-webhook";
 
 const categoryLabels: Record<string, string> = {
     "functional-medicine": "Functional Medicine",
+    "fm-healthcare": "Functional Medicine",
     "gut-health": "Gut Health",
+    "womens-health": "Women's Health & Hormones",
+    "hormone-health": "Hormone Health",
+    "holistic-nutrition": "Holistic Nutrition",
+    "nurse-coach": "Nurse Life Coach",
+    "health-coach": "Health Coach",
     "autism": "Autism & Neurodevelopment",
     "hormones": "Women's Hormones",
 };
@@ -180,15 +186,25 @@ You've got this! 💛
 
         // === SEND CONGRATULATIONS EMAIL ===
         try {
-            const completionUrl = `${process.env.NEXTAUTH_URL}/my-mini-diploma/complete`;
+            // Map category to diploma slug for the correct completion URL
+            const diplomaSlugs: Record<string, string> = {
+                "functional-medicine": "functional-medicine-diploma",
+                "fm-healthcare": "functional-medicine-diploma",
+                "gut-health": "gut-health-diploma",
+                "womens-health": "womens-health-diploma",
+                "hormone-health": "hormone-health-diploma",
+                "holistic-nutrition": "holistic-nutrition-diploma",
+                "nurse-coach": "nurse-coach-diploma",
+                "health-coach": "health-coach-diploma",
+            };
+            const diplomaSlug = diplomaSlugs[user.miniDiplomaCategory || "functional-medicine"] || "functional-medicine-diploma";
+            const completionUrl = `https://learn.accredipro.academy/${diplomaSlug}/complete`;
 
             console.log(`📧 Attempting to send email to ${user.email}...`);
-            console.log(`   FROM_EMAIL: ${process.env.FROM_EMAIL}`);
-            console.log(`   RESEND_API_KEY: ${process.env.RESEND_API_KEY?.substring(0, 10)}...`);
 
             const emailResult = await sendEmail({
                 to: user.email,
-                subject: `🎓 Congratulations! You've completed your ${categoryName} Mini Diploma!`,
+                subject: `${userName}, you did it! Your ${categoryName} Mini Diploma Certificate is ready`,
                 html: `
                     <!DOCTYPE html>
                     <html>
@@ -199,35 +215,31 @@ You've got this! 💛
                     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
                         <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                             <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
-                                <h1 style="color: #D4AF37; margin: 0; font-size: 28px;">🎉 Congratulations!</h1>
-                                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">You've completed your Mini Diploma</p>
+                                <h1 style="color: #D4AF37; margin: 0; font-size: 28px;">You Did It, ${userName}!</h1>
+                                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">Your ${categoryName} Mini Diploma is complete</p>
                             </div>
 
                             <div style="padding: 40px 30px;">
-                                <p style="font-size: 18px; color: #333;">Hi ${userName},</p>
-                                
-                                <p style="color: #555; font-size: 16px;">You did it! 🎊 You've successfully completed your <strong style="color: #722F37;">${categoryName} Mini Diploma</strong>!</p>
+                                <p style="font-size: 16px; color: #555;">Hey ${userName},</p>
 
-                                <div style="background: linear-gradient(135deg, #FDF5E6 0%, #FFF8DC 100%); border: 2px solid #D4AF37; border-radius: 12px; padding: 25px; margin: 25px 0; text-align: center;">
-                                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #8B7355;">Your Achievement</p>
-                                    <p style="margin: 0; font-size: 22px; font-weight: bold; color: #722F37;">${categoryName} Mini Diploma Graduate</p>
-                                    <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">🏅 Badge Unlocked</p>
-                                </div>
+                                <p style="color: #555; font-size: 16px;">I'm SO proud of you! You've completed all 9 lessons of your <strong style="color: #722F37;">${categoryName} Mini Diploma</strong>!</p>
 
-                                <p style="color: #555; font-size: 16px;">Check your messages - Coach Sarah has sent you a personal voice message! 🎙️</p>
-
-                                <div style="background: #f0f9f0; border: 1px solid #10b981; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #059669;">🎁 Special Graduate Offer</p>
-                                    <p style="margin: 0; color: #555; font-size: 14px;">As a Mini Diploma graduate, you get <strong>20% OFF</strong> the full ${categoryName} Certification. This offer expires in 3 days!</p>
-                                </div>
+                                <p style="color: #555; font-size: 16px;">Your ASI-verified Foundation Certificate is ready to download. This is your first official credential in ${categoryName}!</p>
 
                                 <div style="text-align: center; margin: 30px 0;">
-                                    <a href="${completionUrl}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">View Your Certificate</a>
+                                    <a href="${completionUrl}" style="background: linear-gradient(135deg, #D4AF37 0%, #B8960C 100%); color: #722F37; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">Download Your Certificate</a>
                                 </div>
+
+                                <p style="color: #555; font-size: 16px;">I've also sent you a personal voice message in the portal - check your messages when you log in!</p>
+
+                                <p style="color: #555; font-size: 16px; margin-top: 25px;">
+                                    Talk soon,<br/>
+                                    <strong>Sarah</strong>
+                                </p>
                             </div>
 
                             <div style="background: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #eee;">
-                                <p style="margin: 0; color: #999; font-size: 12px;">AccrediPro Academy</p>
+                                <p style="margin: 0; color: #999; font-size: 12px;">ASI Standards Institute | AccrediPro Academy</p>
                             </div>
                         </div>
                     </body>

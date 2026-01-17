@@ -113,9 +113,13 @@ export default async function CompletePage({ searchParams }: PageProps) {
         }
     }
 
+    // Generate certificate ID for this user
+    const certificateId = `FM-MD-${session.user.id.slice(-8).toUpperCase()}`;
+
     return (
         <CompleteClient
             firstName={user.firstName || "there"}
+            lastName={user.lastName || ""}
             diplomaName="Functional Medicine"
             examScore={examScore}
             scholarshipQualified={scholarshipQualified && !!couponCode}
@@ -123,6 +127,7 @@ export default async function CompletePage({ searchParams }: PageProps) {
             couponExpiresAt={couponExpiresAt}
             spotsRemaining={spotsRemaining}
             skipped={skipped}
+            certificateId={certificateId}
         />
     );
 }

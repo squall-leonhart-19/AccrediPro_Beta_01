@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { X, Download, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -9,13 +10,36 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+// Pages where PWA prompt should NOT show (public/lead pages)
+const EXCLUDED_PATH_PATTERNS = [
+  "/functional-medicine-mini-diploma",
+  "/womens-health-diploma",
+  "/gut-health-diploma",
+  "/hormone-health-diploma",
+  "/holistic-nutrition-diploma",
+  "/nurse-coach-diploma",
+  "/health-coach-diploma",
+  "/roots-method",
+  "/fm-career-pathway",
+  "/login",
+  "/register",
+  "/checkout",
+];
+
 export function PWAInstallPrompt() {
+  const pathname = usePathname();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
 
+  // Check if current path is excluded (lead/public pages)
+  const isExcludedPage = EXCLUDED_PATH_PATTERNS.some(pattern => pathname?.includes(pattern));
+
   useEffect(() => {
+    // Don't show on excluded pages (lead gen, public)
+    if (isExcludedPage) return;
+
     // Check if already installed (standalone mode)
     const standalone = window.matchMedia("(display-mode: standalone)").matches;
     setIsStandalone(standalone);
@@ -50,7 +74,7 @@ export function PWAInstallPrompt() {
     }
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
+  }, [isExcludedPage]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
@@ -69,8 +93,8 @@ export function PWAInstallPrompt() {
     localStorage.setItem("pwa-prompt-dismissed", Date.now().toString());
   };
 
-  // Don't render if already installed or shouldn't show
-  if (isStandalone || !showPrompt) return null;
+  // Don't render if already installed, shouldn't show, or on excluded pages
+  if (isStandalone || !showPrompt || isExcludedPage) return null;
 
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-in slide-in-from-bottom-4 duration-300">

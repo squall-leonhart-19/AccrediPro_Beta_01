@@ -670,39 +670,6 @@ export function LeadPortalDashboard({
                     </Card>
                 )}
             </div>
-
-            {/* Floating Chat Button - USE SARAH IMAGE */}
-            <button
-                onClick={() => setShowChat(!showChat)}
-                className={`fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden ${showChat
-                    ? "bg-slate-600 hover:bg-slate-700"
-                    : "hover:scale-105"
-                    }`}
-                style={!showChat ? { border: '3px solid #d4af37' } : {}}
-            >
-                {showChat ? (
-                    <X className="w-6 h-6 text-white" />
-                ) : (
-                    <Image
-                        src={config.coachImage}
-                        alt="Coach Sarah"
-                        width={56}
-                        height={56}
-                        className="w-full h-full object-cover"
-                    />
-                )}
-                {!showChat && (
-                    <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white animate-pulse" />
-                )}
-            </button>
-
-            {/* Live Chat Panel - Slide in from left */}
-            <div
-                className={`fixed bottom-0 left-0 z-40 h-[70vh] w-full sm:w-96 bg-white shadow-2xl rounded-t-2xl sm:rounded-tr-2xl transition-transform duration-300 ${showChat ? "translate-y-0" : "translate-y-full"
-                    }`}
-            >
-                <LiveChatPanel courseSlug={config.slug} />
-            </div>
         </div>
     );
 }

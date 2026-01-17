@@ -1648,9 +1648,9 @@ export function MessagesClient({
                         </span>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 overflow-hidden">
                       <div className="flex items-center justify-between mb-0.5">
-                        <div className="flex items-center gap-1.5 min-w-0">
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1 overflow-hidden">
                           <p className={cn("font-semibold truncate text-sm", conv.unreadCount > 0 ? "text-gray-900" : "text-gray-700")}>
                             {conv.user.firstName} {conv.user.lastName}
                           </p>
@@ -1667,13 +1667,13 @@ export function MessagesClient({
                         )}
                       </div>
                       {conv.lastMessage && (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 w-full overflow-hidden">
                           {conv.lastMessage.senderId === currentUserId && (
                             <CheckCheck className={cn("w-3 h-3 flex-shrink-0", conv.lastMessage.isRead ? "text-blue-500" : "text-gray-400")} />
                           )}
-                          <p className={cn("text-xs truncate", conv.unreadCount > 0 ? "text-gray-700 font-medium" : "text-gray-500")}>
+                          <p className={cn("text-xs truncate max-w-full", conv.unreadCount > 0 ? "text-gray-700 font-medium" : "text-gray-500")}>
                             {conv.lastMessage.attachmentType === "voice"
-                              ? "Voice message"
+                              ? "🎤 Voice message from Sarah"
                               : conv.lastMessage.content || "Attachment"}
                           </p>
                         </div>
