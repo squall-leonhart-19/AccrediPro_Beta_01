@@ -275,24 +275,35 @@ export function DashboardNav() {
 
   return (
     <>
-      {/* Desktop Sidebar - Burgundy/Gold Theme */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-gradient-to-b from-burgundy-700 via-burgundy-800 to-burgundy-900 shadow-2xl">
+      {/* Desktop Sidebar - Premium Gold/Burgundy Theme */}
+      <aside
+        className="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 shadow-2xl"
+        style={{
+          background: 'linear-gradient(180deg, #4e1f24 0%, #3a171a 50%, #2d1114 100%)',
+        }}
+      >
         {/* Logo - Premium ASI Branding */}
-        <div className="flex items-center gap-3 px-6 py-6 border-b border-burgundy-600/30">
+        <div
+          className="flex items-center gap-3 px-6 py-5"
+          style={{
+            borderBottom: '1px solid rgba(212, 175, 55, 0.2)',
+            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.02) 100%)'
+          }}
+        >
           <div className="relative">
             <Image
               src="/asi-logo.png"
               alt="AccrediPro Standards Institute"
-              width={48}
-              height={48}
-              className="rounded-lg"
+              width={52}
+              height={52}
+              className="rounded-xl"
               priority
             />
             <div
               className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
             >
-              <Shield className="w-3 h-3 text-burgundy-900" />
+              <Shield className="w-3 h-3" style={{ color: '#4e1f24' }} />
             </div>
           </div>
           <div>
@@ -301,8 +312,8 @@ export function DashboardNav() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {/* Navigation - Premium Styled */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isGroupExpanded = expandedGroups.includes(item.tourId || item.href);
@@ -534,26 +545,45 @@ export function DashboardNav() {
           <InstallAppButton variant="sidebar" />
         </div>
 
-        {/* User section */}
-        <div className="flex-shrink-0 p-4 border-t border-burgundy-600/30 bg-burgundy-900/50">
+        {/* User section - Premium Styled */}
+        <div
+          className="flex-shrink-0 p-4"
+          style={{
+            borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(45, 17, 20, 0.5) 100%)'
+          }}
+        >
           <div className="flex items-center gap-3 mb-3">
-            <Avatar className="h-10 w-10 ring-2 ring-gold-400/50">
+            <Avatar
+              className="h-11 w-11"
+              style={{
+                border: '2px solid #d4af37',
+                boxShadow: '0 0 10px rgba(212, 175, 55, 0.3)'
+              }}
+            >
               <AvatarImage src={user?.image || undefined} />
-              <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 font-bold">
+              <AvatarFallback
+                className="font-black"
+                style={{
+                  background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)',
+                  color: '#4e1f24'
+                }}
+              >
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">
+              <p className="text-sm font-bold text-white truncate">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-xs text-white/70 truncate">{user?.email}</p>
+              <p className="text-xs truncate" style={{ color: '#d4af37' }}>{user?.email}</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-white/90 hover:text-white hover:bg-burgundy-700/50"
+            className="w-full justify-start font-bold hover:bg-white/10"
+            style={{ color: 'rgba(255,255,255,0.8)' }}
             onClick={() => signOut({ callbackUrl: "/login" })}
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -562,14 +592,20 @@ export function DashboardNav() {
         </div>
       </aside>
 
-      {/* Mobile Header - Burgundy Theme */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-burgundy-800/95 backdrop-blur-md border-b border-burgundy-700">
+      {/* Mobile Header - Premium Gold/Burgundy Theme */}
+      <header
+        className="lg:hidden fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
+        style={{
+          background: 'linear-gradient(135deg, #4e1f24 0%, #3a171a 100%)',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.2)'
+        }}
+      >
         <div className="flex items-center justify-between px-4 py-3">
           {/* Left: Hamburger Menu */}
           <Button
             variant="ghost"
             size="icon"
-            className="text-white/80 hover:text-white hover:bg-burgundy-700"
+            className="text-white/80 hover:text-white hover:bg-white/10"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

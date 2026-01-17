@@ -402,18 +402,11 @@ export default async function DashboardPage() {
             {/* Referral Card */}
             <ReferralCard userId={session.user.id} firstName={firstName} />
 
-            {/* Pod Leaderboard Preview */}
-            <PodLeaderboardPreview currentUserRank={3} />
-
             {/* Community Wins */}
             <CommunityWins events={successEvents} />
           </div>
         </div>
 
-        {/* ========== POD LEADERBOARD (Mobile) ========== */}
-        <div className="lg:hidden">
-          <PodLeaderboardPreview currentUserRank={3} />
-        </div>
 
         {/* ========== COMMUNITY WINS (Mobile) ========== */}
         <div className="lg:hidden">
