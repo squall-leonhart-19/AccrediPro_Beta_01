@@ -203,25 +203,48 @@ export function LeadPortalDashboard({
     const [showChat, setShowChat] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-            {/* Top Header */}
-            <div className="bg-white border-b border-slate-200 px-6 py-4">
+        <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #fdf8f0 0%, #f5efe6 100%)' }}>
+            {/* Top Header - Premium Gold/Burgundy */}
+            <div
+                className="px-6 py-4 border-b"
+                style={{
+                    background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)',
+                    borderColor: 'rgba(212, 175, 55, 0.3)'
+                }}
+            >
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <Image
-                            src="/asi-logo.png"
-                            alt="ASI"
-                            width={48}
-                            height={48}
-                            className="rounded"
-                        />
+                        <div className="relative">
+                            <Image
+                                src="/asi-logo.png"
+                                alt="ASI"
+                                width={52}
+                                height={52}
+                                className="rounded-lg"
+                            />
+                            <div
+                                className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)' }}
+                            >
+                                <CheckCircle className="w-2.5 h-2.5 text-[#4e1f24]" />
+                            </div>
+                        </div>
                         <div>
-                            <h1 className="font-bold text-lg text-slate-900">{config.shortName} Foundation</h1>
-                            <p className="text-sm text-slate-500">ASI-Verified Mini Diploma</p>
+                            <h1 className="font-bold text-lg text-white tracking-tight">{config.shortName} Foundation</h1>
+                            <p className="text-sm flex items-center gap-2" style={{ color: '#d4af37' }}>
+                                <span>ASI-Verified Mini Diploma</span>
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ background: 'rgba(212, 175, 55, 0.2)' }}>ACCREDITED</span>
+                            </p>
                         </div>
                     </div>
                     {!isAllComplete && (
-                        <Badge className="bg-red-100 text-red-800 border-red-300">
+                        <Badge
+                            className="border-0 font-bold"
+                            style={{
+                                background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)',
+                                color: '#4e1f24'
+                            }}
+                        >
                             <Timer className="w-3 h-3 mr-1" />
                             48h Access
                         </Badge>
@@ -232,17 +255,20 @@ export function LeadPortalDashboard({
             {/* PWA Install Banner */}
             <DashboardPWABanner />
 
-            {/* FOMO Cohort Banner */}
+            {/* FOMO Cohort Banner - Premium Gold */}
             {!isAllComplete && (
-                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-3">
+                <div
+                    className="px-4 py-3"
+                    style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 25%, #d4af37 50%, #b8860b 75%, #d4af37 100%)' }}
+                >
                     <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2" style={{ color: '#4e1f24' }}>
                             <GraduationCap className="w-5 h-5" />
-                            <span className="font-bold">COHORT #{Math.floor((Date.now() - new Date("2024-01-01").getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1}</span>
-                            <span className="text-white/80">•</span>
-                            <span className="text-sm">Your access expires in <CohortCountdown enrolledAt={enrolledAt} /></span>
+                            <span className="font-black">COHORT #{Math.floor((Date.now() - new Date("2024-01-01").getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1}</span>
+                            <span className="opacity-60">•</span>
+                            <span className="text-sm font-medium">Your access expires in <CohortCountdown enrolledAt={enrolledAt} /></span>
                         </div>
-                        <div className="text-sm text-white/90">
+                        <div className="text-sm font-bold" style={{ color: '#4e1f24' }}>
                             Complete all {totalLessons} lessons to claim your certificate 🎓
                         </div>
                     </div>
@@ -310,10 +336,10 @@ export function LeadPortalDashboard({
                                         <div
                                             key={i}
                                             className={`h-2 flex-1 rounded-full transition-all ${completedLessons.includes(i + 1)
-                                                    ? "bg-emerald-500"
-                                                    : i + 1 === nextLessonId
-                                                        ? "bg-burgundy-300 animate-pulse"
-                                                        : "bg-slate-200"
+                                                ? "bg-emerald-500"
+                                                : i + 1 === nextLessonId
+                                                    ? "bg-burgundy-300 animate-pulse"
+                                                    : "bg-slate-200"
                                                 }`}
                                         />
                                     ))}
@@ -616,8 +642,8 @@ export function LeadPortalDashboard({
             <button
                 onClick={() => setShowChat(!showChat)}
                 className={`fixed bottom-4 left-4 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${showChat
-                        ? "bg-slate-600 hover:bg-slate-700"
-                        : "bg-burgundy-600 hover:bg-burgundy-700 animate-pulse"
+                    ? "bg-slate-600 hover:bg-slate-700"
+                    : "bg-burgundy-600 hover:bg-burgundy-700 animate-pulse"
                     }`}
             >
                 {showChat ? (
