@@ -96,6 +96,8 @@ function HealthcareWorkersMiniDiplomaContent() {
                     lifeStage: formData.timeCommitment || formData.lifeStage,
                     motivation: formData.motivation,
                     investment: formData.incomeGoal || formData.investment,
+                    investmentLevel: formData.investmentLevel,
+                    readiness: formData.readiness,
                     course: "fm-healthcare",
                     segment: "healthcare-workers",
                 }),

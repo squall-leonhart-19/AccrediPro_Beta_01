@@ -111,7 +111,7 @@ Sarah ✨`,
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { firstName, lastName, email, phone, course, lifeStage, motivation, investment, segment } = body;
+        const { firstName, lastName, email, phone, course, lifeStage, motivation, investment, investmentLevel, readiness, segment } = body;
 
         // Validate required fields
         if (!firstName || !lastName || !email || !phone || !course) {
@@ -277,10 +277,14 @@ export async function POST(request: NextRequest) {
             `lead:${course}-mini-diploma`, // Specific to mini diploma (not purchases)
             "source:mini-diploma",
             `source:${course}`,
-            // Qualification Data (Questions: income_goal, time_commitment, motivation)
+            // Qualification Data (Q1-Q3)
             `income_goal:${investment}`,
             `time_commitment:${lifeStage}`,
             `motivation:${motivation}`,
+            // Q4: Investment Level (budget for program)
+            ...(investmentLevel ? [`investment_level:${investmentLevel}`] : []),
+            // Q5: Readiness to Start
+            ...(readiness ? [`readiness:${readiness}`] : []),
             // Segment tag for different landing page variants (e.g., healthcare-workers, general)
             // Used for GHL workflow routing
             ...(segment ? [`segment:${segment}`] : [])
@@ -395,10 +399,13 @@ export async function POST(request: NextRequest) {
                     lead_source_detail: `${course}-mini-diploma`,
                     // Segment for GHL workflow routing (healthcare-workers, general, etc.)
                     segment: segment || "general",
-                    // Qualification Answers
+                    // Qualification Answers (Q1-Q3)
                     life_stage: lifeStage || "",
                     motivation: motivation || "",
                     investment: investment || "",
+                    // Q4-Q5: Investment Level & Readiness (for sales prioritization)
+                    investment_level: investmentLevel || "",
+                    readiness: readiness || "",
                     // Metadata
                     signup_date: new Date().toISOString(),
                     platform: "accredipro-lms",
