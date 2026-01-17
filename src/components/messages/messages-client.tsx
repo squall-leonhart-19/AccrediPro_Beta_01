@@ -303,6 +303,7 @@ export function MessagesClient({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const isLoadingOlderRef = useRef(false); // Track when loading older messages to prevent auto-scroll
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -414,6 +415,7 @@ export function MessagesClient({
     if (!selectedUser || !nextCursor || loadingMore) return;
 
     setLoadingMore(true);
+    isLoadingOlderRef.current = true; // Flag to prevent auto-scroll
     const container = messagesContainerRef.current;
     const scrollHeightBefore = container?.scrollHeight || 0;
 
@@ -434,10 +436,13 @@ export function MessagesClient({
             const scrollHeightAfter = container.scrollHeight;
             container.scrollTop = scrollHeightAfter - scrollHeightBefore;
           }
+          // Reset flag after scroll position is maintained
+          isLoadingOlderRef.current = false;
         });
       }
     } catch (error) {
       console.error("Failed to load more messages:", error);
+      isLoadingOlderRef.current = false;
     } finally {
       setLoadingMore(false);
     }
@@ -483,6 +488,12 @@ export function MessagesClient({
   const prevMessagesLengthRef = useRef(messages.length);
 
   useEffect(() => {
+    // Skip auto-scroll if we're loading older messages (user is reading history)
+    if (isLoadingOlderRef.current) {
+      prevMessagesLengthRef.current = messages.length;
+      return;
+    }
+
     // Only auto-scroll if messages were added (not on initial empty state)
     if (messages.length > 0 && messages.length !== prevMessagesLengthRef.current) {
       // If new messages were added (not loaded older ones), scroll to bottom
