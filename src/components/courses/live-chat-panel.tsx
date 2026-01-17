@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 interface ChatMessage {
     id: string;
@@ -30,7 +30,16 @@ const ZOMBIE_JOIN_NAMES = [
     "Julie F.", "Christina V.", "Melissa D.", "Amy Z.", "Angela Q.",
 ];
 
-export function LiveChatPanel({ courseId, courseSlug, isMobile = false, onClose }: LiveChatPanelProps) {
+// Wrapper component that provides SessionProvider for contexts that don't have one
+export function LiveChatPanel(props: LiveChatPanelProps) {
+    return (
+        <SessionProvider>
+            <LiveChatPanelInner {...props} />
+        </SessionProvider>
+    );
+}
+
+function LiveChatPanelInner({ courseId, courseSlug, isMobile = false, onClose }: LiveChatPanelProps) {
     const { data: session } = useSession();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState("");
