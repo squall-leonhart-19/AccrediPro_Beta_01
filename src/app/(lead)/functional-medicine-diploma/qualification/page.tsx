@@ -173,7 +173,7 @@ export default function QualificationPage() {
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <div className="bg-emerald-50 rounded-xl p-4 text-center border border-emerald-200">
                                         <Clock className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
-                                        <div className="text-2xl font-bold text-emerald-700">7 Days</div>
+                                        <div className="text-2xl font-bold text-emerald-700">48 Hours</div>
                                         <div className="text-xs text-emerald-600">Access Starts NOW</div>
                                     </div>
                                     <div className="bg-amber-50 rounded-xl p-4 text-center border border-amber-200">

@@ -20,8 +20,11 @@ import {
     Award,
     GraduationCap,
     Timer,
+    MessageCircle,
+    X,
 } from "lucide-react";
 import { DashboardPWABanner } from "@/components/dashboard/pwa-banner";
+import { LiveChatPanel } from "@/components/courses/live-chat-panel";
 
 // Countdown component for cohort expiry
 function CohortCountdown({ enrolledAt }: { enrolledAt?: Date | string | null }) {
@@ -196,6 +199,9 @@ export function LeadPortalDashboard({
 
     const basePath = `/${config.slug}`;
 
+    // Live Chat state
+    const [showChat, setShowChat] = useState(false);
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
             {/* Top Header */}
@@ -303,13 +309,12 @@ export function LeadPortalDashboard({
                                     {Array.from({ length: totalLessons }, (_, i) => (
                                         <div
                                             key={i}
-                                            className={`h-2 flex-1 rounded-full transition-all ${
-                                                completedLessons.includes(i + 1)
+                                            className={`h-2 flex-1 rounded-full transition-all ${completedLessons.includes(i + 1)
                                                     ? "bg-emerald-500"
                                                     : i + 1 === nextLessonId
-                                                    ? "bg-burgundy-300 animate-pulse"
-                                                    : "bg-slate-200"
-                                            }`}
+                                                        ? "bg-burgundy-300 animate-pulse"
+                                                        : "bg-slate-200"
+                                                }`}
                                         />
                                     ))}
                                 </div>
@@ -597,13 +602,38 @@ export function LeadPortalDashboard({
                 )}
             </div>
 
-            {/* Sarah AI Floating Mentor */}
-            <SarahFloatingMentor
-                firstName={firstName}
-                lessonsCompleted={lessonsCompleted}
-                totalLessons={totalLessons}
-                coachImage={config.coachImage}
-            />
+            {/* Sarah AI Floating Mentor - Hidden when chat is open */}
+            {!showChat && (
+                <SarahFloatingMentor
+                    firstName={firstName}
+                    lessonsCompleted={lessonsCompleted}
+                    totalLessons={totalLessons}
+                    coachImage={config.coachImage}
+                />
+            )}
+
+            {/* Floating Chat Button */}
+            <button
+                onClick={() => setShowChat(!showChat)}
+                className={`fixed bottom-4 left-4 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${showChat
+                        ? "bg-slate-600 hover:bg-slate-700"
+                        : "bg-burgundy-600 hover:bg-burgundy-700 animate-pulse"
+                    }`}
+            >
+                {showChat ? (
+                    <X className="w-6 h-6 text-white" />
+                ) : (
+                    <MessageCircle className="w-6 h-6 text-white" />
+                )}
+            </button>
+
+            {/* Live Chat Panel - Slide in from left */}
+            <div
+                className={`fixed bottom-0 left-0 z-40 h-[70vh] w-full sm:w-96 bg-white shadow-2xl rounded-t-2xl sm:rounded-tr-2xl transition-transform duration-300 ${showChat ? "translate-y-0" : "translate-y-full"
+                    }`}
+            >
+                <LiveChatPanel courseSlug={config.slug} />
+            </div>
         </div>
     );
 }

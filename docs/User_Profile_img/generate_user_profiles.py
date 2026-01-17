@@ -193,25 +193,54 @@ EXPRESSIONS = [
     "happy grin", "soft smile", "warm friendly smile", "proud smile"
 ]
 
+# Track existing combos to avoid duplicates
+EXISTING_COMBOS = set()
+
+def load_existing_combos():
+    """Load existing age+scene combos from disk to avoid duplicates"""
+    global EXISTING_COMBOS
+    import re
+    for filename in os.listdir(OUTPUT_DIR):
+        if filename.endswith('.png') and filename.startswith('user_'):
+            # Extract age and scene from filename: user_45_kitchen_baking_timestamp.png
+            match = re.match(r'user_(\d+)_(.+?)_\d+\.png', filename)
+            if match:
+                age = int(match.group(1))
+                scene = match.group(2)
+                EXISTING_COMBOS.add((age, scene))
+    print(f"📂 Found {len(EXISTING_COMBOS)} existing age+scene combos to skip")
+
 def get_unique_combo():
-    """Get unique age + scene combo"""
-    available_scenes = [s for s in SCENE_TEMPLATES if s[0] not in USED_SCENES]
-    if not available_scenes:
-        USED_SCENES.clear()
-        available_scenes = SCENE_TEMPLATES.copy()
+    """Get unique age + scene combo that doesn't already exist"""
+    # Try to find unused combo
+    max_attempts = 500
+    for _ in range(max_attempts):
+        # Pick a scene
+        available_scenes = [s for s in SCENE_TEMPLATES if s[0] not in USED_SCENES]
+        if not available_scenes:
+            USED_SCENES.clear()
+            available_scenes = SCENE_TEMPLATES.copy()
+        
+        scene = random.choice(available_scenes)
+        USED_SCENES.add(scene[0])
+        
+        # Pick an age
+        available_ages = [a for a in range(40, 66) if a not in USED_AGES]
+        if not available_ages:
+            USED_AGES.clear()
+            available_ages = list(range(40, 66))
+        
+        age = random.choice(available_ages)
+        USED_AGES.add(age)
+        
+        # Check if this combo already exists
+        if (age, scene[0]) not in EXISTING_COMBOS:
+            EXISTING_COMBOS.add((age, scene[0]))  # Mark as used
+            return age, scene
     
-    scene = random.choice(available_scenes)
-    USED_SCENES.add(scene[0])
-    
-    # Try to get unused age - US 40+ target
-    available_ages = [a for a in range(40, 66) if a not in USED_AGES]
-    if not available_ages:
-        USED_AGES.clear()
-        available_ages = list(range(40, 66))
-    
-    age = random.choice(available_ages)
-    USED_AGES.add(age)
-    
+    # If we can't find unique, just return any combo (fallback)
+    scene = random.choice(SCENE_TEMPLATES)
+    age = random.choice(range(40, 66))
     return age, scene
 
 def generate_prompt(index):
@@ -319,6 +348,9 @@ def main(count=100):
     """Generate specified number of user profile images"""
     
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    # Pre-load existing combos to avoid duplicates
+    load_existing_combos()
     
     print(f"\n🎭 Generating {count} User Profile Images")
     print(f"📁 Output: {OUTPUT_DIR}")
