@@ -227,45 +227,64 @@ export function LiveChatPanel({ courseId, courseSlug, isMobile = false, onClose 
                 ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                         {/* Show only 25 most recent messages - users can scroll up for more */}
-                        {messages.slice(-25).map((msg) => (
-                            <div
-                                key={msg.id}
-                                style={{
-                                    display: "flex", gap: "8px", alignItems: "flex-start",
-                                    opacity: msg.id.startsWith("temp-") ? 0.6 : 1,
-                                }}
-                            >
-                                <div style={{
-                                    width: "32px", height: "32px", borderRadius: "50%",
-                                    background: msg.user.avatar ? `url(${msg.user.avatar}) center/cover` : "#722f37",
-                                    display: "flex", alignItems: "center", justifyContent: "center",
-                                    color: "#fff", fontSize: "12px", fontWeight: 600, flexShrink: 0
-                                }}>
-                                    {!msg.user.avatar && (msg.user.name?.[0] || "?")}
-                                </div>
-                                <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
-                                        <span style={{
-                                            fontWeight: 600, fontSize: "12px",
-                                            color: msg.isMe ? "#722f37" : "#333"
-                                        }}>
-                                            {msg.isMe ? "You" : msg.user.name}
-                                        </span>
-                                        <span style={{ fontSize: "10px", color: "#999" }}>
-                                            {formatTime(msg.createdAt)}
-                                        </span>
-                                    </div>
+                        {messages.slice(-25).map((msg) => {
+                            // Check if this is Sarah's message
+                            const isSarah = msg.user.name?.toLowerCase().includes("sarah");
+
+                            return (
+                                <div
+                                    key={msg.id}
+                                    style={{
+                                        display: "flex", gap: "8px", alignItems: "flex-start",
+                                        opacity: msg.id.startsWith("temp-") ? 0.6 : 1,
+                                        // Sarah's messages get gold border
+                                        ...(isSarah ? {
+                                            background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+                                            padding: "8px",
+                                            borderRadius: "12px",
+                                            border: "2px solid #f59e0b"
+                                        } : {})
+                                    }}
+                                >
                                     <div style={{
-                                        fontSize: "13px", color: "#444", lineHeight: 1.4,
-                                        background: msg.isMe ? "#f0e6e7" : "#fff",
-                                        padding: "8px 12px", borderRadius: "12px",
-                                        border: "1px solid #eee", wordBreak: "break-word"
+                                        width: "32px", height: "32px", borderRadius: "50%",
+                                        background: msg.user.avatar ? `url(${msg.user.avatar}) center/cover` :
+                                            isSarah ? "#f59e0b" : "#722f37",
+                                        display: "flex", alignItems: "center", justifyContent: "center",
+                                        color: "#fff", fontSize: "12px", fontWeight: 600, flexShrink: 0,
+                                        border: isSarah ? "2px solid #d97706" : "none"
                                     }}>
-                                        {msg.content}
+                                        {!msg.user.avatar && (msg.user.name?.[0] || "?")}
+                                    </div>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
+                                            <span style={{
+                                                fontWeight: 600, fontSize: "12px",
+                                                color: isSarah ? "#b45309" : msg.isMe ? "#722f37" : "#333"
+                                            }}>
+                                                {msg.isMe ? "You" : msg.user.name}
+                                                {isSarah && " ⭐"}
+                                            </span>
+                                            <span style={{ fontSize: "10px", color: isSarah ? "#92400e" : "#999" }}>
+                                                {formatTime(msg.createdAt)}
+                                            </span>
+                                        </div>
+                                        <div style={{
+                                            fontSize: "13px",
+                                            color: isSarah ? "#78350f" : "#444",
+                                            lineHeight: 1.4,
+                                            background: isSarah ? "transparent" : msg.isMe ? "#f0e6e7" : "#fff",
+                                            padding: isSarah ? "0" : "8px 12px",
+                                            borderRadius: "12px",
+                                            border: isSarah ? "none" : "1px solid #eee",
+                                            wordBreak: "break-word"
+                                        }}>
+                                            {msg.content}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
 
                         {/* Typing Indicator */}
                         {typingName && (
