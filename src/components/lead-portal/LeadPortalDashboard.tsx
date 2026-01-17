@@ -278,23 +278,38 @@ export function LeadPortalDashboard({
             <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
                 {/* Welcome + Progress Section */}
                 <div className="grid lg:grid-cols-3 gap-4">
-                    {/* Welcome Card */}
-                    <Card className="lg:col-span-2 border-0 shadow-md bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 text-white overflow-hidden">
+                    {/* Welcome Card - Premium Gold Border */}
+                    <Card
+                        className="lg:col-span-2 border-0 shadow-xl overflow-hidden"
+                        style={{
+                            background: 'linear-gradient(135deg, #4e1f24 0%, #722f37 50%, #4e1f24 100%)',
+                        }}
+                    >
                         <CardContent className="p-6 relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/10 rounded-full blur-3xl" />
+                            {/* Gold glow effect */}
+                            <div
+                                className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-20"
+                                style={{ backgroundColor: '#d4af37' }}
+                            />
                             <div className="flex items-start gap-4">
-                                <div className="w-14 h-14 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                <div
+                                    className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0"
+                                    style={{
+                                        border: '3px solid #d4af37',
+                                        boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
+                                    }}
+                                >
                                     <Image
                                         src={config.coachImage}
                                         alt={config.coachName}
-                                        width={56}
-                                        height={56}
+                                        width={64}
+                                        height={64}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-burgundy-200 text-sm">Coach {config.coachName}</p>
-                                    <h2 className="text-xl font-bold mb-2">
+                                    <p className="text-sm font-medium" style={{ color: '#d4af37' }}>Coach {config.coachName}</p>
+                                    <h2 className="text-2xl font-black text-white mb-2">
                                         {lessonsCompleted === 0
                                             ? `Welcome, ${firstName}! 👋`
                                             : lessonsCompleted < 5
@@ -304,7 +319,7 @@ export function LeadPortalDashboard({
                                                     : `Almost there, ${firstName}! 🔥`
                                         }
                                     </h2>
-                                    <p className="text-burgundy-100 text-sm">
+                                    <p className="text-white/80 text-sm">
                                         {lessonsCompleted === 0
                                             ? `Ready to start your ${config.shortName} certification journey?`
                                             : isAllComplete
@@ -317,30 +332,32 @@ export function LeadPortalDashboard({
                         </CardContent>
                     </Card>
 
-                    {/* Enhanced Progress Card */}
-                    <Card className="border-0 shadow-md bg-white overflow-hidden">
+                    {/* Enhanced Progress Card - Premium */}
+                    <Card className="border-0 shadow-xl bg-white overflow-hidden">
                         <CardContent className="p-0">
                             {/* Progress Header */}
                             <div className="p-4 pb-3">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm font-semibold text-slate-700">Your Progress</span>
+                                    <span className="text-sm font-bold text-slate-700">Your Progress</span>
                                     <div className="flex items-center gap-1.5">
-                                        <Trophy className="w-4 h-4 text-amber-500" />
-                                        <span className="text-lg font-bold text-burgundy-600">{progressPercent}%</span>
+                                        <Trophy className="w-4 h-4" style={{ color: '#d4af37' }} />
+                                        <span className="text-xl font-black" style={{ color: '#722f37' }}>{progressPercent}%</span>
                                     </div>
                                 </div>
 
-                                {/* Segmented Progress Bar */}
+                                {/* Segmented Progress Bar - Gold */}
                                 <div className="flex gap-1 mb-3">
                                     {Array.from({ length: totalLessons }, (_, i) => (
                                         <div
                                             key={i}
-                                            className={`h-2 flex-1 rounded-full transition-all ${completedLessons.includes(i + 1)
-                                                ? "bg-emerald-500"
-                                                : i + 1 === nextLessonId
-                                                    ? "bg-burgundy-300 animate-pulse"
-                                                    : "bg-slate-200"
-                                                }`}
+                                            className={`h-2.5 flex-1 rounded-full transition-all`}
+                                            style={{
+                                                background: completedLessons.includes(i + 1)
+                                                    ? 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)'
+                                                    : i + 1 === nextLessonId
+                                                        ? '#722f37'
+                                                        : '#e2e8f0'
+                                            }}
                                         />
                                     ))}
                                 </div>
@@ -348,30 +365,36 @@ export function LeadPortalDashboard({
                                 {/* Stats Row */}
                                 <div className="flex items-center justify-between text-xs text-slate-500">
                                     <span className="flex items-center gap-1">
-                                        <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                                        <CheckCircle className="w-3.5 h-3.5" style={{ color: '#d4af37' }} />
                                         {lessonsCompleted} of {totalLessons} complete
                                     </span>
                                     <span className="flex items-center gap-1">
-                                        <Clock className="w-3.5 h-3.5 text-blue-500" />
+                                        <Clock className="w-3.5 h-3.5" style={{ color: '#722f37' }} />
                                         ~{timeRemaining} min left
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Continue CTA - Only show if not complete */}
+                            {/* Continue CTA - Gold Metallic */}
                             {!isAllComplete && nextLessonId <= totalLessons && (
                                 <Link href={`${basePath}/lesson/${nextLessonId}`} className="block">
-                                    <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 px-4 py-3 flex items-center justify-between group hover:from-burgundy-700 hover:to-burgundy-800 transition-all">
+                                    <div
+                                        className="px-4 py-3 flex items-center justify-between group transition-all hover:brightness-105"
+                                        style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 25%, #d4af37 50%, #b8860b 75%, #d4af37 100%)' }}
+                                    >
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                                                <Play className="w-4 h-4 text-white" />
+                                            <div
+                                                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                                                style={{ backgroundColor: 'rgba(78, 31, 36, 0.2)' }}
+                                            >
+                                                <Play className="w-4 h-4" style={{ color: '#4e1f24' }} />
                                             </div>
                                             <div>
-                                                <p className="text-white font-semibold text-sm">Continue Learning</p>
-                                                <p className="text-burgundy-200 text-xs">Lesson {nextLessonId} • {allLessons.find(l => l.id === nextLessonId)?.duration || "7 min"}</p>
+                                                <p className="font-bold text-sm" style={{ color: '#4e1f24' }}>✨ Continue Learning</p>
+                                                <p className="text-xs" style={{ color: '#722f37' }}>Lesson {nextLessonId} • {allLessons.find(l => l.id === nextLessonId)?.duration || "8 min"}</p>
                                             </div>
                                         </div>
-                                        <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" style={{ color: '#4e1f24' }} />
                                     </div>
                                 </Link>
                             )}
@@ -480,8 +503,8 @@ export function LeadPortalDashboard({
 
                 {/* Modules Grid */}
                 <div className="space-y-6">
-                    <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                        <BookOpen className="w-5 h-5 text-burgundy-600" />
+                    <h2 className="text-lg font-black flex items-center gap-2" style={{ color: '#4e1f24' }}>
+                        <BookOpen className="w-5 h-5" style={{ color: '#d4af37' }} />
                         Course Curriculum
                     </h2>
 
@@ -493,20 +516,44 @@ export function LeadPortalDashboard({
                         const ModuleIcon = ICONS[module.icon];
 
                         return (
-                            <Card key={module.id} className="border-0 shadow-md overflow-hidden">
+                            <Card key={module.id} className="border-0 shadow-xl overflow-hidden">
                                 {/* Module Header */}
-                                <div className={`px-5 py-4 border-b ${moduleComplete ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100'}`}>
+                                <div
+                                    className="px-5 py-4 border-b"
+                                    style={{
+                                        background: moduleComplete
+                                            ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%)'
+                                            : '#fafafa',
+                                        borderColor: moduleComplete ? 'rgba(212, 175, 55, 0.3)' : '#f0f0f0'
+                                    }}
+                                >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${moduleComplete ? 'bg-emerald-500 text-white' : 'bg-burgundy-100 text-burgundy-600'}`}>
+                                            <div
+                                                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                                style={{
+                                                    background: moduleComplete
+                                                        ? 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)'
+                                                        : '#722f37',
+                                                    color: moduleComplete ? '#4e1f24' : 'white'
+                                                }}
+                                            >
                                                 {moduleComplete ? <CheckCircle className="w-5 h-5" /> : <ModuleIcon className="w-5 h-5" />}
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900">Module {module.id}: {module.title}</h3>
+                                                <h3 className="font-bold" style={{ color: '#1e293b' }}>Module {module.id}: {module.title}</h3>
                                                 <p className="text-sm text-slate-500">{module.description}</p>
                                             </div>
                                         </div>
-                                        <Badge className={moduleComplete ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}>
+                                        <Badge
+                                            className="border-0 font-bold"
+                                            style={{
+                                                background: moduleComplete
+                                                    ? 'linear-gradient(135deg, #d4af37 0%, #f7e7a0 50%, #d4af37 100%)'
+                                                    : '#f1f5f9',
+                                                color: moduleComplete ? '#4e1f24' : '#64748b'
+                                            }}
+                                        >
                                             {moduleLessonsComplete}/{module.lessons.length} Complete
                                         </Badge>
                                     </div>
