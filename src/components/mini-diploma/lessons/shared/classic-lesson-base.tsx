@@ -172,176 +172,187 @@ export function ClassicLessonBase({
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="bg-white border-b sticky top-0 z-10">
-                <div className="max-w-3xl mx-auto px-4 py-3">
-                    <div className="flex items-center justify-between mb-2">
-                        <Link
-                            href={baseUrl}
-                            className="flex items-center gap-2 text-gray-600 hover:text-burgundy-600 transition-colors"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            <span className="text-sm font-medium">Back to {nicheLabel}</span>
-                        </Link>
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
-                            <Clock className="w-4 h-4" />
-                            <span>{readingTime} read</span>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Progress value={progressPercent} className="flex-1 h-2" />
-                        <span className="text-sm font-medium text-slate-600">{lessonNumber}/{totalLessons}</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="max-w-3xl mx-auto px-4 py-8">
-                {/* Lesson Title */}
-                <div className="mb-8">
-                    <div className="flex items-center gap-2 text-sm text-burgundy-600 font-medium mb-2">
-                        <BookOpen className="w-4 h-4" />
-                        <span>Lesson {lessonNumber}</span>
-                    </div>
-                    <h1 className="text-3xl font-bold text-slate-900 mb-2">{lessonTitle}</h1>
-                    <p className="text-lg text-slate-600">{lessonSubtitle}</p>
-                </div>
-
-                {/* Content */}
-                <div className="bg-white rounded-2xl shadow-sm border p-6 md:p-8 mb-8">
-                    {sections.map((section, index) => renderSection(section, index))}
-                </div>
-
-                {/* Key Takeaways */}
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200 p-6 mb-6">
-                    <h3 className="font-bold text-emerald-800 mb-4 flex items-center gap-2">
-                        <Award className="w-5 h-5" />
-                        Key Takeaways from Lesson {lessonNumber}
-                    </h3>
-                    <ul className="space-y-3">
-                        {keyTakeaways.map((takeaway, i) => (
-                            <li key={i} className="flex items-start gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                                <span className="text-slate-700">{takeaway}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                {/* Earning Potential Callout - Phase 3-4 Enhancement */}
-                <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 rounded-2xl border-2 border-amber-300 p-5 mb-6">
-                    <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-lg">
-                            <DollarSign className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-amber-900 mb-1 flex items-center gap-2">
-                                <Sparkles className="w-4 h-4" />
-                                Why This Matters For Your Income
-                            </h4>
-                            <p className="text-amber-800 text-sm leading-relaxed">
-                                Practitioners who master {lessonTitle.toLowerCase()} can charge
-                                <strong className="text-amber-900"> $150-$300 per consultation</strong>.
-                                With just 5-10 clients per week, that's
-                                <strong className="text-amber-900"> $3,000-$8,000/month</strong> working from home.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Certificate Progress Reminder - Phase 3-4 Enhancement */}
-                {lessonNumber < totalLessons && (
-                    <div className="bg-burgundy-50 rounded-xl p-4 mb-8 border border-burgundy-200">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <GraduationCap className="w-5 h-5 text-burgundy-600" />
-                                <span className="text-sm text-burgundy-700">
-                                    <strong>{totalLessons - lessonNumber} more lesson{totalLessons - lessonNumber > 1 ? 's' : ''}</strong> until your certificate is ready!
-                                </span>
+    return (
+        <div className="min-h-screen bg-gray-50 flex">
+            {/* MAIN CONTENT - scrollable */}
+            <div className="flex-1 min-w-0 overflow-auto">
+                {/* Header */}
+                <div className="bg-white border-b sticky top-0 z-10">
+                    <div className="max-w-3xl mx-auto px-4 py-3">
+                        <div className="flex items-center justify-between mb-2">
+                            <Link
+                                href={baseUrl}
+                                className="flex items-center gap-2 text-gray-600 hover:text-burgundy-600 transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span className="text-sm font-medium">Back to {nicheLabel}</span>
+                            </Link>
+                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                <Clock className="w-4 h-4" />
+                                <span>{readingTime} read</span>
                             </div>
-                            <Progress value={progressPercent} className="w-24 h-2" />
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <Progress value={progressPercent} className="flex-1 h-2" />
+                            <span className="text-sm font-medium text-slate-600">{lessonNumber}/{totalLessons}</span>
                         </div>
                     </div>
-                )}
+                </div>
 
-                {/* Completion Card */}
-                <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                    <div className="bg-gradient-to-r from-burgundy-600 to-rose-600 px-6 py-4 text-white">
-                        <div className="flex items-center justify-between">
+                {/* Main Content */}
+                <div className="max-w-3xl mx-auto px-4 py-8">
+                    {/* Lesson Title */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-2 text-sm text-burgundy-600 font-medium mb-2">
+                            <BookOpen className="w-4 h-4" />
+                            <span>Lesson {lessonNumber}</span>
+                        </div>
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2">{lessonTitle}</h1>
+                        <p className="text-lg text-slate-600">{lessonSubtitle}</p>
+                    </div>
+
+                    {/* Content */}
+                    <div className="bg-white rounded-2xl shadow-sm border p-6 md:p-8 mb-8">
+                        {sections.map((section, index) => renderSection(section, index))}
+                    </div>
+
+                    {/* Key Takeaways */}
+                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200 p-6 mb-6">
+                        <h3 className="font-bold text-emerald-800 mb-4 flex items-center gap-2">
+                            <Award className="w-5 h-5" />
+                            Key Takeaways from Lesson {lessonNumber}
+                        </h3>
+                        <ul className="space-y-3">
+                            {keyTakeaways.map((takeaway, i) => (
+                                <li key={i} className="flex items-start gap-3">
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                                    <span className="text-slate-700">{takeaway}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Earning Potential Callout */}
+                    <div className="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 rounded-2xl border-2 border-amber-300 p-5 mb-6">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                                <DollarSign className="w-6 h-6 text-white" />
+                            </div>
                             <div>
-                                <p className="text-burgundy-100 text-sm">Lesson {lessonNumber} of {totalLessons}</p>
-                                <p className="font-semibold">{lessonTitle}</p>
+                                <h4 className="font-bold text-amber-900 mb-1 flex items-center gap-2">
+                                    <Sparkles className="w-4 h-4" />
+                                    Why This Matters For Your Income
+                                </h4>
+                                <p className="text-amber-800 text-sm leading-relaxed">
+                                    Practitioners who master {lessonTitle.toLowerCase()} can charge
+                                    <strong className="text-amber-900"> $150-$300 per consultation</strong>.
+                                    With just 5-10 clients per week, that's
+                                    <strong className="text-amber-900"> $3,000-$8,000/month</strong> working from home.
+                                </p>
                             </div>
-                            {completed && (
-                                <div className="flex items-center gap-2 bg-white/20 rounded-full px-3 py-1">
-                                    <CheckCircle2 className="w-4 h-4" />
-                                    <span className="text-sm font-medium">Completed</span>
-                                </div>
-                            )}
                         </div>
                     </div>
-                    <div className="p-6">
-                        <div className="flex items-center justify-center gap-2 mb-4">
-                            <Progress value={progressPercent} className="flex-1 h-3" />
-                            <span className="text-sm font-medium text-slate-600">{Math.round(progressPercent)}%</span>
+
+                    {/* Certificate Progress Reminder */}
+                    {lessonNumber < totalLessons && (
+                        <div className="bg-burgundy-50 rounded-xl p-4 mb-8 border border-burgundy-200">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <GraduationCap className="w-5 h-5 text-burgundy-600" />
+                                    <span className="text-sm text-burgundy-700">
+                                        <strong>{totalLessons - lessonNumber} more lesson{totalLessons - lessonNumber > 1 ? 's' : ''}</strong> until your certificate is ready!
+                                    </span>
+                                </div>
+                                <Progress value={progressPercent} className="w-24 h-2" />
+                            </div>
                         </div>
+                    )}
 
-                        {lessonNumber < totalLessons ? (
-                            <Button
-                                onClick={handleComplete}
-                                className="w-full bg-gradient-to-r from-burgundy-600 to-rose-600 hover:from-burgundy-700 hover:to-rose-700 text-white font-semibold py-4 rounded-xl"
-                            >
-                                <span className="flex items-center justify-center gap-2">
-                                    {completed ? 'Continue to Lesson ' : 'Complete & Continue to Lesson '}
-                                    {lessonNumber + 1}
-                                    <ChevronRight className="w-5 h-5" />
-                                </span>
-                            </Button>
-                        ) : (
-                            <Button
-                                onClick={handleComplete}
-                                className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold py-4 rounded-xl"
-                            >
-                                <span className="flex items-center justify-center gap-2">
-                                    <GraduationCap className="w-5 h-5" />
-                                    {completed ? 'View Your Certificate' : 'Complete & Get Your Certificate!'}
-                                </span>
-                            </Button>
-                        )}
+                    {/* Completion Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                        <div className="bg-gradient-to-r from-burgundy-600 to-rose-600 px-6 py-4 text-white">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-burgundy-100 text-sm">Lesson {lessonNumber} of {totalLessons}</p>
+                                    <p className="font-semibold">{lessonTitle}</p>
+                                </div>
+                                {completed && (
+                                    <div className="flex items-center gap-2 bg-white/20 rounded-full px-3 py-1">
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        <span className="text-sm font-medium">Completed</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="p-6">
+                            <div className="flex items-center justify-center gap-2 mb-4">
+                                <Progress value={progressPercent} className="flex-1 h-3" />
+                                <span className="text-sm font-medium text-slate-600">{Math.round(progressPercent)}%</span>
+                            </div>
 
-                        {/* Navigation */}
-                        <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                            {lessonNumber > 1 ? (
-                                <Link
-                                    href={`${baseUrl}/lesson/${lessonNumber - 1}`}
-                                    className="flex items-center gap-1 text-sm text-slate-500 hover:text-burgundy-600 transition-colors"
+                            {lessonNumber < totalLessons ? (
+                                <Button
+                                    onClick={handleComplete}
+                                    className="w-full bg-gradient-to-r from-burgundy-600 to-rose-600 hover:from-burgundy-700 hover:to-rose-700 text-white font-semibold py-4 rounded-xl"
                                 >
-                                    <ArrowLeft className="w-4 h-4" />
-                                    Previous Lesson
-                                </Link>
+                                    <span className="flex items-center justify-center gap-2">
+                                        {completed ? 'Continue to Lesson ' : 'Complete & Continue to Lesson '}
+                                        {lessonNumber + 1}
+                                        <ChevronRight className="w-5 h-5" />
+                                    </span>
+                                </Button>
                             ) : (
-                                <div />
-                            )}
-                            {lessonNumber < totalLessons && (
-                                <Link
-                                    href={`${baseUrl}/lesson/${lessonNumber + 1}`}
-                                    className="flex items-center gap-1 text-sm text-slate-500 hover:text-burgundy-600 transition-colors"
+                                <Button
+                                    onClick={handleComplete}
+                                    className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold py-4 rounded-xl"
                                 >
-                                    Next Lesson
-                                    <ArrowRight className="w-4 h-4" />
-                                </Link>
+                                    <span className="flex items-center justify-center gap-2">
+                                        <GraduationCap className="w-5 h-5" />
+                                        {completed ? 'View Your Certificate' : 'Complete & Get Your Certificate!'}
+                                    </span>
+                                </Button>
                             )}
+
+                            {/* Navigation */}
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                                {lessonNumber > 1 ? (
+                                    <Link
+                                        href={`${baseUrl}/lesson/${lessonNumber - 1}`}
+                                        className="flex items-center gap-1 text-sm text-slate-500 hover:text-burgundy-600 transition-colors"
+                                    >
+                                        <ArrowLeft className="w-4 h-4" />
+                                        Previous Lesson
+                                    </Link>
+                                ) : (
+                                    <div />
+                                )}
+                                {lessonNumber < totalLessons && (
+                                    <Link
+                                        href={`${baseUrl}/lesson/${lessonNumber + 1}`}
+                                        className="flex items-center gap-1 text-sm text-slate-500 hover:text-burgundy-600 transition-colors"
+                                    >
+                                        Next Lesson
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Floating Live Chat Button */}
+            {/* RIGHT SIDEBAR - Student Lounge - Desktop XL only */}
+            {courseSlug && (
+                <aside className="hidden xl:flex w-[340px] flex-shrink-0 border-l border-gray-200 flex-col h-screen sticky top-0">
+                    <LiveChatPanel courseSlug={courseSlug} />
+                </aside>
+            )}
+
+            {/* MOBILE: Floating Chat Button - Only on smaller screens */}
             {courseSlug && (
                 <button
                     onClick={() => setChatOpen(true)}
-                    className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                    className="xl:hidden fixed bottom-6 right-6 z-40 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
                     style={{ display: chatOpen ? "none" : "flex" }}
                 >
                     <MessageCircle className="w-6 h-6" />
@@ -351,10 +362,10 @@ export function ClassicLessonBase({
                 </button>
             )}
 
-            {/* Live Chat Overlay */}
+            {/* MOBILE: Chat Overlay */}
             {courseSlug && chatOpen && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/50"
+                    className="xl:hidden fixed inset-0 z-50 bg-black/50"
                     onClick={() => setChatOpen(false)}
                 >
                     <div
@@ -364,7 +375,7 @@ export function ClassicLessonBase({
                         {/* Chat Header */}
                         <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white">
                             <span className="font-semibold flex items-center gap-2">
-                                🔴 Live Student Chat
+                                🔴 Student Lounge
                             </span>
                             <button
                                 onClick={() => setChatOpen(false)}
