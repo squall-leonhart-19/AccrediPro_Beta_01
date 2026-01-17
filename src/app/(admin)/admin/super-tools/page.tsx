@@ -71,6 +71,23 @@ export default async function AdminSuperToolsPage() {
                 </a>
 
                 <a
+                    href="/admin/super-tools/zombie-messages"
+                    className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-amber-300 hover:shadow-md transition-all group"
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition-colors">
+                            <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-gray-900 group-hover:text-amber-600">Zombie Messages</h3>
+                            <p className="text-sm text-gray-500">Chat templates & Sarah messages</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a
                     href="/admin/super-tools/health"
                     className="block p-4 bg-white rounded-lg border border-gray-200 hover:border-green-300 hover:shadow-md transition-all group"
                 >
