@@ -11,6 +11,7 @@ interface LessonProps {
     lessonNumber: number;
     totalLessons?: number;
     firstName?: string;
+    userId?: string;
     onComplete?: () => void;
     onNext?: () => void;
     isCompleted?: boolean;
@@ -32,6 +33,7 @@ export function ClassicLessonYourNextStepWithExam({
     lessonNumber,
     totalLessons = 9,
     firstName = "friend",
+    userId,
     onComplete,
     onNext,
     isCompleted,
@@ -205,6 +207,7 @@ export function ClassicLessonYourNextStepWithExam({
                     {/* Exam Component */}
                     <FMExamComponent
                         firstName={firstName}
+                        userId={userId}
                         onExamComplete={handleExamComplete}
                     />
                 </div>

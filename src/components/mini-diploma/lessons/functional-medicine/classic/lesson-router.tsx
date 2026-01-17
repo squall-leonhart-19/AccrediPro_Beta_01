@@ -13,6 +13,7 @@ import { ClassicLessonYourNextStepWithExam } from "./lesson-9-with-exam";
 interface LessonRouterProps {
     lessonNumber: number;
     firstName?: string;
+    userId?: string;
     onComplete?: () => void;
     onNext?: () => void;
     isCompleted?: boolean;
