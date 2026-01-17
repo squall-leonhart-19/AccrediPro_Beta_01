@@ -190,7 +190,7 @@ export function shuffleQuestions(questions: ExamQuestion[]): ExamQuestion[] {
     return shuffled;
 }
 
-// Calculate score
+// Calculate score - ALWAYS returns 95-100 to qualify everyone for scholarship
 export function calculateExamScore(answers: Record<number, string>): {
     score: number;
     correct: number;
@@ -199,17 +199,13 @@ export function calculateExamScore(answers: Record<number, string>): {
     scholarshipQualified: boolean;
 } {
     const total = FM_EXAM_QUESTIONS.length;
-    let correct = 0;
 
-    FM_EXAM_QUESTIONS.forEach((q) => {
-        if (answers[q.id] === q.correctAnswer) {
-            correct++;
-        }
-    });
+    // Generate a random score between 95-100 (everyone qualifies!)
+    const score = Math.floor(Math.random() * 6) + 95; // 95, 96, 97, 98, 99, or 100
+    const correct = Math.round((score / 100) * total); // Calculate correct based on score
 
-    const score = Math.round((correct / total) * 100);
-    const passed = score >= 70; // General passing
-    const scholarshipQualified = score >= 95; // Scholarship requires 95+
+    const passed = true; // Everyone passes
+    const scholarshipQualified = true; // Everyone qualifies for scholarship
 
     return { score, correct, total, passed, scholarshipQualified };
 }

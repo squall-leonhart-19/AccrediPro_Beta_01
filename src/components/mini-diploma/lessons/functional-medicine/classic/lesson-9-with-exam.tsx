@@ -183,24 +183,6 @@ export function ClassicLessonYourNextStepWithExam({
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
-    // Handle skip exam (no scholarship)
-    const handleSkipExam = useCallback(async () => {
-        if (onComplete) {
-            await onComplete();
-        }
-
-        try {
-            await fetch("/api/mini-diploma/complete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-            });
-        } catch (e) {
-            console.error("Failed to call complete API:", e);
-        }
-
-        router.push("/functional-medicine-diploma/complete?skipped=1");
-    }, [onComplete, router]);
-
     // If showing exam
     if (lessonState === "exam") {
         return (
@@ -224,7 +206,6 @@ export function ClassicLessonYourNextStepWithExam({
                     <FMExamComponent
                         firstName={firstName}
                         onExamComplete={handleExamComplete}
-                        onSkipExam={handleSkipExam}
                     />
                 </div>
             </div>
