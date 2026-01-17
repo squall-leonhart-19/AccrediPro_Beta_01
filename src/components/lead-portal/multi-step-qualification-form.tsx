@@ -22,6 +22,8 @@ export type QualificationData = {
     incomeGoal: string;
     timeCommitment: string;
     motivation: string;
+    investmentLevel: string;
+    readiness: string;
     // Legacy fields (mapped from new ones)
     lifeStage: string;
     investment: string;
@@ -61,6 +63,8 @@ export function MultiStepQualificationForm({
         incomeGoal: "",
         timeCommitment: "",
         motivation: "",
+        investmentLevel: "",
+        readiness: "",
         lifeStage: "",
         investment: ""
     });
@@ -92,7 +96,7 @@ export function MultiStepQualificationForm({
 
     // Validation
     const isStep1Valid = formData.firstName && formData.email && formData.phone.length > 9;
-    const isStep2Valid = formData.incomeGoal && formData.timeCommitment && formData.motivation;
+    const isStep2Valid = formData.incomeGoal && formData.timeCommitment && formData.motivation && formData.investmentLevel && formData.readiness;
 
     return (
         <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
@@ -234,7 +238,7 @@ export function MultiStepQualificationForm({
                                 Almost there, {formData.firstName}!
                             </div>
                             <h3 className="text-xl font-bold text-gray-900">So I can help you better...</h3>
-                            <p className="text-gray-500 text-sm mt-1">Just 3 quick questions from me 💕</p>
+                            <p className="text-gray-500 text-sm mt-1">Just 5 quick questions from me 💕</p>
                         </div>
 
                         {/* Q1: Income Goal */}
@@ -330,6 +334,73 @@ export function MultiStepQualificationForm({
                                         <span className="text-lg">{option.emoji}</span>
                                         <span className="text-sm font-medium text-gray-700">{option.label}</span>
                                         {formData.motivation === option.id && (
+                                            <CheckCircle2 className="w-4 h-4 text-[#722f37] ml-auto" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Q4: Investment Level */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 flex items-start gap-2">
+                                <DollarSign className="w-4 h-4 text-[#722f37] mt-0.5 flex-shrink-0" />
+                                <span>Women like you are building $4-8K/month part-time practices in just 4-8 weeks. What feels right to invest in yourself?</span>
+                            </Label>
+                            <div className="grid grid-cols-1 gap-2">
+                                {[
+                                    { id: "under-1k", label: "Under $1,000 (testing the waters)", emoji: "🌱" },
+                                    { id: "1k-3k", label: "$1,000 - $3,000 (ready to change my life)", emoji: "💫" },
+                                    { id: "3k-5k", label: "$3,000 - $5,000 (serious about my future)", emoji: "⭐" },
+                                    { id: "5k-plus", label: "$5,000+ (all-in on building this for my family)", emoji: "🚀" }
+                                ].map((option) => (
+                                    <button
+                                        key={option.id}
+                                        type="button"
+                                        onClick={() => updateField("investmentLevel", option.id)}
+                                        className={cn(
+                                            "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
+                                            formData.investmentLevel === option.id
+                                                ? "border-[#722f37] bg-[#722f3710]"
+                                                : "border-gray-200 hover:border-[#722f3750] hover:bg-[#722f3708]"
+                                        )}
+                                    >
+                                        <span className="text-lg">{option.emoji}</span>
+                                        <span className="text-sm font-medium text-gray-700">{option.label}</span>
+                                        {formData.investmentLevel === option.id && (
+                                            <CheckCircle2 className="w-4 h-4 text-[#722f37] ml-auto" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Q5: Readiness */}
+                        <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 flex items-start gap-2">
+                                <Sparkles className="w-4 h-4 text-[#722f37] mt-0.5 flex-shrink-0" />
+                                <span>Last one! Imagine 8 weeks from now - certified, working from home, present for the moments that matter. If everything I share feels right, are you ready to start?</span>
+                            </Label>
+                            <div className="grid grid-cols-1 gap-2">
+                                {[
+                                    { id: "yes-ready", label: "Yes - I'm ready to do this for myself (and my family)", emoji: "✅" },
+                                    { id: "need-time", label: "I'll need a little time to think", emoji: "🤔" },
+                                    { id: "talk-partner", label: "I'd want to talk it over with my partner first", emoji: "👫" }
+                                ].map((option) => (
+                                    <button
+                                        key={option.id}
+                                        type="button"
+                                        onClick={() => updateField("readiness", option.id)}
+                                        className={cn(
+                                            "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
+                                            formData.readiness === option.id
+                                                ? "border-[#722f37] bg-[#722f3710]"
+                                                : "border-gray-200 hover:border-[#722f3750] hover:bg-[#722f3708]"
+                                        )}
+                                    >
+                                        <span className="text-lg">{option.emoji}</span>
+                                        <span className="text-sm font-medium text-gray-700">{option.label}</span>
+                                        {formData.readiness === option.id && (
                                             <CheckCircle2 className="w-4 h-4 text-[#722f37] ml-auto" />
                                         )}
                                     </button>
