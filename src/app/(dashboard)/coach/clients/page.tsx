@@ -24,10 +24,6 @@ export default async function CoachClientsPage() {
             protocols: {
                 orderBy: { createdAt: "desc" },
             },
-            assessments: {
-                orderBy: { createdAt: "desc" },
-                take: 10,
-            },
             _count: {
                 select: { sessions: true, tasks: true, protocols: true },
             },
