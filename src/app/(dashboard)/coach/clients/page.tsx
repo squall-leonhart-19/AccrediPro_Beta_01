@@ -2,9 +2,9 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { DashboardClient } from "@/components/coach/dashboard-client";
+import { ClientsPageClient } from "@/components/coach/clients-page-client";
 
-export default async function CoachWorkspacePage() {
+export default async function CoachClientsPage() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
         redirect("/auth/signin");
@@ -21,6 +21,13 @@ export default async function CoachWorkspacePage() {
                 where: { completed: false },
                 orderBy: { dueDate: "asc" },
             },
+            protocols: {
+                orderBy: { createdAt: "desc" },
+            },
+            assessments: {
+                orderBy: { createdAt: "desc" },
+                take: 10,
+            },
             _count: {
                 select: { sessions: true, tasks: true, protocols: true },
             },
@@ -28,21 +35,5 @@ export default async function CoachWorkspacePage() {
         orderBy: { updatedAt: "desc" },
     }) as any[];
 
-    // Stats
-    const stats = {
-        totalClients: clients.length,
-        activeClients: clients.filter((c) => c.status === "ACTIVE").length,
-        pendingTasks: clients.reduce((acc, c) => acc + c.tasks.length, 0),
-        thisWeekSessions: clients.reduce((acc, c) => {
-            const recentSession = c.sessions[0];
-            if (recentSession) {
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                if (new Date(recentSession.date) > weekAgo) return acc + 1;
-            }
-            return acc;
-        }, 0),
-    };
-
-    return <DashboardClient clients={clients} stats={stats} />;
+    return <ClientsPageClient clients={clients} />;
 }
