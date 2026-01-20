@@ -183,21 +183,26 @@ export default function LeadsClient() {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Lead Management</h1>
-                    <p className="text-gray-500">Mini Diploma optins - separate from purchases</p>
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" onClick={exportLeads}>
-                        <Download className="w-4 h-4 mr-2" />
-                        Export CSV
-                    </Button>
-                    <Button variant="outline" onClick={fetchLeads}>
-                        <RefreshCw className="w-4 h-4 mr-2" />
-                        Refresh
-                    </Button>
+            {/* Header - ASI Branded */}
+            <div className="bg-gradient-to-r from-[#4e1f24] via-[#722f37] to-[#4e1f24] -mx-6 -mt-6 px-6 py-6 mb-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <img src="/asi-logo.png" alt="ASI" className="w-12 h-12" />
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">Lead Management</h1>
+                            <p className="text-[#C9A227] text-sm">Mini Diploma Optins</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline" className="border-white/30 text-white hover:bg-white/10" onClick={exportLeads}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Export CSV
+                        </Button>
+                        <Button className="bg-[#C9A227] hover:bg-[#b8922a] text-[#4e1f24] font-semibold" onClick={fetchLeads}>
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Refresh
+                        </Button>
+                    </div>
                 </div>
             </div>
 

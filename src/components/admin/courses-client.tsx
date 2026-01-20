@@ -539,61 +539,102 @@ export function CoursesClient({
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Course Management</h1>
-                    <p className="text-gray-500 mt-1">Create, edit, and manage your certification courses</p>
+        <div className="space-y-6">
+            {/* Header - ASI Branded */}
+            <div className="bg-gradient-to-r from-[#4e1f24] via-[#722f37] to-[#4e1f24] -mx-6 -mt-6 px-6 py-6 mb-6">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <img src="/asi-logo.png" alt="ASI" className="w-12 h-12" />
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">Course Management</h1>
+                            <p className="text-[#C9A227] text-sm">AccrediPro Standards Institute</p>
+                        </div>
+                    </div>
+                    <Button className="bg-[#C9A227] hover:bg-[#b8922a] text-[#4e1f24] font-semibold" onClick={() => setShowAddModal(true)}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Course
+                    </Button>
                 </div>
-                <Button className="bg-burgundy-600 hover:bg-burgundy-700" onClick={() => setShowAddModal(true)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Course
-                </Button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <Card className="bg-gradient-to-br from-burgundy-500 to-burgundy-600 text-white border-0">
+            {/* Stats Cards - ASI Styled */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <Card className="bg-white border border-[#8B1E3F]/20 shadow-sm">
                     <CardContent className="p-4">
-                        <BookOpen className="w-6 h-6 text-burgundy-200 mb-2" />
-                        <p className="text-3xl font-bold">{courses.length}</p>
-                        <p className="text-burgundy-100 text-sm">Total Courses</p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-3xl font-bold text-[#8B1E3F]">{courses.length}</p>
+                                <p className="text-gray-500 text-sm">Total Courses</p>
+                            </div>
+                            <div className="w-10 h-10 bg-[#8B1E3F]/10 rounded-lg flex items-center justify-center">
+                                <BookOpen className="w-5 h-5 text-[#8B1E3F]" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+                <Card className="bg-white border border-green-200 shadow-sm">
                     <CardContent className="p-4">
-                        <CheckCircle className="w-6 h-6 text-green-200 mb-2" />
-                        <p className="text-3xl font-bold">{publishedCount}</p>
-                        <p className="text-green-100 text-sm">Published</p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-3xl font-bold text-green-700">{publishedCount}</p>
+                                <p className="text-gray-500 text-sm">Published</p>
+                            </div>
+                            <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                                <CheckCircle className="w-5 h-5 text-green-600" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-gray-500 to-gray-600 text-white border-0">
+                <Card className="bg-white border border-gray-200 shadow-sm">
                     <CardContent className="p-4">
-                        <FileText className="w-6 h-6 text-gray-300 mb-2" />
-                        <p className="text-3xl font-bold">{draftCount}</p>
-                        <p className="text-gray-200 text-sm">Drafts</p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-3xl font-bold text-gray-700">{draftCount}</p>
+                                <p className="text-gray-500 text-sm">Drafts</p>
+                            </div>
+                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <FileText className="w-5 h-5 text-gray-500" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+                <Card className="bg-white border border-blue-200 shadow-sm">
                     <CardContent className="p-4">
-                        <Users className="w-6 h-6 text-blue-200 mb-2" />
-                        <p className="text-3xl font-bold">{totalEnrollments.toLocaleString()}</p>
-                        <p className="text-blue-100 text-sm">Enrollments</p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-3xl font-bold text-blue-700">{totalEnrollments.toLocaleString()}</p>
+                                <p className="text-gray-500 text-sm">Enrollments</p>
+                            </div>
+                            <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                                <Users className="w-5 h-5 text-blue-600" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+                <Card className="bg-white border border-purple-200 shadow-sm">
                     <CardContent className="p-4">
-                        <Zap className="w-6 h-6 text-purple-200 mb-2" />
-                        <p className="text-3xl font-bold">{activeStudentsThisWeek}</p>
-                        <p className="text-purple-100 text-sm">Active This Week</p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-3xl font-bold text-purple-700">{activeStudentsThisWeek}</p>
+                                <p className="text-gray-500 text-sm">Active (7d)</p>
+                            </div>
+                            <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                                <Zap className="w-5 h-5 text-purple-600" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white border-0">
+                <Card className="bg-gradient-to-br from-[#C9A227] to-[#b8922a] text-white border-0 shadow-sm">
                     <CardContent className="p-4">
-                        <Award className="w-6 h-6 text-amber-200 mb-2" />
-                        <p className="text-3xl font-bold">{totalCertificates}</p>
-                        <p className="text-amber-100 text-sm">Certificates</p>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-3xl font-bold">{totalCertificates}</p>
+                                <p className="text-white/80 text-sm">Certificates</p>
+                            </div>
+                            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                <Award className="w-5 h-5 text-white" />
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
@@ -898,11 +939,10 @@ export function CoursesClient({
                                             key={value}
                                             type="button"
                                             onClick={() => setFormData(prev => ({ ...prev, certificateType: value }))}
-                                            className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                                                formData.certificateType === value
+                                            className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${formData.certificateType === value
                                                     ? "border-burgundy-500 bg-burgundy-50 text-burgundy-700"
                                                     : "border-gray-200 hover:border-gray-300"
-                                            }`}
+                                                }`}
                                         >
                                             {label}
                                         </button>
