@@ -97,6 +97,18 @@ export async function PUT(
         let result;
 
         switch (type) {
+            case "sessions":
+                result = await prisma.clientSession.update({
+                    where: { id: itemId },
+                    data: {
+                        date: data.date ? new Date(data.date) : undefined,
+                        duration: data.duration,
+                        notes: data.notes,
+                        sessionType: data.sessionType,
+                    },
+                });
+                break;
+
             case "tasks":
                 result = await prisma.clientTask.update({
                     where: { id: itemId },
@@ -132,5 +144,66 @@ export async function PUT(
     } catch (error) {
         console.error("Update error:", error);
         return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+    }
+}
+
+// DELETE: Delete session/task/protocol
+export async function DELETE(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string; type: string }> }
+) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const { id: clientId, type } = await params;
+        const { searchParams } = new URL(req.url);
+        const itemId = searchParams.get("itemId");
+
+        if (!itemId) {
+            return NextResponse.json({ error: "Item ID required" }, { status: 400 });
+        }
+
+        // Verify client belongs to coach
+        const client = await prisma.client.findFirst({
+            where: { id: clientId, coachId: session.user.id },
+        });
+
+        if (!client) {
+            return NextResponse.json({ error: "Client not found" }, { status: 404 });
+        }
+
+        switch (type) {
+            case "sessions":
+                await prisma.clientSession.delete({
+                    where: { id: itemId },
+                });
+                break;
+
+            case "tasks":
+                await prisma.clientTask.delete({
+                    where: { id: itemId },
+                });
+                break;
+
+            case "protocols":
+                await prisma.clientProtocol.delete({
+                    where: { id: itemId },
+                });
+                break;
+
+            default:
+                return NextResponse.json({ error: "Invalid type" }, { status: 400 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: `${type.slice(0, -1)} deleted successfully`,
+        });
+    } catch (error) {
+        console.error("Delete error:", error);
+        return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
     }
 }

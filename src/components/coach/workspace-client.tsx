@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
     Users,
@@ -62,8 +64,20 @@ interface Client {
     status: string;
     primaryConcerns?: string | null;
     healthGoals?: string | null;
+    currentHealth?: string | null;
     conditions?: string[];
     medications?: string[];
+    supplements?: string[];
+    allergies?: string[];
+    surgeries?: string | null;
+    familyHistory?: string | null;
+    dietType?: string | null;
+    sleepHours?: number | null;
+    exerciseFreq?: string | null;
+    stressLevel?: string | null;
+    dateOfBirth?: Date | null;
+    gender?: string | null;
+    occupation?: string | null;
     startDate?: Date | null;
     packageType?: string | null;
     assessments?: any[];
@@ -226,6 +240,33 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
     const [clientNotes, setClientNotes] = useState("");
     const [selectedProtocol, setSelectedProtocol] = useState<typeof PROTOCOL_TEMPLATES[0] | null>(null);
 
+    // Assessment state
+    const [assessmentType, setAssessmentType] = useState<string>("");
+    const [assessmentScore, setAssessmentScore] = useState<number>(0);
+    const [savingAssessment, setSavingAssessment] = useState(false);
+
+    // Health profile editing state
+    const [editingHealth, setEditingHealth] = useState(false);
+    const [healthForm, setHealthForm] = useState({
+        primaryConcerns: "",
+        healthGoals: "",
+        currentHealth: "",
+        conditions: [] as string[],
+        medications: [] as string[],
+        supplements: [] as string[],
+        allergies: [] as string[],
+        surgeries: "",
+        familyHistory: "",
+        dietType: "",
+        sleepHours: 7,
+        exerciseFreq: "",
+        stressLevel: "",
+        dateOfBirth: "",
+        gender: "",
+        occupation: "",
+    });
+    const [savingHealth, setSavingHealth] = useState(false);
+
     // Coach Profile State
     const [coachProfile, setCoachProfile] = useState({
         photoUrl: "",
@@ -262,6 +303,31 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
     useEffect(() => {
         if (selectedClient) {
             setClientNotes(selectedClient.notes || "");
+        }
+    }, [selectedClient?.id]);
+
+    // Update health form when client changes
+    useEffect(() => {
+        if (selectedClient) {
+            setHealthForm({
+                primaryConcerns: selectedClient.primaryConcerns || "",
+                healthGoals: selectedClient.healthGoals || "",
+                currentHealth: selectedClient.currentHealth || "",
+                conditions: selectedClient.conditions || [],
+                medications: selectedClient.medications || [],
+                supplements: selectedClient.supplements || [],
+                allergies: selectedClient.allergies || [],
+                surgeries: selectedClient.surgeries || "",
+                familyHistory: selectedClient.familyHistory || "",
+                dietType: selectedClient.dietType || "",
+                sleepHours: selectedClient.sleepHours || 7,
+                exerciseFreq: selectedClient.exerciseFreq || "",
+                stressLevel: selectedClient.stressLevel || "",
+                dateOfBirth: selectedClient.dateOfBirth ? new Date(selectedClient.dateOfBirth).toISOString().split('T')[0] : "",
+                gender: selectedClient.gender || "",
+                occupation: selectedClient.occupation || "",
+            });
+            setEditingHealth(false);
         }
     }, [selectedClient?.id]);
 
@@ -419,7 +485,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
 
     return (
         <>
-            {/* Welcome Header - Premium Coach Dashboard */}
+            {/* AccrediPro Coach Workspace Header */}
             <div className="bg-gradient-to-br from-burgundy-700 via-burgundy-800 to-burgundy-900 relative overflow-hidden">
                 {/* Decorative Elements */}
                 <div className="absolute inset-0">
@@ -429,17 +495,17 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                 </div>
                 <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        {/* Left: Welcome + Stats */}
+                        {/* Left: AccrediPro Branding + Stats */}
                         <div className="flex items-start gap-5">
                             <div className="w-14 h-14 bg-gradient-to-br from-gold-400 to-gold-500 rounded-2xl flex items-center justify-center shadow-lg shadow-gold-500/20">
-                                <Briefcase className="w-7 h-7 text-burgundy-900" />
+                                <Award className="w-7 h-7 text-burgundy-900" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-1">
-                                    <h1 className="text-2xl md:text-3xl font-bold text-white">Coach Workspace</h1>
-                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs">Pro</Badge>
+                                    <h1 className="text-2xl md:text-3xl font-bold text-white">AccrediPro Coach Workspace</h1>
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs font-semibold">Certified</Badge>
                                 </div>
-                                <p className="text-burgundy-200 text-sm mb-3">Manage clients, track progress & grow your practice</p>
+                                <p className="text-burgundy-200 text-sm mb-3">Your all-in-one coaching business hub</p>
                                 {/* Mini Stats */}
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center gap-2 text-white/80">
@@ -451,31 +517,39 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                         <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                                         <span className="text-sm font-medium">{stats.activeClients} Active</span>
                                     </div>
+                                    <div className="w-px h-4 bg-white/20" />
+                                    <div className="flex items-center gap-2 text-gold-300">
+                                        <CheckSquare className="w-4 h-4" />
+                                        <span className="text-sm font-medium">{stats.pendingTasks} Tasks</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Right: Chat with Sarah */}
-                        <a href="/messages" className="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 border border-white/10 transition-all group shadow-lg">
-                            <div className="relative">
-                                <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-gold-400/50 shadow-lg">
-                                    <img src="/coaches/sarah-coach.webp" alt="Coach Sarah" className="w-full h-full object-cover" />
+                        {/* Right: Support + Actions */}
+                        <div className="flex items-center gap-3">
+                            {/* Quick Stats Card */}
+                            <div className="hidden lg:flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10">
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-white">{stats.thisWeekSessions}</p>
+                                    <p className="text-xs text-burgundy-200">Sessions This Week</p>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-burgundy-800 flex items-center justify-center">
-                                    <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                            </div>
+                            {/* Chat with Sarah */}
+                            <a href="/messages" className="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10 transition-all group shadow-lg">
+                                <div className="relative">
+                                    <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-gold-400/50 shadow-lg">
+                                        <img src="/coaches/sarah-coach.webp" alt="Coach Sarah" className="w-full h-full object-cover" />
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-burgundy-800" />
                                 </div>
-                            </div>
-                            <div className="hidden sm:block">
-                                <p className="text-white font-semibold text-sm">Need Help? Ask Sarah</p>
-                                <p className="text-burgundy-200 text-xs flex items-center gap-1">
-                                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-                                    Online • Usually replies in 2h
-                                </p>
-                            </div>
-                            <div className="w-10 h-10 rounded-xl bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
-                                <MessageSquare className="w-5 h-5 text-white" />
-                            </div>
-                        </a>
+                                <div className="hidden sm:block">
+                                    <p className="text-white font-semibold text-sm">Need Help?</p>
+                                    <p className="text-burgundy-200 text-xs">Ask your mentor</p>
+                                </div>
+                                <MessageSquare className="w-5 h-5 text-white/70 group-hover:text-white" />
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -638,19 +712,55 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                             <h3 className="text-xl font-bold text-gray-900">Send Form to {selectedClient.name}</h3>
                             <button onClick={() => setShowSendForm(false)}><X className="w-5 h-5 text-gray-400" /></button>
                         </div>
-                        <div className="space-y-3 mb-6">
-                            {INTAKE_FORMS.map((form) => (
-                                <div key={form.id} className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl hover:border-burgundy-200 transition-colors">
-                                    <span className="text-2xl">{form.icon}</span>
-                                    <div className="flex-1">
-                                        <p className="font-medium text-gray-900">{form.name}</p>
+                        {!selectedClient.email ? (
+                            <div className="text-center py-8">
+                                <Mail className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                                <p className="text-gray-600 mb-2">No email address for this client</p>
+                                <p className="text-sm text-gray-400">Add an email address to send intake forms</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3 mb-6">
+                                {INTAKE_FORMS.map((form) => (
+                                    <div key={form.id} className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl hover:border-burgundy-200 transition-colors">
+                                        <span className="text-2xl">{form.icon}</span>
+                                        <div className="flex-1">
+                                            <p className="font-medium text-gray-900">{form.name}</p>
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            onClick={async () => {
+                                                setSaving(true);
+                                                try {
+                                                    const res = await fetch("/api/coach/intake-forms", {
+                                                        method: "POST",
+                                                        headers: { "Content-Type": "application/json" },
+                                                        body: JSON.stringify({
+                                                            clientId: selectedClient.id,
+                                                            formType: form.id,
+                                                        }),
+                                                    });
+                                                    const data = await res.json();
+                                                    if (data.success) {
+                                                        toast.success(`${form.name} sent to ${selectedClient.email}!`);
+                                                        setShowSendForm(false);
+                                                    } else {
+                                                        toast.error(data.error || "Failed to send form");
+                                                    }
+                                                } catch (error) {
+                                                    console.error("Send form error:", error);
+                                                    toast.error("Failed to send form");
+                                                } finally {
+                                                    setSaving(false);
+                                                }
+                                            }}
+                                            disabled={saving}
+                                        >
+                                            {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Send className="w-3 h-3 mr-1" />} Send
+                                        </Button>
                                     </div>
-                                    <Button size="sm" onClick={() => { toast.success(`Form "${form.name}" sent to ${selectedClient.email || 'client'}!`); setShowSendForm(false); }}>
-                                        <Send className="w-3 h-3 mr-1" /> Send
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                         <Button variant="outline" onClick={() => setShowSendForm(false)} className="w-full">Close</Button>
                     </div>
                 </div>
@@ -722,10 +832,10 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                             <Tabs value={activeTab} onValueChange={setActiveTab}>
                                 <TabsList className="bg-gray-100 p-1 rounded-xl overflow-x-auto">
                                     <TabsTrigger value="overview" className="rounded-lg px-4"><Activity className="w-4 h-4 mr-2" />Overview</TabsTrigger>
+                                    <TabsTrigger value="health" className="rounded-lg px-4"><Heart className="w-4 h-4 mr-2" />Health Profile</TabsTrigger>
                                     <TabsTrigger value="sessions" className="rounded-lg px-4"><Calendar className="w-4 h-4 mr-2" />Sessions</TabsTrigger>
                                     <TabsTrigger value="progress" className="rounded-lg px-4"><TrendingUp className="w-4 h-4 mr-2" />Progress</TabsTrigger>
                                     <TabsTrigger value="protocols" className="rounded-lg px-4"><ClipboardList className="w-4 h-4 mr-2" />Protocols</TabsTrigger>
-                                    <TabsTrigger value="packages" className="rounded-lg px-4"><Heart className="w-4 h-4 mr-2" />Packages</TabsTrigger>
                                     <TabsTrigger value="tasks" className="rounded-lg px-4"><CheckSquare className="w-4 h-4 mr-2" />Tasks</TabsTrigger>
                                     <TabsTrigger value="notes" className="rounded-lg px-4"><Edit className="w-4 h-4 mr-2" />Notes</TabsTrigger>
                                 </TabsList>
@@ -873,6 +983,362 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                     </div>
                                 </TabsContent>
 
+                                {/* Health Profile Tab */}
+                                <TabsContent value="health" className="mt-6">
+                                    <div className="bg-white rounded-2xl border border-gray-100 p-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 text-xl">Health Profile</h3>
+                                                <p className="text-sm text-gray-500">Complete health information for {selectedClient.name}</p>
+                                            </div>
+                                            {!editingHealth ? (
+                                                <Button onClick={() => setEditingHealth(true)} variant="outline">
+                                                    <Edit className="w-4 h-4 mr-2" /> Edit Profile
+                                                </Button>
+                                            ) : (
+                                                <div className="flex gap-2">
+                                                    <Button variant="outline" onClick={() => setEditingHealth(false)}>Cancel</Button>
+                                                    <Button
+                                                        className="bg-burgundy-600 hover:bg-burgundy-700"
+                                                        disabled={savingHealth}
+                                                        onClick={async () => {
+                                                            setSavingHealth(true);
+                                                            try {
+                                                                const res = await fetch(`/api/coach/clients/${selectedClient.id}/health`, {
+                                                                    method: "PUT",
+                                                                    headers: { "Content-Type": "application/json" },
+                                                                    body: JSON.stringify(healthForm),
+                                                                });
+                                                                const data = await res.json();
+                                                                if (data.success) {
+                                                                    // Update selectedClient with new health data
+                                                                    setSelectedClient(prev => prev ? {
+                                                                        ...prev,
+                                                                        ...data.data,
+                                                                    } : null);
+                                                                    setEditingHealth(false);
+                                                                    toast.success("Health profile saved!");
+                                                                } else {
+                                                                    toast.error(data.error || "Failed to save");
+                                                                }
+                                                            } catch (error) {
+                                                                toast.error("Failed to save health profile");
+                                                            } finally {
+                                                                setSavingHealth(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        {savingHealth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                                        Save Profile
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {!editingHealth ? (
+                                            /* View Mode */
+                                            <div className="space-y-6">
+                                                {/* Primary Info */}
+                                                <div className="grid md:grid-cols-3 gap-4">
+                                                    <div className="p-4 bg-burgundy-50 rounded-xl">
+                                                        <p className="text-xs font-medium text-burgundy-600 mb-1">Primary Concerns</p>
+                                                        <p className="text-sm text-gray-900">{selectedClient.primaryConcerns || "Not specified"}</p>
+                                                    </div>
+                                                    <div className="p-4 bg-green-50 rounded-xl">
+                                                        <p className="text-xs font-medium text-green-600 mb-1">Health Goals</p>
+                                                        <p className="text-sm text-gray-900">{selectedClient.healthGoals || "Not specified"}</p>
+                                                    </div>
+                                                    <div className="p-4 bg-blue-50 rounded-xl">
+                                                        <p className="text-xs font-medium text-blue-600 mb-1">Current Health Status</p>
+                                                        <p className="text-sm text-gray-900">{selectedClient.currentHealth || "Not specified"}</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Medical History */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Medical History</h4>
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500 mb-2">Conditions</p>
+                                                            {(selectedClient.conditions?.length ?? 0) > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {selectedClient.conditions?.map((c, i) => (
+                                                                        <Badge key={i} variant="outline" className="text-xs">{c}</Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <p className="text-sm text-gray-400">None listed</p>}
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500 mb-2">Allergies</p>
+                                                            {(selectedClient.allergies?.length ?? 0) > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {selectedClient.allergies?.map((a, i) => (
+                                                                        <Badge key={i} variant="outline" className="text-xs bg-red-50 border-red-200 text-red-700">{a}</Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <p className="text-sm text-gray-400">None listed</p>}
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500 mb-2">Medications</p>
+                                                            {(selectedClient.medications?.length ?? 0) > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {selectedClient.medications?.map((m, i) => (
+                                                                        <Badge key={i} variant="outline" className="text-xs">{m}</Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <p className="text-sm text-gray-400">None listed</p>}
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500 mb-2">Supplements</p>
+                                                            {(selectedClient.supplements?.length ?? 0) > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {selectedClient.supplements?.map((s, i) => (
+                                                                        <Badge key={i} variant="outline" className="text-xs bg-green-50 border-green-200 text-green-700">{s}</Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <p className="text-sm text-gray-400">None listed</p>}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Lifestyle */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Lifestyle</h4>
+                                                    <div className="grid md:grid-cols-4 gap-4">
+                                                        <div className="p-4 bg-gray-50 rounded-xl text-center">
+                                                            <p className="text-2xl font-bold text-burgundy-600">{selectedClient.sleepHours || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Hours Sleep</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl text-center">
+                                                            <p className="text-lg font-semibold text-gray-900">{selectedClient.dietType || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Diet Type</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl text-center">
+                                                            <p className="text-lg font-semibold text-gray-900">{selectedClient.exerciseFreq || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Exercise</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl text-center">
+                                                            <p className="text-lg font-semibold text-gray-900">{selectedClient.stressLevel || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Stress Level</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Personal Info */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Personal Information</h4>
+                                                    <div className="grid md:grid-cols-3 gap-4">
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500">Date of Birth</p>
+                                                            <p className="text-sm text-gray-900">{selectedClient.dateOfBirth ? new Date(selectedClient.dateOfBirth).toLocaleDateString() : "Not specified"}</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500">Gender</p>
+                                                            <p className="text-sm text-gray-900">{selectedClient.gender || "Not specified"}</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500">Occupation</p>
+                                                            <p className="text-sm text-gray-900">{selectedClient.occupation || "Not specified"}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Family History */}
+                                                {selectedClient.familyHistory && (
+                                                    <div>
+                                                        <h4 className="font-semibold text-gray-900 mb-3">Family History</h4>
+                                                        <p className="text-sm text-gray-600 p-4 bg-gray-50 rounded-xl">{selectedClient.familyHistory}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            /* Edit Mode */
+                                            <div className="space-y-6">
+                                                {/* Primary Info */}
+                                                <div className="grid md:grid-cols-1 gap-4">
+                                                    <div>
+                                                        <Label>Primary Concerns</Label>
+                                                        <Textarea
+                                                            value={healthForm.primaryConcerns}
+                                                            onChange={(e) => setHealthForm({...healthForm, primaryConcerns: e.target.value})}
+                                                            placeholder="What are the client's main health concerns?"
+                                                            rows={2}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label>Health Goals</Label>
+                                                        <Textarea
+                                                            value={healthForm.healthGoals}
+                                                            onChange={(e) => setHealthForm({...healthForm, healthGoals: e.target.value})}
+                                                            placeholder="What does the client want to achieve?"
+                                                            rows={2}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label>Current Health Status</Label>
+                                                        <Textarea
+                                                            value={healthForm.currentHealth}
+                                                            onChange={(e) => setHealthForm({...healthForm, currentHealth: e.target.value})}
+                                                            placeholder="Describe current health state"
+                                                            rows={2}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Medical History */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Medical History</h4>
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <Label>Conditions (comma-separated)</Label>
+                                                            <Input
+                                                                value={healthForm.conditions.join(", ")}
+                                                                onChange={(e) => setHealthForm({...healthForm, conditions: e.target.value.split(",").map(s => s.trim()).filter(Boolean)})}
+                                                                placeholder="Type 2 Diabetes, Hypertension"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Allergies (comma-separated)</Label>
+                                                            <Input
+                                                                value={healthForm.allergies.join(", ")}
+                                                                onChange={(e) => setHealthForm({...healthForm, allergies: e.target.value.split(",").map(s => s.trim()).filter(Boolean)})}
+                                                                placeholder="Peanuts, Shellfish"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Medications (comma-separated)</Label>
+                                                            <Input
+                                                                value={healthForm.medications.join(", ")}
+                                                                onChange={(e) => setHealthForm({...healthForm, medications: e.target.value.split(",").map(s => s.trim()).filter(Boolean)})}
+                                                                placeholder="Metformin, Lisinopril"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Supplements (comma-separated)</Label>
+                                                            <Input
+                                                                value={healthForm.supplements.join(", ")}
+                                                                onChange={(e) => setHealthForm({...healthForm, supplements: e.target.value.split(",").map(s => s.trim()).filter(Boolean)})}
+                                                                placeholder="Vitamin D, Magnesium"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="mt-4">
+                                                        <Label>Surgeries / Medical Procedures</Label>
+                                                        <Textarea
+                                                            value={healthForm.surgeries}
+                                                            onChange={(e) => setHealthForm({...healthForm, surgeries: e.target.value})}
+                                                            placeholder="List any surgeries or major medical procedures"
+                                                            rows={2}
+                                                        />
+                                                    </div>
+                                                    <div className="mt-4">
+                                                        <Label>Family History</Label>
+                                                        <Textarea
+                                                            value={healthForm.familyHistory}
+                                                            onChange={(e) => setHealthForm({...healthForm, familyHistory: e.target.value})}
+                                                            placeholder="Relevant family medical history"
+                                                            rows={2}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Lifestyle */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Lifestyle</h4>
+                                                    <div className="grid md:grid-cols-4 gap-4">
+                                                        <div>
+                                                            <Label>Diet Type</Label>
+                                                            <Select value={healthForm.dietType} onValueChange={(v) => setHealthForm({...healthForm, dietType: v})}>
+                                                                <SelectTrigger><SelectValue placeholder="Select diet" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="Standard">Standard</SelectItem>
+                                                                    <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                                                                    <SelectItem value="Vegan">Vegan</SelectItem>
+                                                                    <SelectItem value="Keto">Keto</SelectItem>
+                                                                    <SelectItem value="Paleo">Paleo</SelectItem>
+                                                                    <SelectItem value="Mediterranean">Mediterranean</SelectItem>
+                                                                    <SelectItem value="Gluten-Free">Gluten-Free</SelectItem>
+                                                                    <SelectItem value="Low-FODMAP">Low-FODMAP</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div>
+                                                            <Label>Sleep Hours</Label>
+                                                            <Input
+                                                                type="number"
+                                                                min="0"
+                                                                max="24"
+                                                                value={healthForm.sleepHours}
+                                                                onChange={(e) => setHealthForm({...healthForm, sleepHours: parseInt(e.target.value) || 0})}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Exercise Frequency</Label>
+                                                            <Select value={healthForm.exerciseFreq} onValueChange={(v) => setHealthForm({...healthForm, exerciseFreq: v})}>
+                                                                <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="None">None</SelectItem>
+                                                                    <SelectItem value="1-2x/week">1-2x/week</SelectItem>
+                                                                    <SelectItem value="3-4x/week">3-4x/week</SelectItem>
+                                                                    <SelectItem value="5-6x/week">5-6x/week</SelectItem>
+                                                                    <SelectItem value="Daily">Daily</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div>
+                                                            <Label>Stress Level</Label>
+                                                            <Select value={healthForm.stressLevel} onValueChange={(v) => setHealthForm({...healthForm, stressLevel: v})}>
+                                                                <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="Low">Low</SelectItem>
+                                                                    <SelectItem value="Moderate">Moderate</SelectItem>
+                                                                    <SelectItem value="High">High</SelectItem>
+                                                                    <SelectItem value="Very High">Very High</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Personal Info */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Personal Information</h4>
+                                                    <div className="grid md:grid-cols-3 gap-4">
+                                                        <div>
+                                                            <Label>Date of Birth</Label>
+                                                            <Input
+                                                                type="date"
+                                                                value={healthForm.dateOfBirth}
+                                                                onChange={(e) => setHealthForm({...healthForm, dateOfBirth: e.target.value})}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Gender</Label>
+                                                            <Select value={healthForm.gender} onValueChange={(v) => setHealthForm({...healthForm, gender: v})}>
+                                                                <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="Female">Female</SelectItem>
+                                                                    <SelectItem value="Male">Male</SelectItem>
+                                                                    <SelectItem value="Non-binary">Non-binary</SelectItem>
+                                                                    <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div>
+                                                            <Label>Occupation</Label>
+                                                            <Input
+                                                                value={healthForm.occupation}
+                                                                onChange={(e) => setHealthForm({...healthForm, occupation: e.target.value})}
+                                                                placeholder="Current occupation"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </TabsContent>
+
                                 {/* Sessions Tab */}
                                 <TabsContent value="sessions" className="mt-6">
                                     <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -885,7 +1351,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                         {selectedClient.sessions.length > 0 ? (
                                             <div className="space-y-3">
                                                 {selectedClient.sessions.map((session, i) => (
-                                                    <div key={session.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                                                    <div key={session.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl group">
                                                         <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-gray-100">
                                                             <Calendar className="w-5 h-5 text-gray-400" />
                                                         </div>
@@ -894,6 +1360,29 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                             <p className="text-sm text-gray-500">{new Date(session.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
                                                             {session.notes && <p className="text-sm text-gray-600 mt-1 line-clamp-1">{session.notes}</p>}
                                                         </div>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-opacity"
+                                                            onClick={async () => {
+                                                                if (!confirm("Delete this session?")) return;
+                                                                try {
+                                                                    await fetch(`/api/coach/clients/${selectedClient.id}/sessions?itemId=${session.id}`, {
+                                                                        method: "DELETE",
+                                                                    });
+                                                                    setSelectedClient(prev => prev ? {
+                                                                        ...prev,
+                                                                        sessions: prev.sessions.filter(s => s.id !== session.id),
+                                                                        _count: { ...prev._count, sessions: prev._count.sessions - 1 }
+                                                                    } : null);
+                                                                    toast.success("Session deleted");
+                                                                } catch (error) {
+                                                                    toast.error("Failed to delete session");
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
                                                     </div>
                                                 ))}
                                             </div>
@@ -910,26 +1399,42 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                 {/* Progress Tab */}
                                 <TabsContent value="progress" className="mt-6">
                                     <div className="space-y-6">
-                                        {/* Progress Overview Cards */}
-                                        <div className="grid md:grid-cols-4 gap-4">
-                                            {[
-                                                { label: "Energy Level", current: 7, previous: 5, icon: "⚡", color: "yellow" },
-                                                { label: "Sleep Quality", current: 8, previous: 6, icon: "😴", color: "blue" },
-                                                { label: "Stress Level", current: 4, previous: 7, icon: "🧘", color: "green", inverse: true },
-                                                { label: "Overall Wellness", current: 75, previous: 60, icon: "❤️", color: "burgundy", isPercent: true },
-                                            ].map((metric) => (
-                                                <div key={metric.label} className="bg-white rounded-xl border border-gray-100 p-4">
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <span className="text-xl">{metric.icon}</span>
-                                                        <span className="text-sm text-gray-600">{metric.label}</span>
-                                                    </div>
-                                                    <p className="text-3xl font-bold text-gray-900">{metric.current}{metric.isPercent ? "%" : "/10"}</p>
-                                                    <p className={cn("text-xs mt-1", metric.inverse ? (metric.current < metric.previous ? "text-green-600" : "text-red-600") : (metric.current > metric.previous ? "text-green-600" : "text-red-600"))}>
-                                                        {metric.inverse ? (metric.current < metric.previous ? "↓" : "↑") : (metric.current > metric.previous ? "↑" : "↓")} {Math.abs(metric.current - metric.previous)} from last month
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        {/* Progress Overview Cards - Based on Real Assessments */}
+                                        {selectedClient.assessments && selectedClient.assessments.length > 0 ? (
+                                            <div className="grid md:grid-cols-4 gap-4">
+                                                {(() => {
+                                                    const assessments = selectedClient.assessments || [];
+                                                    const types = ["Energy", "Sleep", "Stress", "Mood"];
+                                                    const icons: Record<string, string> = { Energy: "⚡", Sleep: "😴", Stress: "🧘", Mood: "😊" };
+                                                    return types.map((type) => {
+                                                        const typeAssessments = assessments.filter((a: any) => a.type === type).sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                                                        const current = typeAssessments[0]?.score || 0;
+                                                        const previous = typeAssessments[1]?.score || current;
+                                                        const isInverse = type === "Stress";
+                                                        return (
+                                                            <div key={type} className="bg-white rounded-xl border border-gray-100 p-4">
+                                                                <div className="flex items-center gap-2 mb-2">
+                                                                    <span className="text-xl">{icons[type]}</span>
+                                                                    <span className="text-sm text-gray-600">{type}</span>
+                                                                </div>
+                                                                <p className="text-3xl font-bold text-gray-900">{current}/10</p>
+                                                                {typeAssessments.length > 1 && (
+                                                                    <p className={cn("text-xs mt-1", isInverse ? (current < previous ? "text-green-600" : "text-red-600") : (current > previous ? "text-green-600" : "text-red-600"))}>
+                                                                        {isInverse ? (current < previous ? "↓" : "↑") : (current > previous ? "↑" : "↓")} {Math.abs(current - previous)} from last
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    });
+                                                })()}
+                                            </div>
+                                        ) : (
+                                            <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 p-8 text-center">
+                                                <Activity className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                                                <h3 className="font-semibold text-gray-700 mb-2">No Assessments Yet</h3>
+                                                <p className="text-sm text-gray-500 mb-4">Log your first assessment below to start tracking progress</p>
+                                            </div>
+                                        )}
 
                                         {/* Progress Chart Visualization */}
                                         <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -994,7 +1499,15 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                         <label className="text-sm font-medium text-gray-700 mb-2 block">Assessment Type</label>
                                                         <div className="grid grid-cols-2 gap-2">
                                                             {["Energy", "Sleep", "Stress", "Mood", "Digestion", "Pain"].map((type) => (
-                                                                <Button key={type} variant="outline" size="sm" className="justify-start">{type}</Button>
+                                                                <Button
+                                                                    key={type}
+                                                                    variant={assessmentType === type ? "default" : "outline"}
+                                                                    size="sm"
+                                                                    className={cn("justify-start", assessmentType === type && "bg-burgundy-600 text-white")}
+                                                                    onClick={() => setAssessmentType(type)}
+                                                                >
+                                                                    {type}
+                                                                </Button>
                                                             ))}
                                                         </div>
                                                     </div>
@@ -1002,12 +1515,63 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                         <label className="text-sm font-medium text-gray-700 mb-2 block">Score (1-10)</label>
                                                         <div className="flex gap-1">
                                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                                                                <button key={n} className="w-8 h-8 rounded-lg border border-gray-200 hover:bg-burgundy-50 hover:border-burgundy-300 text-sm font-medium transition-colors">{n}</button>
+                                                                <button
+                                                                    key={n}
+                                                                    className={cn(
+                                                                        "w-8 h-8 rounded-lg border text-sm font-medium transition-colors",
+                                                                        assessmentScore === n
+                                                                            ? "bg-burgundy-600 border-burgundy-600 text-white"
+                                                                            : "border-gray-200 hover:bg-burgundy-50 hover:border-burgundy-300"
+                                                                    )}
+                                                                    onClick={() => setAssessmentScore(n)}
+                                                                >
+                                                                    {n}
+                                                                </button>
                                                             ))}
                                                         </div>
                                                     </div>
-                                                    <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700">
-                                                        <Plus className="w-4 h-4 mr-2" /> Save Assessment
+                                                    <Button
+                                                        className="w-full bg-burgundy-600 hover:bg-burgundy-700"
+                                                        disabled={!assessmentType || !assessmentScore || savingAssessment}
+                                                        onClick={async () => {
+                                                            if (!assessmentType || !assessmentScore) {
+                                                                toast.error("Please select type and score");
+                                                                return;
+                                                            }
+                                                            setSavingAssessment(true);
+                                                            try {
+                                                                const res = await fetch(`/api/coach/clients/${selectedClient.id}/assessments`, {
+                                                                    method: "POST",
+                                                                    headers: { "Content-Type": "application/json" },
+                                                                    body: JSON.stringify({
+                                                                        type: assessmentType,
+                                                                        score: assessmentScore,
+                                                                        date: new Date().toISOString(),
+                                                                    }),
+                                                                });
+                                                                const data = await res.json();
+                                                                if (data.success) {
+                                                                    const newAssessment = { id: Date.now().toString(), type: assessmentType, score: assessmentScore, date: new Date().toISOString() };
+                                                                    setSelectedClient(prev => prev ? {
+                                                                        ...prev,
+                                                                        assessments: [...(prev.assessments || []), newAssessment]
+                                                                    } : null);
+                                                                    setAssessmentType("");
+                                                                    setAssessmentScore(0);
+                                                                    toast.success("Assessment saved!");
+                                                                } else {
+                                                                    toast.error(data.error || "Failed to save assessment");
+                                                                }
+                                                            } catch (error) {
+                                                                console.error("Save assessment error:", error);
+                                                                toast.error("Failed to save assessment");
+                                                            } finally {
+                                                                setSavingAssessment(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        {savingAssessment ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
+                                                        Save Assessment
                                                     </Button>
                                                 </div>
                                             </div>
@@ -1391,17 +1955,14 @@ PLAN:
                             <Tabs defaultValue="my-profile" className="w-full">
                                 <div className="bg-white rounded-xl border border-gray-200 p-2 mb-6">
                                     <div className="flex items-center justify-between gap-4">
-                                        {/* Tabs - Scrollable on mobile */}
+                                        {/* Tabs - Simplified for core features */}
                                         <div className="flex-1 overflow-x-auto">
                                             <TabsList className="bg-gray-50 p-1 rounded-lg inline-flex min-w-max">
-                                                <TabsTrigger value="my-profile" className="rounded-md px-3 py-2 text-sm"><UserCircle className="w-4 h-4 mr-1.5" />Profile</TabsTrigger>
-                                                <TabsTrigger value="overview" className="rounded-md px-3 py-2 text-sm"><Activity className="w-4 h-4 mr-1.5" />Overview</TabsTrigger>
-                                                <TabsTrigger value="emails" className="rounded-md px-3 py-2 text-sm"><Mail className="w-4 h-4 mr-1.5" />Emails</TabsTrigger>
-                                                <TabsTrigger value="resources" className="rounded-md px-3 py-2 text-sm"><FileText className="w-4 h-4 mr-1.5" />Resources</TabsTrigger>
+                                                <TabsTrigger value="my-profile" className="rounded-md px-3 py-2 text-sm"><UserCircle className="w-4 h-4 mr-1.5" />My Profile</TabsTrigger>
+                                                <TabsTrigger value="overview" className="rounded-md px-3 py-2 text-sm"><Activity className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
+                                                <TabsTrigger value="emails" className="rounded-md px-3 py-2 text-sm"><Mail className="w-4 h-4 mr-1.5" />Email Templates</TabsTrigger>
                                                 <TabsTrigger value="programs" className="rounded-md px-3 py-2 text-sm"><ClipboardList className="w-4 h-4 mr-1.5" />Programs</TabsTrigger>
-                                                <TabsTrigger value="groups" className="rounded-md px-3 py-2 text-sm"><Users className="w-4 h-4 mr-1.5" />Groups</TabsTrigger>
-                                                <TabsTrigger value="notes-library" className="rounded-md px-3 py-2 text-sm"><Edit className="w-4 h-4 mr-1.5" />Notes</TabsTrigger>
-                                                <TabsTrigger value="availability" className="rounded-md px-3 py-2 text-sm"><Calendar className="w-4 h-4 mr-1.5" />Schedule</TabsTrigger>
+                                                <TabsTrigger value="availability" className="rounded-md px-3 py-2 text-sm"><Calendar className="w-4 h-4 mr-1.5" />Availability</TabsTrigger>
                                             </TabsList>
                                         </div>
                                         {/* Actions */}
@@ -2173,12 +2734,41 @@ So grateful to be part of your journey,
                                             </div>
                                             <Button
                                                 className="bg-burgundy-600 hover:bg-burgundy-700"
-                                                onClick={() => {
+                                                onClick={async () => {
                                                     setProfileSaving(true);
-                                                    setTimeout(() => {
+                                                    try {
+                                                        const res = await fetch("/api/coach/profile", {
+                                                            method: "PUT",
+                                                            headers: { "Content-Type": "application/json" },
+                                                            body: JSON.stringify({
+                                                                bio: coachProfile.longBio,
+                                                                professionalTitle: coachProfile.nicheStatement,
+                                                                specialties: coachProfile.specializations,
+                                                                website: coachProfile.websiteUrl,
+                                                                socialLinks: {
+                                                                    instagram: coachProfile.instagramUrl,
+                                                                    facebook: coachProfile.facebookUrl,
+                                                                    bookingLink: coachProfile.bookingLink,
+                                                                    packages: coachProfile.packages,
+                                                                    testimonials: coachProfile.testimonials,
+                                                                    services: coachProfile.services,
+                                                                    shortBio: coachProfile.shortBio,
+                                                                },
+                                                                image: coachProfile.photoUrl || undefined,
+                                                            }),
+                                                        });
+                                                        const data = await res.json();
+                                                        if (data.success) {
+                                                            toast.success("Profile saved successfully!");
+                                                        } else {
+                                                            toast.error(data.error || "Failed to save profile");
+                                                        }
+                                                    } catch (error) {
+                                                        console.error("Save profile error:", error);
+                                                        toast.error("Failed to save profile");
+                                                    } finally {
                                                         setProfileSaving(false);
-                                                        toast.success("Profile saved successfully!");
-                                                    }, 1000);
+                                                    }
                                                 }}
                                             >
                                                 {profileSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
