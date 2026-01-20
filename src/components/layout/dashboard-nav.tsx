@@ -174,8 +174,20 @@ const getFMPreviewNavItems = () => [
 ];
 
 
-const coachNavItems = [
-  { href: "/coach/workspace", label: "Coach Workspace", icon: Briefcase },
+const coachNavItems: NavItem[] = [
+  {
+    href: "/coach/workspace",
+    label: "Coach Portal",
+    icon: Briefcase,
+    tourId: "coach-portal",
+    children: [
+      { href: "/coach/workspace", label: "📊 Dashboard", icon: LayoutDashboard, tourId: "coach-dashboard" },
+      { href: "/coach/clients", label: "👥 My Clients", icon: Users, tourId: "coach-clients" },
+      { href: "/coach/profile", label: "👤 My Profile", icon: User, tourId: "coach-profile" },
+      { href: "/coach/availability", label: "📅 Availability", icon: BookOpen, tourId: "coach-availability" },
+      { href: "/coach/programs", label: "📋 Programs", icon: Package, tourId: "coach-programs" },
+    ]
+  },
 ];
 
 const adminNavItems = [
@@ -488,7 +500,68 @@ export function DashboardNav() {
                 </p>
               </div>
               {coachNavItems.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                const hasChildren = item.children && item.children.length > 0;
+                const isGroupExpanded = expandedGroups.includes(item.tourId || item.href);
+                const isActive = pathname === item.href;
+                const isChildActive = hasChildren && item.children?.some(child =>
+                  pathname === child.href || pathname.startsWith(child.href + "/")
+                );
+                const isCoachSection = pathname.startsWith("/coach/");
+
+                // GROUP with children - expandable
+                if (hasChildren) {
+                  return (
+                    <div key={item.href} className="space-y-0.5">
+                      {/* Group header - clickable to expand/collapse */}
+                      <button
+                        onClick={() => toggleGroup(item.tourId || item.href)}
+                        data-tour={item.tourId}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 relative",
+                          isCoachSection
+                            ? "bg-gradient-to-r from-emerald-400/20 to-emerald-500/10 text-emerald-300 shadow-lg shadow-emerald-500/10 border border-emerald-400/20"
+                            : "text-white/90 hover:bg-burgundy-600/50 hover:text-white"
+                        )}
+                      >
+                        <item.icon className={cn("w-5 h-5", isCoachSection ? "text-emerald-400" : "text-white/60")} />
+                        <span className="flex-1 text-left">{item.label}</span>
+                        <ChevronDown className={cn(
+                          "w-4 h-4 transition-transform duration-200",
+                          isGroupExpanded ? "rotate-180" : "",
+                          isCoachSection ? "text-emerald-400" : "text-white/40"
+                        )} />
+                      </button>
+
+                      {/* Expanded children */}
+                      {isGroupExpanded && (
+                        <div className="ml-4 pl-3 border-l border-emerald-600/30 space-y-0.5">
+                          {item.children?.map((child) => {
+                            const isChildActive = pathname === child.href || (child.href !== "/coach/workspace" && pathname.startsWith(child.href + "/"));
+                            const isExactMatch = pathname === child.href;
+                            return (
+                              <Link
+                                key={child.href}
+                                href={child.href}
+                                prefetch={true}
+                                data-tour={child.tourId}
+                                className={cn(
+                                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-150 relative",
+                                  isExactMatch || isChildActive
+                                    ? "bg-emerald-400/10 text-emerald-300 font-medium"
+                                    : "text-white/70 hover:bg-burgundy-600/30 hover:text-white"
+                                )}
+                              >
+                                <span className="flex-1 text-left text-sm">{child.label}</span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                // Standalone item (no children)
                 return (
                   <Link
                     key={item.href}
