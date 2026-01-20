@@ -33,25 +33,70 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/leads", label: "Leads", icon: UserPlus, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/mini-diploma", label: "Mini Diploma", icon: GraduationCap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/courses", label: "Courses", icon: BookOpen, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/users", label: "Users", icon: Users, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
-  { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
-  { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // Full support desk
-  { href: "/admin/marketing", label: "Email Marketing", icon: Mail, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/communications", label: "Communications", icon: Bell, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/referrals", label: "Referral Program", icon: Gift, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
-  { href: "/admin/oracle", label: "Oracle", icon: Brain, roles: ["ADMIN", "SUPERUSER"] },
-  { href: "/admin/super-tools", label: "Super Tools", icon: Shield, roles: ["ADMIN", "SUPERUSER"] },
-  { href: "/admin/settings", label: "Settings", icon: Settings, roles: ["ADMIN", "SUPERUSER"] },
+// Grouped navigation structure
+interface NavItem {
+  href: string;
+  label: string;
+  icon: any;
+  roles: string[];
+}
+
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: "Overview",
+    items: [
+      { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+    ],
+  },
+  {
+    title: "Sales & Leads",
+    items: [
+      { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/leads", label: "Leads & Mini Diploma", icon: UserPlus, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/referrals", label: "Referrals", icon: Gift, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+    ],
+  },
+  {
+    title: "Content",
+    items: [
+      { href: "/admin/courses", label: "Courses", icon: BookOpen, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/users", label: "Students", icon: Users, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] },
+      { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+    ],
+  },
+  {
+    title: "Support & Chat",
+    items: [
+      { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] },
+      { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] },
+    ],
+  },
+  {
+    title: "Marketing",
+    items: [
+      { href: "/admin/marketing", label: "Email Campaigns", icon: Mail, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+      { href: "/admin/communications", label: "Notifications", icon: Bell, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+    ],
+  },
+  {
+    title: "Admin Tools",
+    items: [
+      { href: "/admin/oracle", label: "Oracle AI", icon: Brain, roles: ["ADMIN", "SUPERUSER"] },
+      { href: "/admin/super-tools", label: "Super Tools", icon: Shield, roles: ["ADMIN", "SUPERUSER"] },
+      { href: "/admin/settings", label: "Settings", icon: Settings, roles: ["ADMIN", "SUPERUSER"] },
+    ],
+  },
 ];
+
+// Flatten for mobile menu and filtering
+const navItems = navGroups.flatMap(g => g.items);
 
 export function AdminNav() {
   const pathname = usePathname();
@@ -88,40 +133,55 @@ export function AdminNav() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-          {filteredNavItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== "/admin" && pathname.startsWith(item.href));
+        {/* Navigation - Grouped */}
+        <nav className="flex-1 px-4 py-4 overflow-y-auto">
+          {navGroups.map((group) => {
+            // Filter items in this group by role
+            const groupItems = group.items.filter(item => item.roles.includes(userRole));
+            if (groupItems.length === 0) return null;
+
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150",
-                  isActive
-                    ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 shadow-lg shadow-gold-500/10 border border-gold-400/20"
-                    : "text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white"
-                )}
-              >
-                <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-burgundy-300")} />
-                {item.label}
-                {isActive && (
-                  <div className="ml-auto w-2 h-2 rounded-full bg-gold-400 animate-pulse" />
-                )}
-              </Link>
+              <div key={group.title} className="mb-4">
+                <p className="px-3 py-2 text-[10px] font-bold text-burgundy-400 uppercase tracking-wider">
+                  {group.title}
+                </p>
+                <div className="space-y-1">
+                  {groupItems.map((item) => {
+                    const isActive = pathname === item.href ||
+                      (item.href !== "/admin" && pathname.startsWith(item.href));
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
+                          isActive
+                            ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 border border-gold-400/20"
+                            : "text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white"
+                        )}
+                      >
+                        <item.icon className={cn("w-4 h-4", isActive ? "text-gold-400" : "text-burgundy-300")} />
+                        {item.label}
+                        {isActive && (
+                          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-gold-400" />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
 
-          <div className="pt-4 mt-4 border-t border-burgundy-600/30">
-            <p className="px-4 py-2 text-xs font-semibold text-gold-400 uppercase tracking-wider">
+          <div className="pt-3 mt-2 border-t border-burgundy-600/30">
+            <p className="px-3 py-2 text-[10px] font-bold text-burgundy-400 uppercase tracking-wider">
               Switch View
             </p>
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white transition-all duration-150"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white transition-all duration-150"
             >
-              <LayoutDashboard className="w-5 h-5 text-burgundy-300" />
+              <LayoutDashboard className="w-4 h-4 text-burgundy-300" />
               Student View
             </Link>
           </div>

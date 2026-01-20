@@ -367,13 +367,22 @@ export default function SupportPortalPage() {
                 <div className="p-4 bg-gradient-to-r from-[#722F37] to-[#8B3D47] text-white">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <img src={ASI.logo} alt="ASI" className="w-10 h-10 rounded-lg bg-white p-1" />
+                            <Link href="/admin" className="hover:opacity-80 transition-opacity">
+                                <img src={ASI.logo} alt="ASI" className="w-10 h-10 rounded-lg bg-white p-1" />
+                            </Link>
                             <div>
-                                <h1 className="text-lg font-bold">{ASI.name}</h1>
+                                <Link href="/admin" className="hover:underline">
+                                    <h1 className="text-lg font-bold">{ASI.name}</h1>
+                                </Link>
                                 <p className="text-xs text-white/70">{ASI.division}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
+                            <Link href="/admin">
+                                <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10 text-xs gap-1">
+                                    ← Admin
+                                </Button>
+                            </Link>
                             <Button variant="ghost" size="icon" onClick={() => refetch()} className="text-white/80 hover:text-white hover:bg-white/10">
                                 <RefreshCcw className={cn("w-4 h-4", isLoading && "animate-spin")} />
                             </Button>
