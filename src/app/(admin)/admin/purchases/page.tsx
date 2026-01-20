@@ -171,7 +171,7 @@ async function getPurchasesData(searchParams: SearchParams) {
             createdAt: true,
             productName: true,
             ipAddress: true,
-            stripePaymentId: true,
+            transactionId: true,
             paymentMethod: true,
             currency: true,
             billingName: true,

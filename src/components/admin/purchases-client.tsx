@@ -54,7 +54,7 @@ interface Purchase {
     createdAt: Date;
     productName: string;
     ipAddress?: string;
-    stripePaymentId?: string;
+    transactionId?: string;
     paymentMethod?: string;
     currency?: string;
     billingName?: string;
@@ -475,17 +475,17 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                                                                 </Link>
                                                             </DropdownMenuItem>
                                                         )}
-                                                        {purchase.stripePaymentId && (
+                                                        {purchase.transactionId && (
                                                             <DropdownMenuItem
-                                                                onClick={() => copyToClipboard(purchase.stripePaymentId!, "Stripe ID")}
+                                                                onClick={() => copyToClipboard(purchase.transactionId!, "Stripe ID")}
                                                             >
                                                                 <Copy className="w-4 h-4 mr-2" />
                                                                 Copy Stripe ID
                                                             </DropdownMenuItem>
                                                         )}
-                                                        {purchase.stripePaymentId && (
+                                                        {purchase.transactionId && (
                                                             <DropdownMenuItem
-                                                                onClick={() => window.open(`https://dashboard.stripe.com/payments/${purchase.stripePaymentId}`, "_blank")}
+                                                                onClick={() => window.open(`https://dashboard.stripe.com/payments/${purchase.transactionId}`, "_blank")}
                                                             >
                                                                 <ExternalLink className="w-4 h-4 mr-2" />
                                                                 Open in Stripe
@@ -589,18 +589,18 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                                             <p className="font-medium capitalize">{selectedPurchase.paymentMethod}</p>
                                         </div>
                                     )}
-                                    {selectedPurchase.stripePaymentId && (
+                                    {selectedPurchase.transactionId && (
                                         <div>
                                             <p className="text-gray-500">Stripe ID</p>
                                             <div className="flex items-center gap-1">
                                                 <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">
-                                                    {selectedPurchase.stripePaymentId.slice(0, 14)}...
+                                                    {selectedPurchase.transactionId.slice(0, 14)}...
                                                 </code>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
                                                     className="h-6 w-6 p-0"
-                                                    onClick={() => copyToClipboard(selectedPurchase.stripePaymentId!, "Stripe ID")}
+                                                    onClick={() => copyToClipboard(selectedPurchase.transactionId!, "Stripe ID")}
                                                 >
                                                     <Copy className="w-3 h-3" />
                                                 </Button>
@@ -630,11 +630,11 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
 
                             {/* Actions */}
                             <div className="flex gap-2 pt-4 border-t">
-                                {selectedPurchase.stripePaymentId && (
+                                {selectedPurchase.transactionId && (
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => window.open(`https://dashboard.stripe.com/payments/${selectedPurchase.stripePaymentId}`, "_blank")}
+                                        onClick={() => window.open(`https://dashboard.stripe.com/payments/${selectedPurchase.transactionId}`, "_blank")}
                                     >
                                         <ExternalLink className="w-4 h-4 mr-2" />
                                         Open in Stripe
