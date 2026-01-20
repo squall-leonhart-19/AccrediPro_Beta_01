@@ -216,6 +216,11 @@ async function getPurchasesData(searchParams: SearchParams) {
     const totalRevenue = Number(periodTotal._sum.amount || 0);
     const aov = frontendOrders > 0 ? Math.round(totalRevenue / frontendOrders) : 0;
 
+    // Calculate Today's AOV
+    const todayFrontendOrders = todayFrontend._count || 0;
+    const todayTotalRevenue = Number(todayTotal._sum.amount || 0);
+    const todayAov = todayFrontendOrders > 0 ? Math.round(todayTotalRevenue / todayFrontendOrders) : 0;
+
     // 2. Get Filtered Purchases (For Table)
     const searchFilter = searchParams.search ? {
         OR: [
@@ -228,6 +233,7 @@ async function getPurchasesData(searchParams: SearchParams) {
     } : {};
 
     const whereClause: any = {
+        status: "COMPLETED", // Only show completed payments in table
         ...searchFilter,
         createdAt: { gte: filterRange.start, lte: filterRange.end },
     };
@@ -273,6 +279,7 @@ async function getPurchasesData(searchParams: SearchParams) {
                 revenue: Number(todayTotal._sum.amount || 0),
                 frontendOrders: todayFrontend._count,
                 totalOrders: todayTotal._count,
+                aov: todayAov,
             },
             total: {
                 revenue: Number(allTimeTotal._sum.amount || 0),

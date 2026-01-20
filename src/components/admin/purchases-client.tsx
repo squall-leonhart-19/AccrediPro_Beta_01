@@ -87,6 +87,7 @@ interface Stats {
         revenue: number;
         frontendOrders: number;
         totalOrders: number;
+        aov?: number;
     };
     total: { revenue: number; orders: number };
     takeRates: {
