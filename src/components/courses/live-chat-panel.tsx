@@ -69,10 +69,10 @@ function LiveChatPanelInner({ courseId, courseSlug, isMobile = false, onClose }:
         }
     }, [courseId]);
 
-    // Initial fetch + polling
+    // Initial fetch + polling (every 30s to save bandwidth)
     useEffect(() => {
         fetchMessages();
-        const interval = setInterval(fetchMessages, 10000);
+        const interval = setInterval(fetchMessages, 30000); // Changed from 10s to 30s
         return () => clearInterval(interval);
     }, [fetchMessages]);
 

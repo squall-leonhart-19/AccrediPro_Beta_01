@@ -93,7 +93,7 @@ export function FloatingChatWidget({
         };
 
         fetchMessages();
-        const interval = setInterval(fetchMessages, 3000);
+        const interval = setInterval(fetchMessages, 30000); // Changed from 3s to 30s
         return () => clearInterval(interval);
     }, [visitorId, showOptin, chatOpen]);
 

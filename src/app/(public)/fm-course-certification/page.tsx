@@ -121,8 +121,8 @@ export default function FMCourseCertificationPage() {
         // Initial fetch
         fetchMessages();
 
-        // Poll every 3 seconds
-        const interval = setInterval(fetchMessages, 3000);
+        // Poll every 30 seconds (changed from 3s to reduce bandwidth)
+        const interval = setInterval(fetchMessages, 30000);
 
         return () => clearInterval(interval);
     }, [visitorId, showOptin, chatOpen]);
