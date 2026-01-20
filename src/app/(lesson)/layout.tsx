@@ -20,7 +20,7 @@ export default async function LessonLayout({
     return (
         <SessionProvider>
             <SWRProvider>
-                <NotificationProvider>
+                <NotificationProvider userId={session.user.id}>
                     <AchievementProvider>
                         {/* Minimal layout - fullscreen lesson player */}
                         <div className="h-dvh w-full overflow-hidden">

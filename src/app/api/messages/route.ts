@@ -6,8 +6,37 @@ import { sendEmail, emailWrapper } from "@/lib/email";
 import { notifyNewMessage } from "@/lib/push-notifications";
 
 // Track last email sent per conversation (in-memory, reset on server restart)
+// With TTL cleanup to prevent memory leak
 const lastEmailSent: Map<string, number> = new Map();
 const EMAIL_RATE_LIMIT_MS = 15 * 60 * 1000; // 15 minutes
+const CLEANUP_INTERVAL_MS = 60 * 60 * 1000; // Cleanup every hour
+const MAX_MAP_SIZE = 10000; // Safety limit
+
+// Cleanup old entries periodically
+function cleanupRateLimitMap() {
+  const now = Date.now();
+  const cutoff = now - EMAIL_RATE_LIMIT_MS * 2; // Remove entries older than 2x rate limit
+
+  for (const [key, timestamp] of lastEmailSent.entries()) {
+    if (timestamp < cutoff) {
+      lastEmailSent.delete(key);
+    }
+  }
+
+  // Safety: if still too large, clear oldest half
+  if (lastEmailSent.size > MAX_MAP_SIZE) {
+    const entries = Array.from(lastEmailSent.entries())
+      .sort((a, b) => a[1] - b[1])
+      .slice(0, Math.floor(MAX_MAP_SIZE / 2));
+    for (const [key] of entries) {
+      lastEmailSent.delete(key);
+    }
+  }
+}
+
+// Run cleanup on module load and set interval
+cleanupRateLimitMap();
+setInterval(cleanupRateLimitMap, CLEANUP_INTERVAL_MS);
 
 // GET - Fetch messages with a specific user
 export async function GET(request: NextRequest) {

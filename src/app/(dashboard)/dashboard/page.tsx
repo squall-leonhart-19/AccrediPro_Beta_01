@@ -19,8 +19,9 @@ import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import { getSocialProofStats } from "@/lib/social-proof";
 import { buildCredentialPath, SPECIALTY_ABBREVIATIONS } from "@/lib/credential-path";
 
-// Force dynamic rendering - no caching
-export const dynamic = "force-dynamic";
+// Revalidate every 5 minutes for user-specific data
+// Note: Still uses session for auth, but allows edge caching
+export const revalidate = 300;
 
 // Career stages with income potential
 const CAREER_STAGES = [
@@ -31,7 +32,8 @@ const CAREER_STAGES = [
 ];
 
 async function getDashboardData(userId: string) {
-  const [enrollments, certificatesData, userStreak, user, userTags] = await Promise.all([
+  // Parallel fetch ALL data in a single Promise.all - eliminates waterfall
+  const [enrollments, certificatesData, userStreak, user, userTags, completedLessonIds] = await Promise.all([
     prisma.enrollment.findMany({
       where: { userId },
       select: {
@@ -80,15 +82,14 @@ async function getDashboardData(userId: string) {
       where: { userId },
       select: { tag: true },
     }),
+    // Moved into Promise.all - was causing waterfall!
+    prisma.lessonProgress.findMany({
+      where: { userId, isCompleted: true },
+      select: { lessonId: true },
+    }),
   ]);
 
   const certificates = certificatesData.length;
-
-  // Get completed lessons for this user
-  const completedLessonIds = await prisma.lessonProgress.findMany({
-    where: { userId, isCompleted: true },
-    select: { lessonId: true },
-  });
   const completedSet = new Set(completedLessonIds.map((l) => l.lessonId));
   const completedLessons = completedLessonIds.length;
 

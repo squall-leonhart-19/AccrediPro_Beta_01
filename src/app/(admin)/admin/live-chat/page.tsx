@@ -107,9 +107,16 @@ export default function LiveChatAdminPage() {
     }
   };
 
+  // Initial fetch and polling - fetchConversations is stable (no deps) so this is safe
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchConversations();
-    const interval = setInterval(fetchConversations, 5000);
+    // Poll every 5 seconds, but skip if page is hidden to save resources
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        fetchConversations();
+      }
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -134,11 +141,17 @@ export default function LiveChatAdminPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [selectedConversation?.messages]);
 
-  // Load notes when conversation is selected
+  // Load notes when conversation is selected - with localStorage error handling
   useEffect(() => {
     if (selectedConversation) {
-      const savedNotes = localStorage.getItem(`chat_notes_${selectedConversation.visitorId}`);
-      setVisitorNotes(savedNotes || "");
+      try {
+        const savedNotes = localStorage.getItem(`chat_notes_${selectedConversation.visitorId}`);
+        setVisitorNotes(savedNotes || "");
+      } catch (err) {
+        // localStorage may be unavailable in private browsing or SSR
+        console.warn("localStorage not available:", err);
+        setVisitorNotes("");
+      }
     }
   }, [selectedConversation?.visitorId]);
 
@@ -175,7 +188,12 @@ export default function LiveChatAdminPage() {
     if (!selectedConversation) return;
     setSavingNotes(true);
     try {
-      localStorage.setItem(`chat_notes_${selectedConversation.visitorId}`, visitorNotes);
+      // Save to localStorage with error handling
+      try {
+        localStorage.setItem(`chat_notes_${selectedConversation.visitorId}`, visitorNotes);
+      } catch (err) {
+        console.warn("localStorage not available:", err);
+      }
       // Also save to server if API exists
       await fetch("/api/admin/live-chat/notes", {
         method: "POST",

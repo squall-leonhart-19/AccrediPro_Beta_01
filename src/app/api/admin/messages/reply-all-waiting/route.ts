@@ -50,58 +50,125 @@ export async function GET(request: NextRequest) {
 
     console.log(`[REPLY-ALL] Found ${userIds.length} conversation partners`);
 
-    // Get last message for each conversation
-    const waitingConversations = [];
+    // OPTIMIZED: Batch fetch all last messages in a single query using raw SQL
+    // This eliminates the N+1 problem (was: 1 query per user)
+    const lastMessagesQuery = await prisma.$queryRaw<Array<{
+      id: string;
+      content: string;
+      senderId: string;
+      receiverId: string;
+      createdAt: Date;
+      attachmentType: string | null;
+      transcription: string | null;
+      senderFirstName: string | null;
+      senderLastName: string | null;
+      senderEmail: string | null;
+      senderAvatar: string | null;
+    }>>`
+      WITH RankedMessages AS (
+        SELECT
+          m.id,
+          m.content,
+          m."senderId",
+          m."receiverId",
+          m."createdAt",
+          m."attachmentType",
+          m.transcription,
+          u."firstName" as "senderFirstName",
+          u."lastName" as "senderLastName",
+          u.email as "senderEmail",
+          u.avatar as "senderAvatar",
+          ROW_NUMBER() OVER (
+            PARTITION BY
+              CASE
+                WHEN m."senderId" = ${coachId} THEN m."receiverId"
+                ELSE m."senderId"
+              END
+            ORDER BY m."createdAt" DESC
+          ) as rn
+        FROM "Message" m
+        JOIN "User" u ON u.id = m."senderId"
+        WHERE (m."senderId" = ${coachId} OR m."receiverId" = ${coachId})
+          AND (
+            CASE
+              WHEN m."senderId" = ${coachId} THEN m."receiverId"
+              ELSE m."senderId"
+            END
+          ) = ANY(${userIds})
+      )
+      SELECT * FROM RankedMessages WHERE rn = 1
+    `;
 
-    for (const userId of userIds) {
-      const lastMessage = await prisma.message.findFirst({
-        where: {
-          OR: [
-            { senderId: coachId, receiverId: userId },
-            { senderId: userId, receiverId: coachId },
-          ],
-        },
-        orderBy: { createdAt: "desc" },
-        include: {
-          sender: {
-            select: { id: true, firstName: true, lastName: true, email: true, avatar: true }
-          },
-          receiver: {
-            select: { id: true, firstName: true, lastName: true, email: true, avatar: true }
-          }
-        }
-      });
+    // Filter to only conversations waiting for coach reply (last message from student)
+    const waitingUserIds = lastMessagesQuery
+      .filter(m => m.senderId !== coachId)
+      .map(m => m.senderId);
 
-      // Only include if last message was FROM the user (waiting for coach reply)
-      console.log(`[REPLY-ALL] User ${userId}: lastMessage.senderId=${lastMessage?.senderId}, waiting=${lastMessage && lastMessage.senderId === userId}`);
-      if (lastMessage && lastMessage.senderId === userId) {
-        // Get last 5 messages for context
-        const recentMessages = await prisma.message.findMany({
-          where: {
-            OR: [
-              { senderId: coachId, receiverId: userId },
-              { senderId: userId, receiverId: coachId },
-            ],
-          },
-          orderBy: { createdAt: "desc" },
-          take: 5,
-        });
+    if (waitingUserIds.length === 0) {
+      console.log(`[REPLY-ALL] No conversations waiting for reply`);
+      return NextResponse.json({ conversations: [], count: 0 });
+    }
 
-        waitingConversations.push({
+    // OPTIMIZED: Batch fetch recent messages for all waiting conversations
+    const recentMessagesAll = await prisma.message.findMany({
+      where: {
+        OR: waitingUserIds.flatMap(userId => [
+          { senderId: coachId, receiverId: userId },
+          { senderId: userId, receiverId: coachId },
+        ]),
+      },
+      orderBy: { createdAt: "desc" },
+      take: waitingUserIds.length * 5, // 5 messages per conversation max
+      select: {
+        id: true,
+        content: true,
+        senderId: true,
+        receiverId: true,
+        createdAt: true,
+        attachmentType: true,
+        transcription: true,
+      },
+    });
+
+    // Group recent messages by conversation
+    const recentByUser = new Map<string, typeof recentMessagesAll>();
+    for (const msg of recentMessagesAll) {
+      const otherUserId = msg.senderId === coachId ? msg.receiverId : msg.senderId;
+      if (!recentByUser.has(otherUserId)) {
+        recentByUser.set(otherUserId, []);
+      }
+      const userMessages = recentByUser.get(otherUserId)!;
+      if (userMessages.length < 5) {
+        userMessages.push(msg);
+      }
+    }
+
+    // Build waiting conversations from the batch results
+    const waitingConversations = lastMessagesQuery
+      .filter(m => m.senderId !== coachId)
+      .map(lastMessage => {
+        const userId = lastMessage.senderId;
+        const userRecentMessages = recentByUser.get(userId) || [];
+
+        return {
           userId,
-          user: lastMessage.sender,
+          user: {
+            id: userId,
+            firstName: lastMessage.senderFirstName,
+            lastName: lastMessage.senderLastName,
+            email: lastMessage.senderEmail,
+            avatar: lastMessage.senderAvatar,
+          },
           lastMessage: lastMessage.content,
           lastMessageAt: lastMessage.createdAt,
-          recentMessages: recentMessages.reverse().map(m => ({
+          recentMessages: userRecentMessages.reverse().map(m => ({
             role: m.senderId === coachId ? "coach" : "student",
-            // For voice messages, include transcription if available
             content: m.attachmentType === "voice"
               ? (m.transcription ? `[Voice message: "${m.transcription}"]` : "[Voice message]")
               : m.content,
           })),
-        });
-      }
-    }
+        };
+      });
 
     // Sort by oldest first (longest waiting)
     waitingConversations.sort((a, b) =>

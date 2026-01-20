@@ -157,19 +157,36 @@ export function CompleteClient({
     const [downloading, setDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
 
-    // Fire confetti on mount (celebration!)
+    // Fire confetti on mount (celebration!) - with cleanup to prevent memory leak
     useEffect(() => {
-        if (!confettiFired.current) {
-            confettiFired.current = true;
-            // Load confetti library dynamically
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
-            script.onload = () => {
-                // Fire confetti after script loads
-                setTimeout(fireConfetti, 300);
-            };
-            document.body.appendChild(script);
+        if (confettiFired.current) return;
+        confettiFired.current = true;
+
+        // Check if confetti script already exists
+        const existingScript = document.querySelector('script[src*="canvas-confetti"]');
+        if (existingScript) {
+            // Script already loaded, just fire confetti
+            setTimeout(fireConfetti, 300);
+            return;
         }
+
+        // Load confetti library dynamically
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+        script.id = 'confetti-script';
+        script.onload = () => {
+            // Fire confetti after script loads
+            setTimeout(fireConfetti, 300);
+        };
+        document.body.appendChild(script);
+
+        // Cleanup: remove script on unmount to prevent accumulation
+        return () => {
+            const scriptToRemove = document.getElementById('confetti-script');
+            if (scriptToRemove && scriptToRemove.parentNode) {
+                scriptToRemove.parentNode.removeChild(scriptToRemove);
+            }
+        };
     }, []);
 
     // Download certificate function

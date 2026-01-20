@@ -49,11 +49,17 @@ export function FloatingChatWidget({
         setVisitorId(vid);
     }, []);
 
-    // Polling for messages
+    // Polling for messages - with visibility check to save battery/bandwidth
     useEffect(() => {
         if (!visitorId || showOptin || !chatOpen) return;
 
+        let interval: NodeJS.Timeout | null = null;
+        let isPageVisible = !document.hidden;
+
         const fetchMessages = async () => {
+            // Skip fetch if page not visible (saves bandwidth)
+            if (document.hidden) return;
+
             try {
                 const res = await fetch(`/api/chat/messages?visitorId=${visitorId}`);
                 const data = await res.json();
@@ -78,7 +84,6 @@ export function FloatingChatWidget({
                         result.push(...pendingUserMsgs);
 
                         // Optimization: Only update state if messages actually changed
-                        // Simple check: length diff or last message content diff
                         if (prev.length === result.length &&
                             prev[prev.length - 1]?.content === result[result.length - 1]?.content) {
                             return prev;
@@ -92,9 +97,24 @@ export function FloatingChatWidget({
             }
         };
 
+        // Handle visibility changes - pause polling when tab not visible
+        const handleVisibilityChange = () => {
+            isPageVisible = !document.hidden;
+            if (isPageVisible) {
+                // Immediately fetch when becoming visible
+                fetchMessages();
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
         fetchMessages();
-        const interval = setInterval(fetchMessages, 30000); // Changed from 3s to 30s
-        return () => clearInterval(interval);
+        interval = setInterval(fetchMessages, 30000);
+
+        return () => {
+            if (interval) clearInterval(interval);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+        };
     }, [visitorId, showOptin, chatOpen]);
 
     const startChat = async () => {

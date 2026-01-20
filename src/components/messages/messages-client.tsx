@@ -9,6 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useRealtimeMessages } from "@/hooks/use-realtime-messages";
+import { usePresence } from "@/hooks/use-presence";
 import {
   MessageSquare,
   Send,
@@ -303,12 +305,15 @@ export function MessagesClient({
   const [nextCursor, setNextCursor] = useState<string | null>(null);
 
   // Twitch/YouTube style scroll: only auto-scroll if user is at bottom
-  const [isAtBottom, setIsAtBottom] = useState(true);
+  // Using REFS instead of STATE to avoid re-render loops that cause scroll jumps
+  const isAtBottomRef = useRef(true);
+  const userHasScrolledRef = useRef(false); // Track if user manually scrolled up
   const [newMessagesCount, setNewMessagesCount] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const isLoadingOlderRef = useRef(false); // Track when loading older messages to prevent auto-scroll
+  const isInitialLoadRef = useRef(true); // Track initial load for force scroll
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -317,15 +322,79 @@ export function MessagesClient({
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
   const isMountedRef = useRef(true); // Track if component is still mounted
 
-  // Cleanup on unmount
+  // Cleanup on unmount - prevent memory leaks
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
+      // Cleanup any pending timeouts/intervals
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
     };
   }, []);
 
   const isCoach = currentUserRole === "ADMIN" || currentUserRole === "INSTRUCTOR" || currentUserRole === "MENTOR";
+
+  // ============ SUPABASE REALTIME ============
+  // Handle new message from realtime subscription
+  const handleRealtimeMessage = useCallback((newMessage: Message) => {
+    // Only add if not already in messages (avoid duplicates)
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === newMessage.id)) return prev;
+      return [...prev, newMessage];
+    });
+
+    // Show notification toast
+    const senderName = selectedUser?.firstName || "Someone";
+    toast.info(`New message from ${senderName}`, {
+      description: newMessage.content?.slice(0, 50) + (newMessage.content?.length > 50 ? "..." : ""),
+      duration: 4000,
+    });
+
+    // Update conversation list unread count
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.user?.id === newMessage.senderId
+          ? { ...conv, lastMessage: newMessage, unreadCount: conv.unreadCount + 1 }
+          : conv
+      )
+    );
+  }, [selectedUser]);
+
+  // Handle message updates (read receipts, reactions)
+  const handleRealtimeUpdate = useCallback((updated: Partial<Message> & { id: string }) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === updated.id ? { ...m, ...updated } : m))
+    );
+  }, []);
+
+  // Subscribe to realtime messages
+  const { isConnected: realtimeConnected } = useRealtimeMessages({
+    currentUserId,
+    otherUserId: selectedUser?.id || null,
+    onNewMessage: handleRealtimeMessage,
+    onMessageUpdate: handleRealtimeUpdate,
+    enabled: !!selectedUser,
+  });
+
+  // Subscribe to presence (typing, online status)
+  const {
+    otherUserOnline,
+    otherUserTyping: realtimeTyping,
+    setTyping: setRealtimeTyping,
+  } = usePresence({
+    currentUserId,
+    otherUserId: selectedUser?.id || null,
+    enabled: !!selectedUser,
+  });
+
+  // Use realtime typing if available, fallback to polling-based
+  const isOtherTyping = realtimeTyping || otherUserTyping;
+  // ============ END REALTIME ============
 
   // Calculate waiting count from conversations (matches REPLY badge logic exactly)
   useEffect(() => {
@@ -369,42 +438,54 @@ export function MessagesClient({
   const checkIsAtBottom = useCallback(() => {
     const container = messagesContainerRef.current;
     if (!container) return true;
-    const threshold = 100; // Within 100px of bottom = "at bottom"
+    const threshold = 50; // Tighter threshold - within 50px of bottom = "at bottom"
     return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
   }, []);
 
   // Handle scroll events to track if user is at bottom (Twitch/YouTube style)
+  // Uses REFS to avoid state updates that cause re-renders and scroll jumps
   const handleScroll = useCallback(() => {
-    const atBottom = checkIsAtBottom();
-    setIsAtBottom(atBottom);
-    // Clear new messages count when user scrolls to bottom
-    if (atBottom) {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    isAtBottomRef.current = distanceFromBottom < 50;
+
+    // Track if user manually scrolled up
+    if (distanceFromBottom > 100) {
+      userHasScrolledRef.current = true;
+    } else if (distanceFromBottom < 50) {
+      // User scrolled back to bottom
+      userHasScrolledRef.current = false;
       setNewMessagesCount(0);
     }
-  }, [checkIsAtBottom]);
+  }, []);
 
   // Attach scroll listener to messages container
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
-    container.addEventListener('scroll', handleScroll);
+    container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
   }, [handleScroll, selectedUser]); // Re-attach when conversation changes
 
-  const scrollToBottom = (force = false, instant = false) => {
+  const scrollToBottom = useCallback((force = false, instant = false) => {
     const container = messagesContainerRef.current;
     if (!container) {
       messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
       return;
     }
 
-    // Only auto-scroll if user is at bottom or force is true (Twitch/YouTube style)
-    if (force || isAtBottom) {
+    // Only auto-scroll if:
+    // 1. force=true (initial load, user sent message), OR
+    // 2. User hasn't manually scrolled up AND is at bottom
+    if (force || (!userHasScrolledRef.current && isAtBottomRef.current)) {
       messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
-      setNewMessagesCount(0); // Clear count after scrolling
-      setIsAtBottom(true);
+      setNewMessagesCount(0);
+      isAtBottomRef.current = true;
+      userHasScrolledRef.current = false;
     }
-  };
+  }, []);
 
   const fetchMessages = useCallback(async (userId: string, isRefresh = false) => {
     try {
@@ -481,6 +562,11 @@ export function MessagesClient({
 
   useEffect(() => {
     if (selectedUser) {
+      // Reset scroll tracking for new conversation
+      isInitialLoadRef.current = true;
+      userHasScrolledRef.current = false;
+      isAtBottomRef.current = true;
+
       fetchMessages(selectedUser.id);
       // Mark messages as read when opening conversation
       fetch("/api/messages/read", {
@@ -489,14 +575,20 @@ export function MessagesClient({
         body: JSON.stringify({ senderId: selectedUser.id }),
       }).catch(console.error);
 
-      // Poll for new messages every 5 seconds for real-time feel (like WhatsApp)
-      const interval = setInterval(() => {
-        fetchMessages(selectedUser.id, true); // isRefresh=true to check for new messages
-      }, 5000);
+      // REALTIME: When realtime is connected, reduce polling to 30s (fallback only)
+      // When NOT connected, poll every 5s for responsive feel
+      const pollInterval = realtimeConnected ? 30000 : 5000;
 
-      // Poll for typing indicator every 3 seconds for responsive typing status
-      const typingInterval = setInterval(async () => {
-        if (!isMountedRef.current) return;
+      const interval = setInterval(() => {
+        // Skip polling if page is not visible (saves bandwidth/battery)
+        if (document.hidden) return;
+        fetchMessages(selectedUser.id, true); // isRefresh=true to check for new messages
+      }, pollInterval);
+
+      // Poll for typing indicator - only if realtime presence not connected
+      // Realtime presence handles typing via usePresence hook
+      const typingInterval = realtimeConnected ? null : setInterval(async () => {
+        if (!isMountedRef.current || document.hidden) return;
         try {
           const res = await fetch(`/api/messages/typing?senderId=${selectedUser.id}`);
           const data = await res.json();
@@ -508,12 +600,21 @@ export function MessagesClient({
         }
       }, 3000);
 
+      // Fetch immediately when tab becomes visible again
+      const handleVisibilityChange = () => {
+        if (!document.hidden && selectedUser) {
+          fetchMessages(selectedUser.id, true);
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
       return () => {
         clearInterval(interval);
-        clearInterval(typingInterval);
+        if (typingInterval) clearInterval(typingInterval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
       };
     }
-  }, [selectedUser, fetchMessages]);
+  }, [selectedUser, fetchMessages, realtimeConnected]);
 
   // Track last message ID to detect genuinely NEW messages (not just refreshes)
   const prevLastMessageIdRef = useRef<string | null>(null);
@@ -531,10 +632,12 @@ export function MessagesClient({
     if (lastMessageId && lastMessageId !== prevLastMessageIdRef.current) {
       // Don't react to optimistic messages (they'll be replaced anyway)
       if (!lastMessageId.startsWith('temp-')) {
-        // Twitch/YouTube style: if at bottom, scroll. If not, show counter.
-        if (isAtBottom) {
+        // Twitch/YouTube style: check REFS (not state!) for scroll position
+        // If user hasn't scrolled up AND is at bottom, auto-scroll
+        // Otherwise, show "new messages" indicator
+        if (!userHasScrolledRef.current && isAtBottomRef.current) {
           scrollToBottom(true, true); // force instant scroll
-        } else {
+        } else if (userHasScrolledRef.current) {
           // User is reading history - show "new messages" indicator
           setNewMessagesCount((prev) => prev + 1);
         }
@@ -543,21 +646,27 @@ export function MessagesClient({
 
     // Always update the ref to track current last message
     prevLastMessageIdRef.current = lastMessageId;
-  }, [messages, isAtBottom]);
+  }, [messages, scrollToBottom]); // removed isAtBottom dependency - using refs now
 
-  // Handle typing indicator
+  // Handle typing indicator - use realtime if connected, fallback to API
   const handleTyping = async () => {
     if (!selectedUser || isTyping) return;
     setIsTyping(true);
 
-    try {
-      await fetch("/api/messages/typing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ receiverId: selectedUser.id, isTyping: true }),
-      });
-    } catch (e) {
-      console.error("Typing status error:", e);
+    // Use realtime presence for typing (instant, no API call)
+    if (realtimeConnected) {
+      setRealtimeTyping(true);
+    } else {
+      // Fallback to API-based typing
+      try {
+        await fetch("/api/messages/typing", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ receiverId: selectedUser.id, isTyping: true }),
+        });
+      } catch (e) {
+        console.error("Typing status error:", e);
+      }
     }
 
     // Reset typing after 3 seconds of inactivity
@@ -566,14 +675,18 @@ export function MessagesClient({
     }
     typingTimeoutRef.current = setTimeout(async () => {
       setIsTyping(false);
-      try {
-        await fetch("/api/messages/typing", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ receiverId: selectedUser?.id, isTyping: false }),
-        });
-      } catch (e) {
-        console.error("Typing status error:", e);
+      if (realtimeConnected) {
+        setRealtimeTyping(false);
+      } else {
+        try {
+          await fetch("/api/messages/typing", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ receiverId: selectedUser?.id, isTyping: false }),
+          });
+        } catch (e) {
+          console.error("Typing status error:", e);
+        }
       }
     }, 3000);
   };
@@ -1785,17 +1898,23 @@ export function MessagesClient({
                               {acc}
                             </span>
                           ))}
-                          <span className="text-[9px] text-green-600 flex items-center gap-0.5 ml-1">
-                            <Circle className="w-1.5 h-1.5 fill-current" />
-                            Active now
+                          <span className={cn(
+                            "text-[9px] flex items-center gap-0.5 ml-1",
+                            otherUserOnline ? "text-green-600" : "text-gray-400"
+                          )}>
+                            <Circle className={cn("w-1.5 h-1.5", otherUserOnline && "fill-current")} />
+                            {otherUserOnline ? "Active now" : "Offline"}
                           </span>
                         </div>
                       </div>
                     ) : (
                       <div className="flex flex-col gap-1">
-                        <p className="text-xs text-green-600 flex items-center gap-1">
-                          <Circle className="w-1.5 h-1.5 fill-current" />
-                          Active now
+                        <p className={cn(
+                          "text-xs flex items-center gap-1",
+                          otherUserOnline ? "text-green-600" : "text-gray-400"
+                        )}>
+                          <Circle className={cn("w-1.5 h-1.5", otherUserOnline && "fill-current")} />
+                          {otherUserOnline ? "Active now" : "Offline"}
                         </p>
                         {/* Enrollment Badges - Show what student is enrolled in */}
                         {selectedUser.enrollments && selectedUser.enrollments.length > 0 && (
@@ -2188,7 +2307,8 @@ export function MessagesClient({
                 )}
 
                 {/* Floating "New Messages" button (Twitch/YouTube style) */}
-                {newMessagesCount > 0 && !isAtBottom && (
+                {/* Only shown when there are new messages - newMessagesCount is only > 0 when user scrolled up */}
+                {newMessagesCount > 0 && (
                   <button
                     onClick={() => scrollToBottom(true, true)}
                     className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-2 px-4 py-2 bg-burgundy-600 hover:bg-burgundy-700 text-white text-sm font-medium rounded-full shadow-lg transition-all duration-200 hover:scale-105"
@@ -2572,8 +2692,8 @@ export function MessagesClient({
                 </div>
               )}
 
-              {/* Typing Indicator - Premium Design */}
-              {otherUserTyping && (
+              {/* Typing Indicator - Premium Design (uses realtime or polling) */}
+              {isOtherTyping && (
                 <div className="flex items-start gap-2 px-4 py-3 animate-fade-in">
                   <Avatar className="h-8 w-8 flex-shrink-0">
                     <AvatarImage src={selectedUser?.avatar || undefined} />

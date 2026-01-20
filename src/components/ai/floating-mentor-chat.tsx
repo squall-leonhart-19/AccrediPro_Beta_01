@@ -41,6 +41,20 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
     const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
+    const streamReaderRef = useRef<ReadableStreamDefaultReader | null>(null);
+
+    // Cleanup streaming response on unmount
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+            if (streamReaderRef.current) {
+                streamReaderRef.current.cancel().catch(() => {});
+            }
+        };
+    }, []);
 
     // Fetch mentor and messages on mount
     const fetchMentorAndMessages = useCallback(async () => {
@@ -202,7 +216,9 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
             }));
             chatHistory.push({ role: "user" as const, content: messageContent });
 
-            // Call AI chat API for Sarah's response
+            // Call AI chat API for Sarah's response - with AbortController for cleanup
+            abortControllerRef.current = new AbortController();
+
             const aiRes = await fetch("/api/ai/mentor-chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -210,43 +226,50 @@ export function FloatingMentorChat({ className, lessonContext }: FloatingMentorC
                     messages: chatHistory,
                     context: { currentLesson: lessonContext },
                 }),
+                signal: abortControllerRef.current.signal,
             });
 
             if (aiRes.ok) {
                 const reader = aiRes.body?.getReader();
                 if (reader) {
+                    // Store reader ref for cleanup on unmount
+                    streamReaderRef.current = reader;
                     const decoder = new TextDecoder();
                     let accumulatedContent = "";
 
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
+                    try {
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
 
-                        const chunk = decoder.decode(value);
-                        const lines = chunk.split("\n");
+                            const chunk = decoder.decode(value);
+                            const lines = chunk.split("\n");
 
-                        for (const line of lines) {
-                            if (line.startsWith("data: ")) {
-                                const data = line.slice(6);
-                                if (data === "[DONE]") continue;
+                            for (const line of lines) {
+                                if (line.startsWith("data: ")) {
+                                    const data = line.slice(6);
+                                    if (data === "[DONE]") continue;
 
-                                try {
-                                    const parsed = JSON.parse(data);
-                                    if (parsed.text) {
-                                        accumulatedContent += parsed.text;
-                                        setMessages(prev =>
-                                            prev.map(m =>
-                                                m.id === aiPlaceholderId
-                                                    ? { ...m, content: accumulatedContent }
-                                                    : m
-                                            )
-                                        );
+                                    try {
+                                        const parsed = JSON.parse(data);
+                                        if (parsed.text) {
+                                            accumulatedContent += parsed.text;
+                                            setMessages(prev =>
+                                                prev.map(m =>
+                                                    m.id === aiPlaceholderId
+                                                        ? { ...m, content: accumulatedContent }
+                                                        : m
+                                                )
+                                            );
+                                        }
+                                    } catch {
+                                        // Ignore JSON parse errors for incomplete chunks
                                     }
-                                } catch {
-                                    // Ignore JSON parse errors for incomplete chunks
                                 }
                             }
                         }
+                    } finally {
+                        streamReaderRef.current = null;
                     }
 
                     // Save AI response as a real message from Sarah

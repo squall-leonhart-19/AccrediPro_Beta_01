@@ -50,22 +50,30 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
     const greeting = getGreeting();
     const name = userName || "there";
 
-    // Fetch mentors to get Coach Sarah's ID
+    // Fetch mentors to get Coach Sarah's ID - with AbortController to prevent race conditions
     useEffect(() => {
-        if (isChatMode && !coachId) {
-            fetch("/api/messages/mentors")
-                .then(res => res.json())
-                .then(data => {
-                    const sarah = data.mentors?.find((m: any) =>
-                        m.email === "sarah@accredipro-certificate.com"
-                    );
-                    const mentor = sarah ||
-                        data.mentors?.find((m: any) => m.firstName?.toLowerCase() === "sarah") ||
-                        data.mentors?.[0];
-                    if (mentor) setCoachId(mentor.id);
-                })
-                .catch(() => toast.error("Could not connect to coach."));
-        }
+        if (!isChatMode || coachId) return;
+
+        const abortController = new AbortController();
+
+        fetch("/api/messages/mentors", { signal: abortController.signal })
+            .then(res => res.json())
+            .then(data => {
+                if (abortController.signal.aborted) return;
+                const sarah = data.mentors?.find((m: any) =>
+                    m.email === "sarah@accredipro-certificate.com"
+                );
+                const mentor = sarah ||
+                    data.mentors?.find((m: any) => m.firstName?.toLowerCase() === "sarah") ||
+                    data.mentors?.[0];
+                if (mentor) setCoachId(mentor.id);
+            })
+            .catch((err) => {
+                if (err.name === "AbortError") return;
+                toast.error("Could not connect to coach.");
+            });
+
+        return () => abortController.abort();
     }, [isChatMode, coachId]);
 
     // Fetch messages when chat mode is enabled

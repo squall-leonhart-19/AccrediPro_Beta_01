@@ -99,12 +99,38 @@ export function LessonAnalyticsTracker({
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // Periodic update every 30 seconds
-    const intervalId = setInterval(() => {
-      if (!document.hidden) {
+    // Periodic update every 30 seconds - OPTIMIZED to pause when hidden
+    let intervalId: NodeJS.Timeout | null = null;
+
+    const startInterval = () => {
+      if (intervalId) return; // Already running
+      intervalId = setInterval(() => {
         sendUpdate();
+      }, 30000);
+    };
+
+    const stopInterval = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
       }
-    }, 30000);
+    };
+
+    // Start/stop interval based on visibility
+    const handleIntervalVisibility = () => {
+      if (document.hidden) {
+        stopInterval();
+      } else {
+        startInterval();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleIntervalVisibility);
+
+    // Start interval if page is visible
+    if (!document.hidden) {
+      startInterval();
+    }
 
     return () => {
       // Cleanup
@@ -112,8 +138,9 @@ export function LessonAnalyticsTracker({
         window.removeEventListener("scroll", trackScrollDepth);
       }
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleIntervalVisibility);
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      clearInterval(intervalId);
+      stopInterval();
 
       // Final update on unmount
       sendUpdate({ final: true });

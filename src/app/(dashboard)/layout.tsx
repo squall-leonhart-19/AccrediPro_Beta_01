@@ -174,7 +174,7 @@ export default async function DashboardLayout({
     return (
       <SessionProvider>
         <SWRProvider>
-          <NotificationProvider>
+          <NotificationProvider userId={session.user.id}>
             <AchievementProvider>
               <div className="min-h-screen bg-gray-50 overflow-x-hidden">
                 {/* Lead Sidebar */}
@@ -213,7 +213,7 @@ export default async function DashboardLayout({
   return (
     <SessionProvider>
       <SWRProvider>
-        <NotificationProvider>
+        <NotificationProvider userId={session.user.id}>
           <AchievementProvider>
             <div className="min-h-screen bg-gray-50 overflow-x-hidden">
               <DashboardNav />
