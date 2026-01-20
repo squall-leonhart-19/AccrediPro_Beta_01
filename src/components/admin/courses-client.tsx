@@ -2,24 +2,19 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-    BookOpen, Users, Award, GraduationCap, Plus, Trash2, Check, X,
-    Search, Copy, ExternalLink, Eye, Globe, Lock, Star, ImageIcon,
-    MoreHorizontal, ArrowRight, TrendingUp
+    BookOpen, Users, Award, GraduationCap, Plus, Edit, Trash2, Save, X, Loader2, Check,
+    ChevronRight, Layers, Search, Copy, ExternalLink,
+    TrendingUp, Star, Eye, BarChart3, FileText, Video, Clock, Zap, Settings,
+    Grid3X3, List, Filter, MoreVertical, Globe, Lock, Tag, DollarSign,
+    AlertTriangle, CheckCircle, ImageIcon
 } from "lucide-react";
 import { toast } from "sonner";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 interface Category {
     id: string;
@@ -70,49 +65,146 @@ interface CoursesClientProps {
     totalCertificates: number;
     activeStudentsThisWeek: number;
     avgCompletionRate: number;
-    // Mini Diploma funnel data (optional - passed from server)
-    miniDiplomaFunnel?: {
-        optedIn: number;
-        started: number;
-        completed: number;
-        convertedToPaid: number;
-    };
 }
+
+const CERTIFICATE_LABELS: Record<string, { label: string; color: string }> = {
+    COMPLETION: { label: "Completion", color: "bg-blue-100 text-blue-700" },
+    CERTIFICATION: { label: "Certification", color: "bg-purple-100 text-purple-700" },
+    MINI_DIPLOMA: { label: "Mini Diploma", color: "bg-pink-100 text-pink-700" },
+};
+
+const DIFFICULTY_LABELS: Record<string, { label: string; color: string }> = {
+    BEGINNER: { label: "Beginner", color: "bg-green-100 text-green-700" },
+    INTERMEDIATE: { label: "Intermediate", color: "bg-yellow-100 text-yellow-700" },
+    ADVANCED: { label: "Advanced", color: "bg-orange-100 text-orange-700" },
+    EXPERT: { label: "Expert", color: "bg-red-100 text-red-700" },
+};
 
 export function CoursesClient({
     initialCourses,
+    categories = [],
     totalEnrollments,
     totalCertificates,
     activeStudentsThisWeek = 0,
     avgCompletionRate = 0,
-    miniDiplomaFunnel,
 }: CoursesClientProps) {
     const [courses, setCourses] = useState<Course[]>(initialCourses);
     const [isLoading, setIsLoading] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+    // Filters
     const [searchQuery, setSearchQuery] = useState("");
-    const [filterType, setFilterType] = useState<"all" | "published" | "draft">("all");
+    const [filterStatus, setFilterStatus] = useState<"all" | "published" | "draft">("all");
+    const [filterType, setFilterType] = useState<string>("all");
+    const [filterCategory, setFilterCategory] = useState<string>("all");
+    const [sortBy, setSortBy] = useState<"recent" | "enrollments" | "title">("recent");
+    const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+    // Form
+    const [formData, setFormData] = useState({
+        title: "", slug: "", description: "", shortDescription: "",
+        isFree: true, isPublished: false, isFeatured: false,
+        difficulty: "BEGINNER", certificateType: "COMPLETION",
+        categoryId: "",
+    });
+
+    const resetForm = () => {
+        setFormData({
+            title: "", slug: "", description: "", shortDescription: "",
+            isFree: true, isPublished: false, isFeatured: false,
+            difficulty: "BEGINNER", certificateType: "COMPLETION",
+            categoryId: "",
+        });
+    };
+
+    const generateSlug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
     // Stats
     const publishedCount = courses.filter(c => c.isPublished).length;
     const draftCount = courses.filter(c => !c.isPublished).length;
+    const totalLessons = courses.reduce((acc, c) => acc + (c.modules?.reduce((m, mod) => m + mod.lessons.length, 0) || 0), 0);
+
+    // Separate Mini Diplomas from Main Courses
     const miniDiplomaCourses = courses.filter(c => c.certificateType === "MINI_DIPLOMA");
     const mainCourses = courses.filter(c => c.certificateType !== "MINI_DIPLOMA");
 
-    // Filter courses
-    const filteredCourses = courses.filter(course => {
-        const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesType = filterType === "all" ||
-            (filterType === "published" && course.isPublished) ||
-            (filterType === "draft" && !course.isPublished);
-        return matchesSearch && matchesType;
-    });
+    // Get unique categories from courses
+    const courseCategories = Array.from(new Set(courses.filter(c => c.category).map(c => c.category!.name)));
 
-    const filteredMiniDiplomas = filteredCourses.filter(c => c.certificateType === "MINI_DIPLOMA");
-    const filteredMainCourses = filteredCourses.filter(c => c.certificateType !== "MINI_DIPLOMA");
+    // Filter function
+    const filterCourse = (course: Course) => {
+        const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.slug.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = filterStatus === "all" ||
+            (filterStatus === "published" && course.isPublished) ||
+            (filterStatus === "draft" && !course.isPublished);
+        const matchesType = filterType === "all" || course.certificateType === filterType;
+        const matchesCategory = filterCategory === "all" || course.category?.name === filterCategory;
+        return matchesSearch && matchesStatus && matchesType && matchesCategory;
+    };
 
-    // Actions
-    const handleTogglePublish = async (course: Course) => {
+    // Sort function
+    const sortCourses = (a: Course, b: Course) => {
+        if (sortBy === "enrollments") return b._count.enrollments - a._count.enrollments;
+        if (sortBy === "title") return a.title.localeCompare(b.title);
+        return 0; // recent - maintain original order
+    };
+
+    // Filter & sort both groups
+    const filteredMainCourses = mainCourses.filter(filterCourse).sort(sortCourses);
+    const filteredMiniDiplomas = miniDiplomaCourses.filter(filterCourse).sort(sortCourses);
+    const filteredCourses = courses.filter(filterCourse).sort(sortCourses);
+
+    // API calls
+    const handleCreateCourse = async () => {
+        setIsLoading(true);
+        try {
+            const res = await fetch("/api/admin/courses", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...formData,
+                    categoryId: formData.categoryId || null,
+                }),
+            });
+            if (res.ok) {
+                const { course } = await res.json();
+                setCourses(prev => [{ ...course, modules: [], _count: { enrollments: 0, modules: 0, certificates: 0 } }, ...prev]);
+                setShowAddModal(false);
+                resetForm();
+                toast.success("Course created successfully");
+                // Redirect to editor
+                window.location.href = `/admin/courses/${course.id}`;
+            } else {
+                const error = await res.json();
+                toast.error(error.error || "Failed to create course");
+            }
+        } catch (error) {
+            toast.error("Failed to create course");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleDeleteCourse = async (id: string) => {
+        setIsLoading(true);
+        try {
+            const res = await fetch(`/api/admin/courses?id=${id}`, { method: "DELETE" });
+            if (res.ok) {
+                setCourses(prev => prev.filter(c => c.id !== id));
+                setDeleteConfirm(null);
+                toast.success("Course deleted");
+            }
+        } catch (error) {
+            toast.error("Failed to delete course");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleTogglePublish = async (course: Course, e: React.MouseEvent) => {
+        e.stopPropagation();
         try {
             const res = await fetch("/api/admin/courses", {
                 method: "PATCH",
@@ -121,14 +213,32 @@ export function CoursesClient({
             });
             if (res.ok) {
                 setCourses(prev => prev.map(c => c.id === course.id ? { ...c, isPublished: !c.isPublished } : c));
-                toast.success(course.isPublished ? "Unpublished" : "Published");
+                toast.success(course.isPublished ? "Course unpublished" : "Course published");
             }
-        } catch {
-            toast.error("Failed to update");
+        } catch (error) {
+            toast.error("Failed to update course");
         }
     };
 
-    const handleDuplicate = async (course: Course) => {
+    const handleToggleFeatured = async (course: Course, e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            const res = await fetch("/api/admin/courses", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: course.id, isFeatured: !course.isFeatured }),
+            });
+            if (res.ok) {
+                setCourses(prev => prev.map(c => c.id === course.id ? { ...c, isFeatured: !c.isFeatured } : c));
+                toast.success(course.isFeatured ? "Removed from featured" : "Added to featured");
+            }
+        } catch (error) {
+            toast.error("Failed to update course");
+        }
+    };
+
+    const handleDuplicateCourse = async (course: Course, e: React.MouseEvent) => {
+        e.stopPropagation();
         setIsLoading(true);
         try {
             const res = await fetch("/api/admin/courses", {
@@ -137,7 +247,7 @@ export function CoursesClient({
                 body: JSON.stringify({
                     title: `${course.title} (Copy)`,
                     slug: `${course.slug}-copy-${Date.now()}`,
-                    description: course.description || "",
+                    description: course.description,
                     shortDescription: course.shortDescription,
                     isFree: course.isFree,
                     isPublished: false,
@@ -149,331 +259,700 @@ export function CoursesClient({
             if (res.ok) {
                 const { course: newCourse } = await res.json();
                 setCourses(prev => [{ ...newCourse, modules: [], _count: { enrollments: 0, modules: 0, certificates: 0 } }, ...prev]);
-                toast.success("Duplicated");
+                toast.success("Course duplicated");
             }
-        } catch {
-            toast.error("Failed");
+        } catch (error) {
+            toast.error("Failed to duplicate course");
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleDelete = async (id: string) => {
-        setIsLoading(true);
-        try {
-            const res = await fetch(`/api/admin/courses?id=${id}`, { method: "DELETE" });
-            if (res.ok) {
-                setCourses(prev => prev.filter(c => c.id !== id));
-                setDeleteConfirm(null);
-                toast.success("Deleted");
-            }
-        } catch {
-            toast.error("Failed");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Course Row Component - Clean, minimal
-    const CourseRow = ({ course }: { course: Course }) => {
-        const lessonCount = course.modules?.reduce((acc, m) => acc + m.lessons.length, 0) || 0;
+    const CourseCard = ({ course }: { course: Course }) => {
+        const certType = CERTIFICATE_LABELS[course.certificateType] || CERTIFICATE_LABELS.COMPLETION;
+        const diffLevel = DIFFICULTY_LABELS[course.difficulty] || DIFFICULTY_LABELS.BEGINNER;
+        const totalCourseLessons = course.modules?.reduce((acc, m) => acc + m.lessons.length, 0) || 0;
 
         return (
-            <div className="group flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all">
+            <Card
+                className="group overflow-hidden hover:shadow-lg transition-all cursor-pointer border-gray-200 hover:border-burgundy-300"
+                onClick={() => window.location.href = `/admin/courses/${course.id}`}
+            >
                 {/* Thumbnail */}
-                <div className="relative w-20 h-14 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                <div className="relative aspect-video bg-gradient-to-br from-burgundy-100 to-burgundy-200 overflow-hidden">
                     {course.thumbnail ? (
-                        <Image src={course.thumbnail} alt="" fill className="object-cover" />
+                        <Image
+                            src={course.thumbnail}
+                            alt={course.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                            <ImageIcon className="w-6 h-6 text-gray-300" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <ImageIcon className="w-12 h-12 text-burgundy-300" />
                         </div>
                     )}
-                </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                        <Link
-                            href={`/admin/courses/${course.id}`}
-                            className="font-medium text-gray-900 hover:text-burgundy-600 truncate"
-                        >
-                            {course.title}
-                        </Link>
+                    {/* Status badges overlay */}
+                    <div className="absolute top-2 left-2 flex gap-1.5">
+                        <Badge className={course.isPublished ? "bg-green-500 text-white" : "bg-gray-500 text-white"}>
+                            {course.isPublished ? <Globe className="w-3 h-3 mr-1" /> : <Lock className="w-3 h-3 mr-1" />}
+                            {course.isPublished ? "Live" : "Draft"}
+                        </Badge>
                         {course.isFeatured && (
-                            <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />
+                            <Badge className="bg-gold-500 text-white">
+                                <Star className="w-3 h-3 mr-1 fill-white" />
+                                Featured
+                            </Badge>
                         )}
                     </div>
-                    <div className="flex items-center gap-3 mt-1 text-sm text-gray-500">
-                        <span>{course._count.modules} modules</span>
-                        <span>•</span>
-                        <span>{lessonCount} lessons</span>
-                    </div>
-                </div>
 
-                {/* Stats */}
-                <div className="hidden md:flex items-center gap-6 text-sm">
-                    <div className="text-center">
-                        <p className="font-semibold text-gray-900">{course._count.enrollments}</p>
-                        <p className="text-xs text-gray-500">enrolled</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="font-semibold text-gray-900">{course._count.certificates}</p>
-                        <p className="text-xs text-gray-500">certified</p>
-                    </div>
-                </div>
-
-                {/* Status */}
-                <Badge
-                    variant={course.isPublished ? "default" : "secondary"}
-                    className={course.isPublished ? "bg-emerald-50 text-emerald-700 border-emerald-200" : ""}
-                >
-                    {course.isPublished ? <Globe className="w-3 h-3 mr-1" /> : <Lock className="w-3 h-3 mr-1" />}
-                    {course.isPublished ? "Live" : "Draft"}
-                </Badge>
-
-                {/* Actions */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="w-4 h-4" />
+                    {/* Quick actions overlay */}
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                        <Button
+                            size="sm"
+                            variant="secondary"
+                            className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                            onClick={(e) => handleToggleFeatured(course, e)}
+                        >
+                            <Star className={`w-4 h-4 ${course.isFeatured ? 'fill-gold-400 text-gold-400' : 'text-gray-600'}`} />
                         </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem asChild>
-                            <Link href={`/admin/courses/${course.id}`}>
-                                Edit Course
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => window.open(`/courses/${course.slug}`, '_blank')}>
-                            <Eye className="w-4 h-4 mr-2" />
-                            Preview
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleTogglePublish(course)}>
-                            {course.isPublished ? "Unpublish" : "Publish"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDuplicate(course)}>
-                            <Copy className="w-4 h-4 mr-2" />
-                            Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {deleteConfirm === course.id ? (
-                            <div className="flex items-center gap-1 px-2 py-1">
-                                <Button size="sm" variant="destructive" className="flex-1 h-7" onClick={() => handleDelete(course.id)}>
-                                    <Check className="w-3 h-3" />
-                                </Button>
-                                <Button size="sm" variant="ghost" className="h-7" onClick={() => setDeleteConfirm(null)}>
-                                    <X className="w-3 h-3" />
-                                </Button>
-                            </div>
-                        ) : (
-                            <DropdownMenuItem
-                                className="text-red-600 focus:text-red-600"
-                                onClick={() => setDeleteConfirm(course.id)}
-                            >
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                Delete
-                            </DropdownMenuItem>
+                        <Button
+                            size="sm"
+                            variant="secondary"
+                            className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(`/courses/${course.slug}`, '_blank');
+                            }}
+                        >
+                            <Eye className="w-4 h-4 text-gray-600" />
+                        </Button>
+                    </div>
+
+                    {/* Certificate type badge */}
+                    <div className="absolute bottom-2 left-2">
+                        <Badge className={certType.color}>
+                            {certType.label}
+                        </Badge>
+                    </div>
+                </div>
+
+                <CardContent className="p-4">
+                    {/* Category & Difficulty */}
+                    <div className="flex items-center gap-2 mb-2 text-xs">
+                        {course.category && (
+                            <span className="text-burgundy-600 font-medium">{course.category.name}</span>
                         )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+                        {course.category && <span className="text-gray-300">•</span>}
+                        <Badge variant="outline" className={`text-xs ${diffLevel.color} border-0`}>
+                            {diffLevel.label}
+                        </Badge>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-burgundy-700 transition-colors">
+                        {course.title}
+                    </h3>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                        <div className="flex items-center gap-1">
+                            <Layers className="w-4 h-4" />
+                            <span>{course._count.modules} modules</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <FileText className="w-4 h-4" />
+                            <span>{totalCourseLessons} lessons</span>
+                        </div>
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="flex items-center justify-between pt-3 border-t">
+                        <div className="flex items-center gap-3 text-sm">
+                            <div className="flex items-center gap-1 text-blue-600">
+                                <Users className="w-4 h-4" />
+                                <span className="font-semibold">{course._count.enrollments}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-green-600">
+                                <Award className="w-4 h-4" />
+                                <span className="font-semibold">{course._count.certificates}</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            {course.isFree ? (
+                                <Badge variant="outline" className="text-green-600 border-green-200">Free</Badge>
+                            ) : course.price ? (
+                                <span className="font-semibold text-gray-900">${Number(course.price)}</span>
+                            ) : null}
+                        </div>
+                    </div>
+
+                    {/* Action buttons on hover */}
+                    <div className="mt-3 pt-3 border-t opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={(e) => handleTogglePublish(course, e)}
+                        >
+                            {course.isPublished ? "Unpublish" : "Publish"}
+                        </Button>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={(e) => handleDuplicateCourse(course, e)}
+                        >
+                            <Copy className="w-4 h-4" />
+                        </Button>
+                        {deleteConfirm === course.id ? (
+                            <>
+                                <Button size="sm" variant="destructive" onClick={(e) => { e.stopPropagation(); handleDeleteCourse(course.id); }}>
+                                    <Check className="w-4 h-4" />
+                                </Button>
+                                <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(null); }}>
+                                    <X className="w-4 h-4" />
+                                </Button>
+                            </>
+                        ) : (
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                                onClick={(e) => { e.stopPropagation(); setDeleteConfirm(course.id); }}
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </Button>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    };
+
+    const CourseListItem = ({ course }: { course: Course }) => {
+        const certType = CERTIFICATE_LABELS[course.certificateType] || CERTIFICATE_LABELS.COMPLETION;
+        const totalCourseLessons = course.modules?.reduce((acc, m) => acc + m.lessons.length, 0) || 0;
+
+        return (
+            <Card
+                className="group hover:shadow-md transition-all cursor-pointer border-gray-200 hover:border-burgundy-300"
+                onClick={() => window.location.href = `/admin/courses/${course.id}`}
+            >
+                <CardContent className="p-0">
+                    <div className="flex items-center gap-4">
+                        {/* Thumbnail */}
+                        <div className="relative w-40 h-24 bg-gradient-to-br from-burgundy-100 to-burgundy-200 flex-shrink-0 rounded-l-xl overflow-hidden">
+                            {course.thumbnail ? (
+                                <Image
+                                    src={course.thumbnail}
+                                    alt={course.title}
+                                    fill
+                                    className="object-cover"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <GraduationCap className="w-8 h-8 text-burgundy-300" />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 py-3 pr-4 min-w-0">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="flex-1 min-w-0">
+                                    {/* Category & badges */}
+                                    <div className="flex items-center gap-2 mb-1">
+                                        {course.category && (
+                                            <span className="text-xs text-burgundy-600 font-medium">{course.category.name}</span>
+                                        )}
+                                        <Badge className={`text-xs ${certType.color}`}>{certType.label}</Badge>
+                                        {course.isFeatured && (
+                                            <Badge className="text-xs bg-gold-100 text-gold-700">
+                                                <Star className="w-3 h-3 mr-1 fill-gold-500" />
+                                                Featured
+                                            </Badge>
+                                        )}
+                                    </div>
+
+                                    {/* Title */}
+                                    <h3 className="font-semibold text-gray-900 truncate group-hover:text-burgundy-700 transition-colors">
+                                        {course.title}
+                                    </h3>
+
+                                    {/* Stats row */}
+                                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                                        <div className="flex items-center gap-1">
+                                            <Badge variant={course.isPublished ? "default" : "secondary"} className={`text-xs ${course.isPublished ? "bg-green-100 text-green-700" : ""}`}>
+                                                {course.isPublished ? "Published" : "Draft"}
+                                            </Badge>
+                                        </div>
+                                        <span className="text-gray-300">•</span>
+                                        <span>{course._count.modules} modules</span>
+                                        <span className="text-gray-300">•</span>
+                                        <span>{totalCourseLessons} lessons</span>
+                                        <span className="text-gray-300">•</span>
+                                        <span className="text-blue-600 font-medium">{course._count.enrollments} enrolled</span>
+                                        <span className="text-gray-300">•</span>
+                                        <span className="text-green-600 font-medium">{course._count.certificates} certified</span>
+                                    </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                    <Button variant="ghost" size="sm" onClick={(e) => handleToggleFeatured(course, e)}>
+                                        <Star className={`w-4 h-4 ${course.isFeatured ? 'fill-gold-400 text-gold-400' : ''}`} />
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={(e) => handleTogglePublish(course, e)}>
+                                        {course.isPublished ? <Lock className="w-4 h-4" /> : <Globe className="w-4 h-4" />}
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(`/courses/${course.slug}`, '_blank');
+                                    }}>
+                                        <Eye className="w-4 h-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={(e) => handleDuplicateCourse(course, e)}>
+                                        <Copy className="w-4 h-4" />
+                                    </Button>
+                                    {deleteConfirm === course.id ? (
+                                        <>
+                                            <Button variant="destructive" size="sm" onClick={() => handleDeleteCourse(course.id)}>
+                                                <Check className="w-4 h-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(null)}>
+                                                <X className="w-4 h-4" />
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Button variant="ghost" size="sm" className="text-red-500" onClick={() => setDeleteConfirm(course.id)}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
         );
     };
 
     return (
-        <div className="space-y-8 max-w-6xl mx-auto">
+        <div className="p-6 max-w-7xl mx-auto space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold text-gray-900">Courses</h1>
-                    <p className="text-gray-500 text-sm mt-0.5">
-                        {publishedCount} published • {draftCount} drafts
-                    </p>
+                    <h1 className="text-3xl font-bold text-gray-900">Course Management</h1>
+                    <p className="text-gray-500 mt-1">Create, edit, and manage your certification courses</p>
                 </div>
-                <Button asChild className="bg-burgundy-600 hover:bg-burgundy-700">
-                    <Link href="/admin/courses/new">
-                        <Plus className="w-4 h-4 mr-2" />
-                        New Course
-                    </Link>
+                <Button className="bg-burgundy-600 hover:bg-burgundy-700" onClick={() => setShowAddModal(true)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Course
                 </Button>
             </div>
 
-            {/* Stats Row - Clean, minimal */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="bg-white border-gray-100">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <Card className="bg-gradient-to-br from-burgundy-500 to-burgundy-600 text-white border-0">
                     <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-2xl font-semibold text-gray-900">{totalEnrollments.toLocaleString()}</p>
-                                <p className="text-sm text-gray-500">Total Enrollments</p>
-                            </div>
-                            <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                                <Users className="w-5 h-5 text-blue-600" />
-                            </div>
-                        </div>
+                        <BookOpen className="w-6 h-6 text-burgundy-200 mb-2" />
+                        <p className="text-3xl font-bold">{courses.length}</p>
+                        <p className="text-burgundy-100 text-sm">Total Courses</p>
                     </CardContent>
                 </Card>
-
-                <Card className="bg-white border-gray-100">
+                <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
                     <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-2xl font-semibold text-gray-900">{activeStudentsThisWeek}</p>
-                                <p className="text-sm text-gray-500">Active (7d)</p>
-                            </div>
-                            <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-emerald-600" />
-                            </div>
-                        </div>
+                        <CheckCircle className="w-6 h-6 text-green-200 mb-2" />
+                        <p className="text-3xl font-bold">{publishedCount}</p>
+                        <p className="text-green-100 text-sm">Published</p>
                     </CardContent>
                 </Card>
-
-                <Card className="bg-white border-gray-100">
+                <Card className="bg-gradient-to-br from-gray-500 to-gray-600 text-white border-0">
                     <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-2xl font-semibold text-gray-900">{totalCertificates}</p>
-                                <p className="text-sm text-gray-500">Certificates</p>
-                            </div>
-                            <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
-                                <Award className="w-5 h-5 text-amber-600" />
-                            </div>
-                        </div>
+                        <FileText className="w-6 h-6 text-gray-300 mb-2" />
+                        <p className="text-3xl font-bold">{draftCount}</p>
+                        <p className="text-gray-200 text-sm">Drafts</p>
                     </CardContent>
                 </Card>
-
-                <Card className="bg-white border-gray-100">
+                <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
                     <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-2xl font-semibold text-gray-900">{avgCompletionRate}%</p>
-                                <p className="text-sm text-gray-500">Completion Rate</p>
-                            </div>
-                            <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                                <GraduationCap className="w-5 h-5 text-purple-600" />
-                            </div>
-                        </div>
+                        <Users className="w-6 h-6 text-blue-200 mb-2" />
+                        <p className="text-3xl font-bold">{totalEnrollments.toLocaleString()}</p>
+                        <p className="text-blue-100 text-sm">Enrollments</p>
+                    </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+                    <CardContent className="p-4">
+                        <Zap className="w-6 h-6 text-purple-200 mb-2" />
+                        <p className="text-3xl font-bold">{activeStudentsThisWeek}</p>
+                        <p className="text-purple-100 text-sm">Active This Week</p>
+                    </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white border-0">
+                    <CardContent className="p-4">
+                        <Award className="w-6 h-6 text-amber-200 mb-2" />
+                        <p className="text-3xl font-bold">{totalCertificates}</p>
+                        <p className="text-amber-100 text-sm">Certificates</p>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Mini Diploma Funnel - If data available */}
-            {miniDiplomaFunnel && (
-                <Card className="bg-gradient-to-r from-pink-50 to-purple-50 border-pink-100">
-                    <CardContent className="p-5">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-                                    <GraduationCap className="w-5 h-5 text-pink-600" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold text-gray-900">Mini Diploma Funnel</h3>
-                                    <p className="text-sm text-gray-500">Free lead magnet performance</p>
-                                </div>
-                            </div>
-                            <Link href="/admin/leads" className="text-sm text-burgundy-600 hover:text-burgundy-700 flex items-center gap-1">
-                                View Details <ArrowRight className="w-4 h-4" />
-                            </Link>
+            {/* Filters & Search */}
+            <Card>
+                <CardContent className="p-4">
+                    <div className="flex flex-wrap items-center gap-4">
+                        {/* Search */}
+                        <div className="relative flex-1 min-w-[250px]">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Input
+                                placeholder="Search courses..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-10"
+                            />
                         </div>
-                        <div className="grid grid-cols-4 gap-4">
-                            <div className="text-center p-3 bg-white/60 rounded-lg">
-                                <p className="text-2xl font-semibold text-gray-900">{miniDiplomaFunnel.optedIn}</p>
-                                <p className="text-xs text-gray-500">Opted In</p>
-                            </div>
-                            <div className="text-center p-3 bg-white/60 rounded-lg">
-                                <p className="text-2xl font-semibold text-gray-900">{miniDiplomaFunnel.started}</p>
-                                <p className="text-xs text-gray-500">Started</p>
-                                <p className="text-xs text-pink-600 mt-0.5">
-                                    {miniDiplomaFunnel.optedIn > 0 ? Math.round((miniDiplomaFunnel.started / miniDiplomaFunnel.optedIn) * 100) : 0}%
-                                </p>
-                            </div>
-                            <div className="text-center p-3 bg-white/60 rounded-lg">
-                                <p className="text-2xl font-semibold text-gray-900">{miniDiplomaFunnel.completed}</p>
-                                <p className="text-xs text-gray-500">Completed</p>
-                                <p className="text-xs text-pink-600 mt-0.5">
-                                    {miniDiplomaFunnel.started > 0 ? Math.round((miniDiplomaFunnel.completed / miniDiplomaFunnel.started) * 100) : 0}%
-                                </p>
-                            </div>
-                            <div className="text-center p-3 bg-white/60 rounded-lg">
-                                <p className="text-2xl font-semibold text-emerald-600">{miniDiplomaFunnel.convertedToPaid}</p>
-                                <p className="text-xs text-gray-500">Converted</p>
-                                <p className="text-xs text-emerald-600 mt-0.5">
-                                    {miniDiplomaFunnel.completed > 0 ? Math.round((miniDiplomaFunnel.convertedToPaid / miniDiplomaFunnel.completed) * 100) : 0}%
-                                </p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
 
-            {/* Search & Filter */}
-            <div className="flex items-center gap-3">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                        placeholder="Search courses..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 bg-white"
-                    />
-                </div>
-                <div className="flex items-center bg-white border rounded-lg overflow-hidden">
-                    {(["all", "published", "draft"] as const).map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => setFilterType(type)}
-                            className={`px-4 py-2 text-sm font-medium transition-colors ${filterType === type
-                                    ? "bg-gray-100 text-gray-900"
-                                    : "text-gray-500 hover:text-gray-700"
-                                }`}
+                        {/* Category Filter */}
+                        <select
+                            value={filterCategory}
+                            onChange={(e) => setFilterCategory(e.target.value)}
+                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white min-w-[150px]"
                         >
-                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                        </button>
-                    ))}
-                </div>
+                            <option value="all">All Categories</option>
+                            {courseCategories.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+
+                        {/* Status Filter */}
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value as any)}
+                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white"
+                        >
+                            <option value="all">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="draft">Drafts</option>
+                        </select>
+
+                        {/* Type Filter */}
+                        <select
+                            value={filterType}
+                            onChange={(e) => setFilterType(e.target.value)}
+                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white"
+                        >
+                            <option value="all">All Types</option>
+                            <option value="COMPLETION">Completion</option>
+                            <option value="CERTIFICATION">Certification</option>
+                            <option value="MINI_DIPLOMA">Mini Diploma</option>
+                        </select>
+
+                        {/* Sort */}
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as any)}
+                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white"
+                        >
+                            <option value="recent">Recent First</option>
+                            <option value="enrollments">Most Enrolled</option>
+                            <option value="title">A-Z</option>
+                        </select>
+
+                        {/* View Toggle */}
+                        <div className="flex items-center border rounded-lg overflow-hidden">
+                            <button
+                                onClick={() => setViewMode("grid")}
+                                className={`p-2 ${viewMode === "grid" ? "bg-burgundy-100 text-burgundy-700" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                            >
+                                <Grid3X3 className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => setViewMode("list")}
+                                className={`p-2 ${viewMode === "list" ? "bg-burgundy-100 text-burgundy-700" : "bg-white text-gray-500 hover:bg-gray-50"}`}
+                            >
+                                <List className="w-4 h-4" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Active filters */}
+                    {(searchQuery || filterCategory !== "all" || filterStatus !== "all" || filterType !== "all") && (
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+                            <span className="text-sm text-gray-500">Active filters:</span>
+                            {searchQuery && (
+                                <Badge variant="secondary" className="gap-1">
+                                    Search: {searchQuery}
+                                    <X className="w-3 h-3 cursor-pointer" onClick={() => setSearchQuery("")} />
+                                </Badge>
+                            )}
+                            {filterCategory !== "all" && (
+                                <Badge variant="secondary" className="gap-1">
+                                    {filterCategory}
+                                    <X className="w-3 h-3 cursor-pointer" onClick={() => setFilterCategory("all")} />
+                                </Badge>
+                            )}
+                            {filterStatus !== "all" && (
+                                <Badge variant="secondary" className="gap-1">
+                                    {filterStatus}
+                                    <X className="w-3 h-3 cursor-pointer" onClick={() => setFilterStatus("all")} />
+                                </Badge>
+                            )}
+                            {filterType !== "all" && (
+                                <Badge variant="secondary" className="gap-1">
+                                    {CERTIFICATE_LABELS[filterType]?.label || filterType}
+                                    <X className="w-3 h-3 cursor-pointer" onClick={() => setFilterType("all")} />
+                                </Badge>
+                            )}
+                            <Button variant="ghost" size="sm" className="text-xs" onClick={() => {
+                                setSearchQuery("");
+                                setFilterCategory("all");
+                                setFilterStatus("all");
+                                setFilterType("all");
+                            }}>
+                                Clear all
+                            </Button>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            {/* Results count */}
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-500">
+                    Showing {filteredCourses.length} of {courses.length} courses
+                    ({filteredMainCourses.length} certifications, {filteredMiniDiplomas.length} mini diplomas)
+                </p>
             </div>
 
             {/* Mini Diplomas Section */}
             {filteredMiniDiplomas.length > 0 && (
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                        <h2 className="font-medium text-gray-700">Mini Diplomas</h2>
-                        <Badge variant="secondary" className="bg-pink-50 text-pink-700">
-                            {filteredMiniDiplomas.length}
-                        </Badge>
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center">
+                            <GraduationCap className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Mini Diplomas</h2>
+                            <p className="text-sm text-gray-500">Free lead magnets - {filteredMiniDiplomas.length} courses</p>
+                        </div>
+                        <a
+                            href="/functional-medicine-diploma/lesson/1"
+                            target="_blank"
+                            className="ml-auto text-sm text-burgundy-600 hover:text-burgundy-700 flex items-center gap-1"
+                        >
+                            <ExternalLink className="w-4 h-4" />
+                            Preview FM V2
+                        </a>
                     </div>
-                    <div className="space-y-2">
-                        {filteredMiniDiplomas.map(course => (
-                            <CourseRow key={course.id} course={course} />
-                        ))}
-                    </div>
+                    {viewMode === "grid" ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredMiniDiplomas.map(course => (
+                                <CourseCard key={course.id} course={course} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {filteredMiniDiplomas.map(course => (
+                                <CourseListItem key={course.id} course={course} />
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 
-            {/* Main Courses Section */}
+            {/* Main Certifications Section */}
             {filteredMainCourses.length > 0 && (
-                <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                        <h2 className="font-medium text-gray-700">Certifications</h2>
-                        <Badge variant="secondary">
-                            {filteredMainCourses.length}
-                        </Badge>
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-burgundy-500 to-burgundy-600 flex items-center justify-center">
+                            <Award className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">Main Certifications</h2>
+                            <p className="text-sm text-gray-500">Paid courses - {filteredMainCourses.length} courses</p>
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        {filteredMainCourses.map(course => (
-                            <CourseRow key={course.id} course={course} />
-                        ))}
-                    </div>
+                    {viewMode === "grid" ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {filteredMainCourses.map(course => (
+                                <CourseCard key={course.id} course={course} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="space-y-3">
+                            {filteredMainCourses.map(course => (
+                                <CourseListItem key={course.id} course={course} />
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 
-            {/* Empty State */}
+            {/* Empty state */}
             {filteredCourses.length === 0 && (
-                <div className="text-center py-16">
-                    <BookOpen className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                    <h3 className="font-medium text-gray-900">No courses found</h3>
-                    <p className="text-sm text-gray-500 mt-1">Try adjusting your search or filters</p>
+                <Card className="border-dashed">
+                    <CardContent className="py-16 text-center">
+                        <BookOpen className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
+                        <p className="text-gray-500 mb-6">
+                            {searchQuery || filterCategory !== "all" || filterStatus !== "all" || filterType !== "all"
+                                ? "Try adjusting your filters"
+                                : "Create your first course to get started"
+                            }
+                        </p>
+                        <Button className="bg-burgundy-600 hover:bg-burgundy-700" onClick={() => setShowAddModal(true)}>
+                            <Plus className="w-4 h-4 mr-2" />
+                            Create Course
+                        </Button>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Add Course Modal */}
+            {showAddModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowAddModal(false)}>
+                    <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                        <div className="p-6 border-b sticky top-0 bg-white z-10">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-xl font-bold text-gray-900">Create New Course</h2>
+                                    <p className="text-sm text-gray-500 mt-1">Fill in the basics to get started</p>
+                                </div>
+                                <Button variant="ghost" size="sm" onClick={() => { setShowAddModal(false); resetForm(); }}>
+                                    <X className="w-5 h-5" />
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="p-6 space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Course Title *</label>
+                                <Input
+                                    value={formData.title}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value, slug: generateSlug(e.target.value) }))}
+                                    placeholder="e.g., Gut Health Coach Certification"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">URL Slug</label>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-500">/courses/</span>
+                                    <Input
+                                        value={formData.slug}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                                        className="font-mono"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
+                                <Input
+                                    value={formData.shortDescription}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, shortDescription: e.target.value }))}
+                                    placeholder="Brief summary for course cards"
+                                    maxLength={160}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                                <Textarea
+                                    value={formData.description}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                    rows={4}
+                                    placeholder="Full course description..."
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <select
+                                        value={formData.categoryId}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))}
+                                        className="w-full rounded-lg border border-gray-300 p-2.5 bg-white"
+                                    >
+                                        <option value="">Select category...</option>
+                                        {categories.map(cat => (
+                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                                    <select
+                                        value={formData.difficulty}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, difficulty: e.target.value }))}
+                                        className="w-full rounded-lg border border-gray-300 p-2.5 bg-white"
+                                    >
+                                        <option value="BEGINNER">Beginner</option>
+                                        <option value="INTERMEDIATE">Intermediate</option>
+                                        <option value="ADVANCED">Advanced</option>
+                                        <option value="EXPERT">Expert</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Type</label>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {Object.entries(CERTIFICATE_LABELS).map(([value, { label, color }]) => (
+                                        <button
+                                            key={value}
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, certificateType: value }))}
+                                            className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                                                formData.certificateType === value
+                                                    ? "border-burgundy-500 bg-burgundy-50 text-burgundy-700"
+                                                    : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex gap-6 p-4 bg-gray-50 rounded-xl">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.isFree}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, isFree: e.target.checked }))}
+                                        className="rounded"
+                                    />
+                                    <span className="text-sm">Free Course</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.isPublished}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, isPublished: e.target.checked }))}
+                                        className="rounded"
+                                    />
+                                    <span className="text-sm">Publish Immediately</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.isFeatured}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, isFeatured: e.target.checked }))}
+                                        className="rounded"
+                                    />
+                                    <span className="text-sm">Featured</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div className="p-6 border-t bg-gray-50 flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => { setShowAddModal(false); resetForm(); }}>
+                                Cancel
+                            </Button>
+                            <Button
+                                className="bg-burgundy-600 hover:bg-burgundy-700"
+                                onClick={handleCreateCourse}
+                                disabled={isLoading || !formData.title || !formData.description}
+                            >
+                                {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
+                                Create & Edit
+                            </Button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
