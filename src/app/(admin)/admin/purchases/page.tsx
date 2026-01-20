@@ -122,27 +122,99 @@ async function getPurchasesData(searchParams: SearchParams) {
     const range = searchParams.range || "30days";
     const filterRange = getFilterDateRange(range);
 
-    // 1. Get Revenue Stats - Dynamic based on filter
-    const [periodRevenue, todayRevenue, allTimeRevenue] = await Promise.all([
-        // Current period (matches filter)
+    // Base where clause for completed payments
+    const baseWhere = { status: "COMPLETED" as const };
+    const periodWhere = { ...baseWhere, createdAt: { gte: filterRange.start, lte: filterRange.end } };
+    const todayWhere = { ...baseWhere, createdAt: { gte: startOfTodayUTC } };
+
+    // 1. Get Revenue Stats - Split by payment type for proper CPA calculation
+    const [
+        // Period stats
+        periodFrontend,
+        periodOto,
+        periodBump,
+        periodTotal,
+        // Today stats
+        todayFrontend,
+        todayOto,
+        todayBump,
+        todayTotal,
+        // All time
+        allTimeTotal,
+        // Disputes
+        disputeCount
+    ] = await Promise.all([
+        // Period - Frontend only (for CPA)
         prisma.payment.aggregate({
-            where: { createdAt: { gte: filterRange.start, lte: filterRange.end }, status: "COMPLETED" },
+            where: { ...periodWhere, paymentType: "FRONTEND" },
             _sum: { amount: true },
             _count: true,
         }),
-        // Today (always show for quick reference)
+        // Period - OTO
         prisma.payment.aggregate({
-            where: { createdAt: { gte: startOfTodayUTC }, status: "COMPLETED" },
+            where: { ...periodWhere, paymentType: "OTO" },
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Period - Bump
+        prisma.payment.aggregate({
+            where: { ...periodWhere, paymentType: "BUMP" },
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Period - Total
+        prisma.payment.aggregate({
+            where: periodWhere,
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Today - Frontend
+        prisma.payment.aggregate({
+            where: { ...todayWhere, paymentType: "FRONTEND" },
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Today - OTO
+        prisma.payment.aggregate({
+            where: { ...todayWhere, paymentType: "OTO" },
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Today - Bump
+        prisma.payment.aggregate({
+            where: { ...todayWhere, paymentType: "BUMP" },
+            _sum: { amount: true },
+            _count: true,
+        }),
+        // Today - Total
+        prisma.payment.aggregate({
+            where: todayWhere,
             _sum: { amount: true },
             _count: true,
         }),
         // All time
         prisma.payment.aggregate({
-            where: { status: "COMPLETED" },
+            where: baseWhere,
             _sum: { amount: true },
             _count: true,
         }),
+        // Disputes
+        prisma.payment.count({
+            where: { status: { in: ["DISPUTED", "CHARGEBACK"] } },
+        }),
     ]);
+
+    // Calculate take rates
+    const frontendOrders = periodFrontend._count || 0;
+    const otoCount = periodOto._count || 0;
+    const bumpCount = periodBump._count || 0;
+
+    const otoTakeRate = frontendOrders > 0 ? Math.round((otoCount / frontendOrders) * 100) : 0;
+    const bumpTakeRate = frontendOrders > 0 ? Math.round((bumpCount / frontendOrders) * 100) : 0;
+
+    // Calculate AOV (total revenue / frontend orders)
+    const totalRevenue = Number(periodTotal._sum.amount || 0);
+    const aov = frontendOrders > 0 ? Math.round(totalRevenue / frontendOrders) : 0;
 
     // 2. Get Filtered Purchases (For Table)
     const searchFilter = searchParams.search ? {
@@ -168,6 +240,7 @@ async function getPurchasesData(searchParams: SearchParams) {
             id: true,
             amount: true,
             status: true,
+            paymentType: true,
             createdAt: true,
             productName: true,
             ipAddress: true,
@@ -185,26 +258,32 @@ async function getPurchasesData(searchParams: SearchParams) {
         },
     });
 
-    // 3. Get disputes/chargebacks count
-    const disputeCount = await prisma.payment.count({
-        where: { status: { in: ["DISPUTED", "CHARGEBACK"] } },
-    });
-
     return {
         stats: {
             period: {
-                revenue: Number(periodRevenue._sum.amount || 0),
-                orders: periodRevenue._count,
+                revenue: totalRevenue,
+                frontendOrders: frontendOrders,
+                totalOrders: periodTotal._count,
+                frontendRevenue: Number(periodFrontend._sum.amount || 0),
+                otoRevenue: Number(periodOto._sum.amount || 0),
+                bumpRevenue: Number(periodBump._sum.amount || 0),
                 label: filterRange.label,
             },
             today: {
-                revenue: Number(todayRevenue._sum.amount || 0),
-                orders: todayRevenue._count,
+                revenue: Number(todayTotal._sum.amount || 0),
+                frontendOrders: todayFrontend._count,
+                totalOrders: todayTotal._count,
             },
             total: {
-                revenue: Number(allTimeRevenue._sum.amount || 0),
-                orders: allTimeRevenue._count,
+                revenue: Number(allTimeTotal._sum.amount || 0),
+                orders: allTimeTotal._count,
             },
+            // New metrics for CPA calculation
+            takeRates: {
+                oto: otoTakeRate,
+                bump: bumpTakeRate,
+            },
+            aov: aov,
             disputes: disputeCount,
         },
         recentPurchases: recentPurchases.map(p => ({

@@ -51,6 +51,7 @@ interface Purchase {
     id: string;
     amount: number;
     status: string;
+    paymentType?: string;
     createdAt: Date;
     productName: string;
     ipAddress?: string;
@@ -73,9 +74,26 @@ interface Purchase {
 }
 
 interface Stats {
-    period: { revenue: number; orders: number; label: string };
-    today: { revenue: number; orders: number };
+    period: {
+        revenue: number;
+        frontendOrders: number;
+        totalOrders: number;
+        frontendRevenue: number;
+        otoRevenue: number;
+        bumpRevenue: number;
+        label: string;
+    };
+    today: {
+        revenue: number;
+        frontendOrders: number;
+        totalOrders: number;
+    };
     total: { revenue: number; orders: number };
+    takeRates: {
+        oto: number;
+        bump: number;
+    };
+    aov: number;
     disputes: number;
 }
 
@@ -244,92 +262,108 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                 </div>
             </div>
 
-            {/* Stats Cards - Dynamic based on filter */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Card 1: Current Period (Dynamic) */}
-                <Card className="bg-white/50 backdrop-blur-sm border-blue-100 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10 transition-all duration-300">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-blue-600">{stats.period.label} Revenue</p>
-                                <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {formatCurrency(stats.period.revenue)}
-                                </p>
-                                <div className="flex items-center mt-1 text-blue-600/80 text-xs">
-                                    <ShoppingCart className="w-3 h-3 mr-1" />
-                                    {stats.period.orders} orders
-                                </div>
-                            </div>
-                            <div className="p-3 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg shadow-blue-500/20">
-                                <DollarSign className="w-6 h-6 text-white" />
-                            </div>
+            {/* Stats Cards - 6 Key Metrics for CPA & Funnel Optimization */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {/* Total Revenue */}
+                <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100 shadow-lg">
+                    <CardContent className="pt-4 pb-4">
+                        <div className="text-center">
+                            <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">{stats.period.label}</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">
+                                {formatCurrency(stats.period.revenue)}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">Total Revenue</p>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Card 2: Today's Revenue (Always shown) */}
-                <Card className="bg-white/50 backdrop-blur-sm border-emerald-100 shadow-lg shadow-emerald-500/5 hover:shadow-emerald-500/10 transition-all duration-300">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-emerald-600">Today&apos;s Revenue</p>
-                                <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {formatCurrency(stats.today.revenue)}
-                                </p>
-                                <div className="flex items-center mt-1 text-emerald-600/80 text-xs">
-                                    <Clock className="w-3 h-3 mr-1" />
-                                    {stats.today.orders} orders today
-                                </div>
-                            </div>
-                            <div className="p-3 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl shadow-lg shadow-emerald-500/20">
-                                <TrendingUp className="w-6 h-6 text-white" />
-                            </div>
+                {/* Frontend Orders (For CPA) */}
+                <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100 shadow-lg">
+                    <CardContent className="pt-4 pb-4">
+                        <div className="text-center">
+                            <p className="text-xs font-medium text-emerald-600 uppercase tracking-wide">Frontend</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">
+                                {stats.period.frontendOrders}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">Orders (CPA Base)</p>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Card 3: All Time Total */}
-                <Card className="bg-white/50 backdrop-blur-sm border-purple-100 shadow-lg shadow-purple-500/5 hover:shadow-purple-500/10 transition-all duration-300">
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-purple-600">All Time</p>
-                                <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {formatCurrency(stats.total.revenue)}
-                                </p>
-                                <div className="flex items-center mt-1 text-purple-600/80 text-xs">
-                                    <CreditCard className="w-3 h-3 mr-1" />
-                                    {stats.total.orders} total orders
-                                </div>
-                            </div>
-                            <div className="p-3 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl shadow-lg shadow-purple-500/20">
-                                <Calendar className="w-6 h-6 text-white" />
-                            </div>
+                {/* Today */}
+                <Card className="bg-gradient-to-br from-purple-50 to-white border-purple-100 shadow-lg">
+                    <CardContent className="pt-4 pb-4">
+                        <div className="text-center">
+                            <p className="text-xs font-medium text-purple-600 uppercase tracking-wide">Today</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">
+                                {formatCurrency(stats.today.revenue)}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">{stats.today.frontendOrders} orders</p>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Card 4: Disputes */}
-                <Card className={`backdrop-blur-sm transition-all duration-300 ${stats.disputes > 0 ? 'bg-red-50/50 border-red-100 shadow-lg shadow-red-500/5 hover:shadow-red-500/10' : 'bg-white/50 border-gray-100 shadow-sm'}`}>
-                    <CardContent className="pt-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className={`text-sm font-medium ${stats.disputes > 0 ? 'text-red-600' : 'text-gray-500'}`}>Dispute Risk</p>
-                                <p className={`text-2xl font-bold mt-1 ${stats.disputes > 0 ? 'text-red-900' : 'text-gray-900'}`}>
-                                    {stats.disputes}
-                                </p>
-                                <div className={`flex items-center mt-1 text-xs ${stats.disputes > 0 ? 'text-red-600' : 'text-gray-500'}`}>
-                                    <Shield className="w-3 h-3 mr-1" />
-                                    {stats.disputes > 0 ? 'Action Required' : 'No active disputes'}
-                                </div>
-                            </div>
-                            <div className={`p-3 rounded-xl shadow-lg ${stats.disputes > 0 ? 'bg-gradient-to-br from-red-400 to-red-600 shadow-red-500/20' : 'bg-gray-100'}`}>
-                                <AlertTriangle className={`w-6 h-6 ${stats.disputes > 0 ? 'text-white' : 'text-gray-400'}`} />
-                            </div>
+                {/* OTO Take Rate */}
+                <Card className="bg-gradient-to-br from-amber-50 to-white border-amber-100 shadow-lg">
+                    <CardContent className="pt-4 pb-4">
+                        <div className="text-center">
+                            <p className="text-xs font-medium text-amber-600 uppercase tracking-wide">OTO Rate</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">
+                                {stats.takeRates.oto}%
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">{formatCurrency(stats.period.otoRevenue)} rev</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Bump Take Rate */}
+                <Card className="bg-gradient-to-br from-pink-50 to-white border-pink-100 shadow-lg">
+                    <CardContent className="pt-4 pb-4">
+                        <div className="text-center">
+                            <p className="text-xs font-medium text-pink-600 uppercase tracking-wide">Bump Rate</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">
+                                {stats.takeRates.bump}%
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">{formatCurrency(stats.period.bumpRevenue)} rev</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* AOV */}
+                <Card className="bg-gradient-to-br from-indigo-50 to-white border-indigo-100 shadow-lg">
+                    <CardContent className="pt-4 pb-4">
+                        <div className="text-center">
+                            <p className="text-xs font-medium text-indigo-600 uppercase tracking-wide">AOV</p>
+                            <p className="text-2xl font-bold text-gray-900 mt-1">
+                                {formatCurrency(stats.aov)}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">Avg Order Value</p>
                         </div>
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Disputes Alert (if any) */}
+            {stats.disputes > 0 && (
+                <Card className="bg-red-50 border-red-200 shadow-lg">
+                    <CardContent className="py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-red-100 rounded-lg">
+                                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-red-900">{stats.disputes} Active Disputes</p>
+                                    <p className="text-sm text-red-600">Requires immediate attention</p>
+                                </div>
+                            </div>
+                            <Button variant="destructive" size="sm">
+                                View Disputes
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Main Content Area */}
             <Card className="border-none shadow-xl shadow-gray-200/40 bg-white/70 backdrop-blur-md">

@@ -2735,6 +2735,7 @@ model Payment {
 
   // Status
   status       PaymentStatus @default(COMPLETED)
+  paymentType  PaymentType   @default(FRONTEND) // FRONTEND, OTO, BUMP, SUBSCRIPTION
   refundedAt   DateTime?
   refundAmount Decimal?      @db.Decimal(10, 2)
   chargebackAt DateTime?
@@ -2762,6 +2763,13 @@ enum PaymentStatus {
   REFUNDED
   DISPUTED
   CHARGEBACK
+}
+
+enum PaymentType {
+  FRONTEND     // Initial purchase (counts toward CPA)
+  OTO          // One-Time Offer (upsell after checkout)
+  BUMP         // Order bump (added at checkout)
+  SUBSCRIPTION // Recurring payment
 }
 
 // ==================== RESOURCE DOWNLOADS (DISPUTE EVIDENCE) ====================
