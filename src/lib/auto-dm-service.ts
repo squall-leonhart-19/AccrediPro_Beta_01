@@ -79,22 +79,25 @@ export async function sendPurchaseDMs(options: SendPurchaseDMsOptions): Promise<
         // Get coach user ID from database (find Sarah or the assigned coach)
         const coachInfo = COACH_INFO[niche.coach];
 
-        // Find coach - prioritize mini diploma Sarah, then coach info, then admin
+        // Find coach for MAIN COURSE purchases - use sarah@accredipro-certificate.com
+        // Mini diploma uses sarah_womenhealth@ (handled in auto-messages.ts for wh_* triggers)
         const coachUser = await prisma.user.findFirst({
             where: {
                 OR: [
-                    { email: "sarah_womenhealth@accredipro-certificate.com" }, // Mini diploma Sarah
+                    { email: "sarah@accredipro-certificate.com" }, // Main course Sarah
                     { email: coachInfo.email },
                     { role: "ADMIN" }, // Fallback to any admin
                 ],
             },
-            select: { id: true },
+            select: { id: true, email: true },
         });
 
         if (!coachUser) {
             console.log(`[AUTO-DM] No coach/admin found in database`);
             return false;
         }
+
+        console.log(`[AUTO-DM] Using coach: ${coachUser.email} for main course purchase DMs`);
 
         // Step 1: Send Sarah intro immediately
         const sarahMessage = getSarahIntroDM(niche, firstName);

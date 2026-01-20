@@ -102,11 +102,11 @@ export async function POST(request: NextRequest) {
         });
         console.log(`📱 GHL milestone sent: ${user.email} - mini_diploma_graduate`);
 
-        // Find Sarah coach for functional medicine
+        // Find Sarah Women's Health coach for mini diploma completion messages
+        // Mini diploma messages ALWAYS use sarah_womenhealth@accredipro-certificate.com
         const sarahCoach = await prisma.user.findFirst({
             where: {
-                email: { contains: "sarah", mode: "insensitive" },
-                role: { in: ["ADMIN", "INSTRUCTOR", "MENTOR"] },
+                email: "sarah_womenhealth@accredipro-certificate.com",
             },
         });
 
