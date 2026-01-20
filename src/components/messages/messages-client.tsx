@@ -442,6 +442,9 @@ export function MessagesClient({
     return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
   }, []);
 
+  // Track last scroll time to prevent race conditions with polling
+  const lastScrollTimeRef = useRef<number>(0);
+
   // Handle scroll events to track if user is at bottom (Twitch/YouTube style)
   // Uses REFS to avoid state updates that cause re-renders and scroll jumps
   const handleScroll = useCallback(() => {
@@ -451,11 +454,14 @@ export function MessagesClient({
     const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
     isAtBottomRef.current = distanceFromBottom < 50;
 
-    // Track if user manually scrolled up
-    if (distanceFromBottom > 100) {
+    // Track scroll time to prevent race conditions
+    lastScrollTimeRef.current = Date.now();
+
+    // Track if user manually scrolled up - LOWER threshold (30px) for faster detection
+    if (distanceFromBottom > 30) {
       userHasScrolledRef.current = true;
-    } else if (distanceFromBottom < 50) {
-      // User scrolled back to bottom
+    } else if (distanceFromBottom < 20) {
+      // User scrolled back to bottom - only reset if they're REALLY at bottom
       userHasScrolledRef.current = false;
       setNewMessagesCount(0);
     }
@@ -472,18 +478,29 @@ export function MessagesClient({
   const scrollToBottom = useCallback((force = false, instant = false) => {
     const container = messagesContainerRef.current;
     if (!container) {
-      messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
+      if (force) {
+        messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
+      }
       return;
     }
 
+    // CRITICAL: Don't auto-scroll if user was actively scrolling in last 500ms
+    // This prevents race conditions where polling triggers before scroll state is updated
+    const recentlyScrolled = Date.now() - lastScrollTimeRef.current < 500;
+
     // Only auto-scroll if:
     // 1. force=true (initial load, user sent message), OR
-    // 2. User hasn't manually scrolled up AND is at bottom
-    if (force || (!userHasScrolledRef.current && isAtBottomRef.current)) {
+    // 2. User hasn't manually scrolled up AND is at bottom AND hasn't scrolled recently
+    const shouldScroll = force || (!userHasScrolledRef.current && isAtBottomRef.current && !recentlyScrolled);
+
+    if (shouldScroll) {
       messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
       setNewMessagesCount(0);
       isAtBottomRef.current = true;
-      userHasScrolledRef.current = false;
+      // Only reset userHasScrolledRef if we're forcing (user action, not polling)
+      if (force) {
+        userHasScrolledRef.current = false;
+      }
     }
   }, []);
 
@@ -492,35 +509,22 @@ export function MessagesClient({
       const response = await fetch(`/api/messages?userId=${userId}&limit=50`);
       const data = await response.json();
       if (data.success && isMountedRef.current) {
-        // Check for new incoming messages (on refresh only)
-        if (isRefresh && data.data?.length > 0) {
-          const latestMessage = data.data[data.data.length - 1];
-          const currentLatestId = messages[messages.length - 1]?.id;
-
-          // If there's a new message from the other user, show toast and scroll only if near bottom
-          if (latestMessage.id !== currentLatestId && latestMessage.senderId === userId) {
-            const senderName = selectedUser?.firstName || "Someone";
-            toast.info(`New message from ${senderName}`, {
-              description: latestMessage.content?.slice(0, 50) + (latestMessage.content?.length > 50 ? "..." : ""),
-              duration: 4000,
-            });
-            // Only auto-scroll if user is near bottom - don't force scroll when reading history
-            setTimeout(() => scrollToBottom(false, true), 100);
-          }
-        }
+        // NOTE: New message detection and toast/scroll is handled by the useEffect
+        // that watches the messages array. We don't need to handle it here.
+        // This prevents duplicate scroll calls and race conditions.
 
         setMessages(data.data);
         setHasMoreMessages(data.hasMore || false);
         setNextCursor(data.nextCursor || null);
         if (!isRefresh) {
-          // Force instant scroll on initial load
+          // Force instant scroll on initial load only
           setTimeout(() => scrollToBottom(true, true), 100);
         }
       }
     } catch (error) {
       console.error("Failed to fetch messages:", error);
     }
-  }, [messages, selectedUser]);
+  }, [selectedUser, scrollToBottom]);
 
   // Load more older messages
   const loadMoreMessages = useCallback(async () => {
@@ -632,21 +636,29 @@ export function MessagesClient({
     if (lastMessageId && lastMessageId !== prevLastMessageIdRef.current) {
       // Don't react to optimistic messages (they'll be replaced anyway)
       if (!lastMessageId.startsWith('temp-')) {
+        // Check if this is an incoming message (from the other user)
+        const isIncomingMessage = lastMessage?.senderId === selectedUser?.id;
+
+        // CRITICAL: Check if user was scrolling recently (500ms window)
+        const recentlyScrolled = Date.now() - lastScrollTimeRef.current < 500;
+
         // Twitch/YouTube style: check REFS (not state!) for scroll position
-        // If user hasn't scrolled up AND is at bottom, auto-scroll
+        // If user hasn't scrolled up AND is at bottom AND hasn't scrolled recently, auto-scroll
         // Otherwise, show "new messages" indicator
-        if (!userHasScrolledRef.current && isAtBottomRef.current) {
+        if (!userHasScrolledRef.current && isAtBottomRef.current && !recentlyScrolled) {
           scrollToBottom(true, true); // force instant scroll
-        } else if (userHasScrolledRef.current) {
-          // User is reading history - show "new messages" indicator
-          setNewMessagesCount((prev) => prev + 1);
+        } else if (userHasScrolledRef.current || recentlyScrolled) {
+          // User is reading history OR actively scrolling - show "new messages" indicator
+          if (isIncomingMessage) {
+            setNewMessagesCount((prev) => prev + 1);
+          }
         }
       }
     }
 
     // Always update the ref to track current last message
     prevLastMessageIdRef.current = lastMessageId;
-  }, [messages, scrollToBottom]); // removed isAtBottom dependency - using refs now
+  }, [messages, scrollToBottom, selectedUser]); // removed isAtBottom dependency - using refs now
 
   // Handle typing indicator - use realtime if connected, fallback to API
   const handleTyping = async () => {
