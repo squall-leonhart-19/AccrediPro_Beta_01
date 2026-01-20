@@ -8,7 +8,19 @@ async function getCoursesData() {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    const [courses, categories, totalEnrollments, totalCertificates, activeStudents, completedEnrollments] = await Promise.all([
+    const [
+        courses,
+        categories,
+        totalEnrollments,
+        totalCertificates,
+        activeStudents,
+        completedEnrollments,
+        // Mini Diploma funnel metrics
+        miniDiplomaOptedIn,
+        miniDiplomaStarted,
+        miniDiplomaCompleted,
+        miniDiplomaPaidConversions,
+    ] = await Promise.all([
         prisma.course.findMany({
             include: {
                 category: true,
@@ -53,6 +65,27 @@ async function getCoursesData() {
         prisma.enrollment.count({
             where: { status: "COMPLETED" },
         }),
+        // Mini Diploma: Users who opted in (have miniDiplomaCategory set)
+        prisma.user.count({
+            where: { miniDiplomaCategory: { not: null }, isFakeProfile: false },
+        }),
+        // Mini Diploma: Users who started (miniDiplomaProgress > 0)
+        prisma.user.count({
+            where: { miniDiplomaProgress: { gt: 0 }, isFakeProfile: false },
+        }),
+        // Mini Diploma: Users who completed
+        prisma.user.count({
+            where: { miniDiplomaCompletedAt: { not: null }, isFakeProfile: false },
+        }),
+        // Mini Diploma: Users who converted to paid (have a payment after mini diploma completion)
+        prisma.payment.count({
+            where: {
+                status: "COMPLETED",
+                user: {
+                    miniDiplomaCompletedAt: { not: null },
+                },
+            },
+        }),
     ]);
 
     const avgCompletionRate = totalEnrollments > 0
@@ -66,6 +99,12 @@ async function getCoursesData() {
         totalCertificates,
         activeStudentsThisWeek: activeStudents,
         avgCompletionRate,
+        miniDiplomaFunnel: {
+            optedIn: miniDiplomaOptedIn,
+            started: miniDiplomaStarted,
+            completed: miniDiplomaCompleted,
+            convertedToPaid: miniDiplomaPaidConversions,
+        },
     };
 }
 
@@ -83,6 +122,7 @@ export default async function AdminCoursesPage() {
         totalCertificates,
         activeStudentsThisWeek,
         avgCompletionRate,
+        miniDiplomaFunnel,
     } = await getCoursesData();
 
     // Serialize for client component
@@ -102,6 +142,7 @@ export default async function AdminCoursesPage() {
             totalCertificates={totalCertificates}
             activeStudentsThisWeek={activeStudentsThisWeek}
             avgCompletionRate={avgCompletionRate}
+            miniDiplomaFunnel={miniDiplomaFunnel}
         />
     );
 }
