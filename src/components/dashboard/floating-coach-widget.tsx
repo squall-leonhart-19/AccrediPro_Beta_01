@@ -10,6 +10,8 @@ import {
     Send,
     Loader2,
     ArrowRight,
+    EyeOff,
+    Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,9 +38,13 @@ function getGreeting() {
     return "Good evening";
 }
 
+// localStorage key for hiding chat widget
+const CHAT_HIDDEN_KEY = "accredipro_chat_hidden";
+
 export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isChatMode, setIsChatMode] = useState(false);
+    const [isHidden, setIsHidden] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +55,27 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
 
     const greeting = getGreeting();
     const name = userName || "there";
+
+    // Load hidden state from localStorage on mount
+    useEffect(() => {
+        const stored = localStorage.getItem(CHAT_HIDDEN_KEY);
+        if (stored === "true") {
+            setIsHidden(true);
+        }
+    }, []);
+
+    // Toggle hide state and persist to localStorage
+    const toggleHidden = useCallback(() => {
+        setIsHidden(prev => {
+            const newValue = !prev;
+            localStorage.setItem(CHAT_HIDDEN_KEY, String(newValue));
+            if (newValue) {
+                setIsExpanded(false);
+                setIsChatMode(false);
+            }
+            return newValue;
+        });
+    }, []);
 
     // Fetch mentors to get Coach Sarah's ID - with AbortController to prevent race conditions
     useEffect(() => {
@@ -146,6 +173,20 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
         }
     };
 
+    // Show minimal "show chat" button when hidden
+    if (isHidden) {
+        return (
+            <button
+                onClick={toggleHidden}
+                className="fixed bottom-4 right-4 z-50 w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-500 hover:text-gray-700 flex items-center justify-center shadow-md transition-all duration-200 hover:scale-110 opacity-60 hover:opacity-100"
+                title="Show chat"
+                aria-label="Show chat with Coach Sarah"
+            >
+                <Eye className="w-4 h-4" />
+            </button>
+        );
+    }
+
     return (
         <div className="fixed bottom-4 right-4 z-50">
             {/* Expanded Card */}
@@ -175,8 +216,16 @@ export function FloatingCoachWidget({ userName, userId }: FloatingCoachWidgetPro
                                     </div>
                                 </div>
                                 <button
+                                    onClick={toggleHidden}
+                                    className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10"
+                                    title="Hide chat widget"
+                                >
+                                    <EyeOff className="w-4 h-4" />
+                                </button>
+                                <button
                                     onClick={() => { setIsExpanded(false); setIsChatMode(false); }}
                                     className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10"
+                                    title="Close"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
