@@ -242,10 +242,11 @@ export async function POST(request: NextRequest) {
             }
 
             // User exists but not enrolled - enroll them
-            const courseResults = await prisma.$queryRaw<any[]>`
-                SELECT id FROM "Course" WHERE slug = ${courseSlug} LIMIT 1
-            `;
-            const courseData = courseResults[0];
+            // Use Prisma ORM instead of raw SQL for security (prevents SQL injection)
+            const courseData = await prisma.course.findUnique({
+                where: { slug: courseSlug },
+                select: { id: true },
+            });
 
             if (!courseData) {
                 return NextResponse.json(
@@ -286,13 +287,13 @@ export async function POST(request: NextRequest) {
         // Create new user
         const passwordHash = await bcrypt.hash(LEAD_PASSWORD, 10);
 
-        // Find the course
-        const courseResults = await prisma.$queryRaw<any[]>`
-            SELECT id FROM "Course" WHERE slug = ${courseSlug} LIMIT 1
-        `;
-        const courseData = courseResults[0];
+        // Find the course - use Prisma ORM instead of raw SQL for security
+        const newUserCourseData = await prisma.course.findUnique({
+            where: { slug: courseSlug },
+            select: { id: true },
+        });
 
-        if (!courseData) {
+        if (!newUserCourseData) {
             return NextResponse.json(
                 { error: "Course not found. Please try again later." },
                 { status: 500 }
@@ -329,7 +330,7 @@ export async function POST(request: NextRequest) {
                 assignedCoachId: coach?.id || null,
                 enrollments: {
                     create: {
-                        courseId: courseData.id,
+                        courseId: newUserCourseData.id,
                         status: "ACTIVE",
                     },
                 },

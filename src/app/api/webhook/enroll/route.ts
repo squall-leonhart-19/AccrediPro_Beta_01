@@ -2,24 +2,77 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sendWelcomeEmail } from "@/lib/email";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 // Webhook endpoint for external form opt-ins (e.g., ThriveCart, ConvertKit, etc.)
 // URL: /api/webhook/enroll
 // Method: POST
-// Headers: x-webhook-secret: YOUR_SECRET (set in .env as WEBHOOK_SECRET)
+// Headers: x-webhook-signature: HMAC-SHA256 signature of the body
+// Or fallback: x-webhook-secret: YOUR_SECRET (set in .env as WEBHOOK_SECRET)
+
+/**
+ * Verify HMAC-SHA256 signature for webhook requests
+ * This provides cryptographic verification that the request came from a trusted source
+ */
+function verifyHmacSignature(body: string, signature: string, secret: string): boolean {
+  try {
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(body)
+      .digest("hex");
+
+    // Use timingSafeEqual to prevent timing attacks
+    const sigBuffer = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expectedSignature);
+
+    if (sigBuffer.length !== expectedBuffer.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(sigBuffer, expectedBuffer);
+  } catch {
+    return false;
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify webhook secret
-    const webhookSecret = request.headers.get("x-webhook-secret");
-    if (webhookSecret !== process.env.WEBHOOK_SECRET) {
+    // Get raw body for signature verification
+    const rawBody = await request.text();
+    const webhookSecret = process.env.WEBHOOK_SECRET;
+
+    if (!webhookSecret) {
+      console.error("[WEBHOOK] WEBHOOK_SECRET not configured");
       return NextResponse.json(
-        { success: false, error: "Invalid webhook secret" },
-        { status: 401 }
+        { success: false, error: "Webhook not configured" },
+        { status: 500 }
       );
     }
 
-    const body = await request.json();
+    // Try HMAC signature verification first (preferred method)
+    const hmacSignature = request.headers.get("x-webhook-signature");
+    if (hmacSignature) {
+      if (!verifyHmacSignature(rawBody, hmacSignature, webhookSecret)) {
+        console.warn("[WEBHOOK] Invalid HMAC signature");
+        return NextResponse.json(
+          { success: false, error: "Invalid webhook signature" },
+          { status: 401 }
+        );
+      }
+    } else {
+      // Fallback to simple secret header (for backwards compatibility)
+      const headerSecret = request.headers.get("x-webhook-secret");
+      if (headerSecret !== webhookSecret) {
+        console.warn("[WEBHOOK] Invalid webhook secret header");
+        return NextResponse.json(
+          { success: false, error: "Invalid webhook secret" },
+          { status: 401 }
+        );
+      }
+    }
+
+    // Parse the body (already have it as text, need to parse as JSON)
+    const body = JSON.parse(rawBody);
 
     // Support multiple webhook formats
     // Format 1: Direct { email, firstName, lastName, courseSlug }

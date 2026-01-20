@@ -3,6 +3,75 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { createClient } from "@supabase/supabase-js";
 
+// Allowed file types whitelist - MIME types and extensions
+const ALLOWED_FILE_TYPES: Record<string, { mimeTypes: string[]; extensions: string[] }> = {
+  image: {
+    mimeTypes: ["image/jpeg", "image/png", "image/gif", "image/webp"],
+    extensions: [".jpg", ".jpeg", ".png", ".gif", ".webp"],
+  },
+  voice: {
+    mimeTypes: ["audio/mpeg", "audio/mp3", "audio/wav", "audio/webm", "audio/ogg", "audio/mp4"],
+    extensions: [".mp3", ".wav", ".webm", ".ogg", ".m4a"],
+  },
+  file: {
+    mimeTypes: [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "text/plain",
+      "text/csv",
+    ],
+    extensions: [".pdf", ".doc", ".docx", ".xls", ".xlsx", ".txt", ".csv"],
+  },
+};
+
+// Dangerous file extensions that should never be uploaded (even if they claim to be allowed types)
+const BLOCKED_EXTENSIONS = [
+  ".exe", ".dll", ".bat", ".cmd", ".ps1", ".sh", ".bash",
+  ".php", ".jsp", ".asp", ".aspx", ".cgi", ".pl",
+  ".js", ".mjs", ".ts", ".html", ".htm", ".svg",
+  ".scr", ".com", ".pif", ".vbs", ".vbe", ".wsf", ".wsh",
+];
+
+/**
+ * Validate file type against whitelist
+ * Checks both MIME type and file extension for defense in depth
+ */
+function validateFileType(file: File, type: string): { valid: boolean; error?: string } {
+  const allowedTypes = ALLOWED_FILE_TYPES[type];
+  if (!allowedTypes) {
+    return { valid: false, error: `Invalid upload type: ${type}` };
+  }
+
+  // Get file extension (lowercase)
+  const fileName = file.name.toLowerCase();
+  const ext = fileName.substring(fileName.lastIndexOf("."));
+
+  // Check for blocked dangerous extensions
+  if (BLOCKED_EXTENSIONS.includes(ext)) {
+    console.warn(`[UPLOAD] Blocked dangerous file extension: ${ext} for file ${file.name}`);
+    return { valid: false, error: "This file type is not allowed for security reasons" };
+  }
+
+  // Validate extension
+  if (!allowedTypes.extensions.includes(ext)) {
+    return {
+      valid: false,
+      error: `File type ${ext} not allowed. Allowed: ${allowedTypes.extensions.join(", ")}`,
+    };
+  }
+
+  // Validate MIME type
+  if (!allowedTypes.mimeTypes.includes(file.type)) {
+    // Some browsers report different MIME types, so warn but allow if extension matches
+    console.warn(`[UPLOAD] MIME type mismatch: ${file.type} for ${file.name}, but extension ${ext} is allowed`);
+  }
+
+  return { valid: true };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,10 +87,6 @@ export async function POST(request: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    console.log("DEBUG Upload - NEXT_PUBLIC_SUPABASE_URL exists:", !!supabaseUrl, "value:", supabaseUrl?.substring(0, 30));
-    console.log("DEBUG Upload - SUPABASE_SERVICE_ROLE_KEY exists:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
-    console.log("DEBUG Upload - NEXT_PUBLIC_SUPABASE_ANON_KEY exists:", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-
     if (!supabaseUrl || !supabaseKey) {
       console.error("Storage not configured - URL:", !!supabaseUrl, "Key:", !!supabaseKey);
       return NextResponse.json(
@@ -34,11 +99,21 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
-    const type = formData.get("type") as string; // "image", "file", "voice"
+    const type = (formData.get("type") as string) || "file"; // "image", "file", "voice"
 
     if (!file) {
       return NextResponse.json(
         { success: false, error: "No file provided" },
+        { status: 400 }
+      );
+    }
+
+    // Validate file type against whitelist (SECURITY: defense against malicious uploads)
+    const typeValidation = validateFileType(file, type);
+    if (!typeValidation.valid) {
+      console.warn(`[UPLOAD] File type validation failed for ${file.name}: ${typeValidation.error}`);
+      return NextResponse.json(
+        { success: false, error: typeValidation.error },
         { status: 400 }
       );
     }

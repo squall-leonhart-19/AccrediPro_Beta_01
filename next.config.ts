@@ -111,6 +111,41 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
           },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
+          {
+            // Content Security Policy - allows necessary resources while blocking XSS
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              // Scripts: self + inline for Next.js + Sentry + analytics
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com",
+              // Styles: self + inline for dynamic styles
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              // Images: various CDNs and blob for local processing
+              "img-src 'self' data: blob: https: http:",
+              // Fonts: Google Fonts + self
+              "font-src 'self' https://fonts.gstatic.com data:",
+              // Connect: APIs + Supabase + Sentry + analytics
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com",
+              // Frames: Stripe payment + embedded content
+              "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com",
+              // Media: self + Supabase storage for audio/video
+              "media-src 'self' blob: https://*.supabase.co",
+              // Objects: none (no Flash, etc)
+              "object-src 'none'",
+              // Base URI: self only
+              "base-uri 'self'",
+              // Form actions: self only
+              "form-action 'self'",
+              // Frame ancestors: none (same as X-Frame-Options DENY)
+              "frame-ancestors 'none'",
+              // Upgrade insecure requests
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
         ],
       },
     ];
