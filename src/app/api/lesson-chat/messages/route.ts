@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
         let courseId = searchParams.get("courseId");
         const courseSlug = searchParams.get("courseSlug");
         const limit = parseInt(searchParams.get("limit") || "50");
+        const since = searchParams.get("since"); // Delta polling: only fetch messages after this ID
 
         // Support courseSlug for mini diplomas
         if (!courseId && courseSlug) {
@@ -31,10 +32,24 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, error: "courseId or courseSlug required" }, { status: 400 });
         }
 
+        // Build where clause for delta polling
+        const whereClause: { courseId: string; createdAt?: { gt: Date } } = { courseId };
+
+        // If "since" ID provided, get the timestamp of that message and fetch only newer ones
+        if (since) {
+            const sinceMessage = await prisma.lessonChatMessage.findUnique({
+                where: { id: since },
+                select: { createdAt: true }
+            });
+            if (sinceMessage) {
+                whereClause.createdAt = { gt: sinceMessage.createdAt };
+            }
+        }
+
         const messages = await prisma.lessonChatMessage.findMany({
-            where: { courseId },
+            where: whereClause,
             orderBy: { createdAt: "desc" },
-            take: limit,
+            take: since ? 100 : limit, // Allow more messages for delta to catch up
             include: {
                 user: {
                     select: {

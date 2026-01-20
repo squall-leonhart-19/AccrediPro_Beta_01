@@ -246,11 +246,11 @@ function HealthcareWorkersMiniDiplomaContent() {
                             <div className="flex flex-wrap items-center gap-3 mb-8">
                                 <div className="flex -space-x-2 flex-shrink-0">
                                     {[
-                                        "/zombie-avatars/user_47_backyard_bbq_1767801467.png",
-                                        "/zombie-avatars/user_52_bedroom_morning_1767801467.png",
-                                        "/zombie-avatars/user_44_bathroom_mirror_1767801533.png",
-                                        "/zombie-avatars/user_55_cooking_class_1767801442.png",
-                                        "/zombie-avatars/user_41_coffee_shop_working_1768611487.png",
+                                        "/zombie-avatars/user_47_backyard_bbq_1767801467.webp",
+                                        "/zombie-avatars/user_52_bedroom_morning_1767801467.webp",
+                                        "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp",
+                                        "/zombie-avatars/user_55_cooking_class_1767801442.webp",
+                                        "/zombie-avatars/user_41_coffee_shop_working_1768611487.webp",
                                     ].map((src, i) => (
                                         <Image
                                             key={i}
@@ -389,9 +389,9 @@ function HealthcareWorkersMiniDiplomaContent() {
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { name: "Jennifer M., RN", age: "47", income: "$5,800/mo", before: "ICU Nurse, 18 years", story: "I loved my patients but hated the system. 12-hour shifts, mandatory overtime, watching people get sicker on meds. Now I help clients actually get well — from my home office.", avatar: "/zombie-avatars/user_47_backyard_bbq_1767801467.png" },
-                            { name: "Patricia L., PT", age: "52", income: "$7,200/mo", before: "Physical Therapist, 24 years", story: "Insurance dictated my care plans. 15-minute appointments. I knew there was a better way. Now I spend an hour with clients and see real transformation.", avatar: "/zombie-avatars/user_52_bedroom_morning_1767801467.png" },
-                            { name: "Michelle R., MA", age: "44", income: "$4,100/mo", before: "Medical Assistant", story: "I was exhausted running between exam rooms. The doctors had no time. Patients left confused. Now I give them what the system never could — attention and answers.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.png" }
+                            { name: "Jennifer M., RN", age: "47", income: "$5,800/mo", before: "ICU Nurse, 18 years", story: "I loved my patients but hated the system. 12-hour shifts, mandatory overtime, watching people get sicker on meds. Now I help clients actually get well — from my home office.", avatar: "/zombie-avatars/user_47_backyard_bbq_1767801467.webp" },
+                            { name: "Patricia L., PT", age: "52", income: "$7,200/mo", before: "Physical Therapist, 24 years", story: "Insurance dictated my care plans. 15-minute appointments. I knew there was a better way. Now I spend an hour with clients and see real transformation.", avatar: "/zombie-avatars/user_52_bedroom_morning_1767801467.webp" },
+                            { name: "Michelle R., MA", age: "44", income: "$4,100/mo", before: "Medical Assistant", story: "I was exhausted running between exam rooms. The doctors had no time. Patients left confused. Now I give them what the system never could — attention and answers.", avatar: "/zombie-avatars/user_44_bathroom_mirror_1767801533.webp" }
                         ].map((story, i) => (
                             <div key={i} className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                                 <div className="flex items-center gap-3 mb-4">

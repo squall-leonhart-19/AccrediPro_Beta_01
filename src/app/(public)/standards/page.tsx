@@ -467,7 +467,7 @@ export default function StandardsPage() {
             {/* Olivia */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/olivia.png" alt="Olivia" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/olivia.webp" alt="Olivia" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Olivia</h3>
               <p className="text-xs text-center text-gray-500">Trauma Recovery</p>
@@ -477,7 +477,7 @@ export default function StandardsPage() {
             {/* Luna */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/luna.png" alt="Luna" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/luna.webp" alt="Luna" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Luna</h3>
               <p className="text-xs text-center text-gray-500">Energy Healing</p>
@@ -487,7 +487,7 @@ export default function StandardsPage() {
             {/* Maya */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/maya.png" alt="Maya" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/maya.webp" alt="Maya" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Maya</h3>
               <p className="text-xs text-center text-gray-500">Mindfulness & EFT</p>
@@ -497,7 +497,7 @@ export default function StandardsPage() {
             {/* Emma */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/emma.png" alt="Emma" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/emma.webp" alt="Emma" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Emma</h3>
               <p className="text-xs text-center text-gray-500">Birth & Parenting</p>
@@ -507,7 +507,7 @@ export default function StandardsPage() {
             {/* Bella */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/bella.png" alt="Bella" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/bella.webp" alt="Bella" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Bella</h3>
               <p className="text-xs text-center text-gray-500">Pet Wellness</p>
@@ -517,7 +517,7 @@ export default function StandardsPage() {
             {/* Sage */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/sage.png" alt="Sage" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/sage.webp" alt="Sage" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Sage</h3>
               <p className="text-xs text-center text-gray-500">Herbalism</p>
@@ -527,7 +527,7 @@ export default function StandardsPage() {
             {/* Grace */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/grace.png" alt="Grace" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/grace.webp" alt="Grace" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Grace</h3>
               <p className="text-xs text-center text-gray-500">Faith-Based Coaching</p>
@@ -537,7 +537,7 @@ export default function StandardsPage() {
             {/* Rachel */}
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="aspect-square rounded-xl overflow-hidden mb-3 bg-gray-100">
-                <Image src="/coaches/rachel.png" alt="Rachel" width={200} height={200} className="w-full h-full object-cover" />
+                <Image src="/coaches/rachel.webp" alt="Rachel" width={200} height={200} className="w-full h-full object-cover" />
               </div>
               <h3 className="font-bold text-center" style={{ color: BRAND.burgundy }}>Rachel</h3>
               <p className="text-xs text-center text-gray-500">LGBTQ+ Wellness</p>
