@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -60,12 +62,18 @@ function replacePlaceholders(html: string, data: Record<string, string>): string
   return result;
 }
 
-// GET - Generate preview HTML for email template
+// GET - Generate preview HTML for email template (ADMIN only)
 export async function GET(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
+    // Auth check - ADMIN only
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
 
     const template = await prisma.emailTemplate.findUnique({

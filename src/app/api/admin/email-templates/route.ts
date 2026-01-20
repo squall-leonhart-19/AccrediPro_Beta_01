@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { EmailCategory } from "@prisma/client";
 
-// GET - List all email templates
+// GET - List all email templates (ADMIN only)
 export async function GET(request: NextRequest) {
   try {
+    // Auth check - ADMIN only
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category") as EmailCategory | null;
 
@@ -43,9 +51,15 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create a new email template
+// POST - Create a new email template (ADMIN only)
 export async function POST(request: NextRequest) {
   try {
+    // Auth check - ADMIN only
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const {
       slug,

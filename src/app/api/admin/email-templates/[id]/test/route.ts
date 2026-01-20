@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 
@@ -63,12 +65,18 @@ function replacePlaceholders(text: string, data: Record<string, string>): string
   return result;
 }
 
-// POST - Send test email
+// POST - Send test email (ADMIN only)
 export async function POST(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
+    // Auth check - ADMIN only (this endpoint can send emails!)
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await context.params;
     const body = await request.json();
     const { testEmail } = body;
