@@ -631,13 +631,60 @@ export function LessonPlayer({
                     ref={(el) => {
                         if (el) {
                             el.innerHTML = lesson.content || "";
-                            // Execute any inline scripts after content is rendered
+                            // Execute inline scripts EXCEPT toggleAnswer (we override it)
                             const scripts = el.querySelectorAll("script");
                             scripts.forEach((script) => {
+                                // Skip scripts that define toggleAnswer - we use our own
+                                if (script.textContent?.includes("function toggleAnswer") ||
+                                    script.textContent?.includes("toggleAnswer =")) {
+                                    return;
+                                }
                                 const newScript = document.createElement("script");
                                 newScript.textContent = script.textContent;
                                 script.parentNode?.replaceChild(newScript, script);
                             });
+
+                            // Inject our robust toggleAnswer that stays visible until manually hidden
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            (window as any).toggleAnswer = (btnOrId: HTMLButtonElement | string) => {
+                                let answerElement: HTMLElement | null = null;
+                                let button: HTMLButtonElement | null = null;
+
+                                if (typeof btnOrId === "string") {
+                                    answerElement = document.getElementById(btnOrId);
+                                } else if (btnOrId instanceof HTMLElement) {
+                                    button = btnOrId as HTMLButtonElement;
+                                    answerElement = button.nextElementSibling as HTMLElement;
+                                }
+
+                                if (answerElement) {
+                                    // Clear any auto-hide timeouts
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    const existingTimeout = (answerElement as any)._hideTimeout;
+                                    if (existingTimeout) {
+                                        clearTimeout(existingTimeout);
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                        delete (answerElement as any)._hideTimeout;
+                                    }
+
+                                    const isCurrentlyHidden =
+                                        answerElement.style.display === "none" ||
+                                        answerElement.classList.contains("hidden") ||
+                                        !answerElement.classList.contains("show");
+
+                                    if (isCurrentlyHidden) {
+                                        answerElement.style.display = "block";
+                                        answerElement.classList.remove("hidden");
+                                        answerElement.classList.add("show");
+                                        if (button) button.textContent = "Hide Answer";
+                                    } else {
+                                        answerElement.style.display = "none";
+                                        answerElement.classList.add("hidden");
+                                        answerElement.classList.remove("show");
+                                        if (button) button.textContent = "Reveal Answer";
+                                    }
+                                }
+                            };
                         }
                     }}
                 />
