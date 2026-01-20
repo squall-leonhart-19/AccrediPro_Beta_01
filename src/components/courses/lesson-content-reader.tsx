@@ -89,19 +89,51 @@ export function LessonContentReader({
     handleScroll(); // Initial calculation
 
     // Inject toggleAnswer function for inline onclick handlers in lesson HTML
+    // This handles both ID-based (onclick="toggleAnswer('answer-1')") and
+    // button-based (onclick="toggleAnswer(this)") patterns used in lessons.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).toggleAnswer = (answerId: string) => {
-      const answerElement = document.getElementById(answerId);
-      if (answerElement) {
-        const isHidden = answerElement.style.display === "none" ||
-          answerElement.classList.contains("hidden") ||
-          !answerElement.style.display;
+    (window as any).toggleAnswer = (btnOrId: HTMLButtonElement | string) => {
+      let answerElement: HTMLElement | null = null;
+      let button: HTMLButtonElement | null = null;
 
-        if (isHidden) {
+      // Determine if we were passed a button element or an ID string
+      if (typeof btnOrId === "string") {
+        // ID-based: find element by ID
+        answerElement = document.getElementById(btnOrId);
+      } else if (btnOrId instanceof HTMLElement) {
+        // Button-based: answer is the next sibling element
+        button = btnOrId as HTMLButtonElement;
+        answerElement = button.nextElementSibling as HTMLElement;
+      }
+
+      if (answerElement) {
+        // Clear any auto-hide timeouts that may have been set by embedded scripts
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const existingTimeout = (answerElement as any)._hideTimeout;
+        if (existingTimeout) {
+          clearTimeout(existingTimeout);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          delete (answerElement as any)._hideTimeout;
+        }
+
+        // Check current visibility state
+        const isCurrentlyHidden =
+          answerElement.style.display === "none" ||
+          answerElement.classList.contains("hidden") ||
+          !answerElement.classList.contains("show");
+
+        if (isCurrentlyHidden) {
+          // Show the answer
           answerElement.style.display = "block";
           answerElement.classList.remove("hidden");
+          answerElement.classList.add("show");
+          if (button) button.textContent = "Hide Answer";
         } else {
+          // Hide the answer
           answerElement.style.display = "none";
+          answerElement.classList.add("hidden");
+          answerElement.classList.remove("show");
+          if (button) button.textContent = "Reveal Answer";
         }
       }
     };
