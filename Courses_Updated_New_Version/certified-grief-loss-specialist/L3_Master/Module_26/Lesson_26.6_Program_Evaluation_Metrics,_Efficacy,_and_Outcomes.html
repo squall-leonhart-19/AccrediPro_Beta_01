@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 6: Program Evaluation: Metrics, Efficacy, and Outcomes | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ color: white;
+}
+
+.connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 26: Program Development | Lesson 6 of 8</span>
+ <h1 class="lesson-title">Program Evaluation: Metrics, Efficacy, and Outcomes</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">💡 Advanced Practice</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">AccrediPro Standards Institute Verified</div>
+ <div class="title">Quality Standard: Evidence-Based Practitioner Competency</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">Lesson Architecture</span>
+ <ul class="toc-list">
+ <li><a href="#roi-compassion"><span class="section-num">01</span>The ROI of Compassion</a></li>
+ <li><a href="#solace-metrics"><span class="section-num">02</span>S.O.L.A.C.E. Phase Metrics</a></li>
+ <li><a href="#observational-tracking"><span class="section-num">03</span>Tracking Observational Awareness</a></li>
+ <li><a href="#longitudinal-data"><span class="section-num">04</span>Longitudinal Resilience (E)</a></li>
+ <li><a href="#stakeholder-reporting"><span class="section-num">05</span>Reporting to Stakeholders</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In Lesson 5, we explored <strong>Scaling Resilience</strong> through community models. Now, we move to the critical final step of program architecture: <strong>Evaluation</strong>. Proving efficacy is what separates a "wellness hobby" from a professional, high-impact certification practice.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Proving the Invisible</h3>
+ <p>For many practitioners, grief support feels like a "soft skill." However, to achieve professional legitimacy, secure corporate contracts, or command premium rates (often <strong>$2,500+</strong> for structured group programs), you must be able to demonstrate measurable change. In this lesson, we will bridge the gap between deep empathy and hard data using the S.O.L.A.C.E. Evaluation Framework.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Design a multi-layered evaluation strategy using both quantitative and qualitative data.</li>
+ <li>Align specific metrics with the six phases of the S.O.L.A.C.E. Method™.</li>
+ <li>Implement longitudinal tracking to measure 'Empowered Resilience' (E) up to 12 months post-intervention.</li>
+ <li>Synthesize program data into professional outcome reports for stakeholders and corporate leadership.</li>
+ </ul>
+ </div>
+
+ <h2 id="roi-compassion">The ROI of Compassion: Why Metrics Matter</h2>
+ <p>In the world of professional grief support, metrics serve two primary purposes: <strong>client validation</strong> and <strong>professional legitimacy</strong>. When a client can see their "Grief Intensity Score" drop from an 8 to a 4 over twelve weeks, it reinforces their sense of agency and progress. For the practitioner, these numbers are the foundation of your business case.</p>
+ 
+ <p>A 2022 study on workplace grief support programs found that organizations utilizing structured evaluation saw a <strong>24% higher retention rate</strong> among bereaved employees compared to those with informal support. By tracking outcomes, you move from being a "support person" to being a "strategic partner" in human capital and health.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Overcoming Data Dread</span>
+ <p>Don't let the word "metrics" trigger imposter syndrome. You don't need a PhD in statistics. You simply need to ask the same questions consistently. Professionalism is found in the <strong>consistency</strong> of your inquiry, not just the complexity of your math.</p>
+ </div>
+
+ <h2 id="solace-metrics">S.O.L.A.C.E. Phase Metrics</h2>
+ <p>To evaluate a program effectively, you must measure what you are actually teaching. We align our data collection with the specific goals of each S.O.L.A.C.E. phase.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>S.O.L.A.C.E. Phase</th>
+ <th>Primary Metric Category</th>
+ <th>Example Measurement Tool</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>S: Safe Space</strong></td>
+ <td>Psychological Safety</td>
+ <td>Post-session "Safety & Trust" Likert Scale (1-10)</td>
+ </tr>
+ <tr>
+ <td><strong>O: Observational</strong></td>
+ <td>Somatic & Cognitive Awareness</td>
+ <td>Self-Reported Body Tension Inventory</td>
+ </tr>
+ <tr>
+ <td><strong>L: Legacy Integration</strong></td>
+ <td>Meaning Reconstruction</td>
+ <td>Integration Narrative Coding (Pre vs. Post)</td>
+ </tr>
+ <tr>
+ <td><strong>A: Affective Processing</strong></td>
+ <td>Emotional Regulation</td>
+ <td>DASS-21 (Depression, Anxiety, Stress Scale)</td>
+ </tr>
+ <tr>
+ <td><strong>C: Compassionate Rebuilding</strong></td>
+ <td>Functional Adaptation</td>
+ <td>Work/Life Re-engagement Checklist</td>
+ </tr>
+ <tr>
+ <td><strong>E: Empowered Resilience</strong></td>
+ <td>Self-Efficacy</td>
+ <td>Brief Resilience Scale (BRS)</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="observational-tracking">Tracking Observational Awareness (O)</h2>
+ <p>The "O" in S.O.L.A.C.E. is often the hardest to quantify because it involves internal shifts in perception. We track this through <strong>Behavioral Shift Indicators</strong>. This involves asking participants to track how often they "catch" a grief-triggered somatic response before it leads to an emotional outburst.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">📋</div>
+ <div>
+ <p class="title">Case Study: Brenda’s Corporate Pilot</p>
+ <p class="subtitle">Proving Value to a Tech Firm</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Practitioner:</strong> Brenda (age 52), Career Changer from HR to Grief Specialist.</p>
+ <p><strong>Scenario:</strong> Brenda pitched an 8-week grief support program to a mid-sized tech company. The leadership was skeptical about the "productivity" of the sessions.</p>
+ <p><strong>Intervention:</strong> Brenda implemented a weekly "Observational Awareness Tracker" where employees noted their ability to focus post-grief-trigger. She used the <em>Hogan Grief Reaction Checklist</em> (Modified).</p>
+ <p><strong>Outcome:</strong> At the end of the pilot, Brenda demonstrated a <strong>32% reduction in "Grief-Related Presenteeism"</strong> (being at work but unable to function). This data secured her a 12-month contract worth <strong>$45,000</strong>.</p>
+ </div>
+ </div>
+
+ <h2 id="longitudinal-data">Longitudinal Resilience (E): The 6-12 Month Horizon</h2>
+ <p>Real efficacy isn't measured the day the program ends. It is measured when the "anniversary effect" hits or when a new life stressor occurs. Professional evaluation requires a <strong>Longitudinal Strategy</strong>.</p>
+ 
+ <p>Practitioners should schedule automated check-ins at 6 and 12 months. Key metrics at this stage include:</p>
+ <ul>
+ <li><strong>Sustainable Coping:</strong> Are they still utilizing the S.O.L.A.C.E. toolkit without practitioner guidance?</li>
+ <li><strong>Social Integration:</strong> Have they maintained or expanded their support network?</li>
+ <li><strong>Legacy Maintenance:</strong> Are the rituals established in the "L" phase still providing comfort?</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Value of "Negative" Data</span>
+ <p>If a client’s scores go <em>up</em> at the 6-month mark, this isn't a failure of your program. It is an opportunity for a "booster session" or a referral. This data allows you to be proactive rather than reactive.</p>
+ </div>
+
+ <h2 id="stakeholder-reporting">Reporting to Stakeholders & Donors</h2>
+ <p>Whether you are reporting to a non-profit board, a corporate HR director, or private donors, your report should follow the <strong>Executive Outcome Summary</strong> format:</p>
+ <ol>
+ <li><strong>Executive Summary:</strong> 3-sentence overview of program reach and top-line results.</li>
+ <li><strong>Quantitative Shifts:</strong> Charts showing pre- vs. post-program scores in key domains (Anxiety, Resilience, Safety).</li>
+ <li><strong>Qualitative Narrative:</strong> 2-3 anonymized "Success Stories" or testimonials that humanize the data.</li>
+ <li><strong>Resource Utilization:</strong> How the funding/time was translated into specific healing touchpoints.</li>
+ <li><strong>Recommendations:</strong> Iterative suggestions for the next program cycle.</li>
+ </ol>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is longitudinal data (6-12 months) specifically tied to the 'E' (Empowered Resilience) phase?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Because resilience is defined by the ability to sustain wellbeing over time and through future stressors. Short-term data only measures immediate relief, while longitudinal data measures the permanent integration of coping skills.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary benefit of tracking "Observational Awareness" (O) through somatic reporting?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It provides an objective "early warning system" for the client, allowing them to see measurable progress in their ability to self-regulate before an emotional crisis occurs.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. In a corporate setting, what metric is often most persuasive to leadership?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Reductions in "presenteeism" or "absenteeism," and improvements in employee retention/engagement scores following a loss.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is "Narrative Coding" in the context of Legacy Integration (L)?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It is a qualitative method where the practitioner looks for shifts in the client's language—moving from "hopeless/ended" language to "meaningful/continuing bond" language.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Evaluation turns a compassionate service into a professional, evidence-based program.</li>
+ <li>Use the S.O.L.A.C.E. framework to choose specific metrics for each stage of the healing journey.</li>
+ <li>Quantitative data (scales) provides the "what," while qualitative data (stories) provides the "why."</li>
+ <li>Longitudinal check-ins (6-12 months) are essential for proving the long-term efficacy of resilience training.</li>
+ <li>Professional reporting is your most powerful tool for securing high-value contracts and institutional partnerships.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Neimeyer, R. A. et al. (2021). "The Meaning Reconstruction Scale: Development and Validation." <em>Journal of Loss and Trauma</em>.</li>
+ <li>Shear, M. K. et al. (2022). "Measuring Outcomes in Grief-Focused Interventions: A Meta-Analysis." <em>Clinical Psychology Review</em>.</li>
+ <li>Worden, J. W. (2018). <em>Grief Counseling and Grief Therapy: A Handbook for the Mental Health Practitioner</em>. Springer Publishing.</li>
+ <li>Hogan, N. S. et al. (2020). "The Hogan Grief Reaction Checklist: A 20-Year Retrospective." <em>Death Studies</em>.</li>
+ <li>American Psychological Association (2023). "Guidelines for the Evaluation of Community-Based Support Programs."</li>
+ <li>Zisook, S. et al. (2019). "The Neurobiology of Resilience in Bereavement." <em>Biological Psychiatry</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ const isVisible = answer.style.display === 'block';
+ answer.style.display = isVisible ? 'none' : 'block';
+ this.textContent = isVisible ? 'Reveal Answer' : 'Hide Answer';
+ }
+ });
+});
+</script>
+
+</body>
+</html>

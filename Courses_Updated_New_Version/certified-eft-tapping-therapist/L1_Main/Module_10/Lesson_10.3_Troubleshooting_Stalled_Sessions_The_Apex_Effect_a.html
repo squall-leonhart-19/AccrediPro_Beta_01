@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 10.3: Troubleshooting Stalled Sessions | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px 80px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+ margin-top: 40px;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* TABLES */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box li {
+ margin-bottom: 10px;
+ font-size: 14px;
+ color: #475569;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ color: white;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 10 • Lesson 3 of 8</span>
+ <h1 class="lesson-title">Troubleshooting Stalled Sessions: The Apex Effect and Resistance</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">💎 L1 Advanced Mastery</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">✓</div>
+ <div class="asi-text">
+ <div class="label">AccrediPro Standards Institute Verified</div>
+ <div class="title">Clinical Somatic Integration Protocol (CSIP) Certified</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">Lesson Navigation</span>
+ <ul class="toc-list">
+ <li><a href="#apex-effect"><span class="section-num">01</span>The Apex Effect</a></li>
+ <li><a href="#secondary-gain"><span class="section-num">02</span>Secondary Gain</a></li>
+ <li><a href="#precision-targeting"><span class="section-num">03</span>Refining the Target</a></li>
+ <li><a href="#pivot-blocks"><span class="section-num">04</span>Cognitive Reframing Blocks</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In the previous lesson, we explored the <strong>Ethical Boundaries</strong> of practice. Today, we move into the clinical "trenches" to master the moments when a session feels stuck, ensuring you can guide clients through subconscious resistance with confidence.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome, Practitioner. Even the most skilled EFT therapists encounter sessions where progress seems to halt or clients dismiss their own results. This lesson equips you with the <span class="highlight">advanced troubleshooting toolkit</span> needed to navigate the "Apex Effect" and subconscious resistance. By mastering these nuances, you elevate your practice from basic tapping to transformative clinical somatic therapy, justifying the premium rates ($150-$250/hr) commanded by top-tier specialists.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Identify and manage the <strong>Apex Effect</strong> to ensure client retention and efficacy belief.</li>
+ <li>Detect <strong>Secondary Gain</strong> and apply the 'Safety First' approach to neutralize subconscious resistance.</li>
+ <li>Utilize <strong>Sensory Specificity</strong> to break through global, vague complaints that stall progress.</li>
+ <li>Apply advanced <strong>Cognitive Reframing</strong> when a client is unable to 'Pivot' to a positive affirmation.</li>
+ </ul>
+ </div>
+
+ <h2 id="apex-effect">The Mystery of the Apex Effect</h2>
+ <p>Perhaps the most frustrating phenomenon for a new practitioner is the <strong>Apex Effect</strong>. This occurs when a client experiences a measurable reduction in SUDs (Subjective Units of Distress), yet they attribute the change to everything <em>except</em> the tapping. They might say, "I think I just calmed down on my own," or "The pain was going to go away anyway."</p>
+ 
+ <p>This is not a slight against you; it is a <strong>neurological defense mechanism</strong>. When a long-standing emotional or physical pattern shifts rapidly, the brain experiences <span class="highlight">cognitive dissonance</span>. It is easier for the brain to deny the efficacy of the tool than to accept that its previous reality (the pain/trauma) was malleable.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Baseline Anchor</span>
+ <p>Always document the starting SUDs and the <strong>exact somatic location</strong> of the distress before you begin tapping. When the Apex Effect hits, you can say: "I hear you. Interestingly, 15 minutes ago you rated this as an 8 in your chest. Where is that 8 now?" This forces the brain to confront the data.</p>
+ </div>
+
+ <h2 id="secondary-gain">Unmasking Secondary Gain: The Subconscious Shield</h2>
+ <p>In EFT, we often reach a point where the SUDs stop dropping. This is frequently due to <strong>Secondary Gain</strong>—the subconscious belief that keeping the problem is safer than letting it go. Research in psycho-somatic medicine suggests that up to 30% of chronic conditions involve some level of secondary gain.</p>
+ 
+ <p>Examples of Secondary Gain include:</p>
+ <ul>
+ <li><strong>Safety:</strong> "If I'm not anxious/vigilant, I might get hurt again."</li>
+ <li><strong>Connection:</strong> "If I'm healthy, people won't take care of me anymore."</li>
+ <li><strong>Identity:</strong> "I don't know who I am without this struggle."</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👤</div>
+ <div>
+ <p class="title">Case Study: The Safety of the Struggle</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Linda, 54, former Corporate Executive.</p>
+ <p><strong>Presenting Issue:</strong> Chronic neck tension (SUDs 9) preventing her from starting her new consulting business.</p>
+ <p><strong>Intervention:</strong> After three rounds, SUDs stalled at 5. We explored the "downside" of being pain-free. Linda realized that if her neck was fine, she had "no excuse" not to launch her business, which she secretly feared would fail.</p>
+ <p><strong>Outcome:</strong> We tapped on: <em>"Even though I'm using this neck pain to protect myself from the fear of business failure..."</em> The SUDs dropped to 0, and Linda launched her firm three weeks later.</p>
+ </div>
+ </div>
+
+ <h2 id="precision-targeting">The Precision of the Target: Moving from Global to Laser</h2>
+ <p>A session often stalls because the target is too "global." Tapping on "this stress" is like trying to paint a house with a toothbrush. You must move toward <strong>Sensory Specificity</strong>.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Global (Stall-Prone)</th>
+ <th>Laser-Specific (Breakthrough)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>"I'm stressed about money."</td>
+ <td>"The sharp feeling in my stomach when I saw the $1,200 bill this morning."</td>
+ </tr>
+ <tr>
+ <td>"My boss is mean."</td>
+ <td>"The way his eyebrows furrowed when he looked at my report at 2 PM."</td>
+ </tr>
+ <tr>
+ <td>"I feel like a failure."</td>
+ <td>"The heavy weight in my shoulders when I think about the 2018 layoff."</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The "Movie" Zoom</span>
+ <p>If a client is vague, ask them to "Zoom in" on a specific 2-second snapshot of the memory. What color was the wall? What was the exact tone of voice? The more sensory data you include in the <strong>Reminder Phrase</strong>, the faster the amygdala de-escalates.</p>
+ </div>
+
+ <h2 id="pivot-blocks">Cognitive Reframing Blocks: When the Pivot Fails</h2>
+ <p>In the <strong>T.A.P.P.I.N.G. Method™</strong>, the "Pivot" (Module 4) is where we shift from release to reframing. However, if the SUDs are still above a 3, a positive affirmation will often trigger a "Tail-Ender"—a subconscious "Yes, but..."</p>
+ 
+ <p>If a client says, "I can't say 'I am confident' because it feels like a lie," you have hit a Pivot Block. To troubleshoot this:</p>
+ <ol>
+ <li><strong>Use "Could" or "Maybe":</strong> "Even though I'm not confident yet, I am open to the possibility that I could be."</li>
+ <li><strong>Tap on the Resistance to the Pivot:</strong> "Even though it feels like a lie to say I'm confident..."</li>
+ <li><strong>Go Back to Neutralize:</strong> There is likely a residual somatic charge that hasn't been cleared. Return to the <strong>Process</strong> phase.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The 40+ Woman Perspective</span>
+ <p>Many women in our demographic have been conditioned to "push through" or "be positive." Remind them that in EFT, <strong>honesty is more powerful than positivity</strong>. We cannot Pivot until the "ugly" truth is fully acknowledged and tapped through.</p>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. A client says, "I feel 100% better, but I think it's just because I had a glass of water." What is this called?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">This is the <strong>Apex Effect</strong>. It is a cognitive dissonance where the client denies the efficacy of tapping despite measurable results. To manage it, refer back to their initial somatic baseline and SUDs rating.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the most common reason a SUDs score stalls at a 4 or 5 and won't budge?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">The most common reason is <strong>Secondary Gain</strong> or <strong>Psychological Reversal</strong>. The subconscious mind perceives a benefit to keeping the problem (safety, attention, or protection from a perceived future threat).</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>3. True or False: You should move to the Pivot (Positive Affirmations) as soon as the client feels slightly better.</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text"><strong>False.</strong> Moving to the Pivot too early (when SUDs are still high) often triggers "Tail-Enders" where the brain rejects the positive statement as a lie. Wait until SUDs are at a 3 or lower.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>4. How do you transform a "Global" complaint into a "Laser-Specific" target?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">By using <strong>Sensory Data</strong>. Ask for a specific moment in time (a "snapshot") and identify the visual, auditory, and somatic (body) sensations associated with that exact moment.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The <strong>Apex Effect</strong> is a sign of success, not failure; it means the shift was so profound the brain is struggling to integrate it.</li>
+ <li><strong>Secondary Gain</strong> must be addressed with compassion, not judgment—it is a "Protector" part of the client.</li>
+ <li>Specificity is the "secret sauce" of EFT; if a session is stuck, you are likely being too vague.</li>
+ <li>Respect the <strong>SUDs Threshold</strong>; never force a positive reframe until the emotional "trash" has been sufficiently cleared.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Church, D., et al. (2019). "Clinical EFT as an Evidence-Based Practice for the Treatment of Psychological and Physiological Conditions." <em>Psychology</em>.</li>
+ <li>Festinger, L. (1957). "A Theory of Cognitive Dissonance." <em>Stanford University Press</em>. (Contextualizing the Apex Effect).</li>
+ <li>Feinstein, D. (2012). "What Does Energy Psychology Offer the Psychotherapist?" <em>Psychotherapy: Theory, Research, Practice, Training</em>.</li>
+ <li>Palmer-Hoffman, J., & Brooks, A. J. (2011). "The Effect of Emotional Freedom Techniques (EFT) on Secondary Gain." <em>Energy Psychology Journal</em>.</li>
+ <li>Stapleton, P. (2020). "The Science behind Tapping: A Proven Stress Management Technique." <em>Hay House Publishing</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+</body>
+</html>

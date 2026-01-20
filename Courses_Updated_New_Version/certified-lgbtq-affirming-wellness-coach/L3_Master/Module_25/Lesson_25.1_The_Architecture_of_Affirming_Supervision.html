@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 1: The Architecture of Affirming Supervision | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding-bottom: 80px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 25: L3: Supervision & Mentoring</span>
+ <h1 class="lesson-title">The Architecture of Affirming Supervision</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">💎 L3 Leadership Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Credential Verification</div>
+ <div class="title">AccrediPro Standards Institute • Advanced Practitioner Series</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#defining-l3"><span class="section-num">01</span>Defining the L3 Role</a></li>
+ <li><a href="#supervisory-alliance"><span class="section-num">02</span>The Supervisory Alliance</a></li>
+ <li><a href="#power-dynamics"><span class="section-num">03</span>Navigating Power Dynamics</a></li>
+ <li><a href="#seven-eyed"><span class="section-num">04</span>The Seven-Eyed Model</a></li>
+ <li><a href="#gatekeeping"><span class="section-num">05</span>Gatekeeping & Boundaries</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p><strong>Transitioning to Leadership:</strong> In previous modules, we focused on the deep-dive integration of the PRISM Framework™ for client transformation. As you enter Level 3 (L3), we shift from <em>practicing</em> the framework to <em>stewarding</em> it through the supervision and mentoring of other coaches.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome to the pinnacle of your professional journey. Stepping into the role of an <span class="highlight">Affirming Supervisor</span> is a transition from being a skilled practitioner to becoming a guardian of the profession. This lesson explores the structural foundations required to hold space for other coaches, ensuring that the LGBTQ+ community receives care that is not only skilled but ethically irreproachable and deeply safe.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Distinguish between clinical supervision, peer mentoring, and administrative oversight within the L3 scope.</li>
+ <li>Establish a "Supervisory Alliance" using the Presence & Safety (P) pillar to facilitate coach growth.</li>
+ <li>Analyze hierarchy and power dynamics to maintain an egalitarian, queer-affirming stance.</li>
+ <li>Apply the Seven-Eyed Model of Supervision adapted for the PRISM Framework™ methodology.</li>
+ <li>Execute professional gatekeeping responsibilities to maintain the integrity of the coaching profession.</li>
+ </ul>
+ </div>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍💼</div>
+ <div>
+ <p class="title">L3 Leadership Case Study</p>
+ <p class="subtitle">Sarah, 48 • Former Nurse Manager turned Affirming Coach</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Scenario:</strong> Sarah has spent three years building a successful affirming coaching practice. She is now hiring two junior coaches to expand her reach. She realizes that while she knows how to coach clients, she hasn't yet developed a formal structure to supervise her new team.</p>
+ <p><strong>The Challenge:</strong> One of her junior coaches is struggling with "countertransference"—experiencing their own trauma triggers when working with a non-binary client. Sarah needs a framework to support the coach's resilience (I) without becoming their therapist, while ensuring client safety (P).</p>
+ <p><strong>The Outcome:</strong> By implementing the <strong>Architecture of Affirming Supervision</strong>, Sarah creates a bi-weekly "Supervisory Alliance" session. This allows her to charge a premium for her expertise (adding an estimated $18,000/year in "supervisory income") while ensuring her junior coaches provide gold-standard care.</p>
+ </div>
+ </div>
+
+ <h2 id="defining-l3">Defining the L3 Supervisory Role</h2>
+ <p>In the world of high-level wellness coaching, the terms "mentoring" and "supervision" are often used interchangeably, but as an L3 practitioner, you must distinguish between them. Supervision in an affirming context is a formal arrangement where a coach brings their work to a supervisor to improve their skills, ensure ethical practice, and process the emotional impact of the work.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Role Type</th>
+ <th>Primary Focus</th>
+ <th>Relationship Dynamic</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Clinical Supervision</strong></td>
+ <td>Ethics, safety, and psychological depth of the client-coach interaction.</td>
+ <td>Hierarchical but collaborative; focused on "the work."</td>
+ </tr>
+ <tr>
+ <td><strong>Peer Mentoring</strong></td>
+ <td>Shared experience, business growth, and mutual support.</td>
+ <td>Egalitarian; focused on "the practitioner."</td>
+ </tr>
+ <tr>
+ <td><strong>Administrative Oversight</strong></td>
+ <td>Compliance, billing, scheduling, and KPIs.</td>
+ <td>Managerial; focused on "the business."</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <p>As an L3 Affirming Supervisor, your role is primarily <strong>Formative</strong> (helping the coach learn), <strong>Restorative</strong> (helping the coach process minority stress fatigue), and <strong>Normative</strong> (ensuring the coach adheres to PRISM™ ethical standards).</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Income of Influence</span>
+ <p>Transitioning into supervision isn't just a prestige move; it's a smart business strategy. Many L3 supervisors charge between $150 and $250 per hour for individual supervision. By dedicating just 4 hours a week to supervising junior coaches, you can generate an additional $30,000 to $50,000 in annual revenue with zero marketing costs, as these supervisees often come from your own agency or professional network.</p>
+ </div>
+
+ <h2 id="supervisory-alliance">Establishing the 'Supervisory Alliance'</h2>
+ <p>The <strong>Supervisory Alliance</strong> is the "secure base" from which a coach can explore their mistakes, biases, and successes. In the PRISM Framework™, we use the <strong>P (Presence & Safety)</strong> pillar as the foundation of this alliance.</p>
+ 
+ <p>For a coach to be vulnerable enough to say, <em>"I think I misgendered my client and felt too embarrassed to correct it,"</em> there must be a level of safety that mirrors the safety we provide to clients. This is called "parallel process"—the way you treat the coach is often how the coach will eventually treat the client.</p>
+
+ <h3>Key Elements of the Alliance:</h3>
+ <ul>
+ <li><strong>Transparency:</strong> Clearly defining what is "supervision" and what is "performance review."</li>
+ <li><strong>Affirming Environment:</strong> Ensuring the supervisor themselves is deeply steeped in LGBTQ+ cultural humility.</li>
+ <li><strong>The "Holding Space":</strong> Creating a container where the coach's imposter syndrome can be dismantled through the <strong>Inner Resilience (I)</strong> lens.</li>
+ </ul>
+
+ <h2 id="power-dynamics">Power Dynamics in Affirming Supervision</h2>
+ <p>Within the LGBTQ+ community, traditional hierarchies are often viewed with skepticism due to historical systemic oppression. However, supervision inherently involves a power imbalance—the supervisor has more experience and a duty to "gatekeep" the profession.</p>
+
+ <p>To navigate this, the L3 Supervisor adopts an <strong>Egalitarian-Expert</strong> stance. You are the expert on the PRISM™ methodology and ethics, but the supervisee is the expert on their specific relationship with their client. We deconstruct power by:</p>
+ <ol>
+ <li><strong>Naming the Power:</strong> Explicitly discussing the hierarchy during the first session.</li>
+ <li><strong>Collaborative Goal Setting:</strong> Asking the coach, <em>"What do you need from me to feel safe enough to fail in this room?"</em></li>
+ <li><strong>Intersectional Awareness:</strong> Acknowledging how the supervisor's and coach's identities (race, gender, age) impact the dynamic.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Addressing Imposter Syndrome</span>
+ <p>Many 40+ career changers entering the L3 space feel like "frauds" when supervising others. Remember: Your life experience—whether as a nurse, teacher, or mother—has already built your "supervision muscles." You've been mentoring people for years; you're now simply applying the PRISM™ lens to that existing wisdom.</p>
+ </div>
+
+ <h2 id="seven-eyed">The Seven-Eyed Model (PRISM™ Adaptation)</h2>
+ <p>The <strong>Seven-Eyed Model of Supervision</strong> (Hawkins & Shohet) is the gold standard for clinical oversight. We have adapted it specifically for the PRISM™ methodology to ensure a 360-degree view of the coaching engagement.</p>
+
+ <h3>The 7 Lenses of Affirming Oversight:</h3>
+ <ul>
+ <li><strong>Eye 1: The Client (Recognition):</strong> Who is the client? How are their identities being recognized or erased in the sessions?</li>
+ <li><strong>Eye 2: The Coach’s Interventions (Strategic Wellness):</strong> What tools is the coach using? Are they applying the S pillar effectively?</li>
+ <li><strong>Eye 3: The Relationship (Presence):</strong> What is the "vibe" between the coach and client? Is there a rupture in safety?</li>
+ <li><strong>Eye 4: The Coach’s Internal Process (Inner Resilience):</strong> What is the coach feeling? Are they experiencing internalized stigma or burnout?</li>
+ <li><strong>Eye 5: The Supervisory Relationship:</strong> What is happening between <em>you</em> and the coach right now? (e.g., Is the coach trying to "impress" you instead of being honest?)</li>
+ <li><strong>Eye 6: The Supervisor’s Internal Process:</strong> What are <em>you</em> feeling? Are you being too protective of the coach?</li>
+ <li><strong>Eye 7: The Wider Context (Manifesting Authenticity):</strong> How do societal factors, transphobia, or healthcare systems impact this case?</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Using Eye 5 to Spot Trouble</span>
+ <p>If a coach is very "compliant" and always agrees with you in supervision, they may be doing the same with their clients. This "people-pleasing" often masks a lack of <strong>Presence (P)</strong>. Use the supervisory relationship as a laboratory to help them find their assertive, affirming voice.</p>
+ </div>
+
+ <h2 id="gatekeeping">Gatekeeping & Professional Boundaries</h2>
+ <p>The final, and perhaps most critical, element of the L3 architecture is <strong>Gatekeeping</strong>. This is the ethical obligation to ensure that only competent, safe coaches are practicing under the "Affirming" banner.</p>
+ 
+ <p>Gatekeeping involves:</p>
+ <ul>
+ <li><strong>Formative Assessment:</strong> Providing clear, direct feedback when a coach's practice falls below standards.</li>
+ <li><strong>Remediation:</strong> Creating a plan for a coach to improve specific skills (e.g., "You need more training on the Neurobiology of Safety").</li>
+ <li><strong>The "Hard Stop":</strong> The rare but necessary decision to recommend a coach pause their practice if they are causing harm to the LGBTQ+ community.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Setting the Boundary</span>
+ <p>Supervision is NOT therapy. If a coach's personal trauma is preventing them from being effective, your job is to say: <em>"This is a profound insight, and I want to support you in processing it. However, that processing needs to happen with your therapist so that our time here can remain focused on your professional growth and client safety."</em></p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary difference between Clinical Supervision and Administrative Oversight?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Clinical Supervision focuses on the ethics, safety, and psychological depth of the client-coach relationship (the "work"), whereas Administrative Oversight focuses on business metrics, compliance, and KPIs (the "business").</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. How does the 'Parallel Process' manifest in the Supervisory Alliance?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Parallel Process suggests that the dynamic between the supervisor and the coach will be mirrored in the dynamic between the coach and the client. If a supervisor creates a safe, affirming space (P), the coach is more likely to provide that same safety to their client.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Which 'Eye' in the Seven-Eyed Model focuses on the supervisor's own internal reactions?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Eye 6: The Supervisor's Internal Process. This lens helps the supervisor identify if their own biases or emotions are clouding their ability to provide objective guidance.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is 'Gatekeeping' in the context of L3 supervision?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Gatekeeping is the ethical duty of the supervisor to ensure that coaches are competent and safe. It involves providing feedback, remediation, and, if necessary, preventing an unfit coach from practicing to protect the LGBTQ+ community.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>L3 Supervision is a distinct professional role focused on the formative, restorative, and normative development of other coaches.</li>
+ <li>The 'P' Pillar (Presence & Safety) is the bedrock of the supervisory alliance, allowing for vulnerability and growth.</li>
+ <li>Power dynamics must be explicitly named and navigated to maintain a queer-affirming, egalitarian stance.</li>
+ <li>The adapted Seven-Eyed Model provides a comprehensive 360-degree view of the coaching ecosystem.</li>
+ <li>Gatekeeping is a sacred duty to protect the integrity of the profession and the safety of the LGBTQ+ community.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Hawkins, P., & Shohet, R. (2012). <em>Supervision in the Helping Professions</em>. Open University Press.</li>
+ <li>Proctor, B. (2008). <em>Group Supervision: A Guide to Creative Practice</em>. Sage Publications.</li>
+ <li>Bernard, J. M., & Goodyear, R. K. (2018). <em>Fundamentals of Clinical Supervision</em>. Pearson.</li>
+ <li>Singh, A. A., & dickey, l. m. (2017). "Affirmative Counseling and Psychological Practice with Transgender and Gender Nonconforming Clients." <em>American Psychological Association</em>.</li>
+ <li>Falender, C. A., & Shafranske, E. P. (2014). "Clinical Supervision: A Competency-Based Approach." <em>APA Books</em>.</li>
+ <li>Mullarkey, S. et al. (2021). "The impact of clinical supervision on the resilience of health professionals: A systematic review." <em>Journal of Advanced Nursing</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ const isVisible = answer.style.display === 'block';
+ answer.style.display = isVisible ? 'none' : 'block';
+ this.textContent = isVisible ? 'Reveal Answer' : 'Hide Answer';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

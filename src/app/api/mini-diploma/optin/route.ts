@@ -108,10 +108,80 @@ Sarah ✨`,
     },
 };
 
+// ============================================================
+// RETELL AI INTEGRATION HELPERS
+// ============================================================
+
+/**
+ * Format phone to E.164 format for Retell
+ * Input: "5551234567" or "555-123-4567"
+ * Output: "+15551234567"
+ */
+function formatPhoneE164(phone: string): string {
+    const digits = phone.replace(/\D/g, '');
+    // If already has country code (11 digits starting with 1), just add +
+    if (digits.length === 11 && digits.startsWith('1')) {
+        return `+${digits}`;
+    }
+    // US number (10 digits), add +1
+    if (digits.length === 10) {
+        return `+1${digits}`;
+    }
+    // Fallback: return with +1 anyway
+    return `+1${digits}`;
+}
+
+/**
+ * Get display name for certification (used in Retell prompt personalization)
+ */
+function getCertificationDisplayName(course: string): string {
+    const names: Record<string, string> = {
+        "womens-health": "Women's Health & Hormones",
+        "functional-medicine": "Functional Medicine",
+        "fm-healthcare": "Functional Medicine",
+        "gut-health": "Gut Health",
+        "hormone-health": "Hormone Health",
+        "holistic-nutrition": "Holistic Nutrition",
+        "nurse-coach": "Nurse Life Coach",
+        "health-coach": "Health Coach",
+    };
+    return names[course] || "Health Certification";
+}
+
+/**
+ * Calculate lead score for sales prioritization (0-100)
+ * Higher score = more ready to buy
+ */
+function calculateLeadScore(investmentLevel?: string, readiness?: string): number {
+    let score = 50; // Base score
+
+    // Investment level scoring
+    switch (investmentLevel) {
+        case "5k-plus": score += 35; break;
+        case "3k-5k": score += 25; break;
+        case "1k-3k": score += 15; break;
+        case "under-1k": score += 5; break;
+    }
+
+    // Readiness scoring
+    switch (readiness) {
+        case "yes-ready": score += 15; break;
+        case "need-time": score += 5; break;
+        case "talk-partner": score += 0; break;
+    }
+
+    return Math.min(score, 100);
+}
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { firstName, lastName, email, phone, course, lifeStage, motivation, investment, investmentLevel, readiness, segment } = body;
+        const {
+            firstName, lastName, email, phone, course,
+            lifeStage, motivation, investment, investmentLevel, readiness, segment,
+            // UTM params for attribution (optional)
+            utm_source, utm_medium, utm_campaign, utm_content, utm_term
+        } = body;
 
         // Validate required fields
         if (!firstName || !lastName || !email || !phone || !course) {
@@ -382,43 +452,78 @@ export async function POST(request: NextRequest) {
             // Don't fail registration if email fails
         }
 
-        // GoHighLevel Webhook Integration
-        // Send lead data to GHL for SMS follow-ups
+        // ============================================================
+        // GOHIGHLEVEL + RETELL AI INTEGRATION
+        // Enhanced payload with all fields needed for Retell outbound calls
+        // ============================================================
         const ghlWebhookUrl = process.env.GHL_WEBHOOK_URL;
         if (ghlWebhookUrl) {
             try {
+                // Format phone for Retell (E.164 format: +15551234567)
+                const phoneE164 = formatPhoneE164(cleanPhone);
+
                 const ghlPayload = {
-                    // Contact Info
-                    firstName: firstName.trim(),
-                    lastName: lastName.trim(),
+                    // === ALWAYS SEND (CORE - used by Retell) ===
+                    first_name: firstName.trim(),
+                    last_name: lastName.trim(),
                     email: email.toLowerCase(),
-                    phone: cleanPhone, // Normalized: digits only
-                    // Source Tracking
+                    phone: phoneE164, // E.164 format for Retell
+
+                    // === CERTIFICATION (for Retell personalization) ===
+                    certification: getCertificationDisplayName(course),
+                    certification_slug: course,
+
+                    // === SOURCE TRACKING ===
                     source: "mini-diploma",
-                    lead_source: course, // e.g., "functional-medicine"
+                    lead_source: course,
                     lead_source_detail: `${course}-mini-diploma`,
-                    // Segment for GHL workflow routing (healthcare-workers, general, etc.)
                     segment: segment || "general",
-                    // Qualification Answers (Q1-Q3)
-                    life_stage: lifeStage || "",
-                    motivation: motivation || "",
-                    investment: investment || "",
-                    // Q4-Q5: Investment Level & Readiness (for sales prioritization)
-                    investment_level: investmentLevel || "",
-                    readiness: readiness || "",
-                    // Metadata
+
+                    // === QUALIFICATION DATA (passed to Retell as dynamic vars) ===
+                    // These are the 5 questions from the form
+                    income_goal: investment || "",           // Q1: What's your income goal?
+                    time_commitment: lifeStage || "",        // Q2: How much time can you dedicate?
+                    motivation: motivation || "",            // Q3: What's driving you?
+                    budget: investmentLevel || "",           // Q4: Investment level (also as "investment_level")
+                    investment_level: investmentLevel || "", // Alias for budget
+                    readiness: readiness || "",              // Q5: Ready to start?
+
+                    // === LEAD SCORING (for sales prioritization) ===
+                    lead_score: calculateLeadScore(investmentLevel, readiness),
+
+                    // === VERCEL TRACKING ===
+                    vercel_lead_id: user.id,                 // For Retell function callbacks
+
+                    // === UTM ATTRIBUTION ===
+                    utm_source: utm_source || "",
+                    utm_medium: utm_medium || "",
+                    utm_campaign: utm_campaign || "",
+                    utm_content: utm_content || "",
+                    utm_term: utm_term || "",
+
+                    // === METADATA ===
                     signup_date: new Date().toISOString(),
                     platform: "accredipro-lms",
+
+                    // === RETELL DEDUPE FLAGS (GHL will populate these) ===
+                    // These are set by GHL workflow, not by us:
+                    // retell_call_started: false (default)
+                    // retell_last_call_at: null (default)
                 };
 
-                await fetch(ghlWebhookUrl, {
+                const ghlResponse = await fetch(ghlWebhookUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(ghlPayload),
                 });
-                console.log(`[OPTIN] GHL webhook sent for ${email}`);
+
+                if (ghlResponse.ok) {
+                    console.log(`[OPTIN] ✅ GHL webhook sent for ${email} (phone: ${phoneE164}, score: ${ghlPayload.lead_score})`);
+                } else {
+                    console.error(`[OPTIN] ⚠️ GHL webhook returned ${ghlResponse.status} for ${email}`);
+                }
             } catch (ghlError) {
-                console.error("[OPTIN] GHL webhook failed:", ghlError);
+                console.error("[OPTIN] ❌ GHL webhook failed:", ghlError);
                 // Don't fail registration if GHL fails
             }
         }

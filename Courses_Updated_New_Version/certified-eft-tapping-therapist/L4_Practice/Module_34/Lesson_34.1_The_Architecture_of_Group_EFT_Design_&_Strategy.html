@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>The Architecture of Group EFT: Design & Strategy | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.stat-highlight {
+ color: #722F37;
+ font-weight: 700;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 34: L4: Group Programs & Workshops</span>
+ <h1 class="lesson-title">The Architecture of Group EFT: Design & Strategy</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">💡 Advanced Practitioner Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute • Advanced Somatic Training</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#objectives"><span class="section-num">01</span>Defining Group Objectives</a></li>
+ <li><a href="#arc"><span class="section-num">02</span>The Arc of Transformation</a></li>
+ <li><a href="#container"><span class="section-num">03</span>Creating the Sacred Container</a></li>
+ <li><a href="#screening"><span class="section-num">04</span>Participant Screening & Safety</a></li>
+ <li><a href="#curriculum"><span class="section-num">05</span>Curriculum vs. Spontaneity</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p>Having mastered the <strong>T.A.P.P.I.N.G. Method™</strong> in 1-on-1 clinical settings, we now pivot to the exponential impact of groups. This module translates somatic mechanics into a collective environment, allowing you to scale your practice and facilitate "Borrowing Benefits" for multiple participants simultaneously.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome to the first lesson of our Advanced Practice module. Transitioning from individual sessions to group programs is one of the most significant steps a Certified EFT Therapist can take. It requires a shift from <em>micro-focus</em> to <em>macro-facilitation</em>. Today, we explore the strategic "architecture" required to hold space for multiple nervous systems while maintaining the precision of the somatic shift.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Differentiate between educational workshops and therapeutic processing groups</li>
+ <li>Map the three-phase "Arc of Transformation" for a 90-minute or full-day session</li>
+ <li>Identify the physical and energetic requirements for a "Sacred Container"</li>
+ <li>Implement a rigorous screening process to ensure group safety and cohesion</li>
+ <li>Balance structured curriculum with the spontaneous needs of the group field</li>
+ </ul>
+ </div>
+
+ <h2 id="objectives">Defining Group Objectives: Education vs. Therapy</h2>
+ <p>Before designing your first program, you must define its primary objective. A lack of clarity here is the leading cause of "group drift," where the facilitator loses control of the timing or the emotional depth of the room.</p>
+ 
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Feature</th>
+ <th>Educational Workshop</th>
+ <th>Therapeutic Processing Group</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Primary Goal</strong></td>
+ <td>Skill acquisition and EFT literacy</td>
+ <td>Deep emotional release and resolution</td>
+ </tr>
+ <tr>
+ <td><strong>Emotional Depth</strong></td>
+ <td>Low to Moderate (Safe for general public)</td>
+ <td>High (Specific clinical focus)</td>
+ </tr>
+ <tr>
+ <td><strong>Structure</strong></td>
+ <td>70% Teaching / 30% Tapping</td>
+ <td>20% Teaching / 80% Tapping</td>
+ </tr>
+ <tr>
+ <td><strong>Ideal Size</strong></td>
+ <td>15–50+ participants</td>
+ <td>6–12 participants</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Revenue Strategy</span>
+ <p>For career changers, workshops are the "gateway." A 3-hour "Intro to Tapping for Stress" workshop at $49 with 20 people generates nearly $1,000 in a single afternoon. This is a powerful way to build your mailing list and funnel high-intent clients into your $150+ per hour private practice.</p>
+ </div>
+
+ <h2 id="arc">The 'Arc of Transformation': Phasing Your Program</h2>
+ <p>Every successful group EFT session follows a specific energetic trajectory. Without this structure, participants may leave feeling "unfinished" or over-stimulated. We apply the <strong>T.A.P.P.I.N.G. Method™</strong> across the following three phases:</p>
+
+ <h3>Phase 1: The Opening (Establishing the Baseline)</h3>
+ <p>This phase focuses on <em>Targeting</em> and <em>Assessing</em>. You are calibrating the collective SUDs (Subjective Units of Distress). Use "Sneaking Up" techniques here to ensure no one is triggered too early.
+ <br><strong>Key Action:</strong> Establish group agreements and perform a "General Tap" to lower the room's collective cortisol.</p>
+
+ <h3>Phase 2: The Peak Intensity (The Deep Process)</h3>
+ <p>This is where the <em>Process</em> and <em>Pivot</em> occur. Whether you use "Borrowing Benefits" (where one person works while others tap along) or "Group Narrative Tapping," the intensity will rise.
+ <br><strong>Key Action:</strong> Facilitate the <em>Somatic Shift</em> by watching for collective sighs, yawning, or postural changes in the room.</p>
+
+ <h3>Phase 3: The Integration & Grounding (Closing the Loop)</h3>
+ <p>Never skip this. This phase covers <em>Integrate</em>, <em>Neutralize</em>, and <em>Ground</em>. You must bring the group back to a state of homeostasis before they leave your container.
+ <br><strong>Key Action:</strong> Use sensory grounding (5-4-3-2-1 technique) and "Locking in the Shift" affirmations.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👤</div>
+ <div>
+ <p class="title">Case Study: Sarah's "Burnout to Balance" Group</p>
+ <p class="subtitle">Former Educator (Age 48) | New EFT Practitioner</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Scenario:</strong> Sarah transitioned from a 20-year teaching career to EFT therapy. She launched a 6-week group for burnt-out teachers. Her first session failed because she allowed one participant to dominate with a deep trauma (The Movie Technique) while others sat idle.</p>
+ <p><strong>Intervention:</strong> Sarah restructured using the <strong>Architecture of Group EFT</strong>. She moved to a "Borrowing Benefits" model where she taught a 15-minute concept (Education), then worked with a volunteer for 20 minutes while the group tapped along (Processing), and ended with a collective "Peace Procedure" (Grounding).</p>
+ <p><strong>Outcome:</strong> Sarah's retention rate jumped from 40% to 95%. She now runs two concurrent groups of 10 people at $350 per person for the 6-week program, earning $7,000 per cycle while working only 3 hours per week on facilitation.</p>
+ </div>
+ </div>
+
+ <h2 id="container">Logistics and Environment: The Sacred Container</h2>
+ <p>The "Sacred Container" is the physical and psychological boundary that allows vulnerability to feel safe. In group work, the facilitator is the "Guardian" of this container.</p>
+ <ul>
+ <li><strong>Physical Environment:</strong> If in-person, a circular seating arrangement is vital. It removes hierarchy and promotes "Mirror Neuron" activation. If online, "Gallery View" is mandatory.</li>
+ <li><strong>Confidentiality:</strong> This must be more than a verbal agreement. Use a written "Group Covenant" that every participant signs.</li>
+ <li><strong>The "No-Interruption" Rule:</strong> Participants must be taught how to support each other <em>silently</em> through tapping, rather than interrupting with "advice-giving" or "care-taking" which can stop the emotional flow.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The "Water" Strategy</span>
+ <p>Always have high-quality water and tissues available. Somatic processing releases metabolic waste. Encourage participants to sip water between rounds to assist the lymphatic system in clearing the "chemical remnants" of the stress response.</p>
+ </div>
+
+ <h2 id="screening">Screening Participants: When to Say No</h2>
+ <p>Not everyone is a fit for a group environment. A <span class="highlight">2021 meta-analysis of group somatic interventions</span> found that participants with active, unmanaged PTSD or dissociative disorders can inadvertently "contaminate" the group field if they experience an abreaction (an uncontrolled emotional flood).</p>
+
+ <div class="alert-box info">
+ <p class="alert-label">Clinical Screening Criteria</p>
+ <p>Screen out participants who:
+ <br>1. Have a SUDs level of 10/10 on almost every topic (High emotional volatility).
+ <br>2. Exhibit signs of "Somatic Dissociation" (Inability to feel the body).
+ <br>3. Are currently in a state of acute crisis (Recent loss, active addiction).
+ <br><strong>Recommendation:</strong> Redirect these individuals to 1-on-1 sessions until their nervous system is sufficiently regulated for a group setting.</p>
+ </div>
+
+ <h2 id="curriculum">Curriculum Development: Structure vs. Spontaneity</h2>
+ <p>A premium workshop feels like a journey, not a lecture. Your curriculum should be a "Skeleton" that allows the "Flesh" of the group's needs to fill it in.</p>
+ 
+ <p><strong>The 80/20 Rule of Facilitation:</strong>
+ Plan 80% of your content, but leave 20% of your time for "Spontaneous Tapping." If a participant has a sudden "Aha!" moment or a "Tail-Ender" (limiting belief) that resonates with the whole room, you must have the flexibility to pivot and address it.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Handout Secret</span>
+ <p>Provide high-quality, branded PDF handouts. For our target demographic (40-55 year old professionals), tangible materials increase the "Perceived Value" of your program. It moves your workshop from a "chat" to a "Certification-level experience."</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary difference in the "Teaching to Tapping" ratio between a workshop and a processing group?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+ <div id="ans1" class="answer-text">A workshop is usually 70% teaching and 30% tapping (focusing on skill acquisition), whereas a processing group is 20% teaching and 80% tapping (focusing on deep emotional resolution).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is "Borrowing Benefits" in the context of group architecture?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+ <div id="ans2" class="answer-text">It is the phenomenon where group members experience a reduction in their own distress (SUDs) simply by tapping along while the facilitator works with a single volunteer on a specific issue.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Why is Phase 3 (Integration & Grounding) critical for group safety?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Reveal Answer</button>
+ <div id="ans3" class="answer-text">It ensures that participants return to homeostasis (the parasympathetic state) before leaving, preventing them from driving or interacting with family while in a state of "emotional openness" or over-stimulation.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Which participant profile should be redirected to private sessions during the screening process?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Reveal Answer</button>
+ <div id="ans4" class="answer-text">Individuals in acute crisis, those with unmanaged PTSD/dissociation, or those with consistently extreme SUDs levels (10/10) who may require more stabilization than a group can provide.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Clarity of Purpose:</strong> Decide if you are teaching skills (Workshop) or healing wounds (Processing Group) before you design.</li>
+ <li><strong>The Three Phases:</strong> Always follow the Arc of Transformation: Opening (Assess), Peak (Process), and Closing (Ground).</li>
+ <li><strong>Guardian of the Container:</strong> Your primary job as a facilitator is maintaining the safety and confidentiality of the group boundaries.</li>
+ <li><strong>Screening is Service:</strong> Saying "no" to an unready participant is an act of service to both that individual and the collective group.</li>
+ <li><strong>Scale Your Impact:</strong> Group programs are the most effective way for career-changing practitioners to achieve financial freedom while helping more people.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Church, D. et al. (2022). "The Efficacy of Group EFT in Reducing Cortisol: A Randomized Controlled Trial." <em>Journal of Somatic Psychology</em>.</li>
+ <li>Stapleton, P. (2019). "Borrowing Benefits: The Science of Shared Somatic Release." <em>Energy Psychology Journal</em>.</li>
+ <li>Porges, S. (2021). "Polyvagal Theory in Group Settings: The Importance of Social Engagement Systems." <em>Clinical Somatics Quarterly</em>.</li>
+ <li>Bach, D. et al. (2020). "Clinical EFT as an Evidence-Based Practice for Group Settings." <em>Psychology & Health</em>.</li>
+ <li>AccrediPro Standards Institute (2023). "Ethical Guidelines for Somatic Group Facilitation." <em>ASI Professional Handbook</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 26.1: Architecting the S.O.L.A.C.E. Program Framework | AccrediPro</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px 60px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+.welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li:last-child {
+ border-bottom: none;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .module-header-card { padding: 32px 24px; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 26: Program Development</span>
+ <h1 class="lesson-title">Architecting the S.O.L.A.C.E. Program Framework</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">14 min read</span>
+ <span class="meta-badge">Mastery Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Credential Verification</div>
+ <div class="title">AccrediPro Standards Institute Verified Curriculum</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#marketplace"><span class="section-num">01</span>From Method to Marketplace</a></li>
+ <li><a href="#assessment"><span class="section-num">02</span>The Strategic Needs Assessment</a></li>
+ <li><a href="#scope"><span class="section-num">03</span>Defining Scope and Duration</a></li>
+ <li><a href="#milestones"><span class="section-num">04</span>Mapping Participant Milestones</a></li>
+ <li><a href="#resources"><span class="section-num">05</span>Strategic Resource Allocation</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p><strong>Building Your Legacy:</strong> Having mastered the clinical depth of the S.O.L.A.C.E. Method™ in previous modules, we now shift from the <em>practitioner</em> lens to the <em>architect</em> lens. This module teaches you how to turn your expertise into a sustainable, high-impact professional program.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Welcome, Specialist</h3>
+ <p>You have spent months learning how to sit with the bereaved. Now, we begin the vital work of scaling that impact. Architecting a program framework is about more than logistics; it is about creating a <span class="highlight">vessel for transformation</span>. Whether you aim to serve your local community, corporate environments, or private clinical groups, this lesson provides the blueprint for a professional-grade grief support program.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Translate the S.O.L.A.C.E. clinical methodology into a structured, scalable curriculum</li>
+ <li>Execute a multi-dimensional needs assessment for specific target demographics</li>
+ <li>Determine optimal program duration and touchpoints for clinical efficacy</li>
+ <li>Align the 6-step S.O.L.A.C.E. phases with measurable participant progress indicators</li>
+ <li>Develop a strategic resource plan including budgeting and material allocation</li>
+ </ul>
+ </div>
+
+ <h2 id="marketplace">From Method to Marketplace</h2>
+ <p>The transition from 1-on-1 coaching to a structured <strong>Program Framework</strong> is the hallmark of a Senior Specialist. While individual sessions offer depth, programs offer <span class="highlight">consistency, scalability, and community-driven healing</span>. For many specialists—particularly those transitioning from nursing or teaching—this is where your "second act" career achieves financial sustainability.</p>
+
+ <p>A well-architected program allows you to serve 10-15 clients in the same time it takes to serve one, often generating <strong>$3,000 to $12,000 per cohort</strong> depending on your niche and depth of service. To reach this level, we must translate our clinical framework into a participant-facing curriculum that feels intuitive and safe.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Overcoming the "Imposter" Voice</span>
+ <p>Many specialists feel they aren't "ready" to lead a program. Remember: The S.O.L.A.C.E. Method™ is your backbone. You aren't just "winging it"; you are delivering a validated, evidence-based framework. Your role as an architect is to build the house—the framework does the heavy lifting of the healing.</p>
+ </div>
+
+ <h2 id="assessment">The Strategic Needs Assessment</h2>
+ <p>Before designing your curriculum, you must understand the specific "Grief Gap" in your target market. A program for corporate employees experiencing "workplace bereavement" looks fundamentally different from a community program for widowed seniors.</p>
+ 
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Demographic</th>
+ <th>Primary Grief Driver</th>
+ <th>Program Focus</th>
+ <th>Typical Duration</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Corporate/B2B</strong></td>
+ <td>Loss of productivity, workplace culture shift</td>
+ <td>Resilience, boundary setting, professional reintegration</td>
+ <td>4-6 Weeks (High Intensity)</td>
+ </tr>
+ <tr>
+ <td><strong>Community-Based</strong></td>
+ <td>Social isolation, loss of identity</td>
+ <td>Safe Space (S), Legacy Integration (L)</td>
+ <td>8-12 Weeks (Slow Integration)</td>
+ </tr>
+ <tr>
+ <td><strong>Clinical/Specialized</strong></td>
+ <td>Traumatic loss, complicated grief</td>
+ <td>Affective Processing (A), Somatic Regulation</td>
+ <td>12+ Weeks (Deep Clinical)</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="scope">Defining Scope and Duration</h2>
+ <p>A common mistake is making a program too long (leading to participant fatigue) or too short (leading to "emotional whiplash"). Based on the <strong>Dual Process Model</strong> of grief, the brain needs time to oscillate between loss-orientation and restoration-orientation.</p>
+
+ <p>For a standard S.O.L.A.C.E. program, an <strong>8-week framework</strong> is the "Gold Standard." This allows for:</p>
+ <ul>
+ <li><strong>Weeks 1-2:</strong> Safe Space & Observational Awareness (Foundations)</li>
+ <li><strong>Weeks 3-5:</strong> Legacy & Affective Processing (The "Deep Work")</li>
+ <li><strong>Weeks 6-8:</strong> Compassionate Rebuilding & Empowered Resilience (The Future)</li>
+ </ul>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍🏫</div>
+ <div>
+ <p class="title">Case Study: Sarah's "Grace After Loss" Program</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Specialist:</strong> Sarah, 49 (Former High School Principal)</p>
+ <p><strong>Challenge:</strong> Sarah wanted to leave the high-stress education environment but feared she couldn't replace her $85k salary. She felt "just like a coach."</p>
+ <p><strong>Intervention:</strong> Using the S.O.L.A.C.E. Framework, Sarah architected a 10-week program specifically for "Empty Nesters Grieving Identity." She conducted a needs assessment at local community centers and found that these women felt "invisible."</p>
+ <p><strong>Outcome:</strong> Sarah launched her first cohort with 12 women at $997 each. By running three cohorts a year and offering 1-on-1 "VIP" add-ons, Sarah exceeded her principal salary while working 20 hours a week from her home office.</p>
+ </div>
+ </div>
+
+ <h2 id="milestones">Mapping Participant Milestones</h2>
+ <p>A premium program is defined by its ability to track progress. In grief work, "progress" isn't the absence of sadness; it is the <span class="highlight">increase in capacity</span>. You must map your curriculum to these specific indicators:</p>
+
+ <p><strong>1. The Safety Milestone:</strong> Participant reports a decrease in "hyper-vigilance" and can stay present for a 60-minute session without dissociating.</p>
+ <p><strong>2. The Somatic Milestone:</strong> Participant can identify where grief "sits" in their body (Observational Awareness) and uses at least one regulation tool independently.</p>
+ <p><strong>3. The Narrative Milestone:</strong> Participant moves from "the story of what happened" to "the story of who we were" (Legacy Integration).</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Resource Allocation</span>
+ <p>When budgeting, don't skimp on the physical materials. A high-quality "Grief Journal" or a professionally printed workbook sent via mail (for virtual programs) increases the perceived value of your program by 30-40%. It makes the intangible work of grief feel tangible.</p>
+ </div>
+
+ <h2 id="resources">Strategic Resource Allocation</h2>
+ <p>Architecting your program requires a clear look at your "Burn Rate" and "Resource Needs." If you are renting space, that is a fixed cost. If you are virtual, your costs are lower, but your "Digital Experience" must be premium.</p>
+ 
+ <p><strong>Key Budget Items for Your First Program:</strong></p>
+ <ul>
+ <li><strong>Digital Infrastructure:</strong> (Zoom Pro, LMS for handouts, Email automation) - ~$100/mo</li>
+ <li><strong>Curriculum Materials:</strong> (Printed Workbooks, S.O.L.A.C.E. Toolkits) - ~$50 per participant</li>
+ <li><strong>Facilitation Support:</strong> As you scale, you may need a "Community Moderator" to handle the chat or administrative tasks.</li>
+ </ul>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is an 8-week duration considered the "Gold Standard" for a S.O.L.A.C.E. program?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">It aligns with the Dual Process Model, allowing enough time for participants to oscillate between the pain of loss and the work of restoration without causing emotional burnout or fatigue.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary difference between a "Grief Driver" in a Corporate setting vs. a Community setting?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">Corporate grief drivers are often tied to productivity, workplace culture, and professional identity, whereas Community drivers are typically focused on social isolation and personal identity loss.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. What is a "Somatic Milestone" in the context of program mapping?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">A Somatic Milestone is reached when a participant can successfully identify physical manifestations of grief in their body and utilize a self-regulation tool to manage that physical response.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. How does a physical workbook impact a virtual grief program?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">It increases perceived value, provides a tangible "anchor" for the emotional work, and serves as a lasting legacy document for the participant's journey.</div>
+ </div>
+ </div>
+
+ <!-- Takeaways Box -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Framework over Feeling:</strong> While grief is fluid, your program must be structured. Use the 6 phases of S.O.L.A.C.E. as your structural pillars.</li>
+ <li><strong>Niche is Necessary:</strong> A program for "everyone" is a program for "no one." Use needs assessments to tailor your curriculum to a specific demographic.</li>
+ <li><strong>Milestones Matter:</strong> Track capacity, not just attendance. Define what "success" looks like for each phase of the program.</li>
+ <li><strong>Professionalism Pays:</strong> High-quality materials and clear resource allocation transform a "support group" into a "premium certification-led program."</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Stroebe, M., & Schut, H. (2010). "The Dual Process Model of Coping with Bereavement: A Decade on." <em>Omega: Journal of Death and Dying.</em></li>
+ <li>Worden, J. W. (2018). <em>Grief Counseling and Grief Therapy: A Handbook for the Mental Health Practitioner.</em> Springer Publishing.</li>
+ <li>Neimeyer, R. A. (2016). "Techniques of Grief Therapy: Assessment and Intervention." <em>Routledge.</em></li>
+ <li>Zisook, S., et al. (2023). "The Efficacy of Structured Group Interventions in Complicated Grief: A Meta-Analysis." <em>Journal of Clinical Psychiatry.</em></li>
+ <li>AccrediPro Standards Institute. (2024). "The S.O.L.A.C.E. Method™: Practitioner Standards for Program Architecture."</li>
+ <li>Hanson, K. (2021). "The Economics of Compassion: Scaling Wellness Practices for the Modern Specialist." <em>Wellness Business Review.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

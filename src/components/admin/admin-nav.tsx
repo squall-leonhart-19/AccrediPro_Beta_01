@@ -34,23 +34,23 @@ import {
 import { useState } from "react";
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/purchases", label: "Purchases", icon: DollarSign },
-  { href: "/admin/leads", label: "Leads", icon: UserPlus },
-  { href: "/admin/mini-diploma", label: "Mini Diploma", icon: GraduationCap },
-  { href: "/admin/courses", label: "Courses", icon: BookOpen },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/community", label: "Community", icon: Heart },
-  { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare },
-  { href: "/admin/tickets", label: "Support Tickets", icon: Ticket },
-  { href: "/admin/marketing", label: "Email Marketing", icon: Mail },
-  { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap },
-  { href: "/admin/communications", label: "Communications", icon: Bell },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/referrals", label: "Referral Program", icon: Gift },
-  { href: "/admin/oracle", label: "Oracle", icon: Brain },
-  { href: "/admin/super-tools", label: "Super Tools", icon: Shield },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/leads", label: "Leads", icon: UserPlus, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/mini-diploma", label: "Mini Diploma", icon: GraduationCap, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/courses", label: "Courses", icon: BookOpen, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/users", label: "Users", icon: Users, roles: ["ADMIN", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT can access
+  { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/tickets", label: "Support Tickets", icon: Ticket, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/marketing", label: "Email Marketing", icon: Mail, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/communications", label: "Communications", icon: Bell, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/referrals", label: "Referral Program", icon: Gift, roles: ["ADMIN", "INSTRUCTOR"] },
+  { href: "/admin/oracle", label: "Oracle", icon: Brain, roles: ["ADMIN"] },
+  { href: "/admin/super-tools", label: "Super Tools", icon: Shield, roles: ["ADMIN"] },
+  { href: "/admin/settings", label: "Settings", icon: Settings, roles: ["ADMIN"] },
 ];
 
 export function AdminNav() {
@@ -59,7 +59,11 @@ export function AdminNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const user = session?.user;
+  const userRole = user?.role as string || "STUDENT";
   const initials = `${user?.firstName?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`.toUpperCase() || "A";
+
+  // Filter nav items based on user role
+  const filteredNavItems = navItems.filter(item => item.roles.includes(userRole));
 
   return (
     <>
@@ -80,13 +84,13 @@ export function AdminNav() {
           </div>
           <div>
             <span className="text-xl font-bold text-white">AccrediPro</span>
-            <p className="text-xs text-gold-400">Admin Panel</p>
+            <p className="text-xs text-gold-400">{userRole === "SUPPORT" ? "Support Panel" : "Admin Panel"}</p>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-          {navItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const isActive = pathname === item.href ||
               (item.href !== "/admin" && pathname.startsWith(item.href));
             return (
@@ -136,7 +140,7 @@ export function AdminNav() {
               <p className="text-sm font-semibold text-white truncate">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-xs text-burgundy-300 truncate">Administrator</p>
+              <p className="text-xs text-burgundy-300 truncate">{userRole === "SUPPORT" ? "Support Staff" : "Administrator"}</p>
             </div>
           </div>
           <Button
@@ -183,7 +187,7 @@ export function AdminNav() {
       {mobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 z-40 bg-burgundy-900 pt-16">
           <nav className="p-4 space-y-2">
-            {navItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== "/admin" && pathname.startsWith(item.href));
               return (

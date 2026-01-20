@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 2.2: The ATM Framework: Antecedents, Triggers, and Mediators | AccrediPro</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* INTERACTIVE COMPONENTS */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+.references-box ol {
+ padding-left: 20px;
+}
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+.connection-icon {
+ font-size: 24px;
+}
+
+/* STAT HIGHLIGHT */
+.stat-highlight {
+ font-weight: 800;
+ color: #722F37;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .module-header-card { padding: 32px 20px; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 2: R: Root Cause Analysis</span>
+ <h1 class="lesson-title">The ATM Framework: Antecedents, Triggers, and Mediators</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 2 of 8</span>
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">Accredited Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute™ Certified Content</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#antecedents"><span class="section-num">01</span>Defining Antecedents</a></li>
+ <li><a href="#triggers"><span class="section-num">02</span>Identifying Triggers</a></li>
+ <li><a href="#mediators"><span class="section-num">03</span>Understanding Mediators</a></li>
+ <li><a href="#mapping"><span class="section-num">04</span>Clinical Mapping Strategy</a></li>
+ <li><a href="#case-study"><span class="section-num">05</span>The Complex Fatigue Case</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <span class="connection-icon">🔗</span>
+ <div class="connection-text">
+ <p>In Lesson 2.1, we explored <strong>Systems Biology</strong> and how the body functions as an interconnected web. Now, we introduce the <strong>ATM Framework</strong>—the primary clinical tool used by Integrative Medicine Practitioners to organize that web and identify exactly where dysfunction began.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Become a Clinical Detective</h3>
+ <p>Welcome, Practitioner. One of the most common challenges for career changers—whether you're coming from nursing, teaching, or corporate life—is the feeling of being overwhelmed by a client's complex history. The <strong>ATM Framework</strong> is your "secret weapon." It provides a structured, professional method to stop chasing symptoms and start identifying the <em>story</em> of the disease. By mastering this, you move from "wellness enthusiast" to a legitimate, high-value expert who can command $250+ per consultation.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Define and identify <strong>Antecedents</strong> as the foundational "soil" of a client's health.</li>
+ <li>Pinpoint acute <strong>Triggers</strong> that initiate the transition from health to dysfunction.</li>
+ <li>Analyze <strong>Mediators</strong> that perpetuate chronic illness and prevent healing.</li>
+ <li>Construct a visual <strong>ATM Clinical Map</strong> to present findings to clients professionally.</li>
+ <li>Differentiate between triggers and mediators in complex clinical scenarios.</li>
+ </ul>
+ </div>
+
+ <h2 id="antecedents">Defining Antecedents: The Foundational "Soil"</h2>
+ <p>In the ATM framework, <strong>Antecedents</strong> are the factors that predispose an individual to certain health conditions. Think of them as the "soil" in which the seeds of health or disease are planted. They are present <em>before</em> the onset of the current illness.</p>
+ 
+ <p>A 2021 study published in <em>Nature Reviews Genetics</em> highlighted that while genetics play a role, epigenetics—the influence of the environment on gene expression—accounts for up to <span class="stat-highlight">70-90%</span> of chronic disease risk. This is why we look beyond just DNA.</p>
+
+ <h3>Common Antecedents Include:</h3>
+ <ul>
+ <li><strong>Genetics:</strong> SNPs (Single Nucleotide Polymorphisms) like MTHFR, which affects detoxification and mood.</li>
+ <li><strong>Birth History:</strong> C-section vs. vaginal birth (impacting the initial microbiome) and breastfeeding duration.</li>
+ <li><strong>Early Childhood Trauma:</strong> High ACE (Adverse Childhood Experiences) scores are statistically linked to autoimmune and inflammatory conditions in adulthood.</li>
+ <li><strong>Congenital Factors:</strong> Prenatal exposures to toxins or maternal stress.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Practitioner Insight</span>
+ <p>💡 When discussing antecedents with a client, avoid making them feel "doomed" by their genetics. Instead, use the phrase: <em>"Genetics loads the gun, but environment pulls the trigger."</em> This empowers the client to realize that through lifestyle modification, they can change how their genes are expressed.</p>
+ </div>
+
+ <h2 id="triggers">Identifying Triggers: The "Spark"</h2>
+ <p><strong>Triggers</strong> are the acute events that provoke the onset of symptoms or a change in health status. If the antecedents are the soil, the trigger is the "spark" that starts the fire. A trigger is usually a discrete event that the client can point to in their timeline.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Category</th>
+ <th>Example Triggers</th>
+ <th>Clinical Impact</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Biological</strong></td>
+ <td>Severe viral infection (e.g., EBV, COVID-19)</td>
+ <td>Sudden immune dysregulation</td>
+ </tr>
+ <tr>
+ <td><strong>Physical</strong></td>
+ <td>Car accident, surgery, or head injury</td>
+ <td>Structural stress and systemic inflammation</td>
+ </tr>
+ <tr>
+ <td><strong>Chemical</strong></td>
+ <td>Acute mold exposure or pesticide poisoning</td>
+ <td>Toxic overload and mitochondrial damage</td>
+ </tr>
+ <tr>
+ <td><strong>Emotional</strong></td>
+ <td>Divorce, death of a loved one, or job loss</td>
+ <td>HPA-axis crash and cortisol depletion</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <p>In clinical practice, you will often hear clients say, <em>"I haven't been well since..."</em> Pay close attention to what follows that phrase. That is almost always the primary trigger.</p>
+
+ <h2 id="mediators">Understanding Mediators: The "Wind"</h2>
+ <p><strong>Mediators</strong> are the factors—physiological or psychological—that keep the fire burning. They are the reasons why a person doesn't get better even after the trigger is gone. Mediators "mediate" the ongoing inflammatory or dysfunctional response.</p>
+ 
+ <p>Mediators can be <strong>biochemical</strong> (like cytokines or hormones) or <strong>behavioral</strong> (like poor sleep or negative self-talk). Identifying mediators is crucial because these are often the primary targets for our initial interventions.</p>
+
+ <h3>Types of Mediators:</h3>
+ <ul>
+ <li><strong>Pro-inflammatory Cytokines:</strong> (e.g., TNF-alpha, IL-6) that perpetuate systemic pain.</li>
+ <li><strong>Hormonal Imbalances:</strong> Persistent high cortisol that prevents gut lining repair.</li>
+ <li><strong>Cognitive Mediators:</strong> Fear of movement (kinesiophobia) in chronic pain patients.</li>
+ <li><strong>Environmental Mediators:</strong> Ongoing exposure to blue light at night disrupting circadian rhythms.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Business Tip</span>
+ <p>💡 Clients will pay a premium for someone who can explain <em>why</em> they are stuck. By identifying their mediators, you provide the "missing link" that their conventional doctor likely missed. This level of insight is what builds a referral-based practice for women over 40 transitioning into this field.</p>
+ </div>
+
+ <h2 id="mapping">Clinical Mapping: The ATM Timeline Strategy</h2>
+ <p>To be an effective practitioner, you must visualize the client's story. We use a <strong>Functional Medicine Timeline</strong> to plot these elements. This isn't just for you; showing this map to a client is a powerful "Aha!" moment that builds deep trust.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <span class="title">Visualizing the ATM Timeline</span>
+ </div>
+ <div class="case-study-content">
+ <p>Imagine a horizontal line representing the client's life. 
+ <br><strong>Left Side (Pre-Illness):</strong> List Antecedents (e.g., Born via C-section, History of antibiotic use).
+ <br><strong>The Tipping Point:</strong> Mark the Trigger (e.g., 2018: Severe bout of Food Poisoning).
+ <br><strong>The Current State:</strong> List Mediators (e.g., Chronic Stress, Processed Diet, Low Vitamin D).</p>
+ </div>
+ </div>
+
+ <h2 id="case-study">Case Study: Sarah’s Chronic Fatigue</h2>
+ <p><strong>Client:</strong> Sarah, 48, former high-school teacher.
+ <br><strong>Symptoms:</strong> Extreme fatigue, "brain fog," and joint pain for 3 years.
+ <br><strong>Conventional Diagnosis:</strong> "Fibromyalgia" (treated with NSAIDs and antidepressants with little relief).</p>
+
+ <h3>The ATM Analysis:</h3>
+ <ul>
+ <li><strong>Antecedents:</strong> Family history of Hashimoto’s; grew up in an old, damp house (potential early mold exposure); MTHFR homozygous.</li>
+ <li><strong>Triggers:</strong> A high-stress divorce followed immediately by a severe case of Mononucleosis (EBV).</li>
+ <li><strong>Mediators:</strong> Sarah was drinking 4 cups of coffee daily to "get through," which spiked her cortisol and crashed her blood sugar. She also had undiagnosed "leaky gut" (intestinal permeability) from the NSAID use, which kept her immune system in a state of high alert.</li>
+ </ul>
+
+ <p><strong>The Outcome:</strong> By addressing the <em>mediators</em> first (healing the gut and balancing blood sugar), Sarah's energy improved by <span class="stat-highlight">40%</span> in just 6 weeks. We then addressed the <em>trigger</em> residue (viral support for EBV) and she returned to part-time work within 6 months.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Practitioner Insight</span>
+ <p>💡 Notice how the conventional diagnosis (Fibromyalgia) was just a label for her symptoms. The ATM analysis gave us the actual <em>roadmap</em> for her recovery.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. A client mentions they were born via C-section and never breastfed. In the ATM framework, where does this information belong?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+ <div id="ans1" class="answer-text">This belongs under <strong>Antecedents</strong>. These factors influenced the client's initial microbiome and immune system development before any disease was present.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary difference between a Trigger and a Mediator?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+ <div id="ans2" class="answer-text">A <strong>Trigger</strong> is the acute event that initiates the dysfunction (the "spark"), while a <strong>Mediator</strong> is a factor that continues to provoke the dysfunction and prevents healing (the "wind" that keeps the fire going).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. True or False: Genetics are the most important antecedent and cannot be influenced.</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Reveal Answer</button>
+ <div id="ans3" class="answer-text"><strong>False.</strong> While genetics are important, epigenetics (lifestyle, diet, environment) determines how those genes are expressed. We can influence the <em>expression</em> of most genetic antecedents.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Why is "Poor Sleep" considered a mediator in chronic inflammation?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Reveal Answer</button>
+ <div id="ans4" class="answer-text">Because inadequate sleep prevents the body's natural repair mechanisms and keeps cortisol and inflammatory cytokines elevated, thereby <em>mediating</em> the ongoing state of illness.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The ATM Framework (Antecedents, Triggers, Mediators) is the cornerstone of professional Root Cause Analysis.</li>
+ <li><strong>Antecedents</strong> are pre-existing "soil" factors like genetics, birth history, and early life trauma.</li>
+ <li><strong>Triggers</strong> are the "sparks"—acute events like infections or trauma that initiate the disease process.</li>
+ <li><strong>Mediators</strong> are the "wind"—ongoing biochemical or behavioral factors that keep the client stuck in illness.</li>
+ <li>Mapping the ATM onto a timeline is a vital clinical skill that transforms your credibility and client results.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Jones, D. S. (2020). <em>Textbook of Functional Medicine.</em> Institute for Functional Medicine.</li>
+ <li>Olden, K., et al. (2021). "The Role of Epigenetics in Human Health and Disease." <em>Nature Reviews Genetics.</em></li>
+ <li>Felitti, V. J., et al. (1998/2022 update). "Relationship of Childhood Abuse and Household Dysfunction to Many of the Leading Causes of Death in Adults: The ACE Study." <em>American Journal of Preventive Medicine.</em></li>
+ <li>Hyman, M. (2019). "Systems Medicine, the Future of Health Care." <em>Alternative Therapies in Health and Medicine.</em></li>
+ <li>Bland, J. S. (2017). "The Evolution of Personalized Medicine and the ATM Framework." <em>Integrative Medicine: A Clinician's Journal.</em></li>
+ <li>Slavich, G. M., & Irwin, M. R. (2014). "From Social Stress to Whole-Body Inflammation." <em>Psychological Bulletin.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+
+// Standardized reveal button logic for any other buttons
+document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ // The function toggleAnswer already handles this via onclick, 
+ // but this is a backup for standard compliance.
+ }
+ });
+});
+</script>
+</body>
+</html>

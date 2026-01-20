@@ -16,6 +16,7 @@ import {
   Users,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Circle,
   BookOpen,
   Award,
@@ -301,6 +302,10 @@ export function MessagesClient({
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
 
+  // Twitch/YouTube style scroll: only auto-scroll if user is at bottom
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [newMessagesCount, setNewMessagesCount] = useState(0);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const isLoadingOlderRef = useRef(false); // Track when loading older messages to prevent auto-scroll
@@ -360,6 +365,32 @@ export function MessagesClient({
     }
   };
 
+  // Check if user is at bottom of messages
+  const checkIsAtBottom = useCallback(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return true;
+    const threshold = 100; // Within 100px of bottom = "at bottom"
+    return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+  }, []);
+
+  // Handle scroll events to track if user is at bottom (Twitch/YouTube style)
+  const handleScroll = useCallback(() => {
+    const atBottom = checkIsAtBottom();
+    setIsAtBottom(atBottom);
+    // Clear new messages count when user scrolls to bottom
+    if (atBottom) {
+      setNewMessagesCount(0);
+    }
+  }, [checkIsAtBottom]);
+
+  // Attach scroll listener to messages container
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [handleScroll, selectedUser]); // Re-attach when conversation changes
+
   const scrollToBottom = (force = false, instant = false) => {
     const container = messagesContainerRef.current;
     if (!container) {
@@ -367,11 +398,11 @@ export function MessagesClient({
       return;
     }
 
-    // Only auto-scroll if user is near bottom (within 200px) or force is true
-    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 200;
-    if (force || isNearBottom) {
-      // Use instant scroll for initial load and new messages, smooth for manual
+    // Only auto-scroll if user is at bottom or force is true (Twitch/YouTube style)
+    if (force || isAtBottom) {
       messagesEndRef.current?.scrollIntoView({ behavior: instant ? "instant" : "smooth" });
+      setNewMessagesCount(0); // Clear count after scrolling
+      setIsAtBottom(true);
     }
   };
 
@@ -484,25 +515,35 @@ export function MessagesClient({
     }
   }, [selectedUser, fetchMessages]);
 
-  // Track previous message count to detect new messages
-  const prevMessagesLengthRef = useRef(messages.length);
+  // Track last message ID to detect genuinely NEW messages (not just refreshes)
+  const prevLastMessageIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // Skip auto-scroll if we're loading older messages (user is reading history)
+    // Skip if we're loading older messages (user is reading history)
     if (isLoadingOlderRef.current) {
-      prevMessagesLengthRef.current = messages.length;
       return;
     }
 
-    // Only auto-scroll if messages were added (not on initial empty state)
-    if (messages.length > 0 && messages.length !== prevMessagesLengthRef.current) {
-      // If new messages were added (not loaded older ones), scroll to bottom
-      if (messages.length > prevMessagesLengthRef.current) {
-        scrollToBottom(false, true); // instant scroll for smoother UX
+    const lastMessage = messages[messages.length - 1];
+    const lastMessageId = lastMessage?.id || null;
+
+    // Only react if a genuinely NEW message was added (different ID)
+    if (lastMessageId && lastMessageId !== prevLastMessageIdRef.current) {
+      // Don't react to optimistic messages (they'll be replaced anyway)
+      if (!lastMessageId.startsWith('temp-')) {
+        // Twitch/YouTube style: if at bottom, scroll. If not, show counter.
+        if (isAtBottom) {
+          scrollToBottom(true, true); // force instant scroll
+        } else {
+          // User is reading history - show "new messages" indicator
+          setNewMessagesCount((prev) => prev + 1);
+        }
       }
-      prevMessagesLengthRef.current = messages.length;
     }
-  }, [messages]);
+
+    // Always update the ref to track current last message
+    prevLastMessageIdRef.current = lastMessageId;
+  }, [messages, isAtBottom]);
 
   // Handle typing indicator
   const handleTyping = async () => {
@@ -1902,8 +1943,8 @@ export function MessagesClient({
 
             {/* Main Content Area */}
             <div className="flex-1 flex overflow-hidden">
-              {/* Messages Container */}
-              <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4">
+              {/* Messages Container - relative for floating button */}
+              <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4 relative">
                 {/* Pinned Founder Message - show for ADMIN only (AccrediPro Founder) */}
                 {!isCoach && selectedUser?.role === "ADMIN" && messages.length > 0 && (
                   <div className="mb-4 p-3 bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl border border-gold-200 relative">
@@ -2144,6 +2185,17 @@ export function MessagesClient({
 
                     <div ref={messagesEndRef} />
                   </div>
+                )}
+
+                {/* Floating "New Messages" button (Twitch/YouTube style) */}
+                {newMessagesCount > 0 && !isAtBottom && (
+                  <button
+                    onClick={() => scrollToBottom(true, true)}
+                    className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-2 px-4 py-2 bg-burgundy-600 hover:bg-burgundy-700 text-white text-sm font-medium rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+                  >
+                    <span>{newMessagesCount} new message{newMessagesCount > 1 ? 's' : ''}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
                 )}
               </div>
 

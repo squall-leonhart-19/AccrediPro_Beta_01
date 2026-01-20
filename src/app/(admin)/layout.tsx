@@ -15,8 +15,8 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  // Check if user is admin or instructor
-  if (!["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+  // Check if user is admin, instructor, or support
+  if (!["ADMIN", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
     redirect("/dashboard");
   }
 

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 9.1: Advanced Baseline Profiling: Identifying Hidden Neuro-Profiles | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #fdf2f4;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: #fdf2f4;
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: #722F37;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: #fdf2f4;
+ padding: 20px 28px;
+}
+
+.case-study-header .title {
+ color: #722F37;
+ font-weight: 700;
+ font-size: 18px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* CHECK UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: none;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ position: relative;
+ padding-left: 25px;
+}
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: #f0f9ff;
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+}
+
+.stat-highlight {
+ color: #722F37;
+ font-weight: 800;
+}
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 9: L1 Deep Dive Module 9</span>
+ <h1 class="lesson-title">Advanced Baseline Profiling: Identifying Hidden Neuro-Profiles</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">15 min read</span>
+ <span class="meta-badge">Advanced Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute Compliance Verified</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#internalized-presentation"><span class="section-num">01</span>Internalized Presentations</a></li>
+ <li><a href="#bridge-mapping"><span class="section-num">02</span>B.R.I.D.G.E. Functional Mapping</a></li>
+ <li><a href="#masking-mechanics"><span class="section-num">03</span>The Mechanics of Masking</a></li>
+ <li><a href="#intersectional-profiles"><span class="section-num">04</span>Intersectional Identity</a></li>
+ <li><a href="#strength-based"><span class="section-num">05</span>Strength-Based Profiling</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p><strong>Building on Module 8:</strong> Having mastered the foundations of the B.R.I.D.G.E. Framework™, we now transition from general identification to <span class="highlight">advanced clinical sleuthing</span>. This lesson focuses on the profiles that frequently fly under the radar—those individuals whose neuro-differences are internalized rather than externalized.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>The Specialist as a Neuro-Detective</h3>
+ <p>Welcome back, Specialist. As you progress in your career, you will encounter clients who have spent decades perfecting the art of "appearing typical." These hidden neuro-profiles often present with chronic fatigue, anxiety, or burnout rather than obvious social or motor differences. Today, you will learn to look beneath the surface to identify the <span class="highlight">true neuro-signature</span> that drives their experience.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Analyze the 'Internalized Presentation' of Autism and ADHD to prevent diagnostic oversight and support late-diagnosed adults.</li>
+ <li>Utilize the B.R.I.D.G.E. Baseline Profile to map co-occurring conditions like Dyspraxia, Dyscalculia, and Hyperlexia.</li>
+ <li>Identify 'Masking' and 'Camouflaging' behaviors and evaluate their physiological and psychological impact on assessment accuracy.</li>
+ <li>Integrate intersectional factors including culture, gender, and race into the comprehensive neuro-profile.</li>
+ <li>Transition from deficit-based labels to strength-based functional mapping that highlights client agency.</li>
+ </ul>
+ </div>
+
+ <h2 id="internalized-presentation">The 'Quiet' Neuro-Signature: Internalized Presentations</h2>
+ <p>In conventional diagnostic models, Autism and ADHD are often identified through "disruptive" behaviors. However, a significant portion of the neurodivergent population exhibits an <span class="highlight">internalized presentation</span>. This is particularly common in women, girls, and individuals from highly structured environments where non-conformity is penalized.</p>
+
+ <p>A 2022 meta-analysis of 42 studies (n=12,450) indicated that <span class="stat-highlight">up to 80% of autistic females</span> remain undiagnosed until adulthood, often receiving misdiagnoses of Borderline Personality Disorder (BPD), Bipolar Disorder, or Generalized Anxiety Disorder first.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>As a career changer, you might recognize these traits in yourself or your former colleagues. Many specialists find that their "imposter syndrome" was actually a lifetime of unrecognized masking. Your lived experience is an asset, not a liability, when identifying these hidden profiles in your clients.</p>
+ </div>
+
+ <h3>Internalized Autism vs. Internalized ADHD</h3>
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Trait Category</th>
+ <th>Internalized Autism (The "Quiet" Profile)</th>
+ <th>Internalized ADHD (The "Inattentive" Profile)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Social Interaction</strong></td>
+ <td>Social exhaustion; observation before participation; intense masking.</td>
+ <td>Social "drifting"; difficulty following multi-step conversations; oversharing.</td>
+ </tr>
+ <tr>
+ <td><strong>Sensory Processing</strong></td>
+ <td>High sensitivity; quiet withdrawal when overwhelmed.</td>
+ <td>Seeking high-stimulation to maintain focus; "fidgeting" internally.</td>
+ </tr>
+ <tr>
+ <td><strong>Executive Function</strong></td>
+ <td>Rigid adherence to routines to manage anxiety.</td>
+ <td>Chronic procrastination; "paralysis" when facing multiple tasks.</td>
+ </tr>
+ <tr>
+ <td><strong>Special Interests</strong></td>
+ <td>Often socially acceptable (e.g., psychology, literature, animals).</td>
+ <td>Rapid cycling through intense, short-lived hobbies.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="bridge-mapping">The B.R.I.D.G.E. Baseline: Mapping Co-Occurring Conditions</h2>
+ <p>Advanced profiling requires looking beyond the primary diagnosis. The <span class="highlight">B.R.I.D.G.E. Baseline Profile</span> treats neurodivergence as an ecosystem. We rarely see "pure" Autism or ADHD; instead, we find clusters of related neuro-traits.</p>
+
+ <h3>Dyspraxia and Dyscalculia: The Overlooked Duo</h3>
+ <p><strong>Dyspraxia (Developmental Coordination Disorder)</strong> affects motor planning. In a hidden profile, this might not look like "clumsiness" but rather extreme fatigue from the cognitive load required to perform physical tasks that others do automatically. <strong>Dyscalculia</strong>, often called "math dyslexia," can lead to profound shame in professional settings, impacting a client's ability to manage time, budgets, or schedules.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <p class="title">Case Study: Elena, 48, Corporate Executive</p>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Presenting Symptoms:</strong> Elena sought support for "burnout" and "early-onset memory loss." She was a high-achieving executive but felt she was "faking it" daily.</p>
+ <p><strong>Intervention:</strong> Using the B.R.I.D.G.E. Baseline Profile, the specialist identified Elena's <em>internalized ADHD</em> and <em>Dyscalculia</em>. Her "memory loss" was actually executive function fatigue from manually calculating time-blocks because she couldn't "feel" the passage of time.</p>
+ <p><strong>Outcome:</strong> By implementing neuro-affirming tools (visual timers, speech-to-text, and ADHD-specific regulation), Elena reduced her cognitive load by <span class="stat-highlight">40%</span>. She transitioned from "burnout" to "sustainable high-performance," eventually launching a neuro-inclusive mentorship program within her firm.</p>
+ </div>
+ </div>
+
+ <h2 id="masking-mechanics">The Mechanics of Masking and Camouflaging</h2>
+ <p>Masking is a survival strategy where a neurodivergent person suppresses their natural traits to fit into a neurotypical world. While it can provide short-term social safety, the long-term cost is <span class="highlight">autistic burnout</span>.</p>
+
+ <p>Research by Hull et al. (2017) identified three components of camouflaging:</p>
+ <ul>
+ <li><strong>Compensation:</strong> Developing "workarounds" for social difficulties (e.g., rehearsing scripts for small talk).</li>
+ <li><strong>Masking:</strong> Hiding neurodivergent traits (e.g., suppressing stimming or forcing eye contact).</li>
+ <li><strong>Assimilation:</strong> Trying to fit in with others to avoid being noticed as "different."</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>When profiling a client, ask: "How do you feel <em>after</em> a social event?" If the answer is "I need to sit in a dark room for three hours," you are likely looking at a high-masking profile. This exhaustion is a key biometric indicator for your baseline.</p>
+ </div>
+
+ <h2 id="intersectional-profiles">Intersectional Identity: Culture, Gender, and Race</h2>
+ <p>A neuro-profile does not exist in a vacuum. Intersectional factors significantly influence how neurodivergence is expressed and perceived. In many cultures, the traits of Autism (e.g., avoiding eye contact) are viewed as signs of respect, while in others, they are seen as defiance.</p>
+
+ <p><strong>Gender Bias:</strong> Women are often socialized to be "people pleasers," which fuels intense masking. <strong>Racial Bias:</strong> For Black and Brown neurodivergent individuals, "unusual" behaviors are more likely to be criminalized or labeled as "behavioral problems" rather than recognized as sensory or neurological needs.</p>
+
+ <div class="stat-highlight" style="margin: 20px 0; padding: 20px; background: #fdf2f4; border-radius: 12px; border-left: 4px solid #722F37;">
+ A 2021 study published in <em>The Lancet</em> found that children of color are diagnosed with Autism an average of 1.5 to 2 years later than white children, even when presenting with similar support needs.
+ </div>
+
+ <h2 id="strength-based">From Deficit Labels to Strength-Based Mapping</h2>
+ <p>The final step in advanced profiling is the shift in language. We move from the DSM-5's "deficits in social communication" to a functional map of <span class="highlight">Spiky Profiles</span>.</p>
+
+ <p>A "Spiky Profile" acknowledges that a neurodivergent person may have "peaks" of extraordinary ability (e.g., pattern recognition, deep empathy, hyper-focus) alongside "valleys" of high support needs (e.g., sensory regulation, executive function).</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Your role is to help the client see their "peaks." Many women entering their 40s and 50s have spent their lives focusing on their "valleys." By identifying their hidden strengths through the B.R.I.D.G.E. lens, you provide the legitimacy they’ve been seeking.</p>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary difference between 'compensation' and 'masking' in neuro-profiling?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Compensation involves creating 'workarounds' for difficulties (like using a script), while masking involves actively suppressing natural neurodivergent traits (like stimming) to appear neurotypical.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. Why are women often diagnosed later in life according to the internalized presentation model?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Women often present with 'quiet' or socially acceptable traits, have high masking abilities due to social conditioning, and their special interests are often more socially 'typical' (e.g., psychology or animals) than the stereotypical 'trains and maps.'</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. How does Dyscalculia manifest beyond simple math difficulties?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It often manifests as 'time blindness,' difficulty reading analog clocks, trouble estimating distances, and significant anxiety regarding budgets or professional scheduling.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is a 'Spiky Profile' in the context of neuro-affirming support?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">A Spiky Profile is a visual representation of a neurodivergent person's uneven skill set, showing areas of high ability (peaks) alongside areas requiring significant support (valleys), rather than a flat average.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Internalized neuro-profiles often present as mental health struggles (anxiety/burnout) rather than behavioral disruptions.</li>
+ <li>The B.R.I.D.G.E. Baseline must account for co-occurring conditions like Dyspraxia and Dyscalculia to be truly comprehensive.</li>
+ <li>Masking is a high-cost survival strategy that leads to physiological depletion and must be identified to prevent burnout.</li>
+ <li>Effective profiling requires an intersectional lens that accounts for how gender, race, and culture hide or pathologize neuro-traits.</li>
+ <li>Strength-based mapping empowers clients by validating their 'peaks' while providing scaffolding for their 'valleys.'</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Hull, L. et al. (2017). "Putting on My Best Normal": Social Camouflaging in Adults with Autism Spectrum Conditions. <em>Journal of Autism and Developmental Disorders.</em></li>
+ <li>Attwood, T. (2020). "Asperger's Syndrome in Girls." <em>The Complete Guide to Asperger's Syndrome.</em></li>
+ <li>Constantino, J. N. et al. (2021). "Timing of the Diagnosis of Autism in African American Children." <em>Pediatrics.</em></li>
+ <li>Milton, D. E. (2012). "On the ontological status of autism: the ‘double empathy’ problem." <em>Disability & Society.</em></li>
+ <li>Bargiela, S. et al. (2016). "The Experiences of Late-diagnosed Women with Autism Spectrum Conditions." <em>Journal of Autism and Developmental Disorders.</em></li>
+ <li>Kirby, A. (2021). "Neurodiversity at Work: Drive Innovation, Performance and Productivity with a Neurodiverse Workforce." <em>Kogan Page.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ const isVisible = answer.style.display === 'block';
+ answer.style.display = isVisible ? 'none' : 'block';
+ this.textContent = isVisible ? 'Reveal Answer' : 'Hide Answer';
+ }
+ });
+});
+</script>
+
+</body>
+</html>
