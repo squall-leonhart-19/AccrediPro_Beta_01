@@ -103,7 +103,8 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Write operation - SUPPORT cannot reply to chats
+    if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
     }
 

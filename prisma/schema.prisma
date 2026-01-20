@@ -184,6 +184,9 @@ model User {
   // Mini Diploma Exams
   miniDiplomaExams MiniDiplomaExam[]
 
+  // Audit Logs (actions performed by this user)
+  auditLogs AuditLog[] @relation("AuditLogs")
+
   @@index([email])
   @@index([role])
   @@index([assignedCoachId])
@@ -203,7 +206,8 @@ enum UserRole {
   INSTRUCTOR
   MENTOR
   ADMIN
-  SUPPORT   // Customer care: read-only access to /admin/users
+  SUPERUSER // Full access: admin panel + student dashboard (for testing)
+  SUPPORT   // Customer care: read-only access to users (no write)
 }
 
 enum UserType {
@@ -3047,4 +3051,70 @@ model ScholarshipSpot {
 
   @@unique([month, year, category])
   @@index([month, year])
+}
+
+// ==================== AUDIT LOGGING ====================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+
+  // Who performed the action
+  userId    String
+  userEmail String
+  userRole  String
+
+  // What action was performed
+  action    AuditAction
+  entity    String      // e.g., "User", "Course", "EmailTemplate"
+  entityId  String?     // ID of affected entity
+
+  // Action details
+  details   Json?       // Additional context (old/new values, etc.)
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation("AuditLogs", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+}
+
+enum AuditAction {
+  // User management
+  USER_CREATE
+  USER_UPDATE
+  USER_DELETE
+  USER_ROLE_CHANGE
+  USER_IMPERSONATE
+  IMPERSONATE_START
+  IMPERSONATE_STOP
+
+  // Course management
+  COURSE_CREATE
+  COURSE_UPDATE
+  COURSE_DELETE
+  COURSE_PUBLISH
+  COURSE_UNPUBLISH
+
+  // Email/Communication
+  BULK_EMAIL_SEND
+  BULK_DM_SEND
+  EMAIL_TEMPLATE_UPDATE
+
+  // Financial
+  REFUND_PROCESS
+  PURCHASE_MANUAL
+
+  // Settings
+  SETTINGS_UPDATE
+
+  // Other sensitive actions
+  CERTIFICATE_REVOKE
+  ENROLLMENT_DELETE
+  DATA_EXPORT
+  STATUS_CHANGE
 }

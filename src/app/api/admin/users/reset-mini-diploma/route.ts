@@ -20,13 +20,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if admin
+    // Check if admin/superuser - SUPPORT cannot modify
     const admin = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { role: true },
     });
 
-    if (admin?.role !== "ADMIN") {
+    if (!admin || !["ADMIN", "SUPERUSER"].includes(admin.role)) {
       return NextResponse.json({ error: "Admin access required" }, { status: 403 });
     }
 

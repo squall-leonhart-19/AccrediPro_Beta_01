@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,7 +131,19 @@ async function getCoaches() {
 
 export default async function CommunicationsPage() {
   const session = await getServerSession(authOptions);
-  if (!session) return null;
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  // Verify user has admin access
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  if (!user || !["ADMIN", "INSTRUCTOR", "SUPPORT"].includes(user.role)) {
+    redirect("/dashboard");
+  }
 
   const [communications, userStats, commStats, coaches] = await Promise.all([
     getRecentCommunications(),

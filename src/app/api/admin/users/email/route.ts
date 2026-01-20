@@ -11,7 +11,8 @@ export async function PATCH(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session?.user || session.user.role !== "ADMIN") {
+        // Write operation - SUPPORT cannot modify user data
+        if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

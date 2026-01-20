@@ -15,7 +15,8 @@ export async function GET(request: NextRequest) {
         select: { role: true },
     });
 
-    if (user?.role !== "ADMIN") {
+    // Read operation - allow SUPPORT for read-only access
+    if (!user || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(user.role)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

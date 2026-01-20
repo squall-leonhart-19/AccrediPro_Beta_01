@@ -17,6 +17,10 @@ declare module "next-auth" {
       isFMPreviewOnly?: boolean;
       accessExpiresAt?: string | null;
       hasFMCertification?: boolean;
+      // Impersonation fields
+      isImpersonating?: boolean;
+      originalAdminId?: string;
+      originalAdminName?: string;
     } & DefaultSession["user"];
   }
 
@@ -51,5 +55,10 @@ declare module "next-auth/jwt" {
     isFMPreviewOnly?: boolean;
     accessExpiresAt?: string | null;
     hasFMCertification?: boolean;
+    // Impersonation fields
+    isImpersonating?: boolean;
+    originalAdminId?: string;
+    originalAdminRole?: string;
+    originalAdminName?: string;
   }
 }

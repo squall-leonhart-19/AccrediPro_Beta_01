@@ -33,7 +33,8 @@ export async function GET(request: Request) {
     const session = await getServerSession(authOptions);
     console.log("[LiveChat] Session:", session?.user?.email, session?.user?.role);
 
-    if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Read operation - allow SUPPORT for read-only access
+    if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: getCorsHeaders(request) });
     }
 

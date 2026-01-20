@@ -15,8 +15,8 @@ export async function PATCH(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        // 1. Verify Admin Access
-        if (!session?.user?.id || session.user.role !== "ADMIN") {
+        // 1. Verify Admin/Superuser Access - SUPPORT cannot modify
+        if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
             return NextResponse.json(
                 { error: "Unauthorized. Admin access required." },
                 { status: 401 }

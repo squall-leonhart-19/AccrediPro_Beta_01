@@ -57,7 +57,8 @@ async function enrollUserInCourse(userId: string, courseSlug: string): Promise<{
 export async function POST(request: NextRequest, { params }: RouteParams) {
     try {
         const session = await getServerSession(authOptions);
-        if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+        // Write operation - no SUPPORT access
+        if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -150,7 +151,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
     try {
         const session = await getServerSession(authOptions);
-        if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+        // Write operation - no SUPPORT access
+        if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

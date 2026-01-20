@@ -235,7 +235,8 @@ async function getAnalyticsData() {
 
 export default async function AdminAnalyticsPage() {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") return null;
+  // Read-only analytics - allow SUPPORT for viewing
+  if (!session || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) return null;
 
   const data = await getAnalyticsData();
 

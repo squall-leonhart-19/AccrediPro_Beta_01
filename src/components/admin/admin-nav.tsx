@@ -34,23 +34,23 @@ import {
 import { useState } from "react";
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/leads", label: "Leads", icon: UserPlus, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/mini-diploma", label: "Mini Diploma", icon: GraduationCap, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/courses", label: "Courses", icon: BookOpen, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/users", label: "Users", icon: Users, roles: ["ADMIN", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT can access
-  { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/tickets", label: "Support Tickets", icon: Ticket, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/marketing", label: "Email Marketing", icon: Mail, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/communications", label: "Communications", icon: Bell, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/referrals", label: "Referral Program", icon: Gift, roles: ["ADMIN", "INSTRUCTOR"] },
-  { href: "/admin/oracle", label: "Oracle", icon: Brain, roles: ["ADMIN"] },
-  { href: "/admin/super-tools", label: "Super Tools", icon: Shield, roles: ["ADMIN"] },
-  { href: "/admin/settings", label: "Settings", icon: Settings, roles: ["ADMIN"] },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/purchases", label: "Purchases", icon: DollarSign, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/leads", label: "Leads", icon: UserPlus, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/mini-diploma", label: "Mini Diploma", icon: GraduationCap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/courses", label: "Courses", icon: BookOpen, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/users", label: "Users", icon: Users, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
+  { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
+  { href: "/admin/tickets", label: "Support Tickets", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
+  { href: "/admin/marketing", label: "Email Marketing", icon: Mail, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/communications", label: "Communications", icon: Bell, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/referrals", label: "Referral Program", icon: Gift, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
+  { href: "/admin/oracle", label: "Oracle", icon: Brain, roles: ["ADMIN", "SUPERUSER"] },
+  { href: "/admin/super-tools", label: "Super Tools", icon: Shield, roles: ["ADMIN", "SUPERUSER"] },
+  { href: "/admin/settings", label: "Settings", icon: Settings, roles: ["ADMIN", "SUPERUSER"] },
 ];
 
 export function AdminNav() {

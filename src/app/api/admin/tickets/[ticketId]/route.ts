@@ -12,7 +12,8 @@ export async function GET(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Read operation - allow SUPPORT for read-only access
+    if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -109,7 +110,8 @@ export async function PATCH(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Write operation - SUPPORT cannot update tickets
+    if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -168,7 +170,8 @@ export async function POST(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Write operation - SUPPORT cannot reply to tickets
+    if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -273,7 +276,8 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== "ADMIN") {
+    // Write operation - SUPPORT cannot delete tickets
+    if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

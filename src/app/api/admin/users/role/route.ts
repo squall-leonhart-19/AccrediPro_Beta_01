@@ -6,15 +6,15 @@ import { z } from "zod";
 
 const roleSchema = z.object({
   userId: z.string(),
-  role: z.enum(["STUDENT", "MENTOR", "INSTRUCTOR", "ADMIN"]),
+  role: z.enum(["STUDENT", "MENTOR", "INSTRUCTOR", "ADMIN", "SUPERUSER", "SUPPORT"]),
 });
 
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    // Only admins can change roles
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    // Only admins/superusers can change roles - SUPPORT cannot modify
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

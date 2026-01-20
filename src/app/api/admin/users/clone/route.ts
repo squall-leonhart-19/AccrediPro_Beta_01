@@ -15,7 +15,8 @@ import bcrypt from "bcryptjs";
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        if (!session?.user?.id || session.user.role !== "ADMIN") {
+        // Write operation - SUPPORT cannot modify
+        if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

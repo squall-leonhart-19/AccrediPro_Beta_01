@@ -13,6 +13,21 @@ export async function GET() {
             return NextResponse.json({ redirectUrl: "/login" });
         }
 
+        // Get user's role from database (session.user.role may be stale)
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: { role: true },
+        });
+
+        // ADMIN role: Go directly to admin panel (no student dashboard access)
+        if (user?.role === "ADMIN") {
+            return NextResponse.json({ redirectUrl: "/admin" });
+        }
+
+        // SUPERUSER role: Can see both, default to dashboard but can access admin
+        // INSTRUCTOR/MENTOR: Same as SUPERUSER
+        // They can navigate to /admin if needed
+
         // Check if user has the womens-health-mini-diploma enrollment (lead)
         const leadEnrollment = await prisma.enrollment.findFirst({
             where: {

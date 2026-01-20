@@ -65,15 +65,15 @@ function replacePlaceholders(text: string, data: Record<string, string>): string
   return result;
 }
 
-// POST - Send test email (ADMIN only)
+// POST - Send test email (ADMIN/SUPERUSER only - SUPPORT cannot send)
 export async function POST(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
-    // Auth check - ADMIN only (this endpoint can send emails!)
+    // Auth check - ADMIN/SUPERUSER only (this endpoint sends emails!)
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

@@ -10,6 +10,7 @@ import { SWRProvider } from "@/components/providers/swr-provider";
 import { OnboardingWrapper } from "@/components/onboarding/onboarding-wrapper";
 import { AchievementProvider } from "@/components/gamification/achievement-toast";
 import { FloatingCoachWidget } from "@/components/dashboard/floating-coach-widget";
+import { ImpersonationBanner } from "@/components/admin/impersonation-banner";
 
 // All mini diploma course slugs
 const MINI_DIPLOMA_SLUGS = [
@@ -176,6 +177,8 @@ export default async function DashboardLayout({
         <SWRProvider>
           <NotificationProvider userId={session.user.id}>
             <AchievementProvider>
+              {/* Impersonation Banner */}
+              <ImpersonationBanner />
               <div className="min-h-screen bg-gray-50 overflow-x-hidden">
                 {/* Lead Sidebar */}
                 <LeadSidebar
@@ -215,6 +218,8 @@ export default async function DashboardLayout({
       <SWRProvider>
         <NotificationProvider userId={session.user.id}>
           <AchievementProvider>
+            {/* Impersonation Banner */}
+            <ImpersonationBanner />
             <div className="min-h-screen bg-gray-50 overflow-x-hidden">
               <DashboardNav />
 

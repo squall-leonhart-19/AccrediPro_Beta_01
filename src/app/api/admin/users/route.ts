@@ -21,8 +21,8 @@ export async function DELETE(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        // Must be admin
-        if (!session?.user?.id || session.user.role !== "ADMIN") {
+        // Must be admin or superuser - SUPPORT cannot delete users
+        if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
             return NextResponse.json(
                 { error: "Unauthorized. Admin access required." },
                 { status: 401 }

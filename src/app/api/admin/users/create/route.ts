@@ -12,7 +12,7 @@ const createUserSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
-  role: z.enum(["STUDENT", "MENTOR", "INSTRUCTOR", "ADMIN"]).default("STUDENT"),
+  role: z.enum(["STUDENT", "MENTOR", "INSTRUCTOR", "ADMIN", "SUPERUSER", "SUPPORT"]).default("STUDENT"),
   tags: z.array(z.string()).optional(),
   sendWelcomeEmail: z.boolean().optional().default(true),
 });
@@ -83,8 +83,8 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    // Only admins can create users
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    // Only admins/superusers can create users - SUPPORT cannot modify
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

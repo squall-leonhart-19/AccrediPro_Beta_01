@@ -4,12 +4,12 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { EmailCategory } from "@prisma/client";
 
-// GET - List all email templates (ADMIN only)
+// GET - List all email templates
 export async function GET(request: NextRequest) {
   try {
-    // Auth check - ADMIN only
+    // Read operation - allow SUPPORT for read-only access
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER", "SUPPORT"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -51,12 +51,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create a new email template (ADMIN only)
+// POST - Create a new email template
 export async function POST(request: NextRequest) {
   try {
-    // Auth check - ADMIN only
+    // Write operation - SUPPORT cannot create templates
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

@@ -34,7 +34,8 @@ export default async function AdminSuperToolsPage() {
         select: { role: true },
     });
 
-    if (user?.role !== "ADMIN") {
+    // Super Tools are ADMIN/SUPERUSER only - no SUPPORT access
+    if (!user || !["ADMIN", "SUPERUSER"].includes(user.role)) {
         redirect("/dashboard");
     }
 

@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import { AutoDMsClient } from "./auto-dms-client";
 
 export const metadata = {
@@ -130,7 +131,19 @@ async function getSarahCoach() {
 
 export default async function AutoDMsPage() {
   const session = await getServerSession(authOptions);
-  if (!session) return null;
+  if (!session?.user?.id) {
+    redirect("/login");
+  }
+
+  // Verify user has admin access
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  if (!user || !["ADMIN"].includes(user.role)) {
+    redirect("/dashboard");
+  }
 
   const [stats, sarahCoach] = await Promise.all([
     getStats(),

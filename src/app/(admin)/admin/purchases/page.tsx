@@ -164,7 +164,18 @@ async function getPurchasesData(searchParams: SearchParams) {
         where: whereClause,
         take: 100,
         orderBy: { createdAt: "desc" },
-        include: {
+        select: {
+            id: true,
+            amount: true,
+            status: true,
+            createdAt: true,
+            productName: true,
+            ipAddress: true,
+            stripePaymentId: true,
+            paymentMethod: true,
+            currency: true,
+            billingName: true,
+            billingEmail: true,
             user: {
                 select: { id: true, email: true, firstName: true, lastName: true },
             },
@@ -207,7 +218,8 @@ async function getPurchasesData(searchParams: SearchParams) {
 
 export default async function AdminPurchasesPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
     const session = await getServerSession(authOptions);
-    if (!session || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Read-only purchases view - allow SUPPORT for viewing
+    if (!session || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
         redirect("/login");
     }
 

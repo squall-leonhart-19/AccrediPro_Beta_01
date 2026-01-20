@@ -251,7 +251,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session: updateSession }) {
       // On initial login: set user data
       if (user) {
         token.id = user.id;
@@ -266,6 +266,33 @@ export const authOptions: NextAuthOptions = {
         token.accessExpiresAt = user.accessExpiresAt;
         token.hasFMCertification = user.hasFMCertification;
       }
+
+      // Handle session update for impersonation
+      if (trigger === "update" && updateSession) {
+        // Start impersonation
+        if (updateSession.impersonate) {
+          token.originalAdminId = token.id as string;
+          token.originalAdminRole = token.role as string;
+          token.originalAdminName = `${token.firstName || ""} ${token.lastName || ""}`.trim();
+          // Set impersonated user data
+          token.id = updateSession.impersonate.id;
+          token.role = updateSession.impersonate.role;
+          token.firstName = updateSession.impersonate.firstName;
+          token.lastName = updateSession.impersonate.lastName;
+          token.isImpersonating = true;
+        }
+        // Stop impersonation
+        if (updateSession.stopImpersonation && token.originalAdminId) {
+          token.id = token.originalAdminId;
+          token.role = token.originalAdminRole;
+          // Restore original admin name (we'd need to fetch from DB ideally, but use stored)
+          token.isImpersonating = false;
+          delete token.originalAdminId;
+          delete token.originalAdminRole;
+          delete token.originalAdminName;
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -281,6 +308,10 @@ export const authOptions: NextAuthOptions = {
         session.user.miniDiplomaCourseSlug = token.miniDiplomaCourseSlug as string | null;
         session.user.accessExpiresAt = token.accessExpiresAt as string | null;
         session.user.hasFMCertification = token.hasFMCertification as boolean;
+        // Impersonation data
+        session.user.isImpersonating = token.isImpersonating as boolean | undefined;
+        session.user.originalAdminId = token.originalAdminId as string | undefined;
+        session.user.originalAdminName = token.originalAdminName as string | undefined;
       }
       return session;
     },

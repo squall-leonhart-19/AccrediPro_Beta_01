@@ -71,7 +71,8 @@ async function getCoursesData() {
 
 export default async function AdminCoursesPage() {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    // Allow SUPPORT for read-only access
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
         redirect("/login");
     }
 

@@ -23,7 +23,8 @@ export async function GET() {
         select: { role: true },
     });
 
-    if (!["ADMIN", "INSTRUCTOR", "MENTOR"].includes(user?.role || "")) {
+    // Read operation - allow SUPPORT for read-only access
+    if (!["ADMIN", "SUPERUSER", "INSTRUCTOR", "MENTOR", "SUPPORT"].includes(user?.role || "")) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

@@ -25,7 +25,8 @@ export async function POST(req: NextRequest) {
         select: { role: true },
     });
 
-    if (adminUser?.role !== "ADMIN") {
+    // Super Tools are ADMIN/SUPERUSER only - no SUPPORT access
+    if (!adminUser || !["ADMIN", "SUPERUSER"].includes(adminUser.role)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

@@ -11,7 +11,8 @@ const CHURNING_THRESHOLD = 60;
 export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user || session.user.role !== "ADMIN") {
+    // Super Tools are ADMIN/SUPERUSER only - no SUPPORT access
+    if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

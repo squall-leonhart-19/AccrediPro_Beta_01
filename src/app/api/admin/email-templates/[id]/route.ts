@@ -5,15 +5,15 @@ import { prisma } from "@/lib/prisma";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-// GET - Get single email template with full content (ADMIN only)
+// GET - Get single email template with full content
 export async function GET(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
-    // Auth check - ADMIN only
+    // Read operation - allow SUPPORT for read-only access
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER", "SUPPORT"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -40,15 +40,15 @@ export async function GET(
   }
 }
 
-// PUT - Update email template (ADMIN only)
+// PUT - Update email template
 export async function PUT(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
-    // Auth check - ADMIN only
+    // Write operation - SUPPORT cannot update templates
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -106,15 +106,15 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete email template (ADMIN only, only non-system templates)
+// DELETE - Delete email template (only non-system templates)
 export async function DELETE(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
-    // Auth check - ADMIN only
+    // Write operation - SUPPORT cannot delete templates
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

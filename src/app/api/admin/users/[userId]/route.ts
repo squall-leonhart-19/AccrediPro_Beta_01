@@ -9,7 +9,8 @@ export async function GET(
 ) {
     try {
         const session = await getServerSession(authOptions);
-        if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+        // Allow read access for ADMIN, SUPERUSER, INSTRUCTOR, SUPPORT (read-only)
+        if (!session?.user || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

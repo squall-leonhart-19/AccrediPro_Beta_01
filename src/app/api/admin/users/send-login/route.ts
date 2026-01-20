@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        // Only admins can perform this action
-        if (!session?.user?.id || session.user.role !== "ADMIN") {
+        // Only admins/superusers can perform this action - SUPPORT cannot send login emails
+        if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

@@ -62,15 +62,15 @@ function replacePlaceholders(html: string, data: Record<string, string>): string
   return result;
 }
 
-// GET - Generate preview HTML for email template (ADMIN only)
+// GET - Generate preview HTML for email template
 export async function GET(
   request: NextRequest,
   context: RouteContext
 ) {
   try {
-    // Auth check - ADMIN only
+    // Auth check - ADMIN, SUPERUSER, or SUPPORT (read-only)
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER", "SUPPORT"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

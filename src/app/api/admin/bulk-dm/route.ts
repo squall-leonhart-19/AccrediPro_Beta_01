@@ -11,8 +11,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check admin/mentor access
-    if (session.user.role !== "ADMIN" && session.user.role !== "MENTOR") {
+    // Check admin/superuser/mentor access - SUPPORT cannot send bulk DMs
+    if (!["ADMIN", "SUPERUSER", "MENTOR"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

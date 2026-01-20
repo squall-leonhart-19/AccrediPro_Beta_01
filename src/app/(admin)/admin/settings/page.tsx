@@ -5,7 +5,8 @@ import { SettingsClient } from "@/components/admin/settings-client";
 
 export default async function AdminSettingsPage() {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    // Settings are ADMIN/SUPERUSER only - no SUPPORT access
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
         redirect("/login");
     }
 

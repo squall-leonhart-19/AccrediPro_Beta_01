@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-    DollarSign, TrendingUp, ShoppingCart, Users, Calendar,
-    ArrowUpRight, ArrowDownRight, CreditCard, AlertTriangle,
-    CheckCircle2, Clock, Search, Filter, Download, Eye, Shield,
-    MoreHorizontal
+    DollarSign, TrendingUp, ShoppingCart, Calendar,
+    ArrowUpRight, CreditCard, AlertTriangle,
+    CheckCircle2, Clock, Search, Download, Eye, Shield,
+    MoreHorizontal, RefreshCw, Copy, ExternalLink, RotateCcw, FileText
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,32 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 import Link from "next/link";
 
 interface Purchase {
@@ -28,6 +54,10 @@ interface Purchase {
     createdAt: Date;
     productName: string;
     ipAddress?: string;
+    stripePaymentId?: string;
+    paymentMethod?: string;
+    currency?: string;
+    billingName?: string;
     user: {
         id: string;
         email: string | null;
@@ -38,6 +68,7 @@ interface Purchase {
     course?: {
         id: string;
         slug: string;
+        title?: string;
     } | null;
 }
 
@@ -60,6 +91,24 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
     const searchParams = useSearchParams();
     const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
     const [dateRange, setDateRange] = useState(searchParams.get("range") || "30days");
+    const [statusFilter, setStatusFilter] = useState("all");
+
+    // Dialog states
+    const [selectedPurchase, setSelectedPurchase] = useState<Purchase | null>(null);
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const [refundDialogOpen, setRefundDialogOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    // Copy to clipboard
+    const copyToClipboard = (text: string, label: string) => {
+        navigator.clipboard.writeText(text);
+        toast.success(`${label} copied to clipboard`);
+    };
+
+    // Filter purchases by status
+    const filteredPurchases = statusFilter === "all"
+        ? purchases
+        : purchases.filter(p => p.status === statusFilter);
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat("en-US", {
@@ -147,10 +196,51 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                             <SelectItem value="all">All Time</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" className="shadow-sm border-gray-200">
-                        <Download className="w-4 h-4 mr-2" />
-                        Export
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="shadow-sm border-gray-200">
+                                <Download className="w-4 h-4 mr-2" />
+                                Export
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuLabel>Export Purchases</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => window.open(`/api/admin/export/purchases?format=csv&range=${dateRange}`, "_blank")}
+                            >
+                                <Download className="w-4 h-4 mr-2" />
+                                Export Current View (CSV)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => window.open("/api/admin/export/purchases?format=csv&days=30", "_blank")}
+                            >
+                                <Calendar className="w-4 h-4 mr-2" />
+                                Last 30 Days (CSV)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => window.open("/api/admin/export/purchases?format=csv&days=90", "_blank")}
+                            >
+                                <Calendar className="w-4 h-4 mr-2" />
+                                Last 90 Days (CSV)
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => window.open("/api/admin/export/purchases?format=csv", "_blank")}
+                            >
+                                <CreditCard className="w-4 h-4 mr-2" />
+                                All Purchases (CSV)
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel className="text-xs text-gray-400">Analytics Export</DropdownMenuLabel>
+                            <DropdownMenuItem
+                                onClick={() => window.open("/api/admin/export/analytics?type=revenue&format=csv", "_blank")}
+                            >
+                                <TrendingUp className="w-4 h-4 mr-2" />
+                                Daily Revenue Report
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
@@ -249,15 +339,30 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                             <CardTitle className="text-xl font-bold text-gray-900">Recent Transactions</CardTitle>
                             <CardDescription>Monitor payments and access dispute evidence references.</CardDescription>
                         </div>
-                        <div className="relative w-full md:w-72">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <Input
-                                placeholder="Search by email, name..."
-                                className="pl-9 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onKeyDown={handleSearch}
-                            />
+                        <div className="flex items-center gap-3">
+                            <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                <SelectTrigger className="w-[140px] bg-white border-gray-200">
+                                    <SelectValue placeholder="Status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Statuses</SelectItem>
+                                    <SelectItem value="COMPLETED">Completed</SelectItem>
+                                    <SelectItem value="PENDING">Pending</SelectItem>
+                                    <SelectItem value="REFUNDED">Refunded</SelectItem>
+                                    <SelectItem value="DISPUTED">Disputed</SelectItem>
+                                    <SelectItem value="CHARGEBACK">Chargeback</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <div className="relative w-full md:w-64">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Input
+                                    placeholder="Search by email, name..."
+                                    className="pl-9 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onKeyDown={handleSearch}
+                                />
+                            </div>
                         </div>
                     </div>
                 </CardHeader>
@@ -275,7 +380,7 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {purchases.length === 0 ? (
+                                {filteredPurchases.length === 0 ? (
                                     <tr>
                                         <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                                             <div className="flex flex-col items-center justify-center">
@@ -288,6 +393,7 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                                                     variant="link"
                                                     onClick={() => {
                                                         setSearchTerm("");
+                                                        setStatusFilter("all");
                                                         handleFilterChange("all");
                                                     }}
                                                     className="mt-2 text-blue-600"
@@ -298,7 +404,7 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                                         </td>
                                     </tr>
                                 ) : (
-                                    purchases.map((purchase) => (
+                                    filteredPurchases.map((purchase) => (
                                         <tr key={purchase.id} className="hover:bg-blue-50/30 transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex flex-col">
@@ -343,16 +449,65 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                {purchase.user?.id ? (
-                                                    <Link href={`/admin/users?userId=${purchase.user.id}`}>
-                                                        <Button variant="ghost" size="sm" className="hover:bg-blue-100 hover:text-blue-700 transition-colors">
-                                                            <Eye className="w-4 h-4 mr-2" />
-                                                            View Evidence
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                            <MoreHorizontal className="w-4 h-4" />
                                                         </Button>
-                                                    </Link>
-                                                ) : (
-                                                    <span className="text-xs text-gray-400">No User Linked</span>
-                                                )}
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-48">
+                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            onClick={() => {
+                                                                setSelectedPurchase(purchase);
+                                                                setDetailDialogOpen(true);
+                                                            }}
+                                                        >
+                                                            <FileText className="w-4 h-4 mr-2" />
+                                                            View Details
+                                                        </DropdownMenuItem>
+                                                        {purchase.user?.id && (
+                                                            <DropdownMenuItem asChild>
+                                                                <Link href={`/admin/users?userId=${purchase.user.id}`}>
+                                                                    <Eye className="w-4 h-4 mr-2" />
+                                                                    View User
+                                                                </Link>
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {purchase.stripePaymentId && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => copyToClipboard(purchase.stripePaymentId!, "Stripe ID")}
+                                                            >
+                                                                <Copy className="w-4 h-4 mr-2" />
+                                                                Copy Stripe ID
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {purchase.stripePaymentId && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => window.open(`https://dashboard.stripe.com/payments/${purchase.stripePaymentId}`, "_blank")}
+                                                            >
+                                                                <ExternalLink className="w-4 h-4 mr-2" />
+                                                                Open in Stripe
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                        {purchase.status === "COMPLETED" && (
+                                                            <>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem
+                                                                    onClick={() => {
+                                                                        setSelectedPurchase(purchase);
+                                                                        setRefundDialogOpen(true);
+                                                                    }}
+                                                                    className="text-red-600 focus:text-red-600"
+                                                                >
+                                                                    <RotateCcw className="w-4 h-4 mr-2" />
+                                                                    Issue Refund
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </td>
                                         </tr>
                                     ))
@@ -362,6 +517,225 @@ export default function PurchasesClient({ stats, purchases, timezone, currentRan
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Transaction Detail Dialog */}
+            <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
+                <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-blue-600" />
+                            Transaction Details
+                        </DialogTitle>
+                        <DialogDescription>
+                            Full payment information and audit trail
+                        </DialogDescription>
+                    </DialogHeader>
+                    {selectedPurchase && (
+                        <div className="space-y-4 mt-4">
+                            {/* Status Badge */}
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-500">Status</span>
+                                {getStatusBadge(selectedPurchase.status)}
+                            </div>
+
+                            {/* Amount */}
+                            <div className="p-4 bg-gray-50 rounded-lg">
+                                <p className="text-sm text-gray-500">Amount</p>
+                                <p className="text-2xl font-bold text-gray-900">
+                                    {formatCurrency(selectedPurchase.amount)}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                    {selectedPurchase.currency || "USD"} • {formatDate(selectedPurchase.createdAt)}
+                                </p>
+                            </div>
+
+                            {/* Customer Info */}
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-gray-700">Customer</p>
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <p className="text-gray-500">Name</p>
+                                        <p className="font-medium">
+                                            {selectedPurchase.user?.firstName} {selectedPurchase.user?.lastName}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500">Email</p>
+                                        <p className="font-mono text-xs">
+                                            {selectedPurchase.user?.email || selectedPurchase.billingEmail || "N/A"}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Product Info */}
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-gray-700">Product</p>
+                                <p className="text-sm">{selectedPurchase.productName}</p>
+                                {selectedPurchase.course && (
+                                    <Badge variant="outline" className="text-xs">
+                                        {selectedPurchase.course.slug}
+                                    </Badge>
+                                )}
+                            </div>
+
+                            {/* Payment Info */}
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-gray-700">Payment Details</p>
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                    {selectedPurchase.paymentMethod && (
+                                        <div>
+                                            <p className="text-gray-500">Method</p>
+                                            <p className="font-medium capitalize">{selectedPurchase.paymentMethod}</p>
+                                        </div>
+                                    )}
+                                    {selectedPurchase.stripePaymentId && (
+                                        <div>
+                                            <p className="text-gray-500">Stripe ID</p>
+                                            <div className="flex items-center gap-1">
+                                                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">
+                                                    {selectedPurchase.stripePaymentId.slice(0, 14)}...
+                                                </code>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-6 w-6 p-0"
+                                                    onClick={() => copyToClipboard(selectedPurchase.stripePaymentId!, "Stripe ID")}
+                                                >
+                                                    <Copy className="w-3 h-3" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Evidence / Audit */}
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-gray-700">Evidence & Audit</p>
+                                <div className="flex items-center gap-2">
+                                    {selectedPurchase.ipAddress ? (
+                                        <div className="flex items-center text-emerald-600 text-xs bg-emerald-50 px-2 py-1 rounded border border-emerald-100">
+                                            <CheckCircle2 className="w-3 h-3 mr-1.5" />
+                                            IP: {selectedPurchase.ipAddress}
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center text-amber-600 text-xs bg-amber-50 px-2 py-1 rounded border border-amber-100">
+                                            <Clock className="w-3 h-3 mr-1.5" />
+                                            No IP recorded (legacy)
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2 pt-4 border-t">
+                                {selectedPurchase.stripePaymentId && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => window.open(`https://dashboard.stripe.com/payments/${selectedPurchase.stripePaymentId}`, "_blank")}
+                                    >
+                                        <ExternalLink className="w-4 h-4 mr-2" />
+                                        Open in Stripe
+                                    </Button>
+                                )}
+                                {selectedPurchase.user?.id && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        asChild
+                                    >
+                                        <Link href={`/admin/users?userId=${selectedPurchase.user.id}`}>
+                                            <Eye className="w-4 h-4 mr-2" />
+                                            View User
+                                        </Link>
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
+
+            {/* Refund Confirmation Dialog */}
+            <AlertDialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                            <RotateCcw className="w-5 h-5" />
+                            Issue Refund
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-3">
+                            <p>
+                                Are you sure you want to issue a refund for this transaction?
+                            </p>
+                            {selectedPurchase && (
+                                <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Amount</span>
+                                        <span className="font-bold">{formatCurrency(selectedPurchase.amount)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Customer</span>
+                                        <span>{selectedPurchase.user?.email || selectedPurchase.billingEmail}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-500">Product</span>
+                                        <span>{selectedPurchase.productName}</span>
+                                    </div>
+                                </div>
+                            )}
+                            <p className="text-amber-600 text-sm">
+                                Note: This will mark the payment as refunded in the database. Please process the actual refund in Stripe.
+                            </p>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={async (e) => {
+                                e.preventDefault();
+                                if (!selectedPurchase) return;
+
+                                setIsProcessing(true);
+                                try {
+                                    const res = await fetch(`/api/admin/purchases/${selectedPurchase.id}/refund`, {
+                                        method: "POST",
+                                    });
+
+                                    if (res.ok) {
+                                        toast.success("Refund processed successfully");
+                                        setRefundDialogOpen(false);
+                                        router.refresh();
+                                    } else {
+                                        const data = await res.json();
+                                        toast.error(data.error || "Failed to process refund");
+                                    }
+                                } catch {
+                                    toast.error("Failed to process refund");
+                                } finally {
+                                    setIsProcessing(false);
+                                }
+                            }}
+                            className="bg-red-600 hover:bg-red-700"
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? (
+                                <>
+                                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                                    Processing...
+                                </>
+                            ) : (
+                                <>
+                                    <RotateCcw className="w-4 h-4 mr-2" />
+                                    Issue Refund
+                                </>
+                            )}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

@@ -7,7 +7,8 @@ import { OracleDashboard } from "@/components/oracle/oracle-dashboard";
 export default async function OraclePage() {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user || session.user.role !== "ADMIN") {
+    // Oracle is ADMIN/SUPERUSER only - no SUPPORT access
+    if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
         redirect("/");
     }
 

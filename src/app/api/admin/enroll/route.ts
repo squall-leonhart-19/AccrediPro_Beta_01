@@ -8,7 +8,8 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id || session.user.role !== "ADMIN") {
+    // Write operation - SUPPORT cannot enroll users
+    if (!session?.user?.id || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }

@@ -7,7 +7,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
+    // Write operation - SUPPORT cannot delete conversations
+    if (!session?.user || !["ADMIN", "SUPERUSER"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

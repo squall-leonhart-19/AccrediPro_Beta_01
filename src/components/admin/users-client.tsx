@@ -65,6 +65,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useImpersonation } from "@/components/admin/impersonation-banner";
 
 interface UserStreak {
   currentStreak: number;
@@ -237,6 +238,13 @@ export function UsersClient({ courses }: UsersClientProps) {
 
   // Clone user state
   const [cloningUser, setCloningUser] = useState(false);
+
+  // Impersonation
+  const { startImpersonation, loading: impersonating } = useImpersonation();
+
+  const handleImpersonate = async (userId: string) => {
+    await startImpersonation(userId);
+  };
 
   // Enrollment dialog state
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
@@ -1077,10 +1085,41 @@ export function UsersClient({ courses }: UsersClientProps) {
           <p className="text-gray-500 mt-1">Manage and monitor all users in your platform</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2">
-            <Download className="w-4 h-4" />
-            Export
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <Download className="w-4 h-4" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem
+                onClick={() => window.open("/api/admin/export/users?format=csv", "_blank")}
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export All Users (CSV)
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => window.open("/api/admin/export/users?format=csv&includeEnrollments=true", "_blank")}
+              >
+                <BookOpen className="w-4 h-4 mr-2" />
+                Export with Enrollments
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => window.open("/api/admin/export/users?format=csv&includeTags=true", "_blank")}
+              >
+                <Tag className="w-4 h-4 mr-2" />
+                Export with Tags
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => window.open(`/api/admin/export/users?format=csv&role=${roleFilter !== "ALL" ? roleFilter : ""}`, "_blank")}
+              >
+                <Users className="w-4 h-4 mr-2" />
+                Export Current Filter
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             onClick={() => setCreateUserDialogOpen(true)}
             className="bg-burgundy-600 hover:bg-burgundy-700 gap-2"
@@ -1461,6 +1500,16 @@ export function UsersClient({ courses }: UsersClientProps) {
                                 >
                                   🛡️ View Activity (Disputes)
                                 </DropdownMenuItem>
+                                {/* Impersonate User - only show for non-admin roles */}
+                                {!["ADMIN", "SUPERUSER"].includes(user.role) && (
+                                  <DropdownMenuItem
+                                    onClick={() => handleImpersonate(user.id)}
+                                    className="cursor-pointer bg-amber-50 text-amber-700"
+                                  >
+                                    <UserCog className="w-4 h-4 mr-2 text-amber-600" />
+                                    Impersonate User
+                                  </DropdownMenuItem>
+                                )}
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                   onClick={() => openPasswordDialog(user)}

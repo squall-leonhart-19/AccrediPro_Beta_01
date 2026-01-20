@@ -15,8 +15,12 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  // Check if user is admin, instructor, or support
-  if (!["ADMIN", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
+  // Check if user has admin panel access
+  // ADMIN: Full access, redirected here on login
+  // SUPERUSER: Full access + student dashboard access (for testing)
+  // INSTRUCTOR: Course/user management
+  // SUPPORT: Read-only access to users, tickets, live-chat
+  if (!["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"].includes(session.user.role as string)) {
     redirect("/dashboard");
   }
 
