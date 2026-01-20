@@ -1,29 +1,11 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import TicketsClient from "./tickets-client";
 
 export const metadata = {
   title: "Support Tickets | Admin",
   description: "Manage support tickets",
 };
 
+// Redirect to the new full-featured support desk
 export default async function TicketsPage() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    redirect("/login");
-  }
-
-  // Verify user has admin/support access
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
-
-  if (!user || !["ADMIN", "SUPPORT", "INSTRUCTOR"].includes(user.role)) {
-    redirect("/dashboard");
-  }
-
-  return <TicketsClient />;
+  redirect("/support");
 }

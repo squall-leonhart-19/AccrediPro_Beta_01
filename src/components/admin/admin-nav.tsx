@@ -42,7 +42,7 @@ const navItems = [
   { href: "/admin/users", label: "Users", icon: Users, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
   { href: "/admin/community", label: "Community", icon: Heart, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
   { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
-  { href: "/admin/tickets", label: "Support Tickets", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // SUPPORT: read-only
+  { href: "/support", label: "Support Desk", icon: Ticket, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR", "SUPPORT"] }, // Full support desk
   { href: "/admin/marketing", label: "Email Marketing", icon: Mail, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
   { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
   { href: "/admin/communications", label: "Communications", icon: Bell, roles: ["ADMIN", "SUPERUSER", "INSTRUCTOR"] },
