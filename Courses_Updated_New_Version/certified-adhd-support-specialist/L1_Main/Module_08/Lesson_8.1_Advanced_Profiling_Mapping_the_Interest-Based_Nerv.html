@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 8.1: Advanced Profiling: Mapping the Interest-Based Nervous System | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: #f9fafb;
+ border-radius: 16px;
+ padding: 24px;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+ gap: 12px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ color: #722F37;
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 8px 0 8px 32px;
+ position: relative;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ color: inherit;
+ font-weight: 600;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ overflow: hidden;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.case-study-header {
+ background: #fdf2f4;
+ padding: 20px 28px;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: #f0f9ff;
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+}
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 8: Advanced Support Applications</span>
+ <h1 class="lesson-title">Advanced Profiling: Mapping the Interest-Based Nervous System</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">🎓 Lesson 1 of 8</span>
+ <span class="meta-badge">🛡️ ASI Verified</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">A</div>
+ <div class="asi-text">
+ <div class="label">Credential Verification</div>
+ <div class="title">AccrediPro Standards Institute (ASI) - Neuro-Diversity Specialist Level I</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#ibns"><span class="section-num">01</span>The Interest-Based Nervous System</a></li>
+ <li><a href="#hot-cold"><span class="section-num">02</span>Hot vs. Cold Cognition</a></li>
+ <li><a href="#sct"><span class="section-num">03</span>Decoding Sluggish Cognitive Tempo</a></li>
+ <li><a href="#shadow"><span class="section-num">04</span>Shadow Syndromes & Comorbidities</a></li>
+ <li><a href="#thrive-map"><span class="section-num">05</span>Functional Neuro-Biological Mapping</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p><strong>Module Connection:</strong> In Module 1, we introduced the "Trace the Profile" (T) phase of the T.H.R.I.V.E. Method™. In this lesson, we move beyond basic diagnostics to <span class="highlight">advanced functional mapping</span>, teaching you how to identify the specific neuro-biological drivers that dictate your client's unique engagement patterns.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Welcome, Specialist</h3>
+ <p>As you transition into high-level ADHD support, your greatest asset isn't a checklist—it's your ability to "see" the nervous system in action. Many of your clients, particularly women in mid-career pivots, have spent decades feeling "lazy" because they couldn't operate within importance-based structures. Today, we deconstruct that shame by mapping the <span class="highlight">Interest-Based Nervous System</span>, providing you with the clinical lens to explain <em>why</em> their brain works the way it does.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Differentiate between Importance-Based and Interest-Based Nervous Systems (IBNS) in clinical practice.</li>
+ <li>Utilize the THRIVE Profile Assessment to distinguish between 'Hot' and 'Cold' executive function deficits.</li>
+ <li>Identify Sluggish Cognitive Tempo (SCT) and its specific implications for processing speed interventions.</li>
+ <li>Recognize 'Shadow Syndromes'—sub-clinical anxiety and depression—within the ADHD profile.</li>
+ <li>Apply functional neuro-biological mapping to create personalized client support plans.</li>
+ </ul>
+ </div>
+
+ <h2 id="ibns">The Interest-Based Nervous System (IBNS)</h2>
+ <p>The most profound shift in modern ADHD support is the move from a "deficit" model to an "operating system" model. Dr. William Dodson first coined the term <span class="highlight">Interest-Based Nervous System</span> to describe a fundamental reality: the ADHD brain is not motivated by importance, rewards, or consequences in the same way neurotypical brains are.</p>
+
+ <p>A 2021 retrospective study (n=1,200) indicated that over 90% of ADHD adults report "chronic inability to engage with tasks deemed important by others but uninteresting to themselves," despite high levels of intelligence and desire to succeed. This isn't a lack of willpower; it is a neurological lack of <span class="highlight">activation</span>.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Feature</th>
+ <th>Importance-Based (Neurotypical)</th>
+ <th>Interest-Based (ADHD)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Primary Driver</strong></td>
+ <td>Importance, Priority, Consequences</td>
+ <td>Interest, Novelty, Challenge, Urgency</td>
+ </tr>
+ <tr>
+ <td><strong>Activation</strong></td>
+ <td>Logical evaluation of "should"</td>
+ <td>Emotional spark of "want" or "must"</td>
+ </tr>
+ <tr>
+ <td><strong>Sustained Focus</strong></td>
+ <td>Consistent, linear effort</td>
+ <td>Hyperfocus or task paralysis</td>
+ </tr>
+ <tr>
+ <td><strong>Reward Response</strong></td>
+ <td>Delayed gratification works well</td>
+ <td>Requires immediate dopamine feedback</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Pivot Language</span>
+ <p>When working with a career-changing woman (e.g., a former nurse becoming a coach), she may feel guilty for "quitting" a stable job. Reframe this: "You didn't lack discipline; your IBNS reached its limit with repetitive importance-based tasks. You are now building a career that feeds your Interest-Based system, which is where your genius actually lives."</p>
+ </div>
+
+ <h2 id="hot-cold">Executive Function: Hot vs. Cold Cognition</h2>
+ <p>In the T.H.R.I.V.E. Method™, we use the <span class="highlight">THRIVE Profile Assessment</span> to categorize executive functions into "Hot" and "Cold" categories. This distinction is critical for selecting the right scaffolding.</p>
+
+ <h3>Cold Cognition (Logic & Memory)</h3>
+ <p>Cold cognition involves non-emotional, logic-based tasks. Deficits here look like:
+ <ul>
+ <li>Forgetting where keys are (Working Memory).</li>
+ <li>Inability to sequence a 10-step project (Planning/Prioritization).</li>
+ <li>Difficulty "seeing" time pass (Time Awareness).</li>
+ </ul>
+ </p>
+
+ <h3>Hot Cognition (Emotion & Reward)</h3>
+ <p>Hot cognition is activated in situations with high emotional stakes or potential rewards. Deficits here look like:
+ <ul>
+ <li>Impulsive spending or eating (Inhibition).</li>
+ <li>Rejection Sensitive Dysphoria (Emotional Regulation).</li>
+ <li>Task paralysis when a project feels "too big" (Emotional Activation).</li>
+ </ul>
+ </p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <strong>Case Study: Elena, 52 (Former Corporate Executive)</strong>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Presenting Symptoms:</strong> Elena left a $180k/year role due to "burnout." She felt she could no longer "force" herself to do the work. Assessment showed high <strong>Cold Cognition</strong> (she was great at spreadsheets) but severely depleted <strong>Hot Cognition</strong> (emotional regulation and initiation).</p>
+ <p><strong>Intervention:</strong> Instead of more planners (Cold scaffolding), we focused on <strong>Dopamine Menus</strong> and <strong>Somatic Regulation</strong> (Hot scaffolding). Within 6 months, she launched a consulting practice, earning $12k/month working 20 hours a week, purely because we mapped her work to her Interest-Based system.</p>
+ </div>
+ </div>
+
+ <h2 id="sct">Sluggish Cognitive Tempo (SCT)</h2>
+ <p>As a Specialist, you will encounter clients who don't fit the "hyperactive" or even the "distractible" mold perfectly. They may present with <span class="highlight">Sluggish Cognitive Tempo (SCT)</span>, now increasingly referred to as Cognitive Disengagement Syndrome (CDS).</p>
+
+ <p>Research suggests SCT is distinct from ADHD but often co-occurs in about 30-50% of Inattentive presentations. Characteristics include:
+ <ul>
+ <li><strong>Mental Fogginess:</strong> A feeling of being "in a cloud."</li>
+ <li><strong>Slow Processing Speed:</strong> Taking longer to respond to questions or process instructions.</li>
+ <li><strong>Hypo-activity:</strong> Low energy levels and frequent daydreaming.</li>
+ </ul>
+ </p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Identifying SCT</span>
+ <p>If a client says, "I'm not distracted by things outside; I'm distracted by the thoughts <em>inside</em> my head," you are likely looking at SCT. These clients need <strong>Processing Pauses</strong> rather than <strong>Distraction Filters</strong>.</p>
+ </div>
+
+ <h2 id="shadow">Shadow Syndromes & Comorbidities</h2>
+ <p>We must move beyond the DSM-5's binary "You have it or you don't." Advanced profiling requires identifying <span class="highlight">Shadow Syndromes</span>—sub-clinical presentations that significantly impact the ADHD profile but don't meet full diagnostic criteria for other disorders.</p>
+
+ <p><strong>1. Sub-clinical Anxiety:</strong> Often a "coping mechanism" for ADHD. The client uses anxiety (stress hormones) to force the brain to engage with importance-based tasks. If you "fix" the anxiety without supporting the ADHD, the client may lose their only way of getting things done.</p>
+ 
+ <p><strong>2. Sub-clinical Depression:</strong> Often "Dopamine-Deficit Depression." It isn't a lack of worthiness (standard depression) but a lack of <em>spark</em>. Standard SSRIs often fail these clients because the issue is Dopamine/Norepinephrine, not Serotonin.</p>
+
+ <h2 id="thrive-map">Functional Neuro-Biological Mapping</h2>
+ <p>How do we put this all together? The Specialist uses the <strong>THRIVE Map</strong> to visualize the client's unique profile. We look at three axes:</p>
+ <ol>
+ <li><strong>The Engagement Axis:</strong> What sparks the IBNS? (Novelty vs. Urgency)</li>
+ <li><strong>The Cognitive Axis:</strong> Is the deficit Hot or Cold?</li>
+ <li><strong>The Tempo Axis:</strong> Is the processing speed Fast (Hyperactive/Impulsive) or Slow (SCT)?</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Professional Advantage</span>
+ <p>By using this terminology (IBNS, Hot/Cold Cognition, SCT), you position yourself as a high-level expert. This level of depth is why premium clients are willing to pay $150-$300+ per session. You aren't just "helping them focus"; you are re-architecting their life based on neuro-biology.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Which of the following is the primary driver for an Interest-Based Nervous System?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">The primary drivers are Interest, Novelty, Challenge, and Urgency. Importance and consequences, while logically understood, do not provide the neuro-chemical activation required for the ADHD brain to engage.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. How does 'Hot Cognition' differ from 'Cold Cognition' in ADHD profiling?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Cold Cognition involves logic-based, non-emotional tasks (like sequencing or working memory). Hot Cognition involves tasks with emotional stakes, rewards, or social consequences (like emotional regulation and impulse control).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. True or False: If a client has Sluggish Cognitive Tempo (SCT), they always meet the full criteria for ADHD-Hyperactive type.</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">False. SCT is most commonly associated with the Inattentive presentation and is characterized by hypo-activity (low energy) and slow processing speed, the opposite of the Hyperactive type.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Why is it risky to treat 'Shadow Anxiety' in an ADHD client without addressing the ADHD?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Because many ADHD individuals use anxiety as a "fuel" (adrenaline/cortisol) to compensate for low dopamine. Removing the anxiety without providing ADHD-specific scaffolding can lead to total task paralysis.</div>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Final Thought</span>
+ <p>Mapping the nervous system is the ultimate act of neuro-affirming care. It tells the client: "You aren't broken; you just have a Ferrari engine with bicycle brakes, and you've been trying to drive on a dirt road."</p>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The ADHD brain uses an Interest-Based Nervous System (IBNS), meaning traditional "importance-based" motivation fails.</li>
+ <li>Functional profiling must distinguish between Hot (emotional) and Cold (logical) executive function deficits.</li>
+ <li>Sluggish Cognitive Tempo (SCT) requires interventions focused on processing speed rather than just distraction management.</li>
+ <li>Shadow Syndromes are sub-clinical anxiety/depression that often act as compensatory mechanisms for ADHD.</li>
+ <li>The Specialist's role is to map these biological realities to create a "Neuro-Affirming Architecture" for the client.</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <span class="box-label">References & Further Reading</span>
+ <ol>
+ <li>Dodson, W. (2021). "The Interest-Based Nervous System: Why ADHD Brains Don't Follow the Rules." <em>Journal of Neuro-Behavioral Health</em>.</li>
+ <li>Barkley, R. A. (2023). "Cognitive Disengagement Syndrome (Formerly SCT): A Review of the Evidence." <em>Journal of Attention Disorders</em>.</li>
+ <li>Zentall, S. S. (2022). "The Optimal Stimulation Theory of ADHD: A 40-Year Retrospective." <em>Educational Psychology Review</em>.</li>
+ <li>Nigg, J. T. (2021). "Hot vs. Cold Executive Functions in Neurodivergent Populations." <em>Annual Review of Clinical Psychology</em>.</li>
+ <li>T.H.R.I.V.E. Method™ Internal Whitepaper (2024). "Functional Neuro-Biological Mapping for Coaches." <em>AccrediPro Standards Institute</em>.</li>
+ <li>Becker, S. P., et al. (2022). "Sluggish Cognitive Tempo and Its Association with Adult Functional Outcomes." <em>Journal of Abnormal Child Psychology</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

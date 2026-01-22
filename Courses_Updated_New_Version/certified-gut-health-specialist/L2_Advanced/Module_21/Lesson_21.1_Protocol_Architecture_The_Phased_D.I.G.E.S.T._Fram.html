@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 1: Protocol Architecture: The Phased D.I.G.E.S.T. Framework | AccrediPro</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding-bottom: 80px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+.meta-badge .icon {
+ font-size: 14px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+.welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li:last-child {
+ border-bottom: none;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-header .subtitle {
+ color: rgba(255, 255, 255, 0.8);
+ font-size: 14px;
+ margin: 4px 0 0 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+.patient-profile {
+ padding: 16px;
+ background: #f9fafb;
+ border-radius: 12px;
+ margin-bottom: 20px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+.module-connection .connection-text {
+ flex: 1;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 21: Clinical Strategy & Treatment Planning</span>
+ <h1 class="lesson-title">Protocol Architecture: The Phased D.I.G.E.S.T. Framework</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge"><span class="icon">⏱️</span> 15 min read</span>
+ <span class="meta-badge"><span class="icon">🎓</span> Lesson 1 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Clinical Standard</div>
+ <div class="title">AccrediPro Standards Institute • Gut Health Specialist Division</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#roadmap"><span class="section-num">01</span>The 6-Month Roadmap</a></li>
+ <li><a href="#window"><span class="section-num">02</span>The Clinical Window</a></li>
+ <li><a href="#markers"><span class="section-num">03</span>Objective Success Markers</a></li>
+ <li><a href="#hierarchy"><span class="section-num">04</span>Hierarchy of Intervention</a></li>
+ <li><a href="#stacks"><span class="section-num">05</span>Strategic Supplement Stacking</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In the previous modules, we mastered the individual pillars of the <strong>D.I.G.E.S.T. Method™</strong>. Now, we transition from understanding the "what" to architecting the "when" and "how" within a professional clinical timeline.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering Protocol Architecture</h3>
+ <p>Welcome, Specialist. One of the primary reasons practitioners fail to see long-term results is not a lack of knowledge, but a lack of <em>structure</em>. This lesson introduces the <strong>Protocol Architecture</strong>—the blueprint you will use to guide your clients from acute distress to thriving health over a strategic 24-week period. By mastering this framework, you move from "trying supplements" to "executing a clinical strategy."</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Structure a 6-month clinical roadmap using the D.I.G.E.S.T. Method™ as a foundational timeline.</li>
+ <li>Define the 'Clinical Window' to determine appropriate durations for each healing phase.</li>
+ <li>Establish objective success markers for each phase to ensure clinical progress.</li>
+ <li>Apply the hierarchy of intervention to balance symptomatic relief with root-cause resolution.</li>
+ <li>Map supplement 'stacks' to specific phases to prevent metabolic overwhelm.</li>
+ </ul>
+ </div>
+
+ <!-- Case Study 1 -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">📋</div>
+ <div>
+ <p class="title">Case Study: The "Protocol Fatigue" Trap</p>
+ <p class="subtitle">Sarah, 48-Year-Old Elementary Teacher</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <p><strong>Presenting Symptoms:</strong> Chronic bloating, brain fog, and 3:00 PM energy crashes. Sarah had spent $2,000 on random supplements recommended by various "influencers" but felt no better.</p>
+ <p><strong>The Error:</strong> She was trying to "Gut-Heal" (Phase G) while still being exposed to "Triggers" (Phase I) and without ever "Detecting" (Phase D) her actual baseline. She was essentially building a house without a foundation.</p>
+ <p><strong>The Intervention:</strong> We moved her into a structured 6-month D.I.G.E.S.T. roadmap. By Month 2, her bloating was 70% reduced because we followed the <em>architecture</em>, not just the ingredients.</p>
+ </div>
+ </div>
+ </div>
+
+ <h2 id="roadmap">The 6-Month Clinical Roadmap</h2>
+ <p>Effective gut restoration is rarely a 30-day "reset." True physiological change—especially regarding the microbiome and the intestinal barrier—requires time. A <span class="highlight">6-month roadmap</span> provides the necessary duration for cellular turnover and microbial shifts while setting realistic expectations for the client.</p>
+
+ <p>In your practice, this roadmap justifies a premium package price. Most specialists in our community charge between <strong>$2,500 and $5,000</strong> for a 6-month comprehensive protocol. This allows you to work with fewer clients while providing higher-quality care.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Phase</th>
+ <th>Focus</th>
+ <th>Duration (Approx.)</th>
+ <th>Primary Goal</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>D & I (Detect/Identify)</strong></td>
+ <td>Testing & Trigger Removal</td>
+ <td>Weeks 1–4</td>
+ <td>Baseline Data & Calm Inflammation</td>
+ </tr>
+ <tr>
+ <td><strong>G (Gut-Healing)</strong></td>
+ <td>Barrier Repair</td>
+ <td>Weeks 5–12</td>
+ <td>Seal the Lining & Restore Mucosa</td>
+ </tr>
+ <tr>
+ <td><strong>E (Establish)</strong></td>
+ <td>Microbiome Seeding</td>
+ <td>Weeks 13–18</td>
+ <td>Increase Diversity & Keystone Species</td>
+ </tr>
+ <tr>
+ <td><strong>S & T (Sustain/Thrive)</strong></td>
+ <td>Vagal Tone & Optimization</td>
+ <td>Weeks 19–24</td>
+ <td>Long-term Resilience & Prevention</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>When presenting the 6-month timeline to a new client, explain it as "Biological Seasonality." Just as you cannot rush a harvest, you cannot rush the immune system's re-education. This reframes the time as a necessary investment, not a delay.</p>
+ </div>
+
+ <h2 id="window">Defining the 'Clinical Window'</h2>
+ <p>The <span class="highlight">Clinical Window</span> is the specific timeframe in which a certain intervention is most effective. For example, if you introduce high-dose prebiotics (Phase E) while a client still has active SIBO (Phase D/I), you will likely exacerbate their symptoms. Protocol architecture is as much about <em>exclusion</em> as it is about <em>inclusion</em>.</p>
+
+ <h3>The 4-Week Rule</h3>
+ <p>We generally recommend a minimum of 4 weeks for the Identify/Remove phase. A 2022 study (n=450) showed that it takes approximately 21 to 28 days for the immune system’s IgG response to "quiet down" after removing a food trigger. Rushing into the healing phase before the triggers are gone is like trying to paint a house while it's still raining.</p>
+
+ <h2 id="markers">Objective Success Markers</h2>
+ <p>As a specialist, you must move beyond asking "How do you feel?" While subjective feedback is vital, <span class="highlight">objective markers</span> provide the data needed to adjust the protocol. Without markers, you are guessing; with markers, you are managing.</p>
+
+ <ul>
+ <li><strong>Phase D/I Marker:</strong> Reduction in MSQ (Medical Symptom Questionnaire) score by at least 30%.</li>
+ <li><strong>Phase G Marker:</strong> Normalization of Bristol Stool types (moving toward Type 3 or 4).</li>
+ <li><strong>Phase E Marker:</strong> Increased tolerance to a wider variety of fiber-rich foods without bloating.</li>
+ <li><strong>Phase S/T Marker:</strong> Heart Rate Variability (HRV) improvement, indicating better vagal tone.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Use a digital tracking tool or a simple spreadsheet to graph these markers for your client. Seeing a line graph of their symptoms trending downward is one of the most powerful "buy-in" tools you have for maintaining protocol compliance.</p>
+ </div>
+
+ <h2 id="hierarchy">The Hierarchy of Intervention</h2>
+ <p>In protocol architecture, we follow a specific hierarchy to avoid "supplement overwhelm." If a client is taking 15 different pills on Day 1, we lose the ability to identify what is working (and what might be causing a reaction).</p>
+
+ <ol>
+ <li><strong>Lifestyle Foundation:</strong> Sleep, hydration, and mastication (chewing).</li>
+ <li><strong>Dietary Architecture:</strong> Removal of inflammatory triggers.</li>
+ <li><strong>Digestion Support:</strong> HCL, enzymes, or bitters to ensure the "top-down" process is functioning.</li>
+ <li><strong>Barrier Support:</strong> L-Glutamine, Aloe, Zinc Carnosine.</li>
+ <li><strong>Microbiome Modulation:</strong> Targeted probiotics and prebiotics.</li>
+ </ol>
+
+ <p>A common mistake is jumping to Step 5 (Probiotics) before addressing Step 3 (Digestion Support). If the stomach acid is low, the best probiotics in the world won't fix the underlying putrefaction of undigested proteins.</p>
+
+ <h2 id="stacks">Strategic Supplement Stacking</h2>
+ <p>We use the term <span class="highlight">Stacking</span> to describe the synergistic combination of nutrients within a specific phase. However, these stacks must be "phased out" as the client moves forward. A protocol that only adds and never subtracts is not a treatment plan; it's a list.</p>
+
+ <h3>The "D.I.G." Stack Example</h3>
+ <p>During the Gut-Healing (G) phase, a typical stack might include:</p>
+ <ul>
+ <li><strong>Mucosal Support:</strong> Deglycyrrhizinated Licorice (DGL) and Marshmallow Root.</li>
+ <li><strong>Anti-Inflammatory:</strong> Curcumin (highly bioavailable form).</li>
+ <li><strong>Structural Support:</strong> Collagen peptides or Bone Broth protein.</li>
+ </ul>
+ <p>Once the intestinal barrier is verified as "closed" (via symptom reduction or Zonulin testing), we <em>de-stack</em> these and move into <em>Establish</em> (E) nutrients.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Always ask your client: "Which of these supplements do you feel is making the most difference?" This encourages them to be mindful of their body's response and helps you identify their "bio-individual champions."</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is it clinically risky to introduce high-dose prebiotics during the "Detect/Identify" phase?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">If the client has an unidentified bacterial overgrowth (like SIBO) or active dysbiosis, prebiotics can act as fuel for the "bad" bacteria, causing severe bloating and discomfort before the gut environment has been stabilized.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the recommended minimum duration for the Identify/Remove phase, and why?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">A minimum of 4 weeks. This allows the immune system's IgG and inflammatory responses to stabilize after the removal of triggers, providing a "clean slate" for the Gut-Healing phase.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. In the Hierarchy of Intervention, what should be addressed before microbiome modulation (probiotics)?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Lifestyle foundations, dietary architecture, digestion support (HCL/enzymes), and barrier support should all be addressed prior to microbiome modulation to ensure the "soil" is ready for the "seeds."</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. How does a 6-month roadmap benefit the practitioner's business model?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It allows for premium package pricing ($2,500-$5,000), reduces client churn by setting long-term expectations, and ensures better clinical outcomes which leads to more referrals.</div>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>If you feel imposter syndrome creeping in when discussing a 6-month plan, remember: You aren't selling a "cure," you are selling a <em>process</em>. The value is in your ability to navigate the complexity so the client doesn't have to.</p>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Structure protocols over a <strong>24-week (6-month)</strong> timeline to allow for true physiological change.</li>
+ <li>Use the <strong>D.I.G.E.S.T. framework</strong> to phase interventions, ensuring you don't "seed" (probiotics) before you "weed" (identify triggers).</li>
+ <li>Always establish <strong>objective success markers</strong> (MSQ scores, Bristol Scale) to track progress and justify protocol shifts.</li>
+ <li>Follow the <strong>Hierarchy of Intervention</strong>: start with the "top-down" digestive process before moving to the microbiome.</li>
+ <li><strong>De-stack</strong> supplements as phases conclude to prevent metabolic overwhelm and maintain clinical clarity.</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Fasano, A. (2020). "All disease begins in the (leaky) gut: Role of zonulin-mediated gut permeability." <em>F1000Research</em>.</li>
+ <li>Bischoff, S. C., et al. (2014). "Intestinal permeability – a new target for disease prevention and therapy." <em>BMC Gastroenterology</em>.</li>
+ <li>Mu, Q., et al. (2017). "Leaky Gut as a Danger Signal for Autoimmune Diseases." <em>Frontiers in Immunology</em>.</li>
+ <li>Gaby, A. R. (2017). "Nutritional Medicine." <em>Fritz Perlberg Publishing</em>. (Clinical Guidelines on Phased Protocols).</li>
+ <li>Lynch, B. (2018). "Dirty Genes: A Breakthrough Program to Treat the Root Cause of Illness." <em>HarperOne</em>.</li>
+ <li>Pimentel, M., et al. (2020). "The Microbiome and Irritable Bowel Syndrome." <em>Gastroenterology & Hepatology</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ this.textContent = answer.style.display === 'block' ? 'Hide Answer' : 'Reveal Answer';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

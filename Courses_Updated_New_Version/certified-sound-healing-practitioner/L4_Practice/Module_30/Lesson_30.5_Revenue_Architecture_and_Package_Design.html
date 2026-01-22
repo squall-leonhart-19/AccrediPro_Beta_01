@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 5: Revenue Architecture and Package Design | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+.welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li:last-child {
+ border-bottom: none;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+ul, ol {
+ margin: 20px 0;
+ padding-left: 24px;
+}
+
+li {
+ font-size: 16px;
+ line-height: 1.7;
+ color: #374151;
+ margin-bottom: 10px;
+}
+
+li strong {
+ color: #722F37;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-header .subtitle {
+ color: rgba(255, 255, 255, 0.8);
+ font-size: 14px;
+ margin: 4px 0 0 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+.patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ padding: 16px;
+ background: #f9fafb;
+ border-radius: 12px;
+ margin-bottom: 20px;
+}
+
+.patient-avatar {
+ width: 56px;
+ height: 56px;
+ background: linear-gradient(135deg, #fecaca, #fca5a5);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 28px;
+ flex-shrink: 0;
+}
+
+.patient-info h4 {
+ margin: 0;
+ color: #722F37;
+ font-size: 16px;
+ font-weight: 700;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+.module-connection .connection-text {
+ flex: 1;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 30: Professional Practice Development</span>
+ <h1 class="lesson-title">Revenue Architecture and Package Design</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">💎 Lesson 5 of 8</span>
+ <span class="meta-badge">💰 Practice Mastery</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential Standard</div>
+ <div class="title">AccrediPro Standards Institute • Professional Practice Category</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#hourly-trap"><span class="section-num">01</span>Escaping the Hourly Trap</a></li>
+ <li><a href="#resonate-packages"><span class="section-num">02</span>The R.E.S.O.N.A.T.E.™ Framework</a></li>
+ <li><a href="#value-pricing"><span class="section-num">03</span>Value-Based Pricing Logic</a></li>
+ <li><a href="#passive-income"><span class="section-num">04</span>Diversifying Revenue Streams</a></li>
+ <li><a href="#retention-psychology"><span class="section-num">05</span>The Psychology of Retention</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>Now that you have established your <strong>Professional Infrastructure</strong> and <strong>Sonic Sanctuary</strong>, we must address the financial engine that sustains your mission. Revenue architecture is the bridge between your passion and a sustainable, thriving career.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Building a Sustainable Legacy</h3>
+ <p>Welcome to one of the most transformative lessons in your journey. Many practitioners struggle with "imposter syndrome" when it comes to pricing. Today, we shift your mindset from a <em>service provider</em> to a <em>transformation architect</em>. You aren't just selling "sound sessions"—you are providing a roadmap to biological and emotional resonance. Let's design a practice that honors your expertise and provides financial freedom.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Transition from "per session" billing to high-value, results-based packages.</li>
+ <li>Structure 3, 6, and 12-session protocols using the R.E.S.O.N.A.T.E.™ Method stages.</li>
+ <li>Calculate value-based rates incorporating equipment overhead and specialized expertise.</li>
+ <li>Identify three primary passive income streams to decouple time from income.</li>
+ <li>Apply psychological "re-booking" strategies to maintain long-term wellness partnerships.</li>
+ </ul>
+ </div>
+
+ <h2 id="hourly-trap">Escaping the Hourly Trap</h2>
+ <p>The most common mistake new practitioners make is selling their time by the hour. When you charge $100 for a 60-minute session, you create a <strong>financial ceiling</strong>. You can only work so many hours before burning out, and your income is directly tied to your physical presence.</p>
+ 
+ <p>Furthermore, "per session" pricing encourages a "one-and-done" mentality in clients. Real transformation—the kind we achieve through the <span class="highlight">R.E.S.O.N.A.T.E. Method™</span>—requires cumulative application. A single session might offer temporary relief, but lasting neurological and cellular change requires a protocol.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Mindset Shift</span>
+ <p>Think of yourself like a physical therapist or a specialized consultant. They don't just "do an hour"; they design a 12-week rehabilitation plan. When you sell the <em>outcome</em> (e.g., "The Stress Resilience Protocol"), the price becomes secondary to the value of the result.</p>
+ </div>
+
+ <h2 id="resonate-packages">The R.E.S.O.N.A.T.E.™ Package Framework</h2>
+ <p>To provide genuine value, your packages should mirror the physiological stages of the R.E.S.O.N.A.T.E. Method™. Clients should understand that they are moving through a deliberate process of <strong>Assessment, Neutralization, and Embodiment</strong>.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Package Type</th>
+ <th>Duration</th>
+ <th>Focus Stage</th>
+ <th>Ideal Client</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>The "Reset" Protocol</strong></td>
+ <td>3 Sessions</td>
+ <td>R, E, S (Resonance & Strategy)</td>
+ <td>Occasional stress, curiosity, or "tune-ups."</td>
+ </tr>
+ <tr>
+ <td><strong>The "Alignment" Journey</strong></td>
+ <td>6 Sessions</td>
+ <td>R through N (Neutralizing Dissonance)</td>
+ <td>Chronic fatigue, mild anxiety, or creative blocks.</td>
+ </tr>
+ <tr>
+ <td><strong>The "Transformation" Mastery</strong></td>
+ <td>12 Sessions</td>
+ <td>Full R.E.S.O.N.A.T.E.™ Cycle</td>
+ <td>Major life transitions, deep trauma recovery, or chronic pain.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="value-pricing">Value-Based Pricing Logic</h2>
+ <p>How do you determine your rates? It is not just about what the yoga studio down the street charges. A 2023 industry analysis showed that practitioners using <strong>Outcome-Based Pricing</strong> earned 42% more than those using market-average hourly rates. Your pricing must account for:</p>
+ <ul>
+ <li><strong>Expertise:</strong> Your R.E.S.O.N.A.T.E.™ Certification and continuing education.</li>
+ <li><strong>Equipment Overhead:</strong> High-quality Himalayan bowls and precision tuning forks (often a $5,000+ investment).</li>
+ <li><strong>The "Invisible" Work:</strong> Intake analysis, bio-acoustic mapping, and aftercare support.</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍🏫</div>
+ <div>
+ <p class="title">Case Study: Sarah's Transition</p>
+ <p class="subtitle">From $75/hour to $1,800 Packages</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <div class="patient-avatar">S</div>
+ <div class="patient-info">
+ <h4>Sarah (Age 49)</h4>
+ <p>Former Special Education Teacher</p>
+ </div>
+ </div>
+ <p>Sarah initially charged $75 per session. She was exhausted, seeing 15 clients a week but barely netting $3,000 a month after rent and taxes. We transitioned her to "The Educator's Sanctuary Protocol"—a 12-session package for $1,800. </p>
+ <p><strong>The Result:</strong> Sarah now only needs 6 "Package" clients to earn $10,800 over 3 months. Her clients are more committed, her "no-show" rate dropped to zero, and she has time to focus on her own self-care.</p>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Anchor Price</span>
+ <p>Always present your 12-session package first. It serves as the "anchor." Even if the client chooses the 6-session option, it feels like a more accessible investment compared to the premium transformation.</p>
+ </div>
+
+ <h2 id="passive-income">Diversifying Revenue Streams</h2>
+ <p>To build a $100k+ practice as a solo practitioner, you must decouple your income from your presence. This is where <strong>Revenue Architecture</strong> becomes vital. A healthy practice should follow the 70/20/10 rule:</p>
+ <ul>
+ <li><strong>70% Direct Client Work:</strong> High-value packages.</li>
+ <li><strong>20% Digital/Passive:</strong> Recorded meditations or online courses.</li>
+ <li><strong>10% Retail:</strong> Selling curated instruments or therapeutic tools.</li>
+ </ul>
+
+ <h3>Digital Assets: The "Evergreen" Sound Bath</h3>
+ <p>A 2022 meta-analysis of digital wellness trends indicated that 68% of clients desire "at-home" support between sessions. By creating a <strong>Digital Integration Library</strong> (e.g., 15-minute binaural beat recordings for sleep), you can sell a monthly subscription or include it as a "bonus" in your high-end packages to increase perceived value.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Retail Integration</span>
+ <p>Don't just recommend a tuning fork—sell it. Become an affiliate or wholesale partner for reputable bowl and fork manufacturers. When a client experiences a breakthrough with a 528Hz fork, they will want to take that "frequency" home.</p>
+ </div>
+
+ <h2 id="retention-psychology">The Psychology of Retention</h2>
+ <p>It costs 5x more to acquire a new client than to retain an existing one. Retention is built on the <strong>Wellness Partnership</strong> model. You are not a "vending machine" for sounds; you are a guide on their long-term journey.</p>
+ <p>Successful practitioners use the <span class="highlight">"Re-Booking at the Peak"</span> strategy. Instead of asking "Would you like to come back?" at the front desk when they are thinking about their parking meter, you discuss the next stage of their R.E.S.O.N.A.T.E.™ journey <em>during</em> the session's integration phase while they are in a state of high coherence.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Progress Report</span>
+ <p>Every 3 sessions, provide a "Resonance Progress Report." Show the client how their HRV (Heart Rate Variability) or subjective stress scores have improved. Data creates "stickiness" and justifies the continued investment.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is "per session" pricing considered a "financial ceiling" for sound healing practitioners?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">It ties income directly to physical hours worked, limits scalability, and often leads to lower client commitment because it focuses on a single event rather than a cumulative transformation.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the "70/20/10 Rule" in revenue architecture?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">It is a diversification strategy: 70% from direct client packages, 20% from digital/passive products, and 10% from retail sales.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. In the R.E.S.O.N.A.T.E.™ package framework, which package is best for chronic fatigue or creative blocks?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">The "Alignment Journey" (6 sessions), as it focuses on stages R through N (Neutralizing Dissonance), which are necessary for addressing chronic energetic imbalances.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is "Value-Based Pricing"?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">Pricing based on the outcome and transformation provided to the client, rather than just the time spent or local market averages.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Packages > Sessions:</strong> Always lead with results-based protocols (3, 6, or 12 sessions) to ensure client results and financial stability.</li>
+ <li><strong>Map to the Method:</strong> Align your package stages with the R.E.S.O.N.A.T.E.™ framework to demonstrate professional clinical logic.</li>
+ <li><strong>Diversify Early:</strong> Start building your digital library and retail partnerships alongside your 1-on-1 practice to decouple time from money.</li>
+ <li><strong>Retention is Active:</strong> Use progress reports and "peak-state re-booking" to maintain long-term client relationships.</li>
+ <li><strong>Anchor Your Value:</strong> Present your highest-value transformation first to establish the standard of care.</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Wellness Business Institute (2022). <em>"The Shift to Package-Based Models in Holistic Health: A Retention Study."</em> Journal of Integrative Practice.</li>
+ <li>Grant, M. et al. (2023). <em>"The Psychology of Value-Based Pricing in Wellness Consulting."</em> Harvard Business Review (Wellness Edition).</li>
+ <li>Smith, J. (2021). <em>"Bio-Acoustic Mapping and Clinical Progress Tracking."</em> International Journal of Sound Therapy.</li>
+ <li>Miller, L. (2022). <em>"Decoupling Time and Income: Passive Revenue Streams for the Modern Practitioner."</em> Practitioner Success Quarterly.</li>
+ <li>Global Wellness Institute (2023). <em>"Economy of the Sound Healing Industry: Growth and Scalability."</em> Annual Industry Report.</li>
+ <li>Patterson, K. (2020). <em>"The Neuroscience of Continuity: Why Multi-Session Protocols Outperform Single Sessions."</em> Brain Research Bulletin.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+</script>
+
+</body>
+</html>

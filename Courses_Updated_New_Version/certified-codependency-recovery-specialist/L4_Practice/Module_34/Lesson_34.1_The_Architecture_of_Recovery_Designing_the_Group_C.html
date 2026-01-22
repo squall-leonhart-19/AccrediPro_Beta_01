@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>The Architecture of Recovery: Designing the Group Container | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: #fdfbf7;
+ border: 1px solid #e5d9c3;
+ border-radius: 16px;
+ padding: 24px;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+ gap: 12px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 8px 0 8px 32px;
+ position: relative;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ margin-bottom: 20px;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 2px 4px;
+ border-radius: 4px;
+ font-weight: 600;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ color: white;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ list-style: none;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ position: relative;
+ padding-left: 28px;
+}
+
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+}
+
+.module-connection {
+ background: #f0f9ff;
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 34: Group Programs & Workshops</span>
+ <h1 class="lesson-title">The Architecture of Recovery: Designing the Group Container</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">🎓 Lesson 1 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute Professional Certification</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#safe-vs-brave"><span class="section-num">01</span>Safe Space vs. Brave Space</a></li>
+ <li><a href="#group-agreements"><span class="section-num">02</span>Establishing Rigorous Agreements</a></li>
+ <li><a href="#curriculum-design"><span class="section-num">03</span>The R.E.C.L.A.I.M. Curriculum</a></li>
+ <li><a href="#screening"><span class="section-num">04</span>Screening & Intake Protocols</a></li>
+ <li><a href="#logistics"><span class="section-num">05</span>Logistics for Optimal Impact</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p><strong>Building Your Practice:</strong> Having mastered the individual application of the <strong>R.E.C.L.A.I.M. Method™</strong>, we now transition into the most scalable and often most transformative part of your business: <strong>Group Programs</strong>. This module bridges clinical knowledge with community facilitation.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome to Module 34. For many recovery specialists, group programs represent the "sweet spot" of professional practice. They offer a more accessible price point for clients while significantly increasing your hourly revenue. However, facilitating a group of individuals struggling with codependency requires a specific "architecture"—a container strong enough to hold intense emotion without allowing participants to slip back into caretaking or fixing behaviors.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Define the "Brave Space" framework and explain why it is essential for codependency recovery.</li>
+ <li>Construct a set of non-negotiable group agreements that eliminate cross-talk and caretaking.</li>
+ <li>Outline an 8-to-12 week curriculum structure using the R.E.C.L.A.I.M. Method™.</li>
+ <li>Identify red flags during the screening process to protect the group dynamic.</li>
+ <li>Determine the ideal logistics (size, frequency, duration) for your specific target market.</li>
+ </ul>
+ </div>
+
+ <h2 id="safe-vs-brave">The Container: Safe Space vs. Brave Space</h2>
+ <p>In codependency recovery, the term "Safe Space" is frequently misunderstood. For a codependent individual, "safety" often feels like <em>comfort</em>—an environment where no one is upset, no one is challenged, and everyone is "nice." Unfortunately, this version of safety is often just a continuation of the <strong>fawn response</strong>.</p>
+ 
+ <p>As a Specialist, your goal is to design a <span class="highlight">Brave Space</span>. A Brave Space acknowledges that recovery is uncomfortable. It is a container where participants are safe from judgment and harm, but they are <em>not</em> safe from the discomfort of growth, the challenge of setting boundaries, or the vulnerability of owning their needs.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 When introducing the group, say: "This is a Brave Space. We aren't here to make each other feel 'better' in the moment through caretaking; we are here to hold space for each other's transformation. Transformation requires the courage to be uncomfortable."</p>
+ </div>
+
+ <h2 id="group-agreements">Establishing Rigorous Agreements</h2>
+ <p>The greatest threat to a codependency recovery group is <span class="highlight">Cross-Talk</span>. Cross-Talk is any comment, feedback, or "fixing" directed at another participant while they are sharing. In a group of codependents, the urge to rescue someone who is crying or struggling is biological and intense.</p>
+
+ <h3>Non-Negotiable Group Rules</h3>
+ <ul>
+ <li><strong>No Fixing:</strong> We do not offer advice, "shoulds," or solutions unless specifically requested during a designated coaching block.</li>
+ <li><strong>"I" Statements Only:</strong> Participants must speak from their own experience. Instead of "You should try...", use "In my experience, I found..."</li>
+ <li><strong>The "No Caretaking" Rule:</strong> If a member is crying, we do not rush to hand them a tissue or pat their back. We allow them to have their experience. Rushing to "soothe" often shuts down the emotional processing.</li>
+ <li><strong>Confidentiality:</strong> What is said in the group stays in the group. This is the foundation of the container.</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <strong>Case Study: Sarah's "Rescuer" Group</strong>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Practitioner:</strong> Sarah (52), former HR Director turned Recovery Specialist.<br>
+ <strong>The Situation:</strong> Sarah launched her first 8-week group. In week 3, a participant named Linda began weeping about her son's addiction. Immediately, two other members jumped in with advice on rehabs and "hugs." The session derailed into a "fixing" session, and Linda later reported feeling "smothered" rather than heard.</p>
+ <p><strong>The Intervention:</strong> Sarah realized she hadn't enforced the <strong>No Cross-Talk</strong> agreement. In week 4, she reset the container, explaining that "fixing" is actually a form of control. The group shifted to deep, silent witnessing, which allowed Linda to actually reach the core of her grief.</p>
+ </div>
+ </div>
+
+ <h2 id="curriculum-design">Integrating the R.E.C.L.A.I.M. Method™</h2>
+ <p>A group program should follow a logical arc of transformation. Using the <strong>R.E.C.L.A.I.M. Method™</strong>, we recommend an 8-week or 10-week curriculum. This provides enough time for the "thaw" of the first few weeks and the "integration" of the final weeks.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Phase</th>
+ <th>Weeks</th>
+ <th>Focus Area</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Recognize & Examine</strong></td>
+ <td>Weeks 1-3</td>
+ <td>Identifying patterns, family blueprints, and the "False Self."</td>
+ </tr>
+ <tr>
+ <td><strong>Core & Limits</strong></td>
+ <td>Weeks 4-6</td>
+ <td>Reclaiming values and the "The Guilt Barrier" in boundary setting.</td>
+ </tr>
+ <tr>
+ <td><strong>Agency & Interdependence</strong></td>
+ <td>Weeks 7-8</td>
+ <td>Moving from control to autonomy and practicing safe vulnerability.</td>
+ </tr>
+ <tr>
+ <td><strong>Mastery</strong></td>
+ <td>Week 9-10*</td>
+ <td>Sustaining recovery and preventing "Codependency Drift."</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 <strong>Income Insight:</strong> A standard 8-week group program with 10 participants at $597 each generates <strong>$5,970</strong>. For a practitioner working 2 hours a week on facilitation, this represents an hourly rate of nearly $375, excluding prep time. This is how you achieve financial freedom while serving more people.</p>
+ </div>
+
+ <h2 id="screening">Screening & Intake Protocols</h2>
+ <p>Not everyone is ready for a group environment. A single "High-Conflict" personality or someone in active, unmanaged crisis can destroy the safety of the container for the other 9 people. Your intake process must be rigorous.</p>
+
+ <h3>Identifying 'Recovery-Ready' vs. 'High-Conflict'</h3>
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Recovery-Ready (Green Flag)</th>
+ <th>High-Conflict (Red Flag)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Demonstrates "Self-Reflectivity" (can see their part).</td>
+ <td>Externalizes all blame (everyone else is the problem).</td>
+ </tr>
+ <tr>
+ <td>Willing to follow group agreements.</td>
+ <td>Interrupts the intake call or challenges the rules immediately.</td>
+ </tr>
+ <tr>
+ <td>Seeking tools for self-change.</td>
+ <td>Seeking a platform to vent about a "Narcissist" partner.</td>
+ </tr>
+ <tr>
+ <td>Stable enough to witness others' pain.</td>
+ <td>In active, acute trauma/crisis (requires 1-on-1 first).</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 If a potential client is a "Red Flag" for the group, don't just reject them. Say: "I don't think this group is the right fit for where you are currently. I recommend we start with 4-6 private sessions to stabilize your foundation first." This protects the group and still serves the client.</p>
+ </div>
+
+ <h2 id="logistics">Logistics for Optimal Impact</h2>
+ <p>The "architecture" also includes the physical or digital logistics of the program. According to group dynamic research (Yalom, 2005), the following parameters are most effective for deep transformation:</p>
+
+ <ul>
+ <li><strong>Group Size:</strong> 6 to 12 participants. Fewer than 6 lacks "social energy"; more than 12 prevents everyone from being heard.</li>
+ <li><strong>Frequency:</strong> Weekly. Bi-weekly sessions often lose momentum, as codependents can "relapse" into old patterns quickly without the touchpoint.</li>
+ <li><strong>Duration:</strong> 75 to 90 minutes. Anything less feels rushed; anything more leads to emotional fatigue.</li>
+ <li><strong>Platform:</strong> Zoom (with cameras ON) is the standard for digital. Ensure you use "Gallery View" to foster a sense of community.</li>
+ </ul>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is a "Brave Space" preferred over a traditional "Safe Space" in codependency recovery?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">Because codependents often mistake "safety" for a lack of conflict or discomfort. A Brave Space encourages the necessary discomfort required for setting boundaries and breaking the fawn response.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary reason for banning "Cross-Talk" in a recovery group?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">Cross-talk is often a form of caretaking or "fixing," which reinforces the codependent's habit of focusing on others' problems to avoid their own internal work.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Which phase of the R.E.C.L.A.I.M. Method™ should be the focus of the final weeks of a group program?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">Agency, Interdependence, and Mastery—focusing on autonomy, healthy connection, and sustaining long-term recovery.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is a major "Red Flag" during a group intake call?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">A total lack of self-reflectivity or externalizing all blame onto others. If a client cannot see their own patterns, they may use the group as a venting platform rather than a recovery space.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Group programs are the most scalable way to increase your impact and income as a Specialist.</li>
+ <li>The "Container" is built on clear, enforced agreements—especially the ban on cross-talk and fixing.</li>
+ <li>A Brave Space prioritizes growth and truth over temporary emotional comfort.</li>
+ <li>Screening is your most important duty as a facilitator to protect the collective recovery energy.</li>
+ <li>Ideal group logistics include 6-12 members meeting weekly for 90 minutes.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <span class="box-label">References & Further Reading</span>
+ <ol>
+ <li>Yalom, I. D., & Leszcz, M. (2005). <em>The Theory and Practice of Group Psychotherapy</em>. Basic Books.</li>
+ <li>Brown, B. (2018). <em>Dare to Lead: Brave Work. Tough Conversations. Whole Hearts.</em> (Concept of Brave Spaces).</li>
+ <li>Beattie, M. (2022). <em>Codependent No More: How to Stop Controlling Others and Start Caring for Yourself</em>. Spiegel & Grau.</li>
+ <li>Wright, P. H. (1984). "Self-referent and other-referent communication in the development of relationship." <em>Journal of Social and Personal Relationships</em>.</li>
+ <li>Cermak, T. L. (1986). "Diagnostic Criteria for Codependency." <em>Journal of Psychoactive Drugs</em>.</li>
+ <li>Morgan, J. P. (1991). "What is codependency?" <em>Journal of Clinical Psychology</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

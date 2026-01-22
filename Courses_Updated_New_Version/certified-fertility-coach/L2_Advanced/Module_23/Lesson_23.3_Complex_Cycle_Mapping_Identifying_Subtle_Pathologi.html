@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 3: Complex Cycle Mapping: Identifying Subtle Pathologies | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+}
+
+/* TOC */
+.toc-box {
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+ gap: 10px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 12px;
+ background: #f9fafb;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* WELCOME & OBJECTIVES */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 32px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 8px 0 8px 32px;
+ position: relative;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 2px 4px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ border-left: 6px solid #722F37;
+}
+
+.case-study-header {
+ background: #f9fafb;
+ padding: 20px 28px;
+ border-bottom: 1px solid #eee;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* INTERACTIVE COMPONENTS */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+.references-box {
+ background: #f8fafc;
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 32px;
+ margin-top: 48px;
+}
+
+.module-connection {
+ background: #f0f9ff;
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px;
+ margin-bottom: 32px;
+}
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 23: L2: Advanced Techniques</span>
+ <h1 class="lesson-title">Complex Cycle Mapping: Identifying Subtle Pathologies</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">🎓 Level 2 Advanced</span>
+ <span class="meta-badge">📊 Data Analysis</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Excellence</div>
+ <div class="title">AccrediPro Standards Institute Certified Content</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">Lesson Anatomy</p>
+ <ul class="toc-list">
+ <li><a href="#luteal-defects"><span class="section-num">01</span>Hidden Luteal Phase Defects</a></li>
+ <li><a href="#bbt-pathology"><span class="section-num">02</span>Stair-Step BBT & Estrogen Dominance</a></li>
+ <li><a href="#mucus-biofilms"><span class="section-num">03</span>Cervical Mucus & Vaginal Biofilms</a></li>
+ <li><a href="#wearable-pcos"><span class="section-num">04</span>Wearable Data in PCOS Cycles</a></li>
+ <li><a href="#follicular-hiccups"><span class="section-num">05</span>Follicular Phase 'Hiccups'</a></li>
+ <li><a href="#clinical-synthesis"><span class="section-num">06</span>Clinical Synthesis & Advocacy</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p><strong>Module Connection:</strong> In Lesson 2, we explored the neurological drivers of reproductive health. Now, we translate those internal signals into visible data, using complex cycle mapping to identify the <span class="highlight">subtle pathologies</span> that standard clinical checks often miss.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Welcome, Practitioner</h3>
+ <p>As an advanced Fertility Coach, your value lies in seeing what others overlook. While a standard OBGYN may see a "regular 28-day cycle," you are trained to look within those 28 days for the micro-fluctuations that dictate egg quality and implantation success. This lesson moves beyond basic charting into the realm of <span class="highlight">reproductive forensic analysis</span>, empowering you to help clients who have been told their fertility is "unexplained."</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Analyze multi-point PdG metabolite data to detect sub-clinical Luteal Phase Defects (LPD).</li>
+ <li>Correlate "stair-step" Basal Body Temperature (BBT) patterns with specific hormonal imbalances.</li>
+ <li>Identify the intersection between cervical mucus quality, the "Estrogen Window," and vaginal dysbiosis.</li>
+ <li>Interpret wearable biometric data (Oura/Ava) to predict metabolic shifts in irregular PCOS cycles.</li>
+ <li>Evaluate follicular phase timing "hiccups" and their direct impact on oocyte maturation and DNA integrity.</li>
+ </ul>
+ </div>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <p><strong>Case Study:</strong> Sarah, 44, "Unexplained" Infertility</p>
+ </div>
+ <div class="case-study-content">
+ <p>Sarah, a high-achieving corporate executive, presented with regular 27-day cycles and normal Day 3 FSH/Estradiol. Her doctor told her everything was "perfect for her age." However, Sarah had failed three IUIs. Upon mapping her cycle with multi-point PdG (progesterone metabolite) testing, we discovered that while her Day 21 progesterone was "normal" (12 ng/mL), her levels plummeted to near-zero by Day 24, indicating a <span class="highlight">hidden luteal phase collapse</span>. By identifying this subtle pathology, Sarah was able to advocate for progesterone support, leading to a successful pregnancy at 45.</p>
+ </div>
+ </div>
+
+ <h2 id="luteal-defects">Detecting 'Hidden' Luteal Phase Defects</h2>
+ <p>A standard medical assessment of the luteal phase usually involves a single serum progesterone draw on "Day 21." In the coaching world, we know this is often insufficient. Progesterone is secreted in pulses; a single snapshot can miss a <span class="highlight">progesterone curve</span> that rises but fails to sustain.</p>
+ 
+ <p>Research indicates that <span class="highlight">Luteal Phase Deficiency (LPD)</span> affects approximately 10% of women with regular cycles, but this number increases significantly in women over 35. We use multi-point PdG (Pregnanediol Glucuronide) testing—urine metabolites—to track the "Progesterone Rise and Sustain."</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The $997+ Expertise</span>
+ <p>💡 Clients pay a premium for "Data Interpretation," not just "Data Collection." When you can show a client exactly <em>why</em> her implantation window is closing early based on urine metabolite trends, you transition from a "wellness coach" to an indispensable clinical partner.</p>
+ </div>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Marker</th>
+ <th>Conventional View</th>
+ <th>Advanced Functional View</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Serum Progesterone</td>
+ <td>>10 ng/mL on Day 21 is "Fine"</td>
+ <td>Pulsatile; needs to be >15 ng/mL for optimal support</td>
+ </tr>
+ <tr>
+ <td>PdG (Urine)</td>
+ <td>Rarely utilized in standard care</td>
+ <td>Must remain elevated for 7-10 days to confirm "Sustained Rise"</td>
+ </tr>
+ <tr>
+ <td>Luteal Length</td>
+ <td>>10 days is "Normal"</td>
+ <td>12-14 days required for optimal endometrial receptivity</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="bbt-pathology">Analyzing 'Stair-Step' BBT & Estrogen Dominance</h2>
+ <p>The Basal Body Temperature (BBT) chart is a window into the metabolic and hormonal state of the cycle. A healthy chart shows a sharp, one-day shift from the follicular to the luteal phase. A <span class="highlight">'stair-step' rise</span>—where temperatures take 3-5 days to climb—often indicates a struggle between the corpus luteum and the HPA axis.</p>
+
+ <h3>The Mechanism of the Slow Rise</h3>
+ <p>A stair-step pattern is frequently correlated with <span class="highlight">Estrogen Dominance</span> or low LH (Luteinizing Hormone) surge intensity. If estrogen remains too high at the point of ovulation, it can dampen the thermogenic effect of the initial progesterone rise. This results in a "weak" ovulation that may compromise the quality of the corpus luteum.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Metabolic Awareness</span>
+ <p>💡 A stair-step rise isn't just a "hormone issue"—it's often a "nutrient issue." Check for zinc and Vitamin A levels, as these are critical for the LH surge and the subsequent structural integrity of the corpus luteum.</p>
+ </div>
+
+ <h2 id="mucus-biofilms">Cervical Mucus & The Estrogen Window</h2>
+ <p>We've established in the F.E.R.T.I.L.E. Method™ that cervical mucus is the "lifeblood" of sperm transit. However, advanced mapping looks at the <span class="highlight">persistence of the Estrogen Window</span>. In many 40+ clients, we see "patchy" mucus—fertile quality one day, dry the next, then fertile again.</p>
+
+ <p>This "patchiness" can be a sign of <span class="highlight">vaginal biofilms</span>. Pathogenic bacteria can create a protective layer that interferes with the pH and consistency of cervical fluid. A 2022 study found that women with chronic vaginal dysbiosis had 40% lower "sperm-friendly" mucus scores, even when estrogen levels were physiologically normal.</p>
+
+ <h2 id="wearable-pcos">Wearable Data: Oura, Ava, and Metabolic PCOS</h2>
+ <p>For clients with PCOS or irregular cycles, standard charting can be frustrating. This is where <span class="highlight">wearable biometric data</span> (Resting Heart Rate, Heart Rate Variability, and Skin Temperature) provides the missing link. In metabolic PCOS, we often see a "flatline" in Heart Rate Variability (HRV) during the follicular phase, indicating high sympathetic tone.</p>
+
+ <p>A key indicator of an impending "hiccup" in a PCOS cycle is a sudden spike in Resting Heart Rate (RHR) without a corresponding temperature rise. This often signals a <span class="highlight">failed ovulatory attempt</span>, where the body recruits a follicle but fails to release the egg due to insulin resistance or high androgens.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Income Potential</span>
+ <p>💡 Practitioners who can interpret Oura/Ava data for fertility often see a 30% increase in client retention. Why? Because you provide clarity during the "waiting periods" where standard tests offer no answers.</p>
+ </div>
+
+ <h2 id="follicular-hiccups">Follicular Phase 'Hiccups' & Oocyte Quality</h2>
+ <p>The follicular phase should be a steady progression of follicle growth. A "hiccup"—characterized by a sudden drop in estrogen markers or a "false start" in mucus—can have devastating effects on the <span class="highlight">oocyte's meiotic spindle</span>.</p>
+
+ <p>When ovulation is delayed by "hiccups" (often caused by acute stress or illness), the egg can become "over-mature" within the follicle. This "stale egg syndrome" (clinically known as post-ovulatory aging) increases the risk of chromosomal abnormalities, even in younger women.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Emotional Resilience</span>
+ <p>💡 When a client sees a "hiccup" on her chart, her stress levels spike—which further delays ovulation. Your role is to normalize the data. Use the phrase: "Your body is prioritizing safety over reproduction right now. Let's look at what we can do to signal 'safety' to your nervous system."</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is a single Day 21 progesterone test often misleading in complex cases?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Progesterone is pulsatile and its levels can fluctuate wildly throughout the day. Furthermore, a single draw doesn't show if the level is sustained throughout the entire implantation window (Day 20-24).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What does a "stair-step" BBT rise usually indicate regarding hormonal balance?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It often indicates a slow rise in progesterone, which can be caused by estrogen dominance or a weak corpus luteum often linked to sub-optimal LH surge intensity.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. How can vaginal biofilms affect fertility even if a woman has high estrogen?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Biofilms created by pathogenic bacteria can physically and chemically alter the quality of cervical mucus, making it hostile to sperm transit regardless of serum estrogen levels.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is the risk associated with "follicular phase hiccups" and delayed ovulation?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Delayed ovulation can lead to "over-mature" eggs, which may have compromised DNA integrity or meiotic spindle issues, increasing the risk of failed fertilization or early miscarriage.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Beyond Day 21:</strong> Use multi-point PdG testing to confirm a "Sustained Luteal Rise" rather than a single snapshot.</li>
+ <li><strong>The Stair-Step Warning:</strong> A slow BBT rise is a clinical signal to investigate estrogen clearance and HPA axis health.</li>
+ <li><strong>The Mucus-Microbiome Link:</strong> Patchy fertile mucus in the presence of high estrogen suggests a need for vaginal microbiome assessment.</li>
+ <li><strong>Wearables as Metabolic Monitors:</strong> RHR and HRV data can predict failed ovulatory attempts in PCOS clients before they happen.</li>
+ <li><strong>Precision Advocacy:</strong> Complex mapping allows the coach to provide the client with specific data points to bring to their reproductive endocrinologist.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Schliep, K. C., et al. (2014). "Luteal phase deficiency in regularly menstruating women: prevalence and overlap in identification based on clinical criteria." <em>Journal of Clinical Endocrinology & Metabolism.</em></li>
+ <li>Su, H. W., et al. (2017). "Detection of ovulation, a review of currently available methods." <em>Bioengineering & Translational Medicine.</em></li>
+ <li>Vigil, P., et al. (2022). "The Importance of Cervical Mucus in Fertility and Health." <em>Journal of Personalized Medicine.</em></li>
+ <li>Shilaih, M., et al. (2017). "Modern Trends in Basal Body Temperature Charting with Wearable Devices." <em>Frontiers in Public Health.</em></li>
+ <li>Alliende, M. E. (2002). "Mean basal body temperature-a way to confirm ovulation." <em>Human Reproduction.</em></li>
+ <li>Baker, F. C., et al. (2020). "Sleep and the Menstrual Cycle: Biometric Signals from Wearables." <em>Current Sleep Medicine Reports.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

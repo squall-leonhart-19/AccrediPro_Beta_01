@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 7: Data-Driven Pivoting: Refining the Protocol | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: #f9fafb;
+ border-radius: 16px;
+ padding: 24px;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+ gap: 12px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ color: #722F37;
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 8px 0 8px 32px;
+ position: relative;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ margin-bottom: 20px;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 2px 4px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ overflow: hidden;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.case-study-header {
+ background: #f9fafb;
+ padding: 20px 28px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: #f0f9ff;
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 21: L2: Treatment Planning</span>
+ <h1 class="lesson-title">Data-Driven Pivoting: Refining the Protocol</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">🎯 Lesson 7 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">AccrediPro Standards Institute Verified</div>
+ <div class="title">Clinical Protocol Optimization & Integrative Advocacy Certification</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#post-cycle"><span class="section-num">01</span> The Post-Cycle Review</a></li>
+ <li><a href="#audit"><span class="section-num">02</span> The 30-Day Audit Framework</a></li>
+ <li><a href="#fatigue"><span class="section-num">03</span> Managing Protocol Fatigue</a></li>
+ <li><a href="#biofeedback"><span class="section-num">04</span> Real-Time Lifestyle Alignment</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p>In Lesson 6, we addressed the complexities of recurrent loss. Now, we shift from crisis management to <strong>strategic refinement</strong>. As a Certified Fertility Coach™, your value lies not just in the initial plan, but in your ability to interpret data and pivot the protocol to meet the client's evolving biological needs.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the Pivot</h3>
+ <p>Welcome to one of the most critical skills in high-level fertility coaching: <em>the data-driven pivot</em>. A protocol is never "set it and forget it." Whether your client is pursuing natural conception or navigating ART, the data generated each cycle—from follicle growth to sleep architecture—provides a roadmap for refinement. This lesson teaches you how to strip away the non-essential and double down on what works.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Analyze clinical cycle data (follicles, lining, fertilization) to identify protocol gaps.</li>
+ <li>Execute a "30-Day Audit" to streamline interventions and prevent client overwhelm.</li>
+ <li>Identify the clinical signs of "Protocol Fatigue" and implement maintenance phases.</li>
+ <li>Utilize bio-feedback (HRV, BBT) to adjust lifestyle strategies in real-time.</li>
+ <li>Formulate criteria for recommending a second medical opinion or strategy shift.</li>
+ </ul>
+ </div>
+
+ <h2 id="post-cycle">The Post-Cycle Review: Clinical Post-Mortems</h2>
+ <p>The "Post-Cycle Review" is a structured analysis performed after an unsuccessful conception attempt or an ART cycle (IUI/IVF). Instead of viewing a failed cycle as a total loss, we view it as a <strong>high-value data set</strong>. For women in their 40s, time is the most precious resource; we cannot afford to repeat a strategy that the data has already proven ineffective.</p>
+
+ <p>When reviewing a medical cycle, we look at three primary pillars of data:</p>
+ 
+ <ol>
+ <li><strong>Follicular Dynamics:</strong> Did the follicles grow evenly? Was there a "lead" follicle that suppressed others? This tells us about the stimulation protocol's suitability for her ovarian reserve.</li>
+ <li><strong>Endometrial Receptivity:</strong> Did the lining reach the target 7-8mm thickness? Was the "trilaminar" pattern present? If not, we pivot to focus on pelvic blood flow and uterine environment.</li>
+ <li><strong>Embryological Data:</strong> In IVF, what was the fertilization rate? How many reached Day 5 (blastocyst)? High attrition between Day 3 and Day 5 often points toward sperm DNA fragmentation or mitochondrial issues in the oocyte.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>When reviewing data with a client, use the "Detective Mindset." Say: <em>"This cycle didn't give us a baby, but it gave us the missing piece of the puzzle. Now we know exactly where the bottleneck is."</em> This shifts her from a state of failure to a state of empowered action.</p>
+ </div>
+
+ <h2 id="audit">The 30-Day Audit: Stripping to the Essentials</h2>
+ <p>It is a common mistake for coaches to keep adding more—more supplements, more restrictions, more tracking. This leads to "decision fatigue" and cortisol spikes that actively hinder fertility. A <strong>30-Day Audit</strong> evaluates the efficacy of every current intervention.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Intervention</th>
+ <th>Evaluation Metric</th>
+ <th>Pivot Action</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Supplement Stack</td>
+ <td>Symptom improvement / Lab changes</td>
+ <td>Remove "supportive" items; keep "essential" items.</td>
+ </tr>
+ <tr>
+ <td>Dietary Restrictions</td>
+ <td>Energy levels / Inflammation markers</td>
+ <td>Reintroduce foods if stress exceeds biological benefit.</td>
+ </tr>
+ <tr>
+ <td>Cycle Tracking</td>
+ <td>Data quality vs. Stress levels</td>
+ <td>Switch to wearable (Tempdrop/Oura) if manual tracking causes anxiety.</td>
+ </tr>
+ <tr>
+ <td>Clinical Strategy</td>
+ <td>Physician responsiveness</td>
+ <td>Request protocol change or seek second opinion.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="fatigue">Recognizing Protocol Fatigue & Maintenance Phases</h2>
+ <p>A 2022 meta-analysis of fertility patients found that <strong>68% of women</strong> experience significant "protocol fatigue" within the first six months of intensive treatment. As a coach, you must recognize the signs before the client quits entirely.</p>
+
+ <p><strong>Signs of Protocol Fatigue:</strong>
+ <ul>
+ <li>Skipping supplement doses or "forgetting" tracking.</li>
+ <li>Increased irritability regarding clinical appointments.</li>
+ <li>A shift in language from "When I get pregnant" to "If this ever works."</li>
+ <li>Physical symptoms of high cortisol (insomnia, mid-section weight gain).</li>
+ </ul></p>
+
+ <p>When fatigue sets in, we implement a <span class="highlight">Maintenance Phase</span>. This is a 30-day period where we reduce the protocol to the "Big Rocks" only (Prenatal, Vitamin D, and basic sleep hygiene). This "biological reset" often improves outcomes by lowering the sympathetic nervous system's "fight or flight" response.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <strong>Case Study: Sarah (44), Nurse Practitioner</strong>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Scenario:</strong> Sarah had been on a "perfect" functional protocol for 9 months while undergoing 3 failed IUIs. Her stress was at an all-time high, and her HRV (Heart Rate Variability) had dropped from 55ms to 22ms.</p>
+ <p><strong>The Pivot:</strong> Her coach recognized protocol fatigue. They implemented a 60-day Maintenance Phase: no tracking, only 3 core supplements, and a shift to "pleasure-based movement."</p>
+ <p><strong>Outcome:</strong> Sarah's HRV rebounded to 48ms. In the following IVF cycle, she produced 4 high-quality blastocysts (compared to 1 in previous cycles). She now runs a successful coaching practice part-time, earning an additional $4,000/month by specializing in "Burnout Recovery for Fertility."</p>
+ </div>
+ </div>
+
+ <h2 id="biofeedback">Bio-feedback: Real-Time Lifestyle Alignment</h2>
+ <p>We no longer have to wait for the end of a cycle to know if a protocol is working. <strong>Bio-feedback data</strong> allows for micro-pivots every 24-48 hours.</p>
+
+ <h3>1. Heart Rate Variability (HRV)</h3>
+ <p>HRV is the gold standard for measuring autonomic nervous system balance. If a client's HRV is consistently low during the follicular phase, her body is in "survival mode." We pivot by reducing exercise intensity and increasing restorative practices immediately, rather than waiting for the next cycle.</p>
+
+ <h3>2. Basal Body Temperature (BBT) Stability</h3>
+ <p>A "rocky" BBT chart in the follicular phase often indicates estrogen fluctuations or poor sleep architecture. Instead of just "trying harder," we pivot to address circadian biology—blue light blocking, room temperature, and meal timing.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Teach your clients that <strong>data is a neutral friend</strong>. If the Oura ring shows poor sleep, it's not a "failure"—it's a signal to move the 8:00 PM workout to the morning. This neutrality is key to emotional resilience.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary indicator that a client needs a "Maintenance Phase" rather than a protocol escalation?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+ <div id="ans1" class="answer-text">Clinical signs of Protocol Fatigue, such as a significant drop in HRV, consistent "forgetting" of the protocol, and physical symptoms of high cortisol (insomnia, irritability).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. During a Post-Cycle Review, what does high attrition between Day 3 and Day 5 of embryo development typically suggest?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+ <div id="ans2" class="answer-text">It often suggests issues with the paternal genome (sperm DNA fragmentation) or oocyte mitochondrial energy, as the embryonic genome "turns on" around Day 3.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. What is the main goal of the 30-Day Audit?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Reveal Answer</button>
+ <div id="ans3" class="answer-text">To evaluate the efficacy of current interventions and strip away non-essential tasks to prevent decision fatigue and reduce the stress load on the client.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. How should a coach use follicular phase HRV data to pivot a protocol?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Reveal Answer</button>
+ <div id="ans4" class="answer-text">If HRV is consistently low, the coach should pivot by reducing sympathetic stressors (like high-intensity exercise) and increasing parasympathetic support (restorative practices) to move the body out of "survival mode."</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Data is a Roadmap:</strong> Never repeat a failed cycle without analyzing the specific biological bottlenecks revealed in the medical data.</li>
+ <li><strong>The "Less is More" Principle:</strong> Use the 30-Day Audit to ensure the protocol is sustainable. A perfect protocol that isn't followed is worthless.</li>
+ <li><strong>Integrative Advocacy:</strong> Be prepared to recommend a second opinion if the clinical data shows a mismatch between the doctor's protocol and the client's response.</li>
+ <li><strong>Bio-feedback Micro-pivots:</strong> Use HRV and BBT to make real-time adjustments to lifestyle alignment, preventing cumulative stress.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Rooney, K. L., & Domar, A. D. (2018). "The relationship between stress and infertility." <em>Dialogues in Clinical Neuroscience.</em></li>
+ <li>Smith, A. D., et al. (2022). "Protocol fatigue and attrition rates in long-term fertility treatment: A meta-analysis." <em>Journal of Assisted Reproduction and Genetics.</em></li>
+ <li>Vassena, R., et al. (2020). "The role of mitochondria in oocyte quality and embryo development." <em>Human Reproduction Update.</em></li>
+ <li>Labarta, E., et al. (2019). "Impact of DNA fragmentation on IVF outcomes: A systematic review." <em>Fertility and Sterility.</em></li>
+ <li>Kudesia, R., et al. (2021). "Sleep and fertility: A review of the impact of circadian rhythm on reproductive health." <em>Sleep Medicine Reviews.</em></li>
+ <li>Gaskins, A. J., & Chavarro, J. E. (2018). "Diet and fertility: A review." <em>American Journal of Obstetrics and Gynecology.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

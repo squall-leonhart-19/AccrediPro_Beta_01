@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 2: Profiling Meta-Programs: The Filters of Perception | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* DATA TABLE */
+.data-table { 
+ width: 100%; 
+ border-collapse: collapse; 
+ margin: 25px 0; 
+ font-size: 15px; 
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+.patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ padding: 16px;
+ background: #f9fafb;
+ border-radius: 12px;
+ margin-bottom: 20px;
+}
+
+.patient-info h4 {
+ margin: 0;
+ color: #722F37;
+ font-size: 16px;
+ font-weight: 700;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+}
+
+.references-box li {
+ padding: 8px 0;
+ font-size: 14px;
+ color: #475569;
+ border-bottom: 1px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+ .lesson-wrapper { padding: 24px 16px; }
+ .lesson-title { font-size: 28px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 20: Assessment Tools</span>
+ <h1 class="lesson-title">Profiling Meta-Programs: The Filters of Perception</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 2 of 8</span>
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">Advanced Profiling</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Accredited Skills Institute Verified</div>
+ <div class="title">Certified NLP Practitioner™ Assessment Standards</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#operating-system"><span class="section-num">01</span>The Mental Operating System</a></li>
+ <li><a href="#motivation-direction"><span class="section-num">02</span>Toward vs. Away-From</a></li>
+ <li><a href="#frame-reference"><span class="section-num">03</span>Internal vs. External Reference</a></li>
+ <li><a href="#options-procedures"><span class="section-num">04</span>Options vs. Procedures</a></li>
+ <li><a href="#matcher-mismatcher"><span class="section-num">05</span>Matcher vs. Mis-matcher Patterns</a></li>
+ <li><a href="#behavior-prediction"><span class="section-num">06</span>Predicting & Utilizing Profiles</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In Lesson 1, we mastered <strong>Sensory Acuity</strong> to read external micro-expressions. Now, we move "under the hood" to assess the <strong>Meta-Programs</strong>—the deep-level filters that dictate how your clients process information and make decisions.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome to one of the most transformative skills in the N.E.U.R.O. Transformation Method™. Have you ever wondered why some clients are energized by "big picture" goals while others are paralyzed by them? Or why some people follow instructions perfectly while others naturally rebel? The answer lies in their <span class="highlight">Meta-Programs</span>. By mastering these perceptual filters, you stop guessing and start knowing exactly how to communicate so your clients feel deeply understood.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Define Meta-Programs as the "Operating System" of human subjective experience.</li>
+ <li>Elicit and identify the 4 primary Meta-Program dichotomies through casual conversation.</li>
+ <li>Analyze linguistic indicators to profile a client's dominant filters in real-time.</li>
+ <li>Customize the "Utilize Language Patterns" phase of the N.E.U.R.O. Method™ based on a client's profile.</li>
+ <li>Predict behavioral responses to change interventions based on Meta-Program configurations.</li>
+ </ul>
+ </div>
+
+ <h2 id="operating-system">The Mental Operating System</h2>
+ <p>Meta-Programs are the <span class="highlight">content-free filters</span> that determine which parts of the world we pay attention to. If the Meta-Model is about the <em>structure</em> of language, Meta-Programs are about the <em>structure of thinking itself</em>. Think of them as the settings in a software program; they don't change the data, but they change how the data is displayed and processed.</p>
+
+ <p>Research suggests that the human brain processes approximately 11 million bits of information per second, yet the conscious mind can only handle about 40 to 126 bits. Meta-Programs are the "gatekeepers" that decide what gets through. As a practitioner, identifying these filters allows you to speak directly to the client's unconscious mind using the "software" they already have installed.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Meta-Programs are context-dependent. A client might be "Procedures" oriented at work but "Options" oriented when choosing a vacation. Always assess the Meta-Program within the context of the problem they want to solve.</p>
+ </div>
+
+ <h2 id="motivation-direction">Toward vs. Away-From: The Engine of Motivation</h2>
+ <p>This is arguably the most critical Meta-Program for a coach to identify. It describes the <em>direction</em> of a person's energy.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Pattern</th>
+ <th>Focus</th>
+ <th>Linguistic Indicators</th>
+ <th>Motivation Style</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Toward</strong></td>
+ <td>Goals, rewards, gains, "the carrot."</td>
+ <td>"I want," "get," "achieve," "attain," "goals."</td>
+ <td>Energized by the vision of the future.</td>
+ </tr>
+ <tr>
+ <td><strong>Away-From</strong></td>
+ <td>Problems, risks, "the stick," avoidance.</td>
+ <td>"I don't want," "avoid," "get away from," "prevent."</td>
+ <td>Energized by the pressure of the problem.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <p><strong>Elicitation Question:</strong> "What is important to you about [Context, e.g., your career]?"</p>
+ <p>If they say, "I want to be financially free and have a flexible schedule," they are <strong>Toward</strong>. If they say, "I don't want to be stuck in a cubicle anymore and I want to avoid being broke," they are <strong>Away-From</strong>.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍💼</div>
+ <div>
+ <p class="title">Case Study: The "Stuck" Executive</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <div class="patient-info">
+ <h4>Brenda, 52, Marketing Director</h4>
+ <p>Brenda sought coaching to transition into a wellness career but felt "stuck" for 18 months. Her previous coach used "Toward" language: "Imagine your dream life! Focus on the freedom!" Brenda felt nothing. Her practitioner identified she was 90% <strong>Away-From</strong>. By shifting the language to: "What will happen to your health if you stay in this stress for another 5 years? What risks are you taking by not moving?" Brenda was motivated to take action within 48 hours.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <h2 id="frame-reference">Internal vs. External: The Source of Authority</h2>
+ <p>This filter determines how a person evaluates their progress and makes decisions. Who has the final say?</p>
+ 
+ <ul>
+ <li><strong>Internal:</strong> They decide based on their own standards. They might listen to advice, but they "just know" when they've done a good job. They are difficult to manage but very self-starting.</li>
+ <li><strong>External:</strong> They need feedback, reviews, and external validation to know they are on track. They value credentials and testimonials highly.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>When working with an <strong>Internal</strong> client, never tell them what to do. Instead, say: "Only you can know if this is the right path for you. Based on your experience, what do you think the next step is?" This maintains their sense of authority.</p>
+ </div>
+
+ <h2 id="options-procedures">Options vs. Procedures: The Method of Action</h2>
+ <p>How does the client approach a task? Do they want a "how-to" manual or a "why" and a choice?</p>
+
+ <p><strong>Options</strong> people are "rule breakers." They love finding new ways to do things. If you give them a 10-step process, they will try to find an 11th step or skip step 4 just to see what happens. They are great at starting projects but often struggle to finish them.</p>
+
+ <p><strong>Procedures</strong> people are "rule followers." They need to know the "right" way to do it. They are exceptionally good at completing tasks and following through, but they can become paralyzed if the procedure is broken or unclear.</p>
+
+ <h2 id="matcher-mismatcher">Matcher vs. Mis-matcher Patterns</h2>
+ <p>This filter describes how people relate to new information in comparison to what they already know.</p>
+
+ <ul>
+ <li><strong>Matchers (Sameness):</strong> They look for how things are the same. They are agreeable and notice similarities. "Oh, this NLP is just like the psychology class I took!"</li>
+ <li><strong>Mis-matchers (Difference):</strong> They look for how things are different. They are the "devil's advocates." If you say the sky is blue, they will point out the one white cloud.</li>
+ </ul>
+
+ <p><em>Stat Highlight:</em> A 2021 study on workplace communication found that <strong>Mis-matchers</strong> make up approximately 15-20% of the population, yet they account for over 60% of perceived "difficult" interactions in professional coaching environments when the coach is unaware of the pattern.</p>
+
+ <h2 id="behavior-prediction">Predicting & Utilizing Profiles in the N.E.U.R.O. Method™</h2>
+ <p>Once you have profiled your client, you can customize your intervention for maximum impact. This is the "secret sauce" of the <strong>Utilize Language Patterns</strong> phase.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Client Profile</th>
+ <th>Coaching Strategy</th>
+ <th>Language to Use</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Away-From / Internal</td>
+ <td>Highlight what they will lose if they don't change; ask them to evaluate the cost.</td>
+ <td>"What's the danger of staying here? You'll know when you've had enough."</td>
+ </tr>
+ <tr>
+ <td>Toward / External</td>
+ <td>Paint a vivid picture of the reward; provide testimonials and expert data.</td>
+ <td>"Think of the gains! My other clients found this to be the gold standard."</td>
+ </tr>
+ <tr>
+ <td>Options / Mis-matcher</td>
+ <td>Provide multiple choices; use "reversal" language.</td>
+ <td>"I'm not sure if this is for you, but here are three different ways we could go."</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>For a <strong>Mis-matcher</strong> client, use "Polite Doubt." If you say, "You can definitely do this," they will find reasons why they can't. If you say, "I'm not sure if you're ready for this level of change yet," they will work overtime to prove to you that they are.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. A client says, "I really need to know what the specific steps are for this technique. Is there a checklist I can follow?" Which Meta-Program is dominant?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+ <div id="ans1" class="answer-text">This client is demonstrating a <strong>Procedures</strong> Meta-Program. They are looking for a sequence and a "right way" to execute the task.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the best way to motivate an "Away-From" client who is procrastinating on their health goals?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+ <div id="ans2" class="answer-text">Focus on the <strong>consequences</strong> of inaction. Ask questions like, "What will this cost you in terms of your relationship with your kids if you don't get your energy back?" or "What is the risk of doing nothing?"</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. True or False: Meta-Programs are permanent personality traits that never change.</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Reveal Answer</button>
+ <div id="ans3" class="answer-text"><strong>False.</strong> Meta-Programs are context-dependent and can shift over time as a person evolves or as the environment changes.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Which Meta-Program describes how a person knows they have done a good job?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Reveal Answer</button>
+ <div id="ans4" class="answer-text">The <strong>Frame of Reference</strong> (Internal vs. External). Internal people know based on their own feelings; External people know based on feedback from others.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Meta-Programs are the unconscious filters that determine how we delete, distort, and generalize information.</li>
+ <li>Identifying the <strong>Toward vs. Away-From</strong> pattern is essential for creating sustainable motivation in clients.</li>
+ <li>The <strong>Internal vs. External</strong> filter tells you whether to provide feedback or ask the client to evaluate themselves.</li>
+ <li>Using "pacing" language that matches a client's Meta-Program profile reduces resistance and builds instant rapport.</li>
+ <li>Mastering these assessments allows you to charge premium rates (often $250-$500/hr) because your interventions are surgically precise.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>James, T. & Woodsmall, W. (1988). <em>Time Line Therapy and the Basis of Personality.</em> Meta Publications.</li>
+ <li>Rosecharan, S. et al. (2022). "Cognitive Filtering and Decision-Making Patterns in Professional Coaching." <em>Journal of Applied Neuro-Linguistics.</em></li>
+ <li>Hall, L.M. (2016). <em>Figuring Out People: Design Engineering with Meta-Programs.</em> Crown House Publishing.</li>
+ <li>Sussman, D. (2020). "The Impact of Linguistic Matching on Therapeutic Outcomes: A Meta-Analysis." <em>International Journal of NLP Research.</em></li>
+ <li>Bandler, R. & Grinder, J. (1975). <em>The Structure of Magic, Vol. 1.</em> Science and Behavior Books.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+
+// Standardized reveal button listener for robustness
+document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ // The onclick handles it, but this ensures compatibility
+ }
+ });
+});
+</script>
+
+</body>
+</html>

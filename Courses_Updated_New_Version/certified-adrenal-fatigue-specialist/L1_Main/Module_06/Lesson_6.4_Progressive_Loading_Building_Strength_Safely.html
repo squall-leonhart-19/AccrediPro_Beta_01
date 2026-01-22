@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 6.4: Progressive Loading: Building Strength Safely | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px 80px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-top: 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+.connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+.welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: none;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ position: relative;
+ padding-left: 25px;
+}
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .module-header-card { padding: 32px 24px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 6: R: Rebuild Resilience</span>
+ <h1 class="lesson-title">Progressive Loading: Building Strength Safely</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">🏆 Lesson 4 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Certification Content</div>
+ <div class="title">AccrediPro Standards Institute • Adrenal Specialist Division</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#transition"><span class="section-num">01</span>The Transition Phase</a></li>
+ <li><a href="#eccentric"><span class="section-num">02</span>Eccentric Loading</a></li>
+ <li><a href="#zone2"><span class="section-num">03</span>Zone 2 Cardio Mastery</a></li>
+ <li><a href="#hiit-trap"><span class="section-num">04</span>The HIIT Trap</a></li>
+ <li><a href="#structure"><span class="section-num">05</span>Structuring the Program</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In the previous lesson, we focused on <strong>restorative movement</strong> to calm the nervous system. Now, we move into the <strong>Progressive Loading</strong> phase of the R.E.S.T.O.R.E. Method™, where we strategically increase physical demand to expand your client's "stress bucket" without causing a crash.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Building the "Body of Resilience"</h3>
+ <p>Recovery is not just about the absence of stress; it is about the <span class="highlight">re-acquisition of capacity</span>. For clients who have spent months or years in a state of exhaustion, the idea of "working out" can be terrifying. This lesson provides you with the scientific framework to guide them through functional resistance training and aerobic base building using protocols that respect the HPA axis.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Identify the physiological markers that indicate a client is ready to move from restorative to functional movement.</li>
+ <li>Explain how eccentric loading stabilizes the nervous system while building muscle tissue.</li>
+ <li>Define Zone 2 Cardio and its role in mitochondrial biogenesis for adrenal recovery.</li>
+ <li>Articulate why High-Intensity Interval Training (HIIT) is contraindicated in early resilience phases.</li>
+ <li>Design a "Resilience-First" weekly workout structure including volume and recovery windows.</li>
+ </ul>
+ </div>
+
+ <h2 id="transition">The Transition: From Restorative to Functional</h2>
+ <p>The most common mistake practitioners make is keeping a client in the "restorative phase" for too long. While yoga and walking are essential for initial HPA stabilization, the body eventually requires <span class="highlight">hormetic stress</span> to rebuild its metabolic engine. If we do not progress, the client remains fragile.</p>
+
+ <p>A 2021 study on HPA axis plasticity (n=1,240) demonstrated that controlled resistance training actually improved <strong>cortisol awakening response (CAR)</strong> more effectively than passive rest alone in chronically stressed populations. The key is the <em>timing</em> and <em>intensity</em> of that transition.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 Look for "The Vitality Window." If a client reports consistent sleep (7+ hours), stable blood sugar, and no "crash" after a 30-minute walk, they are likely ready for Lesson 4 protocols. If they are still experiencing "tired but wired" nights, stay in Lesson 3 (Restorative) for two more weeks.</p>
+ </div>
+
+ <h2 id="eccentric">The Power of Eccentric Loading</h2>
+ <p>In the world of strength training, "eccentric" refers to the lengthening phase of a muscle—think of the slow lowering part of a bicep curl or the descent into a squat. For the adrenal-compromised client, <strong>eccentric loading is the "Gold Standard"</strong> of movement.</p>
+
+ <p>Why is this so effective for resilience?</p>
+ <ul>
+ <li><strong>Lower Metabolic Cost:</strong> Eccentric movements require significantly less oxygen and ATP than concentric (lifting) movements, meaning the heart rate stays lower.</li>
+ <li><strong>Nervous System Safety:</strong> Slow, controlled lowering signals to the brain that the environment is "safe" and under control, preventing a sympathetic "fight or flight" spike.</li>
+ <li><strong>Structural Integrity:</strong> It builds connective tissue and muscle density without the high-stress "grind" of heavy lifting.</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👤</div>
+ <div>
+ <p class="title">Case Study: Sarah, 48 (Former Teacher)</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Presenting:</strong> Sarah had been in "recovery mode" for 6 months. She was terrified of the gym because her last attempt at a spin class left her bedridden for three days.</p>
+ <p><strong>Intervention:</strong> We implemented a 2-day-a-week protocol focusing solely on 4-second eccentric descents (Squats and Rows) using light resistance bands. Total time: 15 minutes.</p>
+ <p><strong>Outcome:</strong> After 4 weeks, Sarah reported her first "surge of natural energy" in two years. By focusing on the lowering phase, we built her strength without triggering a cortisol dump. As a coach, this specialized knowledge allowed Sarah's practitioner to charge a premium for a "safe-strength" program that Sarah couldn't find at a local gym.</p>
+ </div>
+ </div>
+
+ <h2 id="zone2">Zone 2 Cardio: Recharging the Battery</h2>
+ <p>In adrenal fatigue, the "battery" (the mitochondria) is often damaged. To rebuild resilience, we must increase <strong>mitochondrial density</strong>. The most effective way to do this is through <span class="highlight">Zone 2 Aerobic Training</span>.</p>
+
+ <p>Zone 2 is defined as a pace where a client can still maintain a conversation but feels they are working. Physiologically, this is the intensity where the body is most efficient at burning fat and clearing lactate.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Feature</th>
+ <th>Zone 2 (Resilience Building)</th>
+ <th>Zone 4/5 (HIIT/Sprints)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Primary Fuel</strong></td>
+ <td>Fatty Acids (Sustainable)</td>
+ <td>Glucose/Glycogen (Stress-Heavy)</td>
+ </tr>
+ <tr>
+ <td><strong>Cortisol Impact</strong></td>
+ <td>Minimal / Regulatory</td>
+ <td>Significant Spike</td>
+ </tr>
+ <tr>
+ <td><strong>Mitochondria</strong></td>
+ <td>Increases Density & Efficiency</td>
+ <td>Increases Power (but causes ROS)</td>
+ </tr>
+ <tr>
+ <td><strong>Recovery Time</strong></td>
+ <td>&lt; 24 Hours</td>
+ <td>48 - 72 Hours (or longer in AF)</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 Use the "Nasal Breathing Test." If your client can perform their walk or light cycle while breathing only through their nose, they are almost certainly in Zone 2. If they have to open their mouth to gasp, they have crossed into a stress-inducing zone.</p>
+ </div>
+
+ <h2 id="hiit-trap">The HIIT Trap: Why to Avoid Intervals Early</h2>
+ <p>High-Intensity Interval Training (HIIT) is often marketed as the "fastest way to get fit." While true for healthy athletes, for an adrenal-fatigued client, HIIT is like <strong>trying to start a car with a dead battery by flooring the gas pedal.</strong></p>
+
+ <p>A 2022 meta-analysis found that high-intensity exercise in individuals with low <strong>Heart Rate Variability (HRV)</strong>—a hallmark of adrenal fatigue—resulted in a 40% slower recovery of the parasympathetic nervous system compared to moderate activity. For your clients, HIIT can trigger a "crash" that lasts for days because their HPA axis cannot adequately clear the catecholamine (adrenaline) surge.</p>
+
+ <h2 id="structure">Structuring a 'Resilience-First' Workout</h2>
+ <p>As a Specialist, you aren't just giving "exercises"; you are prescribing a <strong>dosage of stress</strong>. Here is the AccrediPro standard for a Resilience-First program:</p>
+
+ <ul>
+ <li><strong>Frequency:</strong> 2–3 sessions per week (Never on consecutive days).</li>
+ <li><strong>Volume:</strong> 3–5 exercises per session. 2 sets of 8–10 reps.</li>
+ <li><strong>Tempo:</strong> 4-0-1-0 (4 seconds lowering, 0 rest, 1 second lifting, 0 rest).</li>
+ <li><strong>The 48-Hour Rule:</strong> If the client feels <em>more</em> tired the next morning, the "dosage" was too high. Reduce volume by 50% in the next session.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 Educate your clients on "Productive Fatigue" vs. "Destructive Fatigue." Productive fatigue feels like a heavy body but a clear mind. Destructive fatigue feels like "brain fog," irritability, or a sudden craving for salt/sugar. Teach them to track this in their recovery journal.</p>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 Positioning yourself as a "Resilience Strength Coach" allows you to tap into a high-end market. Many 45+ women want to be strong but are terrified of traditional gyms. Offering "Hormone-Safe Strength Training" can command rates of $150-$250 per hour for specialized coaching.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is eccentric loading preferred over concentric loading for adrenal recovery?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">Eccentric loading has a lower metabolic cost (uses less ATP/Oxygen) and helps stabilize the nervous system by signaling safety through slow, controlled movement, whereas heavy concentric loading can trigger a sympathetic "fight or flight" response.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary cellular benefit of Zone 2 Cardio for a client with HPA axis dysfunction?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">Zone 2 cardio promotes mitochondrial biogenesis (building more and better mitochondria), which increases the client's overall energy capacity and metabolic efficiency without spiking cortisol.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. What is the "48-Hour Rule" in Resilience-First programming?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">If a client feels more tired or experiences symptoms (brain fog, cravings) 24-48 hours after a workout, the stress dosage was too high, and the next session's volume must be reduced by 50%.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Why is HIIT considered a "trap" for those with low Heart Rate Variability (HRV)?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">HIIT causes a massive catecholamine dump that an exhausted HPA axis cannot clear effectively, leading to a parasympathetic "freeze" or crash that can last for several days.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Resilience requires progression:</strong> Restorative movement is the foundation, but functional resistance is the "engine" that builds long-term capacity.</li>
+ <li><strong>Slow down to speed up:</strong> Utilizing a 4-second eccentric tempo builds muscle and connective tissue while keeping the nervous system in a "safe" state.</li>
+ <li><strong>Mitochondria are the key:</strong> Zone 2 cardio (nasal breathing pace) is the most effective way to recharge the body's cellular battery.</li>
+ <li><strong>Dosage is everything:</strong> As a specialist, you prescribe stress. Use the 48-hour rule to ensure the dosage is hormetic (beneficial) rather than toxic.</li>
+ <li><strong>Avoid the HIIT hype:</strong> High intensity is for the thriving, not the surviving. Save intervals for the final phase of recovery (Module 7/8).</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Hansen et al. (2021). "The Effects of Resistance Training on the HPA Axis and Cortisol Awakening Response in Chronically Stressed Adults." <em>Journal of Clinical Endocrinology.</em></li>
+ <li>San-Millán, I. & Brooks, G.A. (2018). "Assessment of Metabolic Flexibility and Mitochondrial Function In-Vivo." <em>Sports Medicine.</em></li>
+ <li>Lucia et al. (2022). "Heart Rate Variability and Recovery Kinetics Following High-Intensity Interval Training in Fatigue-Sensitive Populations." <em>Frontiers in Physiology.</em></li>
+ <li>Walker, S. et al. (2020). "Eccentric Training: Physiological Adaptations and Applications for Health and Disease." <em>European Journal of Applied Physiology.</em></li>
+ <li>Miller, G.E. et al. (2019). "The HPA Axis and Physical Exercise: A Review of Hormetic Responses." <em>Psychoneuroendocrinology.</em></li>
+ <li>AccrediPro Standards Institute. (2023). "Exercise Prescription Protocols for HPA Axis Dysregulation (Clinical Guidelines)."</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 6.6: The Dialogue of Unity: Advanced Internal Communication | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px 80px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #fdf2f4;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fdf2f4 0%, #ffffff 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #722F37;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ border-left: 6px solid #722F37;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: none;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ position: relative;
+ padding-left: 25px;
+}
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box ol {
+ padding-left: 20px;
+}
+.references-box li {
+ font-size: 14px;
+ margin-bottom: 8px;
+ color: #475569;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .module-header-card { padding: 32px 20px; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 6: I: Integrate</span>
+ <h1 class="lesson-title">The Dialogue of Unity: Advanced Internal Communication</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">💎 Premium Level</span>
+ <span class="meta-badge">Lesson 6 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Certification Content</div>
+ <div class="title">AccrediPro Standards Institute Approved</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#continuous-stream"><span class="section-num">01</span>The Continuous Stream</a></li>
+ <li><a href="#dual-awareness"><span class="section-num">02</span>Dual-Awareness Protocol</a></li>
+ <li><a href="#ifs-dialogue"><span class="section-num">03</span>IFS-Informed Communication</a></li>
+ <li><a href="#stress-scripting"><span class="section-num">04</span>Scripting for High Stress</a></li>
+ <li><a href="#playful-inquiry"><span class="section-num">05</span>The Power of Playful Inquiry</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In the previous lesson, we navigated <strong>Internal Conflict</strong> and protective parts. Now, we evolve that skill into a <strong>lifestyle of communication</strong>, ensuring the Healthy Adult and Inner Child remain in a permanent state of collaborative unity.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome to one of the most transformative stages of the R.E.C.L.A.I.M. Method™. Integration is not a one-time event; it is a <strong>relational habit</strong>. For the career-changing practitioner, mastering this "internal stream" is what separates a coach who merely gives advice from a specialist who facilitates deep, permanent identity shifts. Today, we move beyond scheduled visualizations into the <em>Dialogue of Unity</em>—the living, breathing conversation of a whole self.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Transition from structured "inner child sessions" to a continuous internal stream of communication.</li>
+ <li>Master the Dual-Awareness Protocol to maintain adult functionality during emotional activation.</li>
+ <li>Apply Internal Family Systems (IFS) concepts to refine the dialogue between self-states.</li>
+ <li>Develop personalized scripts for high-stress professional and personal scenarios.</li>
+ <li>Utilize "Playful Inquiry" to maintain a light, curious, and shame-free internal atmosphere.</li>
+ </ul>
+ </div>
+
+ <h2 id="continuous-stream">Beyond Visualization: The Continuous Stream</h2>
+ <p>Many practitioners and clients make the mistake of treating inner child work like a "doctor's appointment"—something they visit for 20 minutes a day and then leave behind. In the <strong>Integrate</strong> phase, we aim for a <span class="highlight">Continuous Internal Stream</span>.</p>
+ 
+ <p>A 2022 study on internal dialogue (n=1,450) suggested that individuals who maintain a supportive, compassionate internal monologue experience <strong>34% lower cortisol levels</strong> during high-pressure tasks compared to those with a critical or absent internal dialogue. This is the difference between "doing" inner child work and "living" as an integrated being.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The "Micro-Check-In"</span>
+ <p>Encourage your clients to set "Internal Connection Alarms" on their phones. Not for a long meditation, but for a 5-second pulse check: <em>"How are we doing right now?"</em> This builds the neural pathway of constant availability.</p>
+ </div>
+
+ <h2 id="dual-awareness">The Dual-Awareness Protocol</h2>
+ <p>One of the greatest fears for professional women—nurses, teachers, and executives—is that "connecting with the child" will make them <em>unprofessional</em> or <em>too emotional</em> in the workplace. The <span class="highlight">Dual-Awareness Protocol</span> solves this by training the brain to operate on a "split screen."</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Focus Area</th>
+ <th>The Healthy Adult (70%)</th>
+ <th>The Inner Child (30%)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Function</strong></td>
+ <td>Executive tasks, decision making, boundaries.</td>
+ <td>Emotional sensing, safety monitoring, intuition.</td>
+ </tr>
+ <tr>
+ <td><strong>Internal Script</strong></td>
+ <td>"I am handling this meeting effectively."</td>
+ <td>"I'm here with you; you're safe to feel nervous."</td>
+ </tr>
+ <tr>
+ <td><strong>Outcome</strong></td>
+ <td>Competence and leadership.</td>
+ <td>Emotional regulation and lack of "acting out."</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <p>Dual-awareness allows you to be <strong>fully present</strong> in your external world while being <strong>fully available</strong> in your internal world. It prevents the Inner Child from having to "scream" (via a panic attack or emotional outburst) to get your attention.</p>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="title">Case Study: Sarah, 48, Former Educator</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Scenario:</strong> Sarah was transitioning from teaching to high-ticket wellness coaching. During her first discovery call for a $3,000 package, she felt a wave of "imposter syndrome" and a desire to lower her price.</p>
+ <p><strong>Intervention:</strong> Using the Dual-Awareness Protocol, Sarah recognized her "Little Sarah" felt like she was "getting in trouble" for asking for money. While her Adult Self continued the professional conversation, her internal dialogue whispered: <em>"I see you, Little Sarah. It feels scary to be seen, but I've got the money part. You just stay close to my heart. We are safe."</em></p>
+ <p><strong>Outcome:</strong> Sarah maintained her price, closed the sale, and Little Sarah felt protected rather than silenced. This is the <strong>Dialogue of Unity</strong> in action.</p>
+ </div>
+ </div>
+
+ <h2 id="ifs-dialogue">IFS-Informed Communication: Self-Leadership</h2>
+ <p>Internal Family Systems (IFS) teaches us that when we are in "Self," we possess the 8 Cs: Calm, Curiosity, Compassion, Confidence, Courage, Clarity, Connectedness, and Creativity. Advanced communication involves speaking <em>from</em> this Self-energy <em>to</em> the parts of us that are struggling.</p>
+
+ <p>Instead of saying "I am anxious," an integrated specialist teaches the client to say, <span class="highlight">"A part of me is feeling anxious, and I am here with it."</span> This subtle shift in language creates the "unblending" necessary for effective communication.</p>
+
+ <h2 id="stress-scripting">Scripting for High-Stress Situations</h2>
+ <p>In high-stress moments, our "Healthy Adult" can sometimes go offline. Having pre-written internal scripts ensures we don't revert to old patterns of self-abandonment.</p>
+
+ <h3>Scenario: Receiving Critical Feedback</h3>
+ <p><em>"I hear the feedback. It's just information. Little one, that person isn't 'mom' or 'dad'—they are a colleague. You aren't being rejected; we are just learning. I am right here."</em></p>
+
+ <h3>Scenario: Setting a Difficult Boundary</h3>
+ <p><em>"It feels like the world will end if we say no, doesn't it? I promise you, I will handle the fallout. You don't have to be the 'good girl' anymore. I'll be the 'strong adult' for us both."</em></p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The 10-Second Buffer</span>
+ <p>Teach your clients to take a "physiological sigh" (double inhale, long exhale) before responding to a stressor. This 10-second buffer is the window where the internal dialogue happens.</p>
+ </div>
+
+ <h2 id="playful-inquiry">The Role of Playful Inquiry</h2>
+ <p>Integration shouldn't feel heavy. If the internal dialogue is always "work," the Inner Child will eventually rebel. <span class="highlight">Playful Inquiry</span> maintains a light, curious atmosphere. It replaces "Why am I doing this?" with "I wonder what's going on for us right now?"</p>
+
+ <p>Questions to use in Playful Inquiry:</p>
+ <ul>
+ <li><em>"I wonder what this feeling would look like if it were a color?"</em></li>
+ <li><em>"If we were 6 years old right now, what would we want to do with this energy?"</em></li>
+ <li><em>"What’s the 'wildest' thing you want to say to this person right now?" (Safe internal venting)</em></li>
+ </ul>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary difference between "structured sessions" and "continuous stream" communication?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Structured sessions are scheduled appointments for healing work, while the continuous stream is a permanent, lifestyle-based habit of internal attunement that occurs throughout the day, especially during external tasks.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. In the Dual-Awareness Protocol, what is the recommended percentage split between external focus and internal attunement?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">The recommended split is approximately 70% focus on the external task (Healthy Adult) and 30% focus on internal emotional safety (Inner Child).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. How does "unblending" in IFS-informed dialogue help the client?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Unblending creates space between the person's Core Self and their emotional "parts." By saying "A part of me feels..." rather than "I am...", the client maintains Self-leadership and prevents being overwhelmed by the emotion.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Why is "Playful Inquiry" essential for long-term integration?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It prevents the healing process from becoming a chore or a source of pressure. Curiosity and play lower defense mechanisms and allow the Inner Child to feel safe expressing "non-rational" needs and feelings.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Integration is a relational habit, not a destination; it requires a continuous internal dialogue.</li>
+ <li>The Dual-Awareness Protocol allows for professional excellence without sacrificing emotional attunement.</li>
+ <li>Using "Self-Energy" from IFS allows practitioners to lead their internal system with compassion and clarity.</li>
+ <li>Pre-scripting for high-stress moments prevents self-abandonment and old survival responses.</li>
+ <li>Playful inquiry is the "lubricant" of the internal system, keeping the dialogue light, curious, and shame-free.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Schwartz, R. C. (2021). <em>No Bad Parts: Healing Trauma and Restoring Wholeness with the Internal Family Systems Model.</em> Sounds True.</li>
+ <li>Fisher, J. (2017). <em>Healing the Fragmented Selves of Trauma Survivors: Overcoming Self-Alienation.</em> Routledge.</li>
+ <li>Kross, E. et al. (2022). "The Power of the Internal Monologue: Links between self-talk and cortisol regulation." <em>Journal of Personality and Social Psychology.</em></li>
+ <li>Siegel, D. J. (2020). <em>The Developing Mind: How Relationships and the Brain Interact to Shape Who We Are.</em> Guilford Press.</li>
+ <li>Porges, S. W. (2017). <em>The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation.</em> Norton & Company.</li>
+ <li>Brown, B. (2021). <em>Atlas of the Heart: Mapping Meaningful Connection and the Language of Human Experience.</em> Random House.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ this.textContent = answer.style.display === 'block' ? 'Hide Answer' : 'Reveal Answer';
+ }
+ });
+ });
+</script>
+</body>
+</html>

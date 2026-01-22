@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 8.5: Advanced Troubleshooting: When the Plan Needs Pivot | AccrediPro</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS
+ =========================================== */
+
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding-bottom: 80px;
+}
+
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+}
+
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+}
+
+.toc-box {
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+}
+
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ color: white;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+}
+
+.tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+}
+
+.data-table { 
+ width: 100%; 
+ border-collapse: collapse; 
+ margin: 25px 0; 
+ font-size: 15px; 
+}
+
+.data-table th { 
+ background: #722F37; 
+ color: white; 
+ padding: 12px 15px; 
+ text-align: left; 
+}
+
+.data-table td { 
+ padding: 12px 15px; 
+ border-bottom: 1px solid #e5e7eb; 
+}
+
+.data-table tr:nth-child(even) { 
+ background: #fdf2f4; 
+}
+
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ color: #8B6914;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+}
+
+.references-box {
+ background: #f8fafc;
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ margin-bottom: 8px;
+ color: #475569;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 8: Empowered Action Deep Dive</span>
+ <h1 class="lesson-title">Advanced Troubleshooting: When the Plan Needs Pivot</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">🎓 Lesson 5 of 8</span>
+ <span class="meta-badge">💡 Strategic Coaching</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Certification Content</div>
+ <div class="title">AccrediPro Standards Institute • Certified Fertility Coach™</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#biological-threshold"><span class="section-num">01</span>The 90-Day Threshold</a></li>
+ <li><a href="#fertility-audit"><span class="section-num">02</span>The Strategic Fertility Audit</a></li>
+ <li><a href="#unexplained-plateaus"><span class="section-num">03</span>Decoding Unexplained Plateaus</a></li>
+ <li><a href="#integrative-pivot"><span class="section-num">04</span>The Pivot to Integrative Advocacy</a></li>
+ <li><a href="#emotional-momentum"><span class="section-num">05</span>Sustaining Resilience</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="welcome-box">
+ <p>In the previous lessons of Module 8, we explored the architecture of the Empowered Action Plan and how to refine strategies based on real-time data. However, for some clients, even the most meticulous plan reaches a plateau. This lesson teaches you the high-level skill of <span class="highlight">advanced troubleshooting</span>—knowing exactly when and how to pivot a client's journey from natural optimization to integrative medical support without losing momentum or hope.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Identify the clinical and biological markers that signal a need for a protocol pivot.</li>
+ <li>Conduct a comprehensive "Fertility Audit" to identify hidden endocrine disruptors or metabolic blocks.</li>
+ <li>Apply the 3-6 month data rule to determine when to transition to Integrative Advocacy (I).</li>
+ <li>Navigate "unexplained" infertility plateaus using deeper functional investigation strategies.</li>
+ <li>Support client emotional resilience during the transition from natural conception to Assisted Reproductive Technology (ART).</li>
+ </ul>
+ </div>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <h3>Case Study: The 4-Month Plateau</h3>
+ <p>Client: Elena, 42 • Former Educator • 12 Months TTC</p>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Initial Presentation:</strong> Elena joined the coaching program with irregular cycles (35-45 days) and high stress. For four months, she strictly followed the F.E.R.T.I.L.E. Method™. Her cycles regulated to 29 days, her BBT charts showed clear ovulation, and her cervical mucus improved significantly. However, despite "perfect" timing, she had not conceived.</p>
+ <p><strong>The Pivot:</strong> Instead of continuing the same natural protocol for another three months, we conducted a <strong>Fertility Audit</strong>. We discovered her husband’s recent sperm analysis was borderline, and Elena's AMH had dropped. We pivoted to <strong>Integrative Advocacy</strong>, preparing her for a Mini-IVF protocol while maintaining her functional foundations. She conceived on her first retrieval cycle.</p>
+ <p><strong>Outcome:</strong> Elena’s success was attributed to the <em>timing</em> of the pivot—avoiding "hope fatigue" by moving to medical support exactly when the data suggested the natural window was narrowing.</p>
+ </div>
+ </div>
+
+ <h2 id="biological-threshold">The 90-Day Biological Threshold</h2>
+ <p>In fertility coaching, we must respect the <span class="highlight">biological clock of gametogenesis</span>. Both egg maturation and sperm production take approximately 90 to 120 days to reflect lifestyle and nutritional changes. This creates a natural "audit point."</p>
+ 
+ <p>If a client has implemented the "Big Rocks" of the F.E.R.T.I.L.E. Method™—Targeted Nutrition (T), Lifestyle Alignment (L), and Functional Assessment (F) corrections—for a full 120-day cycle without a positive pregnancy test, a strategic pivot is often required. Continuing the same path beyond this point without new data often leads to client burnout and decreased trust in the coaching process.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Professional Pivot</span>
+ <p>As a premium coach, your value lies in your ability to say, <em>"The data shows we have optimized your foundations, yet the result hasn't followed. It's time to dig deeper."</em> This builds more legitimacy than simply encouraging them to "keep trying" indefinitely. High-level troubleshooting is what justifies a $300+/hour rate.</p>
+ </div>
+
+ <h2 id="fertility-audit">The Strategic Fertility Audit</h2>
+ <p>When a plan plateaus, we perform a <strong>Fertility Audit</strong>. This is a systematic re-evaluation of all pillars to ensure no "hidden" disruptors are stalling progress. Use the following framework to guide your troubleshooting sessions:</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Pillar</th>
+ <th>Audit Checklist</th>
+ <th>Potential "Hidden" Block</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Functional (F)</strong></td>
+ <td>Re-test HbA1c, Fasting Insulin, and Thyroid (TSH/fT3/fT4).</td>
+ <td>Subclinical hypothyroidism or silent insulin resistance.</td>
+ </tr>
+ <tr>
+ <td><strong>Reproductive (R)</strong></td>
+ <td>Review last 3 months of BBT/CM charts.</td>
+ <td>Luteal phase defect (shortened 10-day phase) or weak ovulation.</td>
+ </tr>
+ <tr>
+ <td><strong>Nutrition (T)</strong></td>
+ <td>7-day food diary audit for micronutrient density.</td>
+ <td>Insufficient protein intake or "healthy" inflammatory triggers (e.g., hidden gluten).</td>
+ </tr>
+ <tr>
+ <td><strong>Lifestyle (L)</strong></td>
+ <td>Audit home environment for EDCs and sleep hygiene.</td>
+ <td>High EMF exposure at night or mold/mycotoxins in the home.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="unexplained-plateaus">Decoding Unexplained Plateaus</h2>
+ <p>"Unexplained Infertility" is often simply "uninvestigated infertility." When the standard pillars are optimized but conception fails, we look for <span class="highlight">Advanced Disruptors</span>. A 2022 study published in <em>Frontiers in Endocrinology</em> noted that up to 30% of unexplained infertility cases involve subclinical immune activation or chronic endometritis (silent inflammation of the uterine lining).</p>
+ 
+ <p><strong>Key Areas for Advanced Investigation:</strong></p>
+ <ul>
+ <li><strong>Vaginal/Uterine Microbiome:</strong> Dysbiosis (lack of protective Lactobacilli) can prevent implantation even with a perfect embryo.</li>
+ <li><strong>Sperm DNA Fragmentation:</strong> Standard semen analyses miss this. High fragmentation can lead to "unexplained" fertilization failure or early loss.</li>
+ <li><strong>Silent Endometriosis:</strong> 20-25% of women with no symptoms (no painful periods) may still have mild endometriosis affecting egg quality.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Income Opportunity</span>
+ <p>Many coaches offer a standalone "Fertility Audit & Deep Dive" package for $997. This is a 90-minute intensive for women who have been trying for over a year and feel "stuck." It’s an excellent way to serve clients who aren't ready for a 6-month commitment but need an expert pivot strategy.</p>
+ </div>
+
+ <h2 id="integrative-pivot">The Pivot to Integrative Advocacy (I)</h2>
+ <p>One of the most difficult parts of the coach-client relationship is recommending a shift toward medical intervention (IUI/IVF). However, in the <strong>F.E.R.T.I.L.E. Method™</strong>, medical intervention is not a failure of the holistic approach; it is an <em>integration</em> of it.</p>
+
+ <h3>Criteria for the "Integrative Pivot":</h3>
+ <ol>
+ <li><strong>The Age Factor:</strong> For clients over 40, the window for natural optimization is shorter. If no success occurs within 3-4 months of a perfect protocol, the pivot to ART should be discussed.</li>
+ <li><strong>Structural Barriers:</strong> If the audit suggests blocked tubes (HSG needed) or significant male factor issues.</li>
+ <li><strong>Ovarian Reserve Reality:</strong> If FSH is climbing or AMH is rapidly declining, the functional plan must pivot to "IVF Prep" rather than "Natural Conception."</li>
+ </ol>
+
+ <p>Your role as an <strong>Integrative Advocate</strong> is to ensure the client enters the clinic as a <em>partner</em> in their care, not just a patient. You help them choose the right clinic, decode the protocols, and maintain their functional foundations during the stimulation cycles.</p>
+
+ <h2 id="emotional-momentum">Sustaining Emotional Momentum (E)</h2>
+ <p>A pivot can feel like "starting over" to a client. This is where <strong>Emotional Resilience (E)</strong> becomes the primary focus. The psychological toll of shifting from "we're doing this naturally" to "we need a doctor" can be heavy.</p>
+
+ <p><strong>Reframing the Narrative:</strong>
+ Instead of saying, "The natural way didn't work," reframe it as: <em>"We have spent 4 months building a high-quality foundation. We have improved your egg quality, reduced your inflammation, and optimized your hormones. Now, we are taking that high-quality 'soil' and using medical technology to ensure the 'seed' is planted perfectly."</em></p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Validating the Pivot</span>
+ <p>Remind your client that 40+ women have a higher success rate with IVF when they have done 3 months of functional prep. They aren't "giving up" on the holistic path; they are graduating to a more advanced application of it.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is 90-120 days considered the standard "audit point" for a fertility protocol pivot?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">This timeframe reflects the biological cycle of gametogenesis (the time it takes for an egg or sperm to fully mature). Changes made to nutrition and lifestyle today will not be fully reflected in the quality of the gametes for approximately 3-4 months.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What are the three primary criteria for recommending an "Integrative Pivot" toward ART?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">1. Age (especially over 40) where the window is narrow; 2. Structural barriers (e.g., blocked tubes); 3. Declining ovarian reserve markers (rising FSH or falling AMH).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. How should a coach reframe the transition from natural conception to IVF?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">The transition should be reframed as a "graduation" or a strategic evolution. The coach emphasizes that the natural prep has optimized the "soil" (uterine environment and egg quality), making the medical intervention (the "seed" placement) more likely to succeed.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is a "hidden" block often found during a Functional (F) audit?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">Common hidden blocks include subclinical hypothyroidism (where TSH is "normal" by lab standards but not optimal for fertility) or silent insulin resistance that is only caught by checking fasting insulin, not just glucose.</div>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Career Pivot</span>
+ <p>For many of you transitioning from nursing or teaching, "troubleshooting" is a natural skill. You are used to assessing a situation and adjusting the lesson plan or care plan. Trust your intuition—if the data says a pivot is needed, your client will appreciate your honesty more than your optimism.</p>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Respect the Cycle:</strong> Allow 90-120 days for functional changes to take root before declaring a plateau.</li>
+ <li><strong>Audit, Don't Guess:</strong> Use the Fertility Audit framework to systematically check for hidden endocrine or lifestyle disruptors.</li>
+ <li><strong>Data-Driven Advocacy:</strong> Move to Integrative Advocacy (I) when the data (age, reserves, or time) suggests medical support is the most efficient path.</li>
+ <li><strong>Emotional Reframing:</strong> Focus on the "Optimized Soil" metaphor to maintain client confidence during transitions to ART.</li>
+ <li><strong>Expertise Equals Value:</strong> Your ability to navigate complex plateaus is what separates a certified professional from a general wellness enthusiast.</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li><em>Cimadomo, D., et al. (2022).</em> "The Impact of Lifestyle on Gamete Quality and Reproductive Outcomes." <strong>Frontiers in Endocrinology.</strong></li>
+ <li><em>Gaskins, A. J., & Chavarro, J. E. (2018).</em> "Diet and Fertility: A Review." <strong>American Journal of Obstetrics and Gynecology.</strong></li>
+ <li><em>Homan, G., et al. (2019).</em> "The Impact of Lifestyle Factors on Reproductive Performance in the General Population and Those Undergoing Infertility Treatment: A Review." <strong>Human Reproduction Update.</strong></li>
+ <li><em>Practice Committee of the American Society for Reproductive Medicine. (2020).</em> "Diagnostic Evaluation of the Infertile Female: A Committee Opinion." <strong>Fertility and Sterility.</strong></li>
+ <li><em>Rooney, K. L., & Domar, A. D. (2018).</em> "The Relationship Between Stress and Infertility." <strong>Dialogues in Clinical Neuroscience.</strong></li>
+ <li><em>Vlaisavljević, V., et al. (2021).</em> "The Role of Uterine Microbiome in Assisted Reproduction." <strong>Journal of Assisted Reproduction and Genetics.</strong></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+
+// Standardized reveal answer script
+document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ // The onclick function handles the toggle, this is for redundancy
+ }
+ });
+});
+</script>
+
+</body>
+</html>

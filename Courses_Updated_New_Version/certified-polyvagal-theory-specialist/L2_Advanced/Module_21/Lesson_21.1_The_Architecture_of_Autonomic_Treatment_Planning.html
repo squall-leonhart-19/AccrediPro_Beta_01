@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>The Architecture of Autonomic Treatment Planning | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #fdf2f4;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ border-left: 6px solid #722F37;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: disc;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+ background: white;
+ border-radius: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #722F37, #722F37);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ color: white;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 21: Treatment Planning</span>
+ <h1 class="lesson-title">The Architecture of Autonomic Treatment Planning</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">Level 2 Specialist</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">AccrediPro Standards Institute Verified</div>
+ <div class="title">Certified Polyvagal Theory Specialist™ Clinical Pathway</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#state-vs-symptom"><span class="section-num">01</span>State vs. Symptom Objectives</a></li>
+ <li><a href="#vagus-intake"><span class="section-num">02</span>The V.A.G.U.S. Intake Process</a></li>
+ <li><a href="#autonomic-baseline"><span class="section-num">03</span>Establishing the Baseline</a></li>
+ <li><a href="#polyvagal-smart"><span class="section-num">04</span>Polyvagal SMART Goals</a></li>
+ <li><a href="#safety-hierarchy"><span class="section-num">05</span>The Hierarchy of Safety</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In Level 1, you mastered the science of the autonomic hierarchy. Now, in Level 2, we bridge the gap between <strong>theory and therapy</strong>. This lesson provides the structural blueprint for translating autonomic mapping into actionable, high-ticket treatment plans.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome, Specialist. As you transition into advanced practice, your greatest challenge isn't understanding the Vagus nerve—it's <strong>organizing that understanding</strong> into a plan that creates lasting change. Traditional treatment planning often targets "anxiety" or "insomnia" as isolated problems. In this lesson, you will learn to see these as <em>outputs</em> of an autonomic state, fundamentally shifting how you design your client interventions.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Define the clinical shift from symptom-based to state-based treatment objectives.</li>
+ <li>Integrate the <strong>V.A.G.U.S. Framework™</strong> into standard clinical intake processes.</li>
+ <li>Identify a client's "Autonomic Baseline" using physiological and behavioral markers.</li>
+ <li>Construct SMART goals through a Polyvagal lens (Specific, Measurable, Autonomic, Relational, Targeted).</li>
+ <li>Apply the hierarchy of safety to prioritize physiological stabilization before cognitive processing.</li>
+ </ul>
+ </div>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="title">Case Study: Sarah's Shift</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Sarah, 48, former elementary school teacher.</p>
+ <p><strong>Presenting Symptoms:</strong> Chronic neck tension, "brain fog," and a sudden inability to handle social gatherings (which she used to love).</p>
+ <p><strong>Conventional Plan:</strong> Cognitive Behavioral Therapy (CBT) for social anxiety and physical therapy for neck pain.</p>
+ <p><strong>Polyvagal Intervention:</strong> Sarah was trapped in a <em>Functional Freeze</em> (Dorsal-Sympathetic blend). Her neck tension was a protective "turtle" response. Her brain fog was a dissociative survival strategy. By shifting her treatment plan from "reducing anxiety" to "increasing Ventral Vagal stabilization," she saw a 60% reduction in symptoms within 4 weeks—results her previous 2 years of CBT couldn't touch.</p>
+ </div>
+ </div>
+
+ <h2 id="state-vs-symptom">From Symptom-Based to State-Based Objectives</h2>
+ <p>In the conventional medical model, the goal is "symptom suppression." If a client has tachycardia, we give a beta-blocker. If they have racing thoughts, we give an anxiolytic. As a Polyvagal Specialist, you recognize that the symptom is the <strong>body's intelligent response</strong> to a perceived lack of safety.</p>
+ 
+ <p>Treatment planning in our framework focuses on the <strong>underlying autonomic state</strong>. When the state shifts, the symptoms often resolve spontaneously because the physiological <em>need</em> for the symptom has vanished.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Symptom-Based Goal</th>
+ <th>State-Based (Polyvagal) Objective</th>
+ <th>The "Why"</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>"Reduce panic attacks"</td>
+ <td>"Increase Sympathetic discharge capacity"</td>
+ <td>Panic is trapped mobilization energy.</td>
+ </tr>
+ <tr>
+ <td>"Improve focus/concentration"</td>
+ <td>"Strengthen the Ventral Vagal Brake"</td>
+ <td>Focus requires the safety of the Social Engagement System.</td>
+ </tr>
+ <tr>
+ <td>"Stop emotional eating"</td>
+ <td>"Regulate the Dorsal Vagal metabolic shift"</td>
+ <td>Binging is often a response to autonomic collapse.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Specialist Insight: The Income Factor</span>
+ <p>Practitioners who offer "State-Based Mapping" can often command 2-3x the hourly rate of general wellness coaches. By positioning yourself as a <strong>Nervous System Architect</strong>, you are solving a "root cause" problem that most clients have spent thousands trying to solve at the surface level.</p>
+ </div>
+
+ <h2 id="vagus-intake">Integrating the V.A.G.U.S. Framework™ into Intake</h2>
+ <p>A premium treatment plan begins with a premium intake. You are no longer just asking "What's wrong?" You are asking "How does your nervous system perceive the world?" The <strong>V.A.G.U.S. Framework™</strong> provides the scaffolding for this inquiry:</p>
+
+ <ul>
+ <li><strong>V - Ventral Mapping:</strong> What does safety feel like in this specific body? (e.g., "When do you feel most like yourself?")</li>
+ <li><strong>A - Autonomic Awareness:</strong> How quickly does the client recognize a state shift? (e.g., "Can you feel the moment your heart rate changes?")</li>
+ <li><strong>G - Grounding Interventions:</strong> What tools does the client currently use (consciously or unconsciously) to stay anchored?</li>
+ <li><strong>U - Utilizing Co-regulation:</strong> Who are the safe "anchors" in the client's life?</li>
+ <li><strong>S - Systemic Resilience:</strong> How wide is their Window of Tolerance before they hit "the wall"?</li>
+ </ul>
+
+ <h2 id="autonomic-baseline">Establishing the 'Autonomic Baseline'</h2>
+ <p>The <strong>Autonomic Baseline</strong> is the state the client habitually returns to when not actively engaged in a task. Many of your clients—especially high-achieving women in their 40s and 50s—have a baseline of <em>Functional Sympathetic</em> (constantly "on," even when resting).</p>
+ 
+ <p>To establish this baseline, you must look at data beyond their self-report:</p>
+ <ol>
+ <li><strong>Heart Rate Variability (HRV):</strong> A low HRV often indicates a system stuck in Sympathetic mobilization.</li>
+ <li><strong>Digestive Patterns:</strong> Chronic constipation or IBS often maps to Dorsal or Sympathetic states respectively.</li>
+ <li><strong>Sleep Architecture:</strong> Does the client wake up at 3:00 AM? This is often a Sympathetic "predator watch" spike.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Perimenopause Connection</span>
+ <p>For women in mid-life, hormonal shifts can mimic autonomic dysregulation. A drop in estrogen can weaken the Ventral Vagal brake. Your treatment plan must account for this biological "noise" when establishing the baseline.</p>
+ </div>
+
+ <h2 id="polyvagal-smart">Setting Polyvagal SMART Goals</h2>
+ <p>Standard SMART goals (Specific, Measurable, Achievable, Relevant, Time-bound) often fail because they ignore the client's physiological capacity. We use the <strong>Polyvagal SMART</strong> model:</p>
+
+ <ul>
+ <li><strong>S - Specific State:</strong> Which autonomic branch are we targeting?</li>
+ <li><strong>M - Measurable Markers:</strong> Are we looking at HRV, breath rate, or "Time to Ventral Recovery"?</li>
+ <li><strong>A - Autonomically Attuned:</strong> Is the goal achievable given their current state? (Don't ask a Dorsal client to "go to a networking event").</li>
+ <li><strong>R - Relational:</strong> Does the goal involve co-regulation or social engagement?</li>
+ <li><strong>T - Targeted Interventions:</strong> Does the tool match the state? (e.g., heavy lifting for Sympathetic, humming for Ventral).</li>
+ </ul>
+
+ <h2 id="safety-hierarchy">The Hierarchy of Safety: Physiology First</h2>
+ <p>One of the most common mistakes in treatment planning is attempting <strong>top-down</strong> (cognitive) work when the client is in a <strong>bottom-up</strong> (autonomic) crisis. You cannot "reason" someone out of a Dorsal Vagal shutdown.</p>
+ 
+ <p>The hierarchy of your plan must follow this order:</p>
+ <ol>
+ <li><strong>Physiological Stabilization:</strong> Use breath, temperature, and proprioception to signal safety to the brainstem.</li>
+ <li><strong>Relational Safety:</strong> Establish the practitioner as a Ventral anchor (Co-regulation).</li>
+ <li><strong>Cognitive Integration:</strong> Only now do we move into "mindset" or "story" work.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Client Communication Tip</span>
+ <p>Tell your clients: "We are going to build the foundation of your house before we try to paint the walls. Your nervous system is the foundation. If it's shaking, the paint (your thoughts) will just crack and peel."</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is a "State-Based" objective superior to a "Symptom-Based" objective in Polyvagal practice?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Because symptoms are outputs of an autonomic state. By shifting the state, the physiological need for the symptom often vanishes, leading to more sustainable root-cause resolution.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What does the "A" in the Polyvagal SMART goal model stand for?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">"Autonomically Attuned." This ensures the goal is realistic based on the client's current autonomic capacity and state.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. According to the Hierarchy of Safety, what must be addressed before cognitive/mindset work?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Physiological stabilization and relational safety (co-regulation) must be established first.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. How might perimenopause impact a client's Autonomic Baseline?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Declining estrogen levels can weaken the Ventral Vagal brake, making the client more susceptible to Sympathetic mobilization or Dorsal collapse.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>State Over Symptom:</strong> Always ask "What state is driving this behavior?" rather than "How do I stop this behavior?"</li>
+ <li><strong>Intake is Intervention:</strong> Using the V.A.G.U.S. Framework™ during intake begins the process of neuroceptive shifting.</li>
+ <li><strong>Physiology First:</strong> Never attempt cognitive restructuring with a client who is in a state of autonomic collapse or high mobilization.</li>
+ <li><strong>Baseline Matters:</strong> Success is measured by the shift in the client's habitual baseline, not just their peak performance.</li>
+ <li><strong>Premium Positioning:</strong> Specialized autonomic planning provides a level of clinical depth that justifies higher practitioner fees.</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Porges, S. W. (2021). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." <em>Norton Series on Interpersonal Neurobiology.</em></li>
+ <li>Dana, D. (2018). "The Polyvagal Theory in Therapy: Engaging the Rhythm of Regulation." <em>W. W. Norton & Company.</em></li>
+ <li>Klarer, M., et al. (2014). "Vagus Nerve Stimulation Promotes Extinction of Conditioned Fear and Enhances Plasticity in Critical Limbic Circuits." <em>Biological Psychiatry.</em></li>
+ <li>Gerritsen, R., & Band, G. P. (2018). "Breath of Life: The Respiratory Vagal Stimulation Model of Contemplative Activity." <em>Frontiers in Human Neuroscience.</em></li>
+ <li>Sullivan, M. B., et al. (2018). "Yoga Therapy and Polyvagal Theory: The Convergence of Traditional Wisdom and Contemporary Neuroscience." <em>Journal of Yoga Therapy.</em></li>
+ <li>Thayer, J. F., et al. (2012). "The Relation of Autonomic Nervous System Function to Cranial Nerve and Brain Activity." <em>International Journal of Psychophysiology.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ this.textContent = answer.style.display === 'block' ? 'Hide Answer' : 'Reveal Answer';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

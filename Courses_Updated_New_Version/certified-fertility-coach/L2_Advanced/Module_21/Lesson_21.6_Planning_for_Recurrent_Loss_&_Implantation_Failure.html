@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 6: Planning for Recurrent Loss & Implantation Failure | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: none;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ position: relative;
+ padding-left: 25px;
+}
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+ font-weight: 800;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ color: white;
+}
+
+.connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 21: Treatment Planning • Lesson 6 of 8</span>
+ <h1 class="lesson-title">Planning for Recurrent Loss & Implantation Failure</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">🧬 Advanced Clinical Strategy</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute • Reproductive Health Division</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#safety-first"><span class="section-num">01</span>The 'Safety First' Roadmap</a></li>
+ <li><a href="#immunology"><span class="section-num">02</span>Immunological Literacy</a></li>
+ <li><a href="#anti-inflammatory"><span class="section-num">03</span>The Anti-Inflammatory Sprint</a></li>
+ <li><a href="#collaborative"><span class="section-num">04</span>Collaborative Diagnostics</a></li>
+ <li><a href="#psychological"><span class="section-num">05</span>Psychological Safeguarding</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>Building on <strong>Lesson 5: Advanced Supplement Staging</strong>, we now apply those protocols to the most complex clinical scenario: the client with Recurrent Pregnancy Loss (RPL). Here, we pivot from "optimization" to "preservation."</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Navigating the Heartbreak of Loss</h3>
+ <p>Recurrent Pregnancy Loss (RPL) and Recurrent Implantation Failure (RIF) are perhaps the most emotionally taxing challenges a fertility coach will face. In this lesson, we move beyond basic cycle tracking into the high-level coordination of <span class="highlight">immunology, hematology, and advanced uterine diagnostics</span>. You will learn to architect a roadmap that prioritizes safety, data, and emotional resilience, positioning yourself as an essential advocate in your client's medical team.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Design a 'Safety First' roadmap for clients with a history of 2+ losses.</li>
+ <li>Interpret the intersection of immunological and hematological markers in treatment planning.</li>
+ <li>Implement the 90-day 'Anti-Inflammatory Sprint' for suspected silent endometriosis.</li>
+ <li>Coordinate with medical specialists to integrate ERA, PGT-A, and ReceptivaDx testing.</li>
+ <li>Develop psychological safeguarding triggers for the high-anxiety Two-Week Wait (2WW).</li>
+ </ul>
+ </div>
+
+ <h2 id="safety-first">The 'Safety First' Roadmap for RPL</h2>
+ <p>In conventional care, a diagnosis of Recurrent Pregnancy Loss (RPL) is often not even considered until a woman has suffered three consecutive losses. As a Certified Fertility Coach™, we adopt a <strong>"Safety First"</strong> approach after <em>two</em> losses, or even one late-term loss. This roadmap shifts the focus from "trying to get pregnant" to "identifying why the pregnancy cannot be sustained."</p>
+
+ <p>The F.E.R.T.I.L.E. Method™ roadmap for RPL includes:</p>
+ <ul>
+ <li><strong>The Pre-Conception Audit:</strong> Ensuring all metabolic and thyroid markers are not just "normal," but optimal (e.g., TSH < 2.5 mIU/L).</li>
+ <li><strong>Structural Clearance:</strong> Confirming the client has had a Saline Infusion Sonogram (SIS) or Hysteroscopy to rule out polyps or septums.</li>
+ <li><strong>The Partner Factor:</strong> Mandating DNA Fragmentation testing for the male partner, as high fragmentation is a leading cause of early loss.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Professional Positioning</span>
+ <p>Clients who have experienced loss are often desperate for answers. By specializing in RPL coaching, you can position yourself as a "Fertility Case Manager." Many practitioners in this niche charge <strong>$3,000 to $5,000</strong> for a comprehensive 4-month support package that includes medical advocacy and intensive protocol management.</p>
+ </div>
+
+ <h2 id="immunology">Immunological & Hematological Literacy</h2>
+ <p>When we discuss <strong>Reproductive Literacy</strong> in the context of RPL, we must look at the body's defense systems. The uterus must be "immunologically privileged" to accept an embryo, which is essentially a semi-allograft (half foreign tissue).</p>
+
+ <p>Key areas of focus for your treatment plan include:</p>
+ 
+ <h3>1. Hematology (Blood Clotting)</h3>
+ <p>Micro-clots at the site of implantation can starve the developing embryo of oxygen. You must advocate for a full thrombophilia panel, including:</p>
+ <ul>
+ <li><strong>Factor V Leiden & Prothrombin G20210A mutations.</strong></li>
+ <li><strong>Antiphospholipid Antibodies (APA):</strong> The most common treatable cause of RPL.</li>
+ <li><strong>MTHFR Variations:</strong> Specifically looking at how homocysteine levels may impact vascular health.</li>
+ </ul>
+
+ <h3>2. Immunology (The Immune Response)</h3>
+ <p>If the mother's immune system remains in an "attack" state, it may reject the embryo. This is often driven by <span class="highlight">Natural Killer (NK) Cells</span> or an imbalance in Th1/Th2 cytokines. A 2022 meta-analysis found that elevated peripheral NK cells were significantly higher in women with RIF compared to fertile controls (n=1,240).</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Marker</th>
+ <th>Relevance to Loss</th>
+ <th>Coaching Action</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Homocysteine</strong></td>
+ <td>High levels linked to placental abruption.</td>
+ <td>Optimize B-vitamins (Methylated).</td>
+ </tr>
+ <tr>
+ <td><strong>NK Cell Activity</strong></td>
+ <td>Overactive immune response to embryo.</td>
+ <td>Discuss Intralipids/LDN with RE.</td>
+ </tr>
+ <tr>
+ <td><strong>ANA (Antinuclear Ab)</strong></td>
+ <td>Marker of systemic autoimmunity.</td>
+ <td>Anti-inflammatory sprint protocol.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="anti-inflammatory">The 'Anti-Inflammatory' Sprint</h2>
+ <p>For clients with suspected "silent" endometriosis or high inflammatory markers, we implement a 90-day <strong>Anti-Inflammatory Sprint</strong>. This is an intensive version of the <em>Lifestyle Alignment</em> pillar of the F.E.R.T.I.L.E. Method™.</p>
+
+ <p><strong>The Protocol Architecture:</strong></p>
+ <ul>
+ <li><strong>Dietary Elimination:</strong> Strict removal of gluten, dairy, and seed oils to reduce systemic cytokine production.</li>
+ <li><strong>Supplements:</strong> High-dose Omega-3 (3g+), N-Acetyl Cysteine (NAC), and Resveratrol to dampen pelvic inflammation.</li>
+ <li><strong>Environmental Detox:</strong> 100% elimination of endocrine-disrupting phthalates and parabens which can exacerbate endometriosis.</li>
+ </ul>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍💼</div>
+ <div>
+ <p class="title">Case Study: Overcoming "Unexplained" Loss</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Sarah, age 41, Nurse Practitioner.</p>
+ <p><strong>History:</strong> 3 early miscarriages (6-8 weeks) and 1 failed IVF transfer. All embryos were PGT-A normal. Doctors called it "bad luck."</p>
+ <p><strong>Intervention:</strong> Her coach architected a plan focusing on <em>Integrative Advocacy</em>. They requested a ReceptivaDx test (which came back positive for BCL6, a marker for endo) and a DNA fragmentation test for her husband (which was 28%—high). Sarah underwent 2 months of Lupron Depot and her husband began an antioxidant protocol.</p>
+ <p><strong>Outcome:</strong> Sarah's next transfer was successful. She is now 24 weeks pregnant. <strong>Coach's Fee:</strong> Sarah paid $4,500 for this 6-month intensive advocacy and emotional support program.</p>
+ </div>
+ </div>
+
+ <h2 id="collaborative">Collaborative Planning: Advanced Diagnostics</h2>
+ <p>As a coach, you don't order these tests, but you <em>empower</em> the client to ask for them. Your roadmap should include a "Diagnostic Phase" where you coordinate with the Reproductive Endocrinologist (RE).</p>
+
+ <ul>
+ <li><strong>PGT-A (Preimplantation Genetic Testing):</strong> Screening embryos for chromosomal abnormalities. Crucial for the 40+ demographic to rule out "egg quality" as the primary cause of loss.</li>
+ <li><strong>ERA (Endometrial Receptivity Analysis):</strong> Determining the exact "window of implantation." About 25% of women are "non-receptive" at the standard 120 hours of progesterone.</li>
+ <li><strong>ReceptivaDx:</strong> A biopsy that looks for the BCL6 protein, a highly accurate marker for silent endometriosis and progesterone resistance.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Advocacy Script</span>
+ <p>When a client is nervous to ask their doctor for advanced testing, give them a script: <em>"Dr. [Name], given my history of two losses with genetically normal embryos, I'm concerned about the uterine environment. I’d like to discuss the ERA and ReceptivaDx before our next transfer to ensure we aren't missing a displaced window or inflammation."</em></p>
+ </div>
+
+ <h2 id="psychological">Psychological Safeguarding: The 2WW Trauma</h2>
+ <p>For an RPL client, a positive pregnancy test is not a moment of joy—it is a moment of <strong>terror</strong>. Your treatment plan must include specific <em>Emotional Resilience</em> triggers for the Two-Week Wait (2WW) and the first trimester.</p>
+
+ <h3>The "Safety Plan" for Anxiety:</h3>
+ <ul>
+ <li><strong>The "Distraction Calendar":</strong> Pre-scheduling non-fertility related activities for every day of the 2WW.</li>
+ <li><strong>Somatic Anchoring:</strong> Teaching the client to use the "Vagus Nerve Reset" (Lesson 2.4) the moment they feel the urge to obsessively check for symptoms or "test early."</li>
+ <li><strong>Boundaries with Information:</strong> Advising the client to stay off "loss forums" during the active waiting period, as mirror neurons can trigger a sympathetic "fight or flight" response.</li>
+ </ul>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. At what point should a "Safety First" roadmap be implemented for pregnancy loss?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Ideally after 2 consecutive losses (or 1 late-term loss), rather than waiting for the conventional 3-loss threshold.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary purpose of the ReceptivaDx test in an RPL roadmap?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">To identify the BCL6 protein, which serves as a marker for silent endometriosis and uterine inflammation that may cause implantation failure.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>3. Why is DNA Fragmentation testing for the male partner essential in RPL cases?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Because high DNA fragmentation in sperm can allow for fertilization but lead to embryo arrest or early miscarriage, even if the woman's factors are optimized.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>4. What characterizes the "Anti-Inflammatory Sprint"?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">A 90-day intensive protocol involving strict dietary elimination (gluten/dairy/oils), high-dose antioxidants (NAC/Resveratrol), and total environmental detox to lower systemic cytokines.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>RPL is a Multi-Factorial Puzzle:</strong> Always look at hematology, immunology, and male factor simultaneously.</li>
+ <li><strong>Advocacy is Action:</strong> Your role is to help clients navigate advanced tests like ERA and PGT-A to stop the cycle of "unexplained" loss.</li>
+ <li><strong>The 90-Day Runway:</strong> The "Anti-Inflammatory Sprint" provides the biological window needed to dampen uterine inflammation before the next attempt.</li>
+ <li><strong>Emotional Safeguarding:</strong> Acknowledge the trauma of loss; the 2WW requires a specific psychological support plan to manage the sympathetic nervous system.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Bender Atik et al. (2021). "The ESHRE guideline on recurrent pregnancy loss: an update." <em>Human Reproduction Open</em>.</li>
+ <li>Likic et al. (2022). "Natural Killer Cell Activity and Implantation Failure: A Systematic Review." <em>Journal of Reproductive Immunology</em>.</li>
+ <li>Lessey, B.A. & Young, S.L. (2019). "What Exactly is Endometrial Receptivity?" <em>Fertility and Sterility</em>.</li>
+ <li>Agarwal et al. (2020). "Male Factor in Recurrent Pregnancy Loss: The Role of DNA Fragmentation." <em>Translational Andrology and Urology</em>.</li>
+ <li>Coughlan et al. (2014). "Recurrent Implantation Failure: Definition and Management." <em>Reproductive BioMedicine Online</em>.</li>
+ <li>Simón et al. (2020). "The Endometrial Receptivity Analysis (ERA) in the Clinic." <em>Fertility and Sterility</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+</body>
+</html>

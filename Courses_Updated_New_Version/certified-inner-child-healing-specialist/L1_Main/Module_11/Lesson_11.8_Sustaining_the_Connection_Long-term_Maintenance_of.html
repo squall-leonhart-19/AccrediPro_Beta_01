@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Practice Lab: Deep Dive Integration & Client Application</title>
+ <style>
+ /* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ Module 5 - Functional Nutrition
+ =========================================== */
+
+ /* Reset & Base */
+ * {
+ box-shadow: border-box;
+ margin: 0;
+ padding: 0;
+ }
+
+ body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+ }
+
+ /* MAIN WRAPPER */
+ .lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+ }
+
+ /* HEADER CARD - Premium Gradient */
+ .module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+ }
+
+ .module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+ }
+
+ .module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+ }
+
+ .lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+ }
+
+ /* META BADGES */
+ .lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+ }
+
+ .meta-badge,
+ .meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ }
+
+ /* ASI CREDENTIAL STRIP */
+ .asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ }
+
+ .asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+ }
+
+ .asi-text {
+ flex: 1;
+ }
+
+ .asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+ }
+
+ .asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+ }
+
+ /* TABLE OF CONTENTS */
+ .toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+ }
+
+ .toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+ }
+
+ .toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+ }
+
+ .toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+ }
+
+ .toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+ }
+
+ .section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+ }
+
+ /* WELCOME BOX */
+ .welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+ }
+
+ .welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+ }
+
+ .welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+ }
+
+ /* OBJECTIVES BOX */
+ .objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+ }
+
+ .box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+ }
+
+ .objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+ }
+
+ .objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+ }
+
+ .objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+ }
+
+ /* HIGHLIGHT */
+ .highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+ }
+
+ /* TYPOGRAPHY */
+ h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+ }
+
+ h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+ }
+
+ h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+ }
+
+ p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+ }
+
+ /* CASE STUDY */
+ .case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ }
+
+ .case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ }
+
+ .case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ }
+
+ .case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+ }
+
+ .case-study-content {
+ padding: 28px;
+ }
+
+ .patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ padding: 16px;
+ background: #f9fafb;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ }
+
+ .patient-avatar {
+ width: 56px;
+ height: 56px;
+ background: linear-gradient(135deg, #fecaca, #fca5a5);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 28px;
+ flex-shrink: 0;
+ }
+
+ /* COACH TIP BOX */
+ .coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+ }
+
+ .coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+ }
+
+ .coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+ }
+
+ .coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+ }
+
+ /* MODULE CONNECTION BOX */
+ .module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ }
+
+ .module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ }
+
+ /* DATA TABLE */
+ .data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+ }
+
+ .data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+ }
+
+ .data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+ }
+
+ .data-table tr:nth-child(even) {
+ background: #f9fafb;
+ }
+
+ /* CHECK YOUR UNDERSTANDING */
+ .check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+ }
+
+ .check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ }
+
+ .question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+ }
+
+ .reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+ }
+
+ .answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+ }
+
+ /* KEY TAKEAWAYS */
+ .takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+ }
+
+ .takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ }
+
+ .takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: none;
+ }
+
+ .takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ position: relative;
+ padding-left: 25px;
+ }
+
+ .takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+ font-weight: 800;
+ }
+
+ /* REFERENCES */
+ .references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+ }
+
+ .references-box ol {
+ padding-left: 20px;
+ }
+
+ .references-box li {
+ font-size: 14px;
+ margin-bottom: 8px;
+ color: #475569;
+ }
+
+ /* PRACTICE LAB EXTRAS */
+ .scenario-box {
+ border: 2px dashed #722F37;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 30px 0;
+ background: #fffcfc;
+ }
+
+ .script-dialogue {
+ background: #f3f4f6;
+ padding: 25px;
+ border-radius: 12px;
+ margin: 20px 0;
+ }
+
+ .script-line {
+ margin-bottom: 20px;
+ }
+
+ .speaker {
+ font-weight: 800;
+ color: #722F37;
+ font-size: 13px;
+ text-transform: uppercase;
+ margin-bottom: 4px;
+ }
+
+ .dialogue {
+ font-style: italic;
+ color: #374151;
+ }
+ </style>
+</head>
+
+<body>
+ <div class="lesson-wrapper">
+ <!-- Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 11: L1 Deep Dive</span>
+ <h1 class="lesson-title">Coaching Practice Lab: Integrating the Deep Dive</h1>
+ <div class="lesson-meta">
+ <span class="meta-tag">15 min read</span>
+ <span class="meta-tag">Lesson 8 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <p class="label">Verified Excellence</p>
+ <p class="title">AccrediPro Standards Institute Verified Curriculum</p>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <div class="toc-box">
+ <span class="toc-label">Lab Overview</span>
+ <ul class="toc-list">
+ <li><a href="#welcome"><span class="section-num">1</span>Welcome to the Lab</a></li>
+ <li><a href="#scenario"><span class="section-num">2</span>The Client Scenario</a></li>
+ <li><a href="#script"><span class="section-num">3</span>Coaching Script</a></li>
+ <li><a href="#practice"><span class="section-num">4</span>Speaking Practice</a></li>
+ <li><a href="#mistakes"><span class="section-num">5</span>Common Pitfalls</a></li>
+ <li><a href="#success"><span class="section-num">6</span>Success Markers</a></li>
+ </ul>
+ </div>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>This lab bridges the gap between the <strong>theoretical deep dive</strong> of Module 11 and the <strong>practical application</strong> required to facilitate real client breakthroughs.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box" id="welcome">
+ <h3>Welcome to the Practice Lab, I'm Sarah!</h3>
+ <p>In my practice, I've seen so many brilliant women stall right at the finish line because they're afraid of "doing it wrong." This lab is designed to break that cycle. We aren't looking for perfection; we're looking for presence. Today, you're going to practice holding space for a client's inner child while maintaining your professional authority. You've got this!</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Identify subtle inner child "interference" in client business or life blocks.</li>
+ <li>Practice the "Compassionate Inquiry" script for perfectionism and fear of failure.</li>
+ <li>Navigate client resistance using the "Safe Space Anchor" technique.</li>
+ <li>Demonstrate professional confidence while facilitating emotional integration.</li>
+ </ul>
+ </div>
+
+ <h2 id="scenario">Your Coaching Scenario</h2>
+ <p>In this Practice Lab, you'll be working with a client who represents many of the women you'll serve: a high-achiever who is "stuck" in a transition and doesn't realize her inner child is the one holding the brakes.</p>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👤</div>
+ <div>
+ <p class="title">Client Profile: Diane, 52</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <div class="patient-avatar">👩‍🏫</div>
+ <div class="patient-info">
+ <h4>Former Educator turned Wellness Coach</h4>
+ <p>Sacramento, CA • Married, empty nester</p>
+ </div>
+ </div>
+ <p><strong>Presenting Concern:</strong> Diane has completed her wellness training but is paralyzed when it comes to launching her website. She says she needs "one more certification" or "to tweak the copy again."</p>
+ <p><strong>Background:</strong> Diane was the "perfect" child who never got a B. Her worth was tied strictly to her performance. Now, the prospect of launching a business—where she might "fail" publicly—is triggering a massive safety response from her inner child.</p>
+ <p><strong>The Goal:</strong> Help Diane recognize that her "procrastination" is actually a protective mechanism from her 8-year-old self who is terrified of being "less than perfect."</p>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Sarah's Insight</span>
+ <p>When a client like Diane says she needs "one more certification," she isn't lacking knowledge; she's lacking safety. Your job is to provide that safety so the adult can take the lead again.</p>
+ </div>
+
+ <h2 id="script">The Coaching Script</h2>
+ <p>Read the following dialogue. This script demonstrates how to pivot from a business problem (the website) to the inner child root cause.</p>
+
+ <div class="script-box">
+ <div class="script-dialogue">
+ <div class="script-line">
+ <div class="speaker">DIANE:</div>
+ <div class="dialogue">"I just don't know why I can't hit 'publish.' I've looked at the homepage fifty times. I think I need to take that extra copywriting course before I'm ready."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU (The Coach):</div>
+ <div class="dialogue">"Diane, I hear the desire to have everything just right. But I’d like to pause for a second. When you think about hitting 'publish,' where do you feel that in your body right now?"</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">DIANE:</div>
+ <div class="dialogue">"It’s like a tightness in my chest. Almost like I’m holding my breath."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU (The Coach):</div>
+ <div class="dialogue">"Stay with that tightness. If that feeling had an age, how old would it be? Don't think about it—just let the first number pop up."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">DIANE:</div>
+ <div class="dialogue">"Eight. I feel like I'm eight years old, standing in front of my father with my report card."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU (The Coach):</div>
+ <div class="dialogue">"Thank you for that. It makes so much sense that your website feels scary. To that 8-year-old, 'publish' feels like 'judgment.' Can we tell that 8-year-old Diane that she's safe now, and that 52-year-old Diane is the one in charge of the website?"</div>
+ </div>
+ </div>
+ </div>
+
+ <h2 id="practice">Your Turn: Practice Out Loud</h2>
+ <p>Don't just read this—actually speak it. Your nervous system needs to "hear" you being the expert. This builds the <span class="highlight">muscle memory</span> necessary for high-ticket coaching sessions (where practitioners often earn $200+ per hour).</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Phase</th>
+ <th>What to Say (Speak this out loud!)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>The Invitation</strong></td>
+ <td>"I'm noticing a pattern here, Diane. Would you be open to exploring the 'who' behind this delay, rather than the 'what'?"</td>
+ </tr>
+ <tr>
+ <td><strong>The Somatic Bridge</strong></td>
+ <td>"Close your eyes if it feels safe. Where does that 'not enough' feeling live in your body today?"</td>
+ </tr>
+ <tr>
+ <td><strong>The Adult Reassurance</strong></td>
+ <td>"You can tell that younger part of you: 'I see you're trying to protect me from being judged. Thank you. But I'm the adult now, and I've got this.'"</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Sarah's Insight</span>
+ <p>If the client says "I don't know" to the age question, don't panic. Simply say: "That's okay. If you *did* know, or if you were just guessing, what would you guess?" This bypasses the analytical mind.</p>
+ </div>
+
+ <h2 id="mistakes">Common Pitfalls to Avoid</h2>
+ <p>Even experienced coaches can fall into these traps during a deep dive session:</p>
+ <ul>
+ <li><strong>Over-intellectualizing:</strong> Explaining the science of the amygdala for 20 minutes instead of letting the client feel their emotions.</li>
+ <li><strong>Rushing the "Fix":</strong> Trying to get the client to "stop feeling scared" before they've fully acknowledged the inner child's valid fear.</li>
+ <li><strong>Losing the Professional Container:</strong> Becoming "too much of a friend" and losing the authority needed to guide the client through deep work.</li>
+ <li><strong>Ignoring the Body:</strong> Focusing only on the thoughts/words and missing the physical cues (fidgeting, shallow breathing, looking away).</li>
+ </ul>
+
+ <h2 id="success">Success Markers</h2>
+ <p>How do you know the session was successful? Look for these signs:</p>
+ <ul>
+ <li><strong>Somatic Release:</strong> The client takes a deep, spontaneous sigh or their shoulders visibly drop.</li>
+ <li><strong>Shift in Perspective:</strong> The client stops saying "I am lazy" and starts saying "A part of me is scared."</li>
+ <li><strong>Actionable Clarity:</strong> By the end of the session, the "impossible" task (like the website) feels manageable again.</li>
+ <li><strong>Increased Self-Compassion:</strong> The client’s tone toward themselves softens.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Sarah's Insight</span>
+ <p>Remember, your presence is the most powerful tool you have. If you stay calm and grounded, your client's nervous system will begin to co-regulate with yours.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is it important to ask the client where they feel a block in their body?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">The body (soma) holds the emotional memory of the inner child. By focusing on the physical sensation, we bypass the logical mind's defenses and access the root emotion directly.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. If a client like Diane insists she just needs "more information," what is likely happening?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">This is often a "protective strategy" used by the inner child to avoid the perceived danger of failure or judgment. Seeking more information provides a temporary (but false) sense of safety.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. What is the primary goal of the "Safe Space Anchor"?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">The goal is to provide the inner child with the reassurance that the "Adult Self" is now present and capable of handling the situation, which lowers the nervous system's threat response.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What should you do if a client becomes highly emotional during the practice?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">Stay grounded, maintain a calm voice, and hold the space. Use phrases like "I'm right here with you" and "It's safe to feel this now." Do not rush to "fix" the crying; let the release happen.</div>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Sarah's Insight</span>
+ <p>You are becoming a real coach. Every time you practice these scripts, you are building the confidence to change lives—and build a thriving, meaningful practice for yourself.</p>
+ </div>
+
+ <!-- Takeaways Box -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Inner child blocks often masquerade as business problems like procrastination or "imposter syndrome."</li>
+ <li>Somatic cues (body sensations) are the fastest way to identify the age of the inner child part that is triggered.</li>
+ <li>The coach's primary role is to provide a "regulated container" so the client's adult self can reintegrate.</li>
+ <li>Practice out loud to build the professional authority needed for high-impact coaching.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Schwartz, R. C. (2021). <em>No Bad Parts: Healing Trauma and Restoring Wholeness with the Internal Family Systems Model.</em> Sounds True.</li>
+ <li>Porges, S. W. (2017). <em>The Pocket Guide to the Polyvagal Theory: The Transformative Power of Feeling Safe.</em> Norton & Company.</li>
+ <li>Levine, P. A. (2010). <em>In an Unspoken Voice: How the Body Releases Trauma and Restores Goodness.</em> North Atlantic Books.</li>
+ <li>Mate, G. (2019). <em>When the Body Says No: The Cost of Hidden Stress.</em> Vermilion.</li>
+ <li>Chopich, E. J., & Paul, M. (1990). <em>Healing Your Aloneness: Finding Love and Wholeness Through Your Inner Child.</em> HarperOne.</li>
+ <li>Fisher, J. (2017). <em>Healing the Fragmented Selves of Trauma Survivors: Overcoming Internal Self-Alienation.</em> Routledge.</li>
+ </ol>
+ </div>
+ </div>
+
+ <script>
+ function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+ }
+ </script>
+</body>
+
+</html>

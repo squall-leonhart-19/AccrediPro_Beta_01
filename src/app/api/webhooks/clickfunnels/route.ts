@@ -208,6 +208,151 @@ const PRODUCT_NAMES: Record<string, string> = {
   "coach-business-toolkit": "The Coach Business Toolkit",
 };
 
+// ===========================================
+// DYNAMIC COURSE MATCHING FOR 80 CERTIFICATIONS
+// ===========================================
+
+/**
+ * Convert product name to course slug
+ * Examples:
+ * - "Certified Gut Health Specialist™" → "certified-gut-health-specialist"
+ * - "Gut Health Specialist Certification" → "certified-gut-health-specialist"
+ * - "Gut Health Pro Accelerator" → ["certified-gut-health-specialist-advanced", "-master", "-practice"]
+ */
+function parseProductNameToCourseSlugs(productName: string, productId?: string): string[] {
+  if (!productName) return [];
+
+  const lowerName = productName.toLowerCase().trim();
+
+  // Check if this is a PRO Accelerator (L2-L4 bundle)
+  const isProAccelerator = lowerName.includes("pro accelerator") ||
+    lowerName.includes("pro-accelerator") ||
+    productId?.includes("pro-accelerator") ||
+    productId?.includes("pro_accelerator");
+
+  // Clean the name to extract the core certification name
+  let cleanName = lowerName
+    .replace(/™|®|©/g, "")                    // Remove trademark symbols
+    .replace(/certified\s*/gi, "")             // Remove "certified" prefix
+    .replace(/\s*certification\s*/gi, "")      // Remove "certification" suffix
+    .replace(/\s*pro\s*accelerator\s*/gi, "")  // Remove "pro accelerator"
+    .replace(/\s*specialist\s*/gi, " specialist")  // Normalize "specialist"
+    .replace(/\s*practitioner\s*/gi, " practitioner") // Normalize "practitioner"
+    .replace(/\s*coach\s*/gi, " coach")        // Normalize "coach"
+    .replace(/\s*therapist\s*/gi, " therapist") // Normalize "therapist"
+    .replace(/\s*facilitator\s*/gi, " facilitator") // Normalize "facilitator"
+    .replace(/\s+/g, " ")                      // Collapse multiple spaces
+    .trim();
+
+  // Convert to slug
+  let baseSlug = cleanName
+    .replace(/[^a-z0-9\s-]/g, "")  // Remove special chars
+    .replace(/\s+/g, "-")          // Spaces to dashes
+    .replace(/-+/g, "-")           // Collapse multiple dashes
+    .replace(/^-|-$/g, "");        // Trim dashes
+
+  // Ensure it starts with "certified-"
+  if (!baseSlug.startsWith("certified-")) {
+    baseSlug = `certified-${baseSlug}`;
+  }
+
+  console.log(`[CourseMatch] "${productName}" → base: "${baseSlug}", isProAccelerator: ${isProAccelerator}`);
+
+  if (isProAccelerator) {
+    // Return L2, L3, L4 courses
+    return [
+      `${baseSlug}-advanced`,
+      `${baseSlug}-master`,
+      `${baseSlug}-practice`
+    ];
+  }
+
+  // Return L1 course
+  return [baseSlug];
+}
+
+/**
+ * Find matching course in database with fuzzy matching
+ * Tries exact match first, then partial matches
+ */
+async function findMatchingCourses(slugs: string[]): Promise<string[]> {
+  const matchedSlugs: string[] = [];
+
+  for (const slug of slugs) {
+    // Try exact match first
+    const exactMatch = await prisma.course.findFirst({
+      where: { slug },
+      select: { slug: true }
+    });
+
+    if (exactMatch) {
+      matchedSlugs.push(exactMatch.slug);
+      continue;
+    }
+
+    // Try partial match (in case of minor naming differences)
+    // Extract key terms from the slug
+    const keyTerms = slug.replace("certified-", "").split("-").filter(t => t.length > 2);
+
+    if (keyTerms.length >= 2) {
+      // Search for course containing key terms
+      const partialMatch = await prisma.course.findFirst({
+        where: {
+          AND: keyTerms.slice(0, 3).map(term => ({
+            slug: { contains: term }
+          }))
+        },
+        select: { slug: true }
+      });
+
+      if (partialMatch) {
+        console.log(`[CourseMatch] Fuzzy matched: "${slug}" → "${partialMatch.slug}"`);
+        matchedSlugs.push(partialMatch.slug);
+      }
+    }
+  }
+
+  return matchedSlugs;
+}
+
+/**
+ * Determine courses to enroll from product info
+ * Priority: 1) Static mapping 2) Dynamic name matching
+ */
+async function determineCourses(productId?: string, productName?: string): Promise<string[]> {
+  // 1. Try static mapping first (for legacy/specific products)
+  if (productId && PRODUCT_COURSE_MAP[productId]) {
+    const mapping = PRODUCT_COURSE_MAP[productId];
+    return Array.isArray(mapping) ? mapping : [mapping];
+  }
+
+  // Try matching by product name in static map
+  if (productName) {
+    const lowerName = productName.toLowerCase();
+    for (const [key, mapping] of Object.entries(PRODUCT_COURSE_MAP)) {
+      if (lowerName.includes(key)) {
+        return Array.isArray(mapping) ? mapping : [mapping];
+      }
+    }
+  }
+
+  // 2. Dynamic matching from product name
+  if (productName) {
+    const parsedSlugs = parseProductNameToCourseSlugs(productName, productId);
+    if (parsedSlugs.length > 0) {
+      const matchedCourses = await findMatchingCourses(parsedSlugs);
+      if (matchedCourses.length > 0) {
+        console.log(`[CourseMatch] Dynamic match: ${productName} → ${matchedCourses.join(", ")}`);
+        return matchedCourses;
+      }
+    }
+  }
+
+  // 3. Default fallback
+  console.log(`[CourseMatch] No match found for: ${productName || productId}, using default`);
+  return ["functional-medicine-complete-certification"];
+}
+
 // Verify ClickFunnels webhook signature (if they provide one)
 function verifySignature(
   payload: string,
@@ -696,25 +841,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 2. Determine which course(s) to enroll
-    let courseSlugs: string[] = ["functional-medicine-complete-certification"]; // Default to main certification
-
-    if (productId && PRODUCT_COURSE_MAP[productId]) {
-      const mapping = PRODUCT_COURSE_MAP[productId];
-      courseSlugs = Array.isArray(mapping) ? mapping : [mapping];
-    } else if (productName) {
-      // Try to match by product name keywords
-      const lowerName = productName.toLowerCase();
-
-      // Check all product keywords
-      for (const [key, mapping] of Object.entries(PRODUCT_COURSE_MAP)) {
-        if (lowerName.includes(key)) {
-          courseSlugs = Array.isArray(mapping) ? mapping : [mapping];
-          console.log(`[CF] Product "${productName}" matched keyword "${key}" -> ${courseSlugs.join(', ')}`);
-          break;
-        }
-      }
-    }
+    // 2. Determine which course(s) to enroll (uses dynamic matching)
+    const courseSlugs = await determineCourses(productId, productName);
 
     console.log(`[CF] Determined course slug(s): ${courseSlugs.join(', ')} for product: ${productName || productId}`);
 

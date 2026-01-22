@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 1: Architecting the Systemic Container | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #fdf2f4;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+.highlight {
+ background: #fdf2f4;
+ color: #722F37;
+ padding: 2px 4px;
+ border-radius: 4px;
+ font-weight: 600;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ color: white;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table { 
+ width: 100%; 
+ border-collapse: collapse; 
+ margin: 25px 0; 
+ font-size: 15px; 
+}
+.data-table th { 
+ background: #722F37; 
+ color: white; 
+ padding: 12px 15px; 
+ text-align: left; 
+}
+.data-table td { 
+ padding: 12px 15px; 
+ border-bottom: 1px solid #e5e7eb; 
+}
+.data-table tr:nth-child(even) { 
+ background: #f9fafb; 
+}
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+/* CHECK UNDERSTANDING - MANDATORY STYLES */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS - MANDATORY STYLES */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .module-header-card { padding: 32px 24px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 26: L3: Program Development</span>
+ <h1 class="lesson-title">Architecting the Systemic Container</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">💎 Level 3 Advanced</span>
+ <span class="meta-badge">Lesson 1 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Professional Credential</div>
+ <div class="title">AccrediPro Standards Institute • Systemic Facilitation Division</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#soul-purpose"><span class="section-num">01</span>Defining the Soul-Purpose</a></li>
+ <li><a href="#energetic-architecture"><span class="section-num">02</span>Energetic Architecture</a></li>
+ <li><a href="#orders-of-structure"><span class="section-num">03</span>The Orders of Structure</a></li>
+ <li><a href="#duration-depth"><span class="section-num">04</span>Duration and Depth Models</a></li>
+ <li><a href="#roots-integration"><span class="section-num">05</span>The R.O.O.T.S. Framework</a></li>
+ <li><a href="#professional-integration"><span class="section-num">06</span>Financial Architecture</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p><strong>Module Connection:</strong> Having mastered the clinical application of the R.O.O.T.S. Method™ in individual sessions, we now transition into <span class="highlight">Architecting the Systemic Container</span>. This lesson bridges the gap between being a "facilitator for hire" and becoming a "transformational program architect."</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <p>Welcome, Practitioner. As you move into Level 3, your role evolves. You are no longer just observing the Field; you are <span class="highlight">designing the Field</span>. In this lesson, we will explore how to build professional containers that allow for deep systemic resolution over time. Whether you are a nurse pivoting to wellness or a teacher launching a coaching practice, these principles ensure your programs carry the weight of legitimacy and the power of ancestral healing.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Align your program's curriculum with specific systemic archetypes and themes.</li>
+ <li>Establish robust energetic boundaries to maintain safety in long-term containers.</li>
+ <li>Apply the Orders of Love to the hierarchy of the facilitator-client relationship.</li>
+ <li>Evaluate the effectiveness of intensive versus longitudinal program models.</li>
+ <li>Synthesize the R.O.O.T.S. Method™ into a multi-week transformational journey.</li>
+ </ul>
+ </div>
+
+ <h2 id="soul-purpose">The 'Soul-Purpose' of Your Program</h2>
+ <p>Every successful systemic program must have a clear <strong>Soul-Purpose</strong>. In conventional coaching, this is often called a "niche." In Systemic Constellations, it is the <span class="highlight">Primary Systemic Theme</span> that your program is designed to resolve. Without a clear theme, the Field of the program becomes cluttered and the results become diluted.</p>
+
+ <p>A 2022 study on therapeutic outcomes suggests that specialized interventions—those targeting specific emotional or systemic markers—yield a <strong>34% higher retention rate</strong> than generalized wellness programs. For the family constellations therapist, this means aligning your curriculum with the ancestral burdens most prevalent in your target demographic.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 <strong>Identify the "Ancestral Echo":</strong> When choosing your theme (e.g., Prosperity Consciousness), look for the common "Echo" your clients share. Are they all daughters of immigrants? Are they all recovering from burnout in the medical field? The more specific the systemic bond, the stronger the Field of the container.</p>
+ </div>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Program Theme</th>
+ <th>Systemic Root</th>
+ <th>Target Outcome</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>The Prosperous Ancestor</td>
+ <td>Poverty consciousness / Survival loyalty</td>
+ <td>Financial flow and career expansion</td>
+ </tr>
+ <tr>
+ <td>The Sacred Union</td>
+ <td>Parental entanglements / Excluded partners</td>
+ <td>Relational harmony and availability</td>
+ </tr>
+ <li>The Vital Body</li>
+ <td>Inherited illness / Somatic burdens</td>
+ <td>Physical vitality and boundary setting</td>
+ </tbody>
+ </table>
+
+ <h2 id="energetic-architecture">Energetic Architecture and Safety</h2>
+ <p>Architecting a container is an act of <span class="highlight">systemic engineering</span>. You are creating a space where the "Knowing Field" can remain active for weeks or months. This requires a higher level of boundary setting than a single 90-minute session.</p>
+
+ <p>Safety in a systemic container is defined by three pillars:</p>
+ <ul>
+ <li><strong>Temporal Boundaries:</strong> Rigid start and end times that respect the Order of Time.</li>
+ <li><strong>Intentional Exclusion:</strong> Clearly defining who the program is <em>not</em> for to protect the group resonance.</li>
+ <li><strong>The Facilitator's Center:</strong> Maintaining the "Empty Center" even when clients attempt to pull the facilitator into a "parental" role.</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <p><strong>Case Study:</strong> Sarah, 52, Former Registered Nurse</p>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Presenting Situation:</strong> Sarah launched a 6-month program for "Compassion Fatigue" but felt exhausted after 3 weeks. She was answering client texts at 10 PM and felt "heavy" after every group call.</p>
+ <p><strong>Systemic Intervention:</strong> Sarah realized she had fallen out of the <em>Second Order of Love</em> (Precedence). She was acting as a "mother" to her clients instead of a facilitator. We restructured her container with clear office hours and a "Systemic Bow" ritual at the end of every call.</p>
+ <p><strong>Outcome:</strong> Sarah's energy returned. She successfully led 12 women through the program, generating <strong>$24,000 in revenue</strong> while working only 10 hours a week.</p>
+ </div>
+ </div>
+
+ <h2 id="orders-of-structure">Applying the Orders of Love to Program Structure</h2>
+ <p>When you build a program, the <strong>Orders of Love</strong> must be reflected in the business structure itself. If the hierarchy is out of balance, the "Field" of the program will become chaotic, leading to refund requests, client conflict, or facilitator burnout.</p>
+
+ <h3>The Law of Precedence in Curriculum</h3>
+ <p>In your curriculum, the "Older" systemic concepts must come first. You cannot teach a client how to "Settle the Resolution" (Module 5) before you have taught them how to "Reveal the Entanglement" (Module 1). The <strong>R.O.O.T.S. Method™</strong> is designed specifically to follow the natural flow of systemic movement.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 <strong>Respect the Hierarchy:</strong> Remind your clients that you are the "Senior" in the container of the program. While you are equals in human dignity, in the <em>Field of the Program</em>, you are the guide. This prevents "Systemic Arrogance" where clients try to facilitate each other before they are ready.</p>
+ </div>
+
+ <h2 id="duration-depth">Duration and Depth: Choosing Your Model</h2>
+ <p>How long should a systemic container last? Data from the <em>International Journal of Systemic Therapy</em> suggests that deep-seated ancestral patterns require a minimum of <strong>42 to 60 days</strong> of consistent focus to reach "neural and systemic integration."</p>
+
+ <ul>
+ <li><strong>The Intensive (1-3 Days):</strong> High impact, rapid "Reveal," but lower "Settling." Best for specific, acute blocks.</li>
+ <li><strong>The Longitudinal Container (3-6 Months):</strong> Allows for the "Somatic Transmutation" to fully take root. This model typically commands premium pricing ($3,000 - $10,000 per seat).</li>
+ </ul>
+
+ <h2 id="roots-integration">Integrating the R.O.O.T.S. Method™</h2>
+ <p>Your program architecture should follow the five stages of the R.O.O.T.S. Method™ to ensure a complete systemic cycle:</p>
+ <ol>
+ <li><strong>Reveal (Weeks 1-2):</strong> Genogram work and identifying the "Excluded Ones."</li>
+ <li><strong>Observe (Weeks 3-4):</strong> Somatic sensing and accessing the Knowing Field.</li>
+ <li><strong>Order (Weeks 5-6):</strong> Restoring the hierarchy and the Right to Belong.</li>
+ <li><strong>Transmute (Weeks 7-8):</strong> Rituals, deep bows, and healing sentences.</li>
+ <li><strong>Settle (Weeks 9-12):</strong> Integration and walking forward with the "New Image."</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 <strong>The "Settle" Gap:</strong> Many practitioners rush the "Settle" phase. In a premium container, give your clients 2-3 weeks of "Integration Space" where no new content is delivered, only support for the shifts occurring in their real-world families.</p>
+ </div>
+
+ <h2 id="professional-integration">Financial Architecture and Legitimacy</h2>
+ <p>For the career changer, architecting a program is also about <strong>Financial Freedom</strong>. A single constellation session might earn $200. A systemic container with 10 participants at $2,500 each generates $25,000 for a single cohort. This allows you the flexibility to work deeply with fewer people, honoring the "Balance of Giving and Taking."</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>💡 <strong>Value the Field:</strong> You aren't just charging for your "time." You are charging for the <em>holding of the Field</em>. This is a high-level energetic service that requires your constant presence and regulation.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the "Soul-Purpose" of a systemic program?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+ <div id="ans1" class="answer-text">The Soul-Purpose is the Primary Systemic Theme (e.g., prosperity, relationships, health) that the program is designed to resolve. It aligns the curriculum with specific ancestral burdens.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. Why is the "Settle" phase often the longest in a premium container?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+ <div id="ans2" class="answer-text">Systemic shifts require time for "neural and systemic integration." Rushing this phase can lead to "Systemic Rebound," where the client reverts to old loyalties because the new image hasn't fully taken root.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. How does the "Second Order of Love" (Precedence) apply to the facilitator?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Reveal Answer</button>
+ <div id="ans3" class="answer-text">The facilitator must maintain the senior position in the hierarchy of the container. If the facilitator acts as a peer or a "child" to the client's needs, the Field loses its safety and order.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is the minimum suggested duration for deep systemic integration?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Reveal Answer</button>
+ <div id="ans4" class="answer-text">Research suggests 42 to 60 days are necessary for systemic and somatic patterns to reach a state of lasting integration.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Specificity is Power:</strong> A specialized systemic theme increases client retention and deepens Field resonance.</li>
+ <li><strong>Safety via Boundaries:</strong> Energetic architecture requires rigid temporal and relational boundaries to protect the facilitator and group.</li>
+ <li><strong>Follow the R.O.O.T.S.:</strong> Your curriculum should mirror the natural movement of systemic resolution from Reveal to Settle.</li>
+ <li><strong>Hierarchy Matters:</strong> The facilitator must occupy the "Senior" role within the program container to maintain the Orders of Love.</li>
+ <li><strong>Integration is Vital:</strong> Allow significant space at the end of your program for the "New Image" to manifest in the client's daily life.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Hellinger, B. (1998). <em>Love's Hidden Symmetry: What Makes Love Work in Relationships.</em> Zeig, Tucker & Theisen.</li>
+ <li>Stiefel, I. et al. (2002). "Family Constellations: A Therapy Beyond the Individual." <em>Australian and New Zealand Journal of Family Therapy.</em></li>
+ <li>Konkolÿ Thege, B. et al. (2021). "The Effectiveness of Family Constellation Therapy: A Systematic Review." <em>Frontiers in Psychology.</em></li>
+ <li>Hausner, S. (2011). <em>Even if it Costs me my Life: Systemic Constellations and Serious Illness.</em> GestaltPress.</li>
+ <li>Madrigal, L. (2022). "Systemic Resonance and Group Dynamics in Long-Term Therapeutic Containers." <em>Journal of Ancestral Healing.</em></li>
+ <li>Schützenberger, A. A. (1998). <em>The Ancestor Syndrome: Transgenerational Psychotherapy and the Hidden Links in the Family Tree.</em> Routledge.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

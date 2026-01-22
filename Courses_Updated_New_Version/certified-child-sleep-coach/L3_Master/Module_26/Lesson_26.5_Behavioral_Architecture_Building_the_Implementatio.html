@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 26.5: Behavioral Architecture | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+}
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 26: L3 Program Development</span>
+ <h1 class="lesson-title">Behavioral Architecture: Building the Implementation Roadmap</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 5 of 8</span>
+ <span class="meta-badge">15 min read</span>
+ <span class="meta-badge">Professional Certification</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">AccrediPro Standards Institute Verified</div>
+ <div class="title">Sleep Coaching Implementation & Behavioral Architecture Standards</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#first-72-hours"><span class="section-num">01</span>The Launch: First 72 Hours</a></li>
+ <li><a href="#uniform-response"><span class="section-num">02</span>Uniform Response Protocols</a></li>
+ <li><a href="#extinction-bursts"><span class="section-num">03</span>Psychology of Extinction Bursts</a></li>
+ <li><a href="#contingency-planning"><span class="section-num">04</span>If-Then Contingency Logic</a></li>
+ <li><a href="#bedtime-neuro"><span class="section-num">05</span>Neuro-Associative Triggering</a></li>
+ <li><a href="#success-roadmap"><span class="section-num">06</span>The Roadmap to Maintenance</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p>In previous lessons, we mastered the <strong>S.L.U.M.B.E.R. Method™</strong> foundations: assessment, environment, and methodology selection. Now, we transition from theory to <em>execution</em>. This lesson teaches you how to architect the actual "Day 1" roadmap that ensures your clients don't just start the journey, but finish it successfully.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the "How" of Implementation</h3>
+ <p>Expert coaching is not just about knowing <em>what</em> a child needs; it is about architecting a plan that a tired, emotional parent can actually follow. As a Child Sleep Coach, your value lies in the <strong>Behavioral Roadmap</strong>—the granular, hour-by-hour instructions that eliminate decision fatigue and build parent confidence during the most challenging phase of the process.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Draft a comprehensive 'First 72 Hours' script to guide parents through the critical launch phase.</li>
+ <li>Develop 'Uniform Response' protocols that align all caregivers (parents, nannies, grandparents).</li>
+ <li>Identify and prepare parents for the psychological impact of the 'Extinction Burst.'</li>
+ <li>Architect 'If-Then' contingency plans for common hurdles like illness or teething.</li>
+ <li>Design neuro-associative bedtime routines that leverage biological sleep onset triggers.</li>
+ <li>Establish a communication cadence that ensures high adherence rates.</li>
+ </ul>
+ </div>
+
+ <h2 id="first-72-hours">The Launch: Drafting the 'First 72 Hours' Script</h2>
+ <p>The most common reason sleep coaching fails is not the methodology; it is <span class="highlight">implementation collapse</span> within the first three days. Parents enter the process with high anxiety and low sleep reserves. Without a minute-by-minute script, they will revert to old habits the moment the child protests.</p>
+ 
+ <p>Your "First 72 Hours" script should be a separate, easy-to-read document that outlines exactly what happens from the moment the child wakes up on Day 1 until the morning of Day 4.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Phase</th>
+ <th>Timeframe</th>
+ <th>Coach Instruction Focus</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>The Pre-Game</strong></td>
+ <td>Day 1: 7:00 AM - 6:00 PM</td>
+ <td>Optimizing wake windows to prevent overtiredness before the first night.</td>
+ </tr>
+ <tr>
+ <td><strong>The Zero Hour</strong></td>
+ <td>Day 1: 6:30 PM - 8:00 PM</td>
+ <td>The transition from routine to crib. Scripting the "Final Words" and exit.</td>
+ </tr>
+ <tr>
+ <td><strong>The Resistance</strong></td>
+ <td>Night 1: 8:00 PM - 12:00 AM</td>
+ <td>Managing the first 4 hours of protest with direct methodology application.</td>
+ </tr>
+ <tr>
+ <td><strong>The Fatigue Peak</strong></td>
+ <td>Nights 2 & 3</td>
+ <td>Preparation for the "Extinction Burst"—where protest often intensifies.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The 40+ Pivot Advantage</span>
+ <p>Many of our coaches are women in their 40s and 50s who have raised their own children. Use that authority! When presenting the 72-hour script, say: <em>"In my 20 years of experience, I've seen that the first 72 hours are the 'work' phase. After that, we move into the 'reward' phase. We are going to over-prepare for these three days so you can relax for the rest of the month."</em></p>
+ </div>
+
+ <h2 id="uniform-response">Establishing 'Uniform Response' Protocols</h2>
+ <p>Consistency is the currency of sleep coaching. If Mom responds with a 5-minute check-in but Dad responds by picking the baby up, the child receives a <span class="highlight">variable reinforcement schedule</span>. In behavioral psychology, variable reinforcement is the most powerful way to <em>maintain</em> a behavior, not extinguish it.</p>
+ 
+ <p>A <strong>Uniform Response Protocol (URP)</strong> ensures that no matter who is on duty, the child experiences the exact same response. This reduces the child's confusion and shortens the learning curve.</p>
+
+ <h3>Key Components of a URP:</h3>
+ <ul>
+ <li><strong>The Verbal Script:</strong> A short, 3-5 word phrase used during every check-in (e.g., "It's time for sleep, I love you").</li>
+ <li><strong>The Physical Touch Standard:</strong> Deciding if check-ins involve a pat, a rub, or no touch at all.</li>
+ <li><strong>The "Tap Out" Rule:</strong> A protocol for when a parent feels they are losing their emotional regulation and needs the other caregiver to step in.</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">📋</div>
+ <div>
+ <p class="title">Case Study: The Grandparent Variable</p>
+ <p class="subtitle">Client: Sarah (44), Coach: Diane (52)</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Scenario:</strong> Sarah was a working mother whose mother-in-law provided childcare. While Sarah followed the S.L.U.M.B.E.R. Method™ perfectly at night, the grandmother would rock the baby to sleep for every nap, citing "I can't listen to him cry."</p>
+ <p><strong>Intervention:</strong> Diane architected a <em>Nap-Specific URP</em> for the grandmother that involved a high-support, gradual withdrawal method, allowing the grandmother to stay in the room while the baby learned to self-soothe. This respected the grandmother's emotional boundaries while maintaining behavioral consistency.</p>
+ <p><strong>Outcome:</strong> By day 5, the baby was self-soothing for naps, and the grandmother felt empowered rather than "mean."</p>
+ </div>
+ </div>
+
+ <h2 id="extinction-bursts">The Psychology of 'Extinction Bursts'</h2>
+ <p>As a coach, you must act as a "Psychological Forecaster." You need to warn parents about the <span class="highlight">Extinction Burst</span>—a temporary increase in the frequency or intensity of an unwanted behavior when reinforcement is first removed.</p>
+ 
+ <p>Imagine a broken vending machine. You press the button (the behavior), and nothing happens (no reinforcement). Do you walk away immediately? No. You press the button harder, faster, and perhaps kick the machine. <strong>That is an extinction burst.</strong> If the machine suddenly gives you a soda after you kick it, you have just learned that kicking works.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Managing the Burst</span>
+ <p>The extinction burst usually happens around Night 3 or 4. Warn your clients on Day 1: <em>"Night 3 might be harder than Night 1. This is actually a sign that your child's brain is processing the change. If we stay consistent through the burst, the breakthrough happens on the other side."</em></p>
+ </div>
+
+ <h2 id="contingency-planning">Developing 'If-Then' Contingency Plans</h2>
+ <p>Life does not stop for sleep coaching. A roadmap without contingencies is just a wish. Your implementation plan must include "If-Then" logic for common disruptors. This prevents the parent from panicking and abandoning the plan when something unexpected occurs.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>The "IF" (Hurdle)</th>
+ <th>The "THEN" (Action Plan)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Illness (Fever/Vomiting)</strong></td>
+ <td>Pause coaching immediately. Provide maximum comfort. Resume Day 1 protocols once 24 hours symptom-free.</td>
+ </tr>
+ <tr>
+ <td><strong>Teething (Visible Discomfort)</strong></td>
+ <td>Administer pediatrician-approved pain relief 30 mins before routine. Offer extra comfort during routine, but maintain crib boundaries.</td>
+ </tr>
+ <tr>
+ <td><strong>Poopy Diaper during protest</strong></td>
+ <td>Perform a "Ninja Change"—lights low, minimal talk, no eye contact. Back in crib immediately.</td>
+ </tr>
+ <tr>
+ <td><strong>Unexpected Visitor/Noise</strong></td>
+ <td>Utilize white noise (Layout Optimization). Do not apologize for the child's schedule; the routine is non-negotiable.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="bedtime-neuro">Architecting the Bedtime Routine as a Neuro-Associative Trigger</h2>
+ <p>The bedtime routine is more than just a series of tasks; it is a <span class="highlight">neuro-biological bridge</span>. We are leveraging <em>Classical Conditioning</em>. By performing the same actions in the same order, we trigger the brain to begin the production of endogenous melatonin and down-regulate the nervous system.</p>
+
+ <p><strong>The "Golden Hour" Architecture:</strong></p>
+ <ol>
+ <li><strong>Physical Transition (60 mins out):</strong> High-energy play ends. Dim lights to 50% throughout the house.</li>
+ <li><strong>The Hygiene Anchor (30 mins out):</strong> A warm bath (the drop in body temperature after the bath mimics the natural circadian dip, signaling sleep).</li>
+ <li><strong>The Sensory Layer (15 mins out):</strong> Lotion, pajamas, and white noise activation.</li>
+ <li><strong>The Final Connection (5-10 mins out):</strong> Feeding, a short book, and the "Final Words" script.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Scent Connection</span>
+ <p>Suggest parents use a consistent, safe scent (like a specific lavender wash) only during the bedtime routine. Olfactory associations are among the strongest in the human brain and can significantly speed up sleep onset.</p>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is a 'Variable Reinforcement' schedule dangerous during sleep coaching?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">Variable reinforcement (responding inconsistently) teaches the child that if they protest long enough or hard enough, they will eventually get the reinforcement they want. This makes the behavior much harder to change in the future.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary purpose of the 'First 72 Hours' script?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">To eliminate decision fatigue for the parents. By providing a minute-by-minute plan, you prevent them from making emotional "emergency" decisions that undermine the coaching process.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. When does an 'Extinction Burst' typically occur?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">Typically around Night 3 or 4. It represents a temporary spike in protest intensity as the brain tries one last "push" to get the old reinforcement back.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. How does a warm bath facilitate sleep onset biologically?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">The bath warms the skin, causing vasodilation. When the child leaves the bath, their core body temperature drops rapidly. This drop in temperature is a key biological signal to the brain to begin sleep.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The roadmap must be granular; vague instructions lead to parental non-compliance.</li>
+ <li>Uniform Response Protocols (URPs) are mandatory for every caregiver involved in the child's life.</li>
+ <li>Preparation for the Extinction Burst is the coach's most important psychological tool.</li>
+ <li>"If-Then" planning keeps parents in the "Coach Mindset" rather than the "Crisis Mindset."</li>
+ <li>Bedtime routines function as Pavlovian triggers that prepare the brain for melatonin release.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Mindell, J. A. et al. (2017). "A nightly bedtime routine: impact on sleep in young children and maternal mood." <em>Sleep</em>.</li>
+ <li>Sadeh, A. (2010). "The role and validity of actigraphy in sleep medicine: An update." <em>Sleep Medicine Reviews</em>.</li>
+ <li>Lerman, D. C., & Iwata, B. A. (1995). "Prevalence of the extinction burst during treatment of self-injurious behavior." <em>Journal of Applied Behavior Analysis</em>.</li>
+ <li>Gradisar, M. et al. (2016). "Behavioral Interventions for Infant Sleep Problems: A Randomized Controlled Trial." <em>Pediatrics</em>.</li>
+ <li>Allen, S. L. et al. (2016). "The relationship between sleep and behavior in children: A systematic review." <em>Journal of Child Psychology and Psychiatry</em>.</li>
+ <li>National Sleep Foundation (2022). "The Biology of the Bedtime Routine: Temperature and Light Regulation."</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

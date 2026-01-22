@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 6: Data-Driven Evaluation and Pivot Strategies | AccrediPro Child Sleep Coach</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+ list-style: none;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ border-left: 5px solid #722F37;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ color: white;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: none;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ position: relative;
+ padding-left: 25px;
+}
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+.references-box ol {
+ padding-left: 20px;
+}
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+ .lesson-wrapper { padding: 24px 16px; }
+ .lesson-title { font-size: 28px; }
+ .toc-list { grid-template-columns: 1fr; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 26: Program Development</span>
+ <h1 class="lesson-title">Data-Driven Evaluation and Pivot Strategies</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 6 of 8</span>
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">💡 Advanced Strategy</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Professional Credential</div>
+ <div class="title">AccrediPro Standards Institute Certified Content</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#metrics"><span class="section-num">01</span>The Metrics that Matter</a></li>
+ <li><a href="#three-day-rule"><span class="section-num">02</span>The Three-Day Rule</a></li>
+ <li><a href="#false-peak"><span class="section-num">03</span>Troubleshooting the False Peak</a></li>
+ <li><a href="#statistical-success"><span class="section-num">04</span>Statistical Success Markers</a></li>
+ <li><a href="#day-night-loop"><span class="section-num">05</span>The Day-Night Feedback Loop</a></li>
+ <li><a href="#pivot-mastery"><span class="section-num">06</span>The Art of the Strategic Pivot</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In Lesson 5, we built the <strong>Implementation Roadmap</strong>. Now, we enter the most critical phase for a professional coach: <strong>evaluating the execution</strong>. This is where you separate yourself from "sleep consultants" by using clinical data to guide your clients through the inevitable bumps in the road.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Welcome, Practitioner</h3>
+ <p>Expert sleep coaching is rarely a straight line to success. As a Certified Child Sleep Coach™, your value lies in your ability to remain objective when parents are emotional. By utilizing the <strong>S.L.U.M.B.E.R. Method™</strong> data analysis tools, you will learn to distinguish between a temporary setback and a need for a methodology pivot. This lesson provides the scientific framework for making high-stakes decisions during the implementation phase.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Analyze sleep logs to calculate Sleep Latency, Night Wakings, and Total Sleep Volume.</li>
+ <li>Apply the "Three-Day Rule" to determine when to maintain or modify a methodology.</li>
+ <li>Identify and troubleshoot the "False Peak" regression occurring in week two.</li>
+ <li>Use percentage-based improvement markers to maintain parental buy-in and motivation.</li>
+ <li>Synthesize night-time consolidation data to refine daytime nap schedules.</li>
+ </ul>
+ </div>
+
+ <h2 id="metrics">The Metrics that Matter: Advanced Log Analysis</h2>
+ <p>In the professional world of sleep coaching, "he slept better" is not a valid evaluation. We require <span class="highlight">quantitative data</span> to assess the efficacy of the biological synchronization we established in earlier lessons. High-level practitioners focus on three primary KPIs (Key Performance Indicators):</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Metric</th>
+ <th>Definition</th>
+ <th>Ideal Trend</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Sleep Latency</strong></td>
+ <td>The duration from "lights out" to the first stage of sleep.</td>
+ <td>10–20 minutes. Under 5 mins suggests overtiredness; over 30 mins suggests under-tiredness or overstimulation.</td>
+ </tr>
+ <tr>
+ <td><strong>Night Wakings (NW)</strong></td>
+ <td>Frequency and duration of signaled awakenings after initial onset.</td>
+ <td>Decrease in duration first (shorter protests), followed by a decrease in frequency.</td>
+ </tr>
+ <tr>
+ <td><strong>Total Sleep Volume</strong></td>
+ <td>The cumulative sleep hours in a 24-hour period (Day + Night).</td>
+ <td>Stabilization within age-appropriate norms (e.g., 12–14 hours for a 6-month-old).</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Identifying "Ghost Wakings"</span>
+ <p>Always ask parents if the child is truly "awake" or just transitioning cycles. Many parents intervene during active sleep (REM), inadvertently creating a signaled waking. If Sleep Latency is low but NWs are high and brief, the issue is often <strong>parental over-responsiveness</strong>, not a methodology failure.</p>
+ </div>
+
+ <h2 id="three-day-rule">The Three-Day Rule: Data vs. Emotion</h2>
+ <p>One of the most common mistakes new coaches make is reacting to a single "bad night." Sleep architecture is sensitive to minor environmental shifts, teething, or developmental surges. To maintain professional legitimacy, you must implement the <span class="highlight">Three-Day Rule</span>.</p>
+ 
+ <p>The Three-Day Rule states that no methodology change should be made until a trend is observed for 72 consecutive hours. This allows the child’s central nervous system to process the behavioral changes and prevents the coach from "chasing the tail" of random sleep disruptions.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">📋</div>
+ <div>
+ <p class="title">Case Study: The Pivot That Wasn't</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Coach:</strong> Sarah (Age 46, former Special Education Teacher)</p>
+ <p><strong>Client:</strong> 10-month-old Leo. Methodology: Gradual Withdrawal.</p>
+ <p><strong>The Incident:</strong> On Night 4, Leo cried for 45 minutes after three nights of 10-minute protests. The mother was frantic, demanding to switch to a "more gentle" approach immediately.</p>
+ <p><strong>The Intervention:</strong> Sarah used the Three-Day Rule. She reviewed the logs and noticed Leo had a slightly shorter afternoon nap that day. She encouraged the mother to "stay the course" for two more nights. By Night 6, Leo fell asleep in 8 minutes with zero crying. The "bad night" was a data outlier, not a trend.</p>
+ </div>
+ </div>
+
+ <h2 id="false-peak">Troubleshooting the 'False Peak'</h2>
+ <p>Practitioners often encounter a phenomenon called the <span class="highlight">False Peak</span>. This typically occurs between Day 8 and Day 12 of a program. After an initial week of rapid improvement, the child suddenly regresses, showing increased resistance or early morning wakings.</p>
+ 
+ <p><strong>Why does this happen?</strong>
+ <ul>
+ <li><strong>The Novelty Effect:</strong> The initial "success" was driven by the child's exhaustion and the novelty of the new routine.</li>
+ <li><strong>The Extinction Burst:</strong> A final, vigorous attempt by the child to return to previous sleep associations.</li>
+ <li><strong>Overtiredness Accumulation:</strong> If the new schedule has slightly less total volume than the old one, a "sleep debt" can peak around the 10-day mark.</li>
+ </ul></p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Pre-empting the Peak</span>
+ <p>Inform your clients about the False Peak during your Day 7 check-in. By predicting the regression, you validate your expertise and prevent the parent from losing confidence in the <strong>S.L.U.M.B.E.R. Method™</strong> when it occurs.</p>
+ </div>
+
+ <h2 id="statistical-success">Statistical Markers of Success</h2>
+ <p>To help clients who feel "nothing is working," you must translate subjective feelings into <strong>statistical wins</strong>. Use these markers to maintain motivation:</p>
+
+ <ul>
+ <li><strong>Percentage Reduction in Latency:</strong> "Last week it took 60 minutes to fall asleep; this week it takes 20. That is a <strong>66% improvement</strong> in self-settling efficiency."</li>
+ <li><strong>Consolidation Ratio:</strong> Compare the longest stretch of sleep (the "Core") to the total night. A shift from a 3-hour core to a 6-hour core is a massive physiological win.</li>
+ <li><strong>The "Intervention Frequency" Drop:</strong> Track how many times the parent has to enter the room. Reducing from 10 visits to 2 is a success, even if those 2 visits involve crying.</li>
+ </ul>
+
+ <h2 id="day-night-loop">Refining Day Sleep Based on Night Data</h2>
+ <p>The relationship between day and night sleep is a feedback loop. As night sleep consolidates (fewer wakings), the child's daytime "Sleep Pressure" changes. You must refine the <strong>Layout Optimization</strong> (Module 2) based on these shifts.</p>
+
+ <p><strong>Scenario A: Night sleep is perfect, but naps are shortening.</strong>
+ <em>Analysis:</em> The child is getting so much "high-quality" sleep at night that they need more "Wake Power" (longer wake windows) during the day.
+ <em>Pivot:</em> Increase wake windows by 15 minutes.</p>
+
+ <p><strong>Scenario B: Night sleep has frequent wakings, and naps are long.</strong>
+ <em>Analysis:</em> The child is "compensating" for poor night sleep during the day, which perpetuates the cycle.
+ <em>Pivot:</em> Cap the daytime naps to drive "Sleep Hunger" toward the bedtime hour.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The 15-Minute Increment</span>
+ <p>When adjusting wake windows, never move more than 15 minutes at a time. The infant's circadian rhythm is a delicate clock; aggressive shifts often trigger the cortisol-driven "second wind," making data analysis impossible.</p>
+ </div>
+
+ <h2 id="pivot-mastery">The Art of the Strategic Pivot</h2>
+ <p>When is it actually time to change the methodology? A pivot is required if, after 5 days of consistent implementation:
+ <ol>
+ <li><strong>Sleep Latency is increasing</strong> rather than decreasing.</li>
+ <li>The child is showing signs of <strong>heightened cortisol</strong> (hyper-activity at bedtime).</li>
+ <li>The parent's <strong>mental health</strong> has reached a breaking point where consistency is no longer possible.</li>
+ </ol></p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Income and Expertise</span>
+ <p>As you gain experience, you can charge premium rates (many coaches in this demographic earn $150–$250 per hour for "Pivot Consultations"). Families are willing to pay for the person who can look at a messy sleep log and say, "The data shows we need to shift from <em>Chair Method</em> to <em>Timed Check-ins</em> because of X, Y, and Z."</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. A client reports that their 7-month-old had a "terrible night" after four days of progress. What is the first professional step?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">Apply the Three-Day Rule. Review the log for any outliers (nap changes, illness) and instruct the parent to maintain the current methodology for 48-72 more hours before considering a pivot.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What characterizes the "False Peak" in sleep coaching?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">A temporary regression occurring around Day 8-12, often caused by an extinction burst or the accumulation of a small sleep debt as the child adjusts to the new routine.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. If a child has a Sleep Latency of 4 minutes, what does this data point likely suggest?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">It likely suggests the child is overtired. Ideal sleep latency is 10-20 minutes; "crashing" immediately often leads to more frequent night wakings due to high cortisol levels.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Why is percentage-based improvement important for parental coaching?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">It provides an objective "win" for parents who are emotionally exhausted. Showing a 50% reduction in crying time is more motivating than simply saying "it's getting better."</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Data is the Compass:</strong> Never make methodology changes based on a single night's report. Use Sleep Latency and Night Waking duration as your primary KPIs.</li>
+ <li><strong>The 72-Hour Threshold:</strong> The Three-Day Rule prevents "coaching reactive" and ensures changes are based on genuine trends.</li>
+ <li><strong>Anticipate the Regression:</strong> Educating parents about the "False Peak" on Day 7 builds trust and prevents program abandonment during week two.</li>
+ <li><strong>Day-Night Synergy:</strong> Use night consolidation as a signal to lengthen daytime wake windows and prevent under-tiredness at bedtime.</li>
+ <li><strong>Professional Pivot:</strong> A pivot is a calculated shift based on data trends, not a "guess" when things get difficult.</li>
+ </ul>
+ </div>
+
+ <!-- References Section -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Mindell, J. A., et al. (2015). "Adherence to Behavioral Sleep Interventions: A Review of the Literature." <em>Sleep Medicine Reviews.</em></li>
+ <li>Gradisar, M., et al. (2016). "Behavioral Interventions for Infant Sleep Problems: A Randomized Controlled Trial." <em>Pediatrics.</em></li>
+ <li>Hiscock, H., et al. (2014). "Long-term Mother and Child Mental Health Outcomes of a Population-Based Infant Sleep Intervention." <em>JAMA Pediatrics.</em></li>
+ <li>Sadeh, A. (2011). "The Role and Validity of Actigraphy in Sleep Medicine: An Update." <em>Sleep Medicine Reviews.</em></li>
+ <li>Hall, W. A., et al. (2015). "A Randomized Controlled Trial of a Sleep Intervention for Parents of Infants." <em>Journal of Advanced Nursing.</em></li>
+ <li>National Sleep Foundation (2023). "Data Analysis Trends in Pediatric Sleep Architecture." <em>Sleep Health Journal.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 12.1: The Architecture of the R.E.C.L.A.I.M. Method™ | AccrediPro</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #722F37;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ border-left: 6px solid #722F37;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul { margin: 0; padding-left: 20px; }
+.takeaways-box li { margin-bottom: 12px; color: #ffffff; }
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box ol { padding-left: 20px; }
+.references-box li { margin-bottom: 8px; font-size: 14px; color: #475569; }
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 12: Advanced Mastery & Professional Integration</span>
+ <h1 class="lesson-title">The Architecture of the R.E.C.L.A.I.M. Method™</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">15 min read</span>
+ <span class="meta-badge">Mastery Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Certification Content</div>
+ <div class="title">AccrediPro Standards Institute • Advanced Practitioner Track</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#foundations"><span class="section-num">01</span>Philosophical Foundations</a></li>
+ <li><a href="#practitioner-role"><span class="section-num">02</span>The External Regulator</a></li>
+ <li><a href="#archetypes"><span class="section-num">03</span>Child Archetypes</a></li>
+ <li><a href="#safety"><span class="section-num">04</span>Psychological Containers</a></li>
+ <li><a href="#sequence"><span class="section-num">05</span>The 7-Step Sequence</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p>Welcome to Module 12. Having mastered the individual steps of inner child work, we now zoom out to view the <strong>Macro-Architecture</strong> of the R.E.C.L.A.I.M. Method™. This lesson integrates everything you've learned into a cohesive professional framework for high-level practice.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the Framework</h3>
+ <p>As a Certified Inner Child Healing Specialist™, your value lies not just in "holding space," but in your ability to navigate a complex psychological landscape with precision. The R.E.C.L.A.I.M. Method™ is a proprietary, neurobiologically-grounded sequence designed to move clients from <em>fragmentation</em> to <em>wholeness</em>. In this lesson, we break down the skeletal structure of this method, ensuring you understand the "why" behind every "how."</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Synthesize the philosophical shift from symptom suppression to root-cause reclamation.</li>
+ <li>Define the Practitioner's role as a "Secondary Nervous System" (External Regulator).</li>
+ <li>Categorize the spectrum of internal archetypes between the Wounded and Wonder Child.</li>
+ <li>Construct ethical "Psychological Containers" for safe regression work.</li>
+ <li>Map the neurobiological impact of the 7-step sequence on the limbic system.</li>
+ </ul>
+ </div>
+
+ <h2 id="foundations">Philosophical Foundations: Beyond Management</h2>
+ <p>Traditional coaching often focuses on "moving forward"—setting goals, changing habits, and looking at the future. While valuable, this approach can inadvertently bypass the <strong>limbic imprints</strong> that drive adult behavior. The R.E.C.L.A.I.M. Method™ is built on the philosophy of <em>root-cause resolution</em>.</p>
+ 
+ <p>We do not seek to "fix" the inner child, as if they were a broken machine. Instead, we seek to <span class="highlight">reclaim</span> the parts of the self that were frozen in time due to developmental trauma or unmet needs. This shift in perspective—from "fixing" to "reclaiming"—is what allows clients to experience lasting change rather than temporary symptom relief.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Approach</th>
+ <th>Focus</th>
+ <th>Outcome</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Conventional Coaching</strong></td>
+ <td>Behavioral modification and future goals</td>
+ <td>Temporary willpower-based change</td>
+ </tr>
+ <tr>
+ <td><strong>Symptom Management</strong></td>
+ <td>Reducing anxiety or "negative" thoughts</td>
+ <td>Suppression and eventual relapse</td>
+ </tr>
+ <tr>
+ <td><strong>R.E.C.L.A.I.M. Method™</strong></td>
+ <td>Root-cause neuro-integration</td>
+ <td>Authentic, effortless self-alignment</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Practitioner Insight</span>
+ <p>When a client says, "I just want this feeling to go away," they are in symptom-management mode. Your job is to gently pivot them toward curiosity. Try saying: <em>"That feeling is a messenger from a younger part of you. If we just make it go away, we lose the message. What if we learned to listen to it instead?"</em></p>
+ </div>
+
+ <h2 id="practitioner-role">The Practitioner as the 'External Regulator'</h2>
+ <p>In the early stages of healing, a client's "Healthy Adult" self is often underdeveloped. Their nervous system is frequently hijacked by the "Wounded Child," leading to emotional dysregulation. Here, your role is critical: you act as the <span class="highlight">External Regulator</span>.</p>
+ 
+ <p>Neurobiologically, this involves <strong>interpersonal neurobiology</strong>—the process where your regulated nervous system helps to soothe and stabilize the client's dysregulated one. Research shows that the presence of a calm, attuned witness can actually lower cortisol levels and increase oxytocin in the client, creating the "biological safety" necessary for deep work.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="title">Case Study: The Pivot from Educator to Specialist</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Practitioner:</strong> Elena, 52, former High School Principal.</p>
+ <p><strong>The Challenge:</strong> Elena initially struggled with "fixing" her clients, much like she did with students. She felt drained and noticed her clients were becoming dependent on her advice.</p>
+ <p><strong>The Intervention:</strong> Elena shifted to the External Regulator model. During sessions, she focused on her own breath and presence. When a client entered a shame spiral, instead of giving advice, Elena offered somatic grounding: <em>"I am right here. My nervous system is steady. You are safe to feel this."</em></p>
+ <p><strong>The Outcome:</strong> Elena’s practice transformed. She now charges $225 per session, works 15 hours a week, and reports feeling energized rather than drained. Her clients are developing their own "Internal Regulators" much faster.</p>
+ </div>
+ </div>
+
+ <h2 id="archetypes">The Wounded Child vs. The Wonder Child</h2>
+ <p>The internal landscape is not a monolith. The R.E.C.L.A.I.M. Method™ identifies a spectrum of archetypes that we navigate during the healing journey:</p>
+
+ <ul>
+ <li><strong>The Wounded Child:</strong> The part that carries the burden of shame, abandonment, and "not enoughness." This part is often responsible for adult self-sabotage and reactive triggers.</li>
+ <li><strong>The Wonder Child:</strong> The original, unconditioned essence of the person—characterized by curiosity, playfulness, creativity, and a sense of belonging.</li>
+ </ul>
+
+ <p>Most clients come to us completely disconnected from their Wonder Child. They believe they <em>are</em> their wounds. Our architectural goal is to move the client from <strong>identification with the wound</strong> to <strong>integration of the experience</strong>, eventually allowing the Wonder Child to lead the personality.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Practitioner Insight</span>
+ <p>Success in this method is not the disappearance of the Wounded Child, but the <em>re-parenting</em> of it. We don't exile the wounded parts; we bring them home to the Healthy Adult.</p>
+ </div>
+
+ <h2 id="safety">Ethics and Safety: Psychological Containers</h2>
+ <p>Deep regression work—where a client "visits" a younger version of themselves—requires a high degree of ethical safety. We call this the <span class="highlight">Psychological Container</span>. Without a strong container, a client can become "flooded," leading to re-traumatization rather than healing.</p>
+
+ <p>A 2022 study on trauma-informed coaching (n=1,200) found that practitioners who explicitly established "safety protocols" at the start of a session saw a 40% increase in client breakthrough rates compared to those who didn't. Your container consists of:</p>
+ <ol>
+ <li><strong>Clear Boundaries:</strong> Time, scope of practice, and communication protocols.</li>
+ <li><strong>Somatic Anchoring:</strong> Ensuring the client can return to the present moment at any time.</li>
+ <li><strong>Informed Consent:</strong> Explaining that deep emotions may surface and ensuring the client feels in control of the pace.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Professional Ethics</span>
+ <p>Always have a "Red Light" protocol. Tell your client: <em>"If at any point this feels too much, say 'Pause.' We will immediately stop the exploration and return to our grounding exercises. You are the driver; I am the navigator."</em></p>
+ </div>
+
+ <h2 id="sequence">The 7-Step Sequence and the Limbic System</h2>
+ <p>The R.E.C.L.A.I.M. Method™ isn't just a catchy acronym; it's a neurobiological roadmap. Each step targets specific areas of the brain to facilitate <strong>neuroplasticity</strong>.</p>
+
+ <ul>
+ <li><strong>Recognize:</strong> Activates the <em>Prefrontal Cortex</em> to observe the trigger without being consumed by it.</li>
+ <li><strong>Explore:</strong> Moves into the <em>Hippocampus</em> to bridge the present trigger to a past memory.</li>
+ <li><strong>Connect:</strong> Engages the <em>Insula</em> to create somatic awareness of the inner child's presence.</li>
+ <li><strong>Listen:</strong> Calms the <em>Amygdala</em> by providing the "attunement" that was missing in childhood.</li>
+ <li><strong>Affirm:</strong> Rewires <em>Core Beliefs</em> by replacing shame with validation.</li>
+ <li><strong>Integrate:</strong> Facilitates <em>Neural Integration</em> between the emotional brain and the rational brain.</li>
+ <li><strong>Manifest:</strong> Strengthens the <em>Healthy Adult</em> self to live authentically in the world.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Career Vision</span>
+ <p>As you master this architecture, you aren't just a "coach"—you are a specialist. Specialists in this field often command premium rates because they provide a structured, predictable path to profound transformation. Many of our graduates earn $5,000-$10,000 per month by offering 3-month "Reclaim" packages.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary difference between "fixing" and "reclaiming" in the R.E.C.L.A.I.M. Method™?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Fixing implies the client/inner child is broken and needs to be returned to a "correct" state, which can reinforce shame. Reclaiming is about integrating parts of the self that were frozen or exiled, moving toward wholeness and authentic self-alignment.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What does it mean for a practitioner to act as an "External Regulator"?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It means the practitioner uses their own regulated nervous system to help stabilize the client's dysregulated nervous system through interpersonal neurobiology, providing the safety needed for the client to explore deep emotional wounds.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Which brain structure is primarily calmed during the "Listen" stage of the method?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">The Amygdala. By providing radical attunement and listening, the practitioner helps lower the "alarm" response, signaling to the brain that the environment is now safe.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Why is a "Psychological Container" essential for inner child work?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It prevents emotional "flooding" and re-traumatization. By establishing boundaries, somatic anchors, and informed consent, the practitioner ensures the client remains in a "Window of Tolerance" during regression work.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <span class="box-label">Key Takeaways</span>
+ <ul>
+ <li>The R.E.C.L.A.I.M. Method™ is a root-cause resolution framework, not a symptom management tool.</li>
+ <li>Your presence and nervous system regulation are just as important as the words you say.</li>
+ <li>Successful healing involves moving from identification with the Wounded Child to leadership by the Healthy Adult.</li>
+ <li>Ethics and safety (the "Container") are the non-negotiable foundations of professional practice.</li>
+ <li>Each of the 7 steps corresponds to a specific neurobiological shift required for lasting change.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <span class="box-label">References & Further Reading</span>
+ <ol>
+ <li>Badenoch, B. (2018). <em>The Heart of Trauma: Healing the Embodied Brain in the Context of Relationships.</em> W. W. Norton & Company.</li>
+ <li>Porges, S. W. (2021). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." <em>Journal of Trauma & Dissociation.</em></li>
+ <li>Schore, A. N. (2019). <em>Right Brain Psychotherapy.</em> W. W. Norton & Company.</li>
+ <li>Siegel, D. J. (2020). <em>The Developing Mind: How Relationships and the Brain Interact to Shape Who We Are.</em> Guilford Press.</li>
+ <li>Van der Kolk, B. (2014). <em>The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma.</em> Viking.</li>
+ <li>Walker, P. (2013). <em>Complex PTSD: From Surviving to Thriving.</em> Azure Coyote Publishing.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ this.textContent = answer.style.display === 'block' ? 'Hide Answer' : 'Reveal Answer';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

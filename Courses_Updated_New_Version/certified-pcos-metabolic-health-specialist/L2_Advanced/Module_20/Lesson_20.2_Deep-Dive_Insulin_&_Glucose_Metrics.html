@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 2: Deep-Dive Insulin & Glucose Metrics | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+ border-radius: 12px;
+ overflow: hidden;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 20: L2: Assessment Tools</span>
+ <h1 class="lesson-title">Deep-Dive Insulin & Glucose Metrics</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">💡 Lesson 2 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Credential Verification</div>
+ <div class="title">AccrediPro Standards Institute Verified Content</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#beyond-fasting"><span class="section-num">01</span>Beyond Fasting Glucose</a></li>
+ <li><a href="#kraft-profile"><span class="section-num">02</span>The Kraft Prediabetes Profile</a></li>
+ <li><a href="#lean-paradox"><span class="section-num">03</span>The Lean PCOS Paradox</a></li>
+ <li><a href="#shbg-proxy"><span class="section-num">04</span>SHBG: The Hepatic Proxy</a></li>
+ <li><a href="#steady-method"><span class="section-num">05</span>The S.T.E.A.D.Y. Method™ 'T'</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <p>In <strong>Lesson 1</strong>, we categorized the four clinical subtypes of PCOS. Now, we move into the precision assessment phase, where we look past the surface-level labels to quantify the exact degree of metabolic interference driving androgen excess.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Expert-Level Assessment</h3>
+ <p>Welcome back, Specialist. As a practitioner, you will often encounter clients who have been told their "labs are normal," yet they struggle with weight loss resistance, cystic acne, and irregular cycles. This lesson equips you with the advanced metrics—HOMA-IR, TyG, and Kraft Patterns—that reveal the <span class="highlight">sub-clinical insulin resistance</span> conventional medicine routinely misses.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Calculate and interpret early IR detection markers: HOMA-IR, QUICKI, and TyG Index.</li>
+ <li>Differentiate between the five Kraft Prediabetes Profile patterns in an OGTT.</li>
+ <li>Identify "occult" hyperinsulinemia in metabolically healthy (lean) PCOS phenotypes.</li>
+ <li>Utilize Sex Hormone-Binding Globulin (SHBG) as a clinical proxy for liver insulin sensitivity.</li>
+ <li>Apply the S.T.E.A.D.Y. Method™ 'T' framework based on baseline glucose-to-insulin ratios.</li>
+ </ul>
+ </div>
+
+ <!-- Main Content Section 1 -->
+ <h2 id="beyond-fasting">Beyond Fasting Glucose: The "Early Warning" Metrics</h2>
+ <p>Fasting glucose is a <strong>lagging indicator</strong>. By the time a client's fasting glucose rises above 100 mg/dL, they have often been experiencing significant insulin resistance for 5 to 10 years. In PCOS, we need <strong>leading indicators</strong> that show the compensatory struggle of the pancreas before it begins to fail.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Many of your clients (especially those 40+) will have fasting glucose in the 85-95 range. Conventional doctors call this "perfect." However, if their fasting insulin is 18 μIU/mL, their body is "screaming" to keep that glucose normal. This is where you provide $997+ value—identifying the scream before the collapse.</p>
+ </div>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Metric</th>
+ <th>Formula / Description</th>
+ <th>Optimal Range (PCOS)</th>
+ <th>Clinical Significance</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>HOMA-IR</strong></td>
+ <td>(Glucose x Insulin) / 405</td>
+ <td>&lt; 1.5</td>
+ <td>Gold standard for steady-state insulin resistance.</td>
+ </tr>
+ <tr>
+ <td><strong>QUICKI</strong></td>
+ <td>1 / [log(Insulin) + log(Glucose)]</td>
+ <td>&gt; 0.34</td>
+ <td>Better for identifying sensitivity in non-obese phenotypes.</td>
+ </tr>
+ <tr>
+ <td><strong>TyG Index</strong></td>
+ <td>ln[Triglycerides x Glucose / 2]</td>
+ <td>&lt; 4.45</td>
+ <td>Detects IR when insulin testing is unavailable.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <p>A 2022 study published in <em>Frontiers in Endocrinology</em> involving 1,200 women with PCOS found that HOMA-IR had a <strong>sensitivity of 84%</strong> for predicting metabolic syndrome, compared to only 32% for fasting glucose alone. This demonstrates why the deep-dive is non-negotiable for the Specialist.</p>
+
+ <!-- Case Study 1 -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="title">Case Study: The "Normal Lab" Trap</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Elena, 46, Career Nurse.</p>
+ <p><strong>Presenting Symptoms:</strong> Sudden weight gain (15 lbs in 6 months), thinning hair, "brain fog" after lunch.</p>
+ <p><strong>Conventional Labs:</strong> Fasting Glucose: 92 mg/dL (Normal); HbA1c: 5.4% (Normal).</p>
+ <p><strong>Specialist Assessment:</strong> Fasting Insulin: 22 μIU/mL. <strong>HOMA-IR Calculation:</strong> (92 x 22) / 405 = <strong>4.99</strong>.</p>
+ <p><strong>Outcome:</strong> Despite "normal" glucose, Elena had severe insulin resistance (Stage 2 IR). By applying the S.T.E.A.D.Y. Method™ 'T' (Therapeutic Tuning), she lost 12 lbs in 8 weeks and restored her cognitive clarity.</p>
+ </div>
+ </div>
+
+ <h2 id="kraft-profile">The Kraft Prediabetes Profile: Dynamic Responses</h2>
+ <p>While fasting markers are vital, they only show the body at rest. The <strong>Kraft Prediabetes Profile</strong>, developed by Dr. Joseph Kraft, observes the insulin response over 2-5 hours following a 75g glucose challenge (OGTT). This is the "stress test" for the metabolic system.</p>
+
+ <h3>The Five Kraft Patterns:</h3>
+ <ul>
+ <li><strong>Pattern I (Normal):</strong> Low fasting insulin, peak at 30-60 mins, rapid return to baseline.</li>
+ <li><strong>Pattern II (Delayed Peak):</strong> Insulin peaks at 2 hours. This is the "early warning" of IR.</li>
+ <li><strong>Pattern III (Hyperinsulinemia):</strong> Massive insulin peak (often &gt;100 μIU/mL) that stays elevated at 2 and 3 hours. Common in PCOS.</li>
+ <li><strong>Pattern IV (Hidden Diabetes):</strong> High fasting insulin with a massive, prolonged response.</li>
+ <li><strong>Pattern V (Hypoinsulinemia):</strong> Very low insulin response (often seen in Type 1 or late-stage Type 2 "burnt out" pancreas).</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>In PCOS, we often see <strong>Pattern III</strong>. The client's glucose might look fine at 2 hours because they pumped out 150 units of insulin to force it down. This "Insulin Flood" is what drives the ovaries to produce excess testosterone.</p>
+ </div>
+
+ <h2 id="lean-paradox">Sub-clinical IR in "Lean" PCOS Phenotypes</h2>
+ <p>A common misconception in the medical community is that lean women with PCOS do not have insulin resistance. <strong>The data says otherwise.</strong> Research indicates that up to 75% of lean women with PCOS exhibit decreased insulin sensitivity compared to BMI-matched controls.</p>
+
+ <p>This is often referred to as <span class="highlight">metabolically healthy, but insulin resistant (MHIR)</span>. In these women, the IR may not be systemic (affecting the muscles) but rather <strong>tissue-specific</strong>, primarily affecting the liver and the ovaries. This is why a lean client can still have high androgens and irregular cycles.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>For lean clients, look at the <strong>Triglyceride-to-HDL ratio</strong>. A ratio &gt; 2.0 in a lean woman is a massive red flag for hepatic (liver) insulin resistance, even if she looks "fit" on the outside.</p>
+ </div>
+
+ <h2 id="shbg-proxy">SHBG: The Hepatic Proxy for Insulin Sensitivity</h2>
+ <p>Sex Hormone-Binding Globulin (SHBG) is a protein produced by the liver. Its primary job is to "mopping up" excess testosterone. However, its production is <strong>directly inhibited by insulin</strong> in the liver.</p>
+
+ <p>Therefore, SHBG serves as an incredible proxy marker. If SHBG is low (typically &lt; 40 nmol/L for women), it is a strong clinical indicator that the liver is bathed in too much insulin. This creates a "double whammy" for PCOS:</p>
+ <ol>
+ <li>High insulin stimulates the ovaries to make <strong>more</strong> testosterone.</li>
+ <li>High insulin tells the liver to make <strong>less</strong> SHBG to bind that testosterone.</li>
+ </ol>
+ <p>The result? A massive surge in <strong>Free Testosterone</strong>, the driver of hirsutism and hair loss.</p>
+
+ <h2 id="steady-method">Clinical Application: The S.T.E.A.D.Y. Method™ 'T'</h2>
+ <p>The 'T' in our proprietary method stands for <strong>Therapeutic Tuning</strong>. We use the metrics above to decide the "volume" of our intervention.</p>
+
+ <ul>
+ <li><strong>Mild IR (HOMA-IR 1.5 - 2.5):</strong> Focus on <em>Sequence Tuning</em> (The Macro-Buffer Strategy) and NEAT activation.</li>
+ <li><strong>Moderate IR (HOMA-IR 2.5 - 4.5):</strong> Requires <em>Chrono-Nutrition</em> (narrowed eating windows) and Resistance Training 3x/week.</li>
+ <li><strong>Severe IR (HOMA-IR &gt; 4.5):</strong> May require a <em>Metabolic Reset</em> phase with lower glycemic loads and collaborative care for insulin sensitizers (like Myo-Inositol or Metformin).</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Success as a Specialist isn't just about the labs; it's about the <strong>Income Potential</strong>. Practitioners who can interpret these deep-dive metrics often charge $3,000 - $5,000 for 4-month transformation packages, as they are providing a level of precision that "generalist" health coaches cannot match.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. If a client has a fasting glucose of 90 and a fasting insulin of 15, what is their HOMA-IR, and is it optimal?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">HOMA-IR = (90 x 15) / 405 = <strong>3.33</strong>. No, it is not optimal. Optimal is &lt; 1.5. This client has significant moderate insulin resistance despite "normal" glucose.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. Which Kraft Pattern is characterized by a "Delayed Peak" of insulin at the 2-hour mark?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text"><strong>Pattern II</strong>. This is often the very first sign of metabolic dysfunction before glucose begins to rise.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Why is SHBG often low in women with PCOS?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">High levels of insulin in the liver (hepatic hyperinsulinemia) directly suppress the production of SHBG. Low SHBG is a clinical proxy for liver insulin resistance.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. True or False: Lean women with PCOS rarely have insulin resistance.</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text"><strong>False</strong>. Up to 75% of lean women with PCOS exhibit some form of insulin resistance, often tissue-specific (liver/ovary) rather than systemic.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Fasting Glucose is insufficient:</strong> Always calculate HOMA-IR to reveal hidden insulin resistance.</li>
+ <li><strong>Kraft Patterns provide the "Stress Test":</strong> Pattern III (Hyperinsulinemia) is the most common driver of androgenic symptoms in PCOS.</li>
+ <li><strong>SHBG is a Metabolic Mirror:</strong> A low SHBG is almost always a sign of underlying insulin issues, regardless of BMI.</li>
+ <li><strong>Precision Tuning:</strong> Use HOMA-IR scores to determine the intensity of the S.T.E.A.D.Y. Method™ 'T' interventions.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Kraft, J. R. (2008). <em>"Diabetes Mellitus Is Insulin Resistance: Your Guide to Healthy Longevity."</em> Trafford Publishing.</li>
+ <li>Cassar, S. et al. (2016). "Insulin resistance in polycystic ovary syndrome: a systematic review and meta-analysis of euglycaemic–hyperinsulinaemic clamp studies." <em>Human Reproduction Update</em>.</li>
+ <li>Wang, J. et al. (2022). "The performance of HOMA-IR, TyG index, and TG/HDL-C ratio in predicting PCOS: A cross-sectional study." <em>Frontiers in Endocrinology</em>.</li>
+ <li>Diamanti-Kandarakis, E., & Dunaif, A. (2012). "Insulin Resistance and the Polycystic Ovary Syndrome Revisited." <em>Endocrine Reviews</em>.</li>
+ <li>Qu, X. et al. (2019). "SHBG as a Marker for Metabolic Health and Insulin Resistance in PCOS." <em>Journal of Clinical Endocrinology & Metabolism</em>.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

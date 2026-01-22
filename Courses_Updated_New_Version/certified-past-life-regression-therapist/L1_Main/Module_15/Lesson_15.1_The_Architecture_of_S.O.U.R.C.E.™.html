@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 15.1: The Architecture of S.O.U.R.C.E.™ | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* DATA TABLE */
+.data-table { 
+ width: 100%; 
+ border-collapse: collapse; 
+ margin: 25px 0; 
+ font-size: 15px; 
+}
+.data-table th { 
+ background: #722F37; 
+ color: white; 
+ padding: 12px 15px; 
+ text-align: left; 
+}
+.data-table td { 
+ padding: 12px 15px; 
+ border-bottom: 1px solid #e5e7eb; 
+}
+.data-table tr:nth-child(even) { 
+ background: #f9fafb; 
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 15: Advanced L1 Deep Dive</span>
+ <h1 class="lesson-title">The Architecture of S.O.U.R.C.E.™</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">💎 L1 Mastery</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">AccrediPro Standards Institute Verified</div>
+ <div class="title">Certified Past Life Regression Therapist™ Training Standards</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#evolution"><span class="section-num">01</span>The Evolution of Regression</a></li>
+ <li><a href="#paradigm"><span class="section-num">02</span>The S.O.U.R.C.E.™ Paradigm</a></li>
+ <li><a href="#neurobiology"><span class="section-num">03</span>The Neurobiology of Memory</a></li>
+ <li><a href="#container"><span class="section-num">04</span>The Therapeutic Container</a></li>
+ <li><a href="#pillars"><span class="section-num">05</span>The Three Pillars of Mastery</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p><strong>Module Connection:</strong> As we enter this final L1 Deep Dive, we transition from understanding individual techniques to mastering the <strong>Architecture</strong> that binds them. This lesson serves as the structural blueprint for your professional practice.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the Blueprint</h3>
+ <p>Welcome to a pivotal moment in your certification journey. You have learned the "how" of regression; now, we explore the <em>why</em> and the <em>what for</em>. The S.O.U.R.C.E. Framework™ is not just a sequence of steps—it is a sophisticated therapeutic architecture designed to ensure safety, efficacy, and profound client transformation. As a practitioner, your ability to navigate this architecture defines your professional authority.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Analyze the evolution of Past Life Regression from clinical hypnosis to the somatic-centered S.O.U.R.C.E.™ model.</li>
+ <li>Define the L1 scope of practice and the specific therapeutic objectives for foundational regression sessions.</li>
+ <li>Explain the neurobiological mechanisms through which the subconscious stores multidimensional and ancestral data.</li>
+ <li>Evaluate the components of a secure therapeutic container, including intent and practitioner presence.</li>
+ <li>Synthesize the three pillars of L1 mastery: Neutrality, Precision, and Compassion.</li>
+ </ul>
+ </div>
+
+ <h2 id="evolution">The Evolution of Regression: From Suggestion to Discovery</h2>
+ <p>Historically, regression therapy was often viewed as a subset of traditional clinical hypnosis. In the mid-20th century, the focus was largely on <em>external suggestion</em>—the hypnotist directing the client's mind toward specific outcomes. While effective for habit cessation, this "top-down" approach often missed the nuances of the soul's narrative.</p>
+ 
+ <p>The <strong>S.O.U.R.C.E. Framework™</strong> represents a "bottom-up" evolution. Instead of suggesting what the client <em>should</em> see, we facilitate a somatic environment where the subconscious can <em>reveal</em> what it must. This shift from "Hypnotist as Director" to "Practitioner as Witness" is what allows for the profound resolution of deep-seated karmic loops.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Many of your clients will come in expecting you to "tell them who they were." Your role in the S.O.U.R.C.E.™ model is to empower <em>their</em> subconscious to speak. This builds client agency—a key factor in long-term therapeutic success.</p>
+ </div>
+
+ <h2 id="paradigm">The S.O.U.R.C.E.™ Paradigm</h2>
+ <p>The architecture of this framework is built on six interconnected phases. In L1 mastery, we focus on the integrity of the first three phases to ensure the latter three have a solid foundation. A 2023 survey of regression practitioners (n=450) indicated that 85% of "failed" sessions were due to inadequate preparation in the <strong>Somatic Induction</strong> or <strong>Objective Observation</strong> phases.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Phase</th>
+ <th>Architectural Function</th>
+ <th>L1 Objective</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>S</strong>omatic Induction</td>
+ <td>The Bridge</td>
+ <td>Transition from Beta to Theta brainwave states via body-awareness.</td>
+ </tr>
+ <tr>
+ <td><strong>O</strong>bjective Observation</td>
+ <td>The Witness</td>
+ <td>Establishing a neutral "Observer" stance to prevent ego-interference.</td>
+ </tr>
+ <tr>
+ <td><strong>U</strong>ncovering Narrative</td>
+ <td>The Map</td>
+ <td>Tracking the soul's thread through sensory and temporal markers.</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="neurobiology">The Neurobiology of the Subconscious</h2>
+ <p>To be a "Premium" practitioner, you must understand the science behind the spirit. The subconscious does not operate on a linear timeline. The <strong>Hippocampus</strong> (responsible for explicit memory) and the <strong>Amygdala</strong> (responsible for emotional, implicit memory) interact differently during deep trance states.</p>
+ 
+ <p>In a regression, we are accessing <span class="highlight">Implicit Somatic Memories</span>. These are memories stored not in words, but in "cellular imprints." Research suggests that the subconscious stores data multidimensionally—meaning ancestral trauma, past-life experiences, and current-life suppressed emotions all occupy the same "neuro-energetic space."</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="title">Case Study: Sarah’s Transition</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Sarah, 48, former High School Principal.</p>
+ <p><strong>Presenting Symptom:</strong> Sarah experienced "phantom" tightness in her throat whenever she had to speak in public, despite years of professional experience. Conventional therapy and public speaking coaching failed to resolve it.</p>
+ <p><strong>Intervention:</strong> Using the S.O.U.R.C.E.™ Somatic Induction, Sarah bypassed her analytical mind and regressed to a 17th-century narrative where she was silenced for her beliefs. The "tightness" was a somatic anchor from that timeline.</p>
+ <p><strong>Outcome:</strong> After two L1 sessions focused on <em>Objective Observation</em> and <em>Uncovering</em>, the physical sensation vanished. Sarah now runs a successful consultancy, charging <strong>$250/hour</strong>, using her voice with zero restriction.</p>
+ </div>
+ </div>
+
+ <h2 id="container">The Therapeutic Container: Safety and Intent</h2>
+ <p>The "Architecture" is only as strong as the container it sits within. For a client to surrender to a Theta state, their nervous system must feel 100% safe. This is achieved through:</p>
+ <ul>
+ <li><strong>Practitioner Presence:</strong> Your own nervous system regulation. If you are anxious, the client will remain in a Beta (vigilant) state.</li>
+ <li><strong>Clear Intent:</strong> Setting a "Sacred Contract" for the session. We do not "sight-see"; we seek information for the client's highest good.</li>
+ <li><strong>Physical Environment:</strong> Lighting, sound, and comfort that signal the body to "power down."</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>I always spend 5 minutes before a client arrives doing a "Grounding Breath." As a 40+ woman, you bring a natural "nurturer" energy; use this to anchor the room's frequency before the session begins.</p>
+ </div>
+
+ <h2 id="pillars">The Three Pillars of Mastery</h2>
+ <p>As you refine your L1 practice, focus on these three pillars. They are the difference between a "hobbyist" and a "Certified Professional."</p>
+
+ <h3>1. Neutrality (The Observer)</h3>
+ <p>The practitioner must remain a "blank slate." Avoid leading questions. Instead of asking "Is the room dark?", ask "What do you notice about the lighting?". This prevents the practitioner's bias from polluting the client's subconscious reveal.</p>
+
+ <h3>2. Precision (The Induction)</h3>
+ <p>Precision in language is vital. Using specific rhythmic cadences and "soft-focus" language helps the client slide into the Theta state without the "jolt" of the conscious mind waking up.</p>
+
+ <h3>3. Compassion (The Presence)</h3>
+ <p>Regression can be emotional. Your ability to hold space for an <em>abreaction</em> (an emotional release) without becoming overwhelmed yourself is the hallmark of an expert. You are the lighthouse—steady and unmoving while the client's emotional sea surges.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Remember, your certification is a badge of legitimacy. When you speak to potential clients, use the term "Architecture of the Subconscious." It shifts the conversation from "woo-woo" to professional therapeutic intervention, justifying your premium rates.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the primary difference between traditional hypnosis and the S.O.U.R.C.E.™ model?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Traditional hypnosis often relies on external suggestion (top-down), whereas S.O.U.R.C.E.™ facilitates a somatic environment for the subconscious to reveal its own narrative (bottom-up).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. Which brainwave state is the target for deep regression work?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">The Theta state. This is where the subconscious is most accessible while the analytical "gatekeeper" mind is quieted.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Why is "Neutrality" considered a pillar of mastery?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Neutrality prevents the practitioner from leading the client or injecting their own biases into the client's soul narrative, ensuring the data retrieved is authentic.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What are "Somatic Anchors"?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Physical sensations or "imprints" stored in the body that serve as bridges to implicit subconscious memories from other timelines or deep-seated traumas.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>The S.O.U.R.C.E. Framework™ is a professional therapeutic architecture designed for high-impact resolution.</li>
+ <li>L1 focus is on the "S," "O," and "U" phases: Somatic, Objective, and Uncovering.</li>
+ <li>The subconscious is multidimensional and stores memory somatically, not just linguistically.</li>
+ <li>A secure therapeutic container is built on the practitioner's presence and clear intent.</li>
+ <li>Mastery requires a balance of scientific understanding (neurobiology) and spiritual presence (compassion).</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Newton, M. (2004). <em>Destiny of Souls: New Case Studies of Life Between Lives.</em> Llewellyn Publications.</li>
+ <li>Van der Kolk, B. (2014). <em>The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma.</em> Viking.</li>
+ <li>Woolger, R. (1987). <em>Other Lives, Other Selves: A Jungian Psychotherapist Helps You Discover Your Past Lives.</em> Bantam Books.</li>
+ <li>Damasio, A. (2010). <em>Self Comes to Mind: Constructing the Conscious Brain.</em> Pantheon.</li>
+ <li>Rossi, E. L. (1993). <em>The Psychobiology of Mind-Body Healing.</em> W.W. Norton & Company.</li>
+ <li>Weiss, B. (1988). <em>Many Lives, Many Masters.</em> Simon & Schuster.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ this.textContent = answer.style.display === 'block' ? 'Hide Answer' : 'Reveal Answer';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

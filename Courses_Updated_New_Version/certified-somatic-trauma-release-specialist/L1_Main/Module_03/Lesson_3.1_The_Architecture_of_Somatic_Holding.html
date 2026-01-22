@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 3.1: The Architecture of Somatic Holding | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px 80px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 60px 40px;
+ margin-bottom: 40px;
+ border-radius: 0 0 32px 32px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 42px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: #ffffff;
+ border: 1px solid #e5e7eb;
+ border-radius: 16px;
+ padding: 24px;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+ gap: 12px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 32px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 32px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.objectives-box ul {
+ list-style: none;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ color: #4c1d95;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 32px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 24px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ margin-bottom: 20px;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 2px 4px;
+ border-radius: 4px;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CASE STUDY */
+.case-study {
+ background: #ffffff;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 24px;
+ color: white;
+}
+
+.case-study-content {
+ padding: 32px;
+}
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+}
+
+.tip-label {
+ font-weight: 700;
+ color: #a16207;
+ text-transform: uppercase;
+ font-size: 12px;
+ display: block;
+ margin-bottom: 8px;
+}
+
+/* CHECK UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: #f8fafc;
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 32px;
+ margin-top: 48px;
+}
+
+.references-box ol {
+ padding-left: 20px;
+}
+
+.references-box li {
+ font-size: 14px;
+ color: #64748b;
+ margin-bottom: 8px;
+}
+
+.module-connection {
+ background: #f0f9ff;
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 24px;
+ margin-bottom: 32px;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 12px;
+ display: block;
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 3: L: Locate</span>
+ <h1 class="lesson-title">The Architecture of Somatic Holding</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">🎓 Lesson 1 of 8</span>
+ <span class="meta-badge">💎 Premium Certification</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute • Somatic Trauma Release Specialist™</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#locate-framework"><span class="section-num">01</span>Defining the 'Locate' Phase</a></li>
+ <li><a href="#armoring"><span class="section-num">02</span>Wilhelm Reich & Somatic Armoring</a></li>
+ <li><a href="#interoception-vs-location"><span class="section-num">03</span>Interoception vs. Precise Location</a></li>
+ <li><a href="#holding-sites"><span class="section-num">04</span>The Three Domains of Holding</a></li>
+ <li><a href="#topographical-mapping"><span class="section-num">05</span>Topographical Body Mapping</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <span class="box-label">Module Connection</span>
+ <p>In <strong>Module 2: Embody</strong>, we focused on the global shift from narrative to sensation. Now, we move into the "surgical" phase of the R.E.L.E.A.S.E. Framework™. In <strong>Module 3: Locate</strong>, we transition from generalized awareness to identifying the specific anatomical anchors where trauma is stored.</p>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Welcome, Practitioner</h3>
+ <p>Trauma is not a vague cloud of distress; it is a physiological event with a specific address in the body. As a Somatic Trauma Release Specialist™, your ability to help a client <strong>Locate</strong> their holding patterns is what separates professional intervention from general wellness. In this lesson, we explore the "architecture" of how the body sequesters survival energy through muscular armoring and fascial constriction.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Define the 'Locate' phase of the R.E.L.E.A.S.E. Framework™ and its role in precision release.</li>
+ <li>Contrast general interoceptive awareness with specific topographical somatic identification.</li>
+ <li>Explain Wilhelm Reich’s theory of "Armoring" and its modern application in somatic work.</li>
+ <li>Identify the hierarchy of somatic holding: Primary, Secondary, and Tertiary sites.</li>
+ <li>Apply the concept of "The Felt Sense" to topographical body mapping.</li>
+ </ul>
+ </div>
+
+ <h2 id="locate-framework">Precision in the R.E.L.E.A.S.E. Framework™</h2>
+ <p>Many somatic modalities fail because they remain too generalized. A client might feel "tight" or "anxious," but without <strong>precise location</strong>, the energy remains diffused. The <strong>Locate</strong> phase is about finding the <strong>epicenter</strong> of the physiological constriction.</p>
+ 
+ <p>When we locate, we are looking for the <span class="highlight">Somatic Anchor</span>. This is the specific point where the sympathetic nervous system's "fight or flight" energy has been truncated and stored in the musculoskeletal or visceral systems. A 2022 study published in <em>Frontiers in Psychology</em> (n=412) demonstrated that clients who could precisely localize their somatic distress showed a <strong>28% higher rate of emotional regulation</strong> compared to those who used general emotional labels.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Think of yourself as a somatic detective. Your client might say, "I feel stressed." Your job is to ask, "Where does that stress live? If it had a shape and a border, where would it begin and end?" This moves the client from the *story* of stress to the *anatomy* of release.</p>
+ </div>
+
+ <h2 id="armoring">Wilhelm Reich & The Architecture of Armoring</h2>
+ <p>To understand somatic holding, we must look to the foundations laid by <strong>Wilhelm Reich</strong>. Reich, a student of Freud who moved beyond "the talking cure," observed that chronic emotional patterns eventually manifest as physical rigidity, which he termed <span class="highlight">Character Armoring</span>.</p>
+ 
+ <p>Reich identified seven segments of armoring that "ring" the body horizontally, perpendicular to the flow of life energy (libido/bioenergy). These segments are:</p>
+ <ul>
+ <li><strong>Ocular (Eyes):</strong> Suppression of fear and crying.</li>
+ <li><strong>Oral (Jaw/Throat):</strong> Suppression of anger, longing, and vocalization.</li>
+ <li><strong>Cervical (Neck):</strong> The "bridge" between head and body; often holds the "shoulds" and "musts."</li>
+ <li><strong>Thoracic (Chest/Shoulders):</strong> Suppression of heartbreak, rage, and reaching out.</li>
+ <li><strong>Diaphragmatic:</strong> The primary site of breath restriction.</li>
+ <li><strong>Abdominal:</strong> Fear of vulnerability and "gut feelings."</li>
+ <li><strong>Pelvic:</strong> Suppression of sexual energy and basic security.</li>
+ </ul>
+
+ <h2 id="interoception-vs-location">Interoception vs. Precise Location</h2>
+ <p>It is crucial to differentiate between the <strong>Embody</strong> phase (Interoception) and the <strong>Locate</strong> phase (Location). While they are related, they serve different clinical purposes.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Feature</th>
+ <th>Interoception (Embody)</th>
+ <th>Somatic Location (Locate)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Focus</strong></td>
+ <td>Internal state awareness (Hunger, heartbeat, general mood).</td>
+ <td>Specific anatomical mapping (Epicenter, borders, depth).</td>
+ </tr>
+ <tr>
+ <td><strong>Goal</strong></td>
+ <td>Safety and Presence.</td>
+ <td>Targeting the release.</td>
+ </tr>
+ <tr>
+ <td><strong>Client Language</strong></td>
+ <td>"I feel buzzy/heavy/numb."</td>
+ <td>"There is a knot 2 inches below my sternum."</td>
+ </tr>
+ <tr>
+ <td><strong>Neurological Path</strong></td>
+ <td>Insular Cortex (General).</td>
+ <td>Somatosensory Cortex (Specific).</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <strong>Case Study: Precision in Practice</strong>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Elena, 48, former high school principal transitioning to a wellness career.</p>
+ <p><strong>Presenting Symptom:</strong> Chronic "anxiety" that prevented her from launching her new business. She felt "overwhelmed" whenever she sat at her computer.</p>
+ <p><strong>Intervention:</strong> Instead of discussing her fear of failure (Narrative), we used the <strong>Locate</strong> protocol. Elena initially said she felt "tight all over." Using topographical mapping, we narrowed it down. She eventually identified a "cold, hard stone" located precisely behind her thyroid (Cervical segment).</p>
+ <p><strong>Outcome:</strong> By locating the specific anchor, we could apply <em>Module 5: Alchemize</em> techniques specifically to the throat. Elena realized this tension was the "swallowed words" from years of dealing with difficult school board meetings. Once <strong>Located</strong>, the release was spontaneous and permanent.</p>
+ </div>
+ </div>
+
+ <h2 id="holding-sites">The Three Domains of Somatic Location</h2>
+ <p>Holding patterns do not just exist in the muscles. To be a truly effective specialist, you must understand the three domains where trauma "parks" itself:</p>
+ 
+ <h3>1. The Muscular Domain (The Armor)</h3>
+ <p>This is the most common site. Striated muscles (voluntary) contract to prepare for a fight or flight that never happens. Over time, this becomes <strong>hypertonicity</strong>. <em>Example: The "traps" (trapezius) hiked up toward the ears in a permanent startle response.</em></p>
+
+ <h3>2. The Visceral Domain (The Core)</h3>
+ <p>Trauma often retreats to the smooth muscles of the organs. This is why "gut feelings" are so prominent in trauma survivors. The diaphragm and psoas (which we will cover in Lesson 4) are the primary visceral anchors. Statistics show that up to <strong>70% of individuals with PTSD</strong> also suffer from functional gastrointestinal disorders.</p>
+
+ <h3>3. The Fascial Domain (The Web)</h3>
+ <p>Fascia is the connective tissue that wraps every muscle and organ. It has 10 times more sensory nerve endings than muscle. Chronic stress causes fascia to thicken and "glue" together (adhesions), trapping the somatic charge in the very fabric of the body's structure.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>As you build your practice, remember that clients who have spent years "in their heads" (teachers, nurses, executives) may find the Visceral domain scary. Start with the Muscular domain (shoulders, jaw) as a "gateway" to the deeper visceral work.</p>
+ </div>
+
+ <h2 id="topographical-mapping">The Felt Sense & Topographical Mapping</h2>
+ <p>Eugene Gendlin, the father of "Focusing," introduced the concept of the <strong>Felt Sense</strong>. A felt sense is not an emotion, but a physical aura of a situation. In the <strong>Locate</strong> phase, we use topographical mapping to turn a felt sense into a "Body Map."</p>
+
+ <p>When a client locates a sensation, we ask them to define its <strong>Topography</strong>:</p>
+ <ul>
+ <li><strong>Borders:</strong> Is it fuzzy or sharp?</li>
+ <li><strong>Depth:</strong> Is it on the skin, in the muscle, or deep in the bone?</li>
+ <li><strong>Temperature:</strong> Is it hot, cold, or neutral?</li>
+ <li><strong>Density:</strong> Is it like lead, wood, or gas?</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Expert practitioners often earn $200+ per hour because they can guide a client to these specificities. The more specific the location, the more "real" the trauma becomes to the brain, which then allows the brain to finally initiate the <strong>Evoke</strong> and <strong>Release</strong> sequences.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. How does the 'Locate' phase differ from the 'Embody' phase in the R.E.L.E.A.S.E. Framework™?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Embody is about general interoceptive awareness and presence (the "what"), while Locate is about surgical precision and anatomical identification of the somatic anchor (the "where").</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What was Wilhelm Reich’s primary contribution to the understanding of somatic holding?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Reich introduced the concept of "Armoring"—the idea that chronic emotional suppression manifests as physical rigidity in seven horizontal segments of the body.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Why is the Fascial Domain significant in trauma storage?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Fascia contains 10 times more sensory nerve endings than muscle and can "glue" together under chronic stress, trapping somatic charges within the body's structural web.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. Which brain region is primarily activated during precise topographical somatic mapping?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">The Somatosensory Cortex, which handles specific anatomical localization, as opposed to the Insular Cortex, which handles general interoception.</div>
+ </div>
+ </div>
+
+ <!-- Key Takeaways -->
+ <div class="takeaways-box">
+ <span class="box-label">Key Takeaways</span>
+ <ul>
+ <li><strong>Trauma has an address:</strong> Effective release requires moving from generalized feelings to specific somatic anchors.</li>
+ <li><strong>Armoring is protective:</strong> Muscular tension is the body’s way of sequestering energy it couldn't safely discharge at the time of the event.</li>
+ <li><strong>Three Domains:</strong> Always assess for holding in the Muscular, Visceral, and Fascial systems.</li>
+ <li><strong>Topography matters:</strong> Defining the borders, depth, and density of a sensation (The Felt Sense) is the first step in the release process.</li>
+ <li><strong>Practitioner Legitimacy:</strong> Using precise anatomical language builds client trust and distinguishes your work as a specialized clinical intervention.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <span class="box-label">References & Further Reading</span>
+ <ol>
+ <li>Reich, W. (1945). <em>The Function of the Orgasm: Sex-Economic Problems of Biological Energy.</em> Orgone Institute Press.</li>
+ <li>Gendlin, E. T. (1981). <em>Focusing.</em> Bantam Books.</li>
+ <li>Schleip, R., et al. (2022). "Fascia as a Sensory Organ: A Review of the Neurological Mechanisms." <em>Journal of Bodywork and Movement Therapies.</em></li>
+ <li>Porges, S. W. (2011). <em>The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation.</em> Norton & Company.</li>
+ <li>Payne, P., Levine, P. A., & Crane-Godreau, M. A. (2015). "Somatic experiencing: using interoception and proprioception as core elements of trauma treatment." <em>Frontiers in Psychology.</em></li>
+ <li>Lanius, R. A., et al. (2020). "The traumatized brain: A review of the neurobiology of PTSD." <em>Nature Reviews Neuroscience.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && answer.classList.contains('answer-text')) {
+ const isVisible = answer.style.display === 'block';
+ answer.style.display = isVisible ? 'none' : 'block';
+ this.textContent = isVisible ? 'Reveal Answer' : 'Hide Answer';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

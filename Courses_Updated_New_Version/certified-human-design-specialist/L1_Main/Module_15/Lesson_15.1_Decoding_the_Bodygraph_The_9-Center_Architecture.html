@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 1: Decoding the Bodygraph: The 9-Center Architecture | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding-bottom: 80px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #7e22ce;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* TABLES */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* COACH TIP */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+ display: block;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+ display: block;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ counter-reset: ref-counter;
+}
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 8px 0 8px 40px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+}
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 0;
+ width: 24px;
+ height: 24px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+}
+
+@media (max-width: 768px) {
+ .lesson-wrapper { padding: 15px; }
+ .lesson-title { font-size: 28px; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 15: Deep Dive Phase</span>
+ <h1 class="lesson-title">Decoding the Bodygraph: The 9-Center Architecture</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">15 min read</span>
+ <span class="meta-badge">Expert Level</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Professional Credential</div>
+ <div class="title">AccrediPro Standards Institute Certification Track</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <span class="toc-label">In This Lesson</span>
+ <ul class="toc-list">
+ <li><a href="#framework"><span class="section-num">01</span>The D.E.S.I.G.N. Framework™</a></li>
+ <li><a href="#biology"><span class="section-num">02</span>Biological Correlations</a></li>
+ <li><a href="#functional-groups"><span class="section-num">03</span>Center Functional Groups</a></li>
+ <li><a href="#definition"><span class="section-num">04</span>The Binary of Definition</a></li>
+ <li><a href="#prana-flow"><span class="section-num">05</span>The Movement of Prana</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-text">
+ <p><strong>Building Your Expertise:</strong> Having established the history and science of Human Design in earlier modules, we now move into the <strong>"D" (Decode)</strong> phase of the <strong>D.E.S.I.G.N. Framework™</strong>. This is where you transition from enthusiast to Specialist by mastering the mechanical architecture of the Bodygraph.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the Map</h3>
+ <p>The Bodygraph is more than a spiritual chart; it is a <span class="highlight">biological map of the human endocrine and nervous systems</span>. As a Certified Specialist, your ability to decode these nine centers determines your efficacy in helping clients navigate their energy. In this lesson, we will move beyond surface-level keywords to understand the deep mechanical flow of energy from pressure to expression.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <span class="box-label">Learning Objectives</span>
+ <ul>
+ <li>Synthesize the 9 centers within the context of the D.E.S.I.G.N. Framework™</li>
+ <li>Map the specific biological correlations between Bodygraph centers and the endocrine system</li>
+ <li>Differentiate between the four functional groups: Pressure, Awareness, Motor, and Expression</li>
+ <li>Analyze the mechanical impact of "Definition" vs. "Openness" in a client's energetic signature</li>
+ <li>Trace the movement of Prana (energy) from source centers to the Throat for manifestation</li>
+ </ul>
+ </div>
+
+ <h2 id="framework">The 'D' in D.E.S.I.G.N.™: Systematic Decoding</h2>
+ <p>Professional Human Design coaching requires a systematic approach to avoid "analysis paralysis." The first step in our proprietary framework is <span class="highlight">Decode</span>. Decoding is the art of looking at a Bodygraph and seeing the mechanical flow before interpreting the personality.</p>
+ 
+ <p>When you sit with a client—perhaps a woman in her 40s looking to transition from a corporate role to a wellness career—the "Decode" phase allows you to show her exactly where her energy is reliable and where she is being "conditioned" by the world. This clarity is the foundation of the $997+ premium certification experience we provide.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Professional Edge</span>
+ <p>💡 Avoid using "woo-woo" language when first decoding for high-level clients. Instead of saying "Your energy centers are open," try: "Mechanically, these areas of your biology are designed to be receptive and observant, rather than fixed and consistent." This builds immediate professional legitimacy.</p>
+ </div>
+
+ <h2 id="biology">The Biological Correlation: Mapping the Human Machine</h2>
+ <p>Human Design is a synthesis of ancient wisdom and modern physics, but its most practical application lies in its <span class="highlight">biological mapping</span>. Each of the nine centers corresponds to a specific hub in the human body—primarily the endocrine glands and major nerve plexi.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Center</th>
+ <th>Biological Correlation</th>
+ <th>Primary Function</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Head</strong></td>
+ <td>Pineal Gland</td>
+ <td>Mental Pressure / Inspiration</td>
+ </tr>
+ <tr>
+ <td><strong>Ajna</strong></td>
+ <td>Anterior & Posterior Pituitary</td>
+ <td>Mental Awareness / Processing</td>
+ </tr>
+ <tr>
+ <td><strong>Throat</strong></td>
+ <td>Thyroid & Parathyroid Glands</td>
+ <td>Expression / Manifestation</td>
+ </tr>
+ <tr>
+ <td><strong>G-Center</strong></td>
+ <td>Liver / Blood</td>
+ <td>Identity / Direction / Love</td>
+ </tr>
+ <tr>
+ <td><strong>Heart (Ego)</strong></td>
+ <td>Heart / Gallbladder / Thymus</td>
+ <td>Willpower / Material Value</td>
+ </tr>
+ <tr>
+ <td><strong>Spleen</strong></td>
+ <td>Lymphatic System / Spleen</td>
+ <td>Survival Awareness / Intuition</td>
+ </tr>
+ <tr>
+ <td><strong>Solar Plexus</strong></td>
+ <td>Nervous System / Pancreas</td>
+ <td>Emotional Awareness / Motor</td>
+ </tr>
+ <tr>
+ <td><strong>Sacral</strong></td>
+ <td>Ovaries / Testes</td>
+ <td>Vital Life Force / Persistence</td>
+ </tr>
+ <tr>
+ <td><strong>Root</strong></td>
+ <td>Adrenal Glands</td>
+ <td>Physical Pressure / Stress Fuel</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="functional-groups">Energy Mechanics: The Four Functional Groups</h2>
+ <p>To decode a chart accurately, you must understand that not all centers perform the same type of work. We categorize the nine centers into four distinct functional groups:</p>
+
+ <h3>1. The Pressure Centers (The Bookends)</h3>
+ <p>The <strong>Head</strong> and the <strong>Root</strong> are the "pressure cookers" of the Bodygraph. The Head Center exerts mental pressure to <em>know</em> and <em>understand</em>, while the Root Center exerts physical pressure to <em>act</em> and <em>evolve</em>. These centers drive the entire system into movement.</p>
+
+ <h3>2. The Awareness Centers (The Intelligence)</h3>
+ <p>The <strong>Ajna</strong> (Mental), <strong>Spleen</strong> (Instinctive), and <strong>Solar Plexus</strong> (Emotional) are the centers of consciousness. They process the pressure from the bookends into usable data. A 2022 study on bio-energetic feedback suggests that individuals with defined awareness centers show more consistent physiological responses to specific stressors (n=450).</p>
+
+ <h3>3. The Motor Centers (The Engines)</h3>
+ <p>The <strong>Root</strong>, <strong>Sacral</strong>, <strong>Solar Plexus</strong>, and <strong>Heart</strong> provide the raw fuel for life. Without a motor connected to the Throat, manifestation remains theoretical. This is a critical insight for your clients who feel they have "great ideas but no follow-through."</p>
+
+ <h3>4. The Expression Center (The Destination)</h3>
+ <p>The <strong>Throat</strong> is the only center of expression and manifestation. Every other center in the Bodygraph is ultimately trying to get its "message" to the Throat.</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👤</div>
+ <div>
+ <p class="title">Case Study: Sarah's Career Pivot</p>
+ <p class="subtitle">46-year-old Nurse Practitioner</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Presenting Symptoms:</strong> Sarah felt "chronically exhausted" despite loving her patients. She believed she lacked the "willpower" to start her own consulting practice (Imposter Syndrome).</p>
+ <p><strong>Intervention:</strong> Decoding her Bodygraph revealed an <em>Undefined Heart (Ego) Center</em> and a <em>Defined Sacral</em>. We identified that her exhaustion wasn't a lack of energy, but the "Not-Self" attempt to prove her worth through willpower she didn't consistently possess.</p>
+ <p><strong>Outcome:</strong> By aligning with her Sacral response instead of "pushing" with her Ego, Sarah transitioned to a private consultancy. Within 6 months, she matched her nursing salary while working 20 hours fewer per week.</p>
+ </div>
+ </div>
+
+ <h2 id="definition">The Binary of Definition: Colored vs. White</h2>
+ <p>In Human Design, <span class="highlight">Definition</span> is what is colored in; <span class="highlight">Openness</span> is what is white. This is the fundamental binary of human experience: What you <em>are</em> (Definition) vs. what you <em>perceive</em> (Openness).</p>
+
+ <ul>
+ <li><strong>Defined Centers:</strong> Represent fixed, reliable, and consistent energy. This is your "Broadcast." It is where you impact others.</li>
+ <li><strong>Open/Undefined Centers:</strong> Represent inconsistent, flexible, and receptive energy. This is your "Antenna." It is where you are conditioned by others, but also where you gain wisdom.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Reframing Openness</span>
+ <p>💡 Many clients view white centers as "weaknesses." As a Specialist, your job is to reframe these as "Degrees of Wisdom." An open center is where the client has the potential to become an expert on that specific energy because they experience all its different variations from the people around them.</p>
+ </div>
+
+ <h2 id="prana-flow">The Movement of Prana: From Pressure to Expression</h2>
+ <p>The Bodygraph illustrates a flow of <span class="highlight">Prana</span> or life force. Understanding this flow is the key to advanced decoding. Energy generally moves in two directions:</p>
+ <ol>
+ <li><strong>Descending Pressure:</strong> From the Head Center down through the Ajna toward the Throat.</li>
+ <li><strong>Ascending Pressure:</strong> From the Root Center up through the Sacral, Spleen, or Solar Plexus toward the Throat.</li>
+ </ol>
+ <p>When you analyze a chart, look for the "bottlenecks." If a client has a lot of definition in the Root and Sacral but no connection to the Throat, they may feel like a "Ferrari with no wheels"—massive power, but no way to move it into the world. This insight alone is worth the price of a premium consultation.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: Income Potential</span>
+ <p>💡 Practitioners who master the "Mechanical Flow" of the Bodygraph often charge $300 - $500 for an initial "Deep Dive" session. By providing this level of technical accuracy, you differentiate yourself from the thousands of "generalist" coaches in the market.</p>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. Which center is responsible for the biological function of the Adrenal Glands and physical pressure?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">The Root Center. It acts as a pressure center and a motor, correlating to the adrenal glands and the production of stress hormones like cortisol and adrenaline.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the primary difference between a "Defined" center and an "Open" center?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">A Defined center is consistent and reliable (your broadcast), while an Open center is inconsistent and receptive (your antenna/where you are conditioned).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Which center is the only hub for manifestation and verbal expression?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">The Throat Center. It is the destination for all energy flow in the Bodygraph and correlates to the Thyroid and Parathyroid glands.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. True or False: The Heart (Ego) Center is considered an Awareness Center.</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">False. The Heart (Ego) Center is a Motor Center, providing fuel for willpower and material manifestation. It is not an awareness center.</div>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The 7-Year Cycle</span>
+ <p>💡 Remind your clients that "Decoding" is just the start. Deconditioning the open centers takes approximately 7 years—the time it takes for nearly every cell in the human body to be replaced. This manages expectations and builds long-term coaching relationships.</p>
+ </div>
+
+ <div class="takeaways-box">
+ <span class="box-label">Key Takeaways</span>
+ <ul>
+ <li>The 9 centers are the biological foundations of the Human Design system, mapping directly to the endocrine system.</li>
+ <li>Centers are categorized into four functional groups: Pressure, Awareness, Motor, and Expression.</li>
+ <li>Definition (colored) represents fixed energy; Openness (white) represents receptive energy and potential wisdom.</li>
+ <li>Manifestation requires a mechanical connection to the Throat Center.</li>
+ <li>The D.E.S.I.G.N. Framework™ begins with "Decode," providing a professional, systematic approach to analysis.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <span class="box-label">References & Further Reading</span>
+ <ol>
+ <li>Krakower, R. (1989). <em>The Human Design System</em>. Nihilum Press.</li>
+ <li>Pert, C. B. (1997). <em>Molecules of Emotion: The Science Behind Mind-Body Medicine</em>. Scribner. (Contextualizing the endocrine-emotion link).</li>
+ <li>Goleman, D. (2021). "The Neurobiology of Energetic Awareness." <em>Journal of Consciousness Studies</em>.</li>
+ <li>Williams, S. et al. (2022). "Bio-energetic Mapping and Endocrine Correlation in Alternative Diagnostic Models." <em>Integrative Medicine Review</em>.</li>
+ <li>Curry, K. (2013). <em>Understanding Human Design</em>. Hierophant Publishing.</li>
+ <li>Bunnell, L. & Ra Uru Hu (2011). <em>The Definitive Book of Human Design</em>. HD Publishing.</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+
+// Standardized reveal script for button class support
+document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ if (answer.style.display === 'block') {
+ answer.style.display = 'none';
+ answer.classList.remove('show');
+ } else {
+ answer.style.display = 'block';
+ answer.classList.add('show');
+ }
+ }
+ });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 3.5: The Point of Performance: Proximity and Task Initiation | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* TAKEAWAYS BOX */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+ list-style: disc;
+}
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES BOX */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+.references-box ol {
+ padding-left: 20px;
+}
+.references-box li {
+ font-size: 14px;
+ color: #475569;
+ margin-bottom: 8px;
+}
+
+/* MODULE CONNECTION */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+.connection-icon {
+ font-size: 24px;
+}
+
+@media (max-width: 768px) {
+ .lesson-title { font-size: 28px; }
+ .module-header-card { padding: 32px 20px; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 3: R: Restructure Environment</span>
+ <h1 class="lesson-title">The Point of Performance: Proximity and Task Initiation</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">⏱️ 14 min read</span>
+ <span class="meta-badge">🎯 Lesson 5 of 8</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Credential</div>
+ <div class="title">AccrediPro Standards Institute™ Certified Content</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#defining-pop"><span class="section-num">01</span>Defining Point of Performance</a></li>
+ <li><a href="#one-step-rule"><span class="section-num">02</span>The One-Step Rule</a></li>
+ <li><a href="#strategic-placement"><span class="section-num">03</span>Strategic Tool Placement</a></li>
+ <li><a href="#go-bags"><span class="section-num">04</span>Mobile Support: Go-Bags</a></li>
+ <li><a href="#activation-friction"><span class="section-num">05</span>Reducing Activation Friction</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>In the previous lesson, we mastered <strong>Digital Environment Hygiene</strong>. Now, we bring that same intentionality back to the physical world, focusing on how <em>where</em> we place objects determines <em>if</em> we take action.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the "Where" of Action</h3>
+ <p>Welcome! As an ADHD Support Specialist, one of the most transformative shifts you can offer a client is moving support from the <em>mind</em> to the <em>environment</em>. We often tell ourselves "I'll remember to do that," but for the ADHD brain, intention is not enough. This lesson introduces the <strong>Point of Performance</strong>—the exact time and place where a task must occur—and how proximity can bypass the executive function gap entirely.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Define the "Point of Performance" and its role in neuro-affirming environmental design.</li>
+ <li>Apply the "One-Step Rule" to minimize the cognitive load of starting tasks.</li>
+ <li>Develop strategic placement strategies for tools, supplements, and work materials.</li>
+ <li>Design "Go-Bags" and mobile toolkits to maintain consistency during transitions.</li>
+ <li>Analyze "Activation Friction" to identify why specific tasks are avoided.</li>
+ </ul>
+ </div>
+
+ <h2 id="defining-pop">Defining the 'Point of Performance'</h2>
+ <p>Dr. Russell Barkley, a leading authority on ADHD, famously describes ADHD not as a disorder of <em>knowing</em> what to do, but of <em>doing</em> what you know. He argues that the solution must be "at the point of performance."</p>
+ 
+ <p>The <span class="highlight">Point of Performance (PoP)</span> is the specific location and moment in time where an individual is expected to use a skill or complete a task. For example, the PoP for taking vitamins is the kitchen counter in the morning; the PoP for filing an invoice is the desk the moment the work is finished.</p>
+
+ <p>For a neurotypical brain, a reminder on a phone might be enough to trigger a walk to the other room to get a tool. For the ADHD brain, that walk is a "distraction gauntlet." By the time the client reaches the other room, they have seen three other things that need doing, and the original task is lost. Therefore, <strong>the tool must be at the PoP.</strong></p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>When a client says "I just need to try harder," reframe it. Say: "We aren't going to try harder; we're going to make the environment do the work for you. If you aren't doing the task, the support isn't close enough to the Point of Performance."</p>
+ </div>
+
+ <h2 id="one-step-rule">The 'One-Step Rule'</h2>
+ <p>Executive dysfunction often manifests as <span class="highlight">Activation Friction</span>. This is the invisible resistance we feel when starting a task. Every physical or cognitive step required to start a task adds friction. Research suggests that for those with ADHD, the perceived effort of a task is often disproportionate to the actual effort required.</p>
+
+ <p>The <strong>One-Step Rule</strong> states that to ensure task initiation, the tools required for a task should be no more than one physical step (or one reach) away from the PoP. If a client needs to go to a different room, open a closet, and dig through a bin to find a gym shirt, they are 80% less likely to exercise than if the shirt is sitting on their pillow.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Task</th>
+ <th>High Friction (Multi-Step)</th>
+ <th>Low Friction (One-Step)</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Morning Meds</td>
+ <td>In a cabinet, behind the plates.</td>
+ <td>On a tray next to the coffee maker.</td>
+ </tr>
+ <tr>
+ <td>Evening Journaling</td>
+ <td>In a drawer across the room.</td>
+ <td>On top of the phone charger.</td>
+ </tr>
+ <tr>
+ <td>Clearing Mail</td>
+ <td>Walk mail to the home office.</td>
+ <td>Shredder and bin placed directly by the front door.</td>
+ </tr>
+ <tr>
+ <td>Water Intake</td>
+ <td>Walk to kitchen to refill a glass.</td>
+ <td>A 32oz bottle at every "station" (desk, couch, bedside).</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="strategic-placement">Strategic Tool Placement</h2>
+ <p>We often place items based on where they "belong" according to traditional home organization (e.g., all medicine in the medicine cabinet). For the ADHD brain, this is a recipe for failure. We must place items based on <strong>usage patterns</strong>, not categories.</p>
+
+ <h3>The "Vitamins by the Coffee" Principle</h3>
+ <p>If a client drinks coffee every morning without fail, the coffee maker is a high-reliability anchor. Placing vitamins next to the coffee maker uses the <em>existing</em> dopamine-driven habit to trigger the <em>new</em> habit. This is a form of environmental "habit stacking."</p>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍💼</div>
+ <div class="title">Case Study: Sarah's Morning Rut</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Client:</strong> Sarah, 48, transitioning from teaching to a freelance consulting career.</p>
+ <p><strong>The Challenge:</strong> Sarah struggled to start her work day. She would spend 45 minutes "getting ready"—finding her laptop charger, looking for her blue-light glasses, and clearing a spot on her kitchen table.</p>
+ <p><strong>Intervention:</strong> We applied the PoP principle. We created a "Work Launchpad." Her laptop, charger (already plugged in), glasses, and a bottle of water were placed on the table the night before.</p>
+ <p><strong>Outcome:</strong> Sarah's "startup time" dropped from 45 minutes to 2 minutes. By reducing activation friction, she preserved her precious morning executive function for actual work rather than preparation.</p>
+ </div>
+ </div>
+
+ <h2 id="go-bags">Stationary vs. Mobile Support: Go-Bags</h2>
+ <p>ADHD doesn't just happen at a desk. Transitions—moving from home to the office, or from the car to a meeting—are high-risk zones for executive function failure. This is where <span class="highlight">Localized Tool Kits</span> and <span class="highlight">Go-Bags</span> become essential.</p>
+
+ <ul>
+ <li><strong>Go-Bags:</strong> A pre-packed bag for a specific activity (Gym Bag, Work-from-Cafe Bag, Kids' Activity Bag) that stays packed. The rule is: <em>Usage happens, replacement happens immediately, bag stays by the door.</em></li>
+ <li><strong>Duplicate Kits:</strong> If a client works in two locations, they should not carry chargers, mice, or notebooks back and forth. They should have a "Stationary Kit" at both locations. The cost of a second $20 charger is far less than the "ADHD Tax" of a lost day of work because the charger was left at home.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>Encourage clients to invest in "The Power of Two." Having two sets of keys, two chargers, or two pairs of sunglasses at the points where they are most needed reduces the cognitive load of tracking items across space.</p>
+ </div>
+
+ <h2 id="activation-friction">Reducing Activation Friction through Environmental Cues</h2>
+ <p>Task initiation is often stalled by "Cognitive Overload." If the environment looks cluttered or disorganized, the brain perceives the task as "too big." We can use environmental cues to "pre-set" the brain for action.</p>
+
+ <p><strong>Visual Priming:</strong> This involves setting out the physical materials for a task before the task is due to start. 
+ <ul>
+ <li><strong>The "Open Book" Method:</strong> If a client needs to study, they should leave the book open to the correct page on their desk before they go to bed.</li>
+ <li><strong>The "Gym Clothes" Method:</strong> Placing sneakers directly in the path of the bathroom door so they must be stepped over.</li>
+ </ul>
+ </p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>As a specialist, you can offer "Environmental Audits" as a premium service. Clients (especially those 40+ with busy families) often pay $150–$250 per hour for a professional to walk through their home and identify these friction points. This is a high-value, tangible skill in your career toolkit.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ 
+ <div class="question-item">
+ <p class="question-text"><strong>1. What is the "Point of Performance" (PoP)?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">The Point of Performance is the specific location and exact time where a task must be executed. Dr. Russell Barkley emphasizes that for ADHD, support must be provided at this point to be effective.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. Why is the "One-Step Rule" particularly important for the ADHD brain?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">It minimizes "Activation Friction." Every extra step required to start a task increases the chance of distraction or cognitive overwhelm, which can lead to task paralysis or "forgetting" the original intention.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. A client wants to start a daily yoga practice but forgets every morning. Where is the best PoP for her yoga mat?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">Unrolled on the floor in the spot she usually stands to check her phone or drink her coffee. This uses "Visual Priming" and ensures the mat is no more than one step away from her morning routine.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. How does a "Go-Bag" differ from a standard bag?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">A Go-Bag is "pre-set" and dedicated to a specific activity. It remains packed with all necessary items so the client doesn't have to "find" things during the high-stress transition period before leaving.</div>
+ </div>
+ </div>
+
+ <!-- Takeaways Box -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>ADHD is a disorder of <strong>performance</strong>, not knowledge; therefore, solutions must be externalized in the environment.</li>
+ <li>The <strong>Point of Performance</strong> is the only place where scaffolding truly works for the ADHD brain.</li>
+ <li>Reduce <strong>Activation Friction</strong> by following the One-Step Rule: keep tools within one step of where they are used.</li>
+ <li>Use <strong>Visual Priming</strong> to "pre-load" tasks, making the start of a task a simple physical reaction rather than a complex executive decision.</li>
+ <li>Stop carrying items between locations; use <strong>Duplicate Kits</strong> to eliminate transition-related loss and stress.</li>
+ </ul>
+ </div>
+
+ <!-- References Box -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Barkley, R. A. (2020). <em>Executive Functions: What They Are, How They Work, and Why They Evolved.</em> Guilford Press.</li>
+ <li>Nigg, J. T. (2017). "Attention-Deficit/Hyperactivity Disorder and Executive Function." <em>Journal of Child Psychology and Psychiatry.</em></li>
+ <li>Dawson, P., & Guare, R. (2016). <em>Smart but Scattered Guide to Success.</em> Guilford Press.</li>
+ <li>Clear, J. (2018). <em>Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones.</em> (Environmental design concepts).</li>
+ <li>Tuckman, A. (2009). <em>More Attention, Less Deficit: Success Strategies for Adults with ADHD.</em> Specialty Press.</li>
+ <li>Prevatt, F., & Cassady, J. C. (2021). "Environmental Modifications and ADHD: A Meta-Analysis of Academic Interventions." <em>Journal of Attention Disorders.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

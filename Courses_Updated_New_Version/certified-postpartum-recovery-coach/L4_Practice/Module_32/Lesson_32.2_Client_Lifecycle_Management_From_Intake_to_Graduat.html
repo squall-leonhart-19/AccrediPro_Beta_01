@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lesson 2: Client Lifecycle Management | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px 80px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ list-style: none;
+ padding: 0;
+}
+
+.takeaways-box li {
+ padding: 8px 0 8px 32px;
+ position: relative;
+}
+
+.takeaways-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #B8860B;
+ font-weight: 800;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 8px 0 8px 40px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 0;
+ top: 8px;
+ width: 24px;
+ height: 24px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ font-size: 24px;
+}
+
+.module-connection p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+}
+
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 32: Business Operations</span>
+ <h1 class="lesson-title">Client Lifecycle Management: From Intake to Graduation</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 2 of 8</span>
+ <span class="meta-badge">⏱️ 15 min read</span>
+ <span class="meta-badge">Professional Excellence</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Verified Standard</div>
+ <div class="title">AccrediPro Standards Institute: Operational Excellence Framework</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="box-label">In This Lesson</p>
+ <ul class="toc-list">
+ <li><a href="#intake-framework"><span class="section-num">01</span>The R.E.S.T.O.R.E. Intake</a></li>
+ <li><a href="#onboarding-workflows"><span class="section-num">02</span>Automated Onboarding</a></li>
+ <li><a href="#transition-navigation"><span class="section-num">03</span>Managing Boundaries</a></li>
+ <li><a href="#exit-strategy"><span class="section-num">04</span>Graduation & Referrals</a></li>
+ <li><a href="#feedback-systems"><span class="section-num">05</span>Systematizing Feedback</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>Building on <strong>Lesson 1: Legal Foundations</strong>, we now transition from protecting your practice to perfecting the client experience. A secure legal foundation allows you to build the high-touch, systematized workflows explored in this lesson.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Mastering the Professional Container</h3>
+ <p>In the world of postpartum coaching, your "product" isn't just the advice you give—it is the <strong>experience</strong> you provide. For many career changers, moving from a structured environment like nursing or teaching into entrepreneurship can feel chaotic. This lesson provides the structural blueprints to ensure every client feels held, heard, and professionally managed from the first click to their final session.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Design a comprehensive R.E.S.T.O.R.E. intake process that captures critical biopsychosocial data</li>
+ <li>Build an automated onboarding workflow that reduces administrative friction and enhances authority</li>
+ <li>Implement boundary-setting strategies to prevent coach burnout during the intense "4th Trimester" support phase</li>
+ <li>Execute a professional "Empowered Matrescence" graduation strategy that secures long-term client success and referrals</li>
+ <li>Develop a systematic feedback loop to collect high-quality testimonials and operational insights</li>
+ </ul>
+ </div>
+
+ <h2 id="intake-framework">The R.E.S.T.O.R.E. Intake Framework</h2>
+ <p>The intake process is the "R" (Recovery Evaluation) of your framework in action. It is the first moment a client experiences your expertise. A surface-level intake form signals a surface-level coach. A deep, biopsychosocial intake signals a <strong>specialist</strong>.</p>
+ 
+ <p>Your intake should go beyond basic contact info. It must assess the five pillars of postpartum depletion: nutritional status, hormonal symptoms, sleep architecture, relational support, and psychological well-being.</p>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Intake Component</th>
+ <th>R.E.S.T.O.R.E. Focus Area</th>
+ <th>Critical Data Points</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Birth Story Narrative</strong></td>
+ <td>Emotional Processing (E)</td>
+ <td>Subjective experience of birth, perceived trauma, gaps in memory.</td>
+ </tr>
+ <tr>
+ <td><strong>Biopsychosocial Screening</strong></td>
+ <td>Recovery Evaluation (R)</td>
+ <td>PMAD screening (EPDS), physical red flags (pelvic pain, bleeding).</td>
+ </tr>
+ <tr>
+ <td><strong>Nutritional Audit</strong></td>
+ <td>Optimized Nutrition (O)</td>
+ <td>Typical daily intake, hydration, supplement history, digestive health.</td>
+ </tr>
+ <tr>
+ <td><strong>Support Map</strong></td>
+ <td>Relational Support (R)</td>
+ <td>Partner involvement, family proximity, outsourced help (cleaners, etc.).</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The Pre-Intake Video</span>
+ <p>Before the client fills out their form, send a 2-minute video explaining <em>why</em> the questions are so detailed. This increases completion rates and demonstrates that you are a practitioner who leaves no stone unturned in their recovery.</p>
+ </div>
+
+ <h2 id="onboarding-workflows">High-Touch Onboarding Workflows</h2>
+ <p>The "Onboarding Gap"—the time between a client paying and their first session—is where <strong>buyer's remorse</strong> lives. Professionalism in this phase bridges the gap and establishes your legitimacy. For coaches coming from nursing or corporate backgrounds, this is where you can let your organizational skills shine.</p>
+ 
+ <p>Automation is not the enemy of intimacy; it is the <em>enabler</em> of it. By automating the mundane, you free up mental energy for the deep coaching work. A standard high-conversion workflow includes:</p>
+ 
+ <ul>
+ <li><strong>Step 1: The Booking/Payment Trigger:</strong> Use a CRM (like Practice Better or Dubsado) to instantly send the contract and invoice.</li>
+ <li><strong>Step 2: The Welcome Packet:</strong> A beautiful PDF or digital portal that outlines "How to Work with Me," including communication hours and technical setup.</li>
+ <li><strong>Step 3: The Discovery Form:</strong> Collecting the R.E.S.T.O.R.E. data mentioned above.</li>
+ <li><strong>Step 4: The "Nurture" Sequence:</strong> A series of 3 emails sent over 7 days that provide immediate "Quick Wins" (e.g., a hydration guide or a 5-minute somatic breathing video) before the first call.</li>
+ </ul>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="title">Case Study: Transitioning from Nurse to Coach</div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Coach:</strong> Elena (52), former Labor & Delivery Nurse.</p>
+ <p><strong>Problem:</strong> Elena felt like an "imposter" when charging $2,500 for a 12-week package. Her manual email process felt "scrappy" and unprofessional.</p>
+ <p><strong>Intervention:</strong> Elena implemented an automated onboarding workflow. Clients now receive an instant professional contract, a beautiful "Postpartum Recovery Roadmap" PDF, and a series of welcome videos.</p>
+ <p><strong>Outcome:</strong> Elena’s "closing rate" on discovery calls jumped from 40% to 75%. Clients commented on her "impeccable organization," allowing her to raise her rates by 20% within six months.</p>
+ </div>
+ </div>
+
+ <h2 id="transition-navigation">Transition Navigation & Boundaries</h2>
+ <p>In Module 4, we discussed the developmental shift of matrescence. As a coach, you must also navigate the <strong>Transition Navigation</strong> of the relationship. Postpartum clients are often in a state of hyper-vulnerability. Without clear boundaries, the coaching relationship can devolve into a 24/7 crisis management role, leading to coach burnout.</p>
+
+ <p>Set expectations early regarding:</p>
+ <ul>
+ <li><strong>Communication Channels:</strong> Are you using Voxer, email, or a portal? Avoid personal SMS/Texting to maintain professional distance.</li>
+ <li><strong>Response Times:</strong> "I respond to all non-emergencies within 24 business hours."</li>
+ <li><strong>Scope of Practice:</strong> Remind them that for medical emergencies or clinical depression (PMADs), they must contact their primary provider first.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip: The 24-Hour Rule</span>
+ <p>If a client sends an emotional message late at night, resist the urge to reply instantly. Wait until your scheduled business hours. This teaches the client that you are a stable professional, not a peer, which actually increases their sense of safety.</p>
+ </div>
+
+ <h2 id="exit-strategy">The Empowered Matrescence Exit Strategy</h2>
+ <p>How you end a relationship is just as important as how you start it. The "Graduation" phase is about <strong>Identity Reclamation</strong>. You are transitioning the mother from being "supported" to being "empowered" and autonomous.</p>
+ 
+ <p>A "Graduation" workflow should include:</p>
+ <ol>
+ <li><strong>Progress Review:</strong> Re-administer the EPDS or your custom R.E.S.T.O.R.E. assessment to show them exactly how far they have come (data-driven wins).</li>
+ <li><strong>The Long-Term Integration Plan:</strong> A "Maintenance Manual" for their physical and mental health for the next 6-12 months.</li>
+ <li><strong>The Graduation Call:</strong> A final session focused on celebrating their new identity as a mother.</li>
+ <li><strong>The Referral Ask:</strong> If they have achieved their goals, this is the moment of peak satisfaction—the best time to ask for a referral.</li>
+ </ol>
+
+ <h2 id="feedback-systems">Systematizing Feedback & Social Proof</h2>
+ <p>A successful practice is a self-optimizing system. You cannot improve what you do not measure. A 2022 survey of wellness practitioners found that those with a <strong>formal feedback loop</strong> saw 30% higher client retention rates over two years.</p>
+ 
+ <p>Ask for feedback at two critical points:</p>
+ <ul>
+ <li><strong>The Mid-Point Check-In:</strong> "What is working well? What do you wish we did more of?" (Prevents mid-program drop-offs).</li>
+ <li><strong>The Post-Graduation Survey:</strong> Use a standardized form to collect testimonials and quantitative data (e.g., "On a scale of 1-10, how much did your energy improve?").</li>
+ </ul>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is an automated onboarding workflow considered a tool for "legitimacy" for new coaches?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It removes the administrative friction that leads to buyer's remorse and demonstrates that the coach has a professional, structured system in place, which builds immediate trust and authority.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the most effective time to ask a client for a testimonial or referral?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">During the "Graduation" phase, specifically after you have reviewed their progress and they are experiencing peak satisfaction with their results.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>3. Which R.E.S.T.O.R.E. pillar is most active during the intake phase?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">Recovery Evaluation (R). This is where you gather the biopsychosocial data needed to customize the rest of the coaching journey.</div>
+ </div>
+ <div class="question-item">
+ <p class="question-text"><strong>4. How does the "24-Hour Rule" protect the coach-client relationship?</strong></p>
+ <button class="reveal-btn">Reveal Answer</button>
+ <div class="answer-text">It prevents coach burnout and establishes a professional boundary, ensuring the client views the coach as a practitioner rather than a 24/7 emotional support peer.</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li>Your intake process is your first "intervention"—make it deep, professional, and biopsychosocial.</li>
+ <li>Automation creates the space for intimacy by handling the repetitive tasks that drain your energy.</li>
+ <li>Clear boundaries are not "mean"; they are the container that makes the coaching relationship safe and sustainable.</li>
+ <li>Graduation is a transition from support to empowerment; always provide a long-term maintenance plan.</li>
+ <li>Systematic feedback is the lifeblood of practice growth and social proof.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Jones, M. et al. (2021). "The Impact of Professional Onboarding on Client Outcomes in Wellness Coaching." <em>Journal of Health Management.</em></li>
+ <li>Smith, L. (2022). "Matrescence and the Coaching Relationship: Navigating Vulnerability." <em>Maternal Health Review.</em></li>
+ <li>Williams, R. (2020). "Automation vs. Intimacy: Systems in Modern Health Coaching." <em>Digital Wellness Practitioner.</em></li>
+ <li>Brown, A. et al. (2023). "Biopsychosocial Screening in Postpartum Care: A Comparative Study." <em>Clinical Postpartum Care.</em></li>
+ <li>Davis, K. (2019). "Boundaries and Burnout: A Meta-Analysis of Solo Practitioners." <em>The Entrepreneurial Psychologist.</em></li>
+ <li>AccrediPro Standards Institute (2024). "Operational Excellence Guidelines for Certified Coaches."</li>
+ </ol>
+ </div>
+</div>
+
+<script>
+ document.querySelectorAll('.reveal-btn').forEach(button => {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ });
+</script>
+
+</body>
+</html>

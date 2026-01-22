@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Architecting the RESTORE Framework™: Structural Design | AccrediPro Academy</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding-bottom: 80px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+.welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(114, 47, 55, 0.1);
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #722F37;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fdf2f4 0%, #fdf2f4 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: inherit;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ border-left: 6px solid #722F37;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+/* DATA TABLE */
+.data-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px; }
+.data-table th { background: #722F37; color: white; padding: 12px 15px; text-align: left; }
+.data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
+.data-table tr:nth-child(even) { background: #f9fafb; }
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+ list-style-type: disc;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+@media (max-width: 768px) {
+ .lesson-wrapper { padding: 16px; }
+ .lesson-title { font-size: 28px; }
+}
+ </style>
+</head>
+<body>
+
+<div class="lesson-wrapper">
+ <!-- Module Header Card -->
+ <div class="module-header-card">
+ <span class="module-label">Module 26: Program Development</span>
+ <h1 class="lesson-title">Architecting the RESTORE Framework™: Structural Design</h1>
+ <div class="lesson-meta">
+ <span class="meta-badge">Lesson 1 of 8</span>
+ <span class="meta-badge">14 min read</span>
+ <span class="meta-badge">Strategic Design</span>
+ </div>
+ </div>
+
+ <!-- ASI Credential Strip -->
+ <div class="asi-credential-strip">
+ <div class="asi-logo">ASI</div>
+ <div class="asi-text">
+ <div class="label">Credential Verification</div>
+ <div class="title">AccrediPro Standards Institute • Advanced Fibromyalgia Protocol</div>
+ </div>
+ </div>
+
+ <!-- Table of Contents -->
+ <nav class="toc-box">
+ <p class="toc-label">Lesson Architecture</p>
+ <ul class="toc-list">
+ <li><a href="#duration"><span class="section-num">01</span>The Chronicity Calculus</a></li>
+ <li><a href="#milestones"><span class="section-num">02</span>Clinical Milestones</a></li>
+ <li><a href="#journey"><span class="section-num">03</span>The Client Journey Map</a></li>
+ <li><a href="#integration"><span class="section-num">04</span>Workflow Optimization</a></li>
+ <li><a href="#kpi"><span class="section-num">05</span>Beyond Pain: Success KPIs</a></li>
+ </ul>
+ </nav>
+
+ <!-- Module Connection -->
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>Having mastered the clinical science of the <strong>RESTORE Framework™</strong> in previous modules, we now transition from <em>what</em> to do to <em>how</em> to build it into a professional, high-value program that delivers predictable results for your clients.</p>
+ </div>
+ </div>
+
+ <!-- Welcome Box -->
+ <div class="welcome-box">
+ <h3>Welcome, Specialist</h3>
+ <p>Designing a program for fibromyalgia is fundamentally different from designing a standard weight loss or fitness plan. Because we are dealing with a <span class="highlight">sensitized central nervous system</span>, the structure of your program must act as an external container for safety and regulation. This lesson will teach you how to architect a 12-week or 6-month intensive that respects the biological pacing of the human brain while ensuring your clinical practice remains sustainable and profitable.</p>
+ </div>
+
+ <!-- Learning Objectives -->
+ <div class="objectives-box">
+ <p class="box-label">Learning Objectives</p>
+ <ul>
+ <li>Evaluate the clinical indications for a 12-week vs. 6-month program model based on CNS chronicity.</li>
+ <li>Align the seven phases of the RESTORE Framework™ with physiological adaptation timelines.</li>
+ <li>Construct a multidimensional Client Journey Map that ensures long-term retention and success.</li>
+ <li>Identify and implement 5 specific Key Performance Indicators (KPIs) that track progress beyond subjective pain scores.</li>
+ <li>Integrate specialized fibromyalgia workflows into existing clinical or coaching practice models.</li>
+ </ul>
+ </div>
+
+ <h2 id="duration">The Chronicity Calculus: 12 Weeks vs. 6 Months</h2>
+ <p>One of the most frequent questions from new specialists is: <em>"How long should my program be?"</em> In the world of chronic central sensitization, the answer is dictated by <strong>neuroplasticity</strong>. Research indicates that significant remodeling of pain pathways and habit formation typically requires a minimum of 90 to 180 days.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip 1: The Intensity Match</span>
+ <p>Always match the program duration to the client's "Symptom Duration." A client who has been in a flare for 10 years likely requires a 6-month container to safely navigate the "Bust" cycles without feeling like a failure. Use 12 weeks for those in early-stage sensitization or high-functioning "Boomers."</p>
+ </div>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Feature</th>
+ <th>12-Week Intensive</th>
+ <th>6-Month Transformation</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Primary Goal</strong></td>
+ <td>Stabilization & Flare Reduction</td>
+ <td>CNS Recalibration & Resilience</td>
+ </tr>
+ <tr>
+ <td><strong>Client Profile</strong></td>
+ <td>High-functioning, early diagnosis</td>
+ <td>Complex comorbidities, 5+ years of symptoms</td>
+ </tr>
+ <tr>
+ <td><strong>Meeting Frequency</strong></td>
+ <td>Weekly (High Touch)</td>
+ <td>Bi-weekly (Sustainable Pacing)</td>
+ </tr>
+ <tr>
+ <td><strong>Expected Income</strong></td>
+ <td>$1,200 - $1,800 per client</td>
+ <td>$2,500 - $4,500 per client</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <h2 id="milestones">Phase-Based Physiological Milestones</h2>
+ <p>The RESTORE Framework™ is not a linear checklist; it is a progressive architecture. When designing your program, you must align your sessions with the <strong>Physiological Adaptation Timeline (PAT)</strong>. If you introduce "Targeted Movement" (Phase 4) before "Sleep Optimization" (Phase 3), you risk triggering a massive inflammatory flare.</p>
+
+ <p><strong>The RESTORE Milestone Map:</strong></p>
+ <ul>
+ <li><strong>Weeks 1-2 (Root Assessment):</strong> Identification of the "Baseline." Goal: Client feels <em>heard</em> for the first time in years.</li>
+ <li><strong>Weeks 3-5 (Energy & Sleep):</strong> Metabolic Stabilization. Goal: Reduction in "brain fog" and 15% increase in sleep efficiency.</li>
+ <li><strong>Weeks 6-9 (Movement & Overdrive):</strong> CNS Desensitization. Goal: Introduction of non-threatening movement without PEM (Post-Exertional Malaise).</li>
+ <li><strong>Weeks 10-12 (Resilience & Enduring):</strong> The Exit Strategy. Goal: Creation of the "Flare Recovery Protocol" (FRP).</li>
+ </ul>
+
+ <!-- Case Study -->
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👩‍💼</div>
+ <div>
+ <p class="title">Practitioner Spotlight: Sarah's Pivot</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <p><strong>Practitioner:</strong> Sarah (48), former Special Education Teacher turned Health Coach.</p>
+ <p><strong>The Problem:</strong> Sarah was charging $75 per hour, seeing 15 clients a week, and felt as burnt out as her fibromyalgia clients. She was providing "general wellness" advice.</p>
+ <p><strong>The Intervention:</strong> She architected a 6-month <strong>RESTORE Intensive</strong> priced at $3,000. She limited her practice to 10 "premium" slots. </p>
+ <p><strong>The Outcome:</strong> By focusing on the structural design of the RESTORE Framework™, Sarah increased her income to $5,000/month while working 60% fewer hours. Her clients saw better results because the 6-month structure provided the safety their nervous systems needed to actually heal.</p>
+ </div>
+ </div>
+
+ <h2 id="journey">The Client Journey Map</h2>
+ <p>A "Client Journey Map" is a visual representation of the emotional and physical arc a client experiences. For a fibromyalgia patient, this journey is rarely a straight line upward. It is often a series of "two steps forward, one step back."</p>
+
+ <p><strong>Key Journey Touchpoints:</strong></p>
+ <ol>
+ <li><strong>The Intake (The Validation Phase):</strong> Shifting the narrative from "It's in your head" to "It's in your nervous system."</li>
+ <li><strong>The 4-Week Dip:</strong> Clients often feel frustrated when the initial "hope high" wears off. This is where <em>Energy Pacing</em> becomes the anchor.</li>
+ <li><strong>The Breakthrough (Week 8-9):</strong> The moment the client realizes they did an activity that <em>used</em> to cause a flare, but didn't this time.</li>
+ <li><strong>The Graduation:</strong> Transitioning from "Specialist-Led" to "Self-Led" management.</li>
+ </ol>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip 2: The 'Yellow Light' System</span>
+ <p>Integrate a "Yellow Light" check-in during Week 4. Ask the client: "Is your nervous system feeling safe or pressured by this program?" Adjusting the pace here prevents the client from dropping out due to overwhelm.</p>
+ </div>
+
+ <h2 id="integration">Workflow Optimization</h2>
+ <p>To run a $997+ certification-level program, your "behind the scenes" must be professional. You are no longer just "giving advice"; you are managing a clinical process.</p>
+
+ <p><strong>Essential Workflow Components:</strong></p>
+ <ul>
+ <li><strong>Digital Baseline Tracking:</strong> Use tools (like Practice Better or SimplePractice) to automate the weekly <em>Spoon Theory</em> check-in.</li>
+ <li><strong>The Resource Vault:</strong> Instead of repeating yourself, provide pre-recorded videos on "The Alpha-Delta Sleep Anomaly" or "Box Breathing for Vagus Tone."</li>
+ <li><strong>Communication Boundaries:</strong> Chronic pain clients can be high-need. Set clear "Office Hours" for messaging to protect your own nervous system.</li>
+ </ul>
+
+ <h2 id="kpi">Beyond the Pain Score: Strategic KPIs</h2>
+ <p>If you only track pain scores (0-10), your clients will feel like they are failing on bad days. As a Specialist, you must teach them to track <strong>Functional KPIs</strong>.</p>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip 3: The "Recovery Velocity" KPI</span>
+ <p>The most important metric in Fibromyalgia is not <em>if</em> they flare, but <em>how fast</em> they recover. Track "Flare Duration." If a flare used to last 7 days and now lasts 2 days, that is a massive clinical success, even if the pain intensity was the same.</p>
+ </div>
+
+ <p><strong>Top 5 Specialists KPIs:</strong></p>
+ <ul>
+ <li><strong>Heart Rate Variability (HRV):</strong> A physiological marker of autonomic balance.</li>
+ <li><strong>Sleep Latency & Efficiency:</strong> How long it takes to fall asleep and stay asleep.</li>
+ <li><strong>The "Spoon" Capacity:</strong> Subjective daily energy units available.</li>
+ <li><strong>Social Participation:</strong> Number of social events attended without a subsequent "crash."</li>
+ <li><strong>FIQR Score:</strong> The Revised Fibromyalgia Impact Questionnaire (The gold standard in clinical research).</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip 4: Celebrating "Non-Pain" Victories</span>
+ <p>During your sessions, explicitly look for "glimmers"—small moments of CNS safety. Did they drive to the store without anxiety? Did they read a book for 20 minutes? These are the building blocks of resilience.</p>
+ </div>
+
+ <!-- Check Your Understanding -->
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. Why is a 6-month program often superior to a 12-week program for long-term fibromyalgia cases?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">Neuroplasticity and the remodeling of chronic pain pathways typically require 3-6 months. A longer container allows for the inevitable "Bust" cycles and flares to be managed within the therapeutic relationship, preventing the client from feeling like a "failure" during a temporary setback.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is the danger of introducing Phase 4 (Targeted Movement) before Phase 3 (Sleep Optimization)?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">Without sleep optimization, the body lacks the neuro-regenerative capacity to repair from movement. Introducing movement to a sleep-deprived, sensitized CNS often triggers Post-Exertional Malaise (PEM) and inflammatory flares, reinforcing kinesiophobia.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. What does "Recovery Velocity" measure?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">It measures the duration of a flare rather than the intensity. It is a key KPI because it demonstrates the client's increasing resilience and the effectiveness of their Flare Recovery Protocol (FRP).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is the "4-Week Dip" in the Client Journey Map?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">It is a common period where the initial excitement of starting a new program fades, and the reality of the slow healing process sets in. It is a critical time for the Specialist to focus on Energy Pacing and CNS safety to prevent dropout.</div>
+ </div>
+ </div>
+
+ <!-- Takeaways -->
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways for the Specialist</p>
+ <ul>
+ <li>Structure is safety: A well-designed program acts as an external nervous system for the client.</li>
+ <li>Duration should match chronicity: 6 months is the gold standard for complex, long-term fibromyalgia cases.</li>
+ <li>Pacing is a clinical requirement: Never skip the foundation of Root Assessment and Sleep before moving to physical activity.</li>
+ <li>Track what matters: Focus on functional KPIs like HRV and Recovery Velocity to show progress even when pain is present.</li>
+ <li>Professional workflows lead to professional income: Use automation and resource vaults to scale your impact without burnout.</li>
+ </ul>
+ </div>
+
+ <!-- References -->
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Liptan, G. (2018). <em>The FibroManual: A Complete Fibromyalgia Treatment Guide for You and Your Doctor.</em> Ballantine Books.</li>
+ <li>Bennett, R. M., et al. (2009). "The Revised Fibromyalgia Impact Questionnaire (FIQR): validation and psychometric properties." <em>Arthritis Research & Therapy.</em></li>
+ <li>Clauw, D. J. (2014). "Fibromyalgia: A Clinical Review." <em>JAMA.</em></li>
+ <li>Nijs, J., et al. (2014). "Applying modern pain neuroscience in clinical practice: Criteria for the classification of central sensitization pain." <em>Pain Physician.</em></li>
+ <li>Lally, P., et al. (2010). "How are habits formed: Modelling habit formation in the real world." <em>European Journal of Social Psychology.</em></li>
+ <li>Meeus, M., et al. (2013). "Central sensitization: a biopsychosocial explanation for chronic widespread pain in patients with fibromyalgia and chronic fatigue syndrome." <em>Clinical Rheumatology.</em></li>
+ </ol>
+ </div>
+</div>
+
+<script>
+function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+}
+</script>
+
+</body>
+</html>

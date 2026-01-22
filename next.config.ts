@@ -181,6 +181,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "api.dicebear.com",
       },
+      {
+        // Cloudflare R2 public bucket for course thumbnails and PDFs
+        protocol: "https",
+        hostname: "pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev",
+        pathname: "/**",
+      },
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

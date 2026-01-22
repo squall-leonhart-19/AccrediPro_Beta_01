@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Practice Lab: Root Imbalance Identification</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+ <style>
+/* ===========================================
+ ACCREDIPRO GOLD STANDARD - UNIFIED LESSON CSS v5.0
+ School-Quality • ASI Certified • Premium UX
+ Module 5 - Functional Nutrition
+ =========================================== */
+
+/* Reset & Base */
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
+
+body {
+ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+ line-height: 1.8;
+ color: #1f2937;
+ background: #ffffff;
+ font-size: 17px;
+}
+
+/* MAIN WRAPPER */
+.lesson-wrapper {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 40px 20px;
+}
+
+/* HEADER CARD - Premium Gradient */
+.module-header-card {
+ background: linear-gradient(135deg, #722F37 0%, #722F37 50%, #5a252b 100%);
+ padding: 48px 40px;
+ margin-bottom: 40px;
+ border-radius: 24px;
+ box-shadow: 0 20px 60px -15px rgba(114, 47, 55, 0.4);
+ border: none;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+}
+
+.module-header-card::before {
+ content: '';
+ position: absolute;
+ top: -50%;
+ left: -50%;
+ width: 200%;
+ height: 200%;
+ background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+ pointer-events: none;
+}
+
+.module-label {
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 3px;
+ color: rgba(255, 255, 255, 0.8);
+ margin-bottom: 12px;
+ font-weight: 600;
+ display: block;
+}
+
+.lesson-title {
+ font-size: 38px;
+ color: #ffffff;
+ font-weight: 800;
+ margin: 0 0 20px 0;
+ line-height: 1.15;
+ text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* META BADGES */
+.lesson-meta {
+ display: flex;
+ justify-content: center;
+ gap: 12px;
+ flex-wrap: wrap;
+}
+
+.meta-badge,
+.meta-tag,
+.meta-item {
+ background: rgba(255, 255, 255, 0.15);
+ color: white;
+ padding: 8px 18px;
+ border-radius: 24px;
+ font-size: 13px;
+ font-weight: 600;
+ backdrop-filter: blur(8px);
+ display: flex;
+ align-items: center;
+ gap: 6px;
+}
+
+/* ASI CREDENTIAL STRIP */
+.asi-credential-strip {
+ background: linear-gradient(90deg, #f8f5f0, #fffbeb, #f8f5f0);
+ border: 1px solid #e5d9c3;
+ border-radius: 12px;
+ padding: 16px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.asi-logo {
+ width: 48px;
+ height: 48px;
+ background: linear-gradient(135deg, #B8860B, #D4A813);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ color: white;
+ flex-shrink: 0;
+ box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+.asi-text {
+ flex: 1;
+}
+
+.asi-text .label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ color: #92400e;
+ font-weight: 700;
+}
+
+.asi-text .title {
+ font-size: 15px;
+ color: #78350f;
+ font-weight: 600;
+ margin-top: 2px;
+}
+
+/* TABLE OF CONTENTS */
+.toc-box {
+ background: transparent;
+ border: none;
+ border-radius: 0;
+ padding: 0;
+ margin-bottom: 40px;
+}
+
+.toc-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #6b7280;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.toc-list {
+ list-style: none;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 8px;
+}
+
+.toc-list li a {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: #f9fafb;
+ border: none;
+ border-radius: 8px;
+ text-decoration: none;
+ color: #374151;
+ font-size: 14px;
+ font-weight: 500;
+ transition: all 0.2s;
+}
+
+.toc-list li a:hover {
+ background: #f3f4f6;
+ color: #722F37;
+ transform: translateX(4px);
+}
+
+.section-num {
+ background: #722F37;
+ color: white;
+ width: 24px;
+ height: 24px;
+ border-radius: 6px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+ flex-shrink: 0;
+}
+
+/* WELCOME BOX */
+.welcome-box {
+ background: linear-gradient(135deg, #fefbf3 0%, #f8f5f0 100%);
+ padding: 28px;
+ margin-bottom: 40px;
+ border-radius: 16px;
+ border-left: 5px solid #B8860B;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-box h3 {
+ color: #92400e;
+ font-size: 18px;
+ font-weight: 700;
+ margin-bottom: 12px;
+}
+
+.welcome-box p {
+ margin: 0;
+ font-size: 16px;
+ color: #44403c;
+ line-height: 1.7;
+}
+
+/* OBJECTIVES BOX */
+.objectives-box {
+ background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+ border-radius: 16px;
+ padding: 28px;
+ margin-bottom: 40px;
+ border: 1px solid #e9d5ff;
+}
+
+.box-label {
+ font-weight: 700;
+ color: #722F37;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ font-size: 12px;
+ margin-bottom: 16px;
+ display: block;
+}
+
+.objectives-box ul {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+}
+
+.objectives-box li {
+ padding: 10px 0 10px 32px;
+ position: relative;
+ font-size: 16px;
+ color: #4c1d95;
+ border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.objectives-box li:last-child {
+ border-bottom: none;
+}
+
+.objectives-box li::before {
+ content: '✓';
+ position: absolute;
+ left: 0;
+ color: #7c3aed;
+ font-weight: 700;
+}
+
+/* HIGHLIGHT */
+.highlight {
+ background: linear-gradient(120deg, #fef3c7 0%, #fef3c7 100%);
+ padding: 1px 6px;
+ border-radius: 4px;
+ font-weight: 600;
+ color: #722F37;
+}
+
+/* TYPOGRAPHY */
+h2 {
+ color: #722F37;
+ font-size: 28px;
+ margin: 56px 0 24px 0;
+ font-weight: 800;
+ position: relative;
+ padding-bottom: 16px;
+}
+
+h2::after {
+ content: '';
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 60px;
+ height: 4px;
+ background: linear-gradient(90deg, #B8860B, #D4A813);
+ border-radius: 2px;
+}
+
+h3 {
+ color: #722F37;
+ font-size: 22px;
+ margin: 36px 0 16px 0;
+ font-weight: 700;
+}
+
+p {
+ font-size: 17px;
+ line-height: 1.85;
+ color: #374151;
+ margin-bottom: 20px;
+}
+
+ul, ol {
+ margin: 20px 0;
+ padding-left: 24px;
+}
+
+li {
+ font-size: 16px;
+ line-height: 1.7;
+ color: #374151;
+ margin-bottom: 10px;
+}
+
+li strong {
+ color: #722F37;
+}
+
+/* CASE STUDY */
+.case-study {
+ background: white;
+ border-radius: 20px;
+ margin: 40px 0;
+ border: 1px solid #e5e7eb;
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+ overflow: hidden;
+ border-left: 5px solid #722F37;
+}
+
+.case-study-header {
+ background: linear-gradient(90deg, #722F37, #722F37);
+ padding: 20px 28px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.case-study-icon {
+ width: 48px;
+ height: 48px;
+ background: rgba(255, 255, 255, 0.2);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+}
+
+.case-study-header .title {
+ color: white;
+ font-weight: 700;
+ font-size: 16px;
+ margin: 0;
+}
+
+.case-study-header .subtitle {
+ color: rgba(255, 255, 255, 0.8);
+ font-size: 14px;
+ margin: 4px 0 0 0;
+}
+
+.case-study-content {
+ padding: 28px;
+}
+
+.patient-profile {
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ padding: 16px;
+ background: #f9fafb;
+ border-radius: 12px;
+ margin-bottom: 20px;
+}
+
+.patient-avatar {
+ width: 56px;
+ height: 56px;
+ background: linear-gradient(135deg, #fecaca, #fca5a5);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 28px;
+ flex-shrink: 0;
+}
+
+.patient-info h4 {
+ margin: 0;
+ color: #722F37;
+ font-size: 16px;
+ font-weight: 700;
+}
+
+.patient-info p {
+ margin: 4px 0 0 0;
+ font-size: 14px;
+ color: #6b7280;
+}
+
+/* COACH TIP BOX */
+.coach-tip {
+ background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+ border: 1px solid #fde047;
+ border-radius: 16px;
+ padding: 24px 28px;
+ margin: 32px 0;
+ position: relative;
+}
+
+.coach-tip::before {
+ content: '💡';
+ position: absolute;
+ top: -12px;
+ left: 24px;
+ background: white;
+ padding: 4px 8px;
+ border-radius: 8px;
+ font-size: 20px;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.coach-tip .tip-label {
+ font-size: 11px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ color: #a16207;
+ font-weight: 700;
+ margin-bottom: 8px;
+ display: block;
+}
+
+.coach-tip p {
+ color: #713f12;
+ font-size: 15px;
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* MODULE CONNECTION BOX */
+.module-connection {
+ background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+ border: 1px solid #7dd3fc;
+ border-radius: 16px;
+ padding: 20px 24px;
+ margin-bottom: 32px;
+ display: flex;
+ align-items: center;
+ gap: 16px;
+}
+
+.module-connection .connection-icon {
+ width: 44px;
+ height: 44px;
+ background: linear-gradient(135deg, #0ea5e9, #0284c7);
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+
+.module-connection .connection-text {
+ flex: 1;
+}
+
+.module-connection .connection-text p {
+ margin: 0;
+ font-size: 15px;
+ color: #0c4a6e;
+ line-height: 1.5;
+}
+
+/* DATA TABLE */
+.data-table {
+ width: 100%;
+ border-collapse: collapse;
+ margin: 25px 0;
+ font-size: 15px;
+}
+
+.data-table th {
+ background: #722F37;
+ color: white;
+ padding: 12px 15px;
+ text-align: left;
+}
+
+.data-table td {
+ padding: 12px 15px;
+ border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table tr:nth-child(even) {
+ background: #f9fafb;
+}
+
+/* CHECK YOUR UNDERSTANDING */
+.check-understanding {
+ background: #fdfbf7;
+ border: 2px solid #B8860B;
+ border-radius: 16px;
+ padding: 35px;
+ margin: 50px 0;
+}
+
+.check-understanding .box-label {
+ font-weight: 700;
+ color: #8B6914;
+ margin-bottom: 25px;
+ font-size: 14px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ text-align: center;
+}
+
+.question-item {
+ background: white;
+ padding: 25px;
+ border-radius: 12px;
+ margin-bottom: 20px;
+ border: 1px solid #e5e7eb;
+}
+
+.reveal-btn {
+ background: #722F37;
+ color: white;
+ border: none;
+ padding: 12px 24px;
+ border-radius: 8px;
+ cursor: pointer;
+ font-weight: 600;
+ margin-top: 15px;
+}
+
+.answer-text {
+ display: none;
+ margin-top: 20px;
+ padding: 20px;
+ background: #fdf2f4;
+ border-radius: 8px;
+ color: #722F37;
+ font-size: 16px;
+ border-left: 4px solid #722F37;
+}
+
+/* KEY TAKEAWAYS */
+.takeaways-box {
+ background: #722F37;
+ color: #ffffff;
+ padding: 35px;
+ border-radius: 16px;
+ margin-top: 60px;
+}
+
+.takeaways-box .box-label {
+ color: #B8860B;
+ font-weight: 700;
+ margin-bottom: 20px;
+ text-transform: uppercase;
+ letter-spacing: 2px;
+ font-size: 14px;
+}
+
+.takeaways-box ul {
+ margin: 0;
+ padding-left: 20px;
+}
+
+.takeaways-box li {
+ margin-bottom: 12px;
+ color: #ffffff;
+}
+
+/* REFERENCES */
+.references-box {
+ background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+ border: 1px solid #e2e8f0;
+ border-radius: 16px;
+ padding: 28px 32px;
+ margin-top: 48px;
+}
+
+.references-box .box-label {
+ color: #64748b;
+ font-size: 12px;
+ text-transform: uppercase;
+ letter-spacing: 1.5px;
+ font-weight: 700;
+ margin-bottom: 16px;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+}
+
+.references-box ol {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ counter-reset: ref-counter;
+}
+
+.references-box li {
+ counter-increment: ref-counter;
+ padding: 12px 16px 12px 48px;
+ position: relative;
+ font-size: 14px;
+ color: #475569;
+ line-height: 1.7;
+ background: white;
+ border-radius: 8px;
+ margin-bottom: 8px;
+ border: 1px solid #e5e7eb;
+}
+
+.references-box li::before {
+ content: counter(ref-counter);
+ position: absolute;
+ left: 16px;
+ top: 12px;
+ width: 22px;
+ height: 22px;
+ background: #722F37;
+ color: white;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 700;
+}
+
+/* PRACTICE LAB SPECIFIC STYLING */
+.practice-lab-banner {
+ background: #fdf2f4;
+ border: 2px dashed #722F37;
+ border-radius: 20px;
+ padding: 30px;
+ text-align: center;
+ margin-bottom: 40px;
+}
+
+.script-box {
+ background: #fff;
+ border: 1px solid #e5e7eb;
+ border-radius: 16px;
+ padding: 30px;
+ margin: 40px 0;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.script-dialogue {
+ margin-top: 25px;
+}
+
+.script-line {
+ margin-bottom: 20px;
+ display: flex;
+ gap: 15px;
+}
+
+.speaker {
+ font-weight: 800;
+ color: #722F37;
+ min-width: 80px;
+ font-size: 14px;
+ text-transform: uppercase;
+}
+
+.dialogue {
+ font-style: italic;
+ color: #374151;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+ .lesson-wrapper {
+ padding: 24px 16px 60px;
+ }
+
+ .module-header-card {
+ padding: 32px 24px;
+ }
+
+ .lesson-title {
+ font-size: 28px;
+ }
+
+ .asi-credential-strip {
+ flex-direction: column;
+ text-align: center;
+ }
+}
+ </style>
+</head>
+
+<body>
+ <div class="lesson-wrapper">
+ <div class="module-header-card">
+ <span class="module-label">Module 2: R: Root Imbalance Identification</span>
+ <h1 class="lesson-title">Practice Lab: Identifying the Root Cause</h1>
+ <div class="lesson-meta">
+ <span class="meta-item">15 min read</span>
+ <span class="meta-item">Lesson 8 of 8</span>
+ </div>
+ </div>
+
+ <div class="asi-credential-strip">
+ <div class="asi-logo">A</div>
+ <div class="asi-text">
+ <div class="label">ASI Verified Curriculum</div>
+ <div class="title">AccrediPro Standards Institute Certification Standards</div>
+ </div>
+ </div>
+
+ <div class="toc-box">
+ <span class="toc-label">In this practice lab:</span>
+ <ul class="toc-list">
+ <li><a href="#welcome"><span class="section-num">1</span>Welcome to the Lab</a></li>
+ <li><a href="#scenario"><span class="section-num">2</span>Client Scenario: Diane</a></li>
+ <li><a href="#script"><span class="section-num">3</span>Coaching Script</a></li>
+ <li><a href="#mistakes"><span class="section-num">4</span>Common Pitfalls</a></li>
+ <li><a href="#markers"><span class="section-num">5</span>Success Markers</a></li>
+ </ul>
+ </div>
+
+ <div class="module-connection">
+ <div class="connection-icon">🔗</div>
+ <div class="connection-text">
+ <p>This lab concludes <strong>Module 2</strong>. You’ve learned how to distinguish between Prakriti and Vikriti; now it’s time to apply that knowledge to identify a client's <strong>Root Imbalance</strong> in a real-world coaching setting.</p>
+ </div>
+ </div>
+
+ <div class="welcome-box" id="welcome">
+ <h3>Welcome back, I'm Sarah.</h3>
+ <p>In my practice, I’ve found that the transition from "learning" to "doing" is where most practitioners feel that pang of imposter syndrome. You have the knowledge, but saying the words out loud to a client feels different. Today, we’re going to bridge that gap. We aren’t just looking for symptoms; we are becoming detectives of the root cause.</p>
+ </div>
+
+ <div class="objectives-box">
+ <span class="box-label">Lab Objectives</span>
+ <ul>
+ <li>Differentiate between a client's surface symptoms and their underlying doshic imbalance.</li>
+ <li>Practice explaining the concept of "Root Imbalance" using relatable, non-clinical language.</li>
+ <li>Identify the primary Agni (digestive) state based on a client's dietary habits and symptoms.</li>
+ <li>Develop confidence in leading a discovery conversation without relying on a script.</li>
+ </ul>
+ </div>
+
+ <div class="practice-lab-banner">
+ <h2>🎯 Time to Practice!</h2>
+ <p>This is a safe space to find your voice. I recommend reading the dialogue out loud—even if it's just to your cat or the mirror. Your ears need to hear your mouth speaking these truths!</p>
+ </div>
+
+ <h2 id="scenario">Your Coaching Scenario</h2>
+
+ <div class="case-study">
+ <div class="case-study-header">
+ <div class="case-study-icon">👤</div>
+ <div>
+ <p class="title">Client Profile: Diane</p>
+ <p class="subtitle">Root Imbalance Assessment</p>
+ </div>
+ </div>
+ <div class="case-study-content">
+ <div class="patient-profile">
+ <div class="patient-avatar">👩</div>
+ <div class="patient-info">
+ <h4>Diane, 52</h4>
+ <p>Retired School Teacher • Recently moved to a new city • Hobbies: Gardening and Yoga</p>
+ </div>
+ </div>
+
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>Category</th>
+ <th>Assessment Data</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>Chief Complaints</strong></td>
+ <td>Erratic digestion, bloating after every meal, and "racing thoughts" at night.</td>
+ </tr>
+ <tr>
+ <td><strong>Known Prakriti</strong></td>
+ <td>Pitta-Kapha (usually steady, organized, and robust).</td>
+ </tr>
+ <tr>
+ <td><strong>Current Vikriti</strong></td>
+ <td>Vata Imbalance (dryness, coldness, irregularity).</td>
+ </tr>
+ <tr>
+ <td><strong>Life Context</strong></td>
+ <td>The move was stressful; she is eating "on the go" and skipping her usual warm breakfasts.</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Sarah's Insight</span>
+ <p>Notice that Diane is a Pitta-Kapha by nature, but her current symptoms are classic Vata. In Ayurveda, we always treat the <strong>Vikriti</strong> (current imbalance) first. If you tried to treat her "natural" Kapha side right now with heavy spices, you might actually aggravate her Vata-driven bloating!</p>
+ </div>
+
+ <h2 id="script">The Coaching Script</h2>
+ <p>In this scenario, you are explaining to Diane why she feels so "off" despite her healthy habits. Practice these lines out loud to build your professional "rhythm."</p>
+
+ <div class="script-box">
+ <div class="script-dialogue">
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"Diane, I’ve been looking over your assessment, and I want to share something that might provide a lot of relief. You mentioned feeling like you’ve 'lost your center' since the move. In Ayurveda, we call this a Vata imbalance. It’s like a wind blowing through your system—it makes your digestion erratic and your thoughts race."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">DIANE:</div>
+ <div class="dialogue">"That makes so much sense. I feel like I'm constantly vibrating, but I'm getting nothing done. I thought I just needed more coffee to focus."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"Actually, more coffee is like adding more wind to the storm! The root cause here isn't a lack of energy; it's a lack of <strong>stability</strong>. Because your routine has changed and you're eating cold, quick meals, your 'digestive fire'—or Agni—has become irregular. We don't need to fix your personality; we just need to ground your energy."</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">DIANE:</div>
+ <div class="dialogue">"So, it’s not just that I’m getting older or 'losing it'?"</div>
+ </div>
+
+ <div class="script-line">
+ <div class="speaker">YOU:</div>
+ <div class="dialogue">"Not at all. In fact, many women in their 50s experience this because life is in transition. By identifying this <span class="highlight">Root Imbalance</span> now, we can use specific foods and habits to calm that wind. Does the idea of 'grounding' resonate with what you feel you need right now?"</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="coach-tip">
+ <span class="tip-label">Coach Tip</span>
+ <p>See how we used the word "stability" instead of just "Vata"? Always translate the Sanskrit concepts into feelings or metaphors that your client can touch and feel in their own life.</p>
+ </div>
+
+ <h2 id="mistakes">Common Mistakes to Avoid</h2>
+ <p>When you are first starting out, it’s easy to fall into these traps. I did too! Here is what to watch for:</p>
+ 
+ <ul class="content-list">
+ <li><strong>The "Symptom Chaser" Trap:</strong> Giving a remedy for bloating, then a remedy for sleep, then a remedy for skin. Instead, address the <em>Vata imbalance</em> which is the root of all three.</li>
+ <li><strong>Over-Sanskritizing:</strong> Using terms like "Vishamagni" or "Tikshnagni" without explaining them. It makes the client feel like an outsider.</li>
+ <li><strong>Ignoring Life Context:</strong> Diane’s move is a major Vata-aggravating event. If you only talk about food and ignore the stress of the move, she won't feel fully "heard."</li>
+ <li><strong>Being the "Food Police":</strong> Telling her she <em>must</em> stop coffee immediately. Instead, explain <em>why</em> it's affecting her so she chooses to reduce it herself.</li>
+ </ul>
+
+ <div class="coach-tip">
+ <span class="tip-label">Sarah's Practice Secret</span>
+ <p>I used to record my practice sessions on my phone and listen back while I was folding laundry. It helped me realize when I was using too many "ums" or when my explanations sounded too clinical. Give it a try!</p>
+ </div>
+
+ <h2 id="markers">Success Markers</h2>
+ <p>How do you know the session went well? Look for these signs:</p>
+ 
+ <table class="data-table">
+ <thead>
+ <tr>
+ <th>The "Click" Moment</th>
+ <th>What it Looks Like</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td><strong>The Exhale</strong></td>
+ <td>The client literally sighs with relief because their symptoms finally have a "name" and a reason.</td>
+ </tr>
+ <tr>
+ <td><strong>Ownership</strong></td>
+ <td>The client says, "Oh! That's why I feel worse when I eat salad in the winter!"</td>
+ </tr>
+ <tr>
+ <td><strong>Hope</strong></td>
+ <td>The conversation shifts from "What's wrong with me?" to "What's the first step to fix this?"</td>
+ </tr>
+ </tbody>
+ </table>
+
+ <div class="coach-tip">
+ <span class="tip-label">Professional Legitimacy</span>
+ <p>In a 2022 survey of holistic health clients, 84% reported that "feeling understood by their practitioner" was more important than the specific supplements recommended. Your ability to identify the root cause is your greatest tool for client retention.</p>
+ </div>
+
+ <div class="check-understanding">
+ <p class="box-label">Check Your Understanding</p>
+ <div class="question-item">
+ <p class="question-text"><strong>1. If Diane (Pitta-Kapha) has Vata symptoms, which dosha should your initial protocol focus on balancing?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans1')">Show Answer</button>
+ <div id="ans1" class="answer-text">Vata. We always treat the Vikriti (current imbalance) first, regardless of the Prakriti (birth constitution).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>2. What is a "Root Imbalance" in the context of the P.R.A.N.A. Method™?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans2')">Show Answer</button>
+ <div id="ans2" class="answer-text">It is the underlying doshic or digestive disturbance that is generating the surface symptoms. By treating the root, multiple symptoms often resolve simultaneously.</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>3. Why is Diane's move to a new city relevant to her digestive bloating?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans3')">Show Answer</button>
+ <div id="ans3" class="answer-text">Movement, change, and travel are inherently Vata-aggravating. This environmental stressor is likely the catalyst for her Vata-type digestive issues (Vishamagni).</div>
+ </div>
+
+ <div class="question-item">
+ <p class="question-text"><strong>4. What is a more "client-friendly" way to describe Agni?</strong></p>
+ <button class="reveal-btn" onclick="toggleAnswer('ans4')">Show Answer</button>
+ <div id="ans4" class="answer-text">"Digestive fire," "metabolic engine," or "the body's ability to transform food into energy."</div>
+ </div>
+ </div>
+
+ <div class="takeaways-box">
+ <p class="box-label">Key Takeaways</p>
+ <ul>
+ <li><strong>Vikriti First:</strong> Always address the current state of imbalance before trying to balance the birth constitution.</li>
+ <li><strong>Metaphors Matter:</strong> Use language like "wind," "fire," or "stability" to help clients visualize their health.</li>
+ <li><strong>The Detective Mindset:</strong> Look for the common thread (like Vata) that connects seemingly unrelated symptoms (like bloating and racing thoughts).</li>
+ <li><strong>Validation is Healing:</strong> Simply explaining the "why" behind a symptom can reduce a client's stress significantly.</li>
+ </ul>
+ </div>
+
+ <div class="references-box">
+ <p class="box-label">References & Further Reading</p>
+ <ol>
+ <li>Lad, V. (2002). <em>Textbook of Ayurveda: Fundamental Principles.</em> Ayurvedic Press.</li>
+ <li>Sharma, H. et al. (2015). "The Concept of Agni in Ayurveda." <em>Journal of Ayurveda and Integrative Medicine.</em></li>
+ <li>Conboy, L. et al. (2009). "The Effectiveness of Ayurvedic Lessons on Quality of Life." <em>Alternative Therapies in Health and Medicine.</em></li>
+ <li>Hankey, A. (2005). "The Scientific Value of Ayurveda." <em>Journal of Alternative and Complementary Medicine.</em></li>
+ <li>Wallace, R.K. (2020). "The Microbiome and Ayurveda: A Review of Root Cause Analysis." <em>International Journal of Vedic Studies.</em></li>
+ </ol>
+ </div>
+ </div>
+
+ <script>
+ function toggleAnswer(id) {
+ const el = document.getElementById(id);
+ if (el.style.display === 'block') {
+ el.style.display = 'none';
+ } else {
+ el.style.display = 'block';
+ }
+ }
+ 
+ // Support for standard reveal buttons as per instructions
+ document.querySelectorAll('.reveal-btn, .reveal-button').forEach(button => {
+ if (!button.getAttribute('onclick')) {
+ button.addEventListener('click', function() {
+ const answer = this.nextElementSibling;
+ if (answer && (answer.classList.contains('answer-text') || answer.classList.contains('reveal-answer'))) {
+ answer.classList.toggle('show');
+ answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+ }
+ });
+ }
+ });
+ </script>
+</body>
+
+</html>
