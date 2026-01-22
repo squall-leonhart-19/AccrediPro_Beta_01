@@ -466,615 +466,625 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
                                     <TabsTrigger value="notes" className="rounded-lg px-4"><Edit className="w-4 h-4 mr-2" />Notes</TabsTrigger>
                                 </TabsList>
 
-                                    {/* Overview Tab */}
-                                    <TabsContent value="overview" className="mt-6">
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            {/* Quick Actions */}
-                                            <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                                                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                                    <Zap className="w-5 h-5 text-burgundy-600" />Quick Actions
-                                                </h3>
-                                                <div className="grid grid-cols-2 gap-3">
-                                                    <Button variant="outline" onClick={() => setShowAddSession(true)} className="h-auto py-3 flex-col gap-1 bg-blue-50 border-blue-200 hover:bg-blue-500/20 hover:border-blue-300 text-gray-900">
-                                                        <Video className="w-5 h-5 text-blue-500" /><span className="text-xs">Log Session</span>
-                                                    </Button>
-                                                    <Button variant="outline" onClick={() => setShowSendForm(true)} className="h-auto py-3 flex-col gap-1 bg-burgundy-50 border-burgundy-200 hover:bg-[#722f37]/30 hover:border-[#722f37]/40 text-gray-900">
-                                                        <Send className="w-5 h-5 text-burgundy-600" /><span className="text-xs">Send Form</span>
-                                                    </Button>
-                                                    <Button variant="outline" onClick={() => setShowAssignProtocol(true)} className="h-auto py-3 flex-col gap-1 bg-purple-50 border-purple-200 hover:bg-purple-500/20 hover:border-purple-500/30 text-gray-900">
-                                                        <ClipboardList className="w-5 h-5 text-purple-500" /><span className="text-xs">Assign Protocol</span>
-                                                    </Button>
-                                                    <Button variant="outline" onClick={() => setShowAddTask(true)} className="h-auto py-3 flex-col gap-1 bg-amber-50 border-amber-200 hover:bg-amber-500/20 hover:border-amber-500/30 text-gray-900">
-                                                        <CheckSquare className="w-5 h-5 text-amber-500" /><span className="text-xs">Add Task</span>
-                                                    </Button>
-                                                </div>
-                                            </div>
-
-                                            {/* Health Summary */}
-                                            <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                                                <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                                    <Target className="w-5 h-5 text-burgundy-600" />Health Goals
-                                                </h3>
-                                                {selectedClient.healthGoals ? (
-                                                    <p className="text-sm text-gray-600">{selectedClient.healthGoals}</p>
-                                                ) : (
-                                                    <p className="text-sm text-gray-400">No health goals set</p>
-                                                )}
-                                                {selectedClient.primaryConcerns && (
-                                                    <div className="mt-4 pt-4 border-t border-gray-200">
-                                                        <p className="text-xs font-medium text-gray-500 mb-2">Primary Concerns</p>
-                                                        <p className="text-sm text-gray-600">{selectedClient.primaryConcerns}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Pending Tasks */}
-                                            <div className="bg-white rounded-2xl border border-gray-200 p-5 md:col-span-2">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                                                        <CheckSquare className="w-5 h-5 text-amber-500" />Pending Tasks
-                                                    </h3>
-                                                    <Button size="sm" variant="ghost" onClick={() => setShowAddTask(true)} className="text-burgundy-600 hover:text-[#e8c547] hover:bg-[#d4af37]/10">
-                                                        <Plus className="w-4 h-4" />
-                                                    </Button>
-                                                </div>
-                                                {selectedClient.tasks.length > 0 ? (
-                                                    <div className="space-y-2">
-                                                        {selectedClient.tasks.map((task) => (
-                                                            <div key={task.id} className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                                                                <button
-                                                                    onClick={() => handleCompleteTask(task.id)}
-                                                                    className="w-5 h-5 rounded-full border-2 border-amber-300 hover:bg-amber-200 transition-colors"
-                                                                />
-                                                                <p className="text-sm font-medium text-gray-900 flex-1">{task.task}</p>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    <p className="text-sm text-gray-400 text-center py-4">No pending tasks</p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-
-                                    {/* Health Profile Tab */}
-                                    <TabsContent value="health" className="mt-6">
-                                        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-                                            <div className="flex items-center justify-between mb-6">
-                                                <div>
-                                                    <h3 className="font-bold text-gray-900 text-xl">Health Profile</h3>
-                                                    <p className="text-sm text-gray-500">Complete health information for {selectedClient.name}</p>
-                                                </div>
-                                                {!editingHealth ? (
-                                                    <Button onClick={() => setEditingHealth(true)} variant="outline" className="bg-transparent border-white/20 text-gray-900 hover:bg-white/10 hover:border-white/30">
-                                                        <Edit className="w-4 h-4 mr-2" /> Edit Profile
-                                                    </Button>
-                                                ) : (
-                                                    <div className="flex gap-2">
-                                                        <Button variant="outline" onClick={() => setEditingHealth(false)} className="bg-transparent border-white/20 text-gray-900 hover:bg-white/10">Cancel</Button>
-                                                        <Button
-                                                            className="bg-burgundy-600 hover:bg-burgundy-700 text-white"
-                                                            disabled={savingHealth}
-                                                            onClick={async () => {
-                                                                setSavingHealth(true);
-                                                                try {
-                                                                    const res = await fetch(`/api/coach/clients/${selectedClient.id}/health`, {
-                                                                        method: "PUT",
-                                                                        headers: { "Content-Type": "application/json" },
-                                                                        body: JSON.stringify(healthForm),
-                                                                    });
-                                                                    const data = await res.json();
-                                                                    if (data.success) {
-                                                                        setSelectedClient(prev => prev ? { ...prev, ...data.data } : null);
-                                                                        setEditingHealth(false);
-                                                                        toast.success("Health profile saved!");
-                                                                    } else {
-                                                                        toast.error(data.error || "Failed to save");
-                                                                    }
-                                                                } catch (error) {
-                                                                    toast.error("Failed to save health profile");
-                                                                } finally {
-                                                                    setSavingHealth(false);
-                                                                }
-                                                            }}
-                                                        >
-                                                            {savingHealth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                                            Save Profile
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {!editingHealth ? (
-                                                /* View Mode */
-                                                <div className="space-y-6">
-                                                    <div className="grid md:grid-cols-3 gap-4">
-                                                        <div className="p-4 bg-[#722f37]/20 border border-[#722f37]/30 rounded-xl">
-                                                            <p className="text-xs font-medium text-burgundy-600 mb-1">Primary Concerns</p>
-                                                            <p className="text-sm text-gray-900">{selectedClient.primaryConcerns || "Not specified"}</p>
-                                                        </div>
-                                                        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-                                                            <p className="text-xs font-medium text-emerald-500 mb-1">Health Goals</p>
-                                                            <p className="text-sm text-gray-900">{selectedClient.healthGoals || "Not specified"}</p>
-                                                        </div>
-                                                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                                                            <p className="text-xs font-medium text-blue-500 mb-1">Current Health Status</p>
-                                                            <p className="text-sm text-gray-900">{selectedClient.currentHealth || "Not specified"}</p>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Medical History */}
-                                                    <div>
-                                                        <h4 className="font-semibold text-gray-900 mb-3">Medical History</h4>
-                                                        <div className="grid md:grid-cols-2 gap-4">
-                                                            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                                                                <p className="text-xs font-medium text-gray-500 mb-2">Conditions</p>
-                                                                {(selectedClient.conditions?.length ?? 0) > 0 ? (
-                                                                    <div className="flex flex-wrap gap-1">
-                                                                        {selectedClient.conditions?.map((c, i) => (
-                                                                            <Badge key={i} variant="outline" className="text-xs bg-gray-50 border-white/20 text-gray-900">{c}</Badge>
-                                                                        ))}
-                                                                    </div>
-                                                                ) : <p className="text-sm text-gray-400">None listed</p>}
-                                                            </div>
-                                                            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                                                                <p className="text-xs font-medium text-gray-500 mb-2">Allergies</p>
-                                                                {(selectedClient.allergies?.length ?? 0) > 0 ? (
-                                                                    <div className="flex flex-wrap gap-1">
-                                                                        {selectedClient.allergies?.map((a, i) => (
-                                                                            <Badge key={i} variant="outline" className="text-xs bg-red-50 border-red-200 text-red-700">{a}</Badge>
-                                                                        ))}
-                                                                    </div>
-                                                                ) : <p className="text-sm text-gray-400">None listed</p>}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Lifestyle */}
-                                                    <div>
-                                                        <h4 className="font-semibold text-gray-900 mb-3">Lifestyle</h4>
-                                                        <div className="grid md:grid-cols-4 gap-4">
-                                                            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
-                                                                <p className="text-2xl font-bold text-burgundy-600">{selectedClient.sleepHours || "-"}</p>
-                                                                <p className="text-xs text-gray-500">Hours Sleep</p>
-                                                            </div>
-                                                            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
-                                                                <p className="text-lg font-semibold text-gray-900">{selectedClient.dietType || "-"}</p>
-                                                                <p className="text-xs text-gray-500">Diet Type</p>
-                                                            </div>
-                                                            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
-                                                                <p className="text-lg font-semibold text-gray-900">{selectedClient.exerciseFreq || "-"}</p>
-                                                                <p className="text-xs text-gray-500">Exercise</p>
-                                                            </div>
-                                                            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
-                                                                <p className="text-lg font-semibold text-gray-900">{selectedClient.stressLevel || "-"}</p>
-                                                                <p className="text-xs text-gray-500">Stress Level</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                /* Edit Mode */
-                                                <div className="space-y-6">
-                                                    <div className="grid md:grid-cols-1 gap-4">
-                                                        <div>
-                                                            <Label className="text-gray-600">Primary Concerns</Label>
-                                                            <Textarea
-                                                                value={healthForm.primaryConcerns}
-                                                                onChange={(e) => setHealthForm({...healthForm, primaryConcerns: e.target.value})}
-                                                                placeholder="What are the client's main health concerns?"
-                                                                rows={2}
-                                                                className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <Label className="text-gray-600">Health Goals</Label>
-                                                            <Textarea
-                                                                value={healthForm.healthGoals}
-                                                                onChange={(e) => setHealthForm({...healthForm, healthGoals: e.target.value})}
-                                                                placeholder="What does the client want to achieve?"
-                                                                rows={2}
-                                                                className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <h4 className="font-semibold text-gray-900 mb-3">Lifestyle</h4>
-                                                        <div className="grid md:grid-cols-4 gap-4">
-                                                            <div>
-                                                                <Label className="text-gray-600">Diet Type</Label>
-                                                                <Select value={healthForm.dietType} onValueChange={(v) => setHealthForm({...healthForm, dietType: v})}>
-                                                                    <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900"><SelectValue placeholder="Select diet" /></SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectItem value="Standard">Standard</SelectItem>
-                                                                        <SelectItem value="Vegetarian">Vegetarian</SelectItem>
-                                                                        <SelectItem value="Vegan">Vegan</SelectItem>
-                                                                        <SelectItem value="Keto">Keto</SelectItem>
-                                                                        <SelectItem value="Paleo">Paleo</SelectItem>
-                                                                    </SelectContent>
-                                                                </Select>
-                                                            </div>
-                                                            <div>
-                                                                <Label className="text-gray-600">Sleep Hours</Label>
-                                                                <Input
-                                                                    type="number"
-                                                                    min="0"
-                                                                    max="24"
-                                                                    value={healthForm.sleepHours}
-                                                                    onChange={(e) => setHealthForm({...healthForm, sleepHours: parseInt(e.target.value) || 0})}
-                                                                    className="bg-gray-50 border-gray-200 text-gray-900"
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <Label className="text-gray-600">Exercise Frequency</Label>
-                                                                <Select value={healthForm.exerciseFreq} onValueChange={(v) => setHealthForm({...healthForm, exerciseFreq: v})}>
-                                                                    <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900"><SelectValue placeholder="Select frequency" /></SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectItem value="None">None</SelectItem>
-                                                                        <SelectItem value="1-2x/week">1-2x/week</SelectItem>
-                                                                        <SelectItem value="3-4x/week">3-4x/week</SelectItem>
-                                                                        <SelectItem value="Daily">Daily</SelectItem>
-                                                                    </SelectContent>
-                                                                </Select>
-                                                            </div>
-                                                            <div>
-                                                                <Label className="text-gray-600">Stress Level</Label>
-                                                                <Select value={healthForm.stressLevel} onValueChange={(v) => setHealthForm({...healthForm, stressLevel: v})}>
-                                                                    <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900"><SelectValue placeholder="Select level" /></SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectItem value="Low">Low</SelectItem>
-                                                                        <SelectItem value="Moderate">Moderate</SelectItem>
-                                                                        <SelectItem value="High">High</SelectItem>
-                                                                    </SelectContent>
-                                                                </Select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </TabsContent>
-
-                                    {/* Sessions Tab */}
-                                    <TabsContent value="sessions" className="mt-6">
-                                        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-                                            <div className="flex items-center justify-between mb-6">
-                                                <h3 className="font-bold text-gray-900">Session History</h3>
-                                                <Button size="sm" onClick={() => setShowAddSession(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                                                    <Plus className="w-4 h-4 mr-2" /> Log Session
+                                {/* Overview Tab */}
+                                <TabsContent value="overview" className="mt-6">
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        {/* Quick Actions */}
+                                        <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                <Zap className="w-5 h-5 text-burgundy-600" />Quick Actions
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <Button variant="outline" onClick={() => setShowAddSession(true)} className="h-auto py-3 flex-col gap-1 bg-blue-50 border-blue-200 hover:bg-blue-500/20 hover:border-blue-300 text-gray-900">
+                                                    <Video className="w-5 h-5 text-blue-500" /><span className="text-xs">Log Session</span>
+                                                </Button>
+                                                <Button variant="outline" onClick={() => setShowSendForm(true)} className="h-auto py-3 flex-col gap-1 bg-burgundy-50 border-burgundy-200 hover:bg-[#722f37]/30 hover:border-[#722f37]/40 text-gray-900">
+                                                    <Send className="w-5 h-5 text-burgundy-600" /><span className="text-xs">Send Form</span>
+                                                </Button>
+                                                <Button variant="outline" onClick={() => setShowAssignProtocol(true)} className="h-auto py-3 flex-col gap-1 bg-purple-50 border-purple-200 hover:bg-purple-500/20 hover:border-purple-500/30 text-gray-900">
+                                                    <ClipboardList className="w-5 h-5 text-purple-500" /><span className="text-xs">Assign Protocol</span>
+                                                </Button>
+                                                <Button variant="outline" onClick={() => setShowAddTask(true)} className="h-auto py-3 flex-col gap-1 bg-amber-50 border-amber-200 hover:bg-amber-500/20 hover:border-amber-500/30 text-gray-900">
+                                                    <CheckSquare className="w-5 h-5 text-amber-500" /><span className="text-xs">Add Task</span>
                                                 </Button>
                                             </div>
-                                            {selectedClient.sessions.length > 0 ? (
-                                                <div className="space-y-3">
-                                                    {selectedClient.sessions.map((session, i) => (
-                                                        <div key={session.id} className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-xl group hover:bg-white/10 transition-all">
-                                                            <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-300">
-                                                                <Calendar className="w-5 h-5 text-blue-500" />
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <p className="font-medium text-gray-900">{session.sessionType || `Session #${selectedClient.sessions.length - i}`}</p>
-                                                                <p className="text-sm text-gray-500">{new Date(session.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
-                                                            </div>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 hover:bg-red-50"
-                                                                onClick={async () => {
-                                                                    if (!confirm("Delete this session?")) return;
-                                                                    try {
-                                                                        await fetch(`/api/coach/clients/${selectedClient.id}/sessions?itemId=${session.id}`, { method: "DELETE" });
-                                                                        setSelectedClient(prev => prev ? {
-                                                                            ...prev,
-                                                                            sessions: prev.sessions.filter(s => s.id !== session.id),
-                                                                        } : null);
-                                                                        toast.success("Session deleted");
-                                                                    } catch (error) {
-                                                                        toast.error("Failed to delete session");
-                                                                    }
-                                                                }}
-                                                            >
-                                                                <Trash2 className="w-4 h-4" />
-                                                            </Button>
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                        </div>
+
+                                        {/* Health Summary */}
+                                        <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                <Target className="w-5 h-5 text-burgundy-600" />Health Goals
+                                            </h3>
+                                            {selectedClient.healthGoals ? (
+                                                <p className="text-sm text-gray-600">{selectedClient.healthGoals}</p>
                                             ) : (
-                                                <div className="text-center py-12">
-                                                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-50 flex items-center justify-center">
-                                                        <Calendar className="w-8 h-8 text-blue-500" />
-                                                    </div>
-                                                    <p className="text-gray-500 mb-4">No sessions recorded yet</p>
-                                                    <Button onClick={() => setShowAddSession(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                                                        <Plus className="w-4 h-4 mr-2" /> Log First Session
-                                                    </Button>
+                                                <p className="text-sm text-gray-400">No health goals set</p>
+                                            )}
+                                            {selectedClient.primaryConcerns && (
+                                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                                    <p className="text-xs font-medium text-gray-500 mb-2">Primary Concerns</p>
+                                                    <p className="text-sm text-gray-600">{selectedClient.primaryConcerns}</p>
                                                 </div>
                                             )}
                                         </div>
-                                    </TabsContent>
 
-                                    {/* Tasks Tab */}
-                                    <TabsContent value="tasks" className="mt-6">
-                                        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-                                            <div className="flex items-center justify-between mb-6">
-                                                <h3 className="font-bold text-gray-900">Tasks</h3>
-                                                <Button size="sm" onClick={() => setShowAddTask(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                                                    <Plus className="w-4 h-4 mr-2" /> Add Task
+                                        {/* Pending Tasks */}
+                                        <div className="bg-white rounded-2xl border border-gray-200 p-5 md:col-span-2">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                                                    <CheckSquare className="w-5 h-5 text-amber-500" />Pending Tasks
+                                                </h3>
+                                                <Button size="sm" variant="ghost" onClick={() => setShowAddTask(true)} className="text-burgundy-600 hover:text-[#e8c547] hover:bg-[#d4af37]/10">
+                                                    <Plus className="w-4 h-4" />
                                                 </Button>
                                             </div>
                                             {selectedClient.tasks.length > 0 ? (
                                                 <div className="space-y-2">
                                                     {selectedClient.tasks.map((task) => (
-                                                        <div key={task.id} className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                                        <div key={task.id} className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
                                                             <button
                                                                 onClick={() => handleCompleteTask(task.id)}
-                                                                className="w-6 h-6 rounded-full border-2 border-amber-300 hover:bg-amber-200 transition-colors flex-shrink-0"
+                                                                className="w-5 h-5 rounded-full border-2 border-amber-300 hover:bg-amber-200 transition-colors"
                                                             />
-                                                            <div className="flex-1">
-                                                                <p className="font-medium text-gray-900">{task.task}</p>
-                                                                {task.dueDate && (
-                                                                    <p className="text-xs text-gray-500">Due: {new Date(task.dueDate).toLocaleDateString()}</p>
-                                                                )}
-                                                            </div>
+                                                            <p className="text-sm font-medium text-gray-900 flex-1">{task.task}</p>
                                                         </div>
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <div className="text-center py-12">
-                                                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-50 flex items-center justify-center">
-                                                        <CheckSquare className="w-8 h-8 text-amber-500" />
-                                                    </div>
-                                                    <p className="text-gray-500 mb-4">No tasks yet</p>
-                                                    <Button onClick={() => setShowAddTask(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                                                        <Plus className="w-4 h-4 mr-2" /> Add First Task
+                                                <p className="text-sm text-gray-400 text-center py-4">No pending tasks</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </TabsContent>
+
+                                {/* Health Profile Tab */}
+                                <TabsContent value="health" className="mt-6">
+                                    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 text-xl">Health Profile</h3>
+                                                <p className="text-sm text-gray-500">Complete health information for {selectedClient.name}</p>
+                                            </div>
+                                            {!editingHealth ? (
+                                                <Button onClick={() => setEditingHealth(true)} variant="outline" className="bg-transparent border-white/20 text-gray-900 hover:bg-white/10 hover:border-white/30">
+                                                    <Edit className="w-4 h-4 mr-2" /> Edit Profile
+                                                </Button>
+                                            ) : (
+                                                <div className="flex gap-2">
+                                                    <Button variant="outline" onClick={() => setEditingHealth(false)} className="bg-transparent border-white/20 text-gray-900 hover:bg-white/10">Cancel</Button>
+                                                    <Button
+                                                        className="bg-burgundy-600 hover:bg-burgundy-700 text-white"
+                                                        disabled={savingHealth}
+                                                        onClick={async () => {
+                                                            setSavingHealth(true);
+                                                            try {
+                                                                const res = await fetch(`/api/coach/clients/${selectedClient.id}/health`, {
+                                                                    method: "PUT",
+                                                                    headers: { "Content-Type": "application/json" },
+                                                                    body: JSON.stringify(healthForm),
+                                                                });
+                                                                const data = await res.json();
+                                                                if (data.success) {
+                                                                    setSelectedClient(prev => prev ? { ...prev, ...data.data } : null);
+                                                                    setEditingHealth(false);
+                                                                    toast.success("Health profile saved!");
+                                                                } else {
+                                                                    toast.error(data.error || "Failed to save");
+                                                                }
+                                                            } catch (error) {
+                                                                toast.error("Failed to save health profile");
+                                                            } finally {
+                                                                setSavingHealth(false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        {savingHealth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                                        Save Profile
                                                     </Button>
                                                 </div>
                                             )}
                                         </div>
-                                    </TabsContent>
 
-                                    {/* Notes Tab */}
-                                    <TabsContent value="notes" className="mt-6">
-                                        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="font-bold text-gray-900">Session Notes</h3>
-                                                <Button onClick={handleSaveNotes} disabled={saving} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                                                    {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                                    Save Notes
+                                        {!editingHealth ? (
+                                            /* View Mode */
+                                            <div className="space-y-6">
+                                                <div className="grid md:grid-cols-3 gap-4">
+                                                    <div className="p-4 bg-[#722f37]/20 border border-[#722f37]/30 rounded-xl">
+                                                        <p className="text-xs font-medium text-burgundy-600 mb-1">Primary Concerns</p>
+                                                        <p className="text-sm text-gray-900">{selectedClient.primaryConcerns || "Not specified"}</p>
+                                                    </div>
+                                                    <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                                                        <p className="text-xs font-medium text-emerald-500 mb-1">Health Goals</p>
+                                                        <p className="text-sm text-gray-900">{selectedClient.healthGoals || "Not specified"}</p>
+                                                    </div>
+                                                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                                                        <p className="text-xs font-medium text-blue-500 mb-1">Current Health Status</p>
+                                                        <p className="text-sm text-gray-900">{selectedClient.currentHealth || "Not specified"}</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Medical History */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Medical History</h4>
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500 mb-2">Conditions</p>
+                                                            {(selectedClient.conditions?.length ?? 0) > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {selectedClient.conditions?.map((c, i) => (
+                                                                        <Badge key={i} variant="outline" className="text-xs bg-gray-50 border-white/20 text-gray-900">{c}</Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <p className="text-sm text-gray-400">None listed</p>}
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                                                            <p className="text-xs font-medium text-gray-500 mb-2">Allergies</p>
+                                                            {(selectedClient.allergies?.length ?? 0) > 0 ? (
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {selectedClient.allergies?.map((a, i) => (
+                                                                        <Badge key={i} variant="outline" className="text-xs bg-red-50 border-red-200 text-red-700">{a}</Badge>
+                                                                    ))}
+                                                                </div>
+                                                            ) : <p className="text-sm text-gray-400">None listed</p>}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Lifestyle */}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Lifestyle</h4>
+                                                    <div className="grid md:grid-cols-4 gap-4">
+                                                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
+                                                            <p className="text-2xl font-bold text-burgundy-600">{selectedClient.sleepHours || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Hours Sleep</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
+                                                            <p className="text-lg font-semibold text-gray-900">{selectedClient.dietType || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Diet Type</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
+                                                            <p className="text-lg font-semibold text-gray-900">{selectedClient.exerciseFreq || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Exercise</p>
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-center">
+                                                            <p className="text-lg font-semibold text-gray-900">{selectedClient.stressLevel || "-"}</p>
+                                                            <p className="text-xs text-gray-500">Stress Level</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            /* Edit Mode */
+                                            <div className="space-y-6">
+                                                <div className="grid md:grid-cols-1 gap-4">
+                                                    <div>
+                                                        <Label className="text-gray-600">Primary Concerns</Label>
+                                                        <Textarea
+                                                            value={healthForm.primaryConcerns}
+                                                            onChange={(e) => setHealthForm({ ...healthForm, primaryConcerns: e.target.value })}
+                                                            placeholder="What are the client's main health concerns?"
+                                                            rows={2}
+                                                            className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-gray-600">Health Goals</Label>
+                                                        <Textarea
+                                                            value={healthForm.healthGoals}
+                                                            onChange={(e) => setHealthForm({ ...healthForm, healthGoals: e.target.value })}
+                                                            placeholder="What does the client want to achieve?"
+                                                            rows={2}
+                                                            className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900 mb-3">Lifestyle</h4>
+                                                    <div className="grid md:grid-cols-4 gap-4">
+                                                        <div>
+                                                            <Label className="text-gray-600">Diet Type</Label>
+                                                            <Select value={healthForm.dietType} onValueChange={(v) => setHealthForm({ ...healthForm, dietType: v })}>
+                                                                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900"><SelectValue placeholder="Select diet" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="Standard">Standard</SelectItem>
+                                                                    <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                                                                    <SelectItem value="Vegan">Vegan</SelectItem>
+                                                                    <SelectItem value="Keto">Keto</SelectItem>
+                                                                    <SelectItem value="Paleo">Paleo</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-gray-600">Sleep Hours</Label>
+                                                            <Input
+                                                                type="number"
+                                                                min="0"
+                                                                max="24"
+                                                                value={healthForm.sleepHours}
+                                                                onChange={(e) => setHealthForm({ ...healthForm, sleepHours: parseInt(e.target.value) || 0 })}
+                                                                className="bg-gray-50 border-gray-200 text-gray-900"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-gray-600">Exercise Frequency</Label>
+                                                            <Select value={healthForm.exerciseFreq} onValueChange={(v) => setHealthForm({ ...healthForm, exerciseFreq: v })}>
+                                                                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900"><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="None">None</SelectItem>
+                                                                    <SelectItem value="1-2x/week">1-2x/week</SelectItem>
+                                                                    <SelectItem value="3-4x/week">3-4x/week</SelectItem>
+                                                                    <SelectItem value="Daily">Daily</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-gray-600">Stress Level</Label>
+                                                            <Select value={healthForm.stressLevel} onValueChange={(v) => setHealthForm({ ...healthForm, stressLevel: v })}>
+                                                                <SelectTrigger className="bg-gray-50 border-gray-200 text-gray-900"><SelectValue placeholder="Select level" /></SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="Low">Low</SelectItem>
+                                                                    <SelectItem value="Moderate">Moderate</SelectItem>
+                                                                    <SelectItem value="High">High</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </TabsContent>
+
+                                {/* Sessions Tab */}
+                                <TabsContent value="sessions" className="mt-6">
+                                    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h3 className="font-bold text-gray-900">Session History</h3>
+                                            <Button size="sm" onClick={() => setShowAddSession(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                                <Plus className="w-4 h-4 mr-2" /> Log Session
+                                            </Button>
+                                        </div>
+                                        {selectedClient.sessions.length > 0 ? (
+                                            <div className="space-y-3">
+                                                {selectedClient.sessions.map((session, i) => (
+                                                    <div key={session.id} className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-xl group hover:bg-white/10 transition-all">
+                                                        <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center border border-blue-300">
+                                                            <Calendar className="w-5 h-5 text-blue-500" />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <p className="font-medium text-gray-900">{session.sessionType || `Session #${selectedClient.sessions.length - i}`}</p>
+                                                            <p className="text-sm text-gray-500">{new Date(session.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+                                                        </div>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                                                            onClick={async () => {
+                                                                if (!confirm("Delete this session?")) return;
+                                                                try {
+                                                                    await fetch(`/api/coach/clients/${selectedClient.id}/sessions?itemId=${session.id}`, { method: "DELETE" });
+                                                                    setSelectedClient(prev => prev ? {
+                                                                        ...prev,
+                                                                        sessions: prev.sessions.filter(s => s.id !== session.id),
+                                                                    } : null);
+                                                                    toast.success("Session deleted");
+                                                                } catch (error) {
+                                                                    toast.error("Failed to delete session");
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-12">
+                                                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-50 flex items-center justify-center">
+                                                    <Calendar className="w-8 h-8 text-blue-500" />
+                                                </div>
+                                                <p className="text-gray-500 mb-4">No sessions recorded yet</p>
+                                                <Button onClick={() => setShowAddSession(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                                    <Plus className="w-4 h-4 mr-2" /> Log First Session
                                                 </Button>
                                             </div>
-                                            <Textarea
-                                                value={clientNotes}
-                                                onChange={(e) => setClientNotes(e.target.value)}
-                                                placeholder="Add notes about this client..."
-                                                rows={12}
-                                                className="resize-none bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
-                                            />
+                                        )}
+                                    </div>
+                                </TabsContent>
+
+                                {/* Tasks Tab */}
+                                <TabsContent value="tasks" className="mt-6">
+                                    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h3 className="font-bold text-gray-900">Tasks</h3>
+                                            <Button size="sm" onClick={() => setShowAddTask(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                                <Plus className="w-4 h-4 mr-2" /> Add Task
+                                            </Button>
                                         </div>
-                                    </TabsContent>
-                                </Tabs>
+                                        {selectedClient.tasks.length > 0 ? (
+                                            <div className="space-y-2">
+                                                {selectedClient.tasks.map((task) => (
+                                                    <div key={task.id} className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                                        <button
+                                                            onClick={() => handleCompleteTask(task.id)}
+                                                            className="w-6 h-6 rounded-full border-2 border-amber-300 hover:bg-amber-200 transition-colors flex-shrink-0"
+                                                        />
+                                                        <div className="flex-1">
+                                                            <p className="font-medium text-gray-900">{task.task}</p>
+                                                            {task.dueDate && (
+                                                                <p className="text-xs text-gray-500">Due: {new Date(task.dueDate).toLocaleDateString()}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-12">
+                                                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-50 flex items-center justify-center">
+                                                    <CheckSquare className="w-8 h-8 text-amber-500" />
+                                                </div>
+                                                <p className="text-gray-500 mb-4">No tasks yet</p>
+                                                <Button onClick={() => setShowAddTask(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                                    <Plus className="w-4 h-4 mr-2" /> Add First Task
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </TabsContent>
+
+                                {/* Notes Tab */}
+                                <TabsContent value="notes" className="mt-6">
+                                    <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="font-bold text-gray-900">Session Notes</h3>
+                                            <Button onClick={handleSaveNotes} disabled={saving} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                                Save Notes
+                                            </Button>
+                                        </div>
+                                        <Textarea
+                                            value={clientNotes}
+                                            onChange={(e) => setClientNotes(e.target.value)}
+                                            placeholder="Add notes about this client..."
+                                            rows={12}
+                                            className="resize-none bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400"
+                                        />
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                        </div>
+                    ) : (
+                        /* No Client Selected */
+                        <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gray-50 flex items-center justify-center">
+                                <Users className="w-10 h-10 text-gray-300" />
                             </div>
-                        ) : (
-                            /* No Client Selected */
-                            <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
-                                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gray-50 flex items-center justify-center">
-                                    <Users className="w-10 h-10 text-gray-300" />
-                                </div>
-                                <h3 className="text-xl font-semibold text-gray-900 mb-2">Select a Client</h3>
-                                <p className="text-gray-500 mb-6">Choose a client from the list to view their details</p>
-                                <Button onClick={() => setShowAddClient(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-md">
-                                    <Plus className="w-4 h-4 mr-2" /> Add New Client
-                                </Button>
-                            </div>
-                        )}
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Select a Client</h3>
+                            <p className="text-gray-500 mb-6">Choose a client from the list to view their details</p>
+                            <Button onClick={() => setShowAddClient(true)} className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-md">
+                                <Plus className="w-4 h-4 mr-2" /> Add New Client
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+
+            {/* Add Client Modal */ }
+    {
+        showAddClient && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-gray-900">Add New Client</h3>
+                        <button onClick={() => setShowAddClient(false)}><X className="w-5 h-5 text-gray-400" /></button>
+                    </div>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>Client Name *</Label>
+                            <Input value={newClient.name} onChange={(e) => setNewClient({ ...newClient, name: e.target.value })} placeholder="Full name" />
+                        </div>
+                        <div>
+                            <Label>Email</Label>
+                            <Input type="email" value={newClient.email} onChange={(e) => setNewClient({ ...newClient, email: e.target.value })} placeholder="email@example.com" />
+                        </div>
+                        <div>
+                            <Label>Phone</Label>
+                            <Input value={newClient.phone} onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })} placeholder="(555) 123-4567" />
+                        </div>
+                        <div>
+                            <Label>Initial Notes</Label>
+                            <Textarea value={newClient.notes} onChange={(e) => setNewClient({ ...newClient, notes: e.target.value })} placeholder="Any initial notes..." rows={3} />
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-3 mt-6">
+                        <Button variant="outline" onClick={() => setShowAddClient(false)}>Cancel</Button>
+                        <Button onClick={handleAddClient} disabled={saving || !newClient.name.trim()} className="bg-burgundy-600 hover:bg-burgundy-700">
+                            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
+                            Add Client
+                        </Button>
                     </div>
                 </div>
             </div>
+        )
+    }
 
-            {/* Add Client Modal */}
-            {showAddClient && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Add New Client</h3>
-                            <button onClick={() => setShowAddClient(false)}><X className="w-5 h-5 text-gray-400" /></button>
+    {/* Add Session Modal */ }
+    {
+        showAddSession && selectedClient && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-gray-900">Log Session</h3>
+                        <button onClick={() => setShowAddSession(false)}><X className="w-5 h-5 text-gray-400" /></button>
+                    </div>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>Session Type</Label>
+                            <Select value={newSession.type} onValueChange={(v) => setNewSession({ ...newSession, type: v })}>
+                                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                                <SelectContent>
+                                    {SESSION_TEMPLATES.map((t) => (
+                                        <SelectItem key={t.id} value={t.name}>{t.icon} {t.name} ({t.duration}min)</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
-                        <div className="space-y-4">
-                            <div>
-                                <Label>Client Name *</Label>
-                                <Input value={newClient.name} onChange={(e) => setNewClient({...newClient, name: e.target.value})} placeholder="Full name" />
-                            </div>
-                            <div>
-                                <Label>Email</Label>
-                                <Input type="email" value={newClient.email} onChange={(e) => setNewClient({...newClient, email: e.target.value})} placeholder="email@example.com" />
-                            </div>
-                            <div>
-                                <Label>Phone</Label>
-                                <Input value={newClient.phone} onChange={(e) => setNewClient({...newClient, phone: e.target.value})} placeholder="(555) 123-4567" />
-                            </div>
-                            <div>
-                                <Label>Initial Notes</Label>
-                                <Textarea value={newClient.notes} onChange={(e) => setNewClient({...newClient, notes: e.target.value})} placeholder="Any initial notes..." rows={3} />
-                            </div>
+                        <div>
+                            <Label>Date</Label>
+                            <Input type="date" value={newSession.date} onChange={(e) => setNewSession({ ...newSession, date: e.target.value })} />
                         </div>
-                        <div className="flex justify-end gap-3 mt-6">
-                            <Button variant="outline" onClick={() => setShowAddClient(false)}>Cancel</Button>
-                            <Button onClick={handleAddClient} disabled={saving || !newClient.name.trim()} className="bg-burgundy-600 hover:bg-burgundy-700">
-                                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
-                                Add Client
-                            </Button>
+                        <div>
+                            <Label>Notes</Label>
+                            <Textarea value={newSession.notes} onChange={(e) => setNewSession({ ...newSession, notes: e.target.value })} placeholder="Session notes..." rows={3} />
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* Add Session Modal */}
-            {showAddSession && selectedClient && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Log Session</h3>
-                            <button onClick={() => setShowAddSession(false)}><X className="w-5 h-5 text-gray-400" /></button>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <Label>Session Type</Label>
-                                <Select value={newSession.type} onValueChange={(v) => setNewSession({...newSession, type: v})}>
-                                    <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                                    <SelectContent>
-                                        {SESSION_TEMPLATES.map((t) => (
-                                            <SelectItem key={t.id} value={t.name}>{t.icon} {t.name} ({t.duration}min)</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div>
-                                <Label>Date</Label>
-                                <Input type="date" value={newSession.date} onChange={(e) => setNewSession({...newSession, date: e.target.value})} />
-                            </div>
-                            <div>
-                                <Label>Notes</Label>
-                                <Textarea value={newSession.notes} onChange={(e) => setNewSession({...newSession, notes: e.target.value})} placeholder="Session notes..." rows={3} />
-                            </div>
-                        </div>
-                        <div className="flex justify-end gap-3 mt-6">
-                            <Button variant="outline" onClick={() => setShowAddSession(false)}>Cancel</Button>
-                            <Button onClick={handleAddSession} disabled={saving || !newSession.type || !newSession.date} className="bg-burgundy-600 hover:bg-burgundy-700">
-                                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                                Log Session
-                            </Button>
-                        </div>
+                    <div className="flex justify-end gap-3 mt-6">
+                        <Button variant="outline" onClick={() => setShowAddSession(false)}>Cancel</Button>
+                        <Button onClick={handleAddSession} disabled={saving || !newSession.type || !newSession.date} className="bg-burgundy-600 hover:bg-burgundy-700">
+                            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                            Log Session
+                        </Button>
                     </div>
                 </div>
-            )}
+            </div>
+        )
+    }
 
-            {/* Add Task Modal */}
-            {showAddTask && selectedClient && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Add Task</h3>
-                            <button onClick={() => setShowAddTask(false)}><X className="w-5 h-5 text-gray-400" /></button>
+    {/* Add Task Modal */ }
+    {
+        showAddTask && selectedClient && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl w-full max-w-md p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-gray-900">Add Task</h3>
+                        <button onClick={() => setShowAddTask(false)}><X className="w-5 h-5 text-gray-400" /></button>
+                    </div>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>Task *</Label>
+                            <Input value={newTask.task} onChange={(e) => setNewTask({ ...newTask, task: e.target.value })} placeholder="What needs to be done?" />
                         </div>
-                        <div className="space-y-4">
-                            <div>
-                                <Label>Task *</Label>
-                                <Input value={newTask.task} onChange={(e) => setNewTask({...newTask, task: e.target.value})} placeholder="What needs to be done?" />
-                            </div>
-                            <div>
-                                <Label>Due Date</Label>
-                                <Input type="date" value={newTask.dueDate} onChange={(e) => setNewTask({...newTask, dueDate: e.target.value})} />
-                            </div>
-                        </div>
-                        <div className="flex justify-end gap-3 mt-6">
-                            <Button variant="outline" onClick={() => setShowAddTask(false)}>Cancel</Button>
-                            <Button onClick={handleAddTask} disabled={saving || !newTask.task.trim()} className="bg-burgundy-600 hover:bg-burgundy-700">
-                                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                                Add Task
-                            </Button>
+                        <div>
+                            <Label>Due Date</Label>
+                            <Input type="date" value={newTask.dueDate} onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })} />
                         </div>
                     </div>
+                    <div className="flex justify-end gap-3 mt-6">
+                        <Button variant="outline" onClick={() => setShowAddTask(false)}>Cancel</Button>
+                        <Button onClick={handleAddTask} disabled={saving || !newTask.task.trim()} className="bg-burgundy-600 hover:bg-burgundy-700">
+                            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                            Add Task
+                        </Button>
+                    </div>
                 </div>
-            )}
+            </div>
+        )
+    }
 
-            {/* Assign Protocol Modal */}
-            {showAssignProtocol && selectedClient && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-lg p-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Assign Protocol</h3>
-                            <button onClick={() => setShowAssignProtocol(false)}><X className="w-5 h-5 text-gray-400" /></button>
+    {/* Assign Protocol Modal */ }
+    {
+        showAssignProtocol && selectedClient && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl w-full max-w-lg p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-gray-900">Assign Protocol</h3>
+                        <button onClick={() => setShowAssignProtocol(false)}><X className="w-5 h-5 text-gray-400" /></button>
+                    </div>
+                    <div className="space-y-3">
+                        {PROTOCOL_TEMPLATES.map((protocol) => (
+                            <button
+                                key={protocol.id}
+                                onClick={() => setSelectedProtocol(protocol)}
+                                className={cn(
+                                    "w-full p-4 rounded-xl text-left transition-all border-2",
+                                    selectedProtocol?.id === protocol.id
+                                        ? "border-burgundy-500 bg-burgundy-50"
+                                        : "border-gray-200 hover:border-burgundy-200"
+                                )}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl">{protocol.icon}</span>
+                                    <div>
+                                        <p className="font-semibold text-gray-900">{protocol.name}</p>
+                                        <p className="text-sm text-gray-500">{protocol.category} • {protocol.weeks} weeks</p>
+                                    </div>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                    <div className="flex justify-end gap-3 mt-6">
+                        <Button variant="outline" onClick={() => setShowAssignProtocol(false)}>Cancel</Button>
+                        <Button onClick={handleAssignProtocol} disabled={saving || !selectedProtocol} className="bg-burgundy-600 hover:bg-burgundy-700">
+                            {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                            Assign Protocol
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    {/* Send Form Modal */ }
+    {
+        showSendForm && selectedClient && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-2xl w-full max-w-lg p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-xl font-bold text-gray-900">Send Form to {selectedClient.name}</h3>
+                        <button onClick={() => setShowSendForm(false)}><X className="w-5 h-5 text-gray-400" /></button>
+                    </div>
+                    {!selectedClient.email ? (
+                        <div className="text-center py-8">
+                            <Mail className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                            <p className="text-gray-600 mb-2">No email address for this client</p>
+                            <p className="text-sm text-gray-400">Add an email to send intake forms</p>
                         </div>
+                    ) : (
                         <div className="space-y-3">
-                            {PROTOCOL_TEMPLATES.map((protocol) => (
+                            {INTAKE_FORMS.map((form) => (
                                 <button
-                                    key={protocol.id}
-                                    onClick={() => setSelectedProtocol(protocol)}
-                                    className={cn(
-                                        "w-full p-4 rounded-xl text-left transition-all border-2",
-                                        selectedProtocol?.id === protocol.id
-                                            ? "border-burgundy-500 bg-burgundy-50"
-                                            : "border-gray-200 hover:border-burgundy-200"
-                                    )}
+                                    key={form.id}
+                                    onClick={async () => {
+                                        setSaving(true);
+                                        try {
+                                            const res = await fetch("/api/coach/intake-forms", {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ clientId: selectedClient.id, formType: form.id }),
+                                            });
+                                            const data = await res.json();
+                                            if (data.success) {
+                                                toast.success(`${form.name} sent to ${selectedClient.email}!`);
+                                                setShowSendForm(false);
+                                            } else {
+                                                toast.error(data.error || "Failed to send form");
+                                            }
+                                        } catch (error) {
+                                            toast.error("Failed to send form");
+                                        } finally {
+                                            setSaving(false);
+                                        }
+                                    }}
+                                    disabled={saving}
+                                    className="w-full p-4 rounded-xl text-left transition-all border border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className="text-2xl">{protocol.icon}</span>
-                                        <div>
-                                            <p className="font-semibold text-gray-900">{protocol.name}</p>
-                                            <p className="text-sm text-gray-500">{protocol.category} • {protocol.weeks} weeks</p>
-                                        </div>
+                                        <span className="text-2xl">{form.icon}</span>
+                                        <p className="font-medium text-gray-900">{form.name}</p>
                                     </div>
                                 </button>
                             ))}
                         </div>
-                        <div className="flex justify-end gap-3 mt-6">
-                            <Button variant="outline" onClick={() => setShowAssignProtocol(false)}>Cancel</Button>
-                            <Button onClick={handleAssignProtocol} disabled={saving || !selectedProtocol} className="bg-burgundy-600 hover:bg-burgundy-700">
-                                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                                Assign Protocol
-                            </Button>
-                        </div>
+                    )}
+                    <div className="flex justify-end mt-6">
+                        <Button variant="outline" onClick={() => setShowSendForm(false)}>Close</Button>
                     </div>
                 </div>
-            )}
-
-            {/* Send Form Modal */}
-            {showSendForm && selectedClient && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-lg p-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Send Form to {selectedClient.name}</h3>
-                            <button onClick={() => setShowSendForm(false)}><X className="w-5 h-5 text-gray-400" /></button>
-                        </div>
-                        {!selectedClient.email ? (
-                            <div className="text-center py-8">
-                                <Mail className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                                <p className="text-gray-600 mb-2">No email address for this client</p>
-                                <p className="text-sm text-gray-400">Add an email to send intake forms</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-3">
-                                {INTAKE_FORMS.map((form) => (
-                                    <button
-                                        key={form.id}
-                                        onClick={async () => {
-                                            setSaving(true);
-                                            try {
-                                                const res = await fetch("/api/coach/intake-forms", {
-                                                    method: "POST",
-                                                    headers: { "Content-Type": "application/json" },
-                                                    body: JSON.stringify({ clientId: selectedClient.id, formType: form.id }),
-                                                });
-                                                const data = await res.json();
-                                                if (data.success) {
-                                                    toast.success(`${form.name} sent to ${selectedClient.email}!`);
-                                                    setShowSendForm(false);
-                                                } else {
-                                                    toast.error(data.error || "Failed to send form");
-                                                }
-                                            } catch (error) {
-                                                toast.error("Failed to send form");
-                                            } finally {
-                                                setSaving(false);
-                                            }
-                                        }}
-                                        disabled={saving}
-                                        className="w-full p-4 rounded-xl text-left transition-all border border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-2xl">{form.icon}</span>
-                                            <p className="font-medium text-gray-900">{form.name}</p>
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                        <div className="flex justify-end mt-6">
-                            <Button variant="outline" onClick={() => setShowSendForm(false)}>Close</Button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
+            </div>
+        )
+    }
+        </div >
     );
 }
