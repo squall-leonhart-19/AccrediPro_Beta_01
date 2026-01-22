@@ -79,7 +79,7 @@ const SESSION_TEMPLATES = [
 ];
 
 const PROTOCOL_TEMPLATES = [
-    {showAddClient && (
+    {
         id: "gut-reset",
         name: "28-Day Gut Reset",
         category: "Digestive",
@@ -87,7 +87,7 @@ const PROTOCOL_TEMPLATES = [
         weeks: 4,
         description: "Comprehensive gut healing protocol.",
     },
-    {showAddClient && (
+    {
         id: "hormone-balance",
         name: "Hormone Harmony Protocol",
         category: "Hormonal",
@@ -95,7 +95,7 @@ const PROTOCOL_TEMPLATES = [
         weeks: 8,
         description: "Holistic hormone balancing approach.",
     },
-    {showAddClient && (
+    {
         id: "stress-recovery",
         name: "Adrenal Recovery Program",
         category: "Stress",
@@ -341,6 +341,7 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
     };
 
     return (
+        <>
         <div className="p-4 lg:p-6 max-w-7xl mx-auto">
             {/* Page Header */}
             <div className="mb-6">
@@ -872,8 +873,7 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
         </div>
 
             {/* Add Client Modal */}
-    {showAddClient && (
-        showAddClient && (
+            {showAddClient && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl w-full max-w-md p-6">
                     <div className="flex items-center justify-between mb-6">
@@ -907,12 +907,10 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
                     </div>
                 </div>
             </div>
-        )
-    }
+        )}
 
-    {/* Add Session Modal */ }
-    {showAddClient && (
-        showAddSession && selectedClient && (
+            {/* Add Session Modal */}
+            {showAddSession && selectedClient && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl w-full max-w-md p-6">
                     <div className="flex items-center justify-between mb-6">
@@ -949,12 +947,10 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
                     </div>
                 </div>
             </div>
-        )
-    }
+        )}
 
-    {/* Add Task Modal */ }
-    {showAddClient && (
-        showAddTask && selectedClient && (
+            {/* Add Task Modal */}
+            {showAddTask && selectedClient && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl w-full max-w-md p-6">
                     <div className="flex items-center justify-between mb-6">
@@ -980,12 +976,10 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
                     </div>
                 </div>
             </div>
-        )
-    }
+        )}
 
-    {/* Assign Protocol Modal */ }
-    {showAddClient && (
-        showAssignProtocol && selectedClient && (
+            {/* Assign Protocol Modal */}
+            {showAssignProtocol && selectedClient && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl w-full max-w-lg p-6">
                     <div className="flex items-center justify-between mb-6">
@@ -1023,12 +1017,10 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
                     </div>
                 </div>
             </div>
-        )
-    }
+        )}
 
-    {/* Send Form Modal */ }
-    {showAddClient && (
-        showSendForm && selectedClient && (
+            {/* Send Form Modal */}
+            {showSendForm && selectedClient && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl w-full max-w-lg p-6">
                     <div className="flex items-center justify-between mb-6">
@@ -1083,8 +1075,7 @@ export function ClientsPageClient({ clients: initialClients }: { clients: Client
                     </div>
                 </div>
             </div>
-        )
-    }
-        </div >
+        )}
+        </>
     );
 }
