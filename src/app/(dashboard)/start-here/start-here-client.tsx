@@ -22,7 +22,7 @@ import {
     Heart,
     Map,
     RotateCcw,
-
+    Lock,
     Camera,
     Users,
     UserCheck,
@@ -144,36 +144,71 @@ interface StartHereClientProps {
         learningGoal: string | null;
         focusAreas: string[];
         location: string | null;
+        createdAt: string | null;
     } | null;
     userId: string;
     enrollments: number;
     onboardingData: OnboardingData;
     hasMessagedCoach?: boolean;
     hasIntroPost?: boolean;
+    firstLessonUrl?: string | null;
+    courseName?: string | null;
 }
 
-export function StartHereClient({ user, userId, enrollments, onboardingData, hasMessagedCoach = false, hasIntroPost = false }: StartHereClientProps) {
+export function StartHereClient({ user, userId, enrollments, onboardingData, hasMessagedCoach = false, hasIntroPost = false, firstLessonUrl = null, courseName = null }: StartHereClientProps) {
     const [showQuestionsWizard, setShowQuestionsWizard] = useState(false);
     const [questionsCompleted, setQuestionsCompleted] = useState(user?.hasCompletedOnboarding || false);
+    const [videoWatched, setVideoWatched] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState<{ hours: number; minutes: number; expired: boolean } | null>(null);
 
     // Check localStorage for completion statuses
     useEffect(() => {
         const localQuestionsComplete = localStorage.getItem(`onboarding-complete-${userId}`) === "true";
+        const localVideoWatched = localStorage.getItem(`welcome-video-watched-${userId}`) === "true";
 
         if (localQuestionsComplete) {
             setQuestionsCompleted(true);
         }
+        if (localVideoWatched) {
+            setVideoWatched(true);
+        }
     }, [userId]);
+
+    // 24-hour bonus timer
+    useEffect(() => {
+        if (!user?.createdAt) return;
+
+        const calculateTimeRemaining = () => {
+            const createdAt = new Date(user.createdAt!);
+            const bonusDeadline = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000); // +24 hours
+            const now = new Date();
+            const diff = bonusDeadline.getTime() - now.getTime();
+
+            if (diff <= 0) {
+                setTimeRemaining({ hours: 0, minutes: 0, expired: true });
+            } else {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                setTimeRemaining({ hours, minutes, expired: false });
+            }
+        };
+
+        calculateTimeRemaining();
+        const timer = setInterval(calculateTimeRemaining, 60000); // Update every minute
+        return () => clearInterval(timer);
+    }, [user?.createdAt]);
 
     const handleQuestionsComplete = (data: any) => {
         setShowQuestionsWizard(false);
         setQuestionsCompleted(true);
     };
 
+    const handleVideoWatched = () => {
+        setVideoWatched(true);
+        localStorage.setItem(`welcome-video-watched-${userId}`, "true");
+    };
 
-
-    // Calculate checklist progress - Reordered for best user experience
-    // Personalization questions trigger the OnboardingWizard modal
+    // SIMPLIFIED 3-Step Checklist
     const checklist: {
         id: string;
         label: string;
@@ -184,81 +219,57 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
         icon: LucideIcon;
         color: string;
         emoji: string;
-        reward?: string;
+        reward: string;
+        locked?: boolean;
     }[] = [
             {
-                id: "personalize",
-                label: "Customize Your Experience",
-                description: questionsCompleted
-                    ? "Update your goals anytime to refine your journey"
-                    : "Tell us about your goals so we can personalize your journey",
-                completed: questionsCompleted,
+                id: "video",
+                label: "Watch Welcome Video",
+                description: "Meet Coach Sarah and learn how to succeed",
+                completed: videoWatched,
                 link: null,
-                action: () => setShowQuestionsWizard(true), // Always allow re-opening
-                icon: Wand2,
+                action: handleVideoWatched,
+                icon: Play,
                 color: "burgundy",
-                emoji: "✨",
-                reward: questionsCompleted ? undefined : "+25 XP",
-            },
-            {
-                id: "roadmap",
-                label: "View Your Personalized Roadmap",
-                description: "See your custom path to success based on your goals",
-                completed: questionsCompleted, // Completed once they view it after onboarding
-                link: questionsCompleted ? "/my-personal-roadmap-by-coach-sarah" : null,
-                action: questionsCompleted ? null : () => setShowQuestionsWizard(true), // Must complete onboarding first
-                icon: Map,
-                color: "emerald",
-                emoji: "🗺️",
-                reward: "+15 XP",
-            },
-
-            {
-                id: "profile",
-                label: "Upload Your Profile Photo",
-                description: "Let your coach and community see the real you!",
-                completed: user?.hasProfilePhoto || false,
-                link: "/profile",
-                action: null,
-                icon: Camera,
-                color: "blue",
-                emoji: "📸",
-                reward: "+10 XP",
+                emoji: "🎬",
+                reward: "+25 XP",
             },
             {
                 id: "coach",
-                label: "Say Hi to Your Dedicated Coach",
+                label: "Say Hi to Coach Sarah",
                 description: hasMessagedCoach
-                    ? "Great job connecting with Coach Sarah!"
-                    : "Meet Sarah - she's here to guide your journey!",
+                    ? "Great job connecting with your coach!"
+                    : "Send a quick message to your dedicated mentor",
                 completed: hasMessagedCoach,
-                // Opens chat with Sarah M directly
                 link: "/messages?to=sarah",
                 action: null,
-                icon: UserCheck,
+                icon: MessageSquare,
                 color: "emerald",
                 emoji: "👋",
-                reward: hasMessagedCoach ? undefined : "+20 XP",
+                reward: "+50 XP",
+                locked: !videoWatched,
             },
             {
-                id: "community",
-                label: "Share Your Story with the Community",
-                description: hasIntroPost
-                    ? "Thanks for introducing yourself!"
-                    : "Introduce yourself to fellow health advocates",
-                completed: hasIntroPost,
-                // Links to specific community introduction page
-                link: "/community/cmj94foua0000736vfwdlheir",
+                id: "lesson",
+                label: "Start Your First Lesson",
+                description: courseName
+                    ? `Begin ${courseName}`
+                    : "Jump into your learning journey",
+                completed: false, // We'd need to track this - for now always show as actionable
+                link: firstLessonUrl || "/courses",
                 action: null,
-                icon: Users,
-                color: "orange",
-                emoji: "💬",
-                reward: hasIntroPost ? undefined : "+15 XP",
+                icon: BookOpen,
+                color: "blue",
+                emoji: "📚",
+                reward: "+25 XP",
+                locked: !hasMessagedCoach,
             },
         ];
 
     const completedCount = checklist.filter(item => item.completed).length;
     const progress = (completedCount / checklist.length) * 100;
+    const allComplete = completedCount === checklist.length;
+    const showBonusTimer = timeRemaining && !timeRemaining.expired && !allComplete;
 
     const quickLinks = [
         { href: "/courses", label: "Browse Courses", icon: BookOpen, color: "burgundy", description: "Explore our certifications" },
@@ -301,7 +312,7 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                                 Let's Get You Started, {user?.firstName || "Future Coach"}! 🎉
                                             </h1>
                                             <p className="text-gray-500 text-sm lg:text-base">
-                                                Complete these steps to unlock your full learning experience
+                                                Complete 3 quick steps to unlock your learning journey
                                             </p>
                                         </div>
                                         <div className="flex items-center gap-3 bg-burgundy-50 rounded-xl px-4 py-3 border border-burgundy-100">
@@ -311,6 +322,27 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* 24-Hour Bonus Timer */}
+                                    {showBonusTimer && (
+                                        <div className="mb-4 p-3 bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl border border-gold-200 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 bg-gold-400 rounded-full flex items-center justify-center">
+                                                    <Clock className="w-4 h-4 text-white" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-semibold text-gray-900">🎁 Day 1 Bonus Active!</p>
+                                                    <p className="text-xs text-gray-600">Complete all 3 steps for +100 XP total</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-lg font-bold text-gold-600">
+                                                    {timeRemaining!.hours}h {timeRemaining!.minutes}m
+                                                </div>
+                                                <div className="text-xs text-gray-500">remaining</div>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {/* Progress bar */}
                                     <div className="bg-gray-100 rounded-full h-3 overflow-hidden">
@@ -324,7 +356,7 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                             <Rocket className="w-3 h-3 text-burgundy-500" /> Your journey begins here
                                         </span>
                                         <span className="flex items-center gap-1">
-                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 95 XP!
+                                            <Star className="w-3 h-3 text-gold-500" /> Earn +100 XP!
                                         </span>
                                     </div>
                                 </div>
@@ -350,33 +382,42 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                     {checklist.map((item, index) => {
                                         const stepNumber = index + 1;
                                         const IconComponent = item.icon;
-                                        const isNextStep = !item.completed && checklist.slice(0, index).every(i => i.completed);
+                                        const isNextStep = !item.completed && !item.locked && checklist.slice(0, index).every(i => i.completed);
+                                        const isLocked = item.locked && !item.completed;
 
                                         const content = (
                                             <div className={`group relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${item.completed
                                                 ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
-                                                : isNextStep
-                                                    ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-md shadow-gold-100 hover:shadow-lg hover:shadow-gold-200 cursor-pointer"
-                                                    : "bg-gray-50 border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/50 cursor-pointer"
+                                                : isLocked
+                                                    ? "bg-gray-100 border-gray-200 opacity-60 cursor-not-allowed"
+                                                    : isNextStep
+                                                        ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-md shadow-gold-100 hover:shadow-lg hover:shadow-gold-200 cursor-pointer"
+                                                        : "bg-gray-50 border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/50 cursor-pointer"
                                                 }`}>
                                                 {/* Step indicator */}
                                                 <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${item.completed
                                                     ? "bg-gradient-to-br from-green-500 to-emerald-600"
-                                                    : isNextStep
-                                                        ? "bg-gradient-to-br from-gold-400 to-amber-500 animate-pulse"
-                                                        : `bg-${item.color}-100`
+                                                    : isLocked
+                                                        ? "bg-gray-200"
+                                                        : isNextStep
+                                                            ? "bg-gradient-to-br from-gold-400 to-amber-500 animate-pulse"
+                                                            : `bg-${item.color}-100`
                                                     }`}>
                                                     {item.completed ? (
                                                         <CheckCircle className="w-7 h-7 text-white" />
+                                                    ) : isLocked ? (
+                                                        <Lock className="w-6 h-6 text-gray-400" />
                                                     ) : (
                                                         <IconComponent className={`w-6 h-6 ${isNextStep ? "text-white" : `text-${item.color}-600`}`} />
                                                     )}
                                                     {/* Step number badge */}
                                                     <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${item.completed
                                                         ? "bg-green-600 text-white"
-                                                        : "bg-white shadow border border-gray-200 text-gray-600"
+                                                        : isLocked
+                                                            ? "bg-gray-300 text-gray-500"
+                                                            : "bg-white shadow border border-gray-200 text-gray-600"
                                                         }`}>
-                                                        {item.completed ? "✓" : stepNumber}
+                                                        {item.completed ? "✓" : isLocked ? "🔒" : stepNumber}
                                                     </div>
                                                 </div>
 
@@ -384,14 +425,14 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-lg">{item.emoji}</span>
-                                                        <h3 className={`font-semibold text-base ${item.completed ? "text-green-700" : "text-gray-900"
+                                                        <h3 className={`font-semibold text-base ${item.completed ? "text-green-700" : isLocked ? "text-gray-400" : "text-gray-900"
                                                             }`}>
                                                             {item.label}
                                                         </h3>
                                                     </div>
-                                                    <p className={`text-sm mt-0.5 ${item.completed ? "text-green-600" : "text-gray-500"
+                                                    <p className={`text-sm mt-0.5 ${item.completed ? "text-green-600" : isLocked ? "text-gray-400" : "text-gray-500"
                                                         }`}>
-                                                        {item.description}
+                                                        {isLocked ? "Complete previous step to unlock" : item.description}
                                                     </p>
                                                 </div>
 
@@ -401,16 +442,18 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                                         <Badge className="bg-green-100 text-green-700 border-green-200">
                                                             Completed
                                                         </Badge>
+                                                    ) : isLocked ? (
+                                                        <Badge className="bg-gray-100 text-gray-400 border-gray-200">
+                                                            {item.reward}
+                                                        </Badge>
                                                     ) : (
                                                         <>
-                                                            {item.reward && (
-                                                                <Badge className={`${isNextStep
-                                                                    ? "bg-gold-100 text-gold-700 border-gold-300"
-                                                                    : "bg-gray-100 text-gray-600 border-gray-200"
-                                                                    }`}>
-                                                                    {item.reward}
-                                                                </Badge>
-                                                            )}
+                                                            <Badge className={`${isNextStep
+                                                                ? "bg-gold-100 text-gold-700 border-gold-300"
+                                                                : "bg-gray-100 text-gray-600 border-gray-200"
+                                                                }`}>
+                                                                {item.reward}
+                                                            </Badge>
                                                             <ArrowRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${isNextStep ? "text-gold-600" : "text-gray-400"
                                                                 }`} />
                                                         </>
@@ -423,6 +466,11 @@ export function StartHereClient({ user, userId, enrollments, onboardingData, has
                                                 )}
                                             </div>
                                         );
+
+                                        // Don't allow click if locked
+                                        if (isLocked) {
+                                            return <div key={item.id}>{content}</div>;
+                                        }
 
                                         if (item.action) {
                                             return (

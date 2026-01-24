@@ -7,7 +7,7 @@ import Link from "next/link";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 import { CourseSidebar } from "./course-sidebar";
-import { LiveChatPanel } from "./live-chat-panel";
+// LiveChatPanel removed - now using built-in Sarah mentor ChatPanel
 
 // =============================================================================
 // TYPES
@@ -859,7 +859,7 @@ export function LessonPlayer({
                 </footer>
             </div>
 
-            {/* RIGHT CHAT PANEL - Desktop XL only - Fixed */}
+            {/* RIGHT CHAT PANEL - Desktop XL only - Sarah Mentor Chat */}
             <aside className="desktop-chat" style={{
                 width: "340px",
                 flexShrink: 0,
@@ -868,8 +868,8 @@ export function LessonPlayer({
                 display: "flex",
                 flexDirection: "column"
             }}>
-                {/* Live Chat - Full Panel */}
-                <LiveChatPanel courseId={course.id} />
+                {/* Sarah Private Mentor Chat */}
+                <ChatPanel />
             </aside>
 
             {/* Mobile Chat Overlay */}
@@ -898,31 +898,9 @@ export function LessonPlayer({
                         }}
                         onClick={e => e.stopPropagation()}
                     >
-                        {/* Mobile Header */}
-                        <div style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            padding: "12px 16px",
-                            background: "#16a34a",
-                            color: "#fff",
-                            fontWeight: 600
-                        }}>
-                            <span>🔴 Live Chat</span>
-                            <button
-                                onClick={() => setChatOpen(false)}
-                                style={{
-                                    background: "transparent",
-                                    border: "none",
-                                    color: "#fff",
-                                    fontSize: "20px",
-                                    cursor: "pointer"
-                                }}
-                            >✕</button>
-                        </div>
-                        {/* Mobile Chat Content */}
+                        {/* Mobile Chat Content - Sarah Mentor Chat */}
                         <div style={{ flex: 1, overflow: "hidden" }}>
-                            <LiveChatPanel courseId={course.id} onClose={() => setChatOpen(false)} />
+                            <ChatPanel isMobile={true} />
                         </div>
                     </div>
                 </div>

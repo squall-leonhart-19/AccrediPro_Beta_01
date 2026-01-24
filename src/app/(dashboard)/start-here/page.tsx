@@ -14,7 +14,7 @@ async function getStartHereData(userId: string) {
     // The introduction thread ID for "Share Your Story" XP tracking
     const INTRO_POST_ID = "cmj94foua0000736vfwdlheir";
 
-    const [user, enrollments, userTags, messagedCoach, hasIntroComment] = await Promise.all([
+    const [user, enrollmentData, userTags, messagedCoach, hasIntroComment] = await Promise.all([
         prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -24,9 +24,36 @@ async function getStartHereData(userId: string) {
                 learningGoal: true,
                 focusAreas: true,
                 location: true,
+                createdAt: true, // For 24hr bonus timer
             },
         }),
-        prisma.enrollment.count({ where: { userId } }),
+        // Get first enrollment with course and first lesson
+        prisma.enrollment.findFirst({
+            where: { userId },
+            orderBy: { createdAt: 'asc' },
+            include: {
+                course: {
+                    select: {
+                        id: true,
+                        slug: true,
+                        title: true,
+                        modules: {
+                            where: { isPublished: true },
+                            orderBy: { order: 'asc' },
+                            take: 1,
+                            select: {
+                                lessons: {
+                                    where: { isPublished: true },
+                                    orderBy: { order: 'asc' },
+                                    take: 1,
+                                    select: { id: true, title: true },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        }),
         prisma.userTag.findMany({
             where: { userId },
             select: { tag: true, value: true, metadata: true },
@@ -49,6 +76,9 @@ async function getStartHereData(userId: string) {
         }),
     ]);
 
+    // Get enrollment count separately
+    const enrollments = await prisma.enrollment.count({ where: { userId } });
+
     // Extract relevant tags for display
     const incomeGoalTag = userTags.find(t => t.tag.startsWith('income_goal:'));
     const timelineTag = userTags.find(t => t.tag.startsWith('timeline:'));
@@ -56,6 +86,12 @@ async function getStartHereData(userId: string) {
     const investmentTag = userTags.find(t => t.tag.startsWith('investment:'));
     const obstaclesTags = userTags.filter(t => t.tag.startsWith('obstacle:'));
     const interestsTags = userTags.filter(t => t.tag.startsWith('interest:'));
+
+    // Get first lesson URL
+    const firstLesson = enrollmentData?.course?.modules?.[0]?.lessons?.[0];
+    const firstLessonUrl = firstLesson
+        ? `/courses/${enrollmentData.course.slug}/lesson/${firstLesson.id}`
+        : null;
 
     return {
         user: user ? {
@@ -65,6 +101,7 @@ async function getStartHereData(userId: string) {
             learningGoal: user.learningGoal,
             focusAreas: user.focusAreas || [],
             location: user.location,
+            createdAt: user.createdAt?.toISOString() || null,
         } : null,
         enrollments,
         onboardingData: {
@@ -77,6 +114,8 @@ async function getStartHereData(userId: string) {
         },
         hasMessagedCoach: !!messagedCoach,
         hasIntroPost: !!hasIntroComment,
+        firstLessonUrl,
+        courseName: enrollmentData?.course?.title || null,
     };
 }
 
@@ -84,21 +123,18 @@ export default async function StartHerePage() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return null;
 
-    const { user, enrollments, onboardingData, hasMessagedCoach, hasIntroPost } = await getStartHereData(session.user.id);
-
-    // We can't check localStorage from server, so we pass false
-    // The client component will check localStorage
-    const tourComplete = false;
+    const { user, enrollments, onboardingData, hasMessagedCoach, hasIntroPost, firstLessonUrl, courseName } = await getStartHereData(session.user.id);
 
     return (
         <StartHereClient
             user={user}
             userId={session.user.id}
             enrollments={enrollments}
-            tourComplete={tourComplete}
             onboardingData={onboardingData}
             hasMessagedCoach={hasMessagedCoach}
             hasIntroPost={hasIntroPost}
+            firstLessonUrl={firstLessonUrl}
+            courseName={courseName}
         />
     );
 }
