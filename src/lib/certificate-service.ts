@@ -155,3 +155,82 @@ export async function createCertificateOnCompletion(
 
     return { created: true, certificateId: certificate.certificateNumber };
 }
+
+// Create certificate when a module is completed
+export async function createModuleCertificate(
+    userId: string,
+    courseId: string,
+    moduleId: string
+): Promise<{ created: boolean; certificateId?: string }> {
+    // Check if module certificate already exists (unique constraint: userId + courseId + moduleId)
+    const existingCert = await prisma.certificate.findFirst({
+        where: { userId, courseId, moduleId },
+    });
+
+    if (existingCert) {
+        return { created: false, certificateId: existingCert.certificateNumber };
+    }
+
+    // Get module and course info
+    const module = await prisma.module.findUnique({
+        where: { id: moduleId },
+        include: {
+            course: {
+                select: { slug: true, title: true },
+            },
+            lessons: {
+                where: { isPublished: true },
+                select: { id: true },
+            },
+        },
+    });
+
+    if (!module) {
+        console.error(`[createModuleCertificate] Module not found: ${moduleId}`);
+        return { created: false };
+    }
+
+    // Verify all lessons in the module are completed
+    const completedLessons = await prisma.lessonProgress.count({
+        where: {
+            userId,
+            lessonId: { in: module.lessons.map((l) => l.id) },
+            isCompleted: true,
+        },
+    });
+
+    if (completedLessons < module.lessons.length) {
+        console.log(`[createModuleCertificate] Module not complete: ${completedLessons}/${module.lessons.length} lessons`);
+        return { created: false };
+    }
+
+    // Generate certificate ID with module indicator
+    const moduleCode = module.title
+        .split(" ")
+        .map((word) => word[0]?.toUpperCase() || "")
+        .join("")
+        .substring(0, 2)
+        .padEnd(2, "X");
+    const certificateNumber = `AP-${moduleCode}M${module.order}-${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+    // Create module certificate
+    try {
+        const certificate = await prisma.certificate.create({
+            data: {
+                userId,
+                courseId,
+                moduleId,
+                certificateNumber,
+                type: "MODULE_COMPLETION",
+                issuedAt: new Date(),
+            },
+        });
+
+        console.log(`[createModuleCertificate] Created certificate ${certificate.certificateNumber} for module ${module.title}`);
+        return { created: true, certificateId: certificate.certificateNumber };
+    } catch (error) {
+        // Handle unique constraint violation (race condition)
+        console.error(`[createModuleCertificate] Error creating certificate:`, error);
+        return { created: false };
+    }
+}

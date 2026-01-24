@@ -99,6 +99,17 @@ interface Enrollment {
     progress: number;
 }
 
+interface BestSeller {
+    id: string;
+    slug: string;
+    title: string;
+    thumbnail: string | null;
+    price: number | null;
+    isFree: boolean;
+    enrollments: number;
+    rating: number;
+}
+
 interface CourseCatalogFiltersProps {
     courses: Course[];
     categories: Category[];
@@ -115,6 +126,7 @@ interface CourseCatalogFiltersProps {
     miniDiplomaCompletedAt?: string | null;
     graduateAccessExpiresAt?: string | null;
     isGraduate?: boolean;
+    bestSellers?: BestSeller[];
 }
 
 // Default coach when none assigned
@@ -356,6 +368,7 @@ export function CourseCatalogFilters({
     miniDiplomaCompletedAt = null,
     graduateAccessExpiresAt = null,
     isGraduate = false,
+    bestSellers = [],
 }: CourseCatalogFiltersProps) {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
@@ -657,6 +670,63 @@ export function CourseCatalogFilters({
                     );
                 })}
             </div>
+
+            {/* Best Sellers Section */}
+            {bestSellers.length > 0 && (
+                <section className="mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                                <Flame className="w-4 h-4 text-white" />
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900">Best Sellers</h2>
+                            <Badge className="bg-orange-100 text-orange-700 border-orange-200">Top 8</Badge>
+                        </div>
+                    </div>
+                    <div className="flex gap-4 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-hide">
+                        {bestSellers.map((course) => (
+                            <Link key={course.id} href={`/courses/${course.slug}`} className="flex-shrink-0 w-64">
+                                <Card className="h-full overflow-hidden border-2 border-orange-100 hover:border-orange-300 hover:shadow-lg transition-all group">
+                                    <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-burgundy-500 to-burgundy-700">
+                                        {course.thumbnail ? (
+                                            <Image
+                                                src={course.thumbnail}
+                                                alt={course.title}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full" />
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                        <Badge className="absolute top-2 left-2 bg-gradient-to-r from-orange-400 to-red-500 text-white border-0 shadow-lg">
+                                            <Flame className="w-3 h-3 mr-1" />
+                                            Best Seller
+                                        </Badge>
+                                    </div>
+                                    <CardContent className="p-3">
+                                        <h3 className="font-bold text-sm text-gray-900 mb-2 line-clamp-2 group-hover:text-burgundy-600 transition-colors">
+                                            {course.title}
+                                        </h3>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-1">
+                                                <Star className="w-3.5 h-3.5 text-gold-400 fill-gold-400" />
+                                                <span className="text-sm font-semibold text-gray-900">{course.rating.toFixed(1)}</span>
+                                                <span className="text-xs text-gray-400">({course.enrollments.toLocaleString()})</span>
+                                            </div>
+                                            {course.isFree ? (
+                                                <Badge className="bg-green-100 text-green-700">Free</Badge>
+                                            ) : course.price ? (
+                                                <span className="font-bold text-burgundy-600">${course.price}</span>
+                                            ) : null}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* Course Grid - Enhanced Cards */}
             <section>

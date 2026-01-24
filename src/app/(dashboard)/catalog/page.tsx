@@ -135,7 +135,48 @@ async function getCourses() {
         },
       },
     },
-    orderBy: [{ isFeatured: 'desc' }, { title: 'asc' }],
+    // Order by: featured first, then by popularity (enrollments), then alphabetically
+    orderBy: [
+      { isFeatured: 'desc' },
+      { analytics: { totalEnrolled: 'desc' } },
+      { title: 'asc' }
+    ],
+  });
+}
+
+// Get top 8 best-selling courses by enrollment count
+async function getBestSellers() {
+  return prisma.course.findMany({
+    where: {
+      isPublished: true,
+      certificateType: { not: 'MINI_DIPLOMA' },
+      slug: { notIn: HIDDEN_COURSE_SLUGS },
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      thumbnail: true,
+      price: true,
+      isFree: true,
+      displayEnrollments: true,
+      displayRating: true,
+      socialProofEnabled: true,
+      _count: {
+        select: { enrollments: true },
+      },
+      analytics: {
+        select: {
+          totalEnrolled: true,
+          avgRating: true,
+        },
+      },
+    },
+    orderBy: [
+      { analytics: { totalEnrolled: 'desc' } },
+      { _count: { enrollments: 'desc' } },
+    ],
+    take: 8,
   });
 }
 
@@ -206,13 +247,14 @@ export default async function CoursesPage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const session = await getServerSession(authOptions);
 
-  const [courses, categories, enrollments, specialOffers, wishlist, graduateStatus] = await Promise.all([
+  const [courses, categories, enrollments, specialOffers, wishlist, graduateStatus, bestSellers] = await Promise.all([
     getCourses(),
     getCategories(),
     session?.user?.id ? getUserEnrollments(session.user.id) : [],
     getActiveSpecialOffers(),
     session?.user?.id ? getUserWishlist(session.user.id) : [],
     session?.user?.id ? getUserGraduateStatus(session.user.id) : { miniDiplomaCompletedAt: null, accessExpiresAt: null, isGraduate: false },
+    getBestSellers(),
   ]);
 
   // Transform the data for the client component
@@ -285,6 +327,24 @@ export default async function CoursesPage() {
 
   const wishlistIds = wishlist.map((w) => w.courseId);
 
+  // Transform best sellers for the component
+  const bestSellersData = bestSellers.map((course) => ({
+    id: course.id,
+    slug: course.slug,
+    title: course.title,
+    thumbnail: (course.thumbnail && course.thumbnail.trim() !== "")
+      ? course.thumbnail
+      : getFallbackThumbnail(course.title, course.slug),
+    price: course.price ? Number(course.price) : null,
+    isFree: course.isFree,
+    enrollments: (course as any).socialProofEnabled !== false
+      ? ((course as any).displayEnrollments || course._count.enrollments || 0)
+      : course._count.enrollments || 0,
+    rating: (course as any).socialProofEnabled !== false
+      ? ((course as any).displayRating ? Number((course as any).displayRating) : 4.8)
+      : (course.analytics ? Number(course.analytics.avgRating) : 0),
+  }));
+
   return (
     <div className="animate-fade-in">
       <CourseCatalogFilters
@@ -297,6 +357,7 @@ export default async function CoursesPage() {
         miniDiplomaCompletedAt={graduateStatus.miniDiplomaCompletedAt?.toISOString() || null}
         graduateAccessExpiresAt={graduateStatus.accessExpiresAt?.toISOString() || null}
         isGraduate={!!graduateStatus.isGraduate}
+        bestSellers={bestSellersData}
       />
     </div>
   );

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { onLessonCompleted, onCourseCompleted } from "@/lib/webhooks";
-import { createCertificateOnCompletion } from "@/lib/certificate-service";
+import { createCertificateOnCompletion, createModuleCertificate } from "@/lib/certificate-service";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 
 export async function POST(request: NextRequest) {
@@ -212,13 +212,15 @@ export async function POST(request: NextRequest) {
           await onCourseCompleted(userId, result.actualCourseId);
           await createCertificateOnCompletion(userId, result.actualCourseId);
         }
-        // Send private DM from Coach when module is completed
+        // Send private DM from Coach when module is completed + create module certificate
         if (result.moduleJustCompleted) {
           await triggerAutoMessage({
             userId,
             trigger: "module_complete",
             triggerValue: String(result.moduleOrder),
           });
+          // Create module certificate
+          await createModuleCertificate(userId, result.actualCourseId, actualModuleId);
         }
       } catch (error) {
         console.error("Background webhook error:", error);
