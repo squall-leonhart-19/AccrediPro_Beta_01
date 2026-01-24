@@ -174,7 +174,6 @@ async function getBestSellers() {
     },
     orderBy: [
       { analytics: { totalEnrolled: 'desc' } },
-      { _count: { enrollments: 'desc' } },
     ],
     take: 8,
   });
