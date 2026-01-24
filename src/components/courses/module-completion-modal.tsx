@@ -13,6 +13,8 @@ import {
   MessageCircle,
   CheckCircle,
   PartyPopper,
+  Users,
+  Heart,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import Link from "next/link";
@@ -30,6 +32,8 @@ interface ModuleCompletionModalProps {
   nextModuleLesson?: { id: string; title: string } | null;
   hasQuiz?: boolean;
   quizUrl?: string;
+  userFirstName?: string;
+  onShareToCommunnity?: (moduleName: string) => Promise<void>;
 }
 
 const coachMessages = [
@@ -54,6 +58,8 @@ export function ModuleCompletionModal({
   quizUrl,
 }: ModuleCompletionModalProps) {
   const [showContent, setShowContent] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [hasShared, setHasShared] = useState(false);
   const coachInitials = coachName
     .split(" ")
     .map((n) => n[0])
@@ -167,6 +173,69 @@ export function ModuleCompletionModal({
             </div>
           </div>
         </div>
+
+        {/* Community Win Sharing - Sarah's Offer */}
+        {!hasShared && (
+          <div
+            className={`px-6 py-3 transition-all duration-500 delay-350 ${showContent ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          >
+            <div className="bg-gradient-to-r from-gold-50 to-burgundy-50 rounded-xl p-4 border border-gold-200">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-burgundy-500 to-burgundy-600 flex items-center justify-center flex-shrink-0">
+                  <Heart className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-700 mb-3">
+                    <span className="font-semibold text-burgundy-700">Sarah says:</span> "Want me to share this win with the community? Your classmates love celebrating each other!"
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      disabled={isSharing}
+                      onClick={async () => {
+                        setIsSharing(true);
+                        try {
+                          // Post to community
+                          await fetch('/api/community/share-win', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ moduleName }),
+                          });
+                          setHasShared(true);
+                        } catch (err) {
+                          console.error('Failed to share:', err);
+                        } finally {
+                          setIsSharing(false);
+                        }
+                      }}
+                      className="bg-gradient-to-r from-burgundy-500 to-burgundy-600 hover:from-burgundy-600 hover:to-burgundy-700 text-white"
+                    >
+                      <Users className="w-4 h-4 mr-1" />
+                      {isSharing ? 'Sharing...' : 'Yes, celebrate me!'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setHasShared(true)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Maybe later
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {hasShared && (
+          <div className="px-6 py-2">
+            <div className="bg-green-50 rounded-lg p-3 text-center border border-green-200">
+              <CheckCircle className="w-5 h-5 text-green-500 inline mr-2" />
+              <span className="text-sm text-green-700 font-medium">Shared with the community!</span>
+            </div>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div
