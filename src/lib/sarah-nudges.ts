@@ -10,6 +10,8 @@ export interface NudgeRule {
   message: string;
   priority: number; // Higher = more urgent (1-5)
   emoji?: string;
+  sendEmail?: boolean; // Whether to also send email (not just DM)
+  emailSubject?: string; // Custom email subject
 }
 
 export const NUDGE_RULES: NudgeRule[] = [
@@ -21,6 +23,7 @@ export const NUDGE_RULES: NudgeRule[] = [
     message: "Hey {{firstName}}! I noticed you haven't been around. Everything okay? Your next lesson is waiting: {{nextLessonTitle}}",
     priority: 1,
     emoji: "👋",
+    // DM only - too early for email
   },
   {
     id: "no_login_5d",
@@ -29,6 +32,8 @@ export const NUDGE_RULES: NudgeRule[] = [
     message: "I miss you, {{firstName}}! You were making great progress on {{courseName}}. Let's not lose momentum. Just 10 minutes today?",
     priority: 2,
     emoji: "💭",
+    sendEmail: true,
+    emailSubject: "Sarah here — just checking in on you",
   },
   {
     id: "no_login_7d",
@@ -37,6 +42,8 @@ export const NUDGE_RULES: NudgeRule[] = [
     message: "Hey {{firstName}}, I'm getting a bit worried. Is something blocking you? Reply and let me know — I'm here to help you succeed.",
     priority: 3,
     emoji: "🤔",
+    sendEmail: true,
+    emailSubject: "Quick question from your mentor",
   },
   {
     id: "no_login_14d",
@@ -45,6 +52,18 @@ export const NUDGE_RULES: NudgeRule[] = [
     message: "{{firstName}}, it's been two weeks since we last connected. I'm genuinely concerned. What's going on? I'm here to help, not judge.",
     priority: 4,
     emoji: "❤️",
+    sendEmail: true,
+    emailSubject: "{{firstName}}, I noticed something...",
+  },
+  {
+    id: "no_login_21d",
+    condition: "no_login",
+    daysThreshold: 21,
+    message: "It's been a while, {{firstName}} — no judgment at all. Life gets busy, I completely understand. When you're ready, I'm here. Your progress ({{progress}}%) is saved and waiting for you.",
+    priority: 3, // Lower priority - gentle grace message
+    emoji: "💛",
+    sendEmail: true,
+    emailSubject: "No pressure — just wanted you to know I'm here",
   },
 
   // Stuck on lesson nudge
@@ -66,6 +85,8 @@ export const NUDGE_RULES: NudgeRule[] = [
     message: "You're SO CLOSE, {{firstName}}! Just {{lessonsRemaining}} lessons to go until you're certified. Let's finish this week!",
     priority: 4,
     emoji: "🔥",
+    sendEmail: true,
+    emailSubject: "You're SO close to your certificate!",
   },
   {
     id: "stalled_near_completion_90",
@@ -75,6 +96,8 @@ export const NUDGE_RULES: NudgeRule[] = [
     message: "{{firstName}}, you're at {{progress}}%! That certification is RIGHT THERE. One more push and you've got it!",
     priority: 5,
     emoji: "🏆",
+    sendEmail: true,
+    emailSubject: "{{firstName}}, your certificate is waiting!",
   },
 
   // Streak at risk

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sendSarahNudgeEmail } from "@/lib/email";
 import {
   NUDGE_RULES,
   evaluateNudge,
@@ -75,7 +76,7 @@ export async function GET(request: Request) {
     });
 
     const now = new Date();
-    const nudgesSent: { student: string; rule: string }[] = [];
+    const nudgesSent: { student: string; rule: string; emailSent: boolean }[] = [];
     const errors: string[] = [];
 
     for (const student of students) {
@@ -163,18 +164,42 @@ export async function GET(request: Request) {
           },
         });
 
-        nudgesSent.push({ student: student.email, rule: rule.id });
+        // Also send email if rule has sendEmail: true
+        let emailSent = false;
+        if (rule.sendEmail && student.email) {
+          try {
+            const emailSubject = rule.emailSubject
+              ? fillMessageTemplate(rule.emailSubject, studentData, primaryEnrollment)
+              : "Sarah here — just checking in";
+
+            await sendSarahNudgeEmail({
+              to: student.email,
+              firstName: studentData.firstName,
+              subject: emailSubject,
+              message: message.replace(rule.emoji || '', '').trim(), // Remove emoji for email
+              loginUrl: 'https://learn.accredipro.academy/login',
+            });
+            emailSent = true;
+          } catch (emailErr) {
+            console.error(`Failed to send nudge email to ${student.email}:`, emailErr);
+          }
+        }
+
+        nudgesSent.push({ student: student.email, rule: rule.id, emailSent });
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Unknown error";
         errors.push(`${student.email}: ${errorMessage}`);
       }
     }
 
+    const emailsSent = nudgesSent.filter(n => n.emailSent).length;
+
     return NextResponse.json({
       success: true,
       timestamp: now.toISOString(),
       studentsProcessed: students.length,
       nudgesSent: nudgesSent.length,
+      emailsSent,
       details: nudgesSent,
       errors: errors.length > 0 ? errors : undefined,
     });

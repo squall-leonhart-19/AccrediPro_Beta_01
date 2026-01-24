@@ -2124,3 +2124,59 @@ export async function sendStaffNotificationEmail(
     html: emailWrapper(content, `${customerName} replied to their support ticket.`),
   });
 }
+
+// ============================================
+// SARAH NUDGE EMAILS (Proactive Re-engagement)
+// ============================================
+
+/**
+ * Send a Sarah nudge email - personal style to feel like a real mentor
+ * Used by the sarah-nudges CRON job for 5d+ inactive users
+ */
+export async function sendSarahNudgeEmail({
+  to,
+  firstName,
+  subject,
+  message,
+  loginUrl,
+}: {
+  to: string;
+  firstName: string;
+  subject: string;
+  message: string;
+  loginUrl?: string;
+}) {
+  // Personal-style content (like a real mentor would write)
+  const content = `
+Hey ${firstName},
+
+${message}
+
+${loginUrl ? `When you're ready: ${loginUrl}` : ''}
+
+Talk soon,
+Sarah
+
+P.S. Just reply to this email if you want to chat — I read everything personally.
+  `.trim();
+
+  const html = personalEmailWrapper(`
+    <p style="margin: 0 0 16px 0; color: #333;">Hey ${firstName},</p>
+    <p style="margin: 0 0 16px 0; color: #333;">${message.replace(/\n/g, '</p><p style="margin: 0 0 16px 0; color: #333;">')}</p>
+    ${loginUrl ? `<p style="margin: 0 0 16px 0; color: #333;">When you're ready: <a href="${loginUrl}" style="color: #722F37;">${loginUrl}</a></p>` : ''}
+    <p style="margin: 24px 0 0 0; color: #333;">Talk soon,<br/>Sarah</p>
+    <p style="margin: 16px 0 0 0; color: #666; font-size: 13px; font-style: italic;">P.S. Just reply to this email if you want to chat — I read everything personally.</p>
+  `);
+
+  // Fill in firstName in subject if template includes it
+  const filledSubject = subject.replace(/\{\{firstName\}\}/g, firstName);
+
+  return sendEmail({
+    to,
+    subject: filledSubject,
+    html,
+    text: content,
+    replyTo: 'info@accredipro-certificate.com',
+    type: 'marketing', // Use marketing sender (Sarah)
+  });
+}
