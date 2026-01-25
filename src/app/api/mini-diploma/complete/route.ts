@@ -6,6 +6,7 @@ import { sendEmail } from "@/lib/email";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 import { sendMiniDiplomaCompleteEvent } from "@/lib/meta-capi";
 import { sendMilestoneToGHL } from "@/lib/ghl-webhook";
+import { enrollUserInSequences } from "@/lib/sequence-enrollment";
 
 const categoryLabels: Record<string, string> = {
     "functional-medicine": "Functional Medicine",
@@ -276,6 +277,21 @@ You've got this! 💛
             userId: user.id,
             trigger: "mini_diploma_complete",
         }).catch(console.error);
+
+        // === ENROLL IN COMPLETION SEQUENCES ===
+        try {
+            const enrolled = await enrollUserInSequences(
+                userId,
+                "MINI_DIPLOMA_COMPLETED",
+                `mini-diploma-${categorySlug}-completed`
+            );
+            if (enrolled > 0) {
+                console.log(`[mini-diploma-complete] Enrolled user ${user.email} in ${enrolled} MINI_DIPLOMA_COMPLETED sequence(s)`);
+            }
+        } catch (err) {
+            console.error(`[mini-diploma-complete] Failed to enroll in sequences:`, err);
+            // Don't fail the completion if sequence enrollment fails
+        }
 
         return NextResponse.json({
             success: true,

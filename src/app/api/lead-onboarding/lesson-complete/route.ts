@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { enrollUserInSequences } from "@/lib/sequence-enrollment";
 
 // Map niche to tag prefix
 const NICHE_TAG_PREFIX: Record<string, string> = {
@@ -61,6 +62,23 @@ export async function POST(request: NextRequest) {
         });
 
         console.log(`[lesson-complete] User ${session.user.id} completed lesson ${lessonId}`);
+
+        // When lesson 1 is completed, enroll in MINI_DIPLOMA_STARTED sequences
+        if (lessonId === 1) {
+            try {
+                const enrolled = await enrollUserInSequences(
+                    session.user.id,
+                    "MINI_DIPLOMA_STARTED",
+                    `mini-diploma-${niche}`
+                );
+                if (enrolled > 0) {
+                    console.log(`[lesson-complete] Enrolled user ${session.user.id} in ${enrolled} MINI_DIPLOMA_STARTED sequence(s)`);
+                }
+            } catch (err) {
+                console.error(`[lesson-complete] Failed to enroll in sequences:`, err);
+                // Don't fail the lesson completion if sequence enrollment fails
+            }
+        }
 
         return NextResponse.json({
             success: true,
