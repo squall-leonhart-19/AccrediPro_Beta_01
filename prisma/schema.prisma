@@ -399,6 +399,7 @@ model Category {
 
   courses   Course[]
   community CategoryCommunity?
+  channels  CommunityChannel[]
 
   @@index([slug])
 }
@@ -757,6 +758,47 @@ model Wishlist {
 
 // ==================== MESSAGING & COMMUNITY ====================
 
+// Channel types for community structure (43 channels: 3 global + 10 categories × 4)
+enum ChannelType {
+  GLOBAL_WINS         // 🏆 Wins & Graduates
+  GLOBAL_ANNOUNCEMENTS // 📢 AccrediPro News
+  GLOBAL_LOUNGE       // ☕ Student Lounge
+  INTRODUCTIONS       // 👋 Introduce Yourself
+  WINS                // 🎉 Wins & Celebrations
+  QUESTIONS           // 💬 Questions & Support
+  TIPS                // 💡 Tips & Resources
+}
+
+model CommunityChannel {
+  id          String      @id @default(cuid())
+  slug        String      @unique  // "global-wins", "fm-introductions"
+  name        String               // "Wins & Graduates"
+  emoji       String?              // "🏆"
+  type        ChannelType          // GLOBAL_WINS, INTRODUCTIONS, etc.
+  description String?     @db.Text
+  
+  // Scope
+  isGlobal    Boolean     @default(false)
+  categoryId  String?              // Null for global channels
+  
+  // Settings
+  sortOrder   Int         @default(0)
+  isLocked    Boolean     @default(false)
+  adminOnly   Boolean     @default(false)  // Only admins can post
+  autoPost    Boolean     @default(false)  // For win auto-sharing
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  posts       CommunityPost[]
+  
+  @@index([categoryId])
+  @@index([isGlobal])
+  @@index([type])
+  @@index([sortOrder])
+}
+
 model Message {
   id          String      @id @default(cuid())
   content     String      @db.Text
@@ -877,18 +919,21 @@ model CommunityPost {
   authorId    String
   categoryId  String? // Legacy: general category like "tips", "wins"
   communityId String? // Links to category-based community
+  channelId   String? // Links to the new channel system
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   author    User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
   community CategoryCommunity? @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  channel   CommunityChannel?  @relation(fields: [channelId], references: [id], onDelete: SetNull)
   comments  PostComment[]
   likes     PostLike[]
 
   @@index([authorId])
   @@index([isPinned])
   @@index([communityId])
+  @@index([channelId])
 }
 
 model PostLike {

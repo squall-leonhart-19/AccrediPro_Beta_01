@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, content, communityId, category } = await request.json();
+    const { title, content, communityId, category, channelId } = await request.json();
 
     if (!title || !content) {
       return NextResponse.json(
@@ -196,6 +196,7 @@ export async function POST(request: NextRequest) {
         authorId: session.user.id,
         communityId: communityId || null,
         categoryId: category || null,
+        channelId: channelId || null,
       },
       // ...
     });
