@@ -5,28 +5,63 @@ import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-// Tag prefixes for lesson completion (maps miniDiplomaCategory to tag prefix)
-const CATEGORY_TO_TAG_PREFIX: Record<string, string> = {
-    "womens-health": "wh-lesson-complete",
-    "functional-medicine": "functional-medicine-lesson-complete",
-    "fm-healthcare": "functional-medicine-lesson-complete",
-    "gut-health": "gut-health-lesson-complete",
-    "health-coach": "health-coach-lesson-complete",
-    "holistic-nutrition": "holistic-nutrition-lesson-complete",
-    "hormone-health": "hormone-health-lesson-complete",
-    "nurse-coach": "nurse-coach-lesson-complete",
-};
+// All possible lesson-complete tag prefixes (used to find ANY lesson completion)
+const ALL_TAG_PREFIXES = [
+    "wh-lesson-complete",
+    "functional-medicine-lesson-complete",
+    "gut-health-lesson-complete",
+    "health-coach-lesson-complete",
+    "holistic-nutrition-lesson-complete",
+    "hormone-health-lesson-complete",
+    "nurse-coach-lesson-complete",
+];
 
+// Map category to display label
 const CATEGORY_LABELS: Record<string, string> = {
     "womens-health": "Women's Health",
     "functional-medicine": "Functional Medicine",
+    "functional-medicine-general": "FM General",
+    "functional-medicine-clinician": "FM Clinician",
     "fm-healthcare": "FM Healthcare",
     "gut-health": "Gut Health",
     "health-coach": "Health Coach",
     "holistic-nutrition": "Holistic Nutrition",
     "hormone-health": "Hormone Health",
     "nurse-coach": "Nurse Coach",
+    "unknown": "Unknown/Legacy",
 };
+
+// Helper function to count lesson completions from ANY tag prefix
+function countLessonsFromTags(tags: { tag: string; createdAt: Date }[]): {
+    lessonsCompleted: number;
+    lessonNumbers: number[];
+    lastActivity: Date | null;
+} {
+    const completedLessons = new Set<number>();
+    let lastActivity: Date | null = null;
+
+    for (const t of tags) {
+        // Check if this tag matches any lesson-complete pattern
+        for (const prefix of ALL_TAG_PREFIXES) {
+            if (t.tag.startsWith(prefix + ":")) {
+                const lessonNum = parseInt(t.tag.replace(prefix + ":", ""), 10);
+                if (!isNaN(lessonNum) && lessonNum >= 1 && lessonNum <= 9) {
+                    completedLessons.add(lessonNum);
+                    if (!lastActivity || t.createdAt > lastActivity) {
+                        lastActivity = t.createdAt;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    return {
+        lessonsCompleted: completedLessons.size,
+        lessonNumbers: Array.from(completedLessons).sort((a, b) => a - b),
+        lastActivity,
+    };
+}
 
 /**
  * GET /api/admin/leads-dashboard
@@ -148,18 +183,15 @@ export async function GET(request: Request) {
 
     // Enrich leads with calculated metrics
     const enrichedLeads = leads.map((lead) => {
-        const category = lead.miniDiplomaCategory || "functional-medicine";
-        const tagPrefix = CATEGORY_TO_TAG_PREFIX[category] || "functional-medicine-lesson-complete";
+        // Normalize category - treat null/undefined as "unknown"
+        const rawCategory = lead.miniDiplomaCategory;
+        const category = rawCategory || "unknown";
 
-        // Count lesson completions
-        const lessonTags = lead.tags.filter((t) => t.tag.startsWith(`${tagPrefix}:`));
-        const lessonsCompleted = lessonTags.length;
+        // Count lesson completions from ANY tag prefix (handles legacy/inconsistent data)
+        const lessonData = countLessonsFromTags(lead.tags);
+        const lessonsCompleted = lessonData.lessonsCompleted;
         const progress = Math.round((lessonsCompleted / 9) * 100);
-
-        // Get last activity
-        const lastLessonTag = lessonTags.sort(
-            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )[0];
+        const lastLessonDate = lessonData.lastActivity;
 
         // Calculate revenue from payments
         const totalRevenue = lead.payments.reduce((sum, p) => {
@@ -190,8 +222,8 @@ export async function GET(request: Request) {
             : 0;
 
         // Days since last activity
-        const daysSinceActivity = lastLessonTag?.createdAt
-            ? Math.floor((now.getTime() - new Date(lastLessonTag.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+        const daysSinceActivity = lastLessonDate
+            ? Math.floor((now.getTime() - new Date(lastLessonDate).getTime()) / (1000 * 60 * 60 * 24))
             : daysSinceOptin;
 
         return {
@@ -210,7 +242,7 @@ export async function GET(request: Request) {
             hasPaid: lead.enrollments.length > 0,
             revenue: totalRevenue,
             hasRefund,
-            lastActivity: lastLessonTag?.createdAt.toISOString() || null,
+            lastActivity: lastLessonDate?.toISOString() || null,
             daysSinceOptin,
             daysSinceActivity,
             isStuck: lessonsCompleted > 0 && lessonsCompleted < 9 && daysSinceActivity > 7,
@@ -256,8 +288,9 @@ export async function GET(request: Request) {
             : 0,
     };
 
-    // Calculate per-niche stats
-    const categories = Object.keys(CATEGORY_TO_TAG_PREFIX);
+    // Calculate per-niche stats - use all categories found in leads data
+    const uniqueCategories = new Set(enrichedLeads.map(l => l.category));
+    const categories = Array.from(uniqueCategories);
     const nicheStats = categories.map(category => {
         const nicheLeads = enrichedLeads.filter(l => l.category === category);
         const signups = nicheLeads.length;
@@ -373,6 +406,14 @@ export async function GET(request: Request) {
         dailySignups,
         overallDropoff,
         leads: enrichedLeads,
-        categories: categories.map(c => ({ value: c, label: CATEGORY_LABELS[c] || c })),
+        // Return all categories found in the data for the filter dropdown
+        categories: Array.from(uniqueCategories)
+            .sort((a, b) => {
+                // Put "unknown" at the end
+                if (a === "unknown") return 1;
+                if (b === "unknown") return -1;
+                return a.localeCompare(b);
+            })
+            .map(c => ({ value: c, label: CATEGORY_LABELS[c] || c })),
     });
 }
