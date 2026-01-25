@@ -108,7 +108,7 @@ const fullNavItems: NavItem[] = [
     tourId: "community",
     children: [
       { href: "/community", label: "🏠 Community Hub", icon: Users, tourId: "community-hub" },
-      { href: "/community/cmj94foua0000736vfwdlheir", label: "👋 Introduce Yourself", icon: Users, tourId: "intro" },
+      { href: "/community/cmktszaw30000fqm97xx6xrck", label: "👋 Introduce Yourself", icon: Users, tourId: "intro" },
       { href: "/community/announcements", label: "📢 Announcements", icon: MessageSquare, tourId: "announcements" },
     ]
   },
@@ -158,7 +158,7 @@ const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) =
 
   return [
     { href: lessonPath, label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
-    { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
+    { href: "/community/cmktszaw30000fqm97xx6xrck", label: "Introduce Yourself", icon: Users, tourId: "community" },
     { href: "/messages", label: "Ask Coach Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
     // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
   ];

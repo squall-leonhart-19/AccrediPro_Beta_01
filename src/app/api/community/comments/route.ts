@@ -32,7 +32,7 @@ function containsBannedContent(text: string): { banned: boolean; keyword?: strin
 }
 
 // The introduction post ID for "Share Your Story" XP tracking
-const INTRO_POST_ID = "cmj94foua0000736vfwdlheir";
+const INTRO_POST_ID = "cmktszaw30000fqm97xx6xrck";
 
 // GET - Load more comments with pagination
 export async function GET(request: NextRequest) {

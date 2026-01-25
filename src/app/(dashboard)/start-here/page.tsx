@@ -12,7 +12,7 @@ async function getStartHereData(userId: string) {
     });
 
     // The introduction thread ID for "Share Your Story" XP tracking
-    const INTRO_POST_ID = "cmj94foua0000736vfwdlheir";
+    const INTRO_POST_ID = "cmktszaw30000fqm97xx6xrck";
 
     const [user, enrollmentData, userTags, messagedCoach, hasIntroComment] = await Promise.all([
         prisma.user.findUnique({

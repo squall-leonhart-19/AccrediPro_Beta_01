@@ -307,12 +307,12 @@ export function LeadSidebar({
                                 </Link>
 
                                 <Link
-                                    href="/community/cmj94foua0000736vfwdlheir"
-                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === "/community/cmj94foua0000736vfwdlheir"
+                                    href="/community/cmktszaw30000fqm97xx6xrck"
+                                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === "/community/cmktszaw30000fqm97xx6xrck"
                                         ? "text-white"
                                         : "text-white/60 hover:text-white"
                                         }`}
-                                    style={pathname === "/community/cmj94foua0000736vfwdlheir" ? { backgroundColor: `${BRAND.gold}15` } : {}}
+                                    style={pathname === "/community/cmktszaw30000fqm97xx6xrck" ? { backgroundColor: `${BRAND.gold}15` } : {}}
                                 >
                                     <Hand className="w-4 h-4 flex-shrink-0" />
                                     <span>👋 Introduce Yourself</span>
