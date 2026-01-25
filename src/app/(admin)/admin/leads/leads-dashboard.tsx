@@ -365,12 +365,19 @@ export default function LeadsDashboard() {
                     </div>
                     <div className="flex gap-2">
                         <Link href="/admin/leads/sequences">
-                            <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/30">
+                            <Button
+                                variant="outline"
+                                className="!bg-transparent !border-white/40 !text-white hover:!bg-white/10"
+                            >
                                 <Mail className="w-4 h-4 mr-2" />
                                 Sequences
                             </Button>
                         </Link>
-                        <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/30" onClick={exportCSV}>
+                        <Button
+                            variant="outline"
+                            className="!bg-transparent !border-white/40 !text-white hover:!bg-white/10"
+                            onClick={exportCSV}
+                        >
                             <Download className="w-4 h-4 mr-2" />
                             Export
                         </Button>

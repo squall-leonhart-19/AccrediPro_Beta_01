@@ -567,7 +567,8 @@ export default function SequencesDashboard() {
                     </div>
                     <div className="flex gap-2">
                         <Button
-                            className="bg-white/10 hover:bg-white/20 text-white border border-white/30"
+                            variant="outline"
+                            className="!bg-transparent !border-white/40 !text-white hover:!bg-white/10"
                             onClick={runRetroactiveEnrollment}
                             disabled={enrolling}
                         >
