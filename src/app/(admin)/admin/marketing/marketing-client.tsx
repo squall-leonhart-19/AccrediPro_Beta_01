@@ -131,6 +131,7 @@ interface Sequence {
   description: string | null;
   isActive: boolean;
   triggerType: string;
+  courseCategory: string | null;
   fromName?: string;
   fromEmail?: string;
   totalEnrolled: number;
@@ -163,6 +164,18 @@ const TRIGGER_TYPES = [
   { value: "TRAINING_STARTED", label: "Training started" },
   { value: "COURSE_ENROLLED", label: "Course enrolled" },
   { value: "MANUAL", label: "Manual enrollment only" },
+];
+
+// Mini diploma categories for sequence targeting
+const MINI_DIPLOMA_CATEGORIES = [
+  { value: "functional-medicine", label: "Functional Medicine", color: "#10B981" },
+  { value: "gut-health", label: "Gut Health", color: "#F59E0B" },
+  { value: "hormone-health", label: "Hormone Health", color: "#EC4899" },
+  { value: "womens-health", label: "Women's Health", color: "#8B5CF6" },
+  { value: "holistic-nutrition", label: "Holistic Nutrition", color: "#06B6D4" },
+  { value: "health-coach", label: "Health Coach", color: "#3B82F6" },
+  { value: "nurse-coach", label: "Nurse Coach", color: "#EF4444" },
+  { value: "autism", label: "Autism", color: "#14B8A6" },
 ];
 
 export default function MarketingClient() {
@@ -380,6 +393,7 @@ export default function MarketingClient() {
         body: JSON.stringify({
           name: selectedSequence.name,
           description: selectedSequence.description,
+          courseCategory: selectedSequence.courseCategory,
           isActive: selectedSequence.isActive,
           exitOnReply: selectedSequence.exitOnReply,
           exitOnClick: selectedSequence.exitOnClick,
@@ -1333,6 +1347,22 @@ export default function MarketingClient() {
                         <Badge variant="outline" className="bg-amber-50">{TRIGGER_TYPES.find(t => t.value === seq.triggerType)?.label || seq.triggerType}</Badge>
                         {seq.triggerTag && <Badge variant="outline" style={{ borderColor: seq.triggerTag.color, color: seq.triggerTag.color }}>{seq.triggerTag.name}</Badge>}
                       </div>
+                      {seq.courseCategory && (
+                        <div className="flex items-center gap-2">
+                          <Gift className="h-4 w-4 text-purple-500" />
+                          <span className="text-gray-500">Category:</span>
+                          <Badge
+                            variant="outline"
+                            style={{
+                              borderColor: MINI_DIPLOMA_CATEGORIES.find(c => c.value === seq.courseCategory)?.color || "#6B7280",
+                              backgroundColor: `${MINI_DIPLOMA_CATEGORIES.find(c => c.value === seq.courseCategory)?.color}15`,
+                              color: MINI_DIPLOMA_CATEGORIES.find(c => c.value === seq.courseCategory)?.color || "#6B7280"
+                            }}
+                          >
+                            {MINI_DIPLOMA_CATEGORIES.find(c => c.value === seq.courseCategory)?.label || seq.courseCategory}
+                          </Badge>
+                        </div>
+                      )}
                       {(seq.exitTag || seq.exitOnReply || seq.exitOnClick) && (
                         <div className="flex items-center gap-2">
                           <LogOut className="h-4 w-4 text-red-500" />
@@ -1918,6 +1948,29 @@ export default function MarketingClient() {
             <div className="space-y-4">
               <div><Label>Name</Label><Input value={selectedSequence.name} onChange={(e) => setSelectedSequence({ ...selectedSequence, name: e.target.value })} /></div>
               <div><Label>Description</Label><Textarea value={selectedSequence.description || ""} onChange={(e) => setSelectedSequence({ ...selectedSequence, description: e.target.value })} rows={2} /></div>
+              <div>
+                <Label>Mini Diploma Category</Label>
+                <p className="text-xs text-gray-500 mb-2">Only enroll users from this mini diploma (leave empty for all)</p>
+                <Select
+                  value={selectedSequence.courseCategory || "all"}
+                  onValueChange={(v) => setSelectedSequence({ ...selectedSequence, courseCategory: v === "all" ? null : v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All categories</SelectItem>
+                    {MINI_DIPLOMA_CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.value} value={cat.value}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
+                          {cat.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex items-center justify-between"><div><Label>Active</Label><p className="text-xs text-gray-500">Enable/disable this sequence</p></div><Switch checked={selectedSequence.isActive} onCheckedChange={(checked) => setSelectedSequence({ ...selectedSequence, isActive: checked })} /></div>
               <div className="flex items-center justify-between"><div><Label>Exit on Reply</Label><p className="text-xs text-gray-500">Remove when user replies</p></div><Switch checked={selectedSequence.exitOnReply} onCheckedChange={(checked) => setSelectedSequence({ ...selectedSequence, exitOnReply: checked })} /></div>
               <div className="flex items-center justify-between"><div><Label>Exit on CTA Click</Label><p className="text-xs text-gray-500">Remove when user clicks CTA</p></div><Switch checked={selectedSequence.exitOnClick} onCheckedChange={(checked) => setSelectedSequence({ ...selectedSequence, exitOnClick: checked })} /></div>
