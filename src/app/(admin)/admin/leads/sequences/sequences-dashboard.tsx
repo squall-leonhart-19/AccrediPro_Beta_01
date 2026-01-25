@@ -134,6 +134,8 @@ export default function SequencesDashboard() {
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedSequence, setSelectedSequence] = useState<string | null>(null);
+    const [enrolling, setEnrolling] = useState(false);
+    const [enrollResult, setEnrollResult] = useState<{ success: boolean; message: string } | null>(null);
 
     useEffect(() => {
         fetchData();
@@ -154,6 +156,39 @@ export default function SequencesDashboard() {
             console.error("Failed to fetch sequences data:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const runRetroactiveEnrollment = async () => {
+        if (enrolling) return;
+        setEnrolling(true);
+        setEnrollResult(null);
+        try {
+            const res = await fetch("/api/admin/retroactive-sequence-enroll", {
+                method: "POST",
+            });
+            const result = await res.json();
+            if (res.ok && result.success) {
+                const total = result.summary?.totalNewEnrollments || 0;
+                setEnrollResult({
+                    success: true,
+                    message: `Enrolled ${total} users (${result.started?.enrolled || 0} started, ${result.completed?.enrolled || 0} completed)`,
+                });
+                // Refresh data after enrollment
+                fetchData();
+            } else {
+                setEnrollResult({
+                    success: false,
+                    message: result.error || "Failed to enroll users",
+                });
+            }
+        } catch (error) {
+            setEnrollResult({
+                success: false,
+                message: "Network error - please try again",
+            });
+        } finally {
+            setEnrolling(false);
         }
     };
 
@@ -530,14 +565,42 @@ export default function SequencesDashboard() {
                             <p className="text-[#C9A227] text-sm">Nurture sequence performance & conversions</p>
                         </div>
                     </div>
-                    <Button
-                        className="bg-[#C9A227] hover:bg-[#b8922a] text-[#4e1f24] font-semibold"
-                        onClick={fetchData}
-                    >
-                        <RefreshCw className="w-4 h-4 mr-2" />
-                        Refresh
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button
+                            className="bg-white/10 hover:bg-white/20 text-white border border-white/30"
+                            onClick={runRetroactiveEnrollment}
+                            disabled={enrolling}
+                        >
+                            {enrolling ? (
+                                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                            ) : (
+                                <Users className="w-4 h-4 mr-2" />
+                            )}
+                            {enrolling ? "Enrolling..." : "Enroll Existing Users"}
+                        </Button>
+                        <Button
+                            className="bg-[#C9A227] hover:bg-[#b8922a] text-[#4e1f24] font-semibold"
+                            onClick={fetchData}
+                        >
+                            <RefreshCw className="w-4 h-4 mr-2" />
+                            Refresh
+                        </Button>
+                    </div>
                 </div>
+
+                {/* Enrollment Result Message */}
+                {enrollResult && (
+                    <div className={`mt-4 p-3 rounded-lg ${enrollResult.success ? "bg-green-500/20 text-green-100" : "bg-red-500/20 text-red-100"}`}>
+                        <div className="flex items-center gap-2">
+                            {enrollResult.success ? (
+                                <CheckCircle className="w-4 h-4" />
+                            ) : (
+                                <XCircle className="w-4 h-4" />
+                            )}
+                            {enrollResult.message}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Overall Stats */}

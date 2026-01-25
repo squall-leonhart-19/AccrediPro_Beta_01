@@ -33,10 +33,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const sequenceId = searchParams.get("sequenceId");
 
-    // Get all sequences with their emails and stats
+    // Get only mini diploma related sequences (started + completed triggers)
     const sequences = await prisma.sequence.findMany({
         where: {
             isActive: true,
+            triggerType: {
+                in: ["MINI_DIPLOMA_STARTED", "MINI_DIPLOMA_COMPLETED"],
+            },
         },
         select: {
             id: true,
