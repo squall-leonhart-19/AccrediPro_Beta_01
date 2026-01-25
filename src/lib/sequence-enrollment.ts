@@ -76,7 +76,6 @@ export async function enrollUserInSequences(
                 status: "ACTIVE",
                 currentEmailIndex: 0,
                 nextSendAt,
-                source: source || triggerType.toLowerCase(),
             },
         });
 
