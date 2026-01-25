@@ -2,11 +2,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import LeadsClient from "./leads-client";
+import LeadsDashboard from "./leads-dashboard";
 
 export const metadata = {
-  title: "Lead Management | Admin",
-  description: "Manage mini diploma leads",
+  title: "Lead Intelligence Dashboard | Admin",
+  description: "Mini diploma funnel analytics and lead performance",
 };
 
 export default async function LeadsPage() {
@@ -21,9 +21,9 @@ export default async function LeadsPage() {
     select: { role: true },
   });
 
-  if (!user || !["ADMIN", "INSTRUCTOR"].includes(user.role)) {
+  if (!user || !["ADMIN", "SUPERUSER", "INSTRUCTOR", "MENTOR", "SUPPORT"].includes(user.role)) {
     redirect("/dashboard");
   }
 
-  return <LeadsClient />;
+  return <LeadsDashboard />;
 }

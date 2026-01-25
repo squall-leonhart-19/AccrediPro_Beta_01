@@ -5,7 +5,7 @@ export const metadata = {
   description: "Mini diploma funnel analytics",
 };
 
-// Redirect to the combined Leads & Mini Diploma page
+// Redirect to the unified Lead Intelligence Dashboard
 export default async function MiniDiplomaPage() {
-  redirect("/admin/leads?tab=mini-diploma");
+  redirect("/admin/leads");
 }
