@@ -46,6 +46,7 @@ import {
     Zap,
     ArrowUpRight,
     ArrowDownRight,
+    Mail,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -363,6 +364,12 @@ export default function LeadsDashboard() {
                         </div>
                     </div>
                     <div className="flex gap-2">
+                        <Link href="/admin/leads/sequences">
+                            <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                                <Mail className="w-4 h-4 mr-2" />
+                                Sequences
+                            </Button>
+                        </Link>
                         <Button variant="outline" className="border-white/30 text-white hover:bg-white/10" onClick={exportCSV}>
                             <Download className="w-4 h-4 mr-2" />
                             Export
