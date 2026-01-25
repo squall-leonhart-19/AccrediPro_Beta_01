@@ -101,6 +101,7 @@ const fullNavItems: NavItem[] = [
   // { href: "/my-circle", label: "My Pod", icon: Users2, tourId: "my-pod" },
 
   // 7. Community - EXPANDABLE GROUP with sub-items for all 10 categories
+  // Links to category pages with channel tabs (Intros, Wins, Q&A, Tips)
   {
     href: "/community",
     label: "Community",
@@ -108,17 +109,17 @@ const fullNavItems: NavItem[] = [
     tourId: "community",
     children: [
       { href: "/community", label: "🏠 Community Hub", icon: Users, tourId: "community-hub" },
-      // Category Intro Posts (10 categories)
-      { href: "/community/cmktszaw30000fqm97xx6xrck", label: "🩺 Functional Medicine", icon: Users, tourId: "intro-fm" },
-      { href: "/community/cmktszbal0001fqm9rx7kzppk", label: "💔 Trauma Recovery", icon: Users, tourId: "intro-tr" },
-      { href: "/community/cmktszboa0002fqm9x1hgfmyb", label: "🧠 Mental Health", icon: Users, tourId: "intro-mh" },
-      { href: "/community/cmktszc210003fqm9k21dsok0", label: "👨‍👩‍👧 Parenting & Family", icon: Users, tourId: "intro-pf" },
-      { href: "/community/cmktszcfn0004fqm9hqodz2np", label: "✨ Spiritual & Energy", icon: Users, tourId: "intro-se" },
-      { href: "/community/cmktszct60005fqm9beyhgpai", label: "🧘 Mind & Body", icon: Users, tourId: "intro-mb" },
-      { href: "/community/cmktszd7u0006fqm9nr7qafi8", label: "🐾 Pet Wellness", icon: Users, tourId: "intro-pw" },
-      { href: "/community/cmktszdlh0007fqm9ibhdgjr6", label: "🌿 Herbalism", icon: Users, tourId: "intro-hb" },
-      { href: "/community/cmktszdz10008fqm9851n9f5r", label: "💕 Women's Health", icon: Users, tourId: "intro-wh" },
-      { href: "/community/cmktszech0009fqm9mxzb5iw2", label: "💚 General Wellness", icon: Users, tourId: "intro-gw" },
+      // Category Community Pages (10 categories)
+      { href: "/community/c/fm", label: "🩺 Functional Medicine", icon: Users, tourId: "cat-fm" },
+      { href: "/community/c/tr", label: "💔 Trauma Recovery", icon: Users, tourId: "cat-tr" },
+      { href: "/community/c/mh", label: "🧠 Mental Health", icon: Users, tourId: "cat-mh" },
+      { href: "/community/c/se", label: "✨ Spiritual & Energy", icon: Users, tourId: "cat-se" },
+      { href: "/community/c/pf", label: "👨‍👩‍👧 Parenting & Family", icon: Users, tourId: "cat-pf" },
+      { href: "/community/c/mb", label: "🧘 Mind & Body", icon: Users, tourId: "cat-mb" },
+      { href: "/community/c/pw", label: "🐾 Pet Wellness", icon: Users, tourId: "cat-pw" },
+      { href: "/community/c/hb", label: "🌿 Herbalism", icon: Users, tourId: "cat-hb" },
+      { href: "/community/c/wh", label: "💕 Women's Health", icon: Users, tourId: "cat-wh" },
+      { href: "/community/c/gw", label: "💚 General Wellness", icon: Users, tourId: "cat-gw" },
       { href: "/community/announcements", label: "📢 Announcements", icon: MessageSquare, tourId: "announcements" },
     ]
   },
@@ -168,7 +169,7 @@ const getMiniDiplomaNavItems = (isLocked: boolean, courseSlug?: string | null) =
 
   return [
     { href: lessonPath, label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
-    { href: "/community/cmktszaw30000fqm97xx6xrck", label: "Introduce Yourself", icon: Users, tourId: "community" },
+    { href: "/community/c/fm", label: "Community", icon: Users, tourId: "community" },
     { href: "/messages", label: "Ask Coach Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
     // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
   ];
