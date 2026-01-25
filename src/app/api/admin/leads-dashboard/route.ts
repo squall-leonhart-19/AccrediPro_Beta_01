@@ -392,6 +392,96 @@ export async function GET(request: Request) {
         });
     }
 
+    // ============ WEEKLY COHORTS ============
+    // Group leads by the week they signed up (last 12 weeks)
+    const weeklyCohorts = [];
+    for (let weekOffset = 0; weekOffset < 12; weekOffset++) {
+        const weekEnd = new Date(todayStart);
+        weekEnd.setDate(weekEnd.getDate() - (weekOffset * 7));
+        weekEnd.setHours(23, 59, 59, 999);
+
+        const weekStartDate = new Date(weekEnd);
+        weekStartDate.setDate(weekStartDate.getDate() - 6);
+        weekStartDate.setHours(0, 0, 0, 0);
+
+        const cohortLeads = enrichedLeads.filter(l => {
+            if (!l.optinDate) return false;
+            const optinDate = new Date(l.optinDate);
+            return optinDate >= weekStartDate && optinDate <= weekEnd;
+        });
+
+        const signups = cohortLeads.length;
+        const started = cohortLeads.filter(l => l.lessonsCompleted > 0).length;
+        const completed = cohortLeads.filter(l => l.lessonsCompleted >= 9).length;
+        const paid = cohortLeads.filter(l => l.hasPaid).length;
+        const cohortRevenue = cohortLeads.reduce((sum, l) => sum + l.revenue, 0);
+
+        weeklyCohorts.push({
+            weekStart: weekStartDate.toISOString(),
+            weekEnd: weekEnd.toISOString(),
+            label: weekStartDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+                   " - " + weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+            signups,
+            started,
+            completed,
+            paid,
+            revenue: cohortRevenue,
+            startRate: signups > 0 ? Math.round((started / signups) * 100) : 0,
+            completionRate: started > 0 ? Math.round((completed / started) * 100) : 0,
+            paidConversion: signups > 0 ? Math.round((paid / signups) * 100) : 0,
+        });
+    }
+
+    // ============ WEEK-OVER-WEEK COMPARISON ============
+    // Compare this week vs last week
+    const thisWeekCohort = weeklyCohorts[0];
+    const lastWeekCohort = weeklyCohorts[1];
+
+    const weekOverWeek = {
+        signups: {
+            current: thisWeekCohort?.signups || 0,
+            previous: lastWeekCohort?.signups || 0,
+            delta: (thisWeekCohort?.signups || 0) - (lastWeekCohort?.signups || 0),
+            deltaPercent: lastWeekCohort?.signups > 0
+                ? Math.round(((thisWeekCohort?.signups || 0) - lastWeekCohort.signups) / lastWeekCohort.signups * 100)
+                : 0,
+        },
+        startRate: {
+            current: thisWeekCohort?.startRate || 0,
+            previous: lastWeekCohort?.startRate || 0,
+            delta: (thisWeekCohort?.startRate || 0) - (lastWeekCohort?.startRate || 0),
+        },
+        completionRate: {
+            current: thisWeekCohort?.completionRate || 0,
+            previous: lastWeekCohort?.completionRate || 0,
+            delta: (thisWeekCohort?.completionRate || 0) - (lastWeekCohort?.completionRate || 0),
+        },
+        paidConversion: {
+            current: thisWeekCohort?.paidConversion || 0,
+            previous: lastWeekCohort?.paidConversion || 0,
+            delta: (thisWeekCohort?.paidConversion || 0) - (lastWeekCohort?.paidConversion || 0),
+        },
+        revenue: {
+            current: thisWeekCohort?.revenue || 0,
+            previous: lastWeekCohort?.revenue || 0,
+            delta: (thisWeekCohort?.revenue || 0) - (lastWeekCohort?.revenue || 0),
+            deltaPercent: lastWeekCohort?.revenue > 0
+                ? Math.round(((thisWeekCohort?.revenue || 0) - lastWeekCohort.revenue) / lastWeekCohort.revenue * 100)
+                : 0,
+        },
+    };
+
+    // ============ WEEKLY TRENDS (for charts) ============
+    // Prepare trend data for the last 12 weeks
+    const weeklyTrends = {
+        labels: weeklyCohorts.map(w => w.label).reverse(),
+        signups: weeklyCohorts.map(w => w.signups).reverse(),
+        startRate: weeklyCohorts.map(w => w.startRate).reverse(),
+        completionRate: weeklyCohorts.map(w => w.completionRate).reverse(),
+        paidConversion: weeklyCohorts.map(w => w.paidConversion).reverse(),
+        revenue: weeklyCohorts.map(w => w.revenue).reverse(),
+    };
+
     return NextResponse.json({
         summary,
         funnel,
@@ -406,6 +496,10 @@ export async function GET(request: Request) {
         dailySignups,
         overallDropoff,
         leads: enrichedLeads,
+        // Weekly cohort analysis
+        weeklyCohorts,
+        weekOverWeek,
+        weeklyTrends,
         // Return all categories found in the data for the filter dropdown
         categories: Array.from(uniqueCategories)
             .sort((a, b) => {

@@ -91,6 +91,44 @@ interface NicheStat {
     dropoffPoints: { lesson: number; count: number; dropRate: number }[];
 }
 
+interface WeeklyCohort {
+    weekStart: string;
+    weekEnd: string;
+    label: string;
+    signups: number;
+    started: number;
+    completed: number;
+    paid: number;
+    revenue: number;
+    startRate: number;
+    completionRate: number;
+    paidConversion: number;
+}
+
+interface WeekOverWeekMetric {
+    current: number;
+    previous: number;
+    delta: number;
+    deltaPercent?: number;
+}
+
+interface WeekOverWeek {
+    signups: WeekOverWeekMetric;
+    startRate: WeekOverWeekMetric;
+    completionRate: WeekOverWeekMetric;
+    paidConversion: WeekOverWeekMetric;
+    revenue: WeekOverWeekMetric;
+}
+
+interface WeeklyTrends {
+    labels: string[];
+    signups: number[];
+    startRate: number[];
+    completionRate: number[];
+    paidConversion: number[];
+    revenue: number[];
+}
+
 interface DashboardData {
     summary: {
         total: number;
@@ -128,6 +166,9 @@ interface DashboardData {
     overallDropoff: { lesson: number; label: string; count: number; dropRate: number }[];
     leads: Lead[];
     categories: { value: string; label: string }[];
+    weeklyCohorts: WeeklyCohort[];
+    weekOverWeek: WeekOverWeek;
+    weeklyTrends: WeeklyTrends;
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -145,6 +186,18 @@ const STATUS_LABELS: Record<string, string> = {
     PAID: "Paid",
     REFUNDED: "Refunded",
 };
+
+// Delta indicator component
+function DeltaIndicator({ delta, suffix = "", isPercent = false }: { delta: number; suffix?: string; isPercent?: boolean }) {
+    if (delta === 0) return null;
+    const isPositive = delta > 0;
+    return (
+        <span className={`inline-flex items-center text-xs font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}>
+            {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {isPositive ? "+" : ""}{delta}{isPercent ? "%" : ""}{suffix}
+        </span>
+    );
+}
 
 export default function LeadsDashboard() {
     const [data, setData] = useState<DashboardData | null>(null);
@@ -360,7 +413,12 @@ export default function LeadsDashboard() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-green-600 font-medium">Total Revenue</p>
-                                <p className="text-3xl font-bold text-green-700">{formatCurrency(data.revenue.total)}</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-3xl font-bold text-green-700">{formatCurrency(data.revenue.total)}</p>
+                                    {data.weekOverWeek && (
+                                        <DeltaIndicator delta={data.weekOverWeek.revenue.deltaPercent || 0} isPercent suffix=" vs LW" />
+                                    )}
+                                </div>
                                 <p className="text-xs text-green-600 mt-1">{data.funnel.paid} paid conversions</p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -375,7 +433,12 @@ export default function LeadsDashboard() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-purple-600 font-medium">Paid Conversion</p>
-                                <p className="text-3xl font-bold text-purple-700">{data.rates.paidConversion}%</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-3xl font-bold text-purple-700">{data.rates.paidConversion}%</p>
+                                    {data.weekOverWeek && (
+                                        <DeltaIndicator delta={data.weekOverWeek.paidConversion.delta} suffix="pp" />
+                                    )}
+                                </div>
                                 <p className="text-xs text-purple-600 mt-1">of {data.funnel.signups} leads</p>
                             </div>
                             <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
@@ -390,9 +453,14 @@ export default function LeadsDashboard() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-gray-500">Completion Rate</p>
-                                <p className={`text-3xl font-bold ${getRateColor(data.rates.completionRate, "completion")}`}>
-                                    {data.rates.completionRate}%
-                                </p>
+                                <div className="flex items-center gap-2">
+                                    <p className={`text-3xl font-bold ${getRateColor(data.rates.completionRate, "completion")}`}>
+                                        {data.rates.completionRate}%
+                                    </p>
+                                    {data.weekOverWeek && (
+                                        <DeltaIndicator delta={data.weekOverWeek.completionRate.delta} suffix="pp" />
+                                    )}
+                                </div>
                                 <p className="text-xs text-gray-400 mt-1">{data.funnel.completed} of {data.funnel.started} starters</p>
                             </div>
                             <GraduationCap className="w-8 h-8 text-amber-500" />
@@ -405,9 +473,14 @@ export default function LeadsDashboard() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-gray-500">Start Rate</p>
-                                <p className={`text-3xl font-bold ${getRateColor(data.rates.startRate, "start")}`}>
-                                    {data.rates.startRate}%
-                                </p>
+                                <div className="flex items-center gap-2">
+                                    <p className={`text-3xl font-bold ${getRateColor(data.rates.startRate, "start")}`}>
+                                        {data.rates.startRate}%
+                                    </p>
+                                    {data.weekOverWeek && (
+                                        <DeltaIndicator delta={data.weekOverWeek.startRate.delta} suffix="pp" />
+                                    )}
+                                </div>
                                 <p className="text-xs text-gray-400 mt-1">{data.funnel.started} of {data.funnel.signups} signups</p>
                             </div>
                             <UserCheck className="w-8 h-8 text-blue-500" />
@@ -500,10 +573,18 @@ export default function LeadsDashboard() {
 
             {/* Main Tabs */}
             <Tabs defaultValue="funnel" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-6">
                     <TabsTrigger value="funnel" className="flex items-center gap-2">
                         <Target className="w-4 h-4" />
                         Funnel
+                    </TabsTrigger>
+                    <TabsTrigger value="weekly" className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        Weekly
+                    </TabsTrigger>
+                    <TabsTrigger value="trends" className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4" />
+                        Trends
                     </TabsTrigger>
                     <TabsTrigger value="niches" className="flex items-center gap-2">
                         <BarChart3 className="w-4 h-4" />
@@ -650,7 +731,309 @@ export default function LeadsDashboard() {
                     </Card>
                 </TabsContent>
 
-                {/* Tab 2: Per-Niche Performance */}
+                {/* Tab 2: Weekly Cohorts */}
+                <TabsContent value="weekly" className="space-y-6">
+                    {/* Week-over-Week Summary */}
+                    {data.weekOverWeek && (
+                        <div className="grid grid-cols-5 gap-4">
+                            <Card className={data.weekOverWeek.signups.delta >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}>
+                                <CardContent className="py-4">
+                                    <p className="text-sm text-gray-500">This Week Signups</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-2xl font-bold">{data.weekOverWeek.signups.current}</p>
+                                        <DeltaIndicator delta={data.weekOverWeek.signups.deltaPercent || 0} isPercent />
+                                    </div>
+                                    <p className="text-xs text-gray-400">vs {data.weekOverWeek.signups.previous} last week</p>
+                                </CardContent>
+                            </Card>
+                            <Card className={data.weekOverWeek.startRate.delta >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}>
+                                <CardContent className="py-4">
+                                    <p className="text-sm text-gray-500">This Week Start Rate</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-2xl font-bold">{data.weekOverWeek.startRate.current}%</p>
+                                        <DeltaIndicator delta={data.weekOverWeek.startRate.delta} suffix="pp" />
+                                    </div>
+                                    <p className="text-xs text-gray-400">vs {data.weekOverWeek.startRate.previous}% last week</p>
+                                </CardContent>
+                            </Card>
+                            <Card className={data.weekOverWeek.completionRate.delta >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}>
+                                <CardContent className="py-4">
+                                    <p className="text-sm text-gray-500">This Week Completion</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-2xl font-bold">{data.weekOverWeek.completionRate.current}%</p>
+                                        <DeltaIndicator delta={data.weekOverWeek.completionRate.delta} suffix="pp" />
+                                    </div>
+                                    <p className="text-xs text-gray-400">vs {data.weekOverWeek.completionRate.previous}% last week</p>
+                                </CardContent>
+                            </Card>
+                            <Card className={data.weekOverWeek.paidConversion.delta >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}>
+                                <CardContent className="py-4">
+                                    <p className="text-sm text-gray-500">This Week Paid %</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-2xl font-bold">{data.weekOverWeek.paidConversion.current}%</p>
+                                        <DeltaIndicator delta={data.weekOverWeek.paidConversion.delta} suffix="pp" />
+                                    </div>
+                                    <p className="text-xs text-gray-400">vs {data.weekOverWeek.paidConversion.previous}% last week</p>
+                                </CardContent>
+                            </Card>
+                            <Card className={data.weekOverWeek.revenue.delta >= 0 ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}>
+                                <CardContent className="py-4">
+                                    <p className="text-sm text-gray-500">This Week Revenue</p>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-2xl font-bold">{formatCurrency(data.weekOverWeek.revenue.current)}</p>
+                                        <DeltaIndicator delta={data.weekOverWeek.revenue.deltaPercent || 0} isPercent />
+                                    </div>
+                                    <p className="text-xs text-gray-400">vs {formatCurrency(data.weekOverWeek.revenue.previous)} last week</p>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    )}
+
+                    {/* Weekly Cohort Table */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Calendar className="w-5 h-5 text-burgundy-600" />
+                                Weekly Cohort Performance
+                            </CardTitle>
+                            <CardDescription>Track optimization results week-over-week (last 12 weeks)</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {data.weeklyCohorts && data.weeklyCohorts.length > 0 ? (
+                                <div className="overflow-x-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Week</TableHead>
+                                                <TableHead className="text-center">Signups</TableHead>
+                                                <TableHead className="text-center">Started</TableHead>
+                                                <TableHead className="text-center">Completed</TableHead>
+                                                <TableHead className="text-center">Paid</TableHead>
+                                                <TableHead className="text-center">Start %</TableHead>
+                                                <TableHead className="text-center">Complete %</TableHead>
+                                                <TableHead className="text-center">Paid %</TableHead>
+                                                <TableHead className="text-right">Revenue</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {data.weeklyCohorts.map((cohort, idx) => (
+                                                <TableRow
+                                                    key={cohort.weekStart}
+                                                    className={idx === 0 ? "bg-blue-50 font-medium" : ""}
+                                                >
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-2">
+                                                            {idx === 0 && <Badge className="bg-blue-500 text-xs">Current</Badge>}
+                                                            {idx === 1 && <Badge variant="outline" className="text-xs">Last Week</Badge>}
+                                                            <span className={idx === 0 ? "font-semibold" : ""}>{cohort.label}</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-center font-bold">{cohort.signups}</TableCell>
+                                                    <TableCell className="text-center">{cohort.started}</TableCell>
+                                                    <TableCell className="text-center">{cohort.completed}</TableCell>
+                                                    <TableCell className="text-center">
+                                                        <Badge className={cohort.paid > 0 ? "bg-green-500" : "bg-gray-300"}>
+                                                            {cohort.paid}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <span className={getRateColor(cohort.startRate, "start")}>
+                                                            {cohort.startRate}%
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <span className={getRateColor(cohort.completionRate, "completion")}>
+                                                            {cohort.completionRate}%
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        <Badge className={
+                                                            cohort.paidConversion >= 8 ? "bg-green-500" :
+                                                            cohort.paidConversion >= 4 ? "bg-amber-500" :
+                                                            cohort.paidConversion > 0 ? "bg-red-500" :
+                                                            "bg-gray-300"
+                                                        }>
+                                                            {cohort.paidConversion}%
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right font-medium text-green-600">
+                                                        {formatCurrency(cohort.revenue)}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            ) : (
+                                <p className="text-gray-500 text-center py-8">No weekly cohort data available</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* Tab 3: Trends */}
+                <TabsContent value="trends" className="space-y-6">
+                    {data.weeklyTrends && (
+                        <>
+                            {/* Signups Trend */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Users className="w-5 h-5 text-blue-600" />
+                                        Weekly Signups Trend
+                                    </CardTitle>
+                                    <CardDescription>Lead acquisition over the last 12 weeks</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-end h-48 gap-2">
+                                        {data.weeklyTrends.signups.map((count, i) => {
+                                            const maxCount = Math.max(...data.weeklyTrends.signups, 1);
+                                            const height = (count / maxCount) * 100;
+                                            return (
+                                                <div key={i} className="flex-1 flex flex-col items-center">
+                                                    <span className="text-xs text-gray-500 mb-1">{count}</span>
+                                                    <div
+                                                        className="w-full bg-blue-500 rounded-t hover:bg-blue-600 transition-colors cursor-default"
+                                                        style={{ height: `${Math.max(8, height)}%` }}
+                                                        title={`${data.weeklyTrends.labels[i]}: ${count} signups`}
+                                                    />
+                                                    <p className="text-[9px] text-gray-400 mt-1 truncate w-full text-center">
+                                                        {data.weeklyTrends.labels[i]?.split(" - ")[0]}
+                                                    </p>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Conversion Rates Trend */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <TrendingUp className="w-5 h-5 text-purple-600" />
+                                        Conversion Rates Trend
+                                    </CardTitle>
+                                    <CardDescription>Start, completion, and paid rates over 12 weeks</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-6">
+                                        {/* Start Rate */}
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-blue-600">Start Rate</span>
+                                                <span className="text-sm text-gray-500">Target: 60%+</span>
+                                            </div>
+                                            <div className="flex items-end h-16 gap-1">
+                                                {data.weeklyTrends.startRate.map((rate, i) => (
+                                                    <div key={i} className="flex-1 flex flex-col items-center">
+                                                        <div
+                                                            className={`w-full rounded-t ${rate >= 60 ? "bg-green-400" : rate >= 40 ? "bg-amber-400" : "bg-red-400"}`}
+                                                            style={{ height: `${Math.max(10, rate)}%` }}
+                                                            title={`${data.weeklyTrends.labels[i]}: ${rate}%`}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Completion Rate */}
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-amber-600">Completion Rate</span>
+                                                <span className="text-sm text-gray-500">Target: 50%+</span>
+                                            </div>
+                                            <div className="flex items-end h-16 gap-1">
+                                                {data.weeklyTrends.completionRate.map((rate, i) => (
+                                                    <div key={i} className="flex-1 flex flex-col items-center">
+                                                        <div
+                                                            className={`w-full rounded-t ${rate >= 50 ? "bg-green-400" : rate >= 30 ? "bg-amber-400" : "bg-red-400"}`}
+                                                            style={{ height: `${Math.max(10, rate)}%` }}
+                                                            title={`${data.weeklyTrends.labels[i]}: ${rate}%`}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Paid Conversion */}
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-green-600">Paid Conversion</span>
+                                                <span className="text-sm text-gray-500">Target: 8%+</span>
+                                            </div>
+                                            <div className="flex items-end h-16 gap-1">
+                                                {data.weeklyTrends.paidConversion.map((rate, i) => (
+                                                    <div key={i} className="flex-1 flex flex-col items-center">
+                                                        <div
+                                                            className={`w-full rounded-t ${rate >= 8 ? "bg-green-400" : rate >= 4 ? "bg-amber-400" : "bg-red-400"}`}
+                                                            style={{ height: `${Math.max(10, rate * 5)}%` }}
+                                                            title={`${data.weeklyTrends.labels[i]}: ${rate}%`}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Legend */}
+                                    <div className="flex justify-center gap-6 mt-6 pt-4 border-t">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 bg-green-400 rounded" />
+                                            <span className="text-xs text-gray-500">Above target</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 bg-amber-400 rounded" />
+                                            <span className="text-xs text-gray-500">Near target</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 bg-red-400 rounded" />
+                                            <span className="text-xs text-gray-500">Below target</span>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Revenue Trend */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <DollarSign className="w-5 h-5 text-green-600" />
+                                        Weekly Revenue Trend
+                                    </CardTitle>
+                                    <CardDescription>Revenue from mini diploma leads over 12 weeks</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-end h-48 gap-2">
+                                        {data.weeklyTrends.revenue.map((rev, i) => {
+                                            const maxRev = Math.max(...data.weeklyTrends.revenue, 1);
+                                            const height = (rev / maxRev) * 100;
+                                            return (
+                                                <div key={i} className="flex-1 flex flex-col items-center">
+                                                    <span className="text-xs text-gray-500 mb-1">
+                                                        {rev > 0 ? formatCurrency(rev) : "-"}
+                                                    </span>
+                                                    <div
+                                                        className={`w-full rounded-t transition-colors cursor-default ${
+                                                            rev > 0 ? "bg-green-500 hover:bg-green-600" : "bg-gray-200"
+                                                        }`}
+                                                        style={{ height: `${Math.max(8, height)}%` }}
+                                                        title={`${data.weeklyTrends.labels[i]}: ${formatCurrency(rev)}`}
+                                                    />
+                                                    <p className="text-[9px] text-gray-400 mt-1 truncate w-full text-center">
+                                                        {data.weeklyTrends.labels[i]?.split(" - ")[0]}
+                                                    </p>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </>
+                    )}
+                </TabsContent>
+
+                {/* Tab 4: Per-Niche Performance */}
                 <TabsContent value="niches">
                     <Card>
                         <CardHeader>
