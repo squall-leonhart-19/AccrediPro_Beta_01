@@ -185,7 +185,6 @@ export async function GET(request: NextRequest) {
               currentEmailIndex: nextIndex,
               emailsReceived: { increment: 1 },
               nextSendAt,
-              lastEmailSentAt: now,
             },
           });
 
