@@ -241,7 +241,7 @@ export default function ChatTestPage() {
             {/* Header */}
             <div className="bg-gradient-to-r from-[#6B2C40] to-[#5A2435] text-white p-4 flex items-center gap-3">
               <img
-                src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
+                src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                 alt="Sarah"
                 className="w-11 h-11 rounded-full border-2 border-[#C9A54D]"
               />
@@ -290,7 +290,7 @@ export default function ChatTestPage() {
                     <div key={i} className={`flex gap-2 mb-3 ${msg.role === "user" ? "justify-end" : ""}`}>
                       {msg.role === "bot" && (
                         <img
-                          src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
+                          src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                           alt="Sarah"
                           className="w-8 h-8 rounded-full flex-shrink-0"
                         />
@@ -308,7 +308,7 @@ export default function ChatTestPage() {
                   {isTyping && (
                     <div className="flex gap-2 mb-3">
                       <img
-                        src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
+                        src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                         alt="Sarah"
                         className="w-8 h-8 rounded-full"
                       />
@@ -349,7 +349,7 @@ export default function ChatTestPage() {
         >
           <div className="absolute inset-[-4px] rounded-full bg-[#6B2C40] opacity-30 animate-ping" />
           <img
-            src="https://assets.accredipro.academy/migrated/Sarah-M.webp"
+            src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
             alt="Sarah"
             className="w-[42px] h-[42px] rounded-full border-2 border-[#C9A54D]"
           />

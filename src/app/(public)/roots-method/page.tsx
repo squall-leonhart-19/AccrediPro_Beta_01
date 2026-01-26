@@ -345,7 +345,7 @@ export default function ROOTSMethodPage() {
 
                     <div className="flex justify-center mb-6">
                         <Image
-                            src="https://assets.accredipro.academy/migrated/CMA-Accredited-course.jpeg"
+                            src="https://assets.accredipro.academy/fm-certification/CMA-Accredited-course.jpeg"
                             alt="CMA Accredited Course"
                             width={140}
                             height={70}
@@ -818,7 +818,7 @@ export default function ROOTSMethodPage() {
 
                     <div className="mt-8">
                         <Image
-                            src="https://assets.accredipro.academy/migrated/CMA-Accredited-course.jpeg"
+                            src="https://assets.accredipro.academy/fm-certification/CMA-Accredited-course.jpeg"
                             alt="CMA Accredited Course"
                             width={120}
                             height={60}

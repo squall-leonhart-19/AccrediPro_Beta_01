@@ -7,8 +7,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const OLD_DOMAIN_REGEX = /https:\/\/coach\.accredipro\.academy\/wp-content\/uploads\/\d{4}\/\d{2}\/([^"'\)\s]+)/gi;
-const NEW_BASE_URL = "https://assets.accredipro.academy/migrated/";
+const OLD_DOMAIN_REGEX = /(?:https:\/\/coach\.accredipro\.academy\/wp-content\/uploads\/\d{4}\/\d{2}\/|https:\/\/assets\.accredipro\.academy\/migrated\/)([^"'\)\s]+)/gi;
+const NEW_BASE_URL = "https://assets.accredipro.academy/fm-certification/";
 
 const ROOT_DIR = process.cwd();
 const EXCLUDE_DIRS = ['node_modules', '.git', '.next', '.gemini', 'dist', 'build', 'coverage'];

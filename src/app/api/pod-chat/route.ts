@@ -277,7 +277,7 @@ export async function POST(req: NextRequest) {
                 response: {
                     id: `standup-${Date.now()}`,
                     senderName: "Coach Sarah M.",
-                    senderAvatar: "https://assets.accredipro.academy/migrated/Sarah-M.webp",
+                    senderAvatar: "https://assets.accredipro.academy/fm-certification/Sarah-M.webp",
                     senderType: "coach",
                     content: response,
                     createdAt: new Date().toISOString(),
@@ -309,7 +309,7 @@ export async function POST(req: NextRequest) {
                 response: {
                     id: `reengage-${Date.now()}`,
                     senderName: "Coach Sarah M.",
-                    senderAvatar: "https://assets.accredipro.academy/migrated/Sarah-M.webp",
+                    senderAvatar: "https://assets.accredipro.academy/fm-certification/Sarah-M.webp",
                     senderType: "coach",
                     content: response,
                     createdAt: new Date().toISOString(),
@@ -354,7 +354,7 @@ Example: "Hey ${studentFirstName || "friend"}! 🌿 So glad you're here! [refere
             responses.push({
                 id: `response-${Date.now()}-sarah`,
                 senderName: "Coach Sarah M.",
-                senderAvatar: "https://assets.accredipro.academy/migrated/Sarah-M.webp",
+                senderAvatar: "https://assets.accredipro.academy/fm-certification/Sarah-M.webp",
                 senderType: "coach",
                 content: sarahResponse,
                 createdAt: new Date().toISOString(),
@@ -429,7 +429,7 @@ Keep it very short (1-2 sentences max).`;
         if (isCoachResponse || resourceMatch) {
             responderName = "Coach Sarah M.";
             responderPersonality = "You are Coach Sarah M., a warm and encouraging functional medicine mentor. You're supportive, knowledgeable, and genuinely care about student success. You use emojis sparingly but naturally. Keep responses conversational and short (2-4 sentences).";
-            responderAvatar = "https://assets.accredipro.academy/migrated/Sarah-M.webp";
+            responderAvatar = "https://assets.accredipro.academy/fm-certification/Sarah-M.webp";
         } else {
             const zombie = zombies?.[Math.floor(Math.random() * (zombies?.length || 1))];
             responderName = zombie?.name || "Fellow Student";

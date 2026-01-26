@@ -260,7 +260,7 @@ export default function FreeMiniDiplomaPage() {
         {/* Logo Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 pb-4 border-b" style={{ borderColor: "#ECE8E2" }}>
           <Image
-            src="https://assets.accredipro.academy/migrated/Senza-titolo-Logo-1.png"
+            src="https://assets.accredipro.academy/fm-certification/Senza-titolo-Logo-1.png"
             alt="AccrediPro Academy"
             width={160}
             height={40}

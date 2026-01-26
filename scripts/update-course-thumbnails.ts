@@ -15,10 +15,10 @@ const prisma = new PrismaClient({ adapter });
 
 // Course thumbnail mappings - using WordPress CDN
 const thumbnailMappings: Record<string, string> = {
-  "FM Test": "https://assets.accredipro.academy/migrated/FunctionalMedicinePractictioner-scaled.jpeg",
+  "FM Test": "https://assets.accredipro.academy/fm-certification/FunctionalMedicinePractictioner-scaled.jpeg",
   "Functional Medicine Mini Diploma": "/courses/test01_img.jpeg",
-  "Functional Medicine Certification": "https://assets.accredipro.academy/migrated/FunctionalMedicinePractictioner-scaled.jpeg",
-  "Functional Medicine Complete Certification": "https://assets.accredipro.academy/migrated/FunctionalMedicinePractictioner-scaled.jpeg",
+  "Functional Medicine Certification": "https://assets.accredipro.academy/fm-certification/FunctionalMedicinePractictioner-scaled.jpeg",
+  "Functional Medicine Complete Certification": "https://assets.accredipro.academy/fm-certification/FunctionalMedicinePractictioner-scaled.jpeg",
 };
 
 async function main() {
