@@ -224,7 +224,7 @@ export default function HNCourseCertificationPage() {
                         {/* Header */}
                         <div className="bg-gradient-to-r from-[#722F37] to-[#5A2435] text-white p-4 flex items-center gap-3">
                             <img
-                                src="https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev/fm-certification/Sarah-M.webp"
+                                src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                                 alt="Sarah"
                                 className="w-10 h-10 rounded-full border-2 border-[#D4AF37]"
                             />
@@ -289,7 +289,7 @@ export default function HNCourseCertificationPage() {
                                         <div key={i} className={`mb-3 flex ${msg.role === "user" ? "justify-end" : "gap-2"}`}>
                                             {msg.role === "bot" && (
                                                 <img
-                                                    src="https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev/fm-certification/Sarah-M.webp"
+                                                    src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                                                     alt="Sarah"
                                                     className="w-7 h-7 rounded-full flex-shrink-0"
                                                 />
@@ -305,7 +305,7 @@ export default function HNCourseCertificationPage() {
                                     {isTyping && (
                                         <div className="flex gap-2 mb-3">
                                             <img
-                                                src="https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev/fm-certification/Sarah-M.webp"
+                                                src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                                                 alt="Sarah"
                                                 className="w-7 h-7 rounded-full"
                                             />
@@ -347,7 +347,7 @@ export default function HNCourseCertificationPage() {
                 >
                     <div className="absolute inset-[-4px] rounded-full bg-[#722F37] opacity-30 animate-ping"></div>
                     <img
-                        src="https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev/fm-certification/Sarah-M.webp"
+                        src="https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
                         alt="Sarah"
                         className="w-11 h-11 rounded-full border-2 border-[#D4AF37]"
                     />
