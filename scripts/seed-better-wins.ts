@@ -8,31 +8,17 @@ import prisma from "../src/lib/prisma";
  * - Rich reactions
  */
 
-// Get or create Coach Sarah
+// Get Coach Sarah - use the correct one: sarah@accredipro-certificate.com (ADMIN)
 async function getCoachSarah() {
-  let sarah = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { email: "sarah@accredipro-certificate.com" },
-        { email: "coach@accredipro.academy" },
-        { firstName: "Sarah", lastName: "M.", role: "MENTOR" }
-      ]
-    }
+  // First try to find the correct Sarah
+  const sarah = await prisma.user.findFirst({
+    where: { email: "sarah@accredipro-certificate.com" }
   });
 
   if (!sarah) {
-    sarah = await prisma.user.create({
-      data: {
-        email: "coach@accredipro.academy",
-        firstName: "Sarah",
-        lastName: "M.",
-        role: "MENTOR",
-        avatar: "https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp",
-        bio: "Your Functional Medicine Coach",
-        isActive: true
-      }
-    });
+    throw new Error("Coach Sarah (sarah@accredipro-certificate.com) not found in database. Please create her first.");
   }
+
   return sarah;
 }
 
@@ -270,11 +256,11 @@ async function main() {
   const sarah = await getCoachSarah();
   console.log("Coach Sarah ID:", sarah.id);
 
-  // Get zombies with R2 avatars for authors/commenters
+  // Get zombies with avatars for authors/commenters
   const zombies = await prisma.user.findMany({
     where: {
       isFakeProfile: true,
-      avatar: { contains: "r2.dev" }
+      avatar: { not: null }
     },
     select: { id: true, firstName: true, lastName: true },
     take: 200

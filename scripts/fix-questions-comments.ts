@@ -512,7 +512,7 @@ async function main() {
   console.log(`Found ${zombies.length} zombie profiles`);
 
   const questionsPosts = await prisma.communityPost.findMany({
-    where: { categoryId: "questions-everyone-has" },
+    where: { categoryId: "questions" },
     select: { id: true, title: true, content: true, createdAt: true },
     orderBy: { createdAt: "asc" },
   });
