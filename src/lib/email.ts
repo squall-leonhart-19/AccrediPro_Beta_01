@@ -19,7 +19,7 @@ const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@ac
 
 // Use SITE_URL for emails, NOT NEXTAUTH_URL (which can be localhost for auth)
 const BASE_URL = process.env.SITE_URL || "https://learn.accredipro.academy";
-const LOGO_URL = "https://assets.accredipro.academy/fm-certification/Senza-titolo-Logo-1.png";
+const LOGO_URL = "https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev/fm-certification/Senza-titolo-Logo-1.png";
 const UNSUBSCRIBE_URL = `${BASE_URL}/unsubscribe`;
 
 // ============================================

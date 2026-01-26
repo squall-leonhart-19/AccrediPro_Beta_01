@@ -321,7 +321,7 @@ export function PodChatClient({
                                     id: `response-${msg.id}`,
                                     senderName: msg.aiResponderName,
                                     senderAvatar: msg.aiResponderName.includes("Sarah")
-                                        ? "https://assets.accredipro.academy/fm-certification/Sarah-M.webp"
+                                        ? "https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev/fm-certification/Sarah-M.webp"
                                         : undefined,
                                     senderType: msg.aiResponderName.includes("Sarah") ? "coach" : "zombie",
                                     content: msg.aiResponse,
