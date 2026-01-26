@@ -120,18 +120,18 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              // Scripts: self + inline for Next.js + Sentry + analytics + Facebook Pixel
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net",
+              // Scripts: self + inline for Next.js + Sentry + analytics + Facebook Pixel + Trustpilot
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.google-analytics.com https://*.googletagmanager.com https://js.stripe.com https://connect.facebook.net https://widget.trustpilot.com",
               // Styles: self + inline for dynamic styles
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               // Images: various CDNs and blob for local processing + Facebook
               "img-src 'self' data: blob: https: http: https://*.accredipro.academy",
               // Fonts: Google Fonts + self
               "font-src 'self' https://fonts.gstatic.com data:",
-              // Connect: APIs + Supabase + Sentry + analytics + Facebook + R2
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev https://*.accredipro.academy https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com https://i.pravatar.cc https://api.dicebear.com https://randomuser.me",
-              // Frames: Stripe payment + embedded content
-              "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com https://*.facebook.com",
+              // Connect: APIs + ... + Trustpilot
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.google-analytics.com https://api.stripe.com https://elevenlabs.io https://api.openai.com https://api.anthropic.com https://*.facebook.com https://*.facebook.net https://pub-bc3849663dc849e59aee2d3c517f51e1.r2.dev https://*.accredipro.academy https://fonts.googleapis.com https://fonts.gstatic.com https://images.unsplash.com https://i.pravatar.cc https://api.dicebear.com https://randomuser.me https://widget.trustpilot.com",
+              // Frames: Stripe + ... + Trustpilot
+              "frame-src 'self' https://js.stripe.com https://www.youtube.com https://player.vimeo.com https://*.facebook.com https://widget.trustpilot.com",
               // Media: self + Supabase storage for audio/video
               "media-src 'self' blob: https://*.supabase.co",
               // Workers: allow blob for PWA and other workers
